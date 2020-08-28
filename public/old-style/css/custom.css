@@ -1,0 +1,210 @@
+body{
+    font-family: Lato,sans-serif !important;
+    font-size: 14px !important;
+    line-height: 1.428571429 !important;
+    color: #333 !important;
+    background-color: #fff !important;
+}
+.panel {
+    margin-bottom: 20px !important;
+    border-radius: 0px !important;
+    border-bottom: 1px solid #47546D !important;
+}
+.custom-btn{
+	border: 1px solid #47546D !important;
+	border-radius: 4px !important;
+	margin-bottom: 3px !important;
+	background: #fff;
+}
+.blue-color{
+	color: #47546D !important;
+
+}
+.gray-background{
+    background: #ECEEF0 !important;
+}
+.blue-background{
+	background: #ECEEF0 !important;
+}
+.color-white{
+	color: #ffffff;
+}
+.color-black{
+    color: #47546D;
+}
+.custom-style{
+    border: 1px solid gray;
+    padding: 0px;
+    margin: 14px;
+}
+sup{
+    color: red;
+}
+.border-up{
+   border-top: 1px solid #47546D;
+}
+.border-btm{
+   border-bottom: 1px solid #47546D;
+}
+.form-fields{
+    font-size: 12px;
+    padding: 5px;
+    cursor: pointer;
+}
+.form-side-menu{
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 430px;
+}
+.custom-modal-header{
+    padding: 8px 8px 8px 8px;
+}
+.custom-modal-body{
+	padding: 0px;
+    margin-top: 9px;
+}
+.nav-pills>li>a {
+    border-radius: 0px !important;
+    left: 13px !important;
+    color: black !important;
+    background: #ECEEF0;
+}
+.nav>li>a {
+    padding: 5px 14px !important;
+}
+.nav-pills .active {
+    color: black;
+    background-color: #fff !important;
+    border-color: none;
+    border: 1px solid #47546D;
+    border-bottom: 0px;
+}
+.nav-pills li a:hover {
+    background-color: #fff !important;
+    border-bottom: 1px solid cadetblue;
+}
+.logo {
+    float: left;
+    width: 250px;
+    font-size: 16px;
+}
+.nav-link i{
+	color: #47546D;
+}
+.sidebar a {
+    color: #47546D !important;
+}
+.sidebar .sidebar-sticky {
+    position: relative;
+    height: calc(100vh - 50px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 250px;
+    font-size: 15px;
+    line-height: 17px;
+}
+.sidebar .nav  li a:hover {
+	background: #fff !important;
+}
+.header-list-right > li > a:hover {
+    background: #fff;
+    color: #fff;
+}
+.header-list-right .user-account.show .dropdown-toggle {
+    background: cadetblue;
+    color: #fff;
+}
+.nav-tabs>li>a {
+    color: #555;
+    background-color: #ECEEF0 !important;
+    border: 0px solid #ddd !important;
+    cursor: default;
+}
+.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
+    color: #555;
+    cursor: default;
+    border-bottom-color: none;
+    background-color: #fff !important;
+    color: #47546D !important;
+    border-radius: 0px !important;
+    border: 0px !important;
+}
+.nav-tabs> .active {
+    cursor: default;
+    background-color: cadetblue !important;
+    color: white !important;
+    border-radius: 0px !important;
+}
+.nav-tabs> a.active {
+    cursor: default;
+    background-color: cadetblue !important;
+    color: white !important;
+    border-radius: 0px !important;
+}
+/* for papulate menu of edit and delete*/
+
+.dropdown{
+position: absolute !important;
+}
+.dropdown-menu {
+position: absolute !important;
+width: 25px;
+min-height: 31px;
+top: -5px;
+left: -40px;
+}
+.list-group-item{
+    border: 0 !important;
+    border-radius: 0 !important;
+}
+.dropdown .dropdown-menu a:hover{
+background: #fff;
+color: #4D4D4D;
+cursor: pointer;
+}
+.dropdown:hover .dropdown-menu {
+
+display:inline;
+position: absolute !important;
+background-color: #fff;
+}
+ul{
+list-style: none;
+}
+.dropdown .dropdown-menu{
+min-width: 125px;
+font-size: 12px;
+
+}
+.dropdown .dropdown-menu a {
+padding: 3px 3px 3px 3px;
+display: block;
+}
+.dropdown .dropdown-menu i{
+font-size: 14px;
+}
+
+.list-group li a{
+    color: #47546D !important;
+    text-decoration: none;
+}
+i{
+    cursor: pointer;
+}
+.my-custom-scrollbar {
+position: relative;
+height: 150px;
+overflow: auto;
+}
+.table-wrapper-scroll-y {
+display: block;
+}
+.card-header a{
+    text-decoration: none !important;
+    color: #47546D;
+    font-size: 12px;
+}
+.font-12{
+    font-size: 12px;
+}
+

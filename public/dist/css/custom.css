@@ -1,0 +1,73 @@
+.custom-btn{
+	border: 1px solid #47546D !important;
+	border-radius: 4px !important;
+	margin-bottom: 3px !important;
+	background: #fff;
+}
+.blue-color{
+	color: #47546D !important;
+
+}
+.gray-background{
+    background: #ECEEF0 !important;
+}
+.blue-background{
+	background: #ECEEF0 !important;
+}
+.color-white{
+	color: #ffffff;
+}
+.color-black{
+    color: #47546D;
+}
+.custom-style{
+    border: 1px solid gray;
+    padding: 0px;
+    margin: 14px;
+}
+.border-up{
+   border-top: 1px solid #47546D;
+}
+.border-btm{
+   border-bottom: 1px solid #47546D;
+}
+.form-fields{
+    font-size: 12px;
+    padding: 5px;
+    cursor: pointer;
+}
+.form-side-menu{
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 430px;
+}
+.custom-modal-header{
+    padding: 8px 8px 8px 8px;
+}
+.custom-modal-body{
+	padding: 0px;
+    margin-top: 9px;
+}
+.logo {
+    float: left;
+    width: 250px;
+    font-size: 16px;
+}
+/* for papulate menu of edit and delete*/
+.my-custom-scrollbar {
+position: relative;
+height: 150px;
+overflow: auto;
+}
+.card-header a{
+    text-decoration: none !important;
+    color: #47546D;
+    font-size: 12px;
+}
+.font-12{
+    font-size: 12px;
+}
+
+.mail-menu li a.active:after, .mail-menu li a:hover:after{
+    border-radius: 2px !important;
+}
