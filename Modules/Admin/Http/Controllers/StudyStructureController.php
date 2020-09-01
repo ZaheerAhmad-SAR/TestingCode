@@ -71,6 +71,7 @@ class StudyStructureController extends Controller
             'step_id'    => $id,
             'phase_id'    => $request->phase_id,
             'step_position'  =>  '1',
+            'form_type' =>  $request->form_type,
             'step_name' =>  $request->step_name,
             'step_description' =>  $request->step_description,
             'graders_number' =>  $request->graders_number,
@@ -88,6 +89,7 @@ class StudyStructureController extends Controller
         $phase = PhaseSteps::find($request->step_id);
         $phase->phase_id  =  $request->phase_id;
         $phase->step_position  =  '1';
+        $phase->form_type  =  $request->form_type;
         $phase->step_name  =  $request->step_name;
         $phase->step_description  =  $request->step_description;
         $phase->graders_number  =  $request->graders_number;
