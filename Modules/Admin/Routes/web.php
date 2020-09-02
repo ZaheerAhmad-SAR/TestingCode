@@ -23,7 +23,11 @@ Route::group(['middleware' => ['auth','web']],function(){
     Route::resource('unittest','AllUnitTestController');
 });
 Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],function(){
+
     Route::resource('sites','SiteController');
+    Route::post('sites/update','SiteController@update')->name('updateSites');
+    Route::DELETE('sites/destroy/{sites_id}','SiteController@destroy')->name('destroysites');
+
     Route::resource('studies','StudyController');
     Route::resource('devices','DeviceController');
     Route::resource('modalities','ModilityController');
@@ -37,13 +41,20 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
 
     Route::resource('others','OtherController');
 
+    Route::get('others/{id}/showOtherBySiteId','OtherController@showOtherBySiteId')->name('others.showOtherBySiteId');
+
     Route::post('others/update','OtherController@update')->name('updateOthers');
 
     //routes for options groups
 
+
     Route::resource('optionsGroup','OptionsGroupController');
 
     Route::post('optionsGroup/update','OptionsGroupController@update')->name('updateOptionsGroup');
+
+    Route::DELETE('optionsGroup/destroy/{options_id}','OptionsGroupController@destroy')->name('destroyOptionsGroup');
+
+    Route::DELETE('optionsGroup/destroyUpdateRow/{options_id}','OptionsGroupController@destroyUpdateRow')->name('removeUpdatedItem');
 
     // routes for form managment
     Route::resource('forms','FormController');
@@ -77,11 +88,15 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
 
     Route::resource('photographers','PhotographerController');
 
+    Route::get('photographers/{id}/showPhotographerBySiteId','PhotographerController@showPhotographerBySiteId')->name('photographers.showPhotographerBySiteId');
+
     Route::post('photographers/update','PhotographerController@update')->name('updatePhotographers');
 
 
     Route::resource('coordinator','CoordinatorController');
 
+
+    Route::get('coordinator/{id}/showCoordinatorBySiteId','CoordinatorController@showCoordinatorBySiteId')->name('coordinator.showCoordinatorBySiteId');
 
     Route::post('coordinator/update','CoordinatorController@update')->name('updateCoordinator');
 
@@ -92,7 +107,7 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
     Route::post('primaryinvestigator/update','PrimaryInvestigatorController@update')->name('updatePrimaryinvestigator');
 
 
-    Route::get('primaryinvestigator/{id}/showPrimaryInvestigatorById','PrimaryInvestigatorController@showPrimaryInvestigatorById')->name('primaryinvestigator.showPrimaryInvestigatorById');
+    Route::get('primaryinvestigator/{id}/showSiteId','PrimaryInvestigatorController@showSiteId')->name('primaryinvestigator.showSiteId');
 
 
     Route::get('modalities/{id}/showChild','ModilityController@showChild')->name('modalities.showChild');
@@ -119,6 +134,10 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
     Route::get('others/{id}/destroy','OtherController@destroy')->name('others.destroy');
 
     Route::get('photographers/{id}/destroy','PhotographerController@destroy')->name('photographers.destroy');
+
+    Route::resource('studySite','StudySiteController');
+
+    Route::post('studySite/update','StudySiteController@update')->name('updateStudySite');
 
 });
 

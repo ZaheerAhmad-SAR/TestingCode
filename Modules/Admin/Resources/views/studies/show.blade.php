@@ -1,8 +1,12 @@
-@extends('layouts.app')
+@extends('layouts.home')
 @section('title')
     <title> View Study Details | {{ config('app.name', 'Laravel') }}</title>
 @stop
 @section('content')
+    @php
+
+        $studyid = last(request()->segments());
+        session(['current_study'=>$studyid,'study_short_name'=> $currentStudy->study_short_name ]); @endphp
     <div class="row">
         <div class="col-md-12">
             <div class="panel">

@@ -123,4 +123,17 @@ class CoordinatorController extends Controller
             return response()->json(['success'=>'Coordinator is deleted successfully.']);
         }
     }
+
+    public function showCoordinatorBySiteId(Request $request,$id)
+    {
+
+        if ($request->ajax()) {
+
+            $result    = Coordinator::where('site_id',$id)->get();
+            return response()->json([$result]);
+
+        }
+
+    }
+
 }
