@@ -370,7 +370,7 @@
                             },
                             success:function(res){
                                $.each(res['data'],function(i,j){
-                                
+                                alert(j.field_type);
                                })
                             }
                         });

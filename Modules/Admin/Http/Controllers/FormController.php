@@ -75,7 +75,7 @@ class FormController extends Controller
             'question_text' => $request->question_text, 
             'c_disk' => $request->c_disk, 
             'measurement_unit' => $request->measurement_unit, 
-            'is_dependent' => $request->is_dependent, 
+            'is_dependent' => $request->field_dependent, 
             'dependent_on' => $request->dependent_on, 
             'annotations' => $request->dependent_on 
         ]);
