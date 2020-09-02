@@ -28,6 +28,7 @@ class UserTableSeeder extends Seeder
         if (!$user){
             $user =  User::create([
                 'id'    => Str::uuid(),
+                 'role_id'  => $role_id,
                  'name' =>  'admin',
                 'email' =>  'admin@admin.com',
                 'user_type' => 'system_user',

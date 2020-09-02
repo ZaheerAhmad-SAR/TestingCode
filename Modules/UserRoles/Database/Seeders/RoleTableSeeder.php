@@ -20,7 +20,7 @@ class RoleTableSeeder extends Seeder
     {
         Model::unguard();
 
-        $roles  =   ['admin','manager'];
+        $roles  =   ['admin'];
         foreach ($roles as $role)
         {
             $check_role =   Role::where('name',$role)->first();
