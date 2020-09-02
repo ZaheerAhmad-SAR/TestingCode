@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddForeignKeyToOthersTable extends Migration
+class AddOptionGroupIdToQuestionTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class AddForeignKeyToOthersTable extends Migration
      */
     public function up()
     {
-        Schema::table('others', function (Blueprint $table) {
-            $table->foreign('site_id')->references('id')->on('sites')->onDelete('cascade')->onUpdate('cascade');
+        Schema::table('question', function (Blueprint $table) {
+            $table->uuid('option_group_id')->after('phase_steps_id');
+            $table->uuid('section_id')->after('option_group_id');
         });
     }
 
@@ -25,9 +26,8 @@ class AddForeignKeyToOthersTable extends Migration
      */
     public function down()
     {
-        Schema::table('others', function (Blueprint $table) {
-            $table->dropForeign('site_id');
-
+        Schema::table('question', function (Blueprint $table) {
+            $table->dropColumn('option_group_id');
         });
     }
 }
