@@ -185,6 +185,7 @@
                                        <option value="">---Select Form Type---</option>
                                        <option value="qc">QC</option>
                                        <option value="grading">Grading</option>
+                                       <option value="eligibility">Eligibility</option>
                                        <option value="other">Other</option>
                                     </select>
                                 </div>
