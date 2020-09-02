@@ -52,6 +52,7 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
     Route::get('forms/sections_by_stepId/{id}','FormController@get_section_by_stepId')->name('sectionsbystepId');
     Route::post('studyStatus','StudyController@studyStatus')->name('study.studyStatus');
     Route::post('changeStatus/{id}','StudyController@changeStatus')->name('studies.changeStatus');
+    Route::get('forms/get_allQuestions/{id}','FormController@get_allQuestions')->name('get_allQuestions');
     //end
      // routes for study managment
     Route::resource('study','StudyStructureController');

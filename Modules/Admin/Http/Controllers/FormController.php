@@ -39,6 +39,12 @@ class FormController extends Controller
         $sectionData['data'] = $section;
         echo json_encode($sectionData);
     }
+    public function get_allQuestions($id)
+    {
+        $questions = Question::with('form_field_type')->where('question.section_id', '=', $id)->get();
+        $questionsData['data'] = $questions;
+        echo json_encode($questionsData);
+    }
     
     /**
      * Show the form for creating a new resource.

@@ -252,8 +252,7 @@
         </div>
 </div>
 <!-- End -->
-<!-- add steps agains phases -->
-<!-- phase modle action="{{route('steps.save')}}" -->
+
 @stop
 @section('styles')  
 
@@ -359,7 +358,23 @@
                     html += '<div id="accordion">';
                     $.each(response['data'],function(k,v){
                         var show = (k ==0) ? 'show' : '';
-                        html += '<div class="card"><div class="card-header"><a class="card-link" data-toggle="collapse" href="#collapse_'+v.id+'">'+v.sort_number+'&nbsp;&nbsp;&nbsp;&nbsp;'+v.name+'</a></div><div id="collapse_'+v.id+'" class="collapse '+show+'" data-parent="#accordion"><div class="card-body">Lorem ipsum dolor sit amet,</div></div></div>';
+                        html += '<div class="card"><div class="card-header"><a class="card-link" data-toggle="collapse" href="#collapse_'+v.id+'">'+v.sort_number+'&nbsp;&nbsp;&nbsp;&nbsp;'+v.name+'</a></div><div id="collapse_'+v.id+'" class="collapse '+show+'" data-parent="#accordion"><div class="card-body">';
+                        $.ajax({
+                            url:'forms/get_allQuestions/'+v.id,
+                            type:'post',
+                            dataType:'json',
+                            data:{
+                                "_token": "{{ csrf_token() }}",
+                                "_method": 'GET',
+                                'id': v.id
+                            },
+                            success:function(res){
+                               $.each(res['data'],function(i,j){
+                                
+                               })
+                            }
+                        });
+                        html += '</div></div></div>';
                         sections += '<option value="'+v.id+'">'+v.name+'</option>'
                     });
                     html +='</div>';
