@@ -42,7 +42,7 @@ class StudyController extends Controller
             $sites = Site::all();
             //dd($sites);
         }
-        else{
+        elseif($user->role->name == 'admin' && $user->user_type =='study_user'){
             //dd('else');
             $studies  =   Study::paginate(3);
             $users = User::all();
@@ -147,19 +147,34 @@ class StudyController extends Controller
      * @param int $id
      * @return Response
      */
+//    public function show(Study $study)
+//    {
+//        $id = $study->id;
+//        $subjects = Subject::where('subjects.study_id','=',$id)
+//            ->get();
+//       //dd($subjects);
+//        $site_study = StudySite::where('study_id','=',$id)
+//            ->join('sites', 'sites.id','=','site_study.site_id')
+//            ->select('sites.site_name','sites.id')
+//            ->get();
+//        $diseaseCohort = DiseaseCohort::where('study_id','=',$id)->get();
+//
+//        return view('admin::studies.show',compact('study','subjects','site_study','diseaseCohort'));
+//    }
+
+
     public function show(Study $study)
     {
         $id = $study->id;
-        $subjects = Subject::where('subjects.study_id','=',$id)
-            ->get();
-       //dd($subjects);
+        $currentStudy = Study::find($id);
+        $subjects = Subject::join('sites','sites.id','=','subjects.site_id')->get();
         $site_study = StudySite::where('study_id','=',$id)
             ->join('sites', 'sites.id','=','site_study.site_id')
             ->select('sites.site_name','sites.id')
             ->get();
-        $diseaseCohort = DiseaseCohort::where('study_id','=',$id)->get();
 
-        return view('admin::studies.show',compact('study','subjects','site_study','diseaseCohort'));
+        $diseaseCohort = DiseaseCohort::where('study_id','=',$id)->get();
+        return view('admin::studies.show',compact('study','subjects','currentStudy','site_study','diseaseCohort','studyName'));
     }
 
     /**
