@@ -15,14 +15,15 @@ class CreateQuestionTable extends Migration
     {
         Schema::create('question', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuid('form_field_id');
-            $table->foreign('form_field_id')->references('id')->on('form_field')->onDelete('cascade')->onUpdate('cascade');
-            $table->uuid('phase_steps_id');
-            $table->foreign('phase_steps_id')->references('step_id')->on('phase_steps')->onDelete('cascade')->onUpdate('cascade');
+            $table->uuid('form_field_type_id');
+            $table->foreign('form_field_type_id')->references('id')->on('form_field_type')->onDelete('cascade')->onUpdate('cascade');
+            $table->uuid('section_id');
+            $table->uuid('option_group_id');
+            $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade')->onUpdate('cascade');
             $table->string('question_text')->nullable();
             $table->string('c_disk')->nullable();
             $table->string('measurement_unit')->nullable();
-            $table->enum('is_dependent', array('no', 'yes'))->default('no');
+            $table->enum('is_dependent', array('no', 'yes'))->default('no')->nullable();
             $table->text('dependent_on')->nullable();
             $table->text('annotations')->nullable();
             $table->timestamp('deleted_at')->nullable();
