@@ -16,13 +16,13 @@ class CreateFormFieldTable extends Migration
         Schema::create('form_field', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
             $table->uuid('question_id');
-            $table->string('xls_label')->default('No Label');
+            $table->string('xls_label')->default('No Label')->nullable();
             $table->text('variable_name')->nullable();
-            $table->enum('is_exportable_to_xls', array('yes','no'))->default('yes');
-            $table->enum('is_required', array('no', 'yes'))->default('no');
-            $table->smallInteger('lower_limit')->default(1);
-            $table->smallInteger('upper_limit')->default(250);
-            $table->smallInteger('field_width')->default(50);
+            $table->enum('is_exportable_to_xls', array('yes','no'))->default('yes')->nullable();
+            $table->enum('is_required', array('no', 'yes'))->default('no')->nullable();
+            $table->smallInteger('lower_limit')->default(1)->nullable();
+            $table->smallInteger('upper_limit')->default(250)->nullable();
+            $table->smallInteger('field_width')->default(50)->nullable();
             $table->text('text_info')->nullable();
             $table->text('validation_rules')->nullable();
             $table->timestamp('deleted_at')->nullable();
