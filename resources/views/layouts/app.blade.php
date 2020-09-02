@@ -3,6 +3,7 @@
     <!-- START: Head-->
     <head>
         <meta charset="UTF-8">
+        <title>OCAP</title>
         <link rel="shortcut icon" href="public/dist/images/favicon.ico" />
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <!-- CSRF Token -->
@@ -50,6 +51,7 @@
         <script src="{{ asset('public/dist/vendors/moment/moment.js') }}"></script>
         <script src="{{ asset('public/dist/vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
         <script src="{{ asset('public/dist/vendors/slimscroll/jquery.slimscroll.min.js') }}"></script>
+
         <!-- END: Template JS-->
         <!-- START: APP JS-->
         <script src="{{ asset('public/dist/js/app.js') }}"></script>

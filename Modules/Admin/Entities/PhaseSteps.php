@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Modules\Admin\Entities\StudyStructure;
 class PhaseSteps extends Model
 {
-    protected $fillable = ['step_id','phase_id','step_position','step_name','step_description','graders_number','q_c','eligibility'];
+    protected $fillable = ['step_id','phase_id','step_position','form_type','step_name','step_description','graders_number','q_c','eligibility'];
     // protected $key = 'string';
     protected $table = 'phase_steps';
     protected $primaryKey = "step_id";

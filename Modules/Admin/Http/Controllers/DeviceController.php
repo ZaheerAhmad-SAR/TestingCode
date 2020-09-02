@@ -13,6 +13,7 @@ use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\StudySite;
 
+
 class DeviceController extends Controller
 {
     /**
@@ -26,9 +27,9 @@ class DeviceController extends Controller
 
         return view('admin::devices.index',compact('devices','modilities'));
 
-/*        $devices = Device::paginate(20);
-        $modilities = Modility::all();
-        return view('admin::devices.index',compact('devices','modilities'));*/
+        /*        $devices = Device::paginate(20);
+                $modilities = Modility::all();
+                return view('admin::devices.index',compact('devices','modilities'));*/
     }
 
     /**
@@ -50,7 +51,7 @@ class DeviceController extends Controller
     public function store(Request $request)
     {
         if ($request->ajax()) {
-            dd($request->all());
+            //dd($request->all());
             $deviceID = $request->post_id;
             $id = Str::uuid();
 
@@ -71,7 +72,7 @@ class DeviceController extends Controller
         }
         return \response()->json($device);
 
-       dd($request->all());
+        dd($request->all());
         $request->validate([
             'device_name:required',
             'device_manufacturer:required',
@@ -82,17 +83,17 @@ class DeviceController extends Controller
         $device = Device::create([
             'id'    => $id,
             'device_name' => $request->device_name,
-        'device_manufacturer' => $request->device_manufacturer,
-        'device_model'=> $request->device_model
+            'device_manufacturer' => $request->device_manufacturer,
+            'device_model'=> $request->device_model
         ]);
 
         foreach ($request->modalities as $modility){
-                DeviceModility::create([
-                    'id'    => Str::uuid(),
-                    'device_id'     => $device->id,
-                    'modility_id'   => $modility
-                ]);
-            }
+            DeviceModility::create([
+                'id'    => Str::uuid(),
+                'device_id'     => $device->id,
+                'modility_id'   => $modility
+            ]);
+        }
 
         return redirect()->route('devices.index')->with('success','Device created');
     }
@@ -104,7 +105,10 @@ class DeviceController extends Controller
      */
     public function show(Device $device)
     {
-        return view('admin::show');
+        $device->delete();
+
+        return response()->json(['success'=>'Device deleted successfully.']);
+       /* return view('admin::devices.index');*/
     }
 
     /**
@@ -112,11 +116,16 @@ class DeviceController extends Controller
      * @param int $id
      * @return Response
      */
-    public function edit(Device $device)
+    public function edit($id)
     {
-        $sites = Site::all();
+        $where = array('id' => $id);
+        $device  = Device::with('modalities')->where($where)->first();
+
+        return \response()->json($device);
+
+        /*$sites = Site::all();
         $modilities = Modility::all();
-        return view('admin::devices.edit',compact('device','sites','modilities'));
+        return view('admin::devices.edit',compact('device','sites','modilities'));*/
     }
 
     /**
@@ -146,7 +155,7 @@ class DeviceController extends Controller
      */
     public function destroy($id)
     {
-        dd($id);
+        dd('delete');
         $device = Device::where('id',$id)->delete();
 
         return redirect()->route('devices.index');

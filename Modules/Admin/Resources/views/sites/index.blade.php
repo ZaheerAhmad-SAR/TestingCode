@@ -1,4 +1,4 @@
-@extends('layouts.home')
+@extends ('layouts.home')
 
 @section('title')
     <title> Sites | {{ config('app.name', 'Laravel') }}</title>

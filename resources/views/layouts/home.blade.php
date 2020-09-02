@@ -32,6 +32,11 @@
                         <div class="dropdown-menu border dropdown-menu-right p-0">
                             <a href="" class="dropdown-item px-2 align-self-center d-flex">
                                 <span class="icon-pencil mr-2 h6 mb-0"></span> Edit Profile</a>
+                            @foreach(auth()->user()->user_roles as $role)
+                                <a href="{{ route('switch_role',$role->role_id) }}"
+                                   class="dropdown-item px-2 align-self-center d-flex">
+                                    <span class="icon-user mr-2 h6 mb-0">{{ucfirst( $role->role->name)}}</span> Role</a>
+                            @endforeach
                             <a href="" class="dropdown-item px-2 align-self-center d-flex">
                                 <span class="icon-user mr-2 h6 mb-0"></span> View Profile</a>
                             <div class="dropdown-divider"></div>
@@ -71,6 +76,16 @@
                         </a>
                     </li>
                     @endcan
+                </ul>
+                        <ul class="@if(is_active('studies.index')) {{ 'active' }} @endif">
+                    @if(hasPermission(auth()->user(),'studies.index'))
+                        <li class="nav-item @if(is_active('studies.index')) {{ ' active' }} @endif">
+                            <a href="{!! route('studies.index') !!}">
+                                <i class="icon-book-open"></i>
+                                Studies
+                            </a>
+                        </li>
+                    @endif
                 </ul>
             </li>
             <li class="dropdown"><!-- <a href="#"><i class="icon-organization mr-1"></i> Study Tools</a> -->
@@ -124,6 +139,7 @@
                                 </a>
                             </li>
                             @endcan
+<<<<<<< HEAD
                                 @if(hasPermission(auth()->user(),'studySite.create'))
                                 <li class="@if(is_active('studySite.index')) {{ ' active' }} @endif">
                                     <a  href="{!! route('studySite.index') !!}">
@@ -132,12 +148,16 @@
                                 </li>
                                 @endif
                             <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Design</a>
+=======
+                                <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Design</a>
+>>>>>>> d41b5b3a24117ef3fbb69e04287b2628f9bc0713
                                 <ul class="sub-menu">
                                     <li class="@if(is_active('studyphases.index')) {{ ' active' }} @endif">
                                         <a href="{!! route('study.index') !!}">
                                             Study Structure
                                         </a>
                                     </li>
+
                                     <li class="@if(is_active('forms.index')) {{ ' active' }} @endif">
                                         <a href="{!! route('forms.index') !!}">
                                             Forms
@@ -163,13 +183,6 @@
                 <ul>
                     <li class="dropdown"><a href="#"><i class="fas fa-hospital"></i>Subjects</a>
                         <ul class="sub-menu">
-                            @if(hasPermission(auth()->user(),'studies.create'))
-                            <li class="@if(is_active('studies.index')) {{ ' active' }} @endif">
-                                <a href="{!! route('studies.index') !!}">
-                                    Studies
-                                </a>
-                            </li>
-                            @endif
                         </ul>
                     </li>
                 </ul>

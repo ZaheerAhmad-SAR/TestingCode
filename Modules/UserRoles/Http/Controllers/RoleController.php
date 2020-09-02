@@ -22,7 +22,7 @@ class RoleController extends Controller
     public function index()
     {
         $roles  =  Role::paginate(20);
-        $permissions = Permission::all();
+        $permissions = Permission::all()->groupBy('controller_name');
         return view('userroles::roles.index',compact('roles','permissions'));
     }
 
