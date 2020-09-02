@@ -11,6 +11,8 @@ use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\Section;
 use Modules\Admin\Entities\Question;
 use Modules\Admin\Entities\OptionsGroup;
+use Modules\Admin\Entities\formfieldtype;
+use Modules\Admin\Entities\Formfields;
 
 class FormController extends Controller
 {
@@ -22,7 +24,8 @@ class FormController extends Controller
     {
         $phases = StudyStructure::all();
         $option_groups = OptionsGroup::all();
-        return view('admin::forms.index',compact('phases','option_groups'));
+        $fields = formfieldtype::all();
+        return view('admin::forms.index',compact('phases','option_groups','fields'));
     }
     public function get_steps_by_phaseId($id)
     {
@@ -58,25 +61,32 @@ class FormController extends Controller
     public function add_questions(Request $request)
     {
         $id    = Str::uuid();
-        $basic = array(
+        $question_info = Question::create([
+            'id' => $id, 
+            'form_field_type_id' => $request->form_field_type_id, 
             'section_id' => $request->section_id, 
-            'question_label' => $request->question_label, 
-            'c-disc' => $request->c_disc, 
-            'Variable_name' => $request->Variable_name, 
-            'question_type' => $request->question_type,
-            'question_info' => $request->question_info 
-        );
-        $basic = json_encode(serialize($basic));
-        $question = Question::create([
-            'id'    => $id,
-            'study_id'  =>  '1bcd707e-2f8f-4a22-9b4a-c667a9479b8f',
-            'section_id'  =>  $request->section_id,
-            'type' =>  $request->question_type,
-            'basic' =>  $basic,
-            'data_validation' =>  'null',
-            'dependencies' =>  'null',
-            'annotations' =>  'null',
-            'advanced' =>  'null'
+            'option_group_id' => $request->option_group_id,
+            'question_text' => $request->question_text, 
+            'c_disk' => $request->c_disk, 
+            'measurement_unit' => $request->measurement_unit, 
+            'is_dependent' => $request->is_dependent, 
+            'dependent_on' => $request->dependent_on, 
+            'annotations' => $request->dependent_on 
+        ]);
+        $last_id = Question::select('id')->latest()->first();
+        $id    = Str::uuid();
+        $form_field = Formfields::create([
+            'id' => $id,
+            'question_id' => $last_id->id,
+            'variable_name' => $request->variable_name,
+            'is_exportable_to_xls' => $request->is_exportable_to_xls, 
+            'is_required' => $request->is_required, 
+            'lower_limit' => $request->lower_limit, 
+            'upper_limit' => $request->upper_limit, 
+            'field_width' => $request->field_width, 
+            'question_info' => $request->question_info, 
+            'text_info' => $request->text_info, 
+            'validation_rules' => $request->validation_rules, 
         ]);
         return redirect()->route('forms.index');
     }
