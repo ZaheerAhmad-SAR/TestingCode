@@ -1,5 +1,4 @@
-
-@extends('layouts.app')
+@extends ('layouts.home')
 @section('title')
     <title> Modalities | {{ config('app.name', 'Laravel') }}</title>
 @stop

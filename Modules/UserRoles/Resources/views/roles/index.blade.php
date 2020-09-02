@@ -23,10 +23,10 @@
 <div class="row">
  <div class="col-12 col-sm-12 mt-3">
             <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">                               
+                <div class="card-header d-flex justify-content-between align-items-center">
                     <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#createRole">
                         <i class="fa fa-plus"></i> Add Role
-                    </button>                                   
+                    </button>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -50,12 +50,12 @@
                                 </td>
                             </tr>
                             @endforeach
-                        </table> 
+                        </table>
                     </div>
                 </div>
-            </div> 
+            </div>
 
-        </div>                  
+        </div>
 </div>
     <!-- END: Card DATA-->
 </div>
@@ -75,7 +75,7 @@
                                 <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-Permissions" role="tab" aria-controls="nav-profile" aria-selected="false">Permissions</a>
                             </div>
                         </nav>
-                        
+
                         <div class="tab-content" id="nav-tabContent">
                             <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
                                 @csrf
@@ -110,20 +110,25 @@
                             <div class="tab-pane fade" id="nav-Permissions" role="tabpanel" aria-labelledby="nav-Validation-tab">
                                 <div class="form-group row"style='padding:5px;'>
                                         @foreach ($permissions as $permission)
-                                            <div class="col-sm-3">
-                                                <div class="checkbox">
-                                                    <label><input type="checkbox" name="permission[]" value="{{ $permission->id }}">{{ $permission->name }}</label>
+                                        <div class="col-sm-3">
+                                            <label>{!! $permission[0]->controller_name !!}</label>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            @foreach($permission as $key)
+                                            <div class="checkbox">
+                                                    <label><input type="checkbox" name="permission[]" value="{{ $key->id }}">{{ $key->name }}</label>
                                                 </div>
-                                            </div>
                                         @endforeach
-                                        @error('permission')
+                                        </div>
+                                    @endforeach
+                                    @error('permission')
                                         <span class="text-danger small">
                                             {{ $message }}
                                         </span>
                                         @enderror
-                                </div> 
+                                </div>
                             </div>
-                        </div>    
+                        </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                             <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
@@ -142,10 +147,10 @@
     }
 </style>
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/datatable/css/dataTables.bootstrap4.min.css') }}">
-<link rel="stylesheet" href="{{ asset('public/dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css') }}"> 
+<link rel="stylesheet" href="{{ asset('public/dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css') }}">
 @stop
 @section('script')
-<script src="{{ asset('public/dist/vendors/datatable/js/jquery.dataTables.min.js') }}"></script> 
+<script src="{{ asset('public/dist/vendors/datatable/js/jquery.dataTables.min.js') }}"></script>
 <script src="{{ asset('public/dist/vendors/datatable/js/dataTables.bootstrap4.min.js') }}"></script>
 <script src="{{ asset('public/dist/vendors/datatable/jszip/jszip.min.js') }}"></script>
 <script src="{{ asset('public/dist/vendors/datatable/pdfmake/pdfmake.min.js') }}"></script>
@@ -155,7 +160,7 @@
 <script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.colVis.min.js') }}"></script>
 <script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.flash.min.js') }}"></script>
 <script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.html5.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.print.min.js') }}"></script>              
+<script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('public/dist/js/datatable.script.js') }}"></script>
 
 @stop
