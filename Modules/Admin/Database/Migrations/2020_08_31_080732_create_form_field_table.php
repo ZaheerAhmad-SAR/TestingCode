@@ -14,8 +14,9 @@ class CreateFormFieldTable extends Migration
     public function up()
     {
         Schema::create('form_field', function (Blueprint $table) {
-            $table->uuid('id');
-            $table->uuid('form_field_type_id');            
+            $table->uuid('id')->primary()->unique();
+            $table->uuid('form_field_type_id');
+            $table->foreign('form_field_type_id')->references('id')->on('form_field_type')->onDelete('cascade')->onUpdate('cascade');
             $table->string('xls_label')->default('No Label');
             $table->enum('is_exportable_to_xls', array('yes','no'))->default('yes');
             $table->enum('is_required', array('no', 'yes'))->default('no');
@@ -24,6 +25,7 @@ class CreateFormFieldTable extends Migration
             $table->smallInteger('field_width')->default(50);
             $table->text('text_info')->nullable();
             $table->text('validation_rules')->nullable();
+            $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });
     }

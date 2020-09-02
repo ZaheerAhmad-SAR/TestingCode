@@ -14,10 +14,11 @@ class CreateFormFieldTypeTable extends Migration
     public function up()
     {
         Schema::create('form_field_type', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->uuid('id')->primary()->unique();
             $table->string('field_type')->nullable();
             $table->enum('support_multiple_values', array('no', 'yes'))->default('no');
-            $table->timestamps();            
+            $table->timestamp('deleted_at')->nullable();
+            $table->timestamps();
         });
     }
 
