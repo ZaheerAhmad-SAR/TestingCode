@@ -139,7 +139,6 @@
                                 </a>
                             </li>
                             @endcan
-<<<<<<< HEAD
                                 @if(hasPermission(auth()->user(),'studySite.create'))
                                 <li class="@if(is_active('studySite.index')) {{ ' active' }} @endif">
                                     <a  href="{!! route('studySite.index') !!}">
@@ -147,10 +146,8 @@
                                     </a>
                                 </li>
                                 @endif
-                            <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Design</a>
-=======
                                 <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Design</a>
->>>>>>> d41b5b3a24117ef3fbb69e04287b2628f9bc0713
+
                                 <ul class="sub-menu">
                                     <li class="@if(is_active('studyphases.index')) {{ ' active' }} @endif">
                                         <a href="{!! route('study.index') !!}">
