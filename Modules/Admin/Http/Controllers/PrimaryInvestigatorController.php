@@ -83,6 +83,7 @@ class PrimaryInvestigatorController extends Controller
         }
     }
 
+
     /**
      * Update the specified resource in storage.
      * @param Request $request
@@ -127,14 +128,13 @@ class PrimaryInvestigatorController extends Controller
     }
 
 
-    public function showPrimaryInvestigatorById(Request $request,$id)
+    public function showSiteId(Request $request,$id)
     {
 
         if ($request->ajax()) {
 
-            $record = PrimaryInvestigator::find($id);
-
-            return response()->json([$record]);
+            $allPi    = PrimaryInvestigator::where('site_id',$id)->get();
+            return response()->json([$allPi]);
 
         }
 

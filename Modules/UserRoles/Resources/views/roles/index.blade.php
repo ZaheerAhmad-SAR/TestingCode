@@ -72,7 +72,8 @@
                         <nav>
                             <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
                                 <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-Basic" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
-                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-Permissions" role="tab" aria-controls="nav-profile" aria-selected="false">Permissions</a>
+                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-StudyActivities" role="tab" aria-controls="nav-profile" aria-selected="false">Study Activities</a>
+                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-ManagementActivities" role="tab" aria-controls="nav-profile" aria-selected="false">Management Activities</a>
                             </div>
                         </nav>
 
@@ -89,15 +90,6 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="Name" class="col-sm-3 col-form-label">Role Slug</label>
-                                    <div class="{!! ($errors->has('slug')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                        <input type="text" class="form-control" name="slug" value="{{old('slug')}}">
-                                        @error('slug')
-                                        <span class="text-danger small">{{ $message }} </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="form-group row">
                                     <label for="Description" class="col-sm-3 col-form-label">Description</label>
                                     <div class="{!! ($errors->has('description')) ?'col-sm-9 has-error':'col-sm-9' !!}">
                                         <textarea class="form-control" name="description" value="{{old('description')}}"></textarea>
@@ -107,7 +99,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="tab-pane fade" id="nav-Permissions" role="tabpanel" aria-labelledby="nav-Validation-tab">
+                            <div class="tab-pane fade" id="nav-StudyActivities" role="tabpanel" aria-labelledby="nav-Validation-tab">
                                 <div class="form-group row"style='padding:5px;'>
                                         @foreach ($permissions as $permission)
                                         <div class="col-sm-3">
@@ -127,6 +119,51 @@
                                         </span>
                                         @enderror
                                 </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-ManagementActivities" role="tabpanel">
+                                    <div class="form-group row" style="margin-top: 10px;">
+                                            <label for="Name" class="col-sm-3">System Tools</label>
+                                            <div class="col-md-3">
+                                                <input type="radio" name="system_tools" id="system_tool_yes" value="yes" checked="checked"> Yes
+                                                <input type="radio" name="system_tools" id="system_tool_no" value="no"> No
+                                            </div>
+                                    </div>
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-3">Study Tools</label>
+                                    <div class="col-md-3">
+                                        <input type="radio" name="study_tools" id="study_tool_yes" value="yes" checked="checked"> Yes
+                                        <input type="radio" name="study_tools" id="study_tool_no" value="no"> No
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-3">Data Management</label>
+                                    <div class="col-md-3">
+                                        <input type="radio" name="management" id="management_yes" value="yes" checked="checked"> Yes
+                                        <input type="radio" name="management" id="management_no" value="no"> No
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-3">Activity Log</label>
+                                    <div class="col-md-3">
+                                        <input type="radio" name="log" id="log_yes" value="yes" checked="checked"> Yes
+                                        <input type="radio" name="log" id="log_no" value="no"> No
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-3">Certification</label>
+                                    <div class="col-md-3">
+                                        <input type="radio" name="certification" id="certification_yes" value="yes" checked="checked"> Yes
+                                        <input type="radio" name="q_c" id="certification_no" value="no"> No
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-3">Finance</label>
+                                    <div class="col-md-3">
+                                        <input type="radio" name="q_c" id="finance_yes" value="yes" checked="checked"> Yes
+                                        <input type="radio" name="q_c" id="finance_no" value="no"> No
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                         <div class="modal-footer">
