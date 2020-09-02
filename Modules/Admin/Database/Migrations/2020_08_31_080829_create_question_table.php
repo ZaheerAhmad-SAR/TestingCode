@@ -18,7 +18,7 @@ class CreateQuestionTable extends Migration
             $table->uuid('form_field_id');
             $table->foreign('form_field_id')->references('id')->on('form_field')->onDelete('cascade')->onUpdate('cascade');
             $table->uuid('phase_steps_id');
-            $table->foreign('phase_steps_id')->references('id')->on('phase_steps')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('phase_steps_id')->references('step_id')->on('phase_steps')->onDelete('cascade')->onUpdate('cascade');
             $table->string('question_text')->nullable();
             $table->string('c_disk')->nullable();
             $table->string('measurement_unit')->nullable();

@@ -4,6 +4,7 @@
 <div id="header-fix" class="header fixed-top">
     <div class="site-width">
         <nav class="navbar navbar-expand-lg  p-0">
+            <span class="studyName"> {{session('study_short_name')}}</span>
             <div class="navbar-header  h-100 h4 mb-0 align-self-center logo-bar text-left">
                 <a href="{{ url('/') }}" class="horizontal-logo text-left">
                 <span class="h4 font-weight-bold align-self-center mb-0 ml-auto">
@@ -138,7 +139,18 @@
                                 </a>
                             </li>
                             @endcan
+<<<<<<< HEAD
+                                @if(hasPermission(auth()->user(),'studySite.create'))
+                                <li class="@if(is_active('studySite.index')) {{ ' active' }} @endif">
+                                    <a  href="{!! route('studySite.index') !!}">
+                                        Study Sites
+                                    </a>
+                                </li>
+                                @endif
+                            <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Design</a>
+=======
                                 <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Design</a>
+>>>>>>> d41b5b3a24117ef3fbb69e04287b2628f9bc0713
                                 <ul class="sub-menu">
                                     <li class="@if(is_active('studyphases.index')) {{ ' active' }} @endif">
                                         <a href="{!! route('study.index') !!}">

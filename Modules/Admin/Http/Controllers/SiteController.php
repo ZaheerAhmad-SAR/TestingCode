@@ -24,7 +24,7 @@ class SiteController extends Controller
         $photographers = Photographer::all();
         $coordinators = Coordinator::all();
         $pinvestigators = PrimaryInvestigator::all();
-            return view('admin::sites.index',compact('sites','photographers','pinvestigators','coordinators','site'));
+        return view('admin::sites.index',compact('sites','photographers','pinvestigators','coordinators','site'));
     }
 
     /**
@@ -43,9 +43,9 @@ class SiteController extends Controller
      */
     public function store(Request $request)
     {
-       $validate = $request->validate([
-           'site_code:required',
-           'site_name:required',
+        $request->validate([
+            'site_code:required|unique',
+            'site_name:required',
             'site_country:required',
             'site_address:required',
             'site_city:required',
@@ -53,24 +53,27 @@ class SiteController extends Controller
             'site_phone:required|numeric|max:15',
             'site_email:required|email',
         ]);
-       $id = Str::uuid();
+        $id = Str::uuid();
+        if (Site::where('site_code', $request->site_code)->exists()) {
+
+            return response()->json(['code'=>'Code must be unique']);
+        }
+        else
+        {
             $site = Site::create([
                 'id'    => $id,
                 'site_code'=> empty($request->site_code) ? Null : $request->site_code,
                 'site_name' => empty($request->site_name) ? Null : $request->site_name,
-                'site_country'=> empty($request->site_country) ? Null : $request->site_country,
-                'site_address'=>empty($request->site_address)? Null : $request->site_address,
-                'site_city'=> empty($request->site_city) ? Null : $request->site_city,
-                'site_state'=> empty($request->site_state)? Null : $request->site_state,
+                'site_country'=> empty($request->country) ? Null : $request->country,
+                'site_address'=>empty($request->fullAddr)? Null : $request->fullAddr,
+                'site_city'=> empty($request->locality) ? Null : $request->locality,
+                'site_state'=> empty($request->administrative_area_level_1)? Null : $request->administrative_area_level_1,
                 'site_phone'=> empty($request->site_phone) ? Null : $request->site_phone,
                 'site_email'=>empty($request->site_email)? Null : $request->site_email
             ]);
-        $new_site = Site::select('id')->latest()->first();
-
-
-        return response()->json(['success'=>'Site Info is added successfully']);
-
-        //return redirect()->route('sites.index');
+            $new_site = Site::select('id')->latest()->first();
+            return response()->json(['success'=>'Site Info is added successfully']);
+        }
     }
 
     /**
@@ -88,10 +91,15 @@ class SiteController extends Controller
      * @param int $id
      * @return Response
      */
-    public function edit(Site $site, $id)
+
+
+    public function edit($id)
     {
-        $pi = PrimaryInvestigator::find($id);
-        return view('admin::sites.edit',compact('site','pi'));
+        if ($id) {
+            $record = Site::find($id);
+            return response()->json([$record]);
+
+        }
     }
 
     /**
@@ -100,13 +108,20 @@ class SiteController extends Controller
      * @param int $id
      * @return Response
      */
-    public function update(Request $request, Site $site)
+    public function update(Request $request)
     {
-        $pi = PrimaryInvestigator::find($request->id);
+        $data = array(
+            'site_code'=> empty($request->site_code) ? Null : $request->site_code,
+            'site_name' => empty($request->site_name) ? Null : $request->site_name,
+            'site_country'=> empty($request->country) ? Null : $request->country,
+            'site_address'=>empty($request->fullAddr)? Null : $request->fullAddr,
+            'site_city'=> empty($request->locality) ? Null : $request->locality,
+            'site_state'=> empty($request->administrative_area_level_1)? Null : $request->administrative_area_level_1,
+            'site_phone'=> empty($request->site_phone) ? Null : $request->site_phone
+        );
+        Site::where('id', $request->site_id)->update($data);
+        return response()->json(['success'=>'Site Info is updated successfully']);
 
-        $site->update($request->all());
-
-        return redirect()->route('sites.index')->with('success','Study updated successfully');
     }
 
     /**
@@ -114,8 +129,15 @@ class SiteController extends Controller
      * @param int $id
      * @return Response
      */
-    public function destroy($id)
+
+    public function destroy(Request $request,$id)
     {
-        //
+        if ($request->ajax())
+        {
+            $delete = Site::find($id);
+
+            $delete->delete();
+            return response()->json(['success'=>'Site is deleted successfully.']);
+        }
     }
 }

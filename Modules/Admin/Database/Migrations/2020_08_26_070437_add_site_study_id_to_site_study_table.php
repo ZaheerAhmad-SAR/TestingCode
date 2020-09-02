@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddForeignKeyToOthersTable extends Migration
+class AddSiteStudyIdToSiteStudyTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,9 @@ class AddForeignKeyToOthersTable extends Migration
      */
     public function up()
     {
-        Schema::table('others', function (Blueprint $table) {
-            $table->foreign('site_id')->references('id')->on('sites')->onDelete('cascade')->onUpdate('cascade');
+        Schema::table('site_study', function (Blueprint $table) {
+            $table->text('study_site_id')->after('site_id')->nullable();
+
         });
     }
 
@@ -25,8 +26,8 @@ class AddForeignKeyToOthersTable extends Migration
      */
     public function down()
     {
-        Schema::table('others', function (Blueprint $table) {
-            $table->dropForeign('site_id');
+        Schema::table('site_study', function (Blueprint $table) {
+            $table->dropColumn('study_site_id');
 
         });
     }
