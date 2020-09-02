@@ -1,82 +1,78 @@
-@extends('layouts.app')
-
+@extends ('layouts.home')
 @section('title')
     <title> Studies | {{ config('app.name', 'Laravel') }}</title>
 @stop
 @section('content')
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="panel">
-                <div class="panel-heading">
-                    <div class="pull-left">
-                        <h2>Studies</h2>
-                    </div>
-                    <div class="pull-right btn-group">
-                        {{--<a href="{!! route('studies.create') !!}" class="btn btn-success">Create Study</a>--}}
-                        <button type="button" class="btn custom-btn blue-color" data-toggle="modal" data-target="#createStudy">
-                            <i class="fa fa-plus blue-color"></i> Add Study
+    <div class="container-fluid site-width">
+        <!-- START: Breadcrumbs-->
+        <div class="row ">
+            <div class="col-12  align-self-center">
+                <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
+                    <div class="w-sm-100 mr-auto"><h4 class="mb-0">Studies Detail</h4></div>
+                    <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
+                        <li class="breadcrumb-item">Dashboard</li>
+                        <li class="breadcrumb-item">Studies</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <!-- END: Breadcrumbs-->
+        <div class="row">
+            <div class="col-12 col-sm-12 mt-3">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <button type="button" class="btn btn-outline-primary" id="create-new-study" data-toggle="modal" data-target="#createStudy">
+                            <i class="fa fa-plus"></i> Add Study
                         </button>
                     </div>
-                </div>
-                <div class="panel-body">
-                    <div class="table-responsive">
-                        <table class="table">
-                            <tr>
-                                <th>ID</th>
-                                <th>Status</th>
-                                <th>Short Name : <strong>Study Title</strong>
-                                    <br>
-                                    <br>Sponsor</th>
-                                <th>Change Status</th>
-                                <th>Action</th>
-                            </tr>
-                            @if(count($studies) !=0)
-                            <?php $index= 1 ?>
-                            @foreach($studies as $study)
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
                                 <tr>
-                                    <td>{{$index}}</td>
-                                    <td hidden="hidden" name="{{$study->study_short_name}}"class="studyID">{{$study->id}}</td>
-                                    <td class="status">{{$study->study_status}}</td>
-                                    <td class="fa-box">
-                                        <a class="" href="{{ route('studies.show', $study->id) }}">
-                                            {{ucfirst($study->study_short_name)}} : <strong>{{ucfirst($study->study_title)}}</strong>
-                                        </a>
-                                        <br><br><p style="font-size: 14px; font-style: oblique">Sponsor: <strong>{{ucfirst($study->study_sponsor)}}</strong></p>
-                                    </td>
-                                    <td>
-                                            <select class="studyStatus custom-btn btn"  name="Status" >
-                                                <option value="">Select Status</option>
-                                                <option value="Live">Live</option>
-                                                <option value="Development" >Development</option>
-                                                <option value="Archived">Archived</option>
-                                            </select>
-                                    </td>
-                                    <td>
-                                        <span class="pull-left">
-                                            <ul>
-                                                <li class="dropdown">
-                                    <i class="fa fa-cog" data-toggle="modal"></i>
-                                    <ul class="dropdown-menu" style="position: absolute !important;top: -5px;left: -90px;">
-                                        <li>
-                                            <a href="{{route('studies.changeStatus',$study->id)}}" data-id="{{$study->id}}"  class="studyStatus" data-toggle="modal" data-target="#changeStatus-{{$study->id}}">
-                                                <i class="fa fa-plus blue-color"></i> Change Status
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="{{route('studies.edit',$study->id)}}" data-toggle="modal" class="editStudy" at="">
-                                                <i class="fa fa-pencil" aria-hidden="true"></i> Edit
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#">
-                                                <i class="fa fa-clone" aria-hidden="true"></i> Clone
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" data-id="" class="deleteParent">
-                                                <i class="fa fa-trash" aria-hidden="true"></i> Delete
-                                            </a>
-                                        </li>
+                                    <th>ID</th>
+                                    <th>Status</th>
+                                    <th>Short Name : <strong>Study Title</strong>
+                                        <br>
+                                        <br>Sponsor</th>
+                                    <th>Action</th>
+                                </tr>
+                                @if(count($studies) !=0)
+                                    <?php $index= 1 ?>
+                                    @foreach($studies as $study)
+                                        <tr>
+                                            <td>{{$index}}</td>
+                                            <td hidden="hidden" name="{{$study->study_short_name}}"class="studyID">{{$study->id}}</td>
+                                            <td class="status">{{$study->study_status}}</td>
+                                            <td class="fa-box">
+                                                <a class="" href="{{ route('studies.show', $study->id) }}">
+                                                    {{ucfirst($study->study_short_name)}} : <strong>{{ucfirst($study->study_title)}}</strong>
+                                                </a>
+                                                <br><br><p style="font-size: 14px; font-style: oblique">Sponsor: <strong>{{ucfirst($study->study_sponsor)}}</strong></p>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex mt-3 mt-md-0 ml-auto">
+                                                    <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                                    <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
+                                                    <span class="dropdown-item">
+                                                        <a href="{{route('studies.changeStatus',$study->id)}}" data-id="{{$study->id}}"  class="studyStatus" data-toggle="modal" data-target="#changeStatus-{{$study->id}}">
+                                                            <i class="fa fa-file-plus"></i> Change Status
+                                                        </a>
+                                                    </span>
+                                                        <span class="dropdown-item">
+                                                            <a href="{{route('studies.edit',$study->id)}}" data-toggle="modal" class="editStudy" at="">
+                                                                <i class="icon-pencil" aria-hidden="true"></i> Edit
+                                                            </a>
+                                                        </span>
+                                                        <span class="dropdown-item">
+                                                            <a href="#">
+                                                                <i class="fa fa-clone" aria-hidden="true"></i> Clone </a>
+                                                        </span>
+                                                        <span class="dropdown-item">
+                                                            <a href="#" data-id="" class="deleteParent">
+                                                                <i class="fa fa-trash" aria-hidden="true"></i> Delete</a>
+                                                        </span>
+                                                    </div>
+                                                </div>
                                         {{--<li>
                                             <a href="#">
                                             <i class="fal fa-file-edit"></i>
@@ -100,17 +96,19 @@
                                             </a>
                                         </li>
                                     </ul>
-                                </li>
-
-                            </ul>
-                        </span>                                    </td>
-                                </tr>
-                                <?php $index++ ?>
-                            @endforeach
+                                                </li>
+                                            </ul>
+                                        </span>
+                                    </td>
+                                        </tr>
+                                        <?php $index++ ?>
+                                    @endforeach
                                 @elseif(count($studies) == 0)
-                                <p>No records</p>
+                                    <p>No records</p>
                                 @endif
-                        </table>
+                            </table>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -272,15 +270,15 @@
                                                 @enderror
                                             </div>
                                             <div class="col-md-3">
-                                            <a href="javascript:void(0);" class="add_button" title="Add field"> <i class="fa fa-plus"></i></a>
+                                                <a href="javascript:void(0);" class="add_button" title="Add field"> <i class="fa fa-plus"></i></a>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                          <button class="btn custom-btn blue-color" data-dismiss="modal"><i class="fa fa-window-close blue-color" aria-hidden="true"></i> Close</button>
-                                          <button type="submit" class="btn custom-btn blue-color"><i class="fa fa-save blue-color"></i> Save</button>
-                                      </div>
-                                  </div>
+                                        <button class="btn custom-btn blue-color" data-dismiss="modal"><i class="fa fa-window-close blue-color" aria-hidden="true"></i> Close</button>
+                                        <button type="submit" class="btn custom-btn blue-color"><i class="fa fa-save blue-color"></i> Save</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -288,7 +286,7 @@
             </div>
         </div>
     </div>
-{{-- ChangeStatus Modal--}}
+    {{-- ChangeStatus Modal--}}
     <div class="modal" tabindex="-1" role="dialog" id="changeStatus_Modal">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content" style="width: inherit; top: auto!important;">
@@ -298,25 +296,25 @@
                 </div>
                 <form action="{{route('study.studyStatus')}}" enctype="multipart/form-data" method="POST">
                     <div class="custom-modal-body">
-                                    @csrf
+                        @csrf
                         <input type="hidden" name="study_id", value="{{$study->id}}">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <h4 class="col-md-3">Study Status</h4>
-                                        <div class="col-md-9">
-                                            <input type="radio" name="study_status" value="live"> Live
-                                            <br>
-                                            <input type="radio" name="study_status" value="development"> Development
-                                            <br>
-                                            <input type="radio" name="study_status" value="archived"> Archived
-                                        </div>
-                                    </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h4 class="col-md-3">Study Status</h4>
+                                <div class="col-md-9">
+                                    <input type="radio" name="study_status" value="live"> Live
+                                    <br>
+                                    <input type="radio" name="study_status" value="development"> Development
+                                    <br>
+                                    <input type="radio" name="study_status" value="archived"> Archived
                                 </div>
                             </div>
-                        <div class="modal-footer">
-                            <button class="btn custom-btn blue-color" data-dismiss="modal"><i class="fa fa-window-close blue-color" aria-hidden="true"></i> Close</button>
-                            <button type="submit" class="btn custom-btn blue-color"><i class="fa fa-save blue-color"></i> Save</button>
                         </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn custom-btn blue-color" data-dismiss="modal"><i class="fa fa-window-close blue-color" aria-hidden="true"></i> Close</button>
+                        <button type="submit" class="btn custom-btn blue-color"><i class="fa fa-save blue-color"></i> Save</button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -351,7 +349,7 @@
                         <div id="exTab1">
                             <div class="tab-content clearfix">
                                 <div class="tab-pane active" id="edit-1a">
-                                <div class="row">
+                                    <div class="row">
                                         <div class="col-md-6">
                                             <div class="{!! ($errors->has('study_short_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
                                                 <label>Study Short Name</label>
@@ -489,7 +487,7 @@
                                 </div>
                             </div>
                         </div>
-                        </div>
+                    </div>
                 </form>
             </div>
         </div>

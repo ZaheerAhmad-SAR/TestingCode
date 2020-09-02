@@ -4,12 +4,12 @@
 <div id="header-fix" class="header fixed-top">
     <div class="site-width">
         <nav class="navbar navbar-expand-lg  p-0">
-            <div class="navbar-header  h-100 h4 mb-0 align-self-center logo-bar text-left">  
+            <div class="navbar-header  h-100 h4 mb-0 align-self-center logo-bar text-left">
                 <a href="{{ url('/') }}" class="horizontal-logo text-left">
                 <span class="h4 font-weight-bold align-self-center mb-0 ml-auto">
-                 <!-- <img src="{{asset('public/dist/images/Logo.gif')}}" alt="" style="width: 50px;"> -->  OIRRC 
-                </span>              
-                </a>                   
+                 <!-- <img src="{{asset('public/dist/images/Logo.gif')}}" alt="" style="width: 50px;"> -->  OIRRC
+                </span>
+                </a>
             </div>
             <div class="navbar-header h4 mb-0 text-center h-100 collapse-menu-bar">
                 <a href="#" class="sidebarCollapse" id="collapse"><i class="icon-menu"></i></a>
@@ -19,18 +19,23 @@
             <div class="navbar-right ml-auto h-100">
                 <ul class="ml-auto p-0 m-0 list-unstyled d-flex top-icon h-100">
                     <li class="d-inline-block align-self-center  d-block d-lg-none">
-                        <a href="#" class="nav-link mobilesearch" data-toggle="dropdown" aria-expanded="false"><i class="icon-magnifier h4"></i>                               
+                        <a href="#" class="nav-link mobilesearch" data-toggle="dropdown" aria-expanded="false"><i class="icon-magnifier h4"></i>
                         </a>
-                    </li>                        
+                    </li>
                     <li class="dropdown user-profile align-self-center d-inline-block">
-                        <a href="#" class="nav-link py-0" data-toggle="dropdown" aria-expanded="false"> 
-                            <div class="media">                                   
+                        <a href="#" class="nav-link py-0" data-toggle="dropdown" aria-expanded="false">
+                            <div class="media">
                                 <img src="{{asset('public/dist/images/author.jpg')}}" alt="" class="d-flex img-fluid rounded-circle" width="29">
                             </div>
                         </a>
                         <div class="dropdown-menu border dropdown-menu-right p-0">
                             <a href="" class="dropdown-item px-2 align-self-center d-flex">
                                 <span class="icon-pencil mr-2 h6 mb-0"></span> Edit Profile</a>
+                            @foreach(auth()->user()->user_roles as $role)
+                                <a href="{{ route('switch_role',$role->role_id) }}"
+                                   class="dropdown-item px-2 align-self-center d-flex">
+                                    <span class="icon-user mr-2 h6 mb-0">{{ucfirst( $role->role->name)}}</span> Role</a>
+                            @endforeach
                             <a href="" class="dropdown-item px-2 align-self-center d-flex">
                                 <span class="icon-user mr-2 h6 mb-0"></span> View Profile</a>
                             <div class="dropdown-divider"></div>
@@ -60,7 +65,7 @@
     <div class="site-width">
         <!-- START: Menu-->
         <ul id="side-menu" class="sidebar-menu">
-            <li class="dropdown"><a href="#"><i class="icon-home mr-1"></i> Dashboard</a>                  
+            <li class="dropdown"><a href="#"><i class="icon-home mr-1"></i> Dashboard</a>
                 <ul class="@if(is_active('dashboard.index')) {{ 'active' }} @endif">
                     @can('users.dashboard',Auth::user())
                     <li class="nav-item @if(is_active('dashboard.index')) {{ 'active' }} @endif">
@@ -70,6 +75,16 @@
                         </a>
                     </li>
                     @endcan
+                </ul>
+                        <ul class="@if(is_active('studies.index')) {{ 'active' }} @endif">
+                    @if(hasPermission(auth()->user(),'studies.index'))
+                        <li class="nav-item @if(is_active('studies.index')) {{ ' active' }} @endif">
+                            <a href="{!! route('studies.index') !!}">
+                                <i class="icon-book-open"></i>
+                                Studies
+                            </a>
+                        </li>
+                    @endif
                 </ul>
             </li>
             <li class="dropdown"><!-- <a href="#"><i class="icon-organization mr-1"></i> Study Tools</a> -->
@@ -123,13 +138,14 @@
                                 </a>
                             </li>
                             @endcan
-                            <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Design</a>
-                                <ul class="sub-menu"> 
+                                <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Design</a>
+                                <ul class="sub-menu">
                                     <li class="@if(is_active('studyphases.index')) {{ ' active' }} @endif">
                                         <a href="{!! route('study.index') !!}">
                                             Study Structure
                                         </a>
                                     </li>
+
                                     <li class="@if(is_active('forms.index')) {{ ' active' }} @endif">
                                         <a href="{!! route('forms.index') !!}">
                                             Forms
@@ -140,7 +156,7 @@
                                             Option Groups
                                         </a>
                                     </li>
-                                </ul>    
+                                </ul>
                             </li>
                             <li class="">
                                 <a href="#">
@@ -155,13 +171,6 @@
                 <ul>
                     <li class="dropdown"><a href="#"><i class="fas fa-hospital"></i>Subjects</a>
                         <ul class="sub-menu">
-                            @if(hasPermission(auth()->user(),'studies.create'))
-                            <li class="@if(is_active('studies.index')) {{ ' active' }} @endif">
-                                <a href="{!! route('studies.index') !!}">
-                                    Studies
-                                </a>
-                            </li>
-                            @endif
                         </ul>
                     </li>
                 </ul>
@@ -243,7 +252,7 @@
                     </li>
                 </ul>
             </li>
-            <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Activity Log</a>                  
+            <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Activity Log</a>
                 <ul >
                     <li>
                         <a href="#">

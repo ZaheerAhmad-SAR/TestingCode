@@ -26,6 +26,8 @@ class StudyController extends Controller
     public function index()
     {
       $user = Auth::user();
+        //$user = User::with('studies')->find(Auth::id());
+      //dd($user);
         if ($user->role->name == 'admin'){
             $studies  =   Study::orderBy('created_at')->get();
             $users = User::all();
@@ -199,6 +201,83 @@ class StudyController extends Controller
         $study->update($request->all());
 
         return redirect()->route('studies.index')->with('success','Study updated successfully');
+    }
+
+    /** get clone of the study */
+    public function cloneStudy(Request $request){
+        $mystudy = Study::with('users','subjects','diseaseCohort','sites')
+            ->find($request->id);
+        $id = \Illuminate\Support\Str::uuid();
+//        dd($mystudy->subjects, $mystudy->diseaseCohort);
+
+        if(!empty($mystudy)){
+            $replica = Study::create([
+                'id'    => $id,
+                'study_short_name'  =>  $mystudy->study_short_name.' Cloned ',
+                'study_title' => $mystudy->study_title,
+                'study_status'  => $mystudy->study_status,
+                'study_code' => $mystudy->study_code,
+                'protocol_number'=> $mystudy->protocol_number,
+                'study_phase'=>$mystudy->study_phase,
+                'trial_registry_id'=>$mystudy->trial_registry_id,
+                'study_sponsor'=>$mystudy->study_sponsor,
+                'start_date' => $mystudy->start_date,
+                'end_date' => $mystudy->end_date,
+                'description'   =>  $mystudy->description,
+                'user_id'       => auth()->user()->id
+            ]);
+            $replica_id = Study::select('id')->latest()->first();
+            if($mystudy->users){
+                foreach ($mystudy->users as $user) {
+                    $id = \Illuminate\Support\Str::uuid();
+                    $user = StudyUser::create([
+                        'id'    => $id,
+                        'user_id' => $user->id,
+                        'study_id' =>$replica_id->id
+                    ]);
+                }
+            }
+            if ($mystudy->sites) {
+                foreach ($mystudy->sites as $site) {
+                    $id = \Illuminate\Support\Str::uuid();
+                    StudySite::create([
+                        'id'    => $id,
+                        'study_id' => $replica_id->id,
+                        'site_id' => $site->id
+                    ]);
+                }
+            }
+            if($mystudy->diseaseCohort){
+                foreach ($mystudy->diseaseCohort as $disease_cohort){
+                    $id = \Illuminate\Support\Str::uuid();
+                    $diseaseCohort = DiseaseCohort::create([
+                        'id'    => $id,
+                        'study_id'  => $replica_id->id,
+                        'name'      => $disease_cohort->name
+                    ]);
+                }
+            }
+
+            if ($mystudy->subjects){
+                foreach ($mystudy->subjects as $subject){
+                    $id = \Illuminate\Support\Str::uuid();
+                    $subject = Subject::create([
+                        'id'    => $id,
+                        'study_id' => $replica_id->id,
+                        'subject_id'    => $subject->subject_id.' cloned',
+                        'user_id'       => \auth()->user()->id,
+                        'enrollment_date'   => $subject->enrollment_date,
+                        'study_eye'         => $subject->study_eye,
+                        'site_id'           => $subject->site_id,
+                        'disease_cohort_id' => $subject->disease_cohort
+                    ]);
+
+                }
+            }
+
+            //$replica->save();
+        }
+        return redirect()->route('studies.index')->with('success','Study cloned successfully');
     }
 
     /**
