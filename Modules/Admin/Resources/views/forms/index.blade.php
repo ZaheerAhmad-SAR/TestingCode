@@ -40,7 +40,7 @@
                     </select>
                 </div>
                 <div class="col-sm-2">
-                    <a href="{{route('forms.show',1)}}">
+                    <a href="{{route('forms.show',1)}}" target="_blank">
                         <button class="btn btn-outline-primary" style="background-color: white;"><i class="far fa-eye"></i> Preview</button>
                     </a>    
                 </div>
@@ -58,28 +58,9 @@
             <div class="card border h-100 mail-list-section">
                 <div class="card-body p-0">
                     <div class="scrollertodo">
-                        <div class="border-btm form-fields color-black" data-field-type="numeric"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;&nbsp;Number</div>
-                        <div class="border-btm form-fields color-black" data-field-type="radio"><i class="fa fa-bullseye" aria-hidden="true"></i>&nbsp;&nbsp;Radio buttons</div>
-                        <div class="border-btm form-fields color-black" data-field-type="dropdown"><i class="far fa-caret-square-down" aria-hidden="true"></i>&nbsp;&nbsp;Dropdown</div>
-                        <div class="border-btm form-fields color-black" data-field-type="checkbox"><i class="fa fa-check-square" aria-hidden="true"></i>&nbsp;&nbsp;checkbox</div>
-                        <div class="border-btm form-fields color-black" data-field-type=""><i class="fa fa-calendar-alt" aria-hidden="true"></i>&nbsp;&nbsp;Date</div>
-                        <div class="border-btm form-fields color-black" data-field-type=""><i class="fa fa-calendar-alt" aria-hidden="true"></i>&nbsp;&nbsp;Year</div>
-                        <div class="border-btm form-fields color-black" data-field-type=""><i class="fa fa-clock" aria-hidden="true"></i>&nbsp;&nbsp;Time</div>
-                        <div class="border-btm form-fields color-black" data-field-type=""><i class="fa fa-calculator" aria-hidden="true"></i>&nbsp;&nbsp;Calculation</div>
-                        <div class="border-btm form-fields color-black" data-field-type=""><i class="fas fa-sliders-h" aria-hidden="true"></i>&nbsp;&nbsp;Slider</div>
-                        <div class="border-btm form-fields color-black" data-field-type=""><i class="fa fa-server" aria-hidden="true"></i>&nbsp;&nbsp;Summary</div>
-                        <div class="border-btm form-fields color-black" data-field-type=""><i class="fa fa-qrcode" aria-hidden="true"></i>&nbsp;&nbsp;QR Code</div>
-                        <div class="border-btm form-fields color-black" data-field-type=""><i class="fab fa-cloudscale" aria-hidden="true"></i>&nbsp;&nbsp;Repeated Measure</div>
-                        <div class="border-btm form-fields color-black" data-field-type="text"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;&nbsp;Text</div>
-                        <div class="border-btm form-fields color-black" data-field-type="textarea"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;&nbsp;Text (multiline)</div>
-                        <div class="border-btm form-fields color-black" data-field-type=""><i class="fa fa-list" aria-hidden="true"></i>&nbsp;&nbsp;Randomization </div>
-                        <div class="border-btm form-fields color-black" data-field-type="file"><i class="fa fa-list" aria-hidden="true"></i>&nbsp;&nbsp;Upload file</div>
-                        <div class="border-btm form-fields color-black" data-field-type=""><i class="fa fa-list" aria-hidden="true"></i>&nbsp;&nbsp;Image</div>
-                        <div class="border-btm form-fields color-black" data-field-type=""><i class="fa fa-list" aria-hidden="true"></i>&nbsp;&nbsp;Grid</div>
-                        <div class="border-btm form-fields color-black" data-field-type="dateTime"><i class="fa fa-calendar-alt" aria-hidden="true"></i>&nbsp;&nbsp;Date & Time</div>
-                        <div class="border-btm form-fields color-black" data-field-type=""><i class="fa fa-calendar-alt" aria-hidden="true"></i>&nbsp;&nbsp;Number & Date</div>
-                        <div class="border-btm form-fields color-black" data-field-type=""><i class="fa fa-list" aria-hidden="true"></i>&nbsp;&nbsp;Add Report Button</div>
-                        <div class="border-btm form-fields color-black" data-field-type=""><i class="fa fa-list" aria-hidden="true"></i>&nbsp;&nbsp;Add Survey Button</div>
+                        @foreach($fields as $key => $value)
+                        <div class="border-btm form-fields color-black" data-field-type="{{ $value->field_type }}"  data-field-id="{{ $value->id }}"><i class="{{ $value->icon }}" aria-hidden="true"></i>&nbsp;&nbsp;{{ $value->field_type }}</div>
+                        @endforeach
                     </div>
                 </div>
             </div>
@@ -115,7 +96,7 @@
                             <div class="form-group row" style="margin-top: 10px;">
                                 <label for="Sections" class="col-sm-3 col-form-label">Sections</label>   
                                 <div class="col-sm-9">
-                                    <select name="section_id" id="selected-sections" class="form-control">
+                                    <select name="section_id" id="section_id" class="form-control">
                                         <option value="">--- Placement Place ---</option>
                                     </select>
                                 </div>
@@ -123,62 +104,57 @@
                             <div class="form-group row">
                                 <label for="C-DISC" class="col-sm-3 col-form-label">C-DISC <sup>*</sup></label>      
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" name="c_disc" value="">
+                                    <input type="text" class="form-control" name="c_disk" id="c_disk" value="">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="label" class="col-sm-3 col-form-label"> Label <sup>*</sup></label>    
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" name="question_label" value="">
+                                    <input type="text" class="form-control" name="question_text" id="question_text" value="">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <lable for='variable' class="col-sm-3 col-form-label">Variable name <sup>*</sup></lable>    
                                 <div class="col-sm-9">
-                                    <input type="text" class="form-control" name="Variable_name" value="">
+                                    <input type="text" class="form-control" name="variable_name" id="variable_name" value="">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="field" class="col-sm-3 col-form-label">Choose field type:</label>
                                 <div class="col-sm-9">
-                                    <select name="question_type" id="question_type" class="form-control">
+                                    <select name="form_field_type_id" id="question_type" class="form-control">
                                         <option value="">--- Field Type ---</option>
-                                        <option value="numeric">Number</option>
-                                        <option value="radio">Radio</option>
-                                        <option value="dropdown">Dropdown</option>
-                                        <option value="checkbox">checkbox</option>
-                                        <option value="dateTime">Date & Time</option>
-                                        <option value="text">Text</option>
-                                        <option value="textarea">Textarea</option>
-                                        <option value="file">Upload file</option>
+                                        @foreach($fields as $key => $value)
+                                        <option value="{{ $value->id }}">{{ $value->field_type }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="Required" class="col-sm-3 col-form-label">Required <sup>*</sup></label>    
                                 <div class="col-sm-9">
-                                    <input type="radio" name="required" value="no"> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <input type="radio" name="required" value="yes" checked> Yes
+                                    <input type="radio" name="is_required" value="no"> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="is_required" value="yes" checked> Yes
                                 </div>
                             </div>
                             <div class="view_to_numeric">
                                 <div class="form-group row">
                                     <label for='limits' class="col-sm-3 col-form-label">Lower and upper limits: <sup>*</sup></label>    
                                     <div class="col-sm-4">
-                                        <input type="text" name="minimum" class="form-control" placeholder="Minimum">
+                                        <input type="text" name="lower_limit" id="lower_limit" class="form-control" placeholder="Minimum">
                                     </div>  
                                     <div class="col-sm-5">  
-                                        <input type="text" name="maximum" class="form-control" placeholder="Maximum">
+                                        <input type="text" name="upper_limit" id="upper_limit" class="form-control" placeholder="Maximum">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label">Field width <sup>*</sup></label>    
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control" name="field_width" value="">
+                                        <input type="text" class="form-control" name="field_width" id="field_width" value="">
                                     </div>
                                     <label class="col-sm-3">Measurement unit</label>    
                                     <div class="col-sm-3">
-                                        <input type="text" class="form-control" name="measurement" value="">
+                                        <input type="text" class="form-control" name="measurement_unit" id="measurement_unit" value="">
                                     </div>
                                 </div>
                             </div>
@@ -186,7 +162,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label">Option group: </label>    
                                     <div class="col-sm-9">
-                                        <select name="option_group" id="option_group" class="form-control">
+                                        <select name="option_group_id" id="option_group_id" class="form-control">
                                             <option value="">none</option>
                                             @foreach($option_groups as $key => $value)
                                             <option value="{{$value->id}}">{{$value->option_group_name}}</option>
@@ -199,20 +175,20 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label">Field width <sup>*</sup></label>    
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" name="field_width" value="">
+                                        <input type="text" class="form-control" name="field_width" id="field_width" value="">
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label">Measurement unit</label>    
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" name="measurement" value="">
+                                        <input type="text" class="form-control" name="measurement_unit" id="measurement_unit" value="">
                                     </div>
                                 </div>
                             </div>
                              <div class="form-group row">
                                 <label class="col-sm-3 col-form-label">Text/info: <sup>*</sup></label>    
                                 <div class="col-sm-9">
-                                    <textarea name="question_info" id="question_info" cols="2" rows="2" class="form-control" style="height: 50px;"></textarea>
+                                    <textarea name="text_info" id="text_info" cols="2" rows="2" class="form-control" style="height: 50px;"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -224,7 +200,6 @@
                                 <div class="col-sm-12" style="margin-top: 10px;"><button type="button" class="btn btn-outline-primary addvalidations"><i class="fa fa-plus"></i> Add Message</button></div>    
                             </div>
                              <div class="appendDatavalidations">
-
                             </div>
                         </div>
                         <div class="tab-pane fade" id="nav-Dependencies" role="tabpanel" aria-labelledby="nav-Dependencies-tab">
@@ -261,8 +236,8 @@
                             <div class="form-group row" style="margin-top: 10px;">
                                 <div class="col-sm-3">Exclude field in data exports: <sup>*</sup></div>    
                                 <div class="col-sm-9">
-                                    <input type="radio" name="exports" value="no"> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <input type="radio" name="exports" value="yes" checked> Yes
+                                    <input type="radio" name="is_exportable_to_xls" value="no"> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="is_exportable_to_xls" value="yes" checked> Yes
                                 </div>
                             </div>
                         </div>
@@ -318,15 +293,15 @@
             $('#addField').trigger('reset');
             var type = $(this).attr("data-field-type");
             $('#question_type').val(type);
-            if(type =='numeric'){
+            if(type =='Number'){
                 $('.view_to_numeric').css('display', 'block');
                 $('.optionGroup').css('display', 'none');
                 $('.view_to_textbox').css('display', 'none');
-            }else if(type =='radio' || type =='dropdown' || type =='checkbox'){
+            }else if(type =='Radio' || type =='Dropdown' || type =='checkbox'){
                 $('.optionGroup').css('display', 'block')
                 $('.view_to_numeric').css('display', 'none');
                 $('.view_to_textbox').css('display', 'none');
-            }else if(type =='text'){
+            }else if(type =='Text'){
                 $('.view_to_textbox').css('display', 'block');
                  $('.optionGroup').css('display', 'none')
                 $('.view_to_numeric').css('display', 'none');
@@ -337,6 +312,10 @@
             }
             $('#addField').modal('show');
 
+       })
+       $('body').on('click','.form-fields',function(){
+            var id = $(this).attr("data-field-id");
+            $('#question_type').val(id);
        })
        $('#phases').on('change',function(){
             var phase_id = $(this).val();
@@ -376,7 +355,7 @@
                 },
                 success:function(response){
                     $('.display-sections').html('');
-                    $('#selected-sections').html('');
+                    $('#section_id').html('');
                     html += '<div id="accordion">';
                     $.each(response['data'],function(k,v){
                         var show = (k ==0) ? 'show' : '';
@@ -385,7 +364,7 @@
                     });
                     html +='</div>';
                     $('.display-sections').html(html);
-                    $('#selected-sections').append(sections);
+                    $('#section_id').append(sections);
                     $("#wait").css("display", "none");   
                 }    
             });
