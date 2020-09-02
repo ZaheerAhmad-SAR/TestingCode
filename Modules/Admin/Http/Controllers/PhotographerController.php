@@ -29,7 +29,7 @@ class PhotographerController extends Controller
      */
     public function create()
     {
-       // return view('admin::create');
+        // return view('admin::create');
     }
 
     /**
@@ -41,7 +41,7 @@ class PhotographerController extends Controller
     {
         $site = Site::select('id')->latest()->first();
 
-       // dd($request->all());
+        // dd($request->all());
         $photographer = Photographer::create([
             'id'    => \Illuminate\Support\Str::uuid(),
             'site_id'=> $site->id,
@@ -108,9 +108,6 @@ class PhotographerController extends Controller
 
     }
 
-
-
-
     /**
      * Remove the specified resource from storage.
      * @param int $id
@@ -125,5 +122,17 @@ class PhotographerController extends Controller
             $delete->delete();
             return response()->json(['success'=>'Photographer is deleted successfully.']);
         }
+    }
+
+    public function showPhotographerBySiteId(Request $request,$id)
+    {
+
+        if ($request->ajax()) {
+
+            $result    = Photographer::where('site_id',$id)->get();
+            return response()->json([$result]);
+
+        }
+
     }
 }

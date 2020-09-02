@@ -121,4 +121,18 @@ class OtherController extends Controller
             return response()->json(['success'=>'Others is deleted successfully.']);
         }
     }
+
+    public function showOtherBySiteId(Request $request,$id)
+    {
+
+        if ($request->ajax()) {
+
+            $result    = Other::where('site_id',$id)->get();
+            return response()->json([$result]);
+
+        }
+
+    }
+
+
 }
