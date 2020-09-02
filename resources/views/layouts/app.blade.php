@@ -12,8 +12,8 @@
         <link rel="stylesheet" href="{{ asset('public/dist/vendors/bootstrap/css/bootstrap.min.css') }}">
         <link rel="stylesheet" href="{{ asset('public/dist/vendors/jquery-ui/jquery-ui.min.css') }}">
         <link rel="stylesheet" href="{{ asset('public/dist/vendors/jquery-ui/jquery-ui.theme.min.css') }}">
-        <link rel="stylesheet" href="{{ asset('public/dist/vendors/simple-line-icons/css/simple-line-icons.css') }}"> 
-        <!-- END Template CSS--> 
+        <link rel="stylesheet" href="{{ asset('public/dist/vendors/simple-line-icons/css/simple-line-icons.css') }}">
+        <!-- END Template CSS-->
         <!-- START: Page CSS-->
         @yield('styles')
         <!-- END: Page CSS-->
@@ -21,6 +21,7 @@
         <link rel="stylesheet" href="{{ asset('public/dist/css/main.css') }}">
         <link rel="stylesheet" href="{{ asset('public/dist/css/custom.css') }}">
         <link rel="stylesheet" href="{{ asset('public/dist/vendors/fontawesome/css/all.min.css') }}"/>
+
         <!-- END: Custom CSS-->
         <style>
             #settingbutton{
@@ -29,7 +30,7 @@
         </style>
     </head>
    <!--  <div  id="wait" style="display:none;width:69px;height:89px;position:absolute;top:40%;left:50%;z-index: 9999;"><img src="{{url('public/old-style/images/loader.gif')}}" width="64" height="64" /><br></div> -->
-<body class="@yield('class')"> 
+<body class="@yield('class')">
     <!-- START: Pre Loader-->
         <div class="se-pre-con">
             <div class="loader"></div>
@@ -38,7 +39,7 @@
     @yield('body')
 
      <!-- START: Back to top-->
-        <a href="#" class="scrollup text-center"> 
+        <a href="#" class="scrollup text-center">
             <i class="icon-arrow-up"></i>
         </a>
     <!-- END: Back to top-->
@@ -47,7 +48,7 @@
         <script src="{{ asset('public/dist/vendors/jquery/jquery-3.3.1.min.js') }}"></script>
         <script src="{{ asset('public/dist/vendors/jquery-ui/jquery-ui.min.js') }}"></script>
         <script src="{{ asset('public/dist/vendors/moment/moment.js') }}"></script>
-        <script src="{{ asset('public/dist/vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>    
+        <script src="{{ asset('public/dist/vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
         <script src="{{ asset('public/dist/vendors/slimscroll/jquery.slimscroll.min.js') }}"></script>
         <!-- END: Template JS-->
         <!-- START: APP JS-->

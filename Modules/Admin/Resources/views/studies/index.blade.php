@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.home')
 
 @section('title')
     <title> Studies | {{ config('app.name', 'Laravel') }}</title>

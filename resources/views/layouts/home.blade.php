@@ -4,12 +4,13 @@
 <div id="header-fix" class="header fixed-top">
     <div class="site-width">
         <nav class="navbar navbar-expand-lg  p-0">
-            <div class="navbar-header  h-100 h4 mb-0 align-self-center logo-bar text-left">  
+            <span class="studyName"> {{session('study_short_name')}}</span>
+            <div class="navbar-header  h-100 h4 mb-0 align-self-center logo-bar text-left">
                 <a href="{{ url('/') }}" class="horizontal-logo text-left">
                 <span class="h4 font-weight-bold align-self-center mb-0 ml-auto">
-                 <!-- <img src="{{asset('public/dist/images/Logo.gif')}}" alt="" style="width: 50px;"> -->  OIRRC 
-                </span>              
-                </a>                   
+                 <!-- <img src="{{asset('public/dist/images/Logo.gif')}}" alt="" style="width: 50px;"> -->  OIRRC
+                </span>
+                </a>
             </div>
             <div class="navbar-header h4 mb-0 text-center h-100 collapse-menu-bar">
                 <a href="#" class="sidebarCollapse" id="collapse"><i class="icon-menu"></i></a>
@@ -19,12 +20,12 @@
             <div class="navbar-right ml-auto h-100">
                 <ul class="ml-auto p-0 m-0 list-unstyled d-flex top-icon h-100">
                     <li class="d-inline-block align-self-center  d-block d-lg-none">
-                        <a href="#" class="nav-link mobilesearch" data-toggle="dropdown" aria-expanded="false"><i class="icon-magnifier h4"></i>                               
+                        <a href="#" class="nav-link mobilesearch" data-toggle="dropdown" aria-expanded="false"><i class="icon-magnifier h4"></i>
                         </a>
-                    </li>                        
+                    </li>
                     <li class="dropdown user-profile align-self-center d-inline-block">
-                        <a href="#" class="nav-link py-0" data-toggle="dropdown" aria-expanded="false"> 
-                            <div class="media">                                   
+                        <a href="#" class="nav-link py-0" data-toggle="dropdown" aria-expanded="false">
+                            <div class="media">
                                 <img src="{{asset('public/dist/images/author.jpg')}}" alt="" class="d-flex img-fluid rounded-circle" width="29">
                             </div>
                         </a>
@@ -60,7 +61,7 @@
     <div class="site-width">
         <!-- START: Menu-->
         <ul id="side-menu" class="sidebar-menu">
-            <li class="dropdown"><a href="#"><i class="icon-home mr-1"></i> Dashboard</a>                  
+            <li class="dropdown"><a href="#"><i class="icon-home mr-1"></i> Dashboard</a>
                 <ul class="@if(is_active('dashboard.index')) {{ 'active' }} @endif">
                     @can('users.dashboard',Auth::user())
                     <li class="nav-item @if(is_active('dashboard.index')) {{ 'active' }} @endif">
@@ -123,8 +124,15 @@
                                 </a>
                             </li>
                             @endcan
+                                @if(hasPermission(auth()->user(),'studySite.create'))
+                                <li class="@if(is_active('studySite.index')) {{ ' active' }} @endif">
+                                    <a  href="{!! route('studySite.index') !!}">
+                                        Study Sites
+                                    </a>
+                                </li>
+                                @endif
                             <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Design</a>
-                                <ul class="sub-menu"> 
+                                <ul class="sub-menu">
                                     <li class="@if(is_active('studyphases.index')) {{ ' active' }} @endif">
                                         <a href="{!! route('study.index') !!}">
                                             Study Structure
@@ -140,7 +148,7 @@
                                             Option Groups
                                         </a>
                                     </li>
-                                </ul>    
+                                </ul>
                             </li>
                             <li class="">
                                 <a href="#">
@@ -243,7 +251,7 @@
                     </li>
                 </ul>
             </li>
-            <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Activity Log</a>                  
+            <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Activity Log</a>
                 <ul >
                     <li>
                         <a href="#">
