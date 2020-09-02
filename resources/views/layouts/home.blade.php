@@ -146,7 +146,6 @@
                                     </a>
                                 </li>
                                 @endif
-                            <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Design</a>
                                 <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Design</a>
 
                                 <ul class="sub-menu">
