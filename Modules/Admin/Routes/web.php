@@ -25,6 +25,7 @@ Route::group(['middleware' => ['auth','web']],function(){
 Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],function(){
 
     Route::resource('sites','SiteController');
+    Route::post('transmissions/transmissionData','TransmissionController@transmissionData')->name('transmissions.transmissionData');
     Route::post('sites/update','SiteController@update')->name('updateSites');
     Route::DELETE('sites/destroy/{sites_id}','SiteController@destroy')->name('destroysites');
 
