@@ -30,8 +30,8 @@ return [
         'files' => [
             'routes/web' => 'Routes/web.php',
             'routes/api' => 'Routes/api.php',
-            'views/index' => 'Resources/views/old_index.blade.php',
-            'views/master' => 'Resources/views/layouts/master.blade.php',
+            'views/index' => 'Resources/views/old_index.study_site_new.blade.php',
+            'views/master' => 'Resources/views/layouts/master.study_site_new.blade.php',
             'scaffold/config' => 'Config/config.php',
             'composer' => 'composer.json',
             'assets/js/app' => 'Resources/assets/js/app.js',

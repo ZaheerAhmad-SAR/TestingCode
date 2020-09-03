@@ -4,7 +4,7 @@
 <div id="header-fix" class="header fixed-top">
     <div class="site-width">
         <nav class="navbar navbar-expand-lg  p-0">
-            <span class="studyName"> {{session('study_short_name')}}</span>
+
             <div class="navbar-header  h-100 h4 mb-0 align-self-center logo-bar text-left">
                 <a href="{{ url('/') }}" class="horizontal-logo text-left">
                 <span class="h4 font-weight-bold align-self-center mb-0 ml-auto">
@@ -15,6 +15,7 @@
             <div class="navbar-header h4 mb-0 text-center h-100 collapse-menu-bar">
                 <a href="#" class="sidebarCollapse" id="collapse"><i class="icon-menu"></i></a>
             </div>
+            <span class="studyName" style="margin-left: 13px;"> {{session('study_short_name')}}</span>
             <!-- title here  -->
             <!--  -->
             <div class="navbar-right ml-auto h-100">

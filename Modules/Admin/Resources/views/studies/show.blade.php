@@ -6,6 +6,7 @@
     @php
 
         $studyid = last(request()->segments());
+
         session(['current_study'=>$studyid,'study_short_name'=> $currentStudy->study_short_name ]); @endphp
     <div class="row">
         <div class="col-md-12">

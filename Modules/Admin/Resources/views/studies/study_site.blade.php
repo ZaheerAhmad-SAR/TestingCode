@@ -3,27 +3,41 @@
 @section('title')
     <title> Study Sites | {{ config('app.name', 'Laravel') }}</title>
 @stop
+
 @section('content')
 
 {{--        {{dd($unassignSites)}}--}}
 
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="panel">
-                <div class="panel-heading">
-                    <div class="pull-left">
-                        <h2>Study Sites</h2>
-                    </div>
-                </div>
-                <div class="pull-right btn-group">
-                    <button type="button" class="btn custom-btn blue-color" data-toggle="modal" data-target="#assignSites">
-                        <i class="fa fa-plus blue-color"></i> Assign Sites
-                    </button>
-                </div>
-                <div class="panel-body">
-                    <div class="table-responsive">
 
-                        <table class="table">
+<div class="container-fluid site-width">
+    <!-- START: Breadcrumbs-->
+    <div class="row ">
+        <div class="col-12  align-self-center">
+            <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
+                <div class="w-sm-100 mr-auto"><h4 class="mb-0">Study Sites</h4></div>
+                <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
+                    <li class="breadcrumb-item">Dashboard</li>
+                    <li class="breadcrumb-item">Study Sites</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+    <!-- END: Breadcrumbs-->
+
+    <!-- START: Card Data-->
+    <div class="row">
+        <div class="col-12 col-sm-12 mt-3">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+
+                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#assignSites">
+                        <i class="fa fa-plus"></i> Assign Sites
+                    </button>
+
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
                             <tr>
                                 <th>Code</th>
                                 <th>Name</th>
@@ -40,7 +54,6 @@
                                     </div>
                                 </th>
                             </tr>
-{{--                            <p class="alert alert-success" id="msg"></p>--}}
                             @if(!empty($sites))
                                 @foreach($sites as $site)
                                     <tr>
@@ -60,11 +73,14 @@
                             @endif
                         </table>
                     </div>
-
                 </div>
             </div>
+
         </div>
     </div>
+    <!-- END: Card DATA-->
+</div>
+
 
     <div class="modal" tabindex="-1" role="dialog" id="assignSites">
         <div class="modal-dialog modal-lg" role="document">
@@ -102,7 +118,7 @@
         </div>
     </div>
 @endsection
-@section('scripts')
+@section('script')
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
     <script type="text/javascript">
         $('.edit-study-sites').click(function (){
@@ -113,7 +129,6 @@
         });
 
         $("#studyUpdateButton").click(function () {
-            //$("#msg").show();
             var InputValues = $('input[name^=study_site_id]').map(function(idx, elem) {
                 return $(elem).val();
             }).get();
@@ -134,14 +149,8 @@
                     $('.showButtonDiv').hide();
                     $('.edit-study-sites').show();
                     //$("#msg").html("Recipe Saved");
-                    $("#msg").fadeOut(2000);
                 }
             });
-        });
-        // Function to display the Master List of Sites which is not assign to any study.
-        $(document).ready(function ()
-        {
-
         });
 
         $(document).ready(function() {
