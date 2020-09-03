@@ -23,7 +23,7 @@ class TransmissionController extends Controller
      */
     public function transmissionData(Request $request)
     {
-        dd($request->all());
+        dd($request);
         return view('admin::index');
     }
 
