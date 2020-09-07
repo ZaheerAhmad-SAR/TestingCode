@@ -93,6 +93,13 @@
                 <ul>
                     <li class="dropdown"><a href="#"><i class="icon-grid"></i>System Tools</a>
                         <ul class="sub-menu">
+                            @can('users.create',Auth::user())
+                            <li class="@if(is_active('users.index')) {{ ' active' }} @endif">
+                                <a href="{!! route('users.index') !!}">
+                                    Users
+                                </a>
+                            </li>
+                            @endcan
                             @can('roles.create',Auth::user())
                             <li class="@if(is_active('roles.index')) {{ ' active' }} @endif">
                                 <a href="{!! route('roles.index') !!}">
@@ -133,13 +140,6 @@
                 <ul>
                     <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Tools</a>
                         <ul class="sub-menu">
-                            @can('users.create',Auth::user())
-                            <li class="@if(is_active('users.index')) {{ ' active' }} @endif">
-                                <a href="{!! route('users.index') !!}">
-                                    Users
-                                </a>
-                            </li>
-                            @endcan
                                 @if(hasPermission(auth()->user(),'studySite.create'))
                                 <li class="@if(is_active('studySite.index')) {{ ' active' }} @endif">
                                     <a  href="{!! route('studySite.index') !!}">
@@ -185,49 +185,41 @@
                     </li>
                 </ul>
             </li>
-            <li class="dropdown">
+            <li class="dropdown"><a href="#"><i class="fas fa-sitemap"></i> Quality Control</a>
                 <ul>
-                    <li class="dropdown"><a href="#"><i class="fas fa-sitemap"></i>Quality Control</a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a href="#">
-                                    Qc List
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Qc Status
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Import XML
-                                </a>
-                            </li>
-                        </ul>
+                    <li>
+                        <a href="#">
+                           <i class="fas fa-list"></i> Qc List
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                           <i class="fas fa-check-square"></i> Qc Status
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                           <i class="fas fa-code"></i> Import XML
+                        </a>
                     </li>
                 </ul>
             </li>
-            <li class="dropdown">
+            <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Grading</a>
                 <ul>
-                    <li class="dropdown"><a href="#"><i class="fas fa-database"></i>Grading</a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a href="#">
-                                    Grading List
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Grading Status
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Adjudication
-                                </a>
-                            </li>
-                        </ul>
+                    <li>
+                        <a href="#">
+                          <i class="fas fa-list"></i>  Grading List
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                          <i class="fas fa-check-square"></i> Grading Status
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                           <i class="fas fa-list"></i> Adjudication
+                        </a>
                     </li>
                 </ul>
             </li>

@@ -39,6 +39,14 @@ class FormController extends Controller
         $sectionData['data'] = $section;
         echo json_encode($sectionData);
     }
+    public function get_allQuestions($id)
+    {
+        $questions = Question::with('form_field_type','formFields')
+        ->join('options_groups','options_groups.id','=','question.option_group_id' ,'left')
+        ->where('question.section_id', '=', $id)->get();
+        $questionsData['data'] = $questions;
+        echo json_encode($questionsData);
+    }
     
     /**
      * Show the form for creating a new resource.
@@ -69,7 +77,7 @@ class FormController extends Controller
             'question_text' => $request->question_text, 
             'c_disk' => $request->c_disk, 
             'measurement_unit' => $request->measurement_unit, 
-            'is_dependent' => $request->is_dependent, 
+            'is_dependent' => $request->field_dependent, 
             'dependent_on' => $request->dependent_on, 
             'annotations' => $request->dependent_on 
         ]);

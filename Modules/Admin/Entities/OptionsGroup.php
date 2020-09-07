@@ -15,6 +15,9 @@ class OptionsGroup extends Model
         'option_name',
         'option_value',
     ];
-
+    public function questions()
+    {
+        return $this->belongsTo(Question::class);
+    }
 
 }
