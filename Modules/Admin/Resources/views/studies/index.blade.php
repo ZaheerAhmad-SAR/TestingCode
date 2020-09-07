@@ -71,35 +71,19 @@
                                                             <a href="#" data-id="" class="deleteParent">
                                                                 <i class="fa fa-trash" aria-hidden="true"></i> Delete</a>
                                                         </span>
+                                                        <span class="dropdown-item">
+                                                             <a href="#" data-id="" class="addModalities">
+                                                                <i class="fa fa-object-group" aria-hidden="true"></i> Preferences
+                                                             </a>
+                                                        </span>
+                                                        <span class="dropdown-item">
+                                                            <a href="#" data-id="" class="addModalities">
+                                                                <i class="fa fa-object-group" aria-hidden="true"></i> Modalities
+                                                            </a>
+                                                        </span>
                                                     </div>
                                                 </div>
-                                        {{--<li>
-                                            <a href="#">
-                                            <i class="fal fa-file-edit"></i>
-                                                <select class="studyStatus"  name="Status" >
-                                            <option>Select Status</option>
-                                            <option value="Live">Live</option>
-                                            <option value="Development" >Development</option>
-                                            <option value="Archived">Archived</option>
-                                            --}}{{--<option value="{{!empty($study->study_status)?$study->study_status:'dev'}}" >Development</option>--}}{{--
-                                        </select>
-                                            </a>
-                                        </li>--}}
-                                        <li>
-                                            <a href="#" data-id="" class="addModalities">
-                                                <i class="fa fa-object-group" aria-hidden="true"></i> Preferences
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="#" data-id="" class="addModalities">
-                                                <i class="fa fa-object-group" aria-hidden="true"></i> Modalities
-                                            </a>
-                                        </li>
-                                    </ul>
-                                                </li>
-                                            </ul>
-                                        </span>
-                                    </td>
+                                            </td>
                                         </tr>
                                         <?php $index++ ?>
                                     @endforeach
@@ -108,14 +92,13 @@
                                 @endif
                             </table>
                         </div>
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="modal" tabindex="-1" role="dialog" id="createStudy">
+    <div class="modal fade" tabindex="-1" role="dialog" id="createStudy">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content" style="width: inherit; top: auto!important;">
                 <div class="alert alert-danger" style="display:none"></div>
@@ -124,18 +107,24 @@
                 </div>
                 <form action="{{route('studies.store')}}" enctype="multipart/form-data" method="POST">
                     <div class="custom-modal-body">
+                        <nav>
+                            <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
+                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-Basic" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
+                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-Modalities" role="tab" aria-controls="nav-profile" aria-selected="false">Users</a>
+                            </div>
+                        </nav>
                         <ul  class="nav nav-pills btn">
                             <li>
-                                <a  href="#1a" data-toggle="tab" class="active">Info</a>
+                                <a  href="#1a" data-toggle="tab" class="nav-item nav-link active">Info</a>
                             </li>
                             <li>
-                                <a href="#2a" data-toggle="tab">Users</a>
+                                <a href="#2a" data-toggle="tab" class="nav-item nav-link">Users</a>
                             </li>
                             <li>
-                                <a href="#3a" data-toggle="tab">Sites</a>
+                                <a href="#3a" data-toggle="tab" class="nav-item nav-link">Sites</a>
                             </li>
                             <li>
-                                <a  href="#4a" data-toggle="tab" class="">Disease Cohort</a>
+                                <a  href="#4a" data-toggle="tab" class="nav-item nav-link">Disease Cohort</a>
                             </li>
 
                         </ul>
