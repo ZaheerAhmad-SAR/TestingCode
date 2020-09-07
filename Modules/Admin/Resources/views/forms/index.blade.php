@@ -358,22 +358,8 @@
                     html += '<div id="accordion">';
                     $.each(response['data'],function(k,v){
                         var show = (k ==0) ? 'show' : '';
-                        html += '<div class="card"><div class="card-header"><a class="card-link" data-toggle="collapse" href="#collapse_'+v.id+'">'+v.sort_number+'&nbsp;&nbsp;&nbsp;&nbsp;'+v.name+'</a></div><div id="collapse_'+v.id+'" class="collapse '+show+'" data-parent="#accordion"><div class="card-body">';
-                        $.ajax({
-                            url:'forms/get_allQuestions/'+v.id,
-                            type:'post',
-                            dataType:'json',
-                            data:{
-                                "_token": "{{ csrf_token() }}",
-                                "_method": 'GET',
-                                'id': v.id
-                            },
-                            success:function(res){
-                               $.each(res['data'],function(i,j){
-                                alert(j.field_type);
-                               })
-                            }
-                        });
+                        html += '<div class="card"><div class="card-header"><a class="card-link" data-toggle="collapse" href="#collapse_'+v.id+'">'+v.sort_number+'&nbsp;&nbsp;&nbsp;&nbsp;'+v.name+'</a></div><div id="collapse_'+v.id+'" class="collapse '+show+'" data-parent="#accordion"><div class="card-body questions_'+v.id+'">';
+                        getQuestions(v.id);
                         html += '</div></div></div>';
                         sections += '<option value="'+v.id+'">'+v.name+'</option>'
                     });
@@ -384,5 +370,67 @@
                 }    
             });
        })
+    function getQuestions(id){
+        var html2 = '';
+        $.ajax({
+            url:'forms/get_allQuestions/'+id,
+            type:'post',
+            dataType:'json',
+            data:{
+                "_token": "{{ csrf_token() }}",
+                "_method": 'GET',
+                'id': id
+            },
+            success:function(res){
+               $('questions_'+id).html('');
+               $.each(res['data'],function(i,j){
+                    if(j['form_field_type'].field_type ==='Radio'){
+                       var options = [];
+                       options = j.option_name.split(",");
+                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_text+'</div><div class="col-sm-8">';
+                       $.each(options, function(k,v){
+                            html2 += '<input type="radio" name="'+j.option_group_name+'" value=""> &nbsp;'+v+'&nbsp; ';
+                       })
+                       html2 += '</div></div>';
+                    }else if(j['form_field_type'].field_type ==='Text'){
+                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_text+'</div>';
+                       html2 += '<div class="col-sm-8"> <input type="text" name="'+j.variable_name+'" value="" class="form-control"></div></div>';
+                    }else if(j['form_field_type'].field_type ==='Number'){
+                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_text+'</div>';
+                       html2 += '<div class="col-sm-8"> <input type="number" name="'+j.variable_name+'" value="" class="form-control"></div></div>';
+                    }else if(j['form_field_type'].field_type ==='Dropdown'){
+                       var options = [];
+                       options = j.option_name.split(","); 
+                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_text+'</div><div class="col-sm-8"><select name="'+j.variable_name+'" class="form-control">';
+                       $.each(options, function(k,v){
+                            if(v !=''){
+                                html2 += '<option value="'+v+'">'+v+'<option>';
+                            }
+                       })
+                       html2 += '</select></div></div>';
+                    }else if(j['form_field_type'].field_type ==='Checkbox'){
+                       var options = [];
+                       options = j.option_name.split(",");
+                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_text+'</div><div class="col-sm-8">';
+                       $.each(options, function(k,v){
+                            html2 += '<input type="checkbox" name="'+j.option_group_name+'" value=""> &nbsp;'+v+'&nbsp; ';
+                       })
+                       html2 += '</div></div>';
+                    }else if(j['form_field_type'].field_type ==='Textarea'){
+                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_text+'</div>';
+                       html2 += '<div class="col-sm-8"> <textarea name="'+j.variable_name+'" value="" class="form-control"></textarea></div></div>'; 
+                    }else if(j['form_field_type'].field_type ==='Date & Time'){
+                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_text+'</div>';
+                       html2 += '<div class="col-sm-8"> <input type="date" name="'+j.variable_name+'" value="" class="form-control"></div></div>'; 
+                    }else if(j['form_field_type'].field_type ==='Upload'){
+                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_text+'</div>';
+                       html2 += '<div class="col-sm-8"> <input type="file" name="'+j.variable_name+'" value="" class="form-control"></div></div>'; 
+                    }
+               });
+               $('.questions_'+id).append(html2);
+            }
+        });
+        
+    }  
    </script>     
 @stop

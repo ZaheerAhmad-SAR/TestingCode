@@ -92,6 +92,13 @@
                 <ul>
                     <li class="dropdown"><a href="#"><i class="icon-grid"></i>System Tools</a>
                         <ul class="sub-menu">
+                            @can('users.create',Auth::user())
+                            <li class="@if(is_active('users.index')) {{ ' active' }} @endif">
+                                <a href="{!! route('users.index') !!}">
+                                    Users
+                                </a>
+                            </li>
+                            @endcan
                             @can('roles.create',Auth::user())
                             <li class="@if(is_active('roles.index')) {{ ' active' }} @endif">
                                 <a href="{!! route('roles.index') !!}">
@@ -132,13 +139,6 @@
                 <ul>
                     <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Tools</a>
                         <ul class="sub-menu">
-                            @can('users.create',Auth::user())
-                            <li class="@if(is_active('users.index')) {{ ' active' }} @endif">
-                                <a href="{!! route('users.index') !!}">
-                                    Users
-                                </a>
-                            </li>
-                            @endcan
                                 @if(hasPermission(auth()->user(),'studySite.create'))
                                 <li class="@if(is_active('studySite.index')) {{ ' active' }} @endif">
                                     <a  href="{!! route('studySite.index') !!}">

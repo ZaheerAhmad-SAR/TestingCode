@@ -19,4 +19,8 @@ class Question extends Model
     {
         return $this->hasOne(Formfields::class);
     }
+    public function optionsGroup()
+    {
+       return $this->belongsTo(OptionsGroup::class);
+    }
 }

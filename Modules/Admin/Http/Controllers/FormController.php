@@ -41,7 +41,9 @@ class FormController extends Controller
     }
     public function get_allQuestions($id)
     {
-        $questions = Question::with('form_field_type')->where('question.section_id', '=', $id)->get();
+        $questions = Question::with('form_field_type','formFields')
+        ->join('options_groups','options_groups.id','=','question.option_group_id' ,'left')
+        ->where('question.section_id', '=', $id)->get();
         $questionsData['data'] = $questions;
         echo json_encode($questionsData);
     }
