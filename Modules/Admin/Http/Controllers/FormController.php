@@ -11,8 +11,8 @@ use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\Section;
 use Modules\Admin\Entities\Question;
 use Modules\Admin\Entities\OptionsGroup;
-use Modules\Admin\Entities\formfieldtype;
-use Modules\Admin\Entities\Formfields;
+use Modules\Admin\Entities\FormFieldType;
+use Modules\Admin\Entities\FormFields;
 
 class FormController extends Controller
 {
@@ -24,7 +24,7 @@ class FormController extends Controller
     {
         $phases = StudyStructure::all();
         $option_groups = OptionsGroup::all();
-        $fields = formfieldtype::all();
+        $fields = FormFieldType::all();
         return view('admin::forms.index',compact('phases','option_groups','fields'));
     }
     public function get_steps_by_phaseId($id)
@@ -84,7 +84,7 @@ class FormController extends Controller
         ]);
         $last_id = Question::select('id')->latest()->first();
         $id    = Str::uuid();
-        $form_field = Formfields::create([
+        $form_field = FormFields::create([
             'id' => $id,
             'question_id' => $last_id->id,
             'variable_name' => $request->variable_name,
@@ -104,9 +104,24 @@ class FormController extends Controller
      * @param int $id
      * @return Response
      */
-    public function show($id='')
+    public function show($phase_id, $step_id)
     {
-        return view('admin::forms.form_loader');
+        $phase = StudyStructure::find($phase_id);
+        $step = PhaseSteps::find($step_id);
+        
+        return view('admin::forms.preview_form')
+        ->with('phase', $phase)
+        ->with('step', $step);
+    }
+
+    public function showPreviewFullFlow($id)
+    {
+        $phase = StudyStructure::find($id);
+        $steps = PhaseSteps::select('*')->where('phase_id',$id)->get();
+        
+        return view('admin::forms.preview_form_full_flow')
+        ->with('phase', $phase)
+        ->with('steps', $steps);
     }
 
     /**

@@ -12,15 +12,15 @@ class Question extends Model
 
     public function form_field_type()
     {
-        return $this->belongsTo(Formfieldtype::class);
+        return $this->belongsTo(FormFieldType::class);
     }
 
     public function formFields()
     {
-        return $this->hasOne(Formfields::class,'question_id','id');
+        return $this->hasOne(FormFields::class,'question_id','id');
     }
     public function optionsGroup()
     {
-       return $this->hasOne(OptionsGroup::class,'option_group_id','id')->withDefault();
+       return $this->hasOne(OptionsGroup::class,'id','option_group_id')->withDefault();
     }
 }

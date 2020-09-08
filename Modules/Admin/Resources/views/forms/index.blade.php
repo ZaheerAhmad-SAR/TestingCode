@@ -40,9 +40,7 @@
                     </select>
                 </div>
                 <div class="col-sm-2">
-                    <a href="{{route('forms.show',1)}}" target="_blank">
-                        <button class="btn btn-outline-primary" style="background-color: white;"><i class="far fa-eye"></i> Preview</button>
-                    </a>    
+                <button class="btn btn-outline-primary" onclick="showFormPreview();" style="background-color: white;"><i class="far fa-eye"></i> Preview</button>
                 </div>
             </div>
         </div>
@@ -439,5 +437,11 @@
         });
         
     }  
+    function showFormPreview(){
+           var route = '{{url('forms/show')}}';
+           var phase_id = $('#phases').val();
+           var step_id = $('#steps').val();           
+           window.location.href = route+'/'+phase_id+'/'+step_id;
+       }
    </script>     
 @stop
