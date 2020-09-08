@@ -17,7 +17,7 @@ class OptionsGroup extends Model
     ];
     public function questions()
     {
-        return $this->belongsTo(Question::class);
+        return $this->hasMany(Question::class,'option_group_id','id');
     }
 
 }

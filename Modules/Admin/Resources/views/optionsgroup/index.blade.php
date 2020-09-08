@@ -262,8 +262,8 @@
                $('#OptionsGroupEditForm').trigger('reset');
                $('#editOptionGroups').modal('show');
                var id =($(this).attr("data-id"));
-               //var url = "{{URL('/ocap/optionsGroup')}}";
-               var url = "{{URL('optionsGroup')}}";
+               var url = "{{URL('/ocap_new/optionsGroup')}}";
+               //var url = "{{URL('optionsGroup')}}";
                var newPath = url+ "/"+ id+"/edit/";
                $.ajaxSetup({
                    headers: {
@@ -296,14 +296,14 @@
                        }
                        $.each(optionNameArray, function(index, value)
                        {
-                       $('.appendDataOptions_edit').append('<div class="form-group">\n' +
+                       $('.appendDataOptions_edit').append('<div class="edit_values_row"><div class="form-group row">\n' +
                            '     <div class="col-md-3">Option Name:</div>\n' +
                            '      <div class="form-group col-md-4">\n' +
                            '       <input type="text" id="option_name_edit" name="option_name_edit[]"  value='+value+' class="form-control">\n' +
                            '       </div>\n' +
                            '        <div class="form-group col-md-4">\n' +
                            '        <input type="number" value='+optionValueArray[index]+' name="option_value_edit[]" id="option_value_edit" class="form-control">\n' +
-                           '         </div>\n' +
+                           '         </div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash edit_remove" style="margin-top: 3px;"></i></div></div>\n' +
                            '   ');
                        });
                    }

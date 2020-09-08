@@ -12,6 +12,6 @@ class FormFields extends Model
 
     public function questions()
     {
-        return $this->belongsTo(Questions::class);
+        return $this->belongsTo(Questions::class,'question_id','id');
     }
 }

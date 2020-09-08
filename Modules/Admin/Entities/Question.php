@@ -17,10 +17,10 @@ class Question extends Model
 
     public function formFields()
     {
-        return $this->hasOne(Formfields::class);
+        return $this->hasOne(Formfields::class,'question_id','id');
     }
     public function optionsGroup()
     {
-       return $this->belongsTo(OptionsGroup::class);
+       return $this->hasOne(OptionsGroup::class,'option_group_id','id')->withDefault();
     }
 }
