@@ -20,6 +20,7 @@
 
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.4",
         "beyondcode/laravel-dump-server": "^1.0",
         "filp/whoops": "^2.0",
         "mockery/mockery": "^1.0",
