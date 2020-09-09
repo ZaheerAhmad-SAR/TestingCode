@@ -4,6 +4,7 @@ namespace Modules\Admin\Entities;
 
 use App\User;
 use Illuminate\Database\Eloquent\Model;
+use Modules\UserRoles\Entities\UserRole;
 
 class Study extends Model
 {
@@ -37,6 +38,10 @@ class Study extends Model
 
     public function diseaseCohort(){
         return $this->hasMany(DiseaseCohort::class);
+    }
+
+    public function roles(){
+        return $this->hasMany(RoleStudy::class);
     }
 
 }

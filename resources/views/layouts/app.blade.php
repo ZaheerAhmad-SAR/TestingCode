@@ -21,6 +21,7 @@
         <!-- START: Custom CSS-->
         <link rel="stylesheet" href="{{ asset('public/dist/css/main.css') }}">
         <link rel="stylesheet" href="{{ asset('public/dist/css/custom.css') }}">
+        <link rel="stylesheet" href="{{ asset('public/dist/css/multi-select.css') }}">
         <link rel="stylesheet" href="{{ asset('public/dist/vendors/fontawesome/css/all.min.css') }}"/>
 
         <!-- END: Custom CSS-->
@@ -55,6 +56,7 @@
         <!-- END: Template JS-->
         <!-- START: APP JS-->
         <script src="{{ asset('public/dist/js/app.js') }}"></script>
+        <script src="{{ asset('public/dist/js/jquery.multi-select.js') }}"></script>
         <!-- END: APP JS-->
 
         <!-- START: Page JS-->

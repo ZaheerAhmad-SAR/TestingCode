@@ -4,10 +4,11 @@ namespace Modules\UserRoles\Entities;
 
 use App\User;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Admin\Entities\RoleStudy;
 
 class Role extends Model
 {
-    protected $fillable = ['id','name','description'];
+    protected $fillable = ['id','name','description','created_by'];
     public $incrementing = false;
     public $keyType = 'string';
 
@@ -20,4 +21,10 @@ class Role extends Model
     {
         return $this->belongsToMany('Modules\UserRoles\Entities\Permission');
     }
+
+    public function study()
+    {
+        return $this->hasMany(RoleStudy::class);
+    }
+
 }

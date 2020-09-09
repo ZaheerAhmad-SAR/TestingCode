@@ -93,37 +93,46 @@
                 <ul>
                     <li class="dropdown"><a href="#"><i class="icon-grid"></i>System Tools</a>
                         <ul class="sub-menu">
+                            @if(hasPermission(auth()->user(),'users.store'))
+                                @if(auth()->user()->role->name == 'admin')
+                                <li class="@if(is_active('users.index')) {{ ' active' }} @endif">
+                                    <a href="{!! route('users.index') !!}">
+                                        System Users
+                                    </a>
+                                </li>
+                            @endif
+                            @endif
                             @can('roles.create',Auth::user())
-                            <li class="@if(is_active('roles.index')) {{ ' active' }} @endif">
-                                <a href="{!! route('roles.index') !!}">
-                                    <i class="fal fa-user-tag"></i>
-                                    Roles
-                                </a>
-                            </li>
+                                <li class="@if(is_active('roles.index')) {{ ' active' }} @endif">
+                                    <a href="{!! route('roles.index') !!}">
+                                        <i class="fal fa-user-tag"></i>
+                                        Roles
+                                    </a>
+                                </li>
                             @endcan
                             @if(hasPermission(auth()->user(),'sites.create'))
-                            <li class="@if(is_active('sites.index')) {{ ' active' }} @endif">
-                                <a href="{!! route('sites.index') !!}">
-                                    <i class="fal fa-location-arrow"></i>
-                                    Sites
-                                </a>
-                            </li>
+                                <li class="@if(is_active('sites.index')) {{ ' active' }} @endif">
+                                    <a href="{!! route('sites.index') !!}">
+                                        <i class="fal fa-location-arrow"></i>
+                                        Sites
+                                    </a>
+                                </li>
                             @endif
                             @if(hasPermission(auth()->user(),'devices.create'))
-                            <li class="@if(is_active('devices.index')) {{ ' active' }} @endif">
-                                <a href="{!! route('devices.index') !!}">
-                                    <i class="fal fa-calculator"></i>
-                                    Devices
-                                </a>
-                            </li>
+                                <li class="@if(is_active('devices.index')) {{ ' active' }} @endif">
+                                    <a href="{!! route('devices.index') !!}">
+                                        <i class="fal fa-calculator"></i>
+                                        Devices
+                                    </a>
+                                </li>
                             @endif
                             @if(hasPermission(auth()->user(),'modalities.create'))
-                            <li class=" @if(is_active('modalities.index')) {{ ' active' }} @endif">
-                                <a href="{!! route('modalities.index') !!}">
-                                    <i class="fal fa-mobile"></i>
-                                    Modalities
-                                </a>
-                            </li>
+                                <li class=" @if(is_active('modalities.index')) {{ ' active' }} @endif">
+                                    <a href="{!! route('modalities.index') !!}">
+                                        <i class="fal fa-mobile"></i>
+                                        Modalities
+                                    </a>
+                                </li>
                             @endif
                         </ul>
                     </li>
@@ -133,21 +142,23 @@
                 <ul>
                     <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Tools</a>
                         <ul class="sub-menu">
+                            @if(auth()->user()->role->name !='admin')
                             @can('users.create',Auth::user())
-                            <li class="@if(is_active('users.index')) {{ ' active' }} @endif">
-                                <a href="{!! route('users.index') !!}">
-                                    Users
-                                </a>
-                            </li>
+                                <li class="@if(is_active('users.index')) {{ ' active' }} @endif">
+                                    <a href="{!! route('users.index') !!}">
+                                        Study  Users
+                                    </a>
+                                </li>
                             @endcan
-                                @if(hasPermission(auth()->user(),'studySite.create'))
+                            @endif
+                            @if(hasPermission(auth()->user(),'studySite.create'))
                                 <li class="@if(is_active('studySite.index')) {{ ' active' }} @endif">
                                     <a  href="{!! route('studySite.index') !!}">
                                         Study Sites
                                     </a>
                                 </li>
-                                @endif
-                                <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Design</a>
+                            @endif
+                            <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Design</a>
 
                                 <ul class="sub-menu">
                                     <li class="@if(is_active('studyphases.index')) {{ ' active' }} @endif">
@@ -170,7 +181,7 @@
                             </li>
                             <li class="">
                                 <a href="#">
-                                   Preferences
+                                    Preferences
                                 </a>
                             </li>
                         </ul>

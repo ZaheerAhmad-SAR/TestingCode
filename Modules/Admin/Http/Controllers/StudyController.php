@@ -8,6 +8,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Input;
 use Modules\Admin\Entities\DiseaseCohort;
+use Modules\Admin\Entities\RoleStudyUser;
 use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\Study;
 use Illuminate\Support\Facades\Auth;
@@ -25,9 +26,8 @@ class StudyController extends Controller
      */
     public function index()
     {
-      $user = Auth::user();
+      $user = User::with('studies','user_roles')->find(Auth::id());
         //$user = User::with('studies')->find(Auth::id());
-      //dd($user);
         if ($user->role->name == 'admin'){
             $studies  =   Study::orderBy('created_at')->get();
             $users = User::all();
@@ -49,7 +49,7 @@ class StudyController extends Controller
             $sites = Site::all();
         }
 
-        return view('admin::studies.index',compact('studies','sites','users','subjects'));
+        return view('admin::studies.table',compact('studies','sites','users','subjects'));
     }
 
     /**
@@ -88,7 +88,7 @@ class StudyController extends Controller
      */
     public function store(Request $request)
     {
-       //dd($request->user()->id);
+       dd($request->all());
         $users = User::select('name','id')->where('user_type','!=', 0)->get();
         $sites = Site::all();
         $study =  Study::create([
@@ -107,7 +107,7 @@ class StudyController extends Controller
             'user_id'       => $request->user()->id
         ]);
 
-        if(!empty($request->users)){
+      /*  if(!empty($request->users)){
             foreach ($request->users as $user) {
                 StudyUser::create([
                     'id'    => \Illuminate\Support\Str::uuid(),
@@ -125,7 +125,7 @@ class StudyController extends Controller
                     'site_id' => $site
                 ]);
             }
-        }
+        }*/
 
         if(!empty($request->disease_cohort)){
             foreach ($request->disease_cohort as $disease_cohort){
@@ -167,6 +167,7 @@ class StudyController extends Controller
     {
         $id = $study->id;
         $currentStudy = Study::find($id);
+        $user_study_role = RoleStudyUser::where('study_id','=',$currentStudy)->get();
         $subjects = Subject::join('sites','sites.id','=','subjects.site_id')->get();
         $site_study = StudySite::where('study_id','=',$id)
             ->join('sites', 'sites.id','=','site_study.site_id')

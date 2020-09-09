@@ -41,11 +41,7 @@ class LoginController extends Controller
 
     /*protected function authenticated(Request $request, $user)
     {
-        if ( !$user->confirmed ) {
-            Auth::logout();
-            alertify()->error('Email is not verified')->delay(10000)->clickToClose()->position('bottom right');
-            return redirect(route('corporate.home'));
-        }
+
         if ($user->role_id ==1 || $user->role_id==2){
             return redirect()->intended(route('admin.index'));
         }elseif ($user->role_id==4){
