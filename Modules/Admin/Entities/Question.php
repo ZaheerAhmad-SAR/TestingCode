@@ -2,6 +2,7 @@
 
 namespace Modules\Admin\Entities;
 
+use Modules\Admin\Scopes\QuestionOrderByScope;
 use Illuminate\Database\Eloquent\Model;
 
 class Question extends Model
@@ -9,6 +10,12 @@ class Question extends Model
     protected $table = 'question';
     protected $fillable = ['id','form_field_type_id','section_id','option_group_id','question_sort','question_text','c_disk','measurement_unit','is_dependent','dependent_on','annotations'];
     protected $keyType = 'string';
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new QuestionOrderByScope);
+    }
 
     public function form_field_type()
     {

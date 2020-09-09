@@ -49,7 +49,7 @@ class StudyController extends Controller
             $sites = Site::all();
         }
 
-        return view('admin::studies.table',compact('studies','sites','users','subjects'));
+        return view('admin::studies.table',compact('studies','sites','users'));
     }
 
     /**
@@ -175,7 +175,7 @@ class StudyController extends Controller
             ->get();
 
         $diseaseCohort = DiseaseCohort::where('study_id','=',$id)->get();
-        return view('admin::studies.show',compact('study','subjects','currentStudy','site_study','diseaseCohort','studyName'));
+        return view('admin::studies.show',compact('study','subjects','currentStudy','site_study','diseaseCohort'));
     }
 
     /**
