@@ -236,8 +236,7 @@
                $('#OptionsGroupEditForm').trigger('reset');
                $('#editOptionGroups').modal('show');
                var id =($(this).attr("data-id"));
-               //var url = "{{URL('/ocap/optionsGroup')}}";
-               var url = "{{URL('optionsGroup')}}";
+               var url = "{{URL('/ocap_new/optionsGroup')}}";
                var newPath = url+ "/"+ id+"/edit/";
                $.ajaxSetup({
                    headers: {
@@ -331,8 +330,7 @@
        {
            $('body').on('click', '.deleteOptions', function () {
                var options_id = $(this).data("id");
-               //var url = "{{URL('/ocap/optionsGroup')}}";
-               var url = "{{URL('optionsGroup')}}";
+               var url = "{{URL('/ocap_new/optionsGroup')}}";
                var newPath = url+ "/"+ options_id+"/destroy/";
                $.ajaxSetup({
                    headers: {
