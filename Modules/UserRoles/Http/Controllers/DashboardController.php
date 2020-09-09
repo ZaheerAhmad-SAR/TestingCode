@@ -18,7 +18,8 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('userroles::dashboard');
+        $study = '';
+        return view('userroles::dashboard',compact('study'));
     }
 
     /**
