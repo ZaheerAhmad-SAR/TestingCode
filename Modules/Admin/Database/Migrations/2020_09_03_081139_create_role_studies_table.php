@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddDiseaseCohortColumnToSubjectsTable extends Migration
+class CreateRoleStudiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,12 @@ class AddDiseaseCohortColumnToSubjectsTable extends Migration
      */
     public function up()
     {
-        Schema::table('subjects', function (Blueprint $table) {
-            $table->uuid('disease_cohort_id')->nullable()->after('site_id');
+        Schema::create('role_study', function (Blueprint $table) {
+            $table->uuid('id')->primary()->unique();
+            $table->uuid('study_id')->nullable();
+            $table->uuid('role_id')->nullable();
+
+            $table->timestamps();
         });
     }
 
@@ -25,8 +29,6 @@ class AddDiseaseCohortColumnToSubjectsTable extends Migration
      */
     public function down()
     {
-        Schema::table('subjects', function (Blueprint $table) {
-            $table->dropColumn('disease_cohort_id');
-        });
+        Schema::dropIfExists('role_study');
     }
 }
