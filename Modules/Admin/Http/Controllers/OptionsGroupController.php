@@ -36,12 +36,7 @@ class OptionsGroupController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function getall_options()
-    {
-        $options_dropdown = OptionsGroup::all();
-        $optionsData['data'] = $options_dropdown;
-        echo json_encode($optionsData);
-    }
+
     public function store(Request $request)
     {
         $input = $request->all();

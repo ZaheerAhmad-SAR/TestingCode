@@ -172,8 +172,8 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label">Option group: </label>    
                                     <div class="col-sm-6">
-                                        <select name="option_group_id" id="option_group_id" class="form-control">
-                                            <option value="">none</option>
+                                        <select name="option_group_id" id="option_group_id" class="form-control fstdropdown-select">
+                                            <option value="">None</option>
                                             @foreach($option_groups as $key => $value)
                                             <option value="{{$value->id}}">{{$value->option_group_name}}</option>
                                             @endforeach
@@ -549,7 +549,7 @@
                success: function (results) {
                 fetch_options();
                 $('#OptionsGroupForm').trigger("reset");
-                $("#addphase-close").click();
+                $("#optiongroup-close").click();
                },
                error: function (results) {
                    console.log('Error:', results);
@@ -559,16 +559,13 @@
    }
    addOptionsGroup(); 
    function fetch_options(){
-        alert('working here');
         $('#option_group_id').html(''); 
-        var options = '';
+        var options = '<option value="">None</option>';
         $.ajax({
             url:"{{route('getall_options')}}",
             type:"post",
             dataType:'json',
             success: function(res){
-                alert('working');
-                console.log(res['data']);
                 $.each(res['data'], function(k,v){
                     options += '<option value="'+v.id+'">'+v.option_group_name+'</option>'
                 })

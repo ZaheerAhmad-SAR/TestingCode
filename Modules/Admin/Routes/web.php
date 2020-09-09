@@ -53,7 +53,7 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
     Route::post('optionsGroup/update','OptionsGroupController@update')->name('updateOptionsGroup');
 
     Route::DELETE('optionsGroup/destroy/{options_id}','OptionsGroupController@destroy')->name('destroyOptionsGroup');
-    Route::post('getall_options','OptionsGroupController@getall_options')->name('getall_options');
+    Route::post('getall_options','FormController@getall_options')->name('getall_options');
 
 //    Route::DELETE('optionsGroup/destroy/{options_id}','OptionsGroupController@destroy')->name('destroyOptionsGroup');
 //
