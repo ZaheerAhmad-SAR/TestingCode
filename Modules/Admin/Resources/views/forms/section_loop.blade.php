@@ -2,12 +2,12 @@
         <div class="col-12 col-md-12 mt-3">
             <div class="card">
                 <div class="card-body">
-                    <div class="wizard wizard-white mb-4">                        
+                    <div class="wizard wizard-white mb-4">
                         <ul class="nav nav-tabs d-block d-sm-flex">
                             @php
                             $firstSection = true;
                             @endphp
-                            @foreach ($sections as $section)                                                     
+                            @foreach ($sections as $section)
                             <li class="nav-item mr-auto mb-4">
                                 <a class="nav-link p-0 {{ ($firstSection) ? 'active' : '' }}" data-toggle="tab"
                                     href="#tab{{$section->id}}">
@@ -17,7 +17,7 @@
                                             <h6 class="mb-0 text-uppercase font-weight-bold">{{$section->name}}</h6>
                                             {{$section->description}}
                                         </div>
-                                        
+
                                     </div>
                                 </a>
                             </li>
@@ -29,16 +29,17 @@
                         <div class="tab-content">
                             @php
                             $firstSection = true;
+                            $last = count($sections)-1;
                             @endphp
-                            @foreach ($sections as $section)
-                            <div class="tab-pane fade {{ ($firstSection) ? 'active show' : '' }}"
-                                id="tab{{$section->id}}">
+                            @foreach ($sections as $key=>$section)
+                            <div class="tab-pane fade {{ ($firstSection) ? 'active show' : '' }}" id="tab{{$section->id}}">
                                 @include('admin::forms.section_questions', ['section'=> $section])
+                                @include('admin::forms.section_next_previous', ['key'=> $key, 'first'=>0, 'last'=>$last])                                
                             </div>
                             @php
                             $firstSection = false;
                             @endphp
-                            @endforeach
+                            @endforeach                            
                         </div>
                     </div>
                 </div>

@@ -176,5 +176,13 @@
     outline: none;
     box-shadow: none;
 }
+
+.h1, h1 {
+    font-size: 1.5rem !important;
+}
+
+.h6, h6 {
+    font-size: 0.7rem !important;
+}
 </style>
 @stop
