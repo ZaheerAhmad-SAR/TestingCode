@@ -262,7 +262,15 @@
 
 @stop
 @section('styles')  
-
+<style>
+    .custom_fields{
+        border-bottom: 1px solid #F6F6F7;
+        padding: 10px;
+    }
+    .float-right{
+        float: right;
+    }
+</style>
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
 @stop
 @section('script')  
@@ -415,48 +423,48 @@
                        var optionsvalues = [];
                        optionsvalues = j.option_value.split(',');
                        options = j.option_name.split(",");
-                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div><div class="col-sm-8">';
+                       html2 += '<div class="form-group row custom_fields"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div><div class="col-sm-6">';
                        $.each(options, function(k,v){
                             html2 += '<input type="radio" name="'+j.option_group_name+'_'+j.question_id+'" value="'+optionsvalues[k]+'"> &nbsp;'+v+'&nbsp; ';
                        })
-                       html2 += '</div></div>';
+                       html2 += '</div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
                     }else if(j['form_field_type'].field_type ==='Text'){
-                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
-                       html2 += '<div class="col-sm-8"> <input type="text" name="'+j.variable_name+'" value="" class="form-control"></div></div>';
+                       html2 += '<div class="form-group row custom_fields"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
+                       html2 += '<div class="col-sm-6"> <input type="text" name="'+j.variable_name+'" value="" class="form-control"></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
                     }else if(j['form_field_type'].field_type ==='Number'){
-                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
-                       html2 += '<div class="col-sm-8"> <input type="number" name="'+j.variable_name+'" value="" class="form-control"></div></div>';
+                       html2 += '<div class="form-group row custom_fields"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
+                       html2 += '<div class="col-sm-6"> <input type="number" name="'+j.variable_name+'" value="" class="form-control"></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
                     }else if(j['form_field_type'].field_type ==='Dropdown'){
                        var optionsvalues = [];
                        optionsvalues = j.option_value.split(','); 
                        var options = [];
                        options = j.option_name.split(","); 
-                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div><div class="col-sm-8"><select name="'+j.option_group_name+'" class="form-control">';
+                       html2 += '<div class="form-group row custom_fields"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div><div class="col-sm-6"><select name="'+j.option_group_name+'" class="form-control">';
                        $.each(options, function(k,v){
                             if(k !=''){
                                 html2 += '<option value="'+optionsvalues[k]+'">'+v+'<option>';
                             }
                        })
-                       html2 += '</select></div></div>';
+                       html2 += '</select></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
                     }else if(j['form_field_type'].field_type ==='Checkbox'){
                        var optionsvalues = [];
                        optionsvalues = j.option_value.split(','); 
                        var options = [];
                        options = j.option_name.split(",");
-                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div><div class="col-sm-8">';
+                       html2 += '<div class="form-group row custom_fields"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div><div class="col-sm-6">';
                        $.each(options, function(k,v){
                             html2 += '<input type="checkbox" name="'+j.option_group_name+'" value="'+optionsvalues[k]+'"> &nbsp;'+v+'&nbsp; ';
                        })
-                       html2 += '</div></div>';
+                       html2 += '</div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
                     }else if(j['form_field_type'].field_type ==='Textarea'){
-                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
-                       html2 += '<div class="col-sm-8"> <textarea name="'+j.variable_name+'" value="" class="form-control"></textarea></div></div>'; 
+                       html2 += '<div class="form-group row custom_fields"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
+                       html2 += '<div class="col-sm-6"> <textarea name="'+j.variable_name+'" value="" class="form-control"></textarea></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>'; 
                     }else if(j['form_field_type'].field_type ==='Date & Time'){
-                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
-                       html2 += '<div class="col-sm-8"> <input type="date" name="'+j.variable_name+'" value="" class="form-control"></div></div>'; 
+                       html2 += '<div class="form-group row custom_fields"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
+                       html2 += '<div class="col-sm-6"> <input type="date" name="'+j.variable_name+'" value="" class="form-control"></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>'; 
                     }else if(j['form_field_type'].field_type ==='Upload'){
-                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
-                       html2 += '<div class="col-sm-8"> <input type="file" name="'+j.variable_name+'" value="" class="form-control"></div></div>'; 
+                       html2 += '<div class="form-group row custom_fields"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
+                       html2 += '<div class="col-sm-6"> <input type="file" name="'+j.variable_name+'" value="" class="form-control"></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>'; 
                     }
                });
                $('.questions_'+id).append(html2);
