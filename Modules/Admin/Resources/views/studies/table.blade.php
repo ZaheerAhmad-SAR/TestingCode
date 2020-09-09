@@ -39,7 +39,7 @@
                                 <br>
                                 <br>Sponsor
                             </th>
-                            <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block"><div style="width: 100%; min-width: 10em; background-color: red"><canvas width="200" height="20"></canvas></div></th>
+                            <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block">Progress Bar</th>
                             <th scope="col" data-tablesaw-priority="1"><abbr title="Rotten Tomato Rating">Status</abbr></th>
                             <th scope="col" data-tablesaw-priority="4">Action</th>
                         </tr>
@@ -47,7 +47,7 @@
                         <tbody>
                         <tr>
                             @if(count($studies) !=0)
-                                <?php $index= 1 ?>
+                                <?php $index= 1; ?>
                                 @foreach($studies as $study)
                                         <td>{{$index}}</td>
                             <td class="title">
@@ -56,7 +56,20 @@
                                 </a>
                                 <br><br><p style="font-size: 14px; font-style: oblique">Sponsor: <strong>{{ucfirst($study->study_sponsor)}}</strong></p>
                             </td>
-                            <td class="tablesaw-stack-block"><div style="width: 100%; min-width: 10em; background-color: blue"><canvas width="200" height="20"></canvas></div></td>
+                            <td class="tablesaw-stack-block">
+                                <div class="card">
+                                    <div class="card-body p-0">
+                                        <div  class="barfiller" data-color="#17a2b8">
+                                            <div class="tipWrap">
+                                                 <span class="tip rounded info">
+                                                     <span class="tip-arrow"></span>
+                                                    </span>
+                                            </div>
+                                            <span class="fill" data-percentage="{{rand(10,100)}}"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
                             <td>{{$study->study_status}}</td>
                                         <td>
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
@@ -94,7 +107,7 @@
                                             </div>
                                         </td>
                         </tr>
-                        <?php $index++ ?>
+                        <?php $index++; ?>
                         @endforeach
                         @elseif(count($studies) == 0)
                             <p>No records</p>
@@ -114,9 +127,9 @@
                     <div class="modal-header">
                         <h4 class="modal-title" id="deviceCrudModal">Add Study</h4>
                     </div>
-                    <form id="deviceForm" name="deviceForm" class="form-horizontal" action="{{route('studies.store')}}">
+                    <form method="post" action="{{ route('studies.store') }}">
                         <div class="modal-body">
-                            <input type="hidden" name="device_id" id="device_id">
+                            <input type="hidden" name="study_id" id="study_id">
                             <nav>
                                 <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
                                     <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-Basic" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
@@ -224,7 +237,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                                <button type="submit" class="btn btn-outline-primary" id="btn-save"><i class="fa fa-save"></i> Save Changes</button>
+                                <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
                             </div>
                         </div>
                     </form>
@@ -236,101 +249,51 @@
 @stop
 @section('styles')
     <link rel="stylesheet" href="{{ asset("public/dist/vendors/tablesaw/tablesaw.css") }}">
+    <link rel="stylesheet"  href="{{ asset('public/dist/vendors/chartjs/Chart.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/dist/vendors/morris/morris.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/dist/vendors/weather-icons/css/pe-icon-set-weather.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/dist/vendors/chartjs/Chart.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/dist/vendors/starrr/starrr.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/dist/vendors/fontawesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/dist/vendors/ionicons/css/ionicons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-2.0.3.css') }}">
+
 @stop
 @section('script')
+
+    <script src="{{ asset('public/dist/vendors/raphael/raphael.min.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/morris/morris.min.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/chartjs/Chart.min.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/starrr/starrr.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/jquery-flot/jquery.canvaswrapper.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/jquery-flot/jquery.colorhelpers.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.saturated.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.browser.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.drawSeries.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.uiConstants.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.legend.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.pie.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/chartjs/Chart.min.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-2.0.3.min.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-world-mill.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-de-merc.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-us-aea.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/apexcharts/apexcharts.min.js') }}"></script>
+    <script  src="{{ asset('public/dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
+    <script  src="{{ asset('public/dist/vendors/lineprogressbar/jquery.barfiller.js') }}"></script>
+
+    <script src="{{ asset('public/dist/js/home.script.js') }}"></script>
     <script src="{{ asset("public/dist/vendors/tablesaw/tablesaw.js") }}"></script>
     <script src="{{ asset("public/dist/vendors/tablesaw/tablesaw-init.js") }}"></script>
     <script type="text/javascript">
-
-        $(document).ready(function() {
-
-            $('#select-users').multiSelect({
-                selectableHeader: "<input type='text' class='search-input' autocomplete='off' placeholder='Search'>",
-                selectionHeader: "<input type='text' class='search-input' autocomplete='off' placeholder='Search'>",
-                afterInit: function(ms){
-                    var that = this,
-                        $selectableSearch = that.$selectableUl.prev(),
-                        $selectionSearch = that.$selectionUl.prev(),
-                        selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
-                        selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
-
-                    that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-                        .on('keydown', function(e){
-                            if (e.which === 40){
-                                that.$selectableUl.focus();
-                                return false;
-                            }
-                        });
-
-                    that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-                        .on('keydown', function(e){
-                            if (e.which == 40){
-                                that.$selectionUl.focus();
-                                return false;
-                            }
-                        });
-                },
-                afterSelect: function(){
-                    this.qs1.cache();
-                    this.qs2.cache();
-                },
-                afterDeselect: function(){
-                    this.qs1.cache();
-                    this.qs2.cache();
-                }
-            });
-
-
-        });
-
-        $(document).ready(function() {
-
-            $('#select-sites').multiSelect({
-                selectableHeader: "<input type='text' class='search-input' autocomplete='off' placeholder='Search'>",
-                selectionHeader: "<input type='text' class='search-input' autocomplete='off' placeholder='Search'>",
-                afterInit: function(ms){
-                    var that = this,
-                        $selectableSearch = that.$selectableUl.prev(),
-                        $selectionSearch = that.$selectionUl.prev(),
-                        selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
-                        selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
-
-                    that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-                        .on('keydown', function(e){
-                            if (e.which === 40){
-                                that.$selectableUl.focus();
-                                return false;
-                            }
-                        });
-
-                    that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-                        .on('keydown', function(e){
-                            if (e.which == 40){
-                                that.$selectionUl.focus();
-                                return false;
-                            }
-                        });
-                },
-                afterSelect: function(){
-                    this.qs1.cache();
-                    this.qs2.cache();
-                },
-                afterDeselect: function(){
-                    this.qs1.cache();
-                    this.qs2.cache();
-                }
-            });
-
-
-        });
-
         $(document).ready(function(){
             var maxField = 8; //Input fields increment limitation
             var x = 1; //Initial field counter is 1
             var addButton = $('.add_button'); //Add button selector
             var wrapper = $('.field_wrapper'); //Input field wrapper
             //Once add button is clicked
-            $(addButton).click(function(){
+            $(addButton).on('click',function(){
                 //Check maximum number of input fields
                 if(x < maxField){
                     var fieldHTML = '<div class="form-group row"><div class="col-md-3"><label for="disease_cohort"> ' + (x + 1) +
@@ -348,220 +311,7 @@
                 x--; //Decrement field counter
             });
         });
-
-        $(document).ready(function () {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $('#create-new-study').click(function () {
-                $('#btn-save').val("create-study");
-                $('#studyForm').trigger("reset");
-                $('#studyCrudModal').html("New Study");
-                $('#study-crud-modal').modal('show');
-            });
-
-            $('body').on('click', '#edit-study', function () {
-                var study_id = $(this).data('id');
-                alert(study_id);
-                $.get('studies/'+study_id+'/edit', function (data) {
-                    $('#studyCrudModal').html("Edit Study");
-                    $('#btn-save').val("edit-study");
-                    $('#study-crud-modal').modal('show');
-                    $('#study_id').val(data.id);
-                    $('#study_short_name').val(data.study_short_name);
-                    $('#study_title').val(data.study_title);
-                    $('#study_code').val(data.study_code);
-                    $('#protocol_number').val(data.protocol_number);
-                    $('#trial_registry_id').val(data.trial_registry_id);
-                    $('#study_sponsor').val(data.study_sponsor);
-                    $('#start_date').val(data.start_date);
-                    $('#end_date').val(data.end_date);
-                    $('#description').val(data.description);
-                    $('#users').val(data.users);
-                    $('#sites').val(data.sites);
-                    $('#disease_cohort').val(data.disease_cohort);
-                })
-            });
-
-            $('body').on('click', '.delete-study', function () {
-                var study_id = $(this).data("id");
-                confirm("Are You sure want to delete !");
-                $.ajax({
-                    type: "DELETE",
-                    url: "{{ url('studies')}}"+'/'+study_id,
-                    success: function (data) {
-                        $("#study_id_" + study_id).remove();
-                        confirm('Deleted Successfully !!');
-                    },
-                    error: function (data) {
-                        console.log('Error:', data);
-                    }
-                });
-            });
-        });
-
-
-        $('body').on('click','.changeStudyStatus',function () {
-            var elem    =   $(this);
-            var url     =   elem.attr('data-url');
-            //var value     =   elem.attr('data-value');
-            var id     =   elem.attr('data-id');
-            $.ajax({
-                type:'POST',
-                url:url,
-                data        :   {
-                    '_token'    :   $('meta[name=csrf-token]').attr("content"),
-                    id
-                },
-                success:function(data) {
-                    alert('success');
-                }
-            });
-        });
-
-
-
-
-        function replicateStudy()
-        {
-
-            $('body').on('click', '.clone-study', function () {
-
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-                var parent_id = $(this).data("id");
-                // alert(parent_id);
-                var newPath = "{{URL('studies/cloneStudy')}}";
-                //alert(newPath)
-                $.ajax({
-                    type: "POST",
-                    data:{'id':parent_id},
-                    url: newPath,
-                    success: function (data) {
-                        console.log(data);
-
-                    },
-                    error: function (data) {
-                        console.log('Error:', data);
-                    }
-                });
-            });
-        }
-        replicateStudy();
-
-        if ($("#studyForm").length > 0) {
-            $("#studyForm").validate({
-
-                submitHandler: function(form) {
-                    var t;
-                    var actionType = $('#btn-save').val();
-                    $('#btn-save').html('Sending..');
-
-
-                    $.ajax({
-                        data: $('#studyForm').serialize(),
-                        url: "{{ route('studies.store') }}",
-                        type: "POST",
-                        dataType: 'json',
-                        success: function (data) {
-                            var device = '<tr id="study_id_' + data.id + '">' +
-                                '<td>' + data.id + '</td>' +
-                                '<td>' + data.study_short_name + '</td>' +
-                                '<td>' + data.study_title + '</td>' +
-                                '<td>' + data.study_code + '</td>' +
-                                '<td>' + data.protocol_number + '</td>' +
-                                '<td>' + data.trial_registry_id + '</td>' +
-                                '<td>' + data.study_sponsor + '</td>' +
-                                '<td>' + data.start_date + '</td>' +
-                                '<td>' + data.end_date + '</td>' +
-                                '<td>' + data.description + '</td>' +
-                                '<td>' + data.users + '</td>' +
-                                '<td>' + data.sites + '</td>' +
-                                '<td>' + data.disease_cohort + '</td>' +
-                                '<td>' + data.study_title + '</td>';
-                            device += '<td><a href="javascript:void(0)" id="edit-study" data-id="' + data.id + '" class="btn btn-info">Edit</a></td>';
-                            device += '<td><a href="javascript:void(0)" id="study-status" data-id="' + data.id + '" class="btn btn-info changeStudyStatus"> Status</a></td>';
-                            device += '<td><a href="javascript:void(0)" id="clone-study" data-id="' + data.id + '" class="btn btn-info"> Clone</a></td>';
-                            device += '<td><a href="javascript:void(0)" id="delete-device" data-id="' + data.id + '" class="btn btn-danger delete-device">Delete</a></td></tr>';
-
-                            if (actionType == "create-study") {
-                                $('#study-crud').prepend(device);
-                                var t = setTimeout(function(){// wait for -- secs(2)
-                                    location.reload();
-                                }, 1000);
-                            } else {
-                                $("#study_id_" + data.id).replaceWith(device);
-                            }
-                            $('#studyForm').trigger("reset");
-                            $('#study-crud-modal').modal('hide');
-                            $('#btn-save').html('Save Changes');
-                            alert(data.success());
-                            if(data.success == true){
-                                var t = setTimeout(function(){// wait for -- secs(2)
-                                    location.reload();
-                                }, 1000);
-                            }
-                        },
-                        error: function (data) {
-                            console.log('Error:', data);
-                            $('#btn-save').html('Save Changes');
-                        }
-                    });
-                }
-            })
-        }
-
     </script>
 @stop
-@section('script')
-    <script type="text/javascript">
-$(document).ready(function() {
 
-$('#but-save').on('click', function() {
-var name = $('#study_short_name').val();
-var title = $('#study_title').val();
-var email = $('#email').val();
-var phone = $('#phone').val();
-var city = $('#city').val();
-var password = $('#password').val();
-if(name!="" && email!="" && phone!="" && city!=""){
-//   $("#butsave").attr("disabled", "disabled");
-$.ajax({
-url: "/userData",
-type: "POST",
-data: {
-_token: $("#csrf").val(),
-type: 1,
-name: name,
-email: email,
-phone: phone,
-city: city
-},
-cache: false,
-success: function(dataResult){
-console.log(dataResult);
-var dataResult = JSON.parse(dataResult);
-if(dataResult.statusCode==200){
-window.location = "/userData";
-}
-else if(dataResult.statusCode==201){
-alert("Error occured !");
-}
-
-}
-});
-}
-else{
-alert('Please fill all the field !');
-}
-});
-});
-</script>
-@endsection
 

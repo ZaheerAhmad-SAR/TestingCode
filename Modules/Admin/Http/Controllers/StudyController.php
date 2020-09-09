@@ -88,7 +88,7 @@ class StudyController extends Controller
      */
     public function store(Request $request)
     {
-       dd($request->all());
+        dd($request->all());
         $users = User::select('name','id')->where('user_type','!=', 0)->get();
         $sites = Site::all();
         $study =  Study::create([
@@ -168,7 +168,7 @@ class StudyController extends Controller
         $id = $study->id;
         $currentStudy = Study::find($id);
         $user_study_role = RoleStudyUser::where('study_id','=',$currentStudy)->get();
-        $subjects = Subject::join('sites','sites.id','=','subjects.site_id')->get();
+        $subjects = Subject::with('disease_cohort')->join('sites','sites.id','=','subjects.site_id')->get();
         $site_study = StudySite::where('study_id','=',$id)
             ->join('sites', 'sites.id','=','site_study.site_id')
             ->select('sites.site_name','sites.id')

@@ -6,31 +6,38 @@
     @php
         $studyid = last(request()->segments());
         session(['current_study'=>$studyid,'study_short_name'=> $currentStudy->study_short_name ]); @endphp
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel">
-                <div class="panel-heading">
-                    <div class="pull-left">
-                        <h4>Subjects Listing</h4>
-                    </div>
+    <div class="container-fluid site-width">
+        <!-- START: Breadcrumbs-->
+        <div class="row ">
+            <div class="col-12  align-self-center">
+                <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
+                    <div class="w-sm-100 mr-auto"><h4 class="mb-0">Subjects Details</h4></div>
+                    <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
+                        <li class="breadcrumb-item">Dashboard</li>
+                        <li class="breadcrumb-item">Studies</li>
+                    </ol>
                 </div>
             </div>
-            <ul  class="nav nav-pills btn">
-            </ul>
-            <div id="exTab1">
-                <div class="tab-content clearfix">
-                    <div class="tab-pane active" id="1a">
-                        <div class="pull-right">
-                            <button type="button" class="btn custom-btn blue-color" data-toggle="modal" data-target="#createSubjects">
-                                <i class="fa fa-plus blue-color"></i> Add Subject
-                            </button>
+        </div>
+        <!-- END: Breadcrumbs-->
+
+        <div class="row">
+            <div class="col-12 col-sm-12 mt-3">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#createSubjects">
+                            <i class="fa fa-plus"></i> Add Subject
+                        </button>
                         </div>
-                        <table class="table table-bordered">
+                    <div class="card-body">
+                        <div class="table-responsive list">
+                            <table class="table">
                             <thead>
                             <th>Subject ID</th>
                             <th>Enrollment Date</th>
                             <th>Site</th>
-                            <th>Study ID</th>
+                            <th>Disease Cohort</th>
+                            <th>Study Eye</th>
                             <th>Actions</th>
                             </thead>
                             <tbody>
@@ -39,14 +46,22 @@
                                 <td>{{$subject->subject_id}}</td>
                                 <td>{{$subject->enrollment_date}}</td>
                                 <td>{{!empty($subject->site_id)?$subject->site_name:'SiteName'}}</td>
-                                <td>{{!empty($subject->study_id)?$subject->study_id:'Study ID'}}</td>
+                                <td>{{!empty($subject->disease_cohort->name)?$subject->disease_cohort->name:'Not Defined'}}</td>
+                                <td>{{!empty($subject->study_eye)?$subject->study_eye:'Not Defined'}}</td>
                                 <td>
-                                    <ul>
-                                        <li><i class="fas fa-edit"></i>
-                                        </li>
-                                        <li><i class="fas fa-trash"></i>
-                                        </li>
-                                    </ul>
+                                    <div class="d-flex mt-3 mt-md-0 ml-auto">
+                                        <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                        <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
+                                                    <span class="dropdown-item">
+                                                        <a href="javascript:void(0)" id="edit-device" data-id="{{ $subject->id }}">
+                                                            <i class="far fa-edit"></i>&nbsp; Edit </a>
+                                                    </span>
+                                            <span class="dropdown-item">
+                                                            <a href="{{route('users.destroy',$subject->id)}}" id="delete-device" data-id="{{ $subject->id }}">
+                                                            <i class="far fa-edit"></i>&nbsp; Delete </a>
+                                                    </span>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                                 @endforeach
@@ -55,8 +70,9 @@
                     </div>
                 </div>
             </div>
+            </div>
         </div>
-    </div>
+
 
     <div class="modal" tabindex="-1" role="dialog" id="createSubjects">
         <div class="modal-dialog modal-lg" role="document">

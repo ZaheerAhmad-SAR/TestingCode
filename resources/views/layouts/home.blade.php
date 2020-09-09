@@ -188,13 +188,16 @@
                     </li>
                 </ul>
             </li>
-            <li class="dropdown"><!-- <a href="#"><i class="fas fa-laptop-medical mr-1"></i>Subject Management</a> -->
-                <ul>
-                    <li class="dropdown"><a href="#"><i class="fas fa-hospital"></i>Subjects</a>
-                        <ul class="sub-menu">
-                        </ul>
-                    </li>
+            <li class=""><!-- <a href="#"><i class="fas fa-laptop-medical mr-1"></i>Subject Management</a> -->
+                @if(!empty(session('current_study')))
+                <ul class="@if(is_active('studies.show')) {{ 'active' }} @endif">
+                        <li class="nav-item @if(is_active('studies.show')) {{ ' active' }} @endif">
+                            <a href="{!! route('studies.show',session('current_study')) !!}">
+                                <i class="fas fa-hospital"></i>Subjects
+                            </a>
+                        </li>
                 </ul>
+                    @endif
             </li>
             <li class="dropdown">
                 <ul>
