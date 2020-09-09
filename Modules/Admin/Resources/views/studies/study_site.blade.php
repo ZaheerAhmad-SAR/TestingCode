@@ -6,7 +6,19 @@
 
 @section('content')
 
-{{--        {{dd($unassignSites)}}--}}
+<style type="text/css" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
+    .required:after {
+        content:" *";
+        color: red;
+    }
+
+    .pac-container {
+        z-index: 10000 !important;
+    }
+</style>
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
 
 
 <div class="container-fluid site-width">

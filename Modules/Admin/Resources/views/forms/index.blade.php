@@ -92,12 +92,19 @@
                                 <span class="text-muted font-w-600">Define Basic Attribute of Question</span><br>
                             </div>
                             <div class="form-group row" style="margin-top: 10px;">
+                                <label for="Sorting" class="col-sm-3 col-form-label">Sort Number / Position</label>   
+                                <div class="col-sm-9">
+                                    <input type="Number" name="question_sort" id="question_sort" class="form-control" placeholder="Sort Number / Placement Place">
+                                </div>
+                            </div>
+                            <div class="form-group row">    
                                 <label for="Sections" class="col-sm-3 col-form-label">Sections</label>   
                                 <div class="col-sm-9">
                                     <select name="section_id" id="section_id" class="form-control">
-                                        <option value="">--- Placement Place ---</option>
+                                        <option value="">Choose Phase/Visit && Step/Form-Type Before Adding </option>
                                     </select>
                                 </div>
+                                
                             </div>
                             <div class="form-group row">
                                 <label for="C-DISC" class="col-sm-3 col-form-label">C-DISC <sup>*</sup></label>      
@@ -277,7 +284,6 @@
             var row = $(this).closest('div.anno_values_row');
             row.remove();
        })
-       
        $('.field_dependent').on('change',function(){
             var value = $(this).val();
             if(value =='yes'){
@@ -294,7 +300,7 @@
                 $('.view_to_numeric').css('display', 'block');
                 $('.optionGroup').css('display', 'none');
                 $('.view_to_textbox').css('display', 'none');
-            }else if(type =='Radio' || type =='Dropdown' || type =='checkbox'){
+            }else if(type =='Radio' || type =='Dropdown' || type =='Checkbox'){
                 $('.optionGroup').css('display', 'block')
                 $('.view_to_numeric').css('display', 'none');
                 $('.view_to_textbox').css('display', 'none');
@@ -310,6 +316,26 @@
             $('#addField').modal('show');
 
        })
+       $('#question_type').on('change',function(){
+            var type = $('#question_type option:selected').text();
+            if(type =='Number'){
+                $('.view_to_numeric').css('display', 'block');
+                $('.optionGroup').css('display', 'none');
+                $('.view_to_textbox').css('display', 'none');
+            }else if(type =='Radio' || type =='Dropdown' || type =='Checkbox'){
+                $('.optionGroup').css('display', 'block')
+                $('.view_to_numeric').css('display', 'none');
+                $('.view_to_textbox').css('display', 'none');
+            }else if(type =='Text'){
+                $('.view_to_textbox').css('display', 'block');
+                 $('.optionGroup').css('display', 'none')
+                $('.view_to_numeric').css('display', 'none');
+            }else{
+                $('.view_to_numeric').css('display', 'none');
+                $('.optionGroup').css('display', 'none');
+                $('.view_to_textbox').css('display', 'none');
+            }
+       });
        $('body').on('click','.form-fields',function(){
             var id = $(this).attr("data-field-id");
             $('#question_type').val(id);
@@ -382,29 +408,28 @@
             success:function(res){
                $('questions_'+id).html('');
                $.each(res['data'],function(i,j){
-                    console.log(j);
                     if(j['form_field_type'].field_type ==='Radio'){
                        var options = [];
                        var optionsvalues = [];
                        optionsvalues = j.option_value.split(',');
                        options = j.option_name.split(",");
-                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_text+'</div><div class="col-sm-8">';
+                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div><div class="col-sm-8">';
                        $.each(options, function(k,v){
                             html2 += '<input type="radio" name="'+j.option_group_name+'_'+j.question_id+'" value="'+optionsvalues[k]+'"> &nbsp;'+v+'&nbsp; ';
                        })
                        html2 += '</div></div>';
                     }else if(j['form_field_type'].field_type ==='Text'){
-                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_text+'</div>';
+                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
                        html2 += '<div class="col-sm-8"> <input type="text" name="'+j.variable_name+'" value="" class="form-control"></div></div>';
                     }else if(j['form_field_type'].field_type ==='Number'){
-                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_text+'</div>';
+                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
                        html2 += '<div class="col-sm-8"> <input type="number" name="'+j.variable_name+'" value="" class="form-control"></div></div>';
                     }else if(j['form_field_type'].field_type ==='Dropdown'){
                        var optionsvalues = [];
                        optionsvalues = j.option_value.split(','); 
                        var options = [];
                        options = j.option_name.split(","); 
-                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_text+'</div><div class="col-sm-8"><select name="'+j.option_group_name+'" class="form-control">';
+                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div><div class="col-sm-8"><select name="'+j.option_group_name+'" class="form-control">';
                        $.each(options, function(k,v){
                             if(k !=''){
                                 html2 += '<option value="'+optionsvalues[k]+'">'+v+'<option>';
@@ -416,19 +441,19 @@
                        optionsvalues = j.option_value.split(','); 
                        var options = [];
                        options = j.option_name.split(",");
-                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_text+'</div><div class="col-sm-8">';
+                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div><div class="col-sm-8">';
                        $.each(options, function(k,v){
                             html2 += '<input type="checkbox" name="'+j.option_group_name+'" value="'+optionsvalues[k]+'"> &nbsp;'+v+'&nbsp; ';
                        })
                        html2 += '</div></div>';
                     }else if(j['form_field_type'].field_type ==='Textarea'){
-                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_text+'</div>';
+                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
                        html2 += '<div class="col-sm-8"> <textarea name="'+j.variable_name+'" value="" class="form-control"></textarea></div></div>'; 
                     }else if(j['form_field_type'].field_type ==='Date & Time'){
-                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_text+'</div>';
+                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
                        html2 += '<div class="col-sm-8"> <input type="date" name="'+j.variable_name+'" value="" class="form-control"></div></div>'; 
                     }else if(j['form_field_type'].field_type ==='Upload'){
-                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_text+'</div>';
+                       html2 += '<div class="form-group row"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
                        html2 += '<div class="col-sm-8"> <input type="file" name="'+j.variable_name+'" value="" class="form-control"></div></div>'; 
                     }
                });

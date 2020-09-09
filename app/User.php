@@ -30,8 +30,7 @@ class User extends Authenticatable
         'role_id',
         'password',
         'user_type',
-        'created_as_user_role',
-        'created_by_id',
+        'created_by',
         'deleted_at'
     ];
     public $incrementing = false;

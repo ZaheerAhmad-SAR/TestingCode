@@ -113,11 +113,10 @@ class OptionsGroupController extends Controller
 
     public function destroy(Request $request,$id)
     {
-        dd($id);
+
         if ($request->ajax())
         {
             $delete = OptionsGroup::find($id);
-
             $delete->delete();
             return response()->json(['success'=>'Option is deleted successfully.']);
         }
