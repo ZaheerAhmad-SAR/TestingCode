@@ -229,7 +229,6 @@
        // Add New Option Group
        function addOptionsGroup()
        {
-
            $("#OptionsGroupForm").submit(function(e) {
                $.ajaxSetup({
                    headers: {
@@ -345,32 +344,27 @@
            });
        }
        updateOptionGroup();
-       //  Options Delete function
-           $('body').on('click', '.deleteOptions', function () {
-               var options_id = $(this).data("id");
-               var url = "{{URL('/ocap_new/optionsGroup')}}";
-               var newPath = url+ "/"+ options_id+"/destroy/";
-               $.ajaxSetup({
-                   headers: {
-                       'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                   }
-               });
-               if( confirm("Are You sure want to delete !") ==true) {
-                   $.ajax({
-                       type: "GET",
-                       url: newPath,
-                       success: function (data) {
-                           // $('#'+options_id).remove();
 
-                           window.setTimeout(function () {
-                               location.href = '{{ route('optionsGroup.index') }}';
-                           }, 100);
-                       },
-                       error: function (data) {
-                           console.log('Error:', data);
-                       }
-               });
-             }
-           });
+       //  Options Delete function
+       $('body').on('click','.deleteOptions',function(){
+           var id = $(this).data('id');
+           if (confirm("Are you sure to delete?")) {
+               $.ajax({
+                   url: 'optionsGroup/destroy/'+id,
+                   type: 'POST',
+                   data: {
+                       "_token": "{{ csrf_token() }}",
+                       "_method": 'DELETE',
+                       'id': id
+                   },
+                   success:function(result){
+                       console.log(result);
+                       window.setTimeout(function () {
+                           location.href = "{{ route('optionsGroup.index') }}";
+                       }, 100);
+                   }
+               })
+           }
+       });
    </script>
 @stop
