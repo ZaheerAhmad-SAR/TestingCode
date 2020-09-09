@@ -40,7 +40,7 @@
                                 <br>Sponsor
                             </th>
                             <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block">Progress Bar</th>
-                            <th scope="col" data-tablesaw-priority="1"><abbr title="Rotten Tomato Rating">Status</abbr></th>
+                            <th scope="col" data-tablesaw-priority="1">Status</th>
                             <th scope="col" data-tablesaw-priority="4">Action</th>
                         </tr>
                         </thead>
@@ -127,7 +127,10 @@
                     <div class="modal-header">
                         <h4 class="modal-title" id="deviceCrudModal">Add Study</h4>
                     </div>
+{{--
                     <form method="post" action="{{ route('studies.store') }}">
+--}}
+                    <form id="studyForm" name="studyForm" class="form-horizontal">
                         <div class="modal-body">
                             <input type="hidden" name="study_id" id="study_id">
                             <nav>
@@ -141,25 +144,24 @@
                                 <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
                                     @csrf
                                     <div class="form-group row" style="margin-top: 10px;">
-                                        <label for="study_short_name" class="col-md-3">Short Name</label>
-                                        <div class="{!! ($errors->has('study_short_name')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
-                                            <input type="text" class="form-control" id="study_short_name" name="study_short_name" value="{{old('study_short_name')}}">
-                                            @error('study_short_name')
-                                            <span class="text-danger small">{{ $message }} </span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="study_title" class="col-md-3">Title</label>
-                                        <div class="{!! ($errors->has('study_title')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
+                                        <label for="study_title" class="col-md-2">Title</label>
+                                        <div class="{!! ($errors->has('study_title')) ?'form-group col-md-10 has-error':'form-group col-md-10' !!}">
                                             <input type="text" class="form-control" id="study_title" name="study_title" value="{{old('study_title')}}"> @error('email')
                                             <span class="text-danger small"> {{ $message }} </span>
                                             @enderror
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="study_code" class="col-md-3">Study Code</label>
-                                        <div class="{!! ($errors->has('study_code')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
+                                        <label for="study_short_name" class="col-md-2">Short Name</label>
+                                        <div class="{!! ($errors->has('study_short_name')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                            <input type="text" class="form-control" id="study_short_name" name="study_short_name" value="{{old('study_short_name')}}">
+                                            @error('study_short_name')
+                                            <span class="text-danger small">{{ $message }} </span>
+                                            @enderror
+                                        </div>
+
+                                        <label for="study_code" class="col-md-2">Study Code</label>
+                                        <div class="{!! ($errors->has('study_code')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
                                             <input type="text" class="form-control" id="study_code" name="study_code" value="{{old('study_code')}}">
                                             @error('study_code')
                                             <span class="text-danger small"> {{ $message }} </span>
@@ -167,17 +169,15 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="protocol_number" class="col-md-3">Protocol Number</label>
-                                        <div class="{!! ($errors->has('protocol_number')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
+                                        <label for="protocol_number" class="col-md-2">Protocol Number</label>
+                                        <div class="{!! ($errors->has('protocol_number')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
                                             <input type="text" class="form-control" id="protocol_number" name="protocol_number" value="{{old('protocol_number')}}">
                                             @error('protocol_number')
                                             <span class="text-danger small"> {{ $message }} </span>
                                             @enderror
                                         </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="trial_registry_id" class="col-md-3">Trial Registry ID</label>
-                                        <div class="{!! ($errors->has('trial_registry_id')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
+                                        <label for="trial_registry_id" class="col-md-2">Trial Registry ID</label>
+                                        <div class="{!! ($errors->has('trial_registry_id')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
                                             <input type="text" class="form-control" id="trial_registry_id" name="trial_registry_id" value="{{old('trial_registry_id')}}">
                                             @error('trial_registry_id')
                                             <span class="text-danger small"> {{ $message }} </span>
@@ -185,17 +185,15 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="study_sponsor" class="col-md-3">Study Sponsor</label>
-                                        <div class="{!! ($errors->has('study_sponsor')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
+                                        <label for="study_sponsor" class="col-md-2">Study Sponsor</label>
+                                        <div class="{!! ($errors->has('study_sponsor')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
                                             <input type="text" class="form-control" id="study_sponsor" name="study_sponsor" value="{{old('study_sponsor')}}">
                                             @error('study_sponsor')
                                             <span class="text-danger small"> {{ $message }} </span>
                                             @enderror
                                         </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="start_date" class="col-md-3">Start Date</label>
-                                        <div class="{!! ($errors->has('start_date')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
+                                        <label for="start_date" class="col-md-2">Start Date</label>
+                                        <div class="{!! ($errors->has('start_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
                                             <input type="date" class="form-control" id="start_date" name="start_date" value="{{old('start_date')}}">
                                             @error('start_date')
                                             <span class="text-danger small"> {{ $message }} </span>
@@ -203,17 +201,15 @@
                                         </div>
                                     </div>
                                     <div class="form-group row">
-                                        <label for="end_date" class="col-md-3">End Date</label>
-                                        <div class="{!! ($errors->has('end_date')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
+                                        <label for="end_date" class="col-md-2">End Date</label>
+                                        <div class="{!! ($errors->has('end_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
                                             <input type="date" class="form-control" id="end_date" name="end_date" value="{{old('end_date')}}">
                                             @error('end_date')
                                             <span class="text-danger small"> {{ $message }} </span>
                                             @enderror
                                         </div>
-                                    </div>
-                                    <div class="form-group row">
-                                        <label for="description" class="col-md-3">Description</label>
-                                        <div class="{!! ($errors->has('description')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
+                                        <label for="description" class="col-md-2">Description</label>
+                                        <div class="{!! ($errors->has('description')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
                                             <input type="text" class="form-control" id="description" name="description" value="{{old('description')}}">
                                             @error('description')
                                             <span class="text-danger small"> {{ $message }} </span>
@@ -231,7 +227,11 @@
                                             <span class="text-danger small">{{ $message }} </span>
                                             @enderror
                                         </div>
-                                        <a href="javascript:void(0);" class="add_button" title="Add field"> <i class="fa fa-plus"></i></a>
+                                        <a href="javascript:void(0);" class="add_field" title="Add field"> <i class="btn btn-outline-primary fa fa-plus"></i></a>
+
+                                    </div>
+                                    <div class="appendfields">
+
                                     </div>
                                 </div>
                             </div>
@@ -260,58 +260,185 @@
 
 @stop
 @section('script')
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.add_field').on('click',function () {
+                $('.appendfields').append('<div class="disease_row"><div class="form-group row"><div class="col-md-3"></div> <div class="col-md-6">\n' +
+                    '    <input type="text" class="form-control" id="disease_cohort" name="disease_cohort[]" value="">\n' +
+                    '</div><div class="col-md-3"><i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div></div></div>');
+            })
+            $('body').on('click','.remove_field',function () {
+                alert('hi');
+                var row = $(this).closest('div.disease_row');
+                row.remove();
+            })
+        });
+        $(document).ready(function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
 
-    <script src="{{ asset('public/dist/vendors/raphael/raphael.min.js') }}"></script>
-    <script src="{{ asset('public/dist/vendors/morris/morris.min.js') }}"></script>
-    <script src="{{ asset('public/dist/vendors/chartjs/Chart.min.js') }}"></script>
-    <script src="{{ asset('public/dist/vendors/starrr/starrr.js') }}"></script>
-    <script src="{{ asset('public/dist/vendors/jquery-flot/jquery.canvaswrapper.js') }}"></script>
-    <script src="{{ asset('public/dist/vendors/jquery-flot/jquery.colorhelpers.js') }}"></script>
-    <script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.js') }}"></script>
-    <script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.saturated.js') }}"></script>
-    <script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.browser.js') }}"></script>
-    <script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.drawSeries.js') }}"></script>
-    <script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.uiConstants.js') }}"></script>
-    <script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.legend.js') }}"></script>
-    <script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.pie.js') }}"></script>
-    <script src="{{ asset('public/dist/vendors/chartjs/Chart.min.js') }}"></script>
-    <script src="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-2.0.3.min.js') }}"></script>
-    <script src="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-world-mill.js') }}"></script>
-    <script src="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-de-merc.js') }}"></script>
-    <script src="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-us-aea.js') }}"></script>
-    <script src="{{ asset('public/dist/vendors/apexcharts/apexcharts.min.js') }}"></script>
+            $('#create-new-study').click(function () {
+                $('#btn-save').val("create-study");
+                $('#studyForm').trigger("reset");
+                $('#studyCrudModal').html("New Study");
+                $('#study-crud-modal').modal('show');
+            });
+
+            $('body').on('click', '#edit-study', function () {
+                var study_id = $(this).data('id');
+                alert(study_id);
+                $.get('studies/'+study_id+'/edit', function (data) {
+                    $('#studyCrudModal').html("Edit Study");
+                    $('#btn-save').val("edit-study");
+                    $('#study-crud-modal').modal('show');
+                    $('#study_id').val(data.id);
+                    $('#study_short_name').val(data.study_short_name);
+                    $('#study_title').val(data.study_title);
+                    $('#study_code').val(data.study_code);
+                    $('#protocol_number').val(data.protocol_number);
+                    $('#trial_registry_id').val(data.trial_registry_id);
+                    $('#study_sponsor').val(data.study_sponsor);
+                    $('#start_date').val(data.start_date);
+                    $('#end_date').val(data.end_date);
+                    $('#description').val(data.description);
+                    $('#users').val(data.users);
+                    $('#sites').val(data.sites);
+                    $('#disease_cohort').val(data.disease_cohort);
+                })
+            });
+
+            $('body').on('click', '.delete-study', function () {
+                var study_id = $(this).data("id");
+                confirm("Are You sure want to delete !");
+                $.ajax({
+                    type: "DELETE",
+                    url: "{{ url('studies')}}"+'/'+study_id,
+                    success: function (data) {
+                        $("#study_id_" + study_id).remove();
+                        confirm('Deleted Successfully !!');
+                    },
+                    error: function (data) {
+                        console.log('Error:', data);
+                    }
+                });
+            });
+        });
+
+
+        $('body').on('click','.changeStudyStatus',function () {
+            var elem    =   $(this);
+            var url     =   elem.attr('data-url');
+            //var value     =   elem.attr('data-value');
+            var id     =   elem.attr('data-id');
+            $.ajax({
+                type:'POST',
+                url:url,
+                data        :   {
+                    '_token'    :   $('meta[name=csrf-token]').attr("content"),
+                    id
+                },
+                success:function(data) {
+                    alert('success');
+                }
+            });
+        });
+
+
+        $('body').on('click', '.clone-study', function () {
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            var parent_id = $(this).data("id");
+            // alert(parent_id);
+            var newPath = "{{URL('studies/cloneStudy')}}";
+            //alert(newPath)
+            $.ajax({
+                type: "POST",
+                data:{'id':parent_id},
+                url: newPath,
+                success: function (data) {
+                    console.log(data);
+
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });
+        });
+
+        if ($("#studyForm").length > 0) {
+            $("#studyForm").validate({
+
+                submitHandler: function(form) {
+                    var t;
+                    var actionType = $('#btn-save').val();
+                    $('#btn-save').html('Sending..');
+
+
+                    $.ajax({
+                        data: $('#studyForm').serialize(),
+                        url: "{{ route('studies.store') }}",
+                        type: "POST",
+                        dataType: 'json',
+                        success: function (data) {
+                            var device = '<tr id="study_id_' + data.id + '">' +
+                                '<td>' + data.id + '</td>' +
+                                '<td>' + data.study_short_name + '</td>' +
+                                '<td>' + data.study_title + '</td>' +
+                                '<td>' + data.study_code + '</td>' +
+                                '<td>' + data.protocol_number + '</td>' +
+                                '<td>' + data.trial_registry_id + '</td>' +
+                                '<td>' + data.study_sponsor + '</td>' +
+                                '<td>' + data.start_date + '</td>' +
+                                '<td>' + data.end_date + '</td>' +
+                                '<td>' + data.description + '</td>' +
+                                '<td>' + data.users + '</td>' +
+                                '<td>' + data.sites + '</td>' +
+                                '<td>' + data.disease_cohort + '</td>' +
+                                '<td>' + data.study_title + '</td>';
+                            device += '<td><a href="javascript:void(0)" id="edit-study" data-id="' + data.id + '" class="btn btn-info">Edit</a></td>';
+                            device += '<td><a href="javascript:void(0)" id="study-status" data-id="' + data.id + '" class="btn btn-info changeStudyStatus"> Status</a></td>';
+                            device += '<td><a href="javascript:void(0)" id="clone-study" data-id="' + data.id + '" class="btn btn-info"> Clone</a></td>';
+                            device += '<td><a href="javascript:void(0)" id="delete-device" data-id="' + data.id + '" class="btn btn-danger delete-device">Delete</a></td></tr>';
+
+                            if (actionType == "create-study") {
+                                $('#study-crud').prepend(device);
+                                var t = setTimeout(function(){// wait for -- secs(2)
+                                    location.reload();
+                                }, 1000);
+                            } else {
+                                $("#study_id_" + data.id).replaceWith(device);
+                            }
+                            $('#studyForm').trigger("reset");
+                            $('#study-crud-modal').modal('hide');
+                            $('#btn-save').html('Save Changes');
+                            alert(data.success());
+                            if(data.success == true){
+                                var t = setTimeout(function(){// wait for -- secs(2)
+                                    location.reload();
+                                }, 1000);
+                            }
+                        },
+                        error: function (data) {
+                            console.log('Error:', data);
+                            $('#btn-save').html('Save Changes');
+                        }
+                    });
+                }
+            })
+        }
+    </script>
     <script  src="{{ asset('public/dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
     <script  src="{{ asset('public/dist/vendors/lineprogressbar/jquery.barfiller.js') }}"></script>
 
     <script src="{{ asset('public/dist/js/home.script.js') }}"></script>
-    <script src="{{ asset("public/dist/vendors/tablesaw/tablesaw.js") }}"></script>
-    <script src="{{ asset("public/dist/vendors/tablesaw/tablesaw-init.js") }}"></script>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            var maxField = 8; //Input fields increment limitation
-            var x = 1; //Initial field counter is 1
-            var addButton = $('.add_button'); //Add button selector
-            var wrapper = $('.field_wrapper'); //Input field wrapper
-            //Once add button is clicked
-            $(addButton).on('click',function(){
-                //Check maximum number of input fields
-                if(x < maxField){
-                    var fieldHTML = '<div class="form-group row"><div class="col-md-3"><label for="disease_cohort"> ' + (x + 1) +
-                        '</label></div><div class="{!! ($errors->has('disease_cohort')) ?'col-md-6 has-error ':'col-md-6' !!}"><input type="text" class="form-control" id="disease_cohort" name="disease_cohort[]" value="{{old('disease_cohort')}}"></div><a href="javascript:void(0);" class="remove_button"><i class="fa fa-minus"></i></a></div>'; //New input field html
 
-                    x++; //Increment field counter
-                    $(wrapper).append(fieldHTML); //Add field html
-                }
-            });
-
-            //Once remove button is clicked
-            $(wrapper).on('click', '.remove_button', function(e){
-                e.preventDefault();
-                $(this).parent('div').remove(); //Remove field html
-                x--; //Decrement field counter
-            });
-        });
-    </script>
 @stop
 
 

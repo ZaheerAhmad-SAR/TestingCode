@@ -188,12 +188,7 @@
         });
 
 
-
-
-        function replicateStudy()
-        {
-
-            $('body').on('click', '.clone-study', function () {
+        $('body').on('click', '.clone-study', function () {
 
                 $.ajaxSetup({
                     headers: {
@@ -217,8 +212,6 @@
                     }
                 });
             });
-        }
-        replicateStudy();
 
         if ($("#studyForm").length > 0) {
             $("#studyForm").validate({
