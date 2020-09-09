@@ -75,6 +75,9 @@
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header">
                     <p class="modal-title">Add New Field</p>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
                 </div>
                 <form action="{{route('addQuestions')}}" enctype="multipart/form-data" method="POST" id="formfields">
                 @csrf    
@@ -94,12 +97,19 @@
                                 <span class="text-muted font-w-600">Define Basic Attribute of Question</span><br>
                             </div>
                             <div class="form-group row" style="margin-top: 10px;">
+                                <label for="Sorting" class="col-sm-3 col-form-label">Sort Number / Position</label>   
+                                <div class="col-sm-9">
+                                    <input type="Number" name="question_sort" id="question_sort" class="form-control" placeholder="Sort Number / Placement Place">
+                                </div>
+                            </div>
+                            <div class="form-group row">    
                                 <label for="Sections" class="col-sm-3 col-form-label">Sections</label>   
                                 <div class="col-sm-9">
                                     <select name="section_id" id="section_id" class="form-control">
-                                        <option value="">--- Placement Place ---</option>
+                                        <option value="">Choose Phase/Visit && Step/Form-Type Before Adding </option>
                                     </select>
                                 </div>
+                                
                             </div>
                             <div class="form-group row">
                                 <label for="C-DISC" class="col-sm-3 col-form-label">C-DISC <sup>*</sup></label>      
@@ -161,13 +171,18 @@
                             <div class="optionGroup">
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label">Option group: </label>    
-                                    <div class="col-sm-9">
-                                        <select name="option_group_id" id="option_group_id" class="form-control">
-                                            <option value="">none</option>
+                                    <div class="col-sm-6">
+                                        <select name="option_group_id" id="option_group_id" class="form-control fstdropdown-select">
+                                            <option value="">None</option>
                                             @foreach($option_groups as $key => $value)
                                             <option value="{{$value->id}}">{{$value->option_group_name}}</option>
                                             @endforeach
                                         </select>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#addOptionGroups">
+                                            <i class="fa fa-plus"></i> Add Option Groups
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -252,17 +267,70 @@
         </div>
 </div>
 <!-- End -->
-<!-- add steps agains phases -->
-<!-- phase modle action="{{route('steps.save')}}" -->
+<!-- Modal To add Option Groups -->
+<div class="modal fade" tabindex="-1" role="dialog" id="addOptionGroups">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-content" style="background-color: #F6F6F7;">
+            <div class="alert alert-danger" style="display:none"></div>
+            <div class="modal-header" style="background: #1E3D73;color: white;">
+                <p class="modal-title">Add Option Group</p>
+            </div>
+            <form name="OptionsGroupForm" id="OptionsGroupForm">
+                <div class="modal-body">
+                    <div id="exTab1">
+                        <div class="tab-content clearfix">
+                            <div class="form-group row">
+                                <div class="form-group col-md-12">
+                                    <input type="text" class="form-control" id="option_group_name" name="option_group_name" value="" placeholder="Enter option group name" style="background: white;">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="form-group col-md-12">
+                                    <input type="text" class="form-control" id="option_group_description" name="option_group_description" value="" placeholder="Option group description" style="background: white;">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">Option Layout <sup>*</sup></div>
+                                <div class="form-group col-md-9">
+                                    <input type="radio" name="option_layout" value="vertical"> Vertical &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="option_layout" value="horizontal" checked> Horizontal
+                                </div>
+                            </div>
+                            <div class="appendDataOptions"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary addOptions pull-right"><i class="fa fa-plus"></i> Add option</button>
+                        <button id="optiongroup-close" class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                        <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- End -->
 @stop
 @section('styles')  
-
+<style>
+    .custom_fields{
+        border-bottom: 1px solid #F6F6F7;
+        padding: 10px;
+    }
+    .float-right{
+        float: right;
+    }
+</style>
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
 @stop
 @section('script')  
 <script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script> 
 <script src="{{ asset('public/dist/js/mail.script.js') }}"></script>  
 <script>
+       $('.addOptions').on('click',function(){
+           $('.appendDataOptions').append('<div class="values_row_options"><div class="form-group row"><div class="form-group col-md-6"><input type="text" id="option_name" name="option_name[]" class="form-control" placeholder="Enter option name" style="background:white;"></div><div class="form-group col-md-4"><input type="number" placeholder="Option value" name="option_value[]" id="option_value" class="form-control" style="background:white;"></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove_option" style="margin-top: 3px;"></i></div></div></div>');
+           return false;
+       });  
        $('.addvalidations').on('click',function(){
            $('.appendDatavalidations').append('<div class="values_row"><div class="form-group row"><div class="col-sm-2">If this field is:</div><div class="col-sm-4"><select name="requiredvalidation_value" id="requiredvalidation_value" class="form-control"><option value="">---Select Value---</option><option value="">One</option><option value="">Two</option><option value="">Three</option></select></div><div class="col-sm-5"><input type="text" placeholder="value" name="value" class="form-control"></div><div class="col-sm-1"><i class="btn btn-outline-danger fa fa-trash remove" style="cursor:pointer;"></i></div></div><div class="form-group row"><div class="col-sm-2"> Show a:</div><div class="col-sm-10"><select name="requiredvalidation_value" id="requiredvalidation_value" class="form-control"><option value="">Exclusion</option><option value="">Error</option><option value="">Warning</option></select></div></div><div class="form-group row"><div class="col-sm-2">Message:</div><div class="col-sm-10"><input type="text" name="validation_message" class="form-control"></div></div></div>');
            return false;
@@ -271,6 +339,11 @@
             var row = $(this).closest('div.values_row');
             row.remove();
        })
+       $('body').on('click','.remove_option',function(){
+            var row = $(this).closest('div.values_row_options');
+            row.remove();
+       })
+       
        //
        $('.addannotation').on('click',function(){
            $('.appendannotation').append('<div class="anno_values_row"><div class="form-group row"><div class="col-sm-2">Terminology:</div><div class="col-sm-9"><select name="terminology_value" id="terminology_value" class="form-control"><option value="">---Select Value---</option><option value="">One</option><option value="">Two</option><option value="">Three</option></select></div><div class="col-sm-1"><i class="btn btn-outline-danger fa fa-trash remove_anno" style="cursor:pointer;"></i></div></div><div class="form-group row"><div class="col-sm-2"> Value:</div><div class="col-sm-10"><input type="text" name="annotation_field_value" id="annotation_field_value" class="form-control"></div></div><div class="form-group row"><div class="col-sm-2">Description:</div><div class="col-md-10"><input type="text" name="annotation_message" class="form-control"></div></div></div>');
@@ -280,7 +353,6 @@
             var row = $(this).closest('div.anno_values_row');
             row.remove();
        })
-       
        $('.field_dependent').on('change',function(){
             var value = $(this).val();
             if(value =='yes'){
@@ -297,7 +369,7 @@
                 $('.view_to_numeric').css('display', 'block');
                 $('.optionGroup').css('display', 'none');
                 $('.view_to_textbox').css('display', 'none');
-            }else if(type =='Radio' || type =='Dropdown' || type =='checkbox'){
+            }else if(type =='Radio' || type =='Dropdown' || type =='Checkbox'){
                 $('.optionGroup').css('display', 'block')
                 $('.view_to_numeric').css('display', 'none');
                 $('.view_to_textbox').css('display', 'none');
@@ -313,6 +385,26 @@
             $('#addField').modal('show');
 
        })
+       $('#question_type').on('change',function(){
+            var type = $('#question_type option:selected').text();
+            if(type =='Number'){
+                $('.view_to_numeric').css('display', 'block');
+                $('.optionGroup').css('display', 'none');
+                $('.view_to_textbox').css('display', 'none');
+            }else if(type =='Radio' || type =='Dropdown' || type =='Checkbox'){
+                $('.optionGroup').css('display', 'block')
+                $('.view_to_numeric').css('display', 'none');
+                $('.view_to_textbox').css('display', 'none');
+            }else if(type =='Text'){
+                $('.view_to_textbox').css('display', 'block');
+                 $('.optionGroup').css('display', 'none')
+                $('.view_to_numeric').css('display', 'none');
+            }else{
+                $('.view_to_numeric').css('display', 'none');
+                $('.optionGroup').css('display', 'none');
+                $('.view_to_textbox').css('display', 'none');
+            }
+       });
        $('body').on('click','.form-fields',function(){
             var id = $(this).attr("data-field-id");
             $('#question_type').val(id);
@@ -359,7 +451,9 @@
                     html += '<div id="accordion">';
                     $.each(response['data'],function(k,v){
                         var show = (k ==0) ? 'show' : '';
-                        html += '<div class="card"><div class="card-header"><a class="card-link" data-toggle="collapse" href="#collapse_'+v.id+'">'+v.sort_number+'&nbsp;&nbsp;&nbsp;&nbsp;'+v.name+'</a></div><div id="collapse_'+v.id+'" class="collapse '+show+'" data-parent="#accordion"><div class="card-body">Lorem ipsum dolor sit amet,</div></div></div>';
+                        html += '<div class="card"><div class="card-header"><a class="card-link" data-toggle="collapse" href="#collapse_'+v.id+'">'+v.sort_number+'&nbsp;&nbsp;&nbsp;&nbsp;'+v.name+'</a></div><div id="collapse_'+v.id+'" class="collapse '+show+'" data-parent="#accordion"><div class="card-body questions_'+v.id+'">';
+                        getQuestions(v.id);
+                        html += '</div></div></div>';
                         sections += '<option value="'+v.id+'">'+v.name+'</option>'
                     });
                     html +='</div>';
@@ -369,5 +463,115 @@
                 }    
             });
        })
+    function getQuestions(id){
+        var html2 = '';
+        $.ajax({
+            url:'forms/get_allQuestions/'+id,
+            type:'post',
+            dataType:'json',
+            data:{
+                "_token": "{{ csrf_token() }}",
+                "_method": 'GET',
+                'id': id
+            },
+            success:function(res){
+               $('questions_'+id).html('');
+               $.each(res['data'],function(i,j){
+                    if(j['form_field_type'].field_type ==='Radio'){
+                       var options = [];
+                       var optionsvalues = [];
+                       optionsvalues = j.option_value.split(',');
+                       options = j.option_name.split(",");
+                       html2 += '<div class="form-group row custom_fields"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div><div class="col-sm-6">';
+                       $.each(options, function(k,v){
+                            html2 += '<input type="radio" name="'+j.option_group_name+'_'+j.question_id+'" value="'+optionsvalues[k]+'"> &nbsp;'+v+'&nbsp; ';
+                       })
+                       html2 += '</div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
+                    }else if(j['form_field_type'].field_type ==='Text'){
+                       html2 += '<div class="form-group row custom_fields"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
+                       html2 += '<div class="col-sm-6"> <input type="text" name="'+j.variable_name+'" value="" class="form-control"></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
+                    }else if(j['form_field_type'].field_type ==='Number'){
+                       html2 += '<div class="form-group row custom_fields"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
+                       html2 += '<div class="col-sm-6"> <input type="number" name="'+j.variable_name+'" value="" class="form-control"></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
+                    }else if(j['form_field_type'].field_type ==='Dropdown'){
+                       var optionsvalues = [];
+                       optionsvalues = j.option_value.split(','); 
+                       var options = [];
+                       options = j.option_name.split(","); 
+                       html2 += '<div class="form-group row custom_fields"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div><div class="col-sm-6"><select name="'+j.option_group_name+'" class="form-control">';
+                       $.each(options, function(k,v){
+                            if(k !=''){
+                                html2 += '<option value="'+optionsvalues[k]+'">'+v+'<option>';
+                            }
+                       })
+                       html2 += '</select></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
+                    }else if(j['form_field_type'].field_type ==='Checkbox'){
+                       var optionsvalues = [];
+                       optionsvalues = j.option_value.split(','); 
+                       var options = [];
+                       options = j.option_name.split(",");
+                       html2 += '<div class="form-group row custom_fields"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div><div class="col-sm-6">';
+                       $.each(options, function(k,v){
+                            html2 += '<input type="checkbox" name="'+j.option_group_name+'" value="'+optionsvalues[k]+'"> &nbsp;'+v+'&nbsp; ';
+                       })
+                       html2 += '</div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
+                    }else if(j['form_field_type'].field_type ==='Textarea'){
+                       html2 += '<div class="form-group row custom_fields"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
+                       html2 += '<div class="col-sm-6"> <textarea name="'+j.variable_name+'" value="" class="form-control"></textarea></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>'; 
+                    }else if(j['form_field_type'].field_type ==='Date & Time'){
+                       html2 += '<div class="form-group row custom_fields"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
+                       html2 += '<div class="col-sm-6"> <input type="date" name="'+j.variable_name+'" value="" class="form-control"></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>'; 
+                    }else if(j['form_field_type'].field_type ==='Upload'){
+                       html2 += '<div class="form-group row custom_fields"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
+                       html2 += '<div class="col-sm-6"> <input type="file" name="'+j.variable_name+'" value="" class="form-control"></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>'; 
+                    }
+               });
+               $('.questions_'+id).append(html2);
+            }
+        });
+        
+    } 
+  // Add New Option Group
+   function addOptionsGroup()
+   {
+       $("#OptionsGroupForm").submit(function(e) {
+           $.ajaxSetup({
+               headers: {
+                   'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+               }
+           });
+           e.preventDefault();
+           $.ajax({
+               data: $('#OptionsGroupForm').serialize(),
+               url: "{{route('optionsGroup.store')}}",
+               type: "POST",
+               dataType: 'json',
+               success: function (results) {
+                fetch_options();
+                $('#OptionsGroupForm').trigger("reset");
+                $("#optiongroup-close").click();
+               },
+               error: function (results) {
+                   console.log('Error:', results);
+               }
+           });
+       });
+   }
+   addOptionsGroup(); 
+   function fetch_options(){
+        $('#option_group_id').html(''); 
+        var options = '<option value="">None</option>';
+        $.ajax({
+            url:"{{route('getall_options')}}",
+            type:"post",
+            dataType:'json',
+            success: function(res){
+                $.each(res['data'], function(k,v){
+                    options += '<option value="'+v.id+'">'+v.option_group_name+'</option>'
+                })
+            $('#option_group_id').append(options);    
+            }
+        });
+   }
    </script>     
 @stop

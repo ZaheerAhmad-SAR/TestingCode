@@ -92,32 +92,33 @@
         <!-- END: Card DATA-->
     </div>
 
-    <div class="modal" tabindex="-1" role="dialog" id="siteModal">
-        <div class="modal-dialog modal-lg" role="document" style="margin-top: 0;margin-bottom: 0;display: flex;">
+    <div class="modal fade" tabindex="-1" role="dialog" id="siteModal">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
-                <div class="custom-modal-header gray-background color-black">
+                <div class="modal-header">
                     <p class="modal-title">Add New Site</p>
                 </div>
-                <div id="exTab1" class="modal-body">
+                <div class="modal-body">
 
                     <!-- Nav tabs -->
-                    <ul class="nav nav-pills nav-fill" role="tablist">
-                        <li role="presentation" class="nav-item"><a class="nav-link active" href="#siteInfo" aria-controls="siteInfo" role="tab" data-toggle="tab">Site Info</a></li>
-                        <li role="presentation" class="nav-item"><a href="#primaryInvestigator" class="nav-link addTabs" aria-controls="primaryInvestigator" role="tab" >Primary Investigator</a></li>
-                        <li role="presentation" class="nav-item"><a href="#coordinator" class="nav-link addTabs" aria-controls="coordinator" role="tab" >Coordinator</a></li>
-                        <li role="presentation" class="nav-item"><a href="#photographer" class="nav-link addTabs" aria-controls="photographer" role="tab">Photographer</a></li>
-                        <li role="presentation" class="nav-item"><a href="#others" class="nav-link addTabs" aria-controls="others" role="tab">Others</a></li>
-                    </ul>
-
+                    <nav>
+                        <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link active" href="#siteInfo" aria-controls="siteInfo" role="tab" data-toggle="tab">Site Info</a>
+                            <a href="#primaryInvestigator" class="nav-item nav-link addTabs" aria-controls="primaryInvestigator" role="tab" >Primary Investigator</a>
+                            <a href="#coordinator" class="nav-item nav-link addTabs" aria-controls="coordinator" role="tab" >Coordinator</a>
+                            <a href="#photographer" class="nav-item nav-link addTabs" aria-controls="photographer" role="tab">Photographer</a>
+                            <a href="#others" class="nav-item nav-link addTabs" aria-controls="others" role="tab">Others</a>
+                        </div>
+                    </nav>
                     <!-- Tab panes -->
-                    <div class="tab-content clearfix">
-                        <div role="tabpanel" class="tab-pane active" id="siteInfo">
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="siteInfo" role="tabpanel" aria-labelledby="nav-Basic-tab">
                             <form name="siteInfoForm" id="siteInfoForm">
                                 @csrf
                                 <div class="col-lg-12">
                                     <div class="panel-body">
-                                        <div class="row">
+                                        <div class="row" style="margin-top: 10px;">
                                             <div class="col-md-6">
                                                 <div class="{!! ($errors->has('site_code')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
@@ -135,15 +136,12 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="{!! ($errors->has('site_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
-
                                                     <label class="required">Site Name</label>
                                                     <input type="input" class="form-control"
                                                            name="site_name" id="site_name"
                                                            value="{{old('site_name')}}" required/>
                                                     @error('site_name')
-                                                    <span class="input-danger small">
-                                                                    {{ $message }}
-                                                                    </span>
+                                                    <span class="input-danger small">{{ $message }}</span>
                                                     @enderror
                                                 </div>
                                             </div>
@@ -157,23 +155,17 @@
                                                            type="text"/>
                                                 </div>
                                                 @error('autocomplete')
-                                                <span class="input-danger small">
-                                                            {{ $message }}
-                                                                </span>
+                                                <span class="input-danger small">{{ $message }}</span>
                                                 @enderror
                                             </div>
 
                                             <div class="col-md-6">
                                                 <div class="{!! ($errors->has('fullAddr')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
                                                     <label class="required">Street Address</label>
-
-
                                                     <input id="fullAddr" name="fullAddr" autocomplete="disabled" class="form-control" type="text"/>
                                                 </div>
                                                 @error('autocomplete')
-                                                <span class="input-danger small">
-                                                            {{ $message }}
-                                                                </span>
+                                                <span class="input-danger small">{{ $message }}</span>
                                                 @enderror
                                             </div>
 
@@ -183,9 +175,7 @@
                                                     <input type="text" class="form-control" id="locality" name="locality" value="{{old('locality')}}"/>
                                                 </div>
                                                 @error('locality')
-                                                <span class="input-danger small">
-                                                            {{ $message }}
-                                                                </span>
+                                                <span class="input-danger small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                             <input type="hidden" id="street_number">
@@ -196,9 +186,7 @@
                                                     <input type="text" class="form-control" id="administrative_area_level_1" name="administrative_area_level_1" value="{{old('administrative_area_level_1')}}" required/>
                                                 </div>
                                                 @error('administrative_area_level_1')
-                                                <span class="input-danger small">
-                                                            {{ $message }}
-                                                                </span>
+                                                <span class="input-danger small">{{ $message }}</span>
                                                 @enderror
                                             </div>
 
@@ -208,9 +196,7 @@
                                                     <input type="text" class="form-control" id="postal_code" name="postal_code" value="{{old('postal_code')}}" required/>
                                                 </div>
                                                 @error('postal_code')
-                                                <span class="input-danger small">
-                                                            {{ $message }}
-                                                                </span>
+                                                <span class="input-danger small">{{ $message }}</span>
                                                 @enderror
                                             </div>
 
@@ -220,9 +206,7 @@
                                                     <input type="text" class="form-control" id="country"  name="country" value="{{old('country')}}" required />
                                                 </div>
                                                 @error('country')
-                                                <span class="input-danger small">
-                                                            {{ $message }}
-                                                                </span>
+                                                <span class="input-danger small">{{ $message }}</span>
                                                 @enderror
                                             </div>
 
@@ -232,16 +216,14 @@
                                                     <input type="text" class="form-control" id="site_phone" name="site_phone" value="{{old('site_phone')}}" required/>
                                                 </div>
                                                 @error('site_phone')
-                                                <span class="input-danger small">
-                                                                {{ $message }}
-                                                                    </span>
+                                                <span class="input-danger small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                             <input type="hidden" name="site_id" id="site_id" value="">
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="submit" id="btn_site_info" class="btn custom-btn blue-color"><i class="fa fa-save blue-color changeText"></i> Save</button>
-                                            <button class="btn custom-btn blue-color" data-dismiss="modal"><i class="fa fa-window-close blue-color" aria-hidden="true"></i> Close</button>
+                                            <button type="submit" id="btn_site_info" class="btn btn-outline-primary"><i class="fa fa-save changeText"></i> Save</button>
+                                            <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close redirectPage" aria-hidden="true"></i> Close</button>
                                         </div>
                                     </div>
                                 </div>
@@ -329,12 +311,12 @@
 
                                     <div class="col-md-12">
                                         <div class="pull-right">
-                                            <button type="submit" id="pi_button" class="btn custom-btn blue-color"><i class="fa fa-save blue-color"></i> Save</button>
+                                            <button type="submit" id="pi_button" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save</button>
                                             <input type="hidden" name="pi_submit_actions" id="pi_submit_actions" value="Add">
                                             <input type="hidden" name="pi_id" id="pi_id" value="">
                                             <input type="hidden" name="site_id" id="site_id" value="">
-                                            <button type="button"  id="rest_pi_button" class="btn custom-btn blue-color"><i class="fa fa-refresh blue-color" aria-hidden="true"></i> Reset</button>
-                                            <button class="btn custom-btn blue-color" data-dismiss="modal"><i class="fa fa-window-close blue-color" aria-hidden="true"></i> Close</button>
+                                            <button type="button"  id="rest_pi_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
+                                            <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                                         </div>
                                         <br>
                                         <br>
@@ -441,12 +423,12 @@
 
                                     <div class="col-md-12">
                                         <div class="pull-right">
-                                            <button type="submit" id="c_button" class="btn custom-btn blue-color"><i class="fa fa-save blue-color"></i>Save</button>
+                                            <button type="submit" id="c_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
                                             <input type="hidden" name="c_submit_actions" id="c_submit_actions" value="Add">
                                             <input type="hidden" name="c_id" id="c_id" value="">
                                             <input type="hidden" name="c_site_id" id="c_site_id" value= "">
-                                            <button type="button"  id="reset_c_button" class="btn custom-btn blue-color"><i class="fa fa-refresh blue-color" aria-hidden="true"></i>Reset</button>
-                                            <button class="btn custom-btn blue-color" data-dismiss="modal"><i class="fa fa-window-close blue-color" aria-hidden="true"></i> Close</button>
+                                            <button type="button"  id="reset_c_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true"></i>Reset</button>
+                                            <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                                         </div>
                                         <br>
                                         <br>
@@ -556,13 +538,13 @@
 
                                     <div class="col-md-12">
                                         <div class="pull-right">
-                                            <button type="submit" id="photographer_button" class="btn custom-btn blue-color"><i class="fa fa-save blue-color"></i>Save</button>
+                                            <button type="submit" id="photographer_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
 
                                             <input type="hidden" name="photographer_submit_actions" id="photographer_submit_actions" value="Add">
                                             <input type="hidden" name="photo_id" id="photo_id" value="">
                                             <input type="hidden" name="photographer_site_id" id="photographer_site_id" value= "">
-                                            <button type="button"  id="reset_photographer_button" class="btn custom-btn blue-color"><i class="fa fa-refresh blue-color" aria-hidden="true"></i>Reset</button>
-                                            <button class="btn custom-btn blue-color" data-dismiss="modal"><i class="fa fa-window-close blue-color" aria-hidden="true"></i> Close</button>
+                                            <button type="button"  id="reset_photographer_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true"></i>Reset</button>
+                                            <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
 
                                         </div>
                                         <br>
@@ -581,7 +563,6 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-
                                             </tbody>
                                         </table>
                                     </div>
@@ -670,13 +651,13 @@
 
                                     <div class="col-md-12">
                                         <div class="pull-right">
-                                            <button type="submit" id="others_button" class="btn custom-btn blue-color"><i class="fa fa-save blue-color"></i>Save</button>
+                                            <button type="submit" id="others_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
 
                                             <input type="hidden" name="others_submit_actions" id="others_submit_actions" value="Add">
                                             <input type="hidden" name="others_id" id="others_id" value="">
                                             <input type="hidden" name="others_site_id" id="others_site_id" value= "">
-                                            <button type="button"  id="reset_others_button" class="btn custom-btn blue-color"><i class="fa fa-refresh blue-color" aria-hidden="true"></i>Reset</button>
-                                            <button class="btn custom-btn blue-color" data-dismiss="modal"><i class="fa fa-window-close blue-color" aria-hidden="true"></i> Close</button>
+                                            <button type="button"  id="reset_others_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true"></i>Reset</button>
+                                            <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close " aria-hidden="true"></i> Close</button>
                                         </div>
                                         <br>
                                         <br>

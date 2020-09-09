@@ -9,6 +9,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
+use Modules\Admin\Entities\RoleStudyUser;
 use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Http\Requests\UserRequest;
@@ -25,11 +26,18 @@ class UserController extends Controller
     public function index()
     {
         if (Auth::user()->can('users.create')) {
-            $roles  =   Role::get();
+            $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
         }
 
         if (Auth::user()->role->name == 'admin'){
-            $users  =   User::all();
+            $users  =   User::select('users.*','roles.name as role_name','roles.role_type')->with('role')->join('user_roles','user_roles.user_id','=','users.id')
+                ->join('roles','roles.id','=','user_roles.role_id')
+                ->where('roles.role_type','!=','study_role')
+                ->get();
+            dd(count($users));
+            foreach ($users as $user){
+                dd($user);
+            }
         }
         else{
             $users = User::where('deleted_at','=',Null)
@@ -39,7 +47,7 @@ class UserController extends Controller
         return view('userroles::users.index',compact('users','roles'));
 
     }
-    
+
     /**
      * Show the form for creating a new resource.
      * @return Response
@@ -47,7 +55,8 @@ class UserController extends Controller
     public function create()
     {
         if (Auth::user()->can('users.create')) {
-            $roles  =   Role::get();
+            $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
+            dd($roles);
 
             return view('userroles::users.create',compact('roles'));
         }
@@ -62,30 +71,64 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-       //dd($request->roles());
-       //dd(!empty($request->roles)?$request->roles[0]:2);
-        $user = User::create([
-            'id'    => Str::uuid(),
-            'name'  =>  $request->name,
-            'email' =>  $request->email,
-            'password'  =>  Hash::make($request->password),
-            'user_type' => Input::get('user_type'),
-            'role_id'   => !empty($request->roles)?$request->roles[0]:2,
-            /*'created_by_id' => $request->user()->id,
-            'created_as_user_role'  => $request->user()->role['id']*/
-        ]);
+        $user_role = Auth::user()->role->name;
+        $user_id = Auth::user()->id;
+        //dd($user_id);
+        if ($user_role == 'admin'){
+            $user = User::create([
+                'id'    => Str::uuid(),
+                'name'  =>  $request->name,
+                'email' =>  $request->email,
+                'password'  =>  Hash::make($request->password),
+                'user_type' => 'System User',
+                'role_id'   => !empty($request->roles)?$request->roles[0]:2,
+                'created_by'   => $user_id
+            ]);
 
-        if(!empty($request->roles)){
-            //dd($request->roles);
-            foreach ($request->roles as $role){
-                UserRole::create([
-                    'id'    => Str::uuid(),
-                    'user_id'    =>  $user->id,
-                    'role_id'    =>  $role
-                ]);
+            if(!empty($request->roles)){
+                foreach ($request->roles as $role){
+                    UserRole::create([
+                        'id'    => Str::uuid(),
+                        'user_id'    =>  $user->id,
+                        'role_id'    =>  $role
+                    ]);
+                    RoleStudyUser::create([
+                        'id'    => Str::uuid(),
+                        'role_id' =>$role,
+                        'user_id' => $user->id,
+                        'study_id' => ''
+                    ]);
+                }
             }
         }
+        else{
+            $user = User::create([
+                'id'    => Str::uuid(),
+                'name'  =>  $request->name,
+                'email' =>  $request->email,
+                'password'  =>  Hash::make($request->password),
+                'user_type' => 'Study User',
+                'role_id'   => !empty($request->roles)?$request->roles[0]:2,
+                'created_by'   => $user_id
+            ]);
 
+            if(!empty($request->roles)){
+                foreach ($request->roles as $role){
+                    UserRole::create([
+                        'id'    => Str::uuid(),
+                        'user_id'    =>  $user->id,
+                        'role_id'    =>  $role
+                    ]);
+                    RoleStudyUser::create([
+                        'id'    => Str::uuid(),
+                        'role_id' =>$role,
+                        'user_id' => $user->id,
+                        'study_id' => ''
+                    ]);
+
+                }
+            }
+        }
         return redirect()->route('users.index');
 
     }

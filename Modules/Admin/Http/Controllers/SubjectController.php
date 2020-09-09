@@ -2,12 +2,16 @@
 
 namespace Modules\Admin\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Modules\Admin\Entities\DiseaseCohort;
 use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\Study;
+use Modules\Admin\Entities\StudySite;
 use Modules\Admin\Entities\Subject;
 
 class SubjectController extends Controller
@@ -52,7 +56,22 @@ class SubjectController extends Controller
             'site_id'           => $request->site_id,
             'disease_cohort_id' => $request->disease_cohort
         ]);
-        dd($subject->study_id,$request->study_id);
+
+        $currentStudy = session('current_study');
+        $currentStudy = Study::find($currentStudy);
+        $study = $currentStudy;
+
+        $subjects = Subject::join('sites','sites.id','=','subjects.site_id')->get();
+        $site_study = StudySite::where('study_id','=',$id)
+            ->join('sites', 'sites.id','=','site_study.site_id')
+            ->select('sites.site_name','sites.id')
+            ->get();
+
+        $diseaseCohort = DiseaseCohort::where('study_id','=',$id)->get();
+
+
+        return view('admin::studies.show',compact('currentStudy','subjects','site_study','diseaseCohort','study'));
+
     }
 
     /**

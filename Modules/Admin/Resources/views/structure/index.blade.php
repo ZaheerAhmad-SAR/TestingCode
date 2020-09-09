@@ -216,7 +216,7 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-group row">
+                            <div class="form-group row" style="display: none;">
                                 <label for="Name" class="col-sm-3">QC</label>
                                 <div class="col-md-3">
                                     <input type="radio" name="q_c" id="q_c_yes" value="yes" checked="checked"> Yes
@@ -400,6 +400,7 @@
                                             $(".success-alert").slideUp('slow');        
                                          }, 3000);
                                       }
+                                    refresh_phase_in_stepForm(); 
                                    }
                                 }
                             })
@@ -682,6 +683,20 @@
             });
 
         })
+    function refresh_phase_in_stepForm(){
+        $.ajax({
+            url:'study_phases',
+            dataType: 'json',
+            success:function(res){
+                $('#step_phase_id').html('')
+                var options = ''
+                $.each(res['data'], function(index,value){
+                    options += '<option val ="'+value.id+'" >'+value.name+'</option>'
+                });
+                $('#step_phase_id').append(options);    
+            }
+        });
+    }    
     function Sections(id){
         $.ajax({
              url: 'section',
