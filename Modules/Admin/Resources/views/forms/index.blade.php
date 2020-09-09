@@ -75,6 +75,9 @@
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header">
                     <p class="modal-title">Add New Field</p>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
                 </div>
                 <form action="{{route('addQuestions')}}" enctype="multipart/form-data" method="POST" id="formfields">
                 @csrf    
@@ -168,13 +171,18 @@
                             <div class="optionGroup">
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label">Option group: </label>    
-                                    <div class="col-sm-9">
+                                    <div class="col-sm-6">
                                         <select name="option_group_id" id="option_group_id" class="form-control">
                                             <option value="">none</option>
                                             @foreach($option_groups as $key => $value)
                                             <option value="{{$value->id}}">{{$value->option_group_name}}</option>
                                             @endforeach
                                         </select>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#addOptionGroups">
+                                            <i class="fa fa-plus"></i> Add Option Groups
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -259,7 +267,49 @@
         </div>
 </div>
 <!-- End -->
-
+<!-- Modal To add Option Groups -->
+<div class="modal fade" tabindex="-1" role="dialog" id="addOptionGroups">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-content" style="background-color: #F6F6F7;">
+            <div class="alert alert-danger" style="display:none"></div>
+            <div class="modal-header" style="background: #1E3D73;color: white;">
+                <p class="modal-title">Add Option Group</p>
+            </div>
+            <form name="OptionsGroupForm" id="OptionsGroupForm">
+                <div class="modal-body">
+                    <div id="exTab1">
+                        <div class="tab-content clearfix">
+                            <div class="form-group row">
+                                <div class="form-group col-md-12">
+                                    <input type="text" class="form-control" id="option_group_name" name="option_group_name" value="" placeholder="Enter option group name" style="background: white;">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="form-group col-md-12">
+                                    <input type="text" class="form-control" id="option_group_description" name="option_group_description" value="" placeholder="Option group description" style="background: white;">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-md-3">Option Layout <sup>*</sup></div>
+                                <div class="form-group col-md-9">
+                                    <input type="radio" name="option_layout" value="vertical"> Vertical &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="option_layout" value="horizontal" checked> Horizontal
+                                </div>
+                            </div>
+                            <div class="appendDataOptions"></div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-primary addOptions pull-right"><i class="fa fa-plus"></i> Add option</button>
+                        <button id="optiongroup-close" class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                        <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!-- End -->
 @stop
 @section('styles')  
 <style>
@@ -277,6 +327,10 @@
 <script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script> 
 <script src="{{ asset('public/dist/js/mail.script.js') }}"></script>  
 <script>
+       $('.addOptions').on('click',function(){
+           $('.appendDataOptions').append('<div class="values_row_options"><div class="form-group row"><div class="form-group col-md-6"><input type="text" id="option_name" name="option_name[]" class="form-control" placeholder="Enter option name" style="background:white;"></div><div class="form-group col-md-4"><input type="number" placeholder="Option value" name="option_value[]" id="option_value" class="form-control" style="background:white;"></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove_option" style="margin-top: 3px;"></i></div></div></div>');
+           return false;
+       });  
        $('.addvalidations').on('click',function(){
            $('.appendDatavalidations').append('<div class="values_row"><div class="form-group row"><div class="col-sm-2">If this field is:</div><div class="col-sm-4"><select name="requiredvalidation_value" id="requiredvalidation_value" class="form-control"><option value="">---Select Value---</option><option value="">One</option><option value="">Two</option><option value="">Three</option></select></div><div class="col-sm-5"><input type="text" placeholder="value" name="value" class="form-control"></div><div class="col-sm-1"><i class="btn btn-outline-danger fa fa-trash remove" style="cursor:pointer;"></i></div></div><div class="form-group row"><div class="col-sm-2"> Show a:</div><div class="col-sm-10"><select name="requiredvalidation_value" id="requiredvalidation_value" class="form-control"><option value="">Exclusion</option><option value="">Error</option><option value="">Warning</option></select></div></div><div class="form-group row"><div class="col-sm-2">Message:</div><div class="col-sm-10"><input type="text" name="validation_message" class="form-control"></div></div></div>');
            return false;
@@ -285,6 +339,11 @@
             var row = $(this).closest('div.values_row');
             row.remove();
        })
+       $('body').on('click','.remove_option',function(){
+            var row = $(this).closest('div.values_row_options');
+            row.remove();
+       })
+       
        //
        $('.addannotation').on('click',function(){
            $('.appendannotation').append('<div class="anno_values_row"><div class="form-group row"><div class="col-sm-2">Terminology:</div><div class="col-sm-9"><select name="terminology_value" id="terminology_value" class="form-control"><option value="">---Select Value---</option><option value="">One</option><option value="">Two</option><option value="">Three</option></select></div><div class="col-sm-1"><i class="btn btn-outline-danger fa fa-trash remove_anno" style="cursor:pointer;"></i></div></div><div class="form-group row"><div class="col-sm-2"> Value:</div><div class="col-sm-10"><input type="text" name="annotation_field_value" id="annotation_field_value" class="form-control"></div></div><div class="form-group row"><div class="col-sm-2">Description:</div><div class="col-md-10"><input type="text" name="annotation_message" class="form-control"></div></div></div>');
@@ -471,6 +530,51 @@
             }
         });
         
-    }  
+    } 
+  // Add New Option Group
+   function addOptionsGroup()
+   {
+       $("#OptionsGroupForm").submit(function(e) {
+           $.ajaxSetup({
+               headers: {
+                   'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+               }
+           });
+           e.preventDefault();
+           $.ajax({
+               data: $('#OptionsGroupForm').serialize(),
+               url: "{{route('optionsGroup.store')}}",
+               type: "POST",
+               dataType: 'json',
+               success: function (results) {
+                fetch_options();
+                $('#OptionsGroupForm').trigger("reset");
+                $("#addphase-close").click();
+               },
+               error: function (results) {
+                   console.log('Error:', results);
+               }
+           });
+       });
+   }
+   addOptionsGroup(); 
+   function fetch_options(){
+        alert('working here');
+        $('#option_group_id').html(''); 
+        var options = '';
+        $.ajax({
+            url:"{{route('getall_options')}}",
+            type:"post",
+            dataType:'json',
+            success: function(res){
+                alert('working');
+                console.log(res['data']);
+                $.each(res['data'], function(k,v){
+                    options += '<option value="'+v.id+'">'+v.option_group_name+'</option>'
+                })
+            $('#option_group_id').append(options);    
+            }
+        });
+   }
    </script>     
 @stop
