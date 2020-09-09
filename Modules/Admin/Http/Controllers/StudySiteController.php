@@ -5,8 +5,12 @@ namespace Modules\Admin\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Str;
+use Modules\Admin\Entities\Modility;
+use Modules\Admin\Entities\OptionsGroup;
 use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\StudySite;
+use MongoDB\Driver\Query;
 use MongoDB\Driver\Session;
 
 class StudySiteController extends Controller
@@ -28,7 +32,6 @@ class StudySiteController extends Controller
             ,'sites.site_phone'
         )->join('sites','sites.id','=','site_study.site_id')
             ->where('site_study.study_id','=',session('current_study'))->get();
-        //dd($sites);
 
         foreach ($sites as $site)
         {
@@ -38,7 +41,8 @@ class StudySiteController extends Controller
 
         $unassignSites = Site::select('sites.*')
             ->whereNotIn('sites.id', $siteArray)->get();
-        return view('admin::studies.study_site',compact('sites','unassignSites'));
+
+        return view('admin::studies.studySiteNew',compact('sites','unassignSites'));
     }
 
     /**
@@ -89,18 +93,42 @@ class StudySiteController extends Controller
      */
     public function update(Request $request)
     {
-        $inputIdValues = $_POST['InputIdValues'];
-        $inputValues   = $_POST['InputValues'];
-        $i=0;
-       foreach($inputIdValues as $idValue )
-        {
-            $data = array('study_site_id' => $inputValues[$i]);
-            StudySite::where('id',$idValue)->update($data);
-            $lastRecord = StudySite::get();
-            $i++;
 
+        $sites = $request->sites;
+        $current_study = session('current_study');
+        $result = StudySite::where('study_id', $current_study)->delete();
+        foreach ($sites as $site)
+        {
+            $exploadRecord = explode("_",$site);
+            if($exploadRecord[1]){
+                $others = StudySite::create([
+                    'id'    => Str::uuid(),
+                    'site_id' =>$exploadRecord[0],
+                    'study_site_id'=>$exploadRecord[1],
+                    'study_id'=>session('current_study')
+
+                ]);
+            }
+            else
+            {
+                $others = StudySite::create([
+                    'id'    => Str::uuid(),
+                    'site_id' =>$exploadRecord[0],
+                    'study_id'=>session('current_study')
+                ]);
+            }
         }
-        return response()->json([$lastRecord,'success'=>'Study site is updated successfully!!!!']);
+        return response()->json([$others]);
+        //return response()->json(['success'=>'Study site is updated successfully!!!!']);
+    }
+
+    public function updateStudySite(Request $request)
+    {
+        $textValue = trim($_POST['text_val']);
+        $siteId    = $_POST['site_id'];
+        $data      = array('study_site_id' => $textValue);
+        StudySite::where('id',$siteId)->update($data);
+        return response()->json(['success'=>'Study site is updated successfully!!!!']);
     }
 
     /**
