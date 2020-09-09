@@ -30,7 +30,14 @@ class UserController extends Controller
         }
 
         if (Auth::user()->role->name == 'admin'){
-            $users  =   User::where('created_by','=',\auth()->user()->id)->get();
+            $users  =   User::select('users.*','roles.name as role_name','roles.role_type')->with('role')->join('user_roles','user_roles.user_id','=','users.id')
+                ->join('roles','roles.id','=','user_roles.role_id')
+                ->where('roles.role_type','!=','study_role')
+                ->get();
+            dd(count($users));
+            foreach ($users as $user){
+                dd($user);
+            }
         }
         else{
             $users = User::where('deleted_at','=',Null)
