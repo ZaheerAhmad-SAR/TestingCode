@@ -1601,6 +1601,9 @@
                         },
                         success:function(results){
                             console.log(results);
+                            window.setTimeout(function () {
+                                location.href = '{{ route('studySite.index') }}';
+                            }, 100);
                         }
                     });
 
