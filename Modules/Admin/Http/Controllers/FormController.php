@@ -39,6 +39,15 @@ class FormController extends Controller
         $sectionData['data'] = $section;
         echo json_encode($sectionData);
     }
+    public function get_allQuestions($id)
+    {
+        $questions = Question::with('form_field_type','formFields')
+        ->join('form_field','form_field.question_id','=','question.id')
+        ->join('options_groups','options_groups.id','=','question.option_group_id' ,'left')
+        ->where('question.section_id', '=', $id)->orderBy('question.question_sort', 'asc')->get();
+        $questionsData['data'] = $questions;
+        echo json_encode($questionsData);
+    }
     
     /**
      * Show the form for creating a new resource.
@@ -60,19 +69,22 @@ class FormController extends Controller
     }
     public function add_questions(Request $request)
     {
+
         $id    = Str::uuid();
         $question_info = Question::create([
             'id' => $id, 
             'form_field_type_id' => $request->form_field_type_id, 
             'section_id' => $request->section_id, 
             'option_group_id' => $request->option_group_id,
+            'question_sort' => $request->question_sort,
             'question_text' => $request->question_text, 
             'c_disk' => $request->c_disk, 
             'measurement_unit' => $request->measurement_unit, 
-            'is_dependent' => $request->is_dependent, 
+            'is_dependent' => $request->field_dependent, 
             'dependent_on' => $request->dependent_on, 
             'annotations' => $request->dependent_on 
         ]);
+
         $last_id = Question::select('id')->latest()->first();
         $id    = Str::uuid();
         $form_field = Formfields::create([
