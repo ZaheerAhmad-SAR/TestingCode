@@ -184,7 +184,6 @@ class StudyController extends Controller
 
     /** get clone of the study */
     public function cloneStudy(Request $request){
-        dd($request->all());
         $mystudy = Study::with('users','subjects','diseaseCohort','sites')
             ->find($request->id);
         $id = \Illuminate\Support\Str::uuid();
