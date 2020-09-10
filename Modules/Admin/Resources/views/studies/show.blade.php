@@ -5,7 +5,9 @@
 @section('content')
     @php
         $studyid = last(request()->segments());
-        session(['current_study'=>$studyid,'study_short_name'=> $currentStudy->study_short_name ]); @endphp
+//        session(['current_study'=>$studyid,'study_short_name'=> $study->study_short_name]);
+        session(['current_study'=>$studyid,'study_short_name'=> $study->study_short_name]);
+         @endphp
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
         <div class="row ">
@@ -20,12 +22,13 @@
             </div>
         </div>
         <!-- END: Breadcrumbs-->
+    </div>
 
-        <div class="row">
-            <div class="col-12 col-sm-12 mt-3">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#createSubjects">
+    <div class="row">
+        <div class="col-12 mt-3">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#createSubjects">
                             <i class="fa fa-plus"></i> Add Subject
                         </button>
                         </div>
@@ -35,7 +38,7 @@
                             <thead>
                             <th>Subject ID</th>
                             <th>Enrollment Date</th>
-                            <th>Site</th>
+                            <th>Site Name</th>
                             <th>Disease Cohort</th>
                             <th>Study Eye</th>
                             <th>Actions</th>
@@ -73,90 +76,83 @@
             </div>
         </div>
 
-
     <div class="modal" tabindex="-1" role="dialog" id="createSubjects">
         <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content" style="width: inherit; top: auto!important;">
-                <div class="alert alert-danger" style="display:none"></div>
-                <div class="custom-modal-header gray-background color-black">
-                    <p class="modal-title">Add New Subject</p>
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <h4 class="modal-title" id="deviceCrudModal">Add Subject</h4>
                 </div>
                 <div  class="modal-body">
                 <form action="{{route('subjects.store')}}" enctype="multipart/form-data" method="POST">
                     @csrf
                     <input type="hidden" value="{{$study->id}}" name="study_id">
                     <input type="hidden" value="{{$study}}" name="user">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label for="subject_id" class="col-md-4">Subject ID</label>
-                            <div class="{!! ($errors->has('subject_id')) ?'form-group col-md-8 has-error':'form-group col-md-8' !!}">
+{{--
+
+                    <input type="hidden" value="{{$currentStudy}}" name="study_id">
+                    <input type="hidden" value="{{$currentStudy}}" name="user">
+--}}
+                        <div class="form-group row" style="margin-top: 10px;">
+                            <label for="subject_id" class="col-md-2">Subject ID</label>
+                            <div class="{!! ($errors->has('subject_id')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
                                 <input type="text" class="form-control" name="subject_id" value="{{old('subject_id')}}">
                                 @error('subject_id')
                                 <span class="text-danger small">{{ $message }} </span>
                                 @enderror
-                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <label for="enrollment_date" class="col-md-4">Enrollment Date</label>
-                            <div class="{!! ($errors->has('enrollment_date')) ?'form-group col-md-8 has-error':'form-group col-md-8' !!}">
-                                <input type="date" class="form-control" name="enrollment_date" value="{{old('enrollment_date')}}">
+                            <label for="study_short_name" class="col-md-2">Enrollment Date</label>
+                            <div class="{!! ($errors->has('enrollment_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                <input type="text" class="form-control" id="enrollment_date" name="enrollment_date" value="{{old('enrollment_date')}}">
                                 @error('enrollment_date')
                                 <span class="text-danger small">{{ $message }} </span>
                                 @enderror
                             </div>
                         </div>
-
-                        <div class="col-md-6">
-                            <label for="site_id" class="col-md-4">Site</label>
-                            <div class="{!! ($errors->has('site_id')) ?'form-group col-md-8 has-error':'form-group col-md-8' !!}">
-                                <select name="site_id" class="custom-btn btn">
+                        <div class="form-group row">
+                            <label for="site_id" class="col-md-2">Site</label>
+                            <div class="{!! ($errors->has('site_id')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                <select name="site_id" class="custom-btn btn" style="width: 235px;">
                                     <option value="">Select Subject Site</option>
                                     @if(!empty($site_study))
-                                    @foreach($site_study as $site)
-                                        <option class="dropdown" value="{{$site->id}}">{{$site->site_name}}</option>
+                                        @foreach($site_study as $site)
+                                            <option class="dropdown" value="{{$site->id}}">{{$site->site_name}}</option>
                                         @endforeach
-                                        @endif
+                                    @endif
                                 </select>
                                 @error('site_id')
                                 <span class="text-danger small">{{ $message }} </span>
                                 @enderror
                             </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="site_id" class="col-md-4">Disease Cohort</label>
-                            <div class="{!! ($errors->has('disease_cohort')) ?'form-group col-md-8 has-error':'form-group col-md-8' !!}">
-                                <select name="disease_cohort" class="custom-btn btn">
-                                    <option value="">Select Subject Disease Cohort</option>
-                                    @if(!empty($diseaseCohort))
-                                        {!! $diseaseCohort !!}
-                                        @foreach($diseaseCohort as $disease)
-                                            <option class="dropdown" value="{{$disease->id}}">{{$disease->name}}</option>
-                                        @endforeach
-                                    @endif
+                            <label for="study_eye" class="col-md-2">Study Eye</label>
+                            <div class="{!! ($errors->has('study_eye')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                <select name="study_eye" class="custom-btn btn" style="width: 235px;" >
+                                    <option value="">Select Study Eye</option>
+                                    <option value="od">OD</option>
+                                    <option value="os">OS</option>
+                                    <option value="ou">OU</option>
+                                    <option value="na">NA</option>
                                 </select>
-                                @error('disease_cohort')
-                                <span class="text-danger small">{{ $message }} </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="study_eye" class="col-md-4">Study Eye</label>
-                            <div class="{!! ($errors->has('study_eye')) ?'form-group col-md-8 has-error':'form-group col-md-8' !!}">
-                            <select name="study_eye" class="custom-btn btn" >
-                                <option value="">Select Study Eye</option>
-                                <option value="od">OD</option>
-                                <option value="os">OS</option>
-                                <option value="ou">OU</option>
-                                <option value="na">NA</option>
-                            </select>
                                 @error('subject_site')
                                 <span class="text-danger small">{{ $message }} </span>
                                 @enderror
                             </div>
                         </div>
-
+                    <div class="form-group row">
+                        <label for="site_id" class="col-md-2">Disease Cohort</label>
+                        <div class="{!! ($errors->has('disease_cohort')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                            <select name="disease_cohort" class="custom-btn btn" style="width: 235px;">
+                                <option value="">Select Subject Disease Cohort</option>
+                                @if(!empty($diseaseCohort))
+                                    {!! $diseaseCohort !!}
+                                    @foreach($diseaseCohort as $disease)
+                                        <option class="dropdown" value="{{$disease->id}}">{{$disease->name}}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                            @error('disease_cohort')
+                            <span class="text-danger small">{{ $message }} </span>
+                            @enderror
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button class="btn custom-btn blue-color" data-dismiss="modal"><i class="fa fa-window-close blue-color" aria-hidden="true"></i> Close</button>

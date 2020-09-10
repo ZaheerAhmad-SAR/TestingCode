@@ -4,10 +4,12 @@ namespace Modules\Admin\Entities;
 
 use App\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\UserRoles\Entities\UserRole;
 
 class Study extends Model
 {
+    use SoftDeletes;
     protected $keyType = 'string';
     protected $fillable = [
         'id',
@@ -16,7 +18,6 @@ class Study extends Model
         'study_status',
         'study_code',
         'protocol_number',
-        'study_phase',
         'trial_registry_id',
         'study_sponsor',
         'description','start_date','end_date'];
