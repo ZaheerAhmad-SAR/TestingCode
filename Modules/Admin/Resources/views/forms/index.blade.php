@@ -530,7 +530,6 @@
             }
         });
         
-<<<<<<< HEAD
     }  
     function showFormPreview(){
            var route = '{{url('forms/show')}}';
@@ -538,7 +537,6 @@
            var step_id = $('#steps').val();           
            window.location.href = route+'/'+phase_id+'/'+step_id;
        }
-=======
     } 
   // Add New Option Group
    function addOptionsGroup()
@@ -582,6 +580,5 @@
             }
         });
    }
->>>>>>> 06da08b7c325e1e07bbab9b857e070760fcb1418
    </script>     
 @stop
