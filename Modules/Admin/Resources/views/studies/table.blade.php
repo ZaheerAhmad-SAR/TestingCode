@@ -30,7 +30,7 @@
                     </button>
                 </div>
                 <div class="card-body">
-                    <table class="tablesaw table-bordered" data-tablesaw-mode="stack">
+                    <table class="tablesaw table-bordered" data-tablesaw-mode="stack" id="studies_crud">
                         <thead>
                         <tr>
                             <th scope="col" data-tablesaw-priority="persist">ID</th>
@@ -45,18 +45,18 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr>
                             @if(count($studies) !=0)
                                 <?php $index= 1; ?>
                                 @foreach($studies as $study)
+                                    <tr id="study_id_{{ $study->id }}">
                                         <td>{{$index}}</td>
-                            <td class="title">
+                                        <td class="title">
                                 <a class="" href="{{ route('studies.show', $study->id) }}">
                                     {{ucfirst($study->study_short_name)}} : <strong>{{ucfirst($study->study_title)}}</strong>
                                 </a>
                                 <br><br><p style="font-size: 14px; font-style: oblique">Sponsor: <strong>{{ucfirst($study->study_sponsor)}}</strong></p>
                             </td>
-                            <td class="tablesaw-stack-block">
+                                        <td class="tablesaw-stack-block">
                                 <div class="card">
                                     <div class="card-body p-0">
                                         <div  class="barfiller" data-color="#17a2b8">
@@ -70,7 +70,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td>{{$study->study_status}}</td>
+                                        <td>{{$study->study_status}}</td>
                                         <td>
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
@@ -84,7 +84,7 @@
                                                            <a href="javascript:void(0)" id="edit-study" data-id="{{ $study->id }}">
                                                                <i class="icon-pencil"></i> Edit
                                                            </a>
-                                                        </span>
+                                                    </span>
                                                     <span class="dropdown-item">
                                                             <a href="#">
                                                                 <i class="fa fa-clone" aria-hidden="true"></i> Clone </a>
@@ -106,7 +106,7 @@
                                                 </div>
                                             </div>
                                         </td>
-                        </tr>
+                                    </tr>
                         <?php $index++; ?>
                         @endforeach
                         @elseif(count($studies) == 0)
@@ -125,21 +125,20 @@
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h4 class="modal-title" id="deviceCrudModal">Add Study</h4>
+                        <h4 class="modal-title" id="studyCrudModal">Add Study</h4>
                     </div>
-{{--
-                    <form method="post" action="{{ route('studies.store') }}">
---}}
-                    <form id="studyForm" name="studyForm" class="form-horizontal">
-                        <div class="modal-body">
+                    <div class="modal-body">
+                        <form id="postForm" name="postForm" class="form-horizontal">
                             <input type="hidden" name="study_id" id="study_id">
-                            <nav>
-                                <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
-                                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-Basic" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
-                                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-Disease" role="tab" aria-controls="nav-profile" aria-selected="false">Disease Cohort</a>
-                                </div>
-                            </nav>
-                            <div class="tab-content" id="nav-tabContent">
+                                <div class="modal-body">
+                                    <input type="hidden" name="study_id" id="study_id">
+                                        <nav>
+                                            <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
+                                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-Basic" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
+                                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-Disease" role="tab" aria-controls="nav-profile" aria-selected="false">Disease Cohort</a>
+                                            </div>
+                                        </nav>
+                                <div class="tab-content" id="nav-tabContent">
                                 {{-- Basic Info Tab --}}
                                 <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
                                     @csrf
@@ -257,9 +256,9 @@
     <link rel="stylesheet" href="{{ asset('public/dist/vendors/fontawesome/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('public/dist/vendors/ionicons/css/ionicons.min.css') }}">
     <link rel="stylesheet" href="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-2.0.3.css') }}">
-
 @stop
 @section('script')
+    <script src="{{ asset('public/dist/js/jquery.validate.min.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             $('.add_field').on('click',function () {
@@ -268,7 +267,6 @@
                     '</div><div class="col-md-3"><i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div></div></div>');
             })
             $('body').on('click','.remove_field',function () {
-                alert('hi');
                 var row = $(this).closest('div.disease_row');
                 row.remove();
             })
@@ -289,8 +287,7 @@
 
             $('body').on('click', '#edit-study', function () {
                 var study_id = $(this).data('id');
-                alert(study_id);
-                $.get('studies/'+study_id+'/edit', function (data) {
+              var myStudy=  $.get('studies/'+study_id+'/edit', function (data) {
                     $('#studyCrudModal').html("Edit Study");
                     $('#btn-save').val("edit-study");
                     $('#study-crud-modal').modal('show');
@@ -304,8 +301,6 @@
                     $('#start_date').val(data.start_date);
                     $('#end_date').val(data.end_date);
                     $('#description').val(data.description);
-                    $('#users').val(data.users);
-                    $('#sites').val(data.sites);
                     $('#disease_cohort').val(data.disease_cohort);
                 })
             });
@@ -325,52 +320,56 @@
                     }
                 });
             });
+
+            $('body').on('click','.changeStudyStatus',function () {
+                var elem    =   $(this);
+                var url     =   elem.attr('data-url');
+                //var value     =   elem.attr('data-value');
+                var id     =   elem.attr('data-id');
+                $.ajax({
+                    type:'POST',
+                    url:url,
+                    data        :   {
+                        '_token'    :   $('meta[name=csrf-token]').attr("content"),
+                        id
+                    },
+                    success:function(data) {
+                        alert('success');
+                    }
+                });
+            });
+
         });
 
+        function replicateStudy()
+        {
 
-        $('body').on('click','.changeStudyStatus',function () {
-            var elem    =   $(this);
-            var url     =   elem.attr('data-url');
-            //var value     =   elem.attr('data-value');
-            var id     =   elem.attr('data-id');
-            $.ajax({
-                type:'POST',
-                url:url,
-                data        :   {
-                    '_token'    :   $('meta[name=csrf-token]').attr("content"),
-                    id
-                },
-                success:function(data) {
-                    alert('success');
-                }
+            $('body').on('click', '.clone-study', function () {
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                var parent_id = $(this).data("id");
+                // alert(parent_id);
+                var newPath = "{{URL('studies/cloneStudy')}}";
+                //alert(newPath)
+                $.ajax({
+                    type: "POST",
+                    data:{'id':parent_id},
+                    url: newPath,
+                    success: function (data) {
+                        console.log(data);
+
+                    },
+                    error: function (data) {
+                        console.log('Error:', data);
+                    }
+                });
             });
-        });
-
-
-        $('body').on('click', '.clone-study', function () {
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            var parent_id = $(this).data("id");
-            // alert(parent_id);
-            var newPath = "{{URL('studies/cloneStudy')}}";
-            //alert(newPath)
-            $.ajax({
-                type: "POST",
-                data:{'id':parent_id},
-                url: newPath,
-                success: function (data) {
-                    console.log(data);
-
-                },
-                error: function (data) {
-                    console.log('Error:', data);
-                }
-            });
-        });
+        }
+        replicateStudy();
 
         if ($("#studyForm").length > 0) {
             $("#studyForm").validate({
