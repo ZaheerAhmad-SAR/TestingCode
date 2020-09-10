@@ -97,8 +97,9 @@
                                                            </a>
                                                     </span>
                                                     <span class="dropdown-item">
-                                                            <a href="#" data-id="{{$study->id}}" id="clone-study">
-                                                                <i class="fa fa-clone" aria-hidden="true"></i> Clone </a>
+                                                        <a href="javascript:void(0)" id="clone-study" class="clone-study" data-id="{{$study->id}}">
+                                                <i class="fa fa-clone"></i> Clone
+                                            </a>
                                                         </span>
                                                     <span class="dropdown-item">
                                                             <a href="#" data-id="{{$study->id}}" id="delete-study">
@@ -329,7 +330,7 @@
             });
         });
 
-        $('body').on('click', '#clone-study', function () {
+        $('body').on('click', '.clone-study', function () {
 
             $.ajaxSetup({
                 headers: {
