@@ -3,6 +3,7 @@ $.fn.editableTableWidget = function (options) {
     'use strict';
     return $(this).each(function () {
         var buildDefaultOptions = function () {
+
                 var opts = $.extend({}, $.fn.editableTableWidget.defaultOptions);
                 opts.editor = opts.editor.clone();
                 return opts;
@@ -13,6 +14,7 @@ $.fn.editableTableWidget = function (options) {
             editor = activeOptions.editor.css('position', 'absolute').hide().appendTo(element.parent()),
             active,
             showEditor = function (select) {
+
                 active = element.find('td:focus');
                 if (active.length) {
                     editor.val(active.text())
@@ -30,6 +32,7 @@ $.fn.editableTableWidget = function (options) {
                 }
             },
             setActiveText = function () {
+                
                 var text = editor.val(),
                     evt = $.Event('change'),
                     originalContent;

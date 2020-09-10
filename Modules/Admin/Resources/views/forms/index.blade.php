@@ -40,10 +40,10 @@
                     </select>
                 </div>
                 <div class="col-sm-2">
-                    <a href="{{route('forms.show',1)}}" target="_blank">
-                        <button class="btn btn-outline-primary" style="background-color: white;"><i class="far fa-eye"></i> Preview</button>
-                    </a>    
-                </div>
+                <button class="btn btn-outline-primary" onclick="showFormPreview();" style="background-color: white;"><i class="far fa-eye"></i> Preview</button>
+                
+                
+                </div>                        
             </div>
         </div>
         <div class="col-lg-2 col-xl-2">
@@ -535,6 +535,12 @@
             }
         });
         
+    }  
+    function showFormPreview(){
+           var route = '{{url('forms/show')}}';
+           var phase_id = $('#phases').val();
+           var step_id = $('#steps').val();           
+           window.location.href = route+'/'+phase_id+'/'+step_id;       
     } 
   // Add New Option Group
    function addOptionsGroup()
