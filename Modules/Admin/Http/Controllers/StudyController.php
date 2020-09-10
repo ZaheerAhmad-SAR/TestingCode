@@ -49,7 +49,7 @@ class StudyController extends Controller
             $sites = Site::all();
         }
 
-        return view('admin::studies.index',compact('studies','sites','users','subjects'));
+        return view('admin::studies.index',compact('studies','sites','users'));
     }
 
     /**
@@ -167,22 +167,6 @@ class StudyController extends Controller
      * @param int $id
      * @return Response
      */
-//    public function show(Study $study)
-//    {
-//        $id = $study->id;
-//        $subjects = Subject::where('subjects.study_id','=',$id)
-//            ->get();
-//       //dd($subjects);
-//        $site_study = StudySite::where('study_id','=',$id)
-//            ->join('sites', 'sites.id','=','site_study.site_id')
-//            ->select('sites.site_name','sites.id')
-//            ->get();
-//        $diseaseCohort = DiseaseCohort::where('study_id','=',$id)->get();
-//
-//        return view('admin::studies.show',compact('study','subjects','site_study','diseaseCohort'));
-//    }
-
-
     public function show(Study $study)
     {
         $id = session('current_study');
@@ -196,7 +180,7 @@ class StudyController extends Controller
             ->get();
 
         $diseaseCohort = DiseaseCohort::where('study_id','=',$id)->get();
-        return view('admin::studies.show',compact('study','subjects','currentStudy','site_study','diseaseCohort','studyName'));
+        return view('admin::studies.show',compact('study','subjects','currentStudy','site_study','diseaseCohort'));
     }
 
     /**
@@ -208,7 +192,6 @@ class StudyController extends Controller
     {
         $where = array('id' => $id);
         $study  = Study::with('diseaseCohort')->where($where)->first();
-        dd($study);
 
         return \response()->json($study);
     }

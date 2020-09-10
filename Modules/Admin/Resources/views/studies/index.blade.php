@@ -305,7 +305,7 @@
                 $('#start_date').val(data.start_date);
                 $('#end_date').val(data.end_date);
                 $('#description').val(data.description);
-                /*$('#disease_cohort').val(data.disease_cohort);*/
+                $('#disease_cohort').val(data.disease_cohort);
             })
         });
         $('body').on('click', '#delete-study', function () {
