@@ -172,7 +172,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label">Option group: </label>    
                                     <div class="col-sm-6">
-                                        <select name="option_group_id" id="option_group_id" class="form-control fstdropdown-select">
+                                        <select name="option_group_id" id="option_group_id" class="form-control">
                                             <option value="">None</option>
                                             @foreach($option_groups as $key => $value)
                                             <option value="{{$value->id}}">{{$value->option_group_name}}</option>
@@ -477,6 +477,11 @@
             success:function(res){
                $('questions_'+id).html('');
                $.each(res['data'],function(i,j){
+                    if(j.option_layout ==='vertical'){
+                        var br = '<br>';
+                    }else{
+                        var br = '';
+                    }
                     if(j['form_field_type'].field_type ==='Radio'){
                        var options = [];
                        var optionsvalues = [];
@@ -484,7 +489,7 @@
                        options = j.option_name.split(",");
                        html2 += '<div class="form-group row custom_fields"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div><div class="col-sm-6">';
                        $.each(options, function(k,v){
-                            html2 += '<input type="radio" name="'+j.option_group_name+'_'+j.question_id+'" value="'+optionsvalues[k]+'"> &nbsp;'+v+'&nbsp; ';
+                            html2 += '<input type="radio" name="'+j.option_group_name+'_'+j.question_id+'" value="'+optionsvalues[k]+'"> &nbsp;'+v+'&nbsp;'+br ;
                        })
                        html2 += '</div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
                     }else if(j['form_field_type'].field_type ==='Text'){
