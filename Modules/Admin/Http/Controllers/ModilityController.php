@@ -120,20 +120,6 @@ class ModilityController extends Controller
 
             if (!empty($childmodalities)) {
                 foreach ($childmodalities as $key => $modality) {
-
-//                    $output .= '<ul class="list-group" style="margin-bottom: 1px;">'.'<li class="old_row list-group-item getParentValue" style="border-bottom: 2px solid rgb(71, 84, 109) !important; background-color: #ECEEF0 !important;" >
-//                    <a value='.$modality->id.' at='.$modality->id.' data-id='.$modality->id.' href="#">'.$modality->modility_name. '</a>
-//                    <span class="pull-right"><ul><li class="dropdown"><i class="fa fa-cog" data-toggle="modal"></i>
-//                    <ul class="dropdown-menu">
-//                    <li>
-//                    <a value='.$modality->id.' class="modal-toggle open_modal_edit_child " at='.$modality->id.' data-toggle="modal" data-target="#editChildModal"
-//                    data-id='.$modality->id.'>
-//                    <i class="fa fa-pencil" aria-hidden="true"></i> Edit Phase </a>
-//                    </li> <li><a href="#" data-id='.$modality->id.' class="deleteChild">
-//                    <i class="fa fa-trash" aria-hidden="true"></i> Delete Phase </a> </li>
-//                    </ul></li></ul>
-//                    </span></li>'.'</ul>';
-
                     $output.= '<li class="nav-item mail-item" style="border-bottom: 1px solid #F6F6F7;">
                                 <div class="d-flex align-self-center align-middle">
                                     <div class="mail-content d-md-flex w-100">
@@ -143,20 +129,17 @@ class ModilityController extends Controller
                                         <div class="d-flex mt-3 mt-md-0 ml-auto">
                                             <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                             <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                                <span class="dropdown-item edit_phase" data-id='.$modality->id.'><i class="far fa-edit"></i>&nbsp; Edit</span>
-                                                <span class="dropdown-item" data-id='.$modality->id.'><i class="far fa-clone"></i>&nbsp; Clone</span>
-                                                <span class="dropdown-item deletePhase" data-id='.$modality->id.'><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
+                                                <span class="dropdown-item edit_steps" data-id='.$modality->id.'><i class="far fa-edit"></i>&nbsp; Edit</span>
+                                                <span class="dropdown-item deleteChild" data-id='.$modality->id.'><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </li>';
-
                 }
 
                 return Response ($output);
             }
-
         }
     }
 
@@ -204,10 +187,7 @@ class ModilityController extends Controller
 
         if ($request->ajax())
         {
-
-
             $child = Modility::withTrashed()->find($id)->restore();
-
             return response()->json(['success'=>'Parent and there prospective Childs are restore successfully.']);
         }
     }

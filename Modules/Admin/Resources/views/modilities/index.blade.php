@@ -44,8 +44,8 @@
                                             <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                             <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                 <span class="dropdown-item edit_phase" data-id="{{$modality->id}}"><i class="far fa-edit"></i>&nbsp; Edit</span>
-                                                <span class="dropdown-item" data-id="{{$modality->id}}"><i class="far fa-clone"></i>&nbsp; Clone</span>
-                                                <span class="dropdown-item deletePhase" data-id="{{$modality->id}}"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
+                                                <span class="dropdown-item replicateParent" data-id="{{$modality->id}}"><i class="far fa-clone"></i>&nbsp; Clone</span>
+                                                <span class="dropdown-item deleteParent" data-id="{{$modality->id}}"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                             </div>
                                         </div>
                                     </div>
@@ -55,30 +55,11 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-lg-8 col-xl-8 mb-4 mt-3 pl-lg-0">
+            <div class="col-lg-8 col-xl-8 mb-4 mt-3 pl-lg-0" style="min-height: 450px;">
                 <div class="card border h-100 mail-list-section">
                     <div class="card-body p-0">
                         <div class="scrollertodo">
-                            <ul class="mail-app list-unstyled " id="childClass">
-                                        <li class="py-3 px-2 mail-item tab_" style=" display: block;">
-                                            <div class="d-flex align-self-center align-middle">
-                                                <div class="mail-content d-md-flex w-100">
-                                                    <span class="mail-user"></span>
-                                                    <p class="mail-subject"></p>
-                                                    <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                                        <div class="ml-md-auto mr-3 dot primary"></div>
-                                                        <p class="ml-auto mail-date mb-0"></p>
-                                                        <a href="#" class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog"></i></a>
-                                                        <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                                            <span class="dropdown-item edit_steps"><i class="far fa-edit"></i>&nbsp; Edit</span>
-                                                            <span class="dropdown-item addsection"><i class="far fa-file-code"></i>&nbsp; Add Section</span>
-                                                            <span class="dropdown-item"><i class="far fa-clone"></i>&nbsp; Clone</span>
-                                                            <span class="dropdown-item deleteStep"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
+                            <ul class="list-unstyled inbox-nav  mb-0 mt-2 mail-menu" id="childClass">
                             </ul>
                         </div>
                     </div>
@@ -111,7 +92,7 @@
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal" id="addphase-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="button" class="btn btn-outline-primary" id="saveParent" ><i class="fa fa-save"></i> Save Changes</button>
+                            <button type="submit" class="btn btn-outline-primary" id="saveParent" ><i class="fa fa-save"></i> Save Changes</button>
                         </div>
                     </div>
                 </form>
@@ -119,15 +100,13 @@
         </div>
     </div>
     <!-- add steps agains phases -->
-    <!-- phase modle action="{{route('steps.save')}}" -->
     <div class="modal fade" tabindex="-1" role="dialog" id="editphase" aria-labelledby="exampleModalLongTitle1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header ">
-                    <p class="modal-title">Edit a Phase/p>
+                    <p class="modal-title">Edit a Parent
                 </div>
-            <!-- action="{{route('study.store')}}" -->
                 <form  id="editParentForm" name="editParentForm">
                     <div class="modal-body">
                         <div id="exTab1">
@@ -141,14 +120,11 @@
                                     </div>
                                     <input type="hidden" name="parent_yes" value="1">
                                 </div>
-
-
-
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal" id="addphase-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="button" class="btn btn-outline-primary" id="saveParent" ><i class="fa fa-save"></i> Save Changes</button>
+                            <button type="submit" class="btn btn-outline-primary" id="updateParent" ><i class="fa fa-save"></i> Save Changes</button>
                         </div>
                     </div>
                 </form>
@@ -191,6 +167,35 @@
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal" id="addstep-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                             <button type="button" class="btn btn-outline-primary" id="saveChild"><i class="fa fa-save"></i> Save Changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="editsteps" aria-labelledby="exampleModalLongTitle1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header">
+                    <p class="modal-title">Edit Child</p>
+                </div>
+                <form  id="editChildForm" name="editChildForm">
+                    <div class="modal-body">
+                        <div id="exTab1">
+                            <div class="tab-content clearfix">
+                                @csrf
+
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-3 col-form-label">Child Name</label>
+                                    <div class="col-md-9" id="editChildClass">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-danger" data-dismiss="modal" id="addstep-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="submit" class="btn btn-outline-primary" id="updateChild"><i class="fa fa-save"></i> Save Changes</button>
                         </div>
                     </div>
                 </form>
@@ -288,15 +293,14 @@
         editParent();
         // End of Edit Child Modility
         function editChild(){
-            $(document).on('click','.open_modal_edit_child',function(){
+            $(document).on('click','.edit_steps',function(){
 
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
-                var url = "{{URL('/ocap/childmodilities/')}}";
-                //var url = "{{URL('childmodilities/')}}";
+                var url = "{{URL('/ocap_new/childmodilities/')}}";
                 var child_id = $(this).data('id');
 
                 var newPath = url+ "/"+child_id+"/edit/";
@@ -307,7 +311,7 @@
                     success : function(results)
                     {
                         $('#editChildClass').html(results);
-                        $('#editChildModal').modal('show');
+                        $('#editsteps').modal('show');
                     }
                 });
             });
@@ -343,29 +347,29 @@
         }
         updateChildmodilities();
         //// show Child function
-        function showChild() {
-            $('.list-group-item').click(function() {
+        {{--function showChild() {--}}
+        {{--    $('.list-group-item').click(function() {--}}
 
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-                var id =($(this).attr("data-id"));
-                var url = "{{URL('/ocap_new/modalities')}}";
-                var newPath = url+ "/"+ id+"/showChild/";
+        {{--        $.ajaxSetup({--}}
+        {{--            headers: {--}}
+        {{--                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
+        {{--            }--}}
+        {{--        });--}}
+        {{--        var id =($(this).attr("data-id"));--}}
+        {{--        var url = "{{URL('/ocap_new/modalities')}}";--}}
+        {{--        var newPath = url+ "/"+ id+"/showChild/";--}}
 
-                $.ajax({
-                    type:"GET",
-                    dataType: 'html',
-                    url:newPath,
-                    success : function(results) {
-                        $('#childClass').html(results);
-                    }
-                });
-            });
-        }
-        showChild();
+        {{--        $.ajax({--}}
+        {{--            type:"GET",--}}
+        {{--            dataType: 'html',--}}
+        {{--            url:newPath,--}}
+        {{--            success : function(results) {--}}
+        {{--                $('#childClass').html(results);--}}
+        {{--            }--}}
+        {{--        });--}}
+        {{--    });--}}
+        {{--}--}}
+        {{--showChild();--}}
         //// Add Parent Function
         function modalitiesStore(){
             $('#saveParent').click(function (e) {
@@ -474,13 +478,12 @@
                     }
                 });
                 var parent_id = $(this).data("id");
-                //var url = "{{URL('modalities')}}";
-                var url = "{{URL('/ocap/modalities')}}";
+                var url = "{{URL('/ocap_new/modalities')}}";
                 var newPath = url+ "/"+ parent_id+"/destroy/";
                 if( confirm("Are You sure want to delete !") ==true)
                 {
 
-                    $(this).parent().removeClass('old_row_parent').addClass('new_row_parent').html('<a href="#" data-id= '+parent_id+' class="restoreParent">Undo</a><div id="parent_div">\n' +
+                    $(this).parent().removeClass('old_row_parent').addClass('new_row_parent').html('<span href="#" data-id= '+parent_id+' class="dropdown-item restoreParent"><i class="far fa-trash-alt"></i>&nbsp;Undo</span><div id="parent_div">\n' +
                         '</div>');
 
                     var timeLeft = 15;
@@ -523,19 +526,14 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
-
-
                 var parent_id = $(this).data("id");
-                var url = "{{URL('/ocap/childmodilities')}}";
-                //var url = "{{URL('childmodilities')}}";
+                var url = "{{URL('/ocap_new/childmodilities')}}";
                 var newPath = url+ "/"+ parent_id+"/destroy/";
-
-
                 if( confirm("Are You sure want to delete !") ==true)
                 {
                     //$('.undoChild').append('<li class="list-group-item"><a href="#" data-id= '+parent_id+' class="restoreChild">Undo<i class="fa fa-undo" aria-hidden="true"></i></a></li>');
 
-                    $(this).parent().removeClass('old_row').addClass('new_row').html('<a href="#" data-id= '+parent_id+' class="restoreChild">Undo</a><div id="some_div">\n' +
+                    $(this).parent().removeClass('old_row').addClass('new_row').html('<span href="#" data-id= '+parent_id+' class="restoreChild dropdown-item">Undo</span><div id="some_div">\n' +
                         '</div>');
 
                     var timeLeft = 15;
@@ -581,13 +579,12 @@
                     }
                 });
                 var parent_id = $(this).data("id");
-                var url = "{{URL('childmodilities')}}";
+                var url = "{{URL('/ocap_new/childmodilities')}}";
                 var newPath = url+ "/"+ parent_id+"/restoreChild/";
                 $.ajax({
                     type: "GET",
                     url: newPath,
                     success: function (data) {
-                        //console.log(data);
                         window.setTimeout(function () {
                             location.href = '{{ route('modalities.index') }}';
                         }, 10);
@@ -608,7 +605,7 @@
                     }
                 });
                 var parent_id = $(this).data("id");
-                var url = "{{URL('modalities')}}";
+                var url = "{{URL('/ocap_new/modalities')}}";
                 var newPath = url+ "/"+ parent_id+"/restoreParent/";
                 $.ajax({
                     type: "GET",
@@ -638,8 +635,7 @@
                 });
                 var parent_id = $(this).data("id");
                 console.log(parent_id);
-                var url = "{{URL('/ocap/modalities')}}";
-                //var url = "{{URL('modalities')}}";
+                var url = "{{URL('/ocap_new/modalities')}}";
                 var newPath = url+ "/"+ parent_id+"/replicateParent/";
                 $.ajax({
                     type: "GET",
@@ -657,16 +653,13 @@
             });
         }
         replicateParent();
+
         //// show Child function
-        function showChildModalities() {
+
             $('.showPhasesSteps').click(function() {
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-                var id =($(this).attr("data-id"));
-                var url = "{{URL('/ocap_new/modalities')}}";
+                $.ajaxSetup({ headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
+                var id =($(this).attr("data-id"))
+                var url = "{{URL('ocap_new/modalities')}}";
                 var newPath = url+ "/"+ id+"/showChild/";
                 $.ajax({
                     type:"GET",
@@ -677,30 +670,5 @@
                     }
                 });
             });
-        }
-        showChildModalities();
-
-
-        $( ".getParentValue" ).dblclick(function()
-        {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            var parentId = $(this).data("id");
-            var url = "{{URL('modalities')}}";
-            var newPath = url+ "/"+ parentId+"/edit/";
-            $.ajax({
-                type:"GET",
-                dataType: 'html',
-                url:newPath,
-                success : function(results) {
-                    console.log(results);
-                    $('#childClass').html(results);
-                }
-            });
-        });
-
     </script>
 @stop
