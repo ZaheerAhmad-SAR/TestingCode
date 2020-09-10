@@ -29,7 +29,7 @@ class StudyController extends Controller
       $user = User::with('studies','user_roles')->find(Auth::id());
         //$user = User::with('studies')->find(Auth::id());
         if ($user->role->name == 'admin'){
-            $studies  =   Study::orderBy('created_at')->get();
+            $studies  =   Study::orderBy('study_short_name')->get();
             $users = User::all();
             $sites = Site::all(
             );
@@ -88,14 +88,13 @@ class StudyController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
         $users = User::select('name','id')->where('user_type','!=', 0)->get();
         $sites = Site::all();
         $study =  Study::create([
             'id'    => \Illuminate\Support\Str::uuid(),
             'study_short_name'  =>  $request->study_short_name,
             'study_title' => $request->study_title,
-            'study_status'  => $request->study_status,
+            'study_status'  => 'Development',
             'study_code' => $request->study_code,
             'protocol_number'=> $request->protocol_number,
             'study_phase'=>$request->study_phase,
@@ -165,10 +164,11 @@ class StudyController extends Controller
 
     public function show(Study $study)
     {
-        $id = $study->id;
+        $id = session('current_study');
         $currentStudy = Study::find($id);
-        $user_study_role = RoleStudyUser::where('study_id','=',$currentStudy)->get();
-        $subjects = Subject::with('disease_cohort')->join('sites','sites.id','=','subjects.site_id')->get();
+        $subjects = Subject::where('subjects.study_id','=',$id)
+            ->join('sites','sites.id','=','subjects.site_id')
+            ->get();
         $site_study = StudySite::where('study_id','=',$id)
             ->join('sites', 'sites.id','=','site_study.site_id')
             ->select('sites.site_name','sites.id')
