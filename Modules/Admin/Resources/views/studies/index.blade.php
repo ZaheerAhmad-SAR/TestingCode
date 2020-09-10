@@ -230,19 +230,24 @@
                         </div>
                         {{--Disease tab --}}
                         <div class="tab-pane fade" id="nav-Disease" role="tabpanel" aria-labelledby="nav-Validation-tab">
-                            <div class="field_wrapper form-group row" style="margin-top: 10px;">
-                                <label for="disease_cohort" class="col-md-3">Disease Cohort</label>
-                                <div class="{!! ($errors->has('disease_cohort')) ?'form-group col-md-6 has-error ':'form-group col-md-6' !!}">
-                                    <input type="text" class="form-control" id="disease_cohort" name="disease_cohort[]" value="{{old('disease_cohort')}}">
-                                    @error('disease_cohort')
-                                    <span class="text-danger small">{{ $message }} </span>
-                                    @enderror
+                            <div class="form-group row">
+                                <div class="col-md-12" style="text-align: right; margin-top: 10px">
+                                <a href="javascript:void(0);" class="add_field" title="Add field">
+                                    <button class="btn btn-outline-primary"><i class="fa fa-plus"></i> Add New</button></a>
                                 </div>
-                                <a href="javascript:void(0);" class="add_field" title="Add field"> <i class="btn btn-outline-primary fa fa-plus"></i></a>
-
+                            </div>
+                            <div id="diseaseCohort">
+                                <div class="field_wrapper form-group row" style="margin-top: 10px;">
+                                    <label for="disease_cohort" class="col-md-3">Disease Cohort</label>
+                                    <div class="{!! ($errors->has('disease_cohort')) ?'form-group col-md-6 has-error ':'form-group col-md-6' !!}">
+                                        <input type="text" class="form-control" id="disease_cohort" name="disease_cohort[]" value="{{old('disease_cohort')}}">
+                                        @error('disease_cohort')
+                                        <span class="text-danger small">{{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
                             <div class="appendfields">
-
                             </div>
                         </div>
                     </div>
@@ -332,7 +337,19 @@
                 $('#end_date').val(data.end_date);
                 $('#description').val(data.description);
                 $('#disease_cohort').val(data.disease_cohort);
-            })
+                console.log(data.disease_cohort);
+                var html = '<div class="field_wrapper form-group row" style="margin-top: 10px;">'+
+                    '<label for="disease_cohort" class="col-md-3">Disease Cohort</label>';
+
+                $.each(data.disease_cohort,function (index, value) {
+                    html = '<div class="form-group col-md-6">' +
+                        '<input type="text" class="form-control" id="disease_cohort" name="disease_cohort[]" value="+ value.disease_cohort+">' +
+                        '</div>' +
+                        '<div class="col-md-3"><i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>';
+                })
+                html +="</div>";
+
+           })
         });
 
         $('body').on('click', '#delete-study', function () {
