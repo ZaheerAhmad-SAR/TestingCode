@@ -38,19 +38,19 @@
                         <div class="d-flex align-self-center align-middle">
                             <div class="mail-content d-md-flex w-100">
                                 <a href="#" data-mailtype="tab_{{$phase->id}}" class="nav-link @if ($key === 0) active @endif">
-                                    <span class="mail-user"> {{$phase->position}}. {{$phase->name}}</span> 
-                                </a> 
+                                    <span class="mail-user"> {{$phase->position}}. {{$phase->name}}</span>
+                                </a>
                                 <input type="hidden" class="phase_id" value="{{$phase->id}}">
                                 <input type="hidden" class="phase_study_id" value="{{$phase->study_id}}">
                                 <input type="hidden" class="phase_name" value="{{$phase->name}}">
                                 <input type="hidden" class="phase_position" value="{{$phase->position}}">
-                                <input type="hidden" class="phase_duration" value="{{$phase->duration}}">    
+                                <input type="hidden" class="phase_duration" value="{{$phase->duration}}">
                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
                                     <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                         <span class="dropdown-item edit_phase"><i class="far fa-edit"></i>&nbsp; Edit</span>
                                         <span class="dropdown-item"><i class="far fa-clone"></i>&nbsp; Clone</span>
-                                        <span class="dropdown-item deletePhase"><i class="far fa-trash-alt"></i>&nbsp; Delete</span> 
+                                        <span class="dropdown-item deletePhase"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                     </div>
                                 </div>
                             </div>
@@ -79,8 +79,8 @@
                                 <input type="hidden" class="eligibility" value="{{$step_value->eligibility}}">
                                 <div class="d-flex align-self-center align-middle">
                                     <div class="mail-content d-md-flex w-100">
-                                        <span class="mail-user">{{$step_value->form_type}} - {{$step_value->step_name}}</span> 
-                                        <p class="mail-subject">{{$step_value->step_description}}.</p> 
+                                        <span class="mail-user">{{$step_value->form_type}} - {{$step_value->step_name}}</span>
+                                        <p class="mail-subject">{{$step_value->step_description}}.</p>
                                         <div class="d-flex mt-3 mt-md-0 ml-auto">
                                             <div class="ml-md-auto mr-3 dot primary"></div>
                                             <p class="ml-auto mail-date mb-0">{{$step_value->created_at}}</p>
@@ -89,7 +89,7 @@
                                                 <span class="dropdown-item edit_steps"><i class="far fa-edit"></i>&nbsp; Edit</span>
                                                 <span class="dropdown-item addsection"><i class="far fa-file-code"></i>&nbsp; Add Section</span>
                                                 <span class="dropdown-item"><i class="far fa-clone"></i>&nbsp; Clone</span>
-                                                <span class="dropdown-item deleteStep"><i class="far fa-trash-alt"></i>&nbsp; Delete</span> 
+                                                <span class="dropdown-item deleteStep"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                             </div>
                                         </div>
                                     </div>
@@ -300,10 +300,10 @@
                                   </tr>
                                 </thead>
                                 <tbody id="sectionTable">
-                                  
+
                                 </tbody>
                             </table>
-                        </div>    
+                        </div>
                     </div>
                 </div>
             </form>
@@ -313,7 +313,7 @@
 <!--  -->
 
 @stop
-@section('styles')  
+@section('styles')
 <style>
     .d-flex > span > i {
     cursor: pointer;
@@ -328,9 +328,9 @@
 </style>
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
 @stop
-@section('script')  
-<script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script> 
-<script src="{{ asset('public/dist/js/mail.script.js') }}"></script>  
+@section('script')
+<script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script>
+<script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
 <script>
         $(document).ready(function(){
             // load add model for Phases addsteps
@@ -347,12 +347,12 @@
                 var name = $('input#phase_name').val();
                 var position = $('input#phase_position').val();
                 var duration = $('input#phase_duration').val();
-              
+
                 if(name =='' || position =='' || duration ==''){
                     alert('Please fill all the required fields');
                 }else{
                     $.ajax({
-                        url: (id == '') ? 'study' : 'study/update',   
+                        url: (id == '') ? 'study' : 'study/update',
                         type: 'POST',
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -397,14 +397,14 @@
                                          $('.success-msg').html('Operation Done!')
                                          $('.success-alert').slideDown('slow');
                                          tId=setTimeout(function(){
-                                            $(".success-alert").slideUp('slow');        
+                                            $(".success-alert").slideUp('slow');
                                          }, 3000);
                                       }
-                                    refresh_phase_in_stepForm(); 
+                                    refresh_phase_in_stepForm();
                                    }
                                 }
                             })
-                        }  
+                        }
                     });
                 }
             })
@@ -431,7 +431,7 @@
                 var tId;
                 if (confirm("Are you sure to delete?")) {
                     $.ajax({
-                        url: 'study/'+id,   
+                        url: 'study/'+id,
                         type: 'POST',
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -443,11 +443,11 @@
                             $('.success-msg').html('Operation Done!')
                             $('.success-alert').slideDown('slow');
                             tId=setTimeout(function(){
-                                $(".success-alert").slideUp('slow');        
+                                $(".success-alert").slideUp('slow');
                             }, 3000);
-                        }    
+                        }
                     })
-                }    
+                }
             })
             // load add model for steps
             $('#add_steps').on('click',function(){
@@ -471,7 +471,7 @@
                     alert('Please fill all the required fields');
                 }else{
                     $.ajax({
-                        url: (step_id == '') ? 'steps/store_steps' : 'steps/updateSteps',   
+                        url: (step_id == '') ? 'steps/store_steps' : 'steps/updateSteps',
                         type: 'POST',
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -495,7 +495,7 @@
                                    if(res['data'] != null){
                                       len = res['data'].length;
                                    }
-                                   
+
                                    if(len > 0){
                                       for(var i=0; i<len; i++){
                                         var tId;
@@ -516,7 +516,7 @@
                                             });
                                         }else{
 
-                                        }    
+                                        }
                                         tr_str  += "";
                                         $("#steps-group").append(tr_str);
                                       }
@@ -526,12 +526,12 @@
                                      $('.success-msg').html('Operation Done!')
                                      $('.success-alert').slideDown('slow');
                                      tId=setTimeout(function(){
-                                        $(".success-alert").slideUp('slow');        
+                                        $(".success-alert").slideUp('slow');
                                      }, 3000);
                                    }
                                 }
                             })
-                        }  
+                        }
                     });
                 }
             })
@@ -569,7 +569,7 @@
                 var tId;
                 if (confirm("Are you sure to delete?")) {
                     $.ajax({
-                        url: 'steps/delete_steps/'+step_id, 
+                        url: 'steps/delete_steps/'+step_id,
                         type: 'POST',
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -581,15 +581,15 @@
                             $('.success-msg').html('Operation Done!')
                             $('.success-alert').slideDown('slow');
                             tId=setTimeout(function(){
-                                $(".success-alert").slideUp('slow');        
+                                $(".success-alert").slideUp('slow');
                             }, 3000);
-                        }    
+                        }
                     })
-                }    
+                }
             })
             // Save sections against Steps Save_section {{route('sections.store')}}
             $('#Save_section').on('click',function(){
-                var APP_URL = {!! json_encode(url('/')) !!} 
+                var APP_URL = {!! json_encode(url('/')) !!}
                 var tId;
                 var section_id = $('input#section_id').val();
                 var step_id = $('input#step_id_for_section').val();
@@ -600,7 +600,7 @@
                     alert('Please fill all the required fields');
                 }else{
                     $.ajax({
-                        url: (section_id == '') ? 'sections' : 'section/update', 
+                        url: (section_id == '') ? 'sections' : 'section/update',
                         type: 'POST',
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -619,9 +619,9 @@
                             $('.success-msg-sec').html('Operation Done!')
                             $('.success-alert-sec').slideDown('slow');
                             tId=setTimeout(function(){
-                              $(".success-alert-sec").slideUp('slow');        
+                              $(".success-alert-sec").slideUp('slow');
                             }, 3000);
-                        }  
+                        }
                     });
                 }
             })
@@ -675,11 +675,11 @@
                         $('.success-msg-sec').html('Operation Done!')
                         $('.success-alert-sec').slideDown('slow');
                         tId=setTimeout(function(){
-                          $(".success-alert-sec").slideUp('slow');        
+                          $(".success-alert-sec").slideUp('slow');
                         }, 3000);
-                    }    
+                    }
                    })
-                }   
+                }
             });
 
         })
@@ -693,10 +693,10 @@
                 $.each(res['data'], function(index,value){
                     options += '<option val ="'+value.id+'" >'+value.name+'</option>'
                 });
-                $('#step_phase_id').append(options);    
+                $('#step_phase_id').append(options);
             }
         });
-    }    
+    }
     function Sections(id){
         $.ajax({
              url: 'section',
@@ -705,7 +705,7 @@
              data: {
                 "_token": "{{ csrf_token() }}",
                 'id': id
-            }, 
+            },
              success: function(response){
                var len = 0;
                $('#sectionTable').empty(); // Empty <tbody>
@@ -740,5 +740,5 @@
             }
         });
     }
-    </script>      
+    </script>
 @stop
