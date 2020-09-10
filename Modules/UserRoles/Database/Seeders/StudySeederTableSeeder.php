@@ -17,11 +17,8 @@ class StudySeederTableSeeder extends Seeder
     public function run()
     {
         Model::unguard();
-
-        // $this->call("OthersTableSeeder");
-        $study = Study::find(1);
-
-        if (!$study){
+        $study = Study::all();
+        if (count($study) <= 0){
             $study = Study::create([
                 'id'    => \Illuminate\Support\Str::uuid(),
                 'study_short_name'  =>  'Test Study',
@@ -38,5 +35,6 @@ class StudySeederTableSeeder extends Seeder
                 'user_id'       => \Illuminate\Support\Str::uuid()
             ]);
         }
+
     }
 }
