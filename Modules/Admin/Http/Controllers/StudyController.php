@@ -29,7 +29,7 @@ class StudyController extends Controller
       $user = User::with('studies','user_roles')->find(Auth::id());
         //$user = User::with('studies')->find(Auth::id());
         if ($user->role->name == 'admin'){
-            $studies  =   Study::orderBy('created_at')->get();
+            $studies  =   Study::orderBy('study_short_name')->get();
             $users = User::all();
             $sites = Site::all(
             );
@@ -49,7 +49,7 @@ class StudyController extends Controller
             $sites = Site::all();
         }
 
-        return view('admin::studies.table',compact('studies','sites','users','subjects'));
+        return view('admin::studies.index',compact('studies','sites','users'));
     }
 
     /**
@@ -88,14 +88,35 @@ class StudyController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
+        $studyID = $request->study_id;
+        $study   =   Study::updateOrCreate([
+            'id' => $studyID],
+            [
+                'id'    => \Illuminate\Support\Str::uuid(),
+                'study_short_name'  =>  $request->study_short_name,
+                'study_title' => $request->study_title,
+                'study_status'  => 'Development',
+                'study_code' => $request->study_code,
+                'protocol_number'=> $request->protocol_number,
+                'study_phase'=>$request->study_phase,
+                'trial_registry_id'=>$request->trial_registry_id,
+                'study_sponsor'=>$request->study_sponsor,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'description'   =>  $request->description,
+                'user_id'       => $request->user()->id
+            ]);
+
+        return \response()->json($study);
+
+
         $users = User::select('name','id')->where('user_type','!=', 0)->get();
         $sites = Site::all();
         $study =  Study::create([
             'id'    => \Illuminate\Support\Str::uuid(),
             'study_short_name'  =>  $request->study_short_name,
             'study_title' => $request->study_title,
-            'study_status'  => $request->study_status,
+            'study_status'  => 'Development',
             'study_code' => $request->study_code,
             'protocol_number'=> $request->protocol_number,
             'study_phase'=>$request->study_phase,
@@ -147,35 +168,20 @@ class StudyController extends Controller
      * @param int $id
      * @return Response
      */
-//    public function show(Study $study)
-//    {
-//        $id = $study->id;
-//        $subjects = Subject::where('subjects.study_id','=',$id)
-//            ->get();
-//       //dd($subjects);
-//        $site_study = StudySite::where('study_id','=',$id)
-//            ->join('sites', 'sites.id','=','site_study.site_id')
-//            ->select('sites.site_name','sites.id')
-//            ->get();
-//        $diseaseCohort = DiseaseCohort::where('study_id','=',$id)->get();
-//
-//        return view('admin::studies.show',compact('study','subjects','site_study','diseaseCohort'));
-//    }
-
-
     public function show(Study $study)
     {
-        $id = $study->id;
+        $id = session('current_study');
         $currentStudy = Study::find($id);
-        $user_study_role = RoleStudyUser::where('study_id','=',$currentStudy)->get();
-        $subjects = Subject::with('disease_cohort')->join('sites','sites.id','=','subjects.site_id')->get();
+        $subjects = Subject::where('subjects.study_id','=',$id)
+            ->join('sites','sites.id','=','subjects.site_id')
+            ->get();
         $site_study = StudySite::where('study_id','=',$id)
             ->join('sites', 'sites.id','=','site_study.site_id')
             ->select('sites.site_name','sites.id')
             ->get();
 
         $diseaseCohort = DiseaseCohort::where('study_id','=',$id)->get();
-        return view('admin::studies.show',compact('study','subjects','currentStudy','site_study','diseaseCohort','studyName'));
+        return view('admin::studies.show',compact('study','subjects','currentStudy','site_study','diseaseCohort'));
     }
 
     /**
@@ -183,12 +189,12 @@ class StudyController extends Controller
      * @param int $id
      * @return Response
      */
-    public function edit(Study $study)
+    public function edit($id)
     {
-        $study = Study::with('diseaseCohort','users')->find($study->id);
-        return \response()->json($study);
+        $where = array('id' => $id);
+        $study  = Study::with('diseaseCohort')->where($where)->first();
 
- //       return view('admin::studies.edit', compact('study'));
+        return \response()->json($study);
     }
 
     /**
@@ -221,6 +227,7 @@ class StudyController extends Controller
 
     /** get clone of the study */
     public function cloneStudy(Request $request){
+        dd($request->all());
         $mystudy = Study::with('users','subjects','diseaseCohort','sites')
             ->find($request->id);
         $id = \Illuminate\Support\Str::uuid();
@@ -231,7 +238,7 @@ class StudyController extends Controller
                 'id'    => $id,
                 'study_short_name'  =>  $mystudy->study_short_name.' Cloned ',
                 'study_title' => $mystudy->study_title,
-                'study_status'  => $mystudy->study_status,
+                'study_status'  => 'Development',
                 'study_code' => $mystudy->study_code,
                 'protocol_number'=> $mystudy->protocol_number,
                 'study_phase'=>$mystudy->study_phase,
@@ -290,10 +297,10 @@ class StudyController extends Controller
 
                 }
             }
-
-            //$replica->save();
-        }
-        return redirect()->route('studies.index')->with('success','Study cloned successfully');
+     }
+        $studies = Study::all();
+        return \response()->json($studies);
+//     return redirect()->route('studies.index')->with('success','Study cloned successfully');
     }
 
     /**
@@ -301,9 +308,10 @@ class StudyController extends Controller
      * @param int $id
      * @return Response
      */
-    public function destroy(Study $study)
+    public function destroy($id)
     {
-        $study->delete();
-        return redirect()->route('studies.index');
+        $study = Study::where('id',$id)->delete();
+        //dd($study);
+        return \reponse()->json($study);
     }
 }
