@@ -2,12 +2,7 @@
 @section('title')
     <title> View Study Details | {{ config('app.name', 'Laravel') }}</title>
 @stop
-@section('content')
-@php
-        $studyid = last(request()->segments());
-//        session(['current_study'=>$studyid,'study_short_name'=> $study->study_short_name]);
-        session(['current_study'=>$studyid,'study_short_name'=> $study->study_short_name]);
-         @endphp
+@section('content')    
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
         <div class="row ">
@@ -46,7 +41,8 @@
                             <tbody>
                             @foreach($subjects as $subject)
                             <tr>
-                                <td>{{$subject->subject_id}}</td>
+                                <td><a href="{{route('showSubjectForm',['subject_id'=>$subject->id])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
+                                </td>
                                 <td>{{$subject->enrollment_date}}</td>
                                 <td>{{!empty($subject->site_id)?$subject->site_name:'SiteName'}}</td>
                                 <td>{{!empty($subject->disease_cohort->name)?$subject->disease_cohort->name:'Not Defined'}}</td>
