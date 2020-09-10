@@ -127,7 +127,9 @@ class StudyController extends Controller
      */
     public function show(Study $study)
     {
-        $id = session('current_study');
+
+        session(['current_study'=>$study->id,'study_short_name'=> $study->study_short_name]);        
+        $id = $study->id;
         $currentStudy = Study::find($id);
         $subjects = Subject::where('subjects.study_id','=',$id)
             ->join('sites','sites.id','=','subjects.site_id')

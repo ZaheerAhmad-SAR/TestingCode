@@ -143,5 +143,8 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
 
     Route::post('studySite/updateStudySite','StudySiteController@updateStudySite')->name('updateStudySiteId');
 
+    //SubjectFormLoader
+    Route::get('subject_form/{subject_id}','SubjectFormLoaderController@showSubjectForm')->name('showSubjectForm');
+
 });
 
