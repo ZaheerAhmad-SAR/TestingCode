@@ -258,6 +258,31 @@
         </div>
     </div>
 </div>
+
+    <!-- cloneStudy -->
+    <div class="modal fade" id="clone-study-modal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="dialog">
+            <div class="modal-content" style="width: inherit; top: auto!important;">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header">
+                    <h4 class="modal-title" id="Clone-Study-Modal"></h4>
+                </div>
+                <div class="modal-body">
+                    <form id="cloneForm" name="cloneForm" class="form-horizontal">
+                        <input type="hidden" name="clone_id" id="clone_id">
+                        <div class="custom-modal-body">
+                            <div class="modal-footer">
+                                <button class="btn custom-btn blue-color" data-dismiss="modal">
+                                    <i class="fa fa-window-close blue-color" aria-hidden="true"></i> Close</button>
+                                <button type="submit" class="btn custom-btn blue-color">
+                                    <i class="fa fa-save blue-color"></i> Save</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('script')
     <script src="{{ asset('public/dist/js/jquery.validate.min.js') }}"></script>
@@ -292,7 +317,7 @@
 
         $('body').on('click', '#edit-study', function () {
             var study_id = $(this).data('id');
-            $.get('studies/'+study_id+'/edit', function (data) {
+           var edit_study = $.get('studies/'+study_id+'/edit', function (data) {
                 $('#studyCrudModal').html("Edit study");
                 $('#btn-save').val("edit-study");
                 $('#study-crud-modal').modal('show');
@@ -309,6 +334,7 @@
                 $('#disease_cohort').val(data.disease_cohort);
             })
         });
+
         $('body').on('click', '#delete-study', function () {
             var study_id = $(this).data("id");
             confirm("Are You sure want to delete !");
@@ -340,13 +366,14 @@
             var parent_id = $(this).data("id");
             alert(parent_id);
             var newPath = "{{URL('studies/cloneStudy')}}";
-            confirm("Are You sure want to clone this study !");
+            alert(newPath)
             $.ajax({
-                type: "PUT",
+                type: "POST",
                 data:{'id':parent_id},
                 url: newPath,
                 success: function (data) {
                     console.log(data);
+                    location.reload();
 
                 },
                 error: function (data) {
@@ -354,6 +381,7 @@
                 }
             });
         });
+
     });
 
 
@@ -386,8 +414,10 @@
 
                         if (actionType == "create-study") {
                             $('#studys-crud').prepend(study);
+                            location.reload();
                         } else {
                             $("#study_id_" + data.id).replaceWith(study);
+                            location.reload();
                         }
 
                         $('#studyForm').trigger("reset");

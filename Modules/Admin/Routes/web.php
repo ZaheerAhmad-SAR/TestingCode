@@ -73,6 +73,8 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
     Route::post('steps/store_steps','StudyStructureController@store_steps')->name('steps.save');
     Route::post('steps/updateSteps','StudyStructureController@update_steps')->name('steps.update');
     Route::post('studies/studyStatus','StudyController@studyStatus')->name('studies.studyStatus');
+    Route::post('studies/cloneStudy','StudyController@cloneStudy')->name('studies.cloneStudy');
+
     //end
     // routes for adding sections
     // Route::resource('section','SectionController');
