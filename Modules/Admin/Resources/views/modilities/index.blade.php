@@ -44,8 +44,8 @@
                                             <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                             <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                 <span class="dropdown-item edit_phase" data-id="{{$modality->id}}"><i class="far fa-edit"></i>&nbsp; Edit</span>
-                                                <span class="dropdown-item" data-id="{{$modality->id}}"><i class="far fa-clone"></i>&nbsp; Clone</span>
-                                                <span class="dropdown-item deletePhase" data-id="{{$modality->id}}"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
+                                                <span class="dropdown-item replicateParent" data-id="{{$modality->id}}"><i class="far fa-clone"></i>&nbsp; Clone</span>
+                                                <span class="dropdown-item deleteParent" data-id="{{$modality->id}}"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                             </div>
                                         </div>
                                     </div>
@@ -55,7 +55,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="col-lg-8 col-xl-8 mb-4 mt-3 pl-lg-0">
+            <div class="col-lg-8 col-xl-8 mb-4 mt-3 pl-lg-0" style="min-height: 450px;">
                 <div class="card border h-100 mail-list-section">
                     <div class="card-body p-0">
                         <div class="scrollertodo">
@@ -180,7 +180,7 @@
                 <div class="modal-header">
                     <p class="modal-title">Edit Child</p>
                 </div>
-                <form  id="childForm" name="childForm">
+                <form  id="editChildForm" name="editChildForm">
                     <div class="modal-body">
                         <div id="exTab1">
                             <div class="tab-content clearfix">
@@ -191,12 +191,11 @@
                                     <div class="col-md-9" id="editChildClass">
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal" id="addstep-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="submit" class="btn btn-outline-primary" id="saveChild"><i class="fa fa-save"></i> Save Changes</button>
+                            <button type="submit" class="btn btn-outline-primary" id="updateChild"><i class="fa fa-save"></i> Save Changes</button>
                         </div>
                     </div>
                 </form>
@@ -479,13 +478,12 @@
                     }
                 });
                 var parent_id = $(this).data("id");
-                //var url = "{{URL('modalities')}}";
-                var url = "{{URL('/ocap/modalities')}}";
+                var url = "{{URL('/ocap_new/modalities')}}";
                 var newPath = url+ "/"+ parent_id+"/destroy/";
                 if( confirm("Are You sure want to delete !") ==true)
                 {
 
-                    $(this).parent().removeClass('old_row_parent').addClass('new_row_parent').html('<a href="#" data-id= '+parent_id+' class="restoreParent">Undo</a><div id="parent_div">\n' +
+                    $(this).parent().removeClass('old_row_parent').addClass('new_row_parent').html('<span href="#" data-id= '+parent_id+' class="dropdown-item restoreParent"><i class="far fa-trash-alt"></i>&nbsp;Undo</span><div id="parent_div">\n' +
                         '</div>');
 
                     var timeLeft = 15;
@@ -528,19 +526,14 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
-
-
                 var parent_id = $(this).data("id");
-                var url = "{{URL('/ocap/childmodilities')}}";
-                //var url = "{{URL('childmodilities')}}";
+                var url = "{{URL('/ocap_new/childmodilities')}}";
                 var newPath = url+ "/"+ parent_id+"/destroy/";
-
-
                 if( confirm("Are You sure want to delete !") ==true)
                 {
                     //$('.undoChild').append('<li class="list-group-item"><a href="#" data-id= '+parent_id+' class="restoreChild">Undo<i class="fa fa-undo" aria-hidden="true"></i></a></li>');
 
-                    $(this).parent().removeClass('old_row').addClass('new_row').html('<a href="#" data-id= '+parent_id+' class="restoreChild">Undo</a><div id="some_div">\n' +
+                    $(this).parent().removeClass('old_row').addClass('new_row').html('<span href="#" data-id= '+parent_id+' class="restoreChild dropdown-item">Undo</span><div id="some_div">\n' +
                         '</div>');
 
                     var timeLeft = 15;
@@ -586,13 +579,12 @@
                     }
                 });
                 var parent_id = $(this).data("id");
-                var url = "{{URL('childmodilities')}}";
+                var url = "{{URL('/ocap_new/childmodilities')}}";
                 var newPath = url+ "/"+ parent_id+"/restoreChild/";
                 $.ajax({
                     type: "GET",
                     url: newPath,
                     success: function (data) {
-                        //console.log(data);
                         window.setTimeout(function () {
                             location.href = '{{ route('modalities.index') }}';
                         }, 10);
@@ -613,7 +605,7 @@
                     }
                 });
                 var parent_id = $(this).data("id");
-                var url = "{{URL('modalities')}}";
+                var url = "{{URL('/ocap_new/modalities')}}";
                 var newPath = url+ "/"+ parent_id+"/restoreParent/";
                 $.ajax({
                     type: "GET",
@@ -643,8 +635,7 @@
                 });
                 var parent_id = $(this).data("id");
                 console.log(parent_id);
-                var url = "{{URL('/ocap/modalities')}}";
-                //var url = "{{URL('modalities')}}";
+                var url = "{{URL('/ocap_new/modalities')}}";
                 var newPath = url+ "/"+ parent_id+"/replicateParent/";
                 $.ajax({
                     type: "GET",
@@ -662,6 +653,7 @@
             });
         }
         replicateParent();
+
         //// show Child function
 
             $('.showPhasesSteps').click(function() {

@@ -130,8 +130,7 @@ class ModilityController extends Controller
                                             <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                             <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                 <span class="dropdown-item edit_steps" data-id='.$modality->id.'><i class="far fa-edit"></i>&nbsp; Edit</span>
-                                                <span class="dropdown-item" data-id='.$modality->id.'><i class="far fa-clone"></i>&nbsp; Clone</span>
-                                                <span class="dropdown-item deletePhase" data-id='.$modality->id.'><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
+                                                <span class="dropdown-item deleteChild" data-id='.$modality->id.'><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                             </div>
                                         </div>
                                     </div>
@@ -188,10 +187,7 @@ class ModilityController extends Controller
 
         if ($request->ajax())
         {
-
-
             $child = Modility::withTrashed()->find($id)->restore();
-
             return response()->json(['success'=>'Parent and there prospective Childs are restore successfully.']);
         }
     }
