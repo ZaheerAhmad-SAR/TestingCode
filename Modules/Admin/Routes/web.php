@@ -54,9 +54,6 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
 
     Route::DELETE('optionsGroup/destroy/{options_id}','OptionsGroupController@destroy')->name('destroyOptionsGroup');
 
-//    Route::DELETE('optionsGroup/destroy/{options_id}','OptionsGroupController@destroy')->name('destroyOptionsGroup');
-//
-//    Route::DELETE('optionsGroup/destroyUpdateRow/{options_id}','OptionsGroupController@destroyUpdateRow')->name('removeUpdatedItem');
 
     // routes for form managment
     Route::resource('forms','FormController');

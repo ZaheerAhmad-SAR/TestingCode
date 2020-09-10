@@ -1,250 +1,267 @@
 @extends ('layouts.home')
-@section('title')
-    <title> Modalities | {{ config('app.name', 'Laravel') }}</title>
-@stop
 @section('content')
-    <style>
-        .dropdown{
-            position: absolute;
-        }
-        .dropdown-menu {
-            width: 25px;
-            min-height: 31px;
-            top: -5px;
-            left: -40px;
-        }
-        .dropdown .dropdown-menu a:hover{
-            background: #fff;
-            color: #4D4D4D;
-            cursor: pointer;
-        }
-        .dropdown:hover .dropdown-menu {
-            display:inline;
-            position: absolute;
-            background-color: #fff;
-        }
-        ul{
-            list-style: none;
-        }
-        .dropdown .dropdown-menu{
-            min-width: 100px;
-            font-size: 12px;
-        }
-        .dropdown .dropdown-menu a {
-            padding: 3px 3px 3px 3px;
-            display: block;
-        }
-        .dropdown .dropdown-menu i{
-            font-size: 14px;
-        }
-        .custom-btn{
-            border: 1px solid cadetblue;
-            border-radius: 4px;
-            margin-bottom: 3px;
-            background: #fff;
-        }
-        .blue-color{
-            color: cadetblue;
-        }
-        .blue-background{
-            background: cadetblue;
-        }
-        .color-white{
-            color: #ffffff;
-        }
-    </style>
-    <div class="row">
-        <div class="col-lg-12" style="min-height: 20px;"></div>
-        <div class="col-lg-12">
-                    <div class="col-lg-12">
-                        <div class="panel">
-                            <p class="color-black">Modalities</p>
-                        </div>
-                    </div>
-            <div class="col-lg-12" style="min-height: 20px;"></div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="modal" id="parentModel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
-                                <div class="modal-dialog">
-                                    <div class="modal-content" style="width: inherit;">
-                                        <div class="modal-header blue-background  color-white">
-                                            <h5 class="modal-title" id="childModalLabel">Add Parent</h5>
+    <div class="container-fluid site-width">
+        <!-- START: Breadcrumbs-->
+        <div class="row ">
+            <div class="col-12 align-self-center">
+                <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
+                    <div class="w-sm-100 mr-auto"><h4 class="mb-0">Modalities</h4></div>
+
+                    <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
+                        <li class="breadcrumb-item">Dashboard</li>
+                        <li class="breadcrumb-item">Modalities</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="col-lg-12 success-alert" style="display: none;">
+                <div class="alert alert-primary success-msg" role="alert">
+                </div>
+            </div>
+        </div>
+        <!-- END: Breadcrumbs-->
+
+        <!-- START: Card Data-->
+        <div class="row">
+            <div class="eagle-divider"></div>
+            <div class="col-lg-4 col-xl-4">
+                Parent <button class="custom-btn blue-color" id="add_phase"> <i class="fa fa-plus blue-color"></i> add</button>
+            </div>
+            <div class="col-lg-8  col-xl-8">
+                Child <button class="custom-btn blue-color" id="add_steps"><i class="fa fa-plus blue-color"></i> add</button>
+            </div>
+            <div class="col-lg-4 col-xl-4 mb-4 mt-3 pr-lg-0 flip-menu">
+                <a href="#" class="d-inline-block d-lg-none mt-1 flip-menu-close"><i class="icon-close"></i></a>
+                <div class="card border h-100 mail-menu-section ">
+                    <ul class="list-unstyled inbox-nav  mb-0 mt-2 mail-menu" id="phases-group">
+                        @foreach($modalities as $modality)
+                            <li class="nav-item mail-item" style="border-bottom: 1px solid #F6F6F7;">
+                                <div class="d-flex align-self-center align-middle">
+                                    <div class="mail-content d-md-flex w-100">
+                                        <a href="#" data-mailtype="tab_" data-id="{{$modality->id}}" class="nav-link showPhasesSteps">
+                                            <span class="mail-user">{{$modality->modility_name}}</span>
+                                        </a>
+                                        <div class="d-flex mt-3 mt-md-0 ml-auto">
+                                            <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                            <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
+                                                <span class="dropdown-item edit_phase" data-id="{{$modality->id}}"><i class="far fa-edit"></i>&nbsp; Edit</span>
+                                                <span class="dropdown-item" data-id="{{$modality->id}}"><i class="far fa-clone"></i>&nbsp; Clone</span>
+                                                <span class="dropdown-item deletePhase" data-id="{{$modality->id}}"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
+                                            </div>
                                         </div>
-                                        <form id="parentForm" name="parentForm" class="form-horizontal">
-                                            <div class="modal-body">
-                                                <div class="form-group">
-                                                    <label for="name" class="col-sm-2 control-label">Name</label>
-                                                    <div class="col-sm-10">
-                                                        <input type="text" class="form-control" id="modility_name" name="modility_name" placeholder="Enter Modility name" maxlength="50"  value="{{old('modility_name')}}" required/>
-                                                    </div>
-                                                </div>
-                                                <input type="hidden" name="parent_yes" value="1">
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="submit" class="btn custom-btn blue-color" id="saveParent" value="create" style="margin-top: 4px;"><i class="fa fa-save blue-color"></i> Save
-                                                </button>
-                                                <button type="button" class="btn custom-btn blue-color" data-dismiss="modal"><i class="fa fa-window-close blue-color" aria-hidden="true"></i> Close</button>
-                                            </div>
-                                        </form>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <!-- Button trigger modal -->
-                            <!--  <button type="button" class="btn btn-outline-primary">
-                             Create Child
-                             </button> -->
-                            <!-- Modal -->
-                            <div class="modal" id="childModal" tabindex="-1" role="dialog" aria-labelledby="childModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content" style="width: inherit;">
-                                        <div class="modal-header blue-background  color-white">
-                                            <h5 class="modal-title" id="childModalLabel">Add Child</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <form id="childForm" name="childForm" class="form-horizontal">
-                                            <div class="modal-body">
-                                                <div class="form-group">
-                                                    <label class="col-sm-3" for="modility_name">Child Name</label>
-                                                    <div class="col-sm-9">
-                                                        <input type="text" class="form-control" id="modility_name" name="modility_name" value="{{old('modility_name')}}" required/>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group">
-                                                    <label class="col-sm-3" for="modility_name">Modality</label>
-                                                    <div class="col-sm-9">
-                                                        <select class="form-control" name="parent_id" id="parent_id">
-                                                            <option value="">Select Parent Modality</option>
-                                                            @foreach ($modalities as $modility)
-                                                                <option value="{{ $modility->id }}">{{ $modility->modility_name }}</option>
-                                                            @endforeach
-                                                        </select>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-8 col-xl-8 mb-4 mt-3 pl-lg-0">
+                <div class="card border h-100 mail-list-section">
+                    <div class="card-body p-0">
+                        <div class="scrollertodo">
+                            <ul class="mail-app list-unstyled " id="childClass">
+                                        <li class="py-3 px-2 mail-item tab_" style=" display: block;">
+                                            <div class="d-flex align-self-center align-middle">
+                                                <div class="mail-content d-md-flex w-100">
+                                                    <span class="mail-user"></span>
+                                                    <p class="mail-subject"></p>
+                                                    <div class="d-flex mt-3 mt-md-0 ml-auto">
+                                                        <div class="ml-md-auto mr-3 dot primary"></div>
+                                                        <p class="ml-auto mail-date mb-0"></p>
+                                                        <a href="#" class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog"></i></a>
+                                                        <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
+                                                            <span class="dropdown-item edit_steps"><i class="far fa-edit"></i>&nbsp; Edit</span>
+                                                            <span class="dropdown-item addsection"><i class="far fa-file-code"></i>&nbsp; Add Section</span>
+                                                            <span class="dropdown-item"><i class="far fa-clone"></i>&nbsp; Clone</span>
+                                                            <span class="dropdown-item deleteStep"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" id="saveChild" class="btn custom-btn blue-color" style="margin-top: 4px;"><i class="fa fa-save blue-color"></i> Save</button>
-                                                <button type="button" class="btn custom-btn blue-color" data-dismiss="modal"><i class="fa fa-window-close blue-color" aria-hidden="true"></i> Close</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                <div class="panel-body" style="min-height: 450px;">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <button class="custom-btn blue-color"  data-toggle="modal" data-target="#parentModel"><i class="fa fa-plus blue-color"></i> add</button>
-                            <ul class="list-group">
-                                @foreach($modalities as $modality)
-                                    <li data-id="{{$modality->id}}" id="{{$modality->id}}" style="border-bottom: 2px solid rgb(71, 84, 109) !important; background-color: #ECEEF0 !important;" class="list-group-item getParentValue">
-                                        <a class="" href="#"> {{$modality->modility_name}}</a>
-                                        <span class="pull-right">
-                                        <ul>
-                                        <li class="dropdown">
-                                            <i class="fa fa-cog" data-toggle="modal"></i>
-                                            <ul class="dropdown-menu">
-                                                <li>
-                                                    <a class="modal-toggle open_modal " at="{{$modality->id}}" data-toggle="modal" data-target="#editParentModal" data-id="{{$modality->id}}" >
-                                                        <i class="fa fa-pencil" aria-hidden="true"></i> Edit Phase
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#" data-id="{{$modality->id}}" class="deleteParent">
-                                                        <i class="fa fa-trash" aria-hidden="true"></i> Delete Phase
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a href="#" class="replicateParent" data-id="{{$modality->id}}">
-                                                        <i class="fa fa-clone" aria-hidden="true"></i> Clone  Item
-                                                    </a>
-                                                </li>
-
-                                            </ul>
                                         </li>
-                                    </ul>
-                                </span>
-                                    </li>
-                                @endforeach
                             </ul>
-
-                        </div>
-                        <div class="col-sm-6">
-                            <button class="custom-btn blue-color"  data-toggle="modal" data-target="#childModal"><i class="fa fa-plus blue-color"></i> add</button>
-                            <div id="childClass"></div>
                         </div>
                     </div>
                 </div>
-        <!-- <div class="row"> -->
-        <div class="modal" id="editParentModal" tabindex="-1" role="dialog" aria-labelledby="editParentModal" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content" style="width: inherit;">
-                    <div class="modal-header blue-background  color-white">
-                        <h5 class="modal-title" id="editParentModalLabel">Edit Parent</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <form id="editParentForm" name="editParentForm">
-                        <div class="modal-body" id="modal-body">
-                            <input type="hidden" name="parent_yes" value="1">
-                            <div class="form-group">
-                                <label for="name" class="col-sm-2 control-label">Name</label>
-                                <div class="col-sm-10" id="editParentClass"></div>
+            </div>
+        </div>
+        <!-- END: Card DATA-->
+    </div>
+    <!-- phase modle -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="addphase" aria-labelledby="exampleModalLongTitle1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header ">
+                    <p class="modal-title">Add Parent</p>
+                </div>
+                <form  id="parentForm" name="parentForm">
+                    <div class="modal-body">
+                        <div id="exTab1">
+                            <div class="tab-content clearfix">
+                                @csrf
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-3 col-form-label">Name</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="modility_name" name="modility_name" placeholder="Enter Modility name" maxlength="50"  value="{{old('modility_name')}}" required/>
+                                    </div>
+                                    <input type="hidden" name="parent_yes" value="1">
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn custom-btn blue-color" name="saveEditParent" id="saveEditParent" value="create" style="margin-top: 4px;"><i class="fa fa-save blue-color"></i> Save
-                            </button>
-
-                            <button type="button" class="btn custom-btn blue-color" data-dismiss="modal"><i class="fa fa-window-close blue-color" aria-hidden="true"></i> Close</button>
+                            <button class="btn btn-outline-danger" data-dismiss="modal" id="addphase-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="button" class="btn btn-outline-primary" id="saveParent" ><i class="fa fa-save"></i> Save Changes</button>
                         </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        <!-- </div> -->
-        <div class="row">
-            <div class="modal" id="editChildModal" tabindex="-1" role="dialog" aria-labelledby="editParentModal" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content" style="width: inherit;">
-                        <div class="modal-header blue-background  color-white">
-                            <h5 class="modal-title" id="editChildModalLabel">Edit Child</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form class="" id="editChildForm" name="editChildForm">
-                            <div class="modal-body" id="modal-body">
-                                <div class="form-group">
-                                    <label for="name" class="col-sm-2 control-label">Name</label>
-                                    <div class="col-sm-10" id="editChildClass">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="submit" class="btn custom-btn blue-color" name="saveEditChild" id="saveEditChild" value="create" style="margin-top: 4px;"><i class="fa fa-save blue-color"></i> Save
-                                </button>
-                                <button type="button" class="btn custom-btn blue-color" data-dismiss="modal"><i class="fa fa-window-close blue-color" aria-hidden="true"></i> Close</button>
-                            </div>
-                        </form>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
-@endsection
-@section('scripts')
+    <!-- add steps agains phases -->
+    <!-- phase modle action="{{route('steps.save')}}" -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="editphase" aria-labelledby="exampleModalLongTitle1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header ">
+                    <p class="modal-title">Edit a Phase/p>
+                </div>
+            <!-- action="{{route('study.store')}}" -->
+                <form  id="editParentForm" name="editParentForm">
+                    <div class="modal-body">
+                        <div id="exTab1">
+                            <div class="tab-content clearfix">
+                                @csrf
 
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-3 col-form-label">Name</label>
+                                    <div class="col-sm-9" id="editParentClass">
+                                        <input type="text" class="form-control" id="modility_name" name="modility_name" placeholder="Enter Modility name" maxlength="50"  value="{{old('modility_name')}}" required/>
+                                    </div>
+                                    <input type="hidden" name="parent_yes" value="1">
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-danger" data-dismiss="modal" id="addphase-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="button" class="btn btn-outline-primary" id="saveParent" ><i class="fa fa-save"></i> Save Changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="addsteps" aria-labelledby="exampleModalLongTitle1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header">
+                    <p class="modal-title">Add Child</p>
+                </div>
+                <form  id="childForm" name="childForm">
+                    <div class="modal-body">
+                        <div id="exTab1">
+                            <div class="tab-content clearfix">
+                                @csrf
+
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-3 col-form-label">Child Name</label>
+                                    <div class="col-md-9">
+                                        <input type="text" class="form-control" id="modility_name" name="modility_name" value="{{old('modility_name')}}" required/>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-3 col-form-label">Modality</label>
+                                    <div class="col-md-9">
+                                        <select class="form-control" name="parent_id" id="parent_id">
+                                            <option value="">Select Parent Modality</option>
+                                            @foreach ($modalities as $modility)
+                                                <option value="{{ $modility->id }}">{{ $modility->modility_name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-danger" data-dismiss="modal" id="addstep-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="button" class="btn btn-outline-primary" id="saveChild"><i class="fa fa-save"></i> Save Changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!--  -->
+
+    <!--  -->
+
+@stop
+@section('styles')
+    <style>
+        .d-flex > span > i {
+            cursor: pointer;
+
+        }
+        .mail-menu li a {
+            font-weight: 600 !important;
+        }
+        .dropdown-menu span{
+            cursor: pointer;
+        }
+    </style>
+    <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
+@stop
+@section('script')
+
+@section('script')
     <script type="text/javascript">
+        $('body').on('click','.edit_phase',function(){
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            var url = "{{URL('/ocap_new/modalities')}}";
+            var parent_id = $(this).data('id');
+            //alert(parent_id);
+            var newPath = url+ "/"+parent_id+"/edit/";
+            $.ajax({
+                type:"GET",
+                dataType: 'html',
+                url:newPath,
+                success : function(results)
+                {
+                    $('#editParentClass').html(results);
+                    $('#editphase').trigger('reset');
+                    $('#editphase').modal('show');
+                }
+            });
+
+
+        })
+        $('#add_phase').on('click',function(){
+
+            // $('.modal-title').html('Add a Phase');
+            // $('#add_edit_phase').trigger('reset');
+
+            $('#addphase').modal('show');
+        })
+
+        $('#add_steps').on('click',function(){
+            // $('.modal-title').html('Add a steps');
+            // $('#add_edit_steps').trigger('reset');
+            // $('#step_id').val('');
+            $('#addsteps').modal('show');
+        })
+
         // Edit Parent Modility by id
-        function editParent()
-        {
+        function editParent(){
             $(document).on('click','.open_modal',function(){
                 $.ajaxSetup({
                     headers: {
@@ -268,13 +285,9 @@
                 });
             });
         }
-
         editParent();
-
         // End of Edit Child Modility
-
-        function editChild()
-        {
+        function editChild(){
             $(document).on('click','.open_modal_edit_child',function(){
 
                 $.ajaxSetup({
@@ -299,17 +312,10 @@
                 });
             });
         }
-
         editChild();
-
-
-
         /// Update Child Modility Function
-
-
-        function updateChildmodilities ()
-        {
-                $("#editChildForm").submit(function(e) {
+        function updateChildmodilities (){
+            $("#editChildForm").submit(function(e) {
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -336,15 +342,8 @@
             });
         }
         updateChildmodilities();
-
-
-
-
-
         //// show Child function
-
-        function showChild()
-        {
+        function showChild() {
             $('.list-group-item').click(function() {
 
                 $.ajaxSetup({
@@ -352,12 +351,8 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
-
                 var id =($(this).attr("data-id"));
-
-                var url = "{{URL('/ocap/modalities')}}";
-                //var url = "{{URL('modalities')}}";
-
+                var url = "{{URL('/ocap_new/modalities')}}";
                 var newPath = url+ "/"+ id+"/showChild/";
 
                 $.ajax({
@@ -370,13 +365,9 @@
                 });
             });
         }
-
         showChild();
-
         //// Add Parent Function
-
-        function modalitiesStore()
-        {
+        function modalitiesStore(){
             $('#saveParent').click(function (e) {
 
                 $.ajaxSetup({
@@ -395,7 +386,7 @@
                     success: function (data) {
 
                         $('#parentForm').trigger("reset");
-                        $('#parentModel').modal('hide');
+                        $('#add_phase').modal('hide');
 
                         window.setTimeout(function () {
                             location.href = '{{ route('modalities.index') }}';
@@ -409,15 +400,9 @@
                 });
             });
         }
-
         modalitiesStore();
-
-
-
         /// update Modalities Function
-
-        function updateModalities()
-        {
+        function updateModalities() {
             $("#editParentForm").submit(function(e) {
 
 
@@ -434,7 +419,7 @@
                     type: "POST",
                     dataType: 'json',
                     success: function (data) {
-                        $('#editParentModal').modal('hide');
+                        $('#editphase').modal('hide');
                         window.setTimeout(function () {
                             location.href = '{{ route('modalities.index') }}';
                         }, 100);
@@ -442,21 +427,15 @@
                     },
                     error: function (data) {
                         console.log('Error:', data);
-                        $('#saveEditParent').html('Save Changes');
                     }
                 });
             });
 
         }
-
         updateModalities();
-
         /// end of update Modalities Function
-
-
         // Add Child function
-        function childmodilitiesStore()
-        {
+        function childmodilitiesStore() {
             $('#saveChild').click(function (e) {
                 $.ajaxSetup({
                     headers: {
@@ -473,7 +452,7 @@
                     success: function (data) {
                         console.log(data);
                         $('#childForm').trigger("reset");
-                        $('#childModal').modal('hide');
+                        $('#addsteps').modal('hide');
                         window.setTimeout(function () {
                             location.href = '{{ route('modalities.index') }}';
                         }, 100);
@@ -485,13 +464,9 @@
                 });
             });
         }
-
         childmodilitiesStore();
-
         // Parent Delete function
-
-        function modalitiesDestroy()
-        {
+        function modalitiesDestroy() {
             $('body').on('click', '.deleteParent', function () {
                 $.ajaxSetup({
                     headers: {
@@ -539,14 +514,9 @@
 
             });
         }
-
         modalitiesDestroy();
-
-
         // Child Delete function
-
-        function childmodilitiesDestroy()
-        {
+        function childmodilitiesDestroy() {
             $('body').on('click', '.deleteChild', function () {
                 $.ajaxSetup({
                     headers: {
@@ -601,12 +571,8 @@
             });
         }
         childmodilitiesDestroy();
-
-
         // Child Restore function
-
-        function restoreChild()
-        {
+        function restoreChild() {
 
             $('body').on('click', '.restoreChild', function () {
                 $.ajaxSetup({
@@ -632,15 +598,9 @@
                 });
             });
         }
-
         restoreChild();
-
-
         // Restore Parent function
-
-        function restoreParent()
-        {
-
+        function restoreParent() {
             $('body').on('click', '.restoreParent', function () {
                 $.ajaxSetup({
                     headers: {
@@ -665,14 +625,9 @@
                 });
             });
         }
-
         restoreParent();
-
-
         //  Replicate Parent function
-
-        function replicateParent()
-        {
+        function replicateParent(){
 
             $('body').on('click', '.replicateParent', function () {
 
@@ -702,54 +657,50 @@
             });
         }
         replicateParent();
+        //// show Child function
+        function showChildModalities() {
+            $('.showPhasesSteps').click(function() {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                var id =($(this).attr("data-id"));
+                var url = "{{URL('/ocap_new/modalities')}}";
+                var newPath = url+ "/"+ id+"/showChild/";
+                $.ajax({
+                    type:"GET",
+                    dataType: 'html',
+                    url:newPath,
+                    success : function(results) {
+                        $('#childClass').html(results);
+                    }
+                });
+            });
+        }
+        showChildModalities();
 
 
-    //// show Child function
-    function showChildModalities() {
-        $('.list-group-item').click(function() {
+        $( ".getParentValue" ).dblclick(function()
+        {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            var id =($(this).attr("data-id"));
-            var url = "{{URL('/ocap/modalities')}}";
-            //var url = "{{URL('modalities')}}";
-            var newPath = url+ "/"+ id+"/showChild/";
+            var parentId = $(this).data("id");
+            var url = "{{URL('modalities')}}";
+            var newPath = url+ "/"+ parentId+"/edit/";
             $.ajax({
                 type:"GET",
                 dataType: 'html',
                 url:newPath,
                 success : function(results) {
+                    console.log(results);
                     $('#childClass').html(results);
                 }
             });
         });
-    }
-    showChildModalities();
 
-
-    $( ".getParentValue" ).dblclick(function()
-    {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-        var parentId = $(this).data("id");
-        var url = "{{URL('modalities')}}";
-        var newPath = url+ "/"+ parentId+"/edit/";
-        $.ajax({
-            type:"GET",
-            dataType: 'html',
-            url:newPath,
-            success : function(results) {
-                console.log(results);
-                $('#childClass').html(results);
-            }
-        });
-    });
-
-</script>
-@endsection
-
+    </script>
+@stop

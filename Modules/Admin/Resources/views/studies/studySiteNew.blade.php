@@ -80,7 +80,6 @@
                                             <td class="studySitetableData addRowItem" data-id="{{$site->id}}" data-value="{{$site->study_site_id}}" name="studySiteId" id="studySiteId">
                                                 {{$site->study_site_id}}
                                             </td>
-
                                         </tr>
                                     @endforeach
                                 @endif
@@ -1601,9 +1600,9 @@
                         },
                         success:function(results){
                             console.log(results);
-                            window.setTimeout(function () {
-                                location.href = '{{ route('studySite.index') }}';
-                            }, 100);
+                            {{--window.setTimeout(function () {--}}
+                            {{--    location.href = '{{ route('studySite.index') }}';--}}
+                            {{--}, 100);--}}
                         }
                     });
 
