@@ -33,6 +33,7 @@ class UserTableSeeder extends Seeder
                 'email' =>  'admin@admin.com',
                 'user_type' => 'system_user',
                 'password'  =>  Hash::make('12345678'),
+                'created_by' => ''
             ]);
             dd($user);
             $user   =   User::first();

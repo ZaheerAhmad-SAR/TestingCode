@@ -21,7 +21,7 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles  =  Role::where('created_by','=',\auth()->user()->id)->get();
+        $roles  =  Role::all();
         $permissions = Permission::all()->groupBy('controller_name');
         return view('userroles::roles.index',compact('roles','permissions'));
     }
