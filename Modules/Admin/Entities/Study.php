@@ -4,10 +4,12 @@ namespace Modules\Admin\Entities;
 
 use App\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\UserRoles\Entities\UserRole;
 
 class Study extends Model
 {
+    use SoftDeletes;
     protected $keyType = 'string';
     protected $fillable = [
         'id',
