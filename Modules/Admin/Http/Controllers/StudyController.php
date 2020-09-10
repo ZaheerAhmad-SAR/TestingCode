@@ -49,7 +49,7 @@ class StudyController extends Controller
             $sites = Site::all();
         }
 
-        return view('admin::studies.table',compact('studies','sites','users'));
+        return view('admin::studies.index',compact('studies','sites','users'));
     }
 
     /**
