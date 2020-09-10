@@ -92,6 +92,7 @@ class StudyController extends Controller
         $study   =   Study::updateOrCreate([
             'id' => $studyID],
             [
+                'id'    => \Illuminate\Support\Str::uuid(),
                 'study_short_name'  =>  $request->study_short_name,
                 'study_title' => $request->study_title,
                 'study_status'  => 'Development',
@@ -296,12 +297,10 @@ class StudyController extends Controller
 
                 }
             }
-
-            //$replica->save();
-        }
+     }
         $studies = Study::all();
         return \response()->json($studies);
-//        return redirect()->route('studies.index')->with('success','Study cloned successfully');
+//     return redirect()->route('studies.index')->with('success','Study cloned successfully');
     }
 
     /**
@@ -312,7 +311,7 @@ class StudyController extends Controller
     public function destroy($id)
     {
         $study = Study::where('id',$id)->delete();
-        dd($study);
-        return Response::json($study);
+        //dd($study);
+        return \reponse()->json($study);
     }
 }
