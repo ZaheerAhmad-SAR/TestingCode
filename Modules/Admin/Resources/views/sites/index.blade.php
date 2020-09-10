@@ -233,7 +233,7 @@
                             <form name="primaryInvestigatorForm" id="primaryInvestigatorForm">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
                                 <input type="hidden" name="site_id" value="{{!empty($site->id)}}">
-                                <div class="row">
+                                <div class="row" style="margin-top: 15px;">
                                     <div class="col-md-6">
                                         <div class="{!! ($errors->has('first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
@@ -310,7 +310,7 @@
                                     <input type="hidden" id="primaryInvestigatorJsonData" value=''>
 
                                     <div class="col-md-12">
-                                        <div class="pull-right">
+                                        <div class="pull-right" style="text-align: right;">
                                             <button type="submit" id="pi_button" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save</button>
                                             <input type="hidden" name="pi_submit_actions" id="pi_submit_actions" value="Add">
                                             <input type="hidden" name="pi_id" id="pi_id" value="">
@@ -345,7 +345,7 @@
                             <form  name="coordinatorForm" id="coordinatorForm">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
                                 <input type="hidden" name="site_id" value="{{!empty($site->id)}}">
-                                <div class="row">
+                                <div class="row" style="margin-top: 15px;">
                                     <div class="col-md-6">
                                         <div class="{!! ($errors->has('c_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
@@ -422,7 +422,7 @@
                                     <input type="hidden" id="CoordinatorjsonData" value=''>
 
                                     <div class="col-md-12">
-                                        <div class="pull-right">
+                                        <div class="pull-right" style="text-align: right;">
                                             <button type="submit" id="c_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
                                             <input type="hidden" name="c_submit_actions" id="c_submit_actions" value="Add">
                                             <input type="hidden" name="c_id" id="c_id" value="">
@@ -458,7 +458,7 @@
                                   enctype="multipart/form-data" method="POST">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
                                 <input type="hidden" name="site_id" value="">
-                                <div class="row">
+                                <div class="row" style="margin-top: 15px;">
                                     <div class="col-md-6">
                                         <div class="{!! ($errors->has('photographer_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
@@ -537,7 +537,7 @@
                                     <input type="hidden" id="photographerjsonData" value=''>
 
                                     <div class="col-md-12">
-                                        <div class="pull-right">
+                                        <div class="pull-right" style="text-align: right;">
                                             <button type="submit" id="photographer_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
 
                                             <input type="hidden" name="photographer_submit_actions" id="photographer_submit_actions" value="Add">
@@ -573,7 +573,7 @@
                             <form  name="othersForm" id="othersForm">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
                                 <input type="hidden" name="site_id" value="">
-                                <div class="row">
+                                <div class="row" style="margin-top: 15px;">
                                     <div class="col-md-6">
                                         <div class="{!! ($errors->has('others_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
@@ -650,9 +650,8 @@
                                     <input type="hidden" id="jsonDataOthers" value=''>
 
                                     <div class="col-md-12">
-                                        <div class="pull-right">
+                                        <div class="pull-right" style="text-align: right;">
                                             <button type="submit" id="others_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
-
                                             <input type="hidden" name="others_submit_actions" id="others_submit_actions" value="Add">
                                             <input type="hidden" name="others_id" id="others_id" value="">
                                             <input type="hidden" name="others_site_id" id="others_site_id" value= "">
