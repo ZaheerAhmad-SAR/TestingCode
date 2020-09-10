@@ -22,10 +22,13 @@ class SubjectController extends Controller
      */
     public function index()
     {
-        dd('here');
-        $subjects = Subject::all();
+        $id = session('current_study');
+        $currentStudy = Study::find($id);
+        $subjects = Subject::where('subjects.study_id','=',$id)
+            ->join('sites','sites.id','=','subjects.site_id')
+            ->get();
         $sites = Study::with('sites')->get();
-        return view('admin::studies.show',compact('subjects','sites'));
+        return view('admin::studies.show',compact('subjects','sites','currentStudy'));
     }
 
     /**
@@ -61,7 +64,9 @@ class SubjectController extends Controller
         $currentStudy = Study::find($currentStudy);
         $study = $currentStudy;
 
-        $subjects = Subject::join('sites','sites.id','=','subjects.site_id')->get();
+        $id = session('current_study');
+        $currentStudy = Study::find($id);
+        $subjects = Subject::where('subjects.study_id','=',$id)->get();
         $site_study = StudySite::where('study_id','=',$id)
             ->join('sites', 'sites.id','=','site_study.site_id')
             ->select('sites.site_name','sites.id')
@@ -71,6 +76,7 @@ class SubjectController extends Controller
 
 
         return view('admin::studies.show',compact('currentStudy','subjects','site_study','diseaseCohort','study'));
+        //return \response()->json();
 
     }
 
