@@ -77,9 +77,7 @@
                                             <td>{{ucfirst($site->site_country)}}</td>
                                             <td>{{ucfirst($site->site_phone)}}</td>
                                             <td class="site_id" style="display: none"> {{$site->id}} </td>
-                                            <td class="studySitetableData addRowItem" data-id="{{$site->id}}" data-value="{{$site->study_site_id}}" name="studySiteId" id="studySiteId">
-                                                {{$site->study_site_id}}
-                                            </td>
+<td class="studySitetableData addRowItem" data-id="{{$site->id}}" data-value="{{$site->study_site_id}}" name="studySiteId" id="studySiteId">{{$site->study_site_id}}</td>
                                         </tr>
                                     @endforeach
                                 @endif

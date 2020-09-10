@@ -3,7 +3,7 @@
     <title> View Study Details | {{ config('app.name', 'Laravel') }}</title>
 @stop
 @section('content')
-    @php
+@php
         $studyid = last(request()->segments());
 //        session(['current_study'=>$studyid,'study_short_name'=> $study->study_short_name]);
         session(['current_study'=>$studyid,'study_short_name'=> $study->study_short_name]);
