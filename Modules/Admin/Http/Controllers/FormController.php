@@ -27,6 +27,12 @@ class FormController extends Controller
         $fields = FormFieldType::all();
         return view('admin::forms.index',compact('phases','option_groups','fields'));
     }
+    public function getall_options()
+    {
+        $options_dropdown = OptionsGroup::all();
+        $optionsData['data'] = $options_dropdown;
+        echo json_encode($optionsData);
+    }
     public function get_steps_by_phaseId($id)
     {
         $PhaseSteps = PhaseSteps::select('*')->where('phase_id',$id)->get();
