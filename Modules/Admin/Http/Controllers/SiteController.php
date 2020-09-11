@@ -93,12 +93,11 @@ class SiteController extends Controller
      */
 
 
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
-        if ($id) {
+        if ($request->ajax()) {
             $record = Site::find($id);
             return response()->json([$record]);
-
         }
     }
 
