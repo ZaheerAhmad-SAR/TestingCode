@@ -270,6 +270,6 @@ class StudyController extends Controller
     {
         $study = Study::where('id',$id)->delete();
         //dd($study);
-        return \reponse()->json($study);
+        return \response()->json($study);
     }
 }
