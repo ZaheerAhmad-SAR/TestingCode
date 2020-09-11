@@ -11,7 +11,6 @@ use Illuminate\Support\Str;
 use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Http\Requests\PermissionRequest;
 
-
 class PermissionsController extends Controller
 {
     /**
@@ -20,9 +19,8 @@ class PermissionsController extends Controller
      */
     public function index()
     {
-
         $permissions  =   Permission::paginate(20);
-        return view('userroles::permissions.index',compact('permissions'));
+        return view('userroles::permissions.index', compact('permissions'));
     }
 
     /**
@@ -41,11 +39,7 @@ class PermissionsController extends Controller
      */
     public function store(PermissionRequest $request)
     {
-
-
         Permission::create([
-
-             Permission::create([
             'id'    => Str::uuid(),
 
             'name'  =>  $request->name,
@@ -73,7 +67,7 @@ class PermissionsController extends Controller
     public function edit($id)
     {
         $permission   = Permission::find(decrypt($id));
-        return view('userroles::permissions.edit',compact('permission'));
+        return view('userroles::permissions.edit', compact('permission'));
     }
 
     /**
