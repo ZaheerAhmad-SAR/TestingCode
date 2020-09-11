@@ -25,7 +25,11 @@ class UserController extends Controller
      */
     public function index()
     {
+<<<<<<< HEAD
+
+=======
         //session(['current_study'=>$study->id,'study_short_name'=> $study->study_short_name]);
+>>>>>>> fbb0c57de5a575f970a192a3f5b29c1522bc5479
         if (Auth::user()->can('users.create')) {
             $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
         }
@@ -35,10 +39,16 @@ class UserController extends Controller
                 ->join('roles','roles.id','=','user_roles.role_id')
                 ->where('roles.role_type','!=','study_role')
                 ->get();
+<<<<<<< HEAD
+            foreach ($users as $user){
+                dd($user);
+            }
+=======
 //            dd(count($users));
 //            foreach ($users as $user){
 //                dd($user);
 //            }
+>>>>>>> fbb0c57de5a575f970a192a3f5b29c1522bc5479
         }
         else{
             $users = User::where('deleted_at','=',Null)
