@@ -43,6 +43,7 @@
                             @php
                             $firstPhase = true;
                             @endphp
+                            @if(count($visitPhases))
                             @foreach ($visitPhases as $phase)
                             <div class="card m-1">
                                 <div class="card-header" id="headingOne">
@@ -55,35 +56,30 @@
                                         </button>
                                     </h5>
                                 </div>
-
                                 <div id="collapse{{$phase->id}}" class="collapse {{ ($firstPhase) ? 'show' : '' }}"
                                     aria-labelledby="headingOne" data-parent="#accordion" style="">
-
-                                    <ul class="nav flex-column contact-menu">
-                                        @php
-                                        $firstStep = true;
-                                        @endphp
-                                        @foreach ($phase->phases as $step)
-
-                                        <li class="nav-item">
-                                            <a class="nav-link {{ ($firstStep) ? 'active' : '' }}"
-                                                href="javascript:void(0);"
-                                                data-contacttype="contact-{{$step->step_id}}">
-                                                {{$step->step_name}}
-                                            </a>
-                                        </li>
-                                        @php
-                                        $firstStep = false;
-                                        @endphp
-                                        @endforeach
-                                    </ul>
-
+                                    @if(count($phase->phases))
+                                    @php
+                                    $firstStep = true;
+                                    @endphp
+                                    @foreach ($phase->phases as $step)
+                                    <a class="contact_link badge p-1 badge-light m-1" href="javascript:void(0);"
+                                        data-contacttype="contact-{{$step->step_id}}">
+                                        {{$step->step_name}}
+                                    </a>
+                                    <br>
+                                    @php
+                                    $firstStep = false;
+                                    @endphp
+                                    @endforeach
+                                    @endif
                                 </div>
                             </div>
                             @php
                             $firstPhase = false;
                             @endphp
                             @endforeach
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -96,6 +92,7 @@
                         @foreach ($phase->phases as $step)
                         @php
                         $sections = $step->sections;
+                        if(count($sections)){
                         @endphp
                         <div class="card-body p-0">
                             <div class="contacts list">
@@ -106,6 +103,7 @@
                             </div>
                         </div>
                         @php
+                        }
                         $firstStep = false;
                         @endphp
                         @endforeach
@@ -124,9 +122,7 @@
 
     @section('script')
     <script>
-    $('.contact-menu a').on('click', function() {
-        $('.contact-menu a').removeClass('active');
-        $(this).addClass('active');
+    $('.contact_link').on('click', function() {
         $('.contact').hide();
         $('.' + $(this).data("contacttype")).show(500);
         return false;
