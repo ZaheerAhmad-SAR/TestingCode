@@ -25,6 +25,7 @@ class UserController extends Controller
      */
     public function index()
     {
+
         if (Auth::user()->can('users.create')) {
             $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
         }
@@ -34,7 +35,6 @@ class UserController extends Controller
                 ->join('roles','roles.id','=','user_roles.role_id')
                 ->where('roles.role_type','!=','study_role')
                 ->get();
-            dd(count($users));
             foreach ($users as $user){
                 dd($user);
             }
