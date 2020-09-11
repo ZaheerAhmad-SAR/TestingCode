@@ -1,3 +1,4 @@
+@if(count($section->questions))
 <div class="form">
     @foreach ($section->questions as $question)
 
@@ -95,3 +96,4 @@
     @endif
     @endforeach    
 </div>
+@endif

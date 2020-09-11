@@ -540,7 +540,7 @@
            var route = '{{url('forms/show')}}';
            var phase_id = $('#phases').val();
            var step_id = $('#steps').val();           
-           window.location.href = route+'/'+phase_id+'/'+step_id;       
+           window.open(route+'/'+phase_id+'/'+step_id);
     } 
   // Add New Option Group
    function addOptionsGroup()
