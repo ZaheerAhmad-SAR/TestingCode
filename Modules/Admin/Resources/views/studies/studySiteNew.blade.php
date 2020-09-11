@@ -1597,9 +1597,9 @@
                         },
                         success:function(results){
                             console.log(results);
-                            {{--window.setTimeout(function () {--}}
-                            {{--    location.href = '{{ route('studySite.index') }}';--}}
-                            {{--}, 100);--}}
+                            window.setTimeout(function () {
+                                location.href = '{{ route('studySite.index') }}';
+                            }, 10);
                         }
                     });
 
@@ -1634,6 +1634,9 @@
                             tId=setTimeout(function(){
                                 $(".success-alert-sec").slideUp('slow');
                             }, 3000);
+                            window.setTimeout(function () {
+                                location.href = '{{ route('studySite.index') }}';
+                            }, 100);
 
                         },
                         error: function (results) {

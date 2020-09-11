@@ -130,14 +130,10 @@ class PrimaryInvestigatorController extends Controller
 
     public function showSiteId(Request $request,$id)
     {
-
         if ($request->ajax()) {
-
             $allPi    = PrimaryInvestigator::where('site_id',$id)->get();
+            dd($allPi);
             return response()->json([$allPi]);
-
         }
-
     }
-
 }

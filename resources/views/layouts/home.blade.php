@@ -151,7 +151,12 @@
                                 </li>
                             @endcan
                             @endif
-                            @if(hasPermission(auth()->user(),'studySite.index'))
+                                <li class="@if(is_active('studyrole.index')) {{ ' active' }} @endif">
+                                    <a href="{!! route('studyrole.index') !!}">
+                                        Study  Roles
+                                    </a>
+                                </li>
+                            @if(hasPermission(auth()->user(),'studySite.create'))
                                 <li class="@if(is_active('studySite.index')) {{ ' active' }} @endif">
                                     <a  href="{!! route('studySite.index') !!}">
                                         Study Sites
