@@ -26,12 +26,14 @@
             $firstStep = true;
             @endphp
             @php
-            $sections = $step->sections;
+            $sections = $step->sections;            
+            if(count($sections)){
             @endphp
             <div class="tab-pane fade {{ ($firstStep) ? 'active show' : '' }}" id="tab{{$step->step_id}}">
                 @include('admin::forms.section_loop', ['step'=>$step, 'sections'=> $sections])
             </div>
             @php
+            }
             $firstStep = false;
             @endphp
         </div>
