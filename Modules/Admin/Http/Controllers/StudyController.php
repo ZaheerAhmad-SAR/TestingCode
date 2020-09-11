@@ -189,7 +189,7 @@ class StudyController extends Controller
         $mystudy = Study::with('users','subjects','diseaseCohort','sites')
             ->find($request->id);
         $id = \Illuminate\Support\Str::uuid();
-//        dd($mystudy->subjects, $mystudy->diseaseCohort);
+        $study_subjects = Subject::where('study_id','=',$request->id)->get();
 
         if(!empty($mystudy)){
             $replica = Study::create([
@@ -238,9 +238,9 @@ class StudyController extends Controller
                     ]);
                 }
             }
-
-            if ($mystudy->subjects){
-                foreach ($mystudy->subjects as $subject){
+            if ($study_subjects){
+                foreach ($study_subjects as $subject){
+                    $disease_id =$subject->disease_cohort_id;
                     $id = \Illuminate\Support\Str::uuid();
                     $subject = Subject::create([
                         'id'    => $id,
@@ -250,8 +250,9 @@ class StudyController extends Controller
                         'enrollment_date'   => $subject->enrollment_date,
                         'study_eye'         => $subject->study_eye,
                         'site_id'           => $subject->site_id,
-                        'disease_cohort_id' => $subject->disease_cohort
+                        'disease_cohort_id' => $disease_id
                     ]);
+                    dd($subject);
 
                 }
             }

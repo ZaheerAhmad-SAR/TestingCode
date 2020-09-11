@@ -343,7 +343,6 @@
         $('body').on('click', '#delete-study', function () {
             var study_id = $(this).data("id");
             confirm("Are You sure want to delete !");
-
             $.ajax({
                 type: "DELETE",
                 url: "{{ url('studies')}}"+'/'+study_id,
@@ -369,17 +368,15 @@
                 }
             });
             var parent_id = $(this).data("id");
-            alert(parent_id);
             var newPath = "{{URL('studies/cloneStudy')}}";
-            alert(newPath)
+            //alert(newPath)
+            confirm("Are You sure want to Clone !");
             $.ajax({
                 type: "POST",
                 data:{'id':parent_id},
                 url: newPath,
                 success: function (data) {
                     console.log(data);
-                    location.reload();
-
                 },
                 error: function (data) {
                     console.log('Error:', data);

@@ -37,7 +37,7 @@
                                 <th style="width: 5%;">Action</th>
                             </tr>
                             @foreach($roles as $role)
-                            <tr>
+                                    <tr>
                                 <td>{{ucfirst($role->name)}}</td>
                                 <td>{{ucfirst($role->description)}}</td>
                                 <td>
@@ -106,6 +106,9 @@
                                             <label>{!! $permission[0]->controller_name !!}</label>
                                         </div>
                                         <div class="col-sm-3">
+                                            <?php
+                                            $key_method_name ='';
+                                            ?>
                                             @foreach($permission as $key)
                                             <div class="checkbox">
                                                     <label><input type="checkbox" name="permission[]" value="{{ $key->id }}">{{ $key->name }}</label>

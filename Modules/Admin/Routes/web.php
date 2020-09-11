@@ -20,8 +20,7 @@ Route::prefix('admin')->group(function() {
 
 Route::group(['middleware' => ['auth','web']],function(){
 
-    Route::resource('unittest','AllUnitTestController');
-});
+   });
 Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],function(){
 
     Route::resource('sites','SiteController');
