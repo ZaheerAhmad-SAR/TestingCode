@@ -141,4 +141,8 @@
 .h6, h6 {
     font-size: 0.7rem !important;
 }
+
+.collapse-body-bg{
+    background: #ffffff !important;
+}
 </style>
