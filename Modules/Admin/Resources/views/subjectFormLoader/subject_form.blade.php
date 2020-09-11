@@ -44,34 +44,30 @@
                             @endphp
                             @if(count($visitPhases))
                             @foreach ($visitPhases as $phase)
-                            <div class="card m-1">
-                                <div class="card-header" id="headingOne">
-                                    <h5 class="mb-0">
-                                        <button class="btn btn-link collapsed" data-toggle="collapse"
-                                            data-target="#collapse{{$phase->id}}"
-                                            aria-expanded="{{ ($firstPhase) ? 'true' : 'false' }}"
-                                            aria-controls="collapseOne">
-                                            {{$phase->name}}
-                                        </button>
-                                    </h5>
-                                </div>
-                                <div id="collapse{{$phase->id}}" class="collapse {{ ($firstPhase) ? 'show' : '' }}"
-                                    aria-labelledby="headingOne" data-parent="#accordion" style="">
-                                    @if(count($phase->phases))
-                                    @php
-                                    $firstStep = true;
-                                    @endphp
-                                    @foreach ($phase->phases as $step)
-                                    <a class="contact_link badge p-1 badge-light m-1" href="javascript:void(0);"
-                                        data-contacttype="contact-{{$step->step_id}}">
-                                        {{$step->step_name}}
-                                    </a>
-                                    <br>
-                                    @php
-                                    $firstStep = false;
-                                    @endphp
-                                    @endforeach
-                                    @endif
+                            <div class="card text-white bg-primary m-1">
+                                <div id="heading{{$phase->id}}" class="card-header" data-toggle="collapse" data-target="#collapse{{$phase->id}}"
+                                    aria-expanded="{{ ($firstPhase) ? 'true' : 'false' }}" aria-controls="collapse{{$phase->id}}">
+                                    {{$phase->name}}</div>
+                                <div id="collapse{{$phase->id}}"
+                                    class="card-body collapse-body-bg collapse {{ ($firstPhase) ? 'show' : '' }}" aria-labelledby="heading{{$phase->id}}"
+                                    data-parent="#accordion" style="">
+                                    <p class="card-text">
+                                        @if(count($phase->phases))
+                                        @php
+                                        $firstStep = true;
+                                        @endphp
+                                        @foreach ($phase->phases as $step)
+                                        <a class="contact_link badge p-1 badge-light m-1" href="javascript:void(0);"
+                                            data-contacttype="contact-{{$step->step_id}}">
+                                            {{$step->step_name}}
+                                        </a>
+                                        <br>
+                                        @php
+                                        $firstStep = false;
+                                        @endphp
+                                        @endforeach
+                                        @endif
+                                    </p>
                                 </div>
                             </div>
                             @php
