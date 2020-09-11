@@ -21,29 +21,43 @@
 
     <!-- START: Card Data-->
     <div class="row">
+        <div class="col-12 col-sm-12 mt-3">
+            <div class="card">
+                <div class="card-header  justify-content-between align-items-center">
+                    <h4 class="card-title">Grading legend</h4>
+                </div>
+                <div class="card-body">
+                    <span class="badge p-2 badge-light mb-1">Not Graded</span>&nbsp;&nbsp;
+                    <span class="badge p-2 badge-warning mb-1">Graded by 1st grader</span>&nbsp;&nbsp;
+                    <span class="badge p-2 badge-success mb-1">Graded by 2nd grader</span>&nbsp;&nbsp;
+                    <span class="badge p-2 badge-danger mb-1">Required Adjudication</span>&nbsp;&nbsp;
+                </div>
+            </div>
+        </div>
         <div class="col-12 col-sm-12">
             <div class="row row-eq-height">
                 <div class="col-12 col-lg-2 mt-3 todo-menu-bar flip-menu pr-lg-0">
                     <a href="#" class="d-inline-block d-lg-none mt-1 flip-menu-close"><i class="icon-close"></i></a>
                     <div class="card border h-100 contact-menu-section">
                         <div id="accordion">
-                        @php
-                                        $firstPhase = true;
-                                        @endphp
+                            @php
+                            $firstPhase = true;
+                            @endphp
                             @foreach ($visitPhases as $phase)
-                            <div class="card">
+                            <div class="card m-1">
                                 <div class="card-header" id="headingOne">
                                     <h5 class="mb-0">
                                         <button class="btn btn-link collapsed" data-toggle="collapse"
-                                            data-target="#collapse{{$phase->id}}" aria-expanded="{{ ($firstPhase) ? 'true' : 'false' }}"
+                                            data-target="#collapse{{$phase->id}}"
+                                            aria-expanded="{{ ($firstPhase) ? 'true' : 'false' }}"
                                             aria-controls="collapseOne">
                                             {{$phase->name}}
                                         </button>
                                     </h5>
                                 </div>
 
-                                <div id="collapse{{$phase->id}}" class="collapse {{ ($firstPhase) ? 'show' : '' }}" aria-labelledby="headingOne"
-                                    data-parent="#accordion" style="">
+                                <div id="collapse{{$phase->id}}" class="collapse {{ ($firstPhase) ? 'show' : '' }}"
+                                    aria-labelledby="headingOne" data-parent="#accordion" style="">
 
                                     <ul class="nav flex-column contact-menu">
                                         @php
@@ -67,8 +81,8 @@
                                 </div>
                             </div>
                             @php
-                                        $firstPhase = false;
-                                        @endphp
+                            $firstPhase = false;
+                            @endphp
                             @endforeach
                         </div>
                     </div>
