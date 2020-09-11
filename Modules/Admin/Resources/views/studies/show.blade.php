@@ -17,7 +17,7 @@
             </div>
         </div>
         <!-- END: Breadcrumbs-->
-    </div>
+    
 
     <div class="row">
         <div class="col-12 mt-3">
@@ -71,9 +71,9 @@
             </div>
             </div>
         </div>
-
+</div>
     <div class="modal" tabindex="-1" role="dialog" id="createSubjects">
-        <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content" >
                 <div class="modal-header">
                     <h4 class="modal-title" id="deviceCrudModal">Add Subject</h4>
@@ -98,7 +98,7 @@
                         </div>
                             <label for="study_short_name" class="col-md-2">Enrollment Date</label>
                             <div class="{!! ($errors->has('enrollment_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                <input type="text" class="form-control" id="enrollment_date" name="enrollment_date" value="{{old('enrollment_date')}}">
+                                <input type="date" class="form-control" id="enrollment_date" name="enrollment_date" value="{{old('enrollment_date')}}">
                                 @error('enrollment_date')
                                 <span class="text-danger small">{{ $message }} </span>
                                 @enderror
@@ -107,7 +107,7 @@
                         <div class="form-group row">
                             <label for="site_id" class="col-md-2">Site</label>
                             <div class="{!! ($errors->has('site_id')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                <select name="site_id" class="custom-btn btn" style="width: 235px;">
+                                <select name="site_id" class="form-control">
                                     <option value="">Select Subject Site</option>
                                     @if(!empty($site_study))
                                         @foreach($site_study as $site)
@@ -121,7 +121,7 @@
                             </div>
                             <label for="study_eye" class="col-md-2">Study Eye</label>
                             <div class="{!! ($errors->has('study_eye')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                <select name="study_eye" class="custom-btn btn" style="width: 235px;" >
+                                <select name="study_eye" class="form-control">
                                     <option value="">Select Study Eye</option>
                                     <option value="od">OD</option>
                                     <option value="os">OS</option>
@@ -135,8 +135,8 @@
                         </div>
                     <div class="form-group row">
                         <label for="site_id" class="col-md-2">Disease Cohort</label>
-                        <div class="{!! ($errors->has('disease_cohort')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                            <select name="disease_cohort" class="custom-btn btn" style="width: 235px;">
+                        <div class="{!! ($errors->has('disease_cohort')) ?'form-group col-md-10 has-error':'form-group col-md-10' !!}">
+                            <select name="disease_cohort" class="form-control">
                                 <option value="">Select Subject Disease Cohort</option>
                                 @if(!empty($diseaseCohort))
                                     {!! $diseaseCohort !!}
@@ -151,8 +151,8 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn custom-btn blue-color" data-dismiss="modal"><i class="fa fa-window-close blue-color" aria-hidden="true"></i> Close</button>
-                        <button type="submit" class="btn custom-btn blue-color"><i class="fa fa-save blue-color"></i> Save</button>
+                        <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                        <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save</button>
                     </div>
                 </form>
                 </div>
