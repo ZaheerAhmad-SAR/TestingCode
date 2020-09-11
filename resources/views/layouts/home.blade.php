@@ -15,11 +15,15 @@
             <div class="navbar-header h4 mb-0 text-center h-100 collapse-menu-bar">
                 <a href="#" class="sidebarCollapse" id="collapse"><i class="icon-menu"></i></a>
             </div>
-            <span class="studyName" style="margin-left: 13px;"> {{session('study_short_name')}}</span>
             <!-- title here  -->
             <!--  -->
             <div class="navbar-right ml-auto h-100">
                 <ul class="ml-auto p-0 m-0 list-unstyled d-flex top-icon h-100">
+                    <li style="margin-top: 5px;">
+                        <span> 
+                            <strong>Current Study:</strong> {{session('study_short_name')}}
+                        </span> 
+                    </li>
                     <li class="d-inline-block align-self-center  d-block d-lg-none">
                         <a href="#" class="nav-link mobilesearch" data-toggle="dropdown" aria-expanded="false"><i class="icon-magnifier h4"></i>
                         </a>

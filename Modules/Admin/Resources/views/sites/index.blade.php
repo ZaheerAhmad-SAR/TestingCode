@@ -222,7 +222,7 @@
                                             <input type="hidden" name="site_id" id="site_id" value="">
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="submit" id="btn_site_info" class="btn btn-outline-primary"><i class="fa fa-save changeText"></i> Save</button>
+                                            <button type="submit" id="btn_site_info" class="btn btn-outline-primary"><i class="fa fa-save changeText"></i> Save Changes</button>
                                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close redirectPage" aria-hidden="true"></i> Close</button>
                                         </div>
                                     </div>
@@ -311,7 +311,7 @@
 
                                     <div class="col-md-12">
                                         <div class="pull-right" style="text-align: right;">
-                                            <button type="submit" id="pi_button" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save</button>
+                                            <button type="submit" id="pi_button" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
                                             <input type="hidden" name="pi_submit_actions" id="pi_submit_actions" value="Add">
                                             <input type="hidden" name="pi_id" id="pi_id" value="">
                                             <input type="hidden" name="site_id" id="site_id" value="">
@@ -423,11 +423,11 @@
 
                                     <div class="col-md-12">
                                         <div class="pull-right" style="text-align: right;">
-                                            <button type="submit" id="c_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
+                                            <button type="submit" id="c_button" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
                                             <input type="hidden" name="c_submit_actions" id="c_submit_actions" value="Add">
                                             <input type="hidden" name="c_id" id="c_id" value="">
                                             <input type="hidden" name="c_site_id" id="c_site_id" value= "">
-                                            <button type="button"  id="reset_c_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true"></i>Reset</button>
+                                            <button type="button"  id="reset_c_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
                                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                                         </div>
                                         <br>
@@ -538,12 +538,12 @@
 
                                     <div class="col-md-12">
                                         <div class="pull-right" style="text-align: right;">
-                                            <button type="submit" id="photographer_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
+                                            <button type="submit" id="photographer_button" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
 
                                             <input type="hidden" name="photographer_submit_actions" id="photographer_submit_actions" value="Add">
                                             <input type="hidden" name="photo_id" id="photo_id" value="">
                                             <input type="hidden" name="photographer_site_id" id="photographer_site_id" value= "">
-                                            <button type="button"  id="reset_photographer_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true"></i>Reset</button>
+                                            <button type="button"  id="reset_photographer_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
                                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
 
                                         </div>
@@ -651,11 +651,11 @@
 
                                     <div class="col-md-12">
                                         <div class="pull-right" style="text-align: right;">
-                                            <button type="submit" id="others_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
+                                            <button type="submit" id="others_button" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Chnages</button>
                                             <input type="hidden" name="others_submit_actions" id="others_submit_actions" value="Add">
                                             <input type="hidden" name="others_id" id="others_id" value="">
                                             <input type="hidden" name="others_site_id" id="others_site_id" value= "">
-                                            <button type="button"  id="reset_others_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true"></i>Reset</button>
+                                            <button type="button"  id="reset_others_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
                                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close " aria-hidden="true"></i> Close</button>
                                         </div>
                                         <br>
