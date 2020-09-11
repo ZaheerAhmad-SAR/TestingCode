@@ -38,6 +38,8 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
 
     Route::resource('subjects','SubjectController');
 
+    Route::resource('studyrole','StudyRoleController');
+
     Route::resource('others','OtherController');
 
     Route::get('others/{id}/showOtherBySiteId','OtherController@showOtherBySiteId')->name('others.showOtherBySiteId');
