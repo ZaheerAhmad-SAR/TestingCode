@@ -71,15 +71,11 @@ class PrimaryInvestigatorController extends Controller
      * @param int $id
      * @return Response
      */
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
-
-        if ($id) {
-
+        if ($request->ajax()) {
             $record = PrimaryInvestigator::find($id);
-
             return response()->json([$record]);
-
         }
     }
 
@@ -99,9 +95,9 @@ class PrimaryInvestigatorController extends Controller
             'email' => $request->pi_email,
             'phone' => $request->pi_phone
         );
-        PrimaryInvestigator::where('id', $request->pi_id)->update($data);
 
-        $site_id  = $request->site_id;
+        PrimaryInvestigator::where('id', $request->pi_id)->update($data);
+        $site_id  = $request->pi_site_id;
 
         $allPi    = PrimaryInvestigator::where('site_id',$site_id)->get();
 
@@ -132,7 +128,6 @@ class PrimaryInvestigatorController extends Controller
     {
         if ($request->ajax()) {
             $allPi    = PrimaryInvestigator::where('site_id',$id)->get();
-            dd($allPi);
             return response()->json([$allPi]);
         }
     }

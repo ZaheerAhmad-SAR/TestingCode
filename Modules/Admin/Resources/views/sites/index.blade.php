@@ -314,7 +314,7 @@
                                             <button type="submit" id="pi_button" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save</button>
                                             <input type="hidden" name="pi_submit_actions" id="pi_submit_actions" value="Add">
                                             <input type="hidden" name="pi_id" id="pi_id" value="">
-                                            <input type="hidden" name="site_id" id="site_id" value="">
+                                            <input type="hidden" name="pi_site_id" id="pi_site_id" value="">
                                             <button type="button"  id="rest_pi_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
                                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                                         </div>
@@ -454,10 +454,10 @@
                             </form>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="photographer">
-                            <form action="#" name="photographerForm" id="photographerForm"
+                            <form  name="photographerForm" id="photographerForm"
                                   enctype="multipart/form-data" method="POST">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                <input type="hidden" name="site_id" value="">
+                                <input type="hidden" name="site_id"  value="{{!empty($site->id)}}">
                                 <div class="row" style="margin-top: 15px;">
                                     <div class="col-md-6">
                                         <div class="{!! ($errors->has('photographer_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
@@ -572,7 +572,7 @@
                         <div role="tabpanel" class="tab-pane" id="others">
                             <form  name="othersForm" id="othersForm">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                <input type="hidden" name="site_id" value="">
+                                <input type="hidden" name="site_id"  value="{{!empty($site->id)}}">
                                 <div class="row" style="margin-top: 15px;">
                                     <div class="col-md-6">
                                         <div class="{!! ($errors->has('others_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
@@ -760,8 +760,7 @@
     }
 
     // Add New Primary Investigator
-    function addPrimaryInvestigator()
-    {
+    function addPrimaryInvestigator(){
         $("#primaryInvestigatorForm").submit(function(e) {
             var first_name        = $('#pi_first_name').val();
             var p_mid_name        = $('#pi_mid_name').val();
@@ -790,8 +789,8 @@
                 type: "POST",
                 dataType: 'json',
                 success: function (results) {
+                    console.log(results);
                     var primary_investigator_id = results[0].id;
-
                     var html    =   '';
 
                     if(pi_submit_actions == 'Add') {
@@ -800,20 +799,22 @@
                             '<td>'+first_name + '   '.repeat(4)+p_last_name+'</td>\n'+
                             '<td>'+p_phone+'</td>\n' +
                             '<td>'+p_email+'</td>\n' +
-                            '<td><i style="color: #EA4335;" class="fa fa-trash deleteprimaryinvestigator" data-id ='+primary_investigator_id+'></i>&nbsp;&nbsp;<i style="color: #34A853;" class="icon-pencil editprimaryinvestigator" data-id ='+primary_investigator_id+'></i>'+
+                            '<td><i style="color: #EA4335;" class="fa fa-trash deleteprimaryinvestigator" data-id ='+primary_investigator_id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editprimaryinvestigator" data-id ='+primary_investigator_id+'></i>'+
                             '</td>\n' +
                             '</tr>';
 
                         $('.primaryInvestigatorTableAppend tbody').prepend(html);
                     }
                     else{
+
                         $.each(results, function(index,row)
                         {
+                            console.log(results);
                             html    += '<tr id='+row.id+'>\n'+
                                 '<td>'+row.first_name + '  '.repeat(4)+row.last_name+'</td>\n'+
                                 '<td>'+row.phone+'</td>\n' +
                                 '<td>'+row.email+'</td>\n' +
-                                '<td><i style="color: #EA4335;" class="fa fa-trash deleteprimaryinvestigator" data-id ='+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853;" class="icon-pencil editprimaryinvestigator" data-id ='+row.id+'></i>'+
+                                '<td><i style="color: #EA4335;" class="fa fa-trash deleteprimaryinvestigator" data-id ='+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editprimaryinvestigator" data-id ='+row.id+'></i>'+
                                 '</td>\n' +
                                 '</tr>';
                         });
@@ -834,10 +835,8 @@
     addPrimaryInvestigator();
     // End of primary Investigator
 
-
     // Primary investigator Delete function
-    function primaryinvestigatorDestroy()
-    {
+    function primaryinvestigatorDestroy(){
         $('body').on('click', '.deleteprimaryinvestigator', function () {
             $.ajaxSetup({
                 headers: {
@@ -864,24 +863,20 @@
     }
     primaryinvestigatorDestroy();
 
-    function resetprimaryinvestigatorForm()
-    {
+    function resetprimaryinvestigatorForm() {
         $("#rest_pi_button").click(function(){
             $("#pi_submit_actions").attr('value', 'Add');
             $("#primaryInvestigatorForm").trigger("reset");
         });
     }
-
     resetprimaryinvestigatorForm();
 
-    function resetcoordinatorForm()
-    {
+    function resetcoordinatorForm() {
         $("#reset_c_button").click(function(){
             $("#c_submit_actions").attr('value', 'Add');
             $("#coordinatorForm").trigger("reset");
         });
     }
-
     resetcoordinatorForm();
 
     function resetphotographerForm()
@@ -902,11 +897,44 @@
     }
 
     resetothersForm();
+    //// show Coordinator function
+
+    function showCoordinator() {
+        $('body').on('click', '.editCoordinator', function (e) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            var id =($(this).attr("data-id"));
+            var url = "{{URL('/ocap_new/coordinator')}}";
+            var newPath = url+ "/"+ id+"/edit/";
+
+            $.ajax({
+                type:"GET",
+                dataType: 'html',
+                url:newPath,
+                success : function(results) {
+                    var parsedata = JSON.parse(results)[0];
+                    console.log(parsedata);
+                    $('#c_id').val(parsedata.id);
+                    $('#c_site_id').val(parsedata.site_id);
+                    $('#c_submit_actions').val('Edit');
+                    $('#c_first_name').val(parsedata.first_name);
+                    $('#c_mid_name').val(parsedata.mid_name);
+                    $('#c_last_name').val(parsedata.last_name);
+                    $('#c_phone').val(parsedata.phone);
+                    $('#c_email').val(parsedata.email);
+                }
+            });
+        });
+    }
+    showCoordinator();
+
+    //// showOthers function
 
     //// show Primary Investigator function
-
-    function showPrimaryInvestigator()
-    {
+    function showPrimaryInvestigator() {
         $('body').on('click', '.editprimaryinvestigator', function (e) {
             $.ajaxSetup({
                 headers: {
@@ -922,8 +950,9 @@
                 url:newPath,
                 success : function(results) {
                     var parsedata = JSON.parse(results)[0];
+                    console.log(parsedata);
                     $('#pi_id').val(parsedata.id);
-                    $('#site_id').val(parsedata.site_id);
+                    $('#pi_site_id').val(parsedata.site_id);
                     $('#pi_submit_actions').val('Edit');
                     $('#pi_first_name').val(parsedata.first_name);
                     $('#pi_mid_name').val(parsedata.mid_name);
@@ -966,6 +995,7 @@
                 type: "POST",
                 dataType: 'json',
                 success: function (results) {
+
                     var photographer_id = results[0].id;
                     var html    =   '';
                     if(photographer_submit_actions == 'Add')
@@ -974,7 +1004,7 @@
                             '<td>'+photographer_first_name + '   '.repeat(4)+photographer_last_name+'</td>\n'+
                             '<td>'+photographer_phone+'</td>\n' +
                             '<td>'+photographer_email+'</td>\n' +
-                            '<td><i style="color: #EA4335;"  class="fa fa-trash deletePhotographer" data-id = '+photographer_id+'></i>&nbsp;&nbsp;<i style="color: #34A853;" class="icon-pencil editPhotographer" data-id = '+photographer_id+'></i></td>\n' +
+                            '<td><i style="color: #EA4335;"  class="fa fa-trash deletePhotographer" data-id = '+photographer_id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editPhotographer" data-id = '+photographer_id+'></i></td>\n' +
                             '</tr>';
                         $('.photographertableAppend tbody').prepend(html);
 
@@ -988,7 +1018,7 @@
                                 '<td>'+row.first_name+ '   '.repeat(4)+row.last_name+'</td>\n'+
                                 '<td>'+row.phone+'</td>\n' +
                                 '<td>'+row.email+'</td>\n' +
-                                '<td><i style="color: #EA4335;" class="fa fa-trash deletePhotographer" data-id = '+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853;" class="icon-pencil editPhotographer" data-id = '+row.id+'></i></td>\n' +
+                                '<td><i style="color: #EA4335;" class="fa fa-trash deletePhotographer" data-id = '+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editPhotographer" data-id = '+row.id+'></i></td>\n' +
                                 '</tr>';
                         });
                         $('.photographertableAppend tbody').html(html);
@@ -1082,7 +1112,7 @@
                             '<td>'+c_first_name + '   '.repeat(4)+c_last_name+'</td>\n'+
                             '<td>'+c_phone+'</td>\n' +
                             '<td>'+c_email+'</td>\n' +
-                            '<td><i style="color: #EA4335;" class="fa fa-trash deleteCoordinator" data-id ='+coordinator_id+'></i>&nbsp;&nbsp;<i style="color: #34A853;" class="icon-pencil editCoordinator" data-id ='+coordinator_id+'></i></td>\n' +
+                            '<td><i style="color: #EA4335;" class="fa fa-trash deleteCoordinator" data-id ='+coordinator_id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editCoordinator" data-id ='+coordinator_id+'></i></td>\n' +
                             '</tr>';
                         $('.CtableAppend tbody').prepend(html);
                     }
@@ -1095,7 +1125,7 @@
                                 '<td>'+row.first_name + '   '.repeat(4)+row.last_name+'</td>\n'+
                                 '<td>'+row.phone+'</td>\n' +
                                 '<td>'+row.email+'</td>\n' +
-                                '<td><i style="color: #EA4335;" class="fa fa-trash deleteCoordinator" data-id ='+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853;" class="icon-pencil editCoordinator" data-id ='+row.id+'></i></td>\n' +
+                                '<td><i style="color: #EA4335;" class="fa fa-trash deleteCoordinator" data-id ='+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editCoordinator" data-id ='+row.id+'></i></td>\n' +
                                 '</tr>';
                         });
                         $('.CtableAppend tbody').html(html);
@@ -1112,44 +1142,6 @@
     }
     addCoordinator();
     // End of Coordinator
-
-    //// show Coordinator function
-
-    function showCoordinator()
-    {
-        $('body').on('click', '.editCoordinator', function (e) {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            var id =($(this).attr("data-id"));
-            var url = "{{URL('/ocap_new/coordinator')}}";
-            var newPath = url+ "/"+ id+"/edit/";
-
-            $.ajax({
-                type:"GET",
-                dataType: 'html',
-                url:newPath,
-                success : function(results) {
-                    var parsedata = JSON.parse(results)[0];
-                    console.log(parsedata);
-                    $('#c_id').val(parsedata.id);
-                    $('#c_site_id').val(parsedata.site_id);
-                    $('#c_submit_actions').val('Edit');
-                    $('#c_first_name').val(parsedata.first_name);
-                    $('#c_mid_name').val(parsedata.mid_name);
-                    $('#c_last_name').val(parsedata.last_name);
-                    $('#c_phone').val(parsedata.phone);
-                    $('#c_email').val(parsedata.email);
-                }
-            });
-        });
-    }
-
-    showCoordinator();
-
-    //// showOthers function
 
     function showOthers()
     {
@@ -1226,7 +1218,7 @@
                             '<td>' + others_first_name + '   '.repeat(4) + others_last_name + '</td>\n' +
                             '<td>' + others_phone + '</td>\n' +
                             '<td>' + others_email + '</td>\n' +
-                            '<td><i style="color: #EA4335;" class="fa fa-trash deleteOthers" data-id =' + others_id + '></i>&nbsp;&nbsp;<i style="color: #34A853;" data-id = ' + others_id + ' class="icon-pencil editOthers"></i></td>\n' +
+                            '<td><i style="color: #EA4335;" class="fa fa-trash deleteOthers" data-id =' + others_id + '></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" data-id = ' + others_id + ' class="icon-pencil editOthers"></i></td>\n' +
                             '</tr>';
 
                         $('.otherstableAppend tbody').prepend(html);
@@ -1242,7 +1234,7 @@
                                 '<td>' + row.first_name + '   '.repeat(4) + row.last_name + '</td>\n' +
                                 '<td>' + row.phone + '</td>\n' +
                                 '<td>' + row.email + '</td>\n' +
-                                '<td><i style="color: #EA4335;" class="fa fa-trash deleteOthers" data-id =' + row.id + '></i>&nbsp;&nbsp;<i style="color: #34A853;" data-id = ' + row.id + ' class="icon-pencil editOthers"></i></td>\n' +
+                                '<td><i style="color: #EA4335;" class="fa fa-trash deleteOthers" data-id =' + row.id + '></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" data-id = ' + row.id + ' class="icon-pencil editOthers"></i></td>\n' +
                                 '</tr>';
                         });
 
@@ -1340,6 +1332,7 @@
                 success : function(results) {
                     $('.addTabs').attr("data-toggle","tab"); // Add data-toggle tab after insert
                     var parsedata = JSON.parse(results)[0];
+                    console.log(parsedata);
                     $('#site_id').val(parsedata.id);
                     $('#site_code').val(parsedata.site_code);
                     $('#site_name').val(parsedata.site_name);
@@ -1353,15 +1346,17 @@
                         dataType: 'html',
                         url:new_pi_url,
                         success : function(results) {
+                            console.log(results);
                             var parsedata = JSON.parse(results)[0];
                             var html    =   '';
                             $.each(parsedata, function(index,row)
                             {
+                                console.log(parsedata);
                                 html    += '<tr id='+row.id+'>\n'+
-                                    '<td>'+row.first_name + '  '.repeat(4)+row.last_name+'</td>\n'+
+                                    '<td>'+row.first_name+ '  '.repeat(4)+row.last_name+'</td>\n'+
                                     '<td>'+row.phone+'</td>\n' +
                                     '<td>'+row.email+'</td>\n' +
-                                    '<td><i style="color: #EA4335;" class="fa fa-trash deleteprimaryinvestigator" data-id ='+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853;" class="icon-pencil editprimaryinvestigator" data-id ='+row.id+'></i>'+
+                                    '<td><i style="color: #EA4335;" class="fa fa-trash deleteprimaryinvestigator" data-id ='+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editprimaryinvestigator" data-id ='+row.id+'></i>'+
                                     '</td>\n' +
                                     '</tr>';
                             });
@@ -1380,7 +1375,7 @@
                                             '<td>'+row.first_name + '   '.repeat(4)+row.last_name+'</td>\n'+
                                             '<td>'+row.phone+'</td>\n' +
                                             '<td>'+row.email+'</td>\n' +
-                                            '<td><i style="color: #EA4335;" class="fa fa-trash deleteCoordinator" data-id ='+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853;" class="icon-pencil editCoordinator" data-id ='+row.id+'></i></td>\n' +
+                                            '<td><i style="color: #EA4335;" class="fa fa-trash deleteCoordinator" data-id ='+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editCoordinator" data-id ='+row.id+'></i></td>\n' +
                                             '</tr>';
                                     });
                                     $('.CtableAppend tbody').html(html);
@@ -1398,7 +1393,7 @@
                                                     '<td>'+row.first_name+ '   '.repeat(4)+row.last_name+'</td>\n'+
                                                     '<td>'+row.phone+'</td>\n' +
                                                     '<td>'+row.email+'</td>\n' +
-                                                    '<td><i style="color: #EA4335;" class="fa fa-trash deletePhotographer" data-id = '+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853;" class="icon-pencil editPhotographer" data-id = '+row.id+'></i></td>\n' +
+                                                    '<td><i style="color: #EA4335;" class="fa fa-trash deletePhotographer" data-id = '+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editPhotographer" data-id = '+row.id+'></i></td>\n' +
                                                     '</tr>';
                                             });
                                             $('.photographertableAppend tbody').html(html);
@@ -1417,7 +1412,7 @@
                                                             '<td>' + row.first_name + '   '.repeat(4) + row.last_name + '</td>\n' +
                                                             '<td>' + row.phone + '</td>\n' +
                                                             '<td>' + row.email + '</td>\n' +
-                                                            '<td><i style="color: #EA4335;" class="fa fa-trash deleteOthers" data-id =' + row.id + '></i>&nbsp;&nbsp;<i style="color: #34A853;" data-id = ' + row.id + ' class="icon-pencil editOthers"></i></td>\n' +
+                                                            '<td><i style="color: #EA4335;" class="fa fa-trash deleteOthers" data-id =' + row.id + '></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" data-id = ' + row.id + ' class="icon-pencil editOthers"></i></td>\n' +
                                                             '</tr>';
                                                     });
 
