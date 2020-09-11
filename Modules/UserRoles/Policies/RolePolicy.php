@@ -39,6 +39,7 @@ class RolePolicy
     }
 
     protected function checkPermission($user,$name){
+
         foreach ($user->role->permissions as $permission)
         {
             if($permission->name == $name)

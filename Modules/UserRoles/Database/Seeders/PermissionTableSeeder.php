@@ -19,35 +19,21 @@ class PermissionTableSeeder extends Seeder
     {
         Model::unguard();
         $routeCollection = Route::getRoutes();
-
         foreach ($routeCollection as $keys => $route) {
             if (search_auth($route->action['middleware'], 'auth')) {
                 if (!empty($route->getName())) {
-                    $get_info = explode('.',$route->getName());
-                    $current_method_name = $get_info;
                     $permission = Permission::where('name', '=', $route->getName())->first();
+                    list($permission_name) = explode('.', $route->getName());
+                    //dd($permission_name);
                     if ($permission) {
-                        if (isset($current_method_name[1])){
-                            $permission->update(['name' => $route->getName(),'method_name' => $current_method_name[1]]);
-                        }else{
-                            $permission->update(['name' => $route->getName(),'method_name' => Null]);
-                        }
+                        $permission->update(['name' => $route->getName(), 'controller_name' => $permission_name]);
                     } else {
-                        if (isset($current_method_name[1])){
-                            Permission::create([
-                                'id'    => Str::uuid(),
-                                'name' => $route->getName(),
-                                'for' => $route->getName(),
-                                'method_name' => $current_method_name[1],
-                            ]);
-                        }
-                        else{
-                            Permission::create([
-                                'id'    => Str::uuid(),
-                                'name' => $route->getName(),
-                                'for' => $route->getName(),
-                            ]);
-                        }
+                        Permission::create([
+                            'id' => Str::uuid(),
+                            'name' => $route->getName(),
+                            'for' => $route->getName(),
+                            'controller_name' => $permission_name
+                        ]);
                     }
                 }
             }

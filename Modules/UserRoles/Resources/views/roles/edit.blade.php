@@ -52,9 +52,6 @@
                     <div class="form-group row">
                         @foreach ($permissions as $permission)
                             <div class="col-sm-3">
-                                {!! $permission ->controller_name!!}
-                            </div>
-                            <div class="col-sm-4">
                                 <div class="checkbox">
                                     <label>
                                         <input type="checkbox" name="permission[]" value="{{ $permission->id }}"

@@ -21,8 +21,10 @@ class RoleController extends Controller
      */
     public function index()
     {
+
         $roles  =  Role::all();
-        $permissions = Permission::where('method_name','!=',Null)->get()->groupBy('controller_name');
+        $permissions = Permission::where('method_name','!=',Null)
+            ->orderBY('name')->get()->groupBy('controller_name');
         return view('userroles::roles.index',compact('roles','permissions'));
     }
 
@@ -73,7 +75,7 @@ class RoleController extends Controller
     public function edit($id)
     {
         $role   =   Role::find(decrypt($id));
-        $permissions = Permission::get();
+        $permissions = Permission::all();
         return view('userroles::roles.edit',compact('role','permissions'));
     }
 

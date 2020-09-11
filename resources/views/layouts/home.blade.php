@@ -118,7 +118,7 @@
                                     </a>
                                 </li>
                             @endif
-                            @if(hasPermission(auth()->user(),'devices.create'))
+                            @if(hasPermission(auth()->user(),'devices.index'))
                                 <li class="@if(is_active('devices.index')) {{ ' active' }} @endif">
                                     <a href="{!! route('devices.index') !!}">
                                         <i class="fal fa-calculator"></i>
