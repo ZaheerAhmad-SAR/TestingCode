@@ -106,10 +106,7 @@
                                             <label>{!! $permission[0]->controller_name !!}</label>
                                         </div>
                                         <div class="col-sm-3">
-                                            <?php
-                                            $key_method_name ='';
-                                            ?>
-                                            @foreach($permission as $key)
+                                         @foreach($permission as $key)
                                             <div class="checkbox">
                                                     <label><input type="checkbox" name="permission[]" value="{{ $key->id }}">{{ $key->name }}</label>
                                                 </div>
