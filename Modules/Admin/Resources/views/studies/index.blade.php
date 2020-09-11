@@ -230,25 +230,18 @@
                         </div>
                         {{--Disease tab --}}
                         <div class="tab-pane fade" id="nav-Disease" role="tabpanel" aria-labelledby="nav-Validation-tab">
-                            <div class="form-group row">
-                                <div class="col-md-12" style="text-align: right; margin-top: 10px">
-                                <a href="javascript:void(0);" class="add_field" title="Add field">
-                                    <button class="btn btn-outline-primary"><i class="fa fa-plus"></i> Add New</button></a>
-                                </div>
-                            </div>
-                            <div id="diseaseCohort">
-                                <div class="field_wrapper form-group row" style="margin-top: 10px;">
-                                    <label for="disease_cohort" class="col-md-3">Disease Cohort</label>
-                                    <div class="{!! ($errors->has('disease_cohort')) ?'form-group col-md-6 has-error ':'form-group col-md-6' !!}">
-                                        <input type="text" class="form-control" id="disease_cohort" name="disease_cohort[]" value="{{old('disease_cohort')}}">
-                                        @error('disease_cohort')
-                                        <span class="text-danger small">{{ $message }} </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="appendfields">
-                            </div>
+                            <div class="form-group row" style="margin-top: 10px;">
+                                <div class="col-md-2">
+                                    <label for="disease_cohort">Disease Cohort</label>
+                                </div>     
+                                <div class="col-md-7 appendfields">
+                                    <input type="text" class="form-control" id="disease_cohort" name="disease_cohort[]" value="{{old('disease_cohort')}}" style="width: 90%;">
+                                </div>     
+                                <div class="col-md-3" style="text-align: right">
+                                    <button class="btn btn-outline-primary add_field"><i class="fa fa-plus"></i> Add New</button>
+                                </div>     
+                            </div>    
+                            
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -296,10 +289,10 @@
     <script src="{{ asset('public/dist/js/home.script.js') }}"></script>
     <script>
     $(document).ready(function(){
-            $('.add_field').on('click',function () {
-                $('.appendfields').append('<div class="disease_row"><div class="form-group row"><div class="col-md-3"></div> <div class="col-md-6">\n' +
-                    '    <input type="text" class="form-control" id="disease_cohort" name="disease_cohort[]" value="">\n' +
-                    '</div><div class="col-md-3"><i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div></div></div>');
+            $('.add_field').on('click',function (e) {
+                e.preventDefault();
+                $('.appendfields').append('<div class="disease_row" style="margin-top:10px;">' +
+                    '    <input type="text" class="form-control" id="disease_cohort" name="disease_cohort[]" value="" style="width: 90%;display: inline;">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>');
             })
             $('body').on('click','.remove_field',function () {
                 var row = $(this).closest('div.disease_row');
@@ -337,18 +330,13 @@
                 $('#end_date').val(data.end_date);
                 $('#description').val(data.description);
                 $('#disease_cohort').val(data.disease_cohort);
-                console.log(data.disease_cohort);
-                var html = '<div class="field_wrapper form-group row" style="margin-top: 10px;">'+
-                    '<label for="disease_cohort" class="col-md-3">Disease Cohort</label>';
-
+                var html = '';
+                $('.appendfields').html('');
                 $.each(data.disease_cohort,function (index, value) {
-                    html = '<div class="form-group col-md-6">' +
-                        '<input type="text" class="form-control" id="disease_cohort" name="disease_cohort[]" value="+ value.disease_cohort+">' +
-                        '</div>' +
-                        '<div class="col-md-3"><i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>';
-                })
-                html +="</div>";
-
+                    html += '<div class="disease_row" style="margin-top:10px;">' +
+                        '<input type="hidden" class="form-control" id="disease_cohort" name="disease_cohort[]" value="'+value.id+'" style="width: 90%;display: inline;"><input type="text" class="form-control" value="'+value.name+'" style="width: 90%;display: inline;">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>';
+                });
+                $('.appendfields').append(html);
            })
         });
 

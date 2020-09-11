@@ -204,49 +204,41 @@
                 </ul>
                     @endif
             </li>
-            <li class="dropdown">
+            <li class="dropdown"><a href="#"><i class="fas fa-sitemap"></i> Quality Control</a>
                 <ul>
-                    <li class="dropdown"><a href="#"><i class="fas fa-sitemap"></i>Quality Control</a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a href="#">
-                                    Qc List
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Qc Status
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Import XML
-                                </a>
-                            </li>
-                        </ul>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-list"></i> Qc List
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-chart-line"></i> Qc Status
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-file-import"></i> Import XML
+                        </a>
                     </li>
                 </ul>
             </li>
-            <li class="dropdown">
+            <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Grading</a>
                 <ul>
-                    <li class="dropdown"><a href="#"><i class="fas fa-database"></i>Grading</a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a href="#">
-                                    Grading List
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Grading Status
-                                </a>
-                            </li>
-                            <li>
-                                <a href="#">
-                                    Adjudication
-                                </a>
-                            </li>
-                        </ul>
+                    <li>
+                        <a href="#">
+                           <i class="fas fa-list"></i> Grading List
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                           <i class="fas fa-chart-line"></i> Grading Status
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                           <i class="fas fa-chart-line"></i> Adjudication
+                        </a>
                     </li>
                 </ul>
             </li>
