@@ -70,7 +70,7 @@
 <div class="sidebar">
     <div class="site-width">
         <!-- START: Menu-->
-        <ul id="side-menu" class="sidebar-menu">
+        <ul id="side-menu" class="sidebar-menu" style="height: 560px;overflow-y: scroll;">
             <li class="dropdown"><a href="#"><i class="icon-home mr-1"></i> Dashboard</a>
                 <ul class="@if(is_active('dashboard.index')) {{ 'active' }} @endif">
                     @can('users.dashboard',Auth::user())
@@ -298,7 +298,7 @@
 <!-- END: Main Menu-->
 
 <!-- START: Main Content-->
-<main style="min-height: 530px;">
+<main style="min-height: 500px;">
     @yield('content')
 </main>
 <!-- END: Content-->
