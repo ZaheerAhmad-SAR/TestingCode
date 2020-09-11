@@ -23,15 +23,31 @@ class PermissionTableSeeder extends Seeder
         foreach ($routeCollection as $keys => $route) {
             if (search_auth($route->action['middleware'], 'auth')) {
                 if (!empty($route->getName())) {
+                    $get_info = explode('.',$route->getName());
+                    $current_method_name = $get_info;
                     $permission = Permission::where('name', '=', $route->getName())->first();
                     if ($permission) {
-                        $permission->update(['name' => $route->getName()]);
+                        if (isset($current_method_name[1])){
+                            $permission->update(['name' => $route->getName(),'method_name' => $current_method_name[1]]);
+                        }else{
+                            $permission->update(['name' => $route->getName(),'method_name' => Null]);
+                        }
                     } else {
-                        Permission::create([
-                            'id'    => Str::uuid(),
-                            'name' => $route->getName(),
-                            'for' => $route->getName(),
-                        ]);
+                        if (isset($current_method_name[1])){
+                            Permission::create([
+                                'id'    => Str::uuid(),
+                                'name' => $route->getName(),
+                                'for' => $route->getName(),
+                                'method_name' => $current_method_name[1],
+                            ]);
+                        }
+                        else{
+                            Permission::create([
+                                'id'    => Str::uuid(),
+                                'name' => $route->getName(),
+                                'for' => $route->getName(),
+                            ]);
+                        }
                     }
                 }
             }

@@ -79,7 +79,7 @@
                     @endcan
                 </ul>
                         <ul class="@if(is_active('studies.index')) {{ 'active' }} @endif">
-                    @if(hasPermission(auth()->user(),'studies.index'))
+                        @if(hasPermission(auth()->user(),'studies.index'))
                         <li class="nav-item @if(is_active('studies.index')) {{ ' active' }} @endif">
                             <a href="{!! route('studies.index') !!}">
                                 <i class="icon-book-open"></i>

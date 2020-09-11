@@ -37,7 +37,7 @@
                                 <th style="width: 5%;">Action</th>
                             </tr>
                             @foreach($roles as $role)
-                            <tr>
+                                    <tr>
                                 <td>{{ucfirst($role->name)}}</td>
                                 <td>{{ucfirst($role->description)}}</td>
                                 <td>
@@ -106,10 +106,29 @@
                                             <label>{!! $permission[0]->controller_name !!}</label>
                                         </div>
                                         <div class="col-sm-3">
+                                            <?php
+                                            $key_method_name ='';
+                                            ?>
                                             @foreach($permission as $key)
-                                            <div class="checkbox">
-                                                    <label><input type="checkbox" name="permission[]" value="{{ $key->id }}">{{ $key->name }}</label>
+                                                @if($key->method_name == 'index' || $key->method_name == 'create' || $key->method_name == 'edit' || $key->method_name == 'destroy')
+                                                    @if($key->method_name == 'index')
+                                                            <?php $key_method_name = 'View'; ?>
+                                                    @endif
+                                                    @if($key->method_name == 'create')
+                                                        <?php $key_method_name = 'Add'; ?>
+                                                    @endif
+                                                    @if($key->method_name == 'edit')
+                                                        <?php $key_method_name = 'Edit'; ?>
+                                                    @endif
+                                                    @if($key->method_name == 'destroy')
+                                                        <?php $key_method_name = 'Delete'; ?>
+                                                    @endif
+                                                    <div class="checkbox">
+                                                    <label>
+                                                        <input type="checkbox" name="permission[]" value="{{ $key->id }}">{{ $key_method_name }}
+                                                    </label>
                                                 </div>
+                                                @endif
                                         @endforeach
                                         </div>
                                     @endforeach
