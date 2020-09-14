@@ -98,7 +98,6 @@ class StudyController extends Controller
                 'study_status'  => 'Development',
                 'study_code' => $request->study_code,
                 'protocol_number'=> $request->protocol_number,
-                'study_phase'=>$request->study_phase,
                 'trial_registry_id'=>$request->trial_registry_id,
                 'study_sponsor'=>$request->study_sponsor,
                 'start_date' => $request->start_date,
@@ -252,7 +251,7 @@ class StudyController extends Controller
                         'site_id'           => $subject->site_id,
                         'disease_cohort_id' => $disease_id
                     ]);
-                    dd($subject);
+                    //dd($subject);
 
                 }
             }
