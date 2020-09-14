@@ -45,12 +45,14 @@
                             @if(count($visitPhases))
                             @foreach ($visitPhases as $phase)
                             <div class="card text-white bg-primary m-1">
-                                <div id="heading{{$phase->id}}" class="card-header" data-toggle="collapse" data-target="#collapse{{$phase->id}}"
-                                    aria-expanded="{{ ($firstPhase) ? 'true' : 'false' }}" aria-controls="collapse{{$phase->id}}">
+                                <div id="heading{{$phase->id}}" class="card-header" data-toggle="collapse"
+                                    data-target="#collapse{{$phase->id}}"
+                                    aria-expanded="{{ ($firstPhase) ? 'true' : 'false' }}"
+                                    aria-controls="collapse{{$phase->id}}">
                                     {{$phase->name}}</div>
                                 <div id="collapse{{$phase->id}}"
-                                    class="card-body collapse-body-bg collapse {{ ($firstPhase) ? 'show' : '' }}" aria-labelledby="heading{{$phase->id}}"
-                                    data-parent="#accordion" style="">
+                                    class="card-body collapse-body-bg collapse {{ ($firstPhase) ? 'show' : '' }}"
+                                    aria-labelledby="heading{{$phase->id}}" data-parent="#accordion" style="">
                                     <p class="card-text">
                                         @if(count($phase->phases))
                                         @php
@@ -80,7 +82,11 @@
                 </div>
                 <div class="col-12 col-lg-10 mt-3 pl-lg-0">
                     <div class="card border h-100 contact-list-section">
-
+                        @if(count($visitPhases))
+                        @php
+                        $firstPhase = true;
+                        @endphp
+                        @foreach ($visitPhases as $phase)
                         @php
                         $firstStep = true;
                         @endphp
@@ -91,7 +97,8 @@
                         @endphp
                         <div class="card-body p-0">
                             <div class="contacts list">
-                                <div class="contact contact-{{$step->step_id}}">
+                                <div class="contact contact-{{$step->step_id}}"
+                                    style="display: {{ ($firstPhase) ? 'block' : 'none' }};">
                                     @include('admin::forms.section_loop', ['step'=>$step,
                                     'sections'=> $sections])
                                 </div>
@@ -102,7 +109,11 @@
                         $firstStep = false;
                         @endphp
                         @endforeach
-
+                        @php
+                        $firstPhase = false;
+                        @endphp
+                        @endforeach
+                        @endif
                     </div>
                 </div>
             </div>
