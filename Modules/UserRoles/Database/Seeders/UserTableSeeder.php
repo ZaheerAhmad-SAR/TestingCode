@@ -35,7 +35,7 @@ class UserTableSeeder extends Seeder
                 'password'  =>  Hash::make('12345678'),
                 'created_by' => ''
             ]);
-            dd($user);
+//            dd($user);
             $user   =   User::first();
             $user_id = $user->id;
             $role = Role::first();

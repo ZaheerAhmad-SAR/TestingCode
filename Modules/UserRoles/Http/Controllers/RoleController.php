@@ -21,10 +21,14 @@ class RoleController extends Controller
      */
     public function index()
     {
-
         $roles  =  Role::all();
-        $permissions = Permission::all();
-    
+//        $permissions = Permission::all();
+        $permissions = Permission::where('controller_name','=','grading')
+            ->orwhere('controller_name','=','qualitycontrol')
+            ->orwhere('controller_name','=','studytools')
+            ->orwhere('controller_name','=','systemtools')
+            ->get();
+
         return view('userroles::roles.index',compact('roles','permissions'));
     }
 
@@ -34,8 +38,8 @@ class RoleController extends Controller
      */
     public function create()
     {
-    
-        $permissions = Permission::all();
+//        $permissions = Permission::get();
+         $permissions = Permission::where('controller_name','=','grading')->get();
 
         return view('userroles::roles.create')->with(compact('permissions'));
     }
@@ -47,13 +51,14 @@ class RoleController extends Controller
      */
     public function store(RoleRequest $request)
     {
+       // dd($request->all());
         $role =  Role::create([
             'id' => \Illuminate\Support\Str::uuid(),
             'name'  =>  $request->name,
             'description'   =>  $request->description,
             'created_by'    => auth()->user()->id,
         ]);
-        /*$role->permissions()->sync($request->permission);*/
+        $role->permissions()->attach($request->permission);
 
         return redirect()->route('roles.index');
     }
@@ -76,7 +81,7 @@ class RoleController extends Controller
     public function edit($id)
     {
         $role   =   Role::find(decrypt($id));
-        $permissions = Permission::all();
+        $permissions = Permission::get();
         return view('userroles::roles.edit',compact('role','permissions'));
     }
 

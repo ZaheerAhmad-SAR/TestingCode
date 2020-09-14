@@ -29,10 +29,9 @@ class UserController extends Controller
             $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
         }
 
-        if (Auth::user()->role->name == 'admin'){
+        if (hasPermission(auth()->user(),'studytools.index')){
             $users  =   User::all();
-            }
-            
+        }
         else{
             $users = User::where('deleted_at','=',Null)
                 ->where('user_type','=','study_user')
@@ -50,7 +49,6 @@ class UserController extends Controller
     {
         if (Auth::user()->can('users.create')) {
             $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
-        
 
             return view('userroles::users.create',compact('roles'));
         }

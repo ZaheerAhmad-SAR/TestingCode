@@ -4,7 +4,6 @@
     <title> Roles | {{ config('app.name', 'Laravel') }}</title>
 @stop
 @section('content')
-
  <div class="container-fluid site-width">
     <!-- START: Breadcrumbs-->
     <div class="row ">
@@ -101,8 +100,98 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="nav-StudyActivities" role="tabpanel" aria-labelledby="nav-Validation-tab">
+                                    <div class="form-group row" style="margin-top: 15px;">
+                                        <div class="col-md-3">
+                                            <label for="Name" style="padding-left: 11px">Studies </label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <input type="checkbox" name="study_add" id="study_add"> Add
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="checkbox" name="study_edit" id="study_edit"> Edit
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="checkbox" name="study_view" id="study_view"> View
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="checkbox" name="study_delete" id="study_delete"> Delete
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" style="margin-top: 15px;">
+                                        <div class="col-md-3">
+                                            <label for="Name" style="padding-left: 11px">Subjects </label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <input type="checkbox" name="study_add" id="study_add"> Add
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="checkbox" name="study_edit" id="study_edit"> Edit
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="checkbox" name="study_view" id="study_view"> View
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="checkbox" name="study_delete" id="study_delete"> Delete
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" style="margin-top: 15px;">
+                                        <div class="col-md-3">
+                                            <label for="Name" style="padding-left: 11px">Sites </label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="row" >
+                                                <div class="col-md-3">
+                                                    <input type="checkbox" name="study_add" id="study_add"> Add
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="checkbox" name="study_edit" id="study_edit"> Edit
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="checkbox" name="study_view" id="study_view"> View
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="checkbox" name="study_delete" id="study_delete"> Delete
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row" style="margin-top: 15px;">
+                                        <div class="col-md-3">
+                                            <label for="Name" style="padding-left: 11px">Devices </label>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <input type="checkbox" name="study_add" id="study_add"> Add
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="checkbox" name="study_edit" id="study_edit"> Edit
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="checkbox" name="study_view" id="study_view"> View
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <input type="checkbox" name="study_delete" id="study_delete"> Delete
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                            </div>
+                            <div class="tab-pane fade" id="nav-StudyActiviti" role="tabpanel" aria-labelledby="nav-Validation-tab">
                                 <div class="form-group row"style='padding:5px;'>
-                                        @foreach ($permissions as $permission)
+                                    <div class="col-sm-3">
+                                        <label>Study Tools</label>
+                                    </div>
+                                @foreach ($permissions as $permission)
                                         <div class="col-sm-3">
                                             <div class="checkbox">
                                                     <label><input type="checkbox" name="permission[]" value="{{ $permission->id }}">{{ $permission->name }}</label>
@@ -149,14 +238,14 @@
                                     <label for="Name" class="col-sm-3">Certification</label>
                                     <div class="col-md-3">
                                         <input type="radio" name="certification" id="certification_yes" value="yes" checked="checked"> Yes
-                                        <input type="radio" name="q_c" id="certification_no" value="no"> No
+                                        <input type="radio" name="certification" id="certification_no" value="no"> No
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label for="Name" class="col-sm-3">Finance</label>
                                     <div class="col-md-3">
-                                        <input type="radio" name="q_c" id="finance_yes" value="yes" checked="checked"> Yes
-                                        <input type="radio" name="q_c" id="finance_no" value="no"> No
+                                        <input type="radio" name="finance" id="finance_yes" value="yes" checked="checked"> Yes
+                                        <input type="radio" name="finance" id="finance_no" value="no"> No
                                     </div>
                                 </div>
 
