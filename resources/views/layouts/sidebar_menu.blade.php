@@ -100,8 +100,8 @@
                                 @if(hasPermission(auth()->user(),'studydesign.index'))
                                     <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Design</a>
                                         <ul class="sub-menu">
-                                            @if(hasPermission(auth()->user(),'studyphases.index'))
-                                                <li class="@if(is_active('studyphases.index')) {{ ' active' }} @endif">
+                                            @if(hasPermission(auth()->user(),'study.index'))
+                                                <li class="@if(is_active('study.index')) {{ ' active' }} @endif">
                                                     <a href="{!! route('study.index') !!}">
                                                         Study Structure
                                                     </a>
@@ -114,7 +114,7 @@
                                                     </a>
                                                 </li>
                                             @endif
-                                            @if(hasPermission(auth()->user(),'studyphases.index'))
+                                            @if(hasPermission(auth()->user(),'study.index'))
                                                 <li class="@if(is_active('optionsGroup.index')) {{ ' active' }} @endif">
                                                     <a href="{!! route('optionsGroup.index') !!}">
                                                         Option Groups

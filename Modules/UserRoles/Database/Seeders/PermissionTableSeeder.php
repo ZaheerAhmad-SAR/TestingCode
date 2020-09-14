@@ -24,7 +24,6 @@ class PermissionTableSeeder extends Seeder
                 if (!empty($route->getName())) {
                     $permission = Permission::where('name', '=', $route->getName())->first();
                     list($permission_name) = explode('.', $route->getName());
-                    //dd($permission_name);
                     if ($permission) {
                         $permission->update(['name' => $route->getName(), 'controller_name' => $permission_name]);
                     } else {

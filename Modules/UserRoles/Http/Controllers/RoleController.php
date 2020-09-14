@@ -51,13 +51,14 @@ class RoleController extends Controller
      */
     public function store(RoleRequest $request)
     {
-        dd($request->all());
+       // dd($request->all());
         $role =  Role::create([
             'id' => \Illuminate\Support\Str::uuid(),
             'name'  =>  $request->name,
             'description'   =>  $request->description,
             'created_by'    => auth()->user()->id,
         ]);
+        $role->permissions()->attach($request->permission);
 
         return redirect()->route('roles.index');
     }

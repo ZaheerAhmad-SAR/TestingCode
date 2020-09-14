@@ -37,16 +37,12 @@ class RoleTableSeeder extends Seeder
             $role = Role::first();
             $role_id = $role->id;
             if ($check_role->name=='admin'){
-                $permissions    =   Permission::get();
-                //$permissions = Permission::select('id')->get();
-                //dd('in loop', $permissions);
+                $permissions    =   Permission::all();
                 foreach ($permissions as   $permission){
                    $permission_id = $permission->id;
                     $permission_data        =   RolePermission::where('role_id','=',$role_id)
                         ->where('permission_id','=',$permission->id)->first();
-                   //dd('here',$permission_data);
                     if (!empty($permission_data)){
-                        //dd('not empty');
                         $permission_data->update([
                             'role_id'   =>  $role_id,
                             'permission_id' =>  $permission->id
