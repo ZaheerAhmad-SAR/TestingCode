@@ -34,10 +34,6 @@ class UserController extends Controller
                 ->join('roles','roles.id','=','user_roles.role_id')
                 ->where('roles.role_type','!=','study_role')
                 ->get();
-            dd(count($users));
-            foreach ($users as $user){
-                dd($user);
-            }
         }
         else{
             $users = User::where('deleted_at','=',Null)
@@ -56,7 +52,6 @@ class UserController extends Controller
     {
         if (Auth::user()->can('users.create')) {
             $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
-            dd($roles);
 
             return view('userroles::users.create',compact('roles'));
         }

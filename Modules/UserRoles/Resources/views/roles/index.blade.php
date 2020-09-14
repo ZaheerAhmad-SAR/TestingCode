@@ -101,16 +101,14 @@
                             </div>
                             <div class="tab-pane fade" id="nav-StudyActivities" role="tabpanel" aria-labelledby="nav-Validation-tab">
                                 <div class="form-group row"style='padding:5px;'>
-                                        @foreach ($permissions as $permission)
+                                    <div class="col-sm-3">
+                                        <label>Study Tools</label>
+                                    </div>
+                                @foreach ($permissions as $permission)
                                         <div class="col-sm-3">
-                                            <label>{!! $permission[0]->controller_name !!}</label>
-                                        </div>
-                                        <div class="col-sm-3">
-                                         @foreach($permission as $key)
                                             <div class="checkbox">
-                                                    <label><input type="checkbox" name="permission[]" value="{{ $key->id }}">{{ $key->name }}</label>
+                                                    <label><input type="checkbox" name="permission[]" value="{{ $permission->id }}">{{ $permission->name }}</label>
                                                 </div>
-                                        @endforeach
                                         </div>
                                     @endforeach
                                     @error('permission')
@@ -153,14 +151,14 @@
                                     <label for="Name" class="col-sm-3">Certification</label>
                                     <div class="col-md-3">
                                         <input type="radio" name="certification" id="certification_yes" value="yes" checked="checked"> Yes
-                                        <input type="radio" name="q_c" id="certification_no" value="no"> No
+                                        <input type="radio" name="certification" id="certification_no" value="no"> No
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label for="Name" class="col-sm-3">Finance</label>
                                     <div class="col-md-3">
-                                        <input type="radio" name="q_c" id="finance_yes" value="yes" checked="checked"> Yes
-                                        <input type="radio" name="q_c" id="finance_no" value="no"> No
+                                        <input type="radio" name="finance" id="finance_yes" value="yes" checked="checked"> Yes
+                                        <input type="radio" name="finance" id="finance_no" value="no"> No
                                     </div>
                                 </div>
 
@@ -187,17 +185,5 @@
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css') }}">
 @stop
 @section('script')
-<script src="{{ asset('public/dist/vendors/datatable/js/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/js/dataTables.bootstrap4.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/jszip/jszip.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/pdfmake/pdfmake.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/pdfmake/vfs_fonts.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/buttons/js/dataTables.buttons.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.bootstrap4.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.colVis.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.flash.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.html5.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.print.min.js') }}"></script>
-<script src="{{ asset('public/dist/js/datatable.script.js') }}"></script>
 
 @stop
