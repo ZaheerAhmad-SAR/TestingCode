@@ -123,16 +123,6 @@ class FormController extends Controller
         ->with('step', $step);
     }
 
-    public function showPreviewFullFlow($id)
-    {
-        $phase = StudyStructure::find($id);
-        $steps = PhaseSteps::select('*')->where('phase_id',$id)->get();
-        
-        return view('admin::forms.preview_form_full_flow')
-        ->with('phase', $phase)
-        ->with('steps', $steps);
-    }
-
     /**
      * Show the form for editing the specified resource.
      * @param int $id
