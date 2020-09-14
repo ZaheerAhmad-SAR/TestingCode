@@ -52,6 +52,7 @@ class StudyStructureController extends Controller
         $id    = Str::uuid();
         $phase = StudyStructure::create([
             'id'    => $id,
+            'study_id'    => session('current_study'),
             'position'  =>  $request->position,
             'name' =>  $request->name,
             'duration' =>  $request->duration
