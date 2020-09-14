@@ -54,7 +54,14 @@ class FormController extends Controller
         $questionsData['data'] = $questions;
         echo json_encode($questionsData);
     }
-    
+    public function updateQustionsort(Request $request)
+    {
+        $question = Question::find($request->questionId);
+        $question->question_sort  =  $request->sort_value;
+        $question->save();
+        $Response['data'] = 'success';
+        echo json_encode($Response);
+    }
     /**
      * Show the form for creating a new resource.
      * @return Response
@@ -159,8 +166,14 @@ class FormController extends Controller
      * @param int $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy($id='')
     {
-        //
+        
+    }
+    function deleteQuestion($id){
+        $question = Question::where('id',$id)->delete();
+        $question = FormFields::where('question_id',$id)->delete();
+        $Response['data'] = 'success';
+        echo json_encode($Response); 
     }
 }
