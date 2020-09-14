@@ -23,7 +23,6 @@ class Permission extends Model
         'name',
         'for',
         'controller_name',
-        'method_name',
         'created_at',
         'updated_at',
         'deleted_at',
