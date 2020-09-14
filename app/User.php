@@ -29,7 +29,6 @@ class User extends Authenticatable
         'email',
         'role_id',
         'password',
-        'user_type',
         'created_by',
         'deleted_at'
     ];
