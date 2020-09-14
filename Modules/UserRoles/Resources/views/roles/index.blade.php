@@ -4,7 +4,6 @@
     <title> Roles | {{ config('app.name', 'Laravel') }}</title>
 @stop
 @section('content')
-
  <div class="container-fluid site-width">
     <!-- START: Breadcrumbs-->
     <div class="row ">
@@ -102,7 +101,10 @@
                             </div>
                             <div class="tab-pane fade" id="nav-StudyActivities" role="tabpanel" aria-labelledby="nav-Validation-tab">
                                 <div class="form-group row"style='padding:5px;'>
-                                        @foreach ($permissions as $permission)
+                                    <div class="col-sm-3">
+                                        <label>Study Tools</label>
+                                    </div>
+                                @foreach ($permissions as $permission)
                                         <div class="col-sm-3">
                                             <div class="checkbox">
                                                     <label><input type="checkbox" name="permission[]" value="{{ $permission->id }}">{{ $permission->name }}</label>

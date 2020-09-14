@@ -49,6 +49,7 @@
                         </span>
                         @enderror
                     </div>
+                    <label>Permissions: {{count($permissions)}}</label>
                     <div class="form-group row">
                         @foreach ($permissions as $permission)
                             <div class="col-sm-3">
