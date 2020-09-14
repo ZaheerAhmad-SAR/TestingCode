@@ -4,6 +4,7 @@
     <title> Roles | {{ config('app.name', 'Laravel') }}</title>
 @stop
 @section('content')
+
  <div class="container-fluid site-width">
     <!-- START: Breadcrumbs-->
     <div class="row ">
@@ -103,14 +104,9 @@
                                 <div class="form-group row"style='padding:5px;'>
                                         @foreach ($permissions as $permission)
                                         <div class="col-sm-3">
-                                            <label>{!! $permission[0]->controller_name !!}</label>
-                                        </div>
-                                        <div class="col-sm-3">
-                                         @foreach($permission as $key)
                                             <div class="checkbox">
-                                                    <label><input type="checkbox" name="permission[]" value="{{ $key->id }}">{{ $key->name }}</label>
+                                                    <label><input type="checkbox" name="permission[]" value="{{ $permission->id }}">{{ $permission->name }}</label>
                                                 </div>
-                                        @endforeach
                                         </div>
                                     @endforeach
                                     @error('permission')

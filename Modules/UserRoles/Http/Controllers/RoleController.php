@@ -23,8 +23,8 @@ class RoleController extends Controller
     {
 
         $roles  =  Role::all();
-        $permissions = Permission::where('method_name','!=',Null)
-            ->orderBY('name')->get()->groupBy('controller_name');
+        $permissions = Permission::all();
+    
         return view('userroles::roles.index',compact('roles','permissions'));
     }
 
@@ -34,7 +34,8 @@ class RoleController extends Controller
      */
     public function create()
     {
-        $permissions = Permission::get();
+    
+        $permissions = Permission::all();
 
         return view('userroles::roles.create')->with(compact('permissions'));
     }
