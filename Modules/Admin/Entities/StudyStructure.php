@@ -6,7 +6,7 @@ use Modules\Admin\Scopes\StudyStructureOrderByScope;
 use Illuminate\Database\Eloquent\Model;
 class StudyStructure extends Model
 {
-    protected $fillable = ['id','name','position','duration'];
+    protected $fillable = ['id','study_id','name','position','duration'];
     // protected $keyType = 'string';
     protected $casts = [
     	'id' => 'string'

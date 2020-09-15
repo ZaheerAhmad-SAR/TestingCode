@@ -24,6 +24,11 @@ Route::group(['middleware' => ['auth','web','roles']],function(){
     /*Route::resource('permissions', 'PermissionsController');*/
     Route::resource('users','UserController');
     Route::resource('dashboard','DashboardController');
+    Route::resource('grading','GradingController');
+    Route::resource('qualitycontrol','QualityControlController');
+    Route::resource('studytools','StudyToolsController');
+    Route::resource('systemtools','SystemToolsController');
+    Route::resource('studydesign','StudyDesignController');
 
 });
 Route::group(['middleware' => ['auth','web']],function(){

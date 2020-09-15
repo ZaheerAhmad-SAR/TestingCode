@@ -13,7 +13,7 @@ class SubjectFormLoaderController extends Controller
     public function showSubjectForm($subjectId)
     {
         $studyId = session('current_study');
-        $visitPhases = StudyStructure::all();
+        $visitPhases = StudyStructure::where('study_id', $studyId)->get();
         
         return view('admin::subjectFormLoader.subject_form')
         ->with('subjectId', $subjectId)

@@ -23,7 +23,6 @@ function search_auth($arr, $auth)
     }
     return false;
 }
-
 function hasPermission($user, $routeName){
     $role = $user->role;
     $permission = Permission::where('name','=',$routeName)->first();
@@ -38,3 +37,5 @@ function hasPermission($user, $routeName){
         return false;
     }
 }
+
+

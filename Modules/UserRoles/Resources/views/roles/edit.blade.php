@@ -28,7 +28,7 @@
             @method('PATCH')
                 <div class="card-body">
                     <div class="form-group row">
-                        <label for="Name" class="col-sm-3">Name</label>    
+                        <label for="Name" class="col-sm-3">Name</label>
                         <div class="{!! ($errors->has('name')) ?'col-sm-9 has-error':'col-sm-9' !!}">
                             <input type="text" class="form-control" name="name" value="{{$role->name}}">
                             @error('name')
@@ -49,6 +49,7 @@
                         </span>
                         @enderror
                     </div>
+                    <label>Permissions: {{count($permissions)}}</label>
                     <div class="form-group row">
                         @foreach ($permissions as $permission)
                             <div class="col-sm-3">
@@ -74,8 +75,8 @@
                     </div>
                 </div>
             </form>
-        </div> 
-    </div>                  
+        </div>
+    </div>
 </div>
     <!-- END: Card DATA-->
 </div>
