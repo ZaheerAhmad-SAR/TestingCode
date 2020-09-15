@@ -28,4 +28,8 @@ class Permission extends Model
         'deleted_at',
     ];
 
+    public function roles(){
+        return $this->belongsToMany('Modules\UserRoles\Entities\Role');
+    }
+
 }

@@ -22,6 +22,8 @@ class Role extends Model
     public function permissions()
     {
         return $this->belongsToMany('Modules\UserRoles\Entities\Permission');
+//        return $this->belongsToMany('Modules\UserRoles\Entities\Permission','permission_role','permission_id','role_id');
+//        $this->belongsToMany('App\Included','included_tour', 'tour_id', 'included_id');
     }
 
     public function study()

@@ -23,9 +23,11 @@
  <div class="col-12 col-sm-12 mt-3">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#createRole">
-                        <i class="fa fa-plus"></i> Add Role
-                    </button>
+                   @if(hasPermission(auth()->user(),'roles.create'))
+                        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#createRole">
+                            <i class="fa fa-plus"></i> Add Role
+                        </button>
+                       @endif
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -75,11 +77,10 @@
                                 <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-ManagementActivities" role="tab" aria-controls="nav-profile" aria-selected="false">Management Activities</a>
                             </div>
                         </nav>
-
                         <div class="tab-content" id="nav-tabContent">
                             <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
                                 @csrf
-                                <div class="form-group row" style="margin-top: 10px;">
+                                <div class="form-group row" style="margin-top: 20px;">
                                     <label for="Name" class="col-sm-3 col-form-label">Name</label>
                                     <div class="{!! ($errors->has('name')) ?'col-sm-9 has-error':'col-sm-9' !!}">
                                         <input type="text" class="form-control" name="name" value="{{old('name')}}">
@@ -99,162 +100,211 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="nav-StudyActivities" role="tabpanel" aria-labelledby="nav-Validation-tab">
-                                    <div class="form-group row" style="margin-top: 15px;">
-                                        <div class="col-md-3">
-                                            <label for="Name" style="padding-left: 11px">Studies </label>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <div class="row">
-                                                <div class="col-md-3">
-                                                    <input type="checkbox" name="study_add" id="study_add"> Add
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <input type="checkbox" name="study_edit" id="study_edit"> Edit
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <input type="checkbox" name="study_view" id="study_view"> View
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <input type="checkbox" name="study_delete" id="study_delete"> Delete
-                                                </div>
+                                <div class="form-group row" style="margin-top: 15px;">
+                                    <div class="col-md-3">
+                                        <label for="Name" style="padding-left: 11px">Adjudication </label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="adjudication_add" id="adjudication_add"> Add
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="adjudication_edit" id="adjudication_edit"> Edit
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="adjudication_view" id="adjudication_view"> View
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="adjudication_delete" id="adjudication_delete"> Delete
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group row" style="margin-top: 15px;">
-                                        <div class="col-md-3">
-                                            <label for="Name" style="padding-left: 11px">Subjects </label>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <div class="row">
-                                                <div class="col-md-3">
-                                                    <input type="checkbox" name="study_add" id="study_add"> Add
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <input type="checkbox" name="study_edit" id="study_edit"> Edit
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <input type="checkbox" name="study_view" id="study_view"> View
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <input type="checkbox" name="study_delete" id="study_delete"> Delete
-                                                </div>
+                                </div>
+                                <div class="form-group row" style="margin-top: 15px;">
+                                    <div class="col-md-3">
+                                        <label for="Name" style="padding-left: 11px">Eligibility</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="eligibility_add" id="eligibility_add"> Add
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="eligibility_edit" id="eligibility_edit"> Edit
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="eligibility_view" id="eligibility_view"> View
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="eligibility_delete" id="eligibility_delete"> Delete
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group row" style="margin-top: 15px;">
-                                        <div class="col-md-3">
-                                            <label for="Name" style="padding-left: 11px">Sites </label>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <div class="row" >
-                                                <div class="col-md-3">
-                                                    <input type="checkbox" name="study_add" id="study_add"> Add
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <input type="checkbox" name="study_edit" id="study_edit"> Edit
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <input type="checkbox" name="study_view" id="study_view"> View
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <input type="checkbox" name="study_delete" id="study_delete"> Delete
-                                                </div>
+                                </div>
+                                <div class="form-group row" style="margin-top: 15px;">
+                                    <div class="col-md-3">
+                                        <label for="Name" style="padding-left: 11px">Grading </label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="grading_add" id="grading_add"> Add
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="grading_edit" id="grading_edit"> Edit
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="grading_view" id="grading_view"> View
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="grading_delete" id="grading_delete"> Delete
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="form-group row" style="margin-top: 15px;">
-                                        <div class="col-md-3">
-                                            <label for="Name" style="padding-left: 11px">Devices </label>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <div class="row">
-                                                <div class="col-md-3">
-                                                    <input type="checkbox" name="study_add" id="study_add"> Add
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <input type="checkbox" name="study_edit" id="study_edit"> Edit
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <input type="checkbox" name="study_view" id="study_view"> View
-                                                </div>
-                                                <div class="col-md-3">
-                                                    <input type="checkbox" name="study_delete" id="study_delete"> Delete
-                                                </div>
+                                </div>
+                                <div class="form-group row" style="margin-top: 15px;">
+                                    <div class="col-md-3">
+                                        <label for="Name" style="padding-left: 11px">Quality Control </label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="qualityControl_add" id="qualityControl_add"> Add
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="qualityControl_edit" id="qualityControl_edit"> Edit
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="qualityControl_view" id="qualityControl_view"> View
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="qualityControl_delete" id="qualityControl_delete"> Delete
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="form-group row" style="margin-top: 15px;">
+                                    <div class="col-md-3">
+                                        <label for="Name" style="padding-left: 11px">Queries</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="queries_add" id="queries_add"> Add
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="queries_edit" id="queries_edit"> Edit
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="queries_view" id="queries_view"> View
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="queries_delete" id="queries_delete"> Delete
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row" style="margin-top: 15px;">
+                                    <div class="col-md-3">
+                                        <label for="Name" style="padding-left: 11px">Studies </label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="study_add" id="study_add"> Add
 
-                            </div>
-                            <div class="tab-pane fade" id="nav-StudyActiviti" role="tabpanel" aria-labelledby="nav-Validation-tab">
-                                <div class="form-group row"style='padding:5px;'>
-                                    <div class="col-sm-3">
-                                        <label>Study Tools</label>
-                                    </div>
-                                @foreach ($permissions as $permission)
-                                        <div class="col-sm-3">
-                                            <div class="checkbox">
-                                                    <label><input type="checkbox" name="permission[]" value="{{ $permission->id }}">{{ $permission->name }}</label>
-                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="study_edit" id="study_edit"> Edit
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="study_view" id="study_view"> View
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="study_delete" id="study_delete"> Delete
+                                            </div>
                                         </div>
-                                    @endforeach
-                                    @error('permission')
-                                        <span class="text-danger small">
-                                            {{ $message }}
-                                        </span>
-                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row" style="margin-top: 15px;">
+                                    <div class="col-md-3">
+                                        <label for="Name" style="padding-left: 11px">Subjects </label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="subjects_add" id="subjects_add"> Add
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="subjects_edit" id="subjects_edit"> Edit
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="subjects_view" id="subjects_view"> View
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="subjects_delete" id="subjects_delete"> Delete
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="nav-ManagementActivities" role="tabpanel">
                                     <div class="form-group row" style="margin-top: 10px;">
-                                            <label for="Name" class="col-sm-3">System Tools</label>
-                                            <div class="col-md-3">
-                                                <input type="radio" name="system_tools" id="system_tool_yes" value="yes" checked="checked"> Yes
+                                        <div class="col-md-3">
+                                            <label for="Name">System Tools</label>
+                                        </div>
+                                        <div class="col-md-3">
+                                                <input type="radio" name="system_tools" id="system_tool_yes" value="yes"> Yes
                                                 <input type="radio" name="system_tools" id="system_tool_no" value="no"> No
                                             </div>
+                                        <div class="col-md-3">
+                                            <label for="Name">Study Tools</label>
+                                        </div>
+                                        <div class="col-md-3">
+                                                <input type="radio" name="study_tools" id="study_tool_yes" value="yes"> Yes
+                                                <input type="radio" name="study_tools" id="study_tool_no" value="no"> No
+                                            </div>
                                     </div>
-                                <div class="form-group row">
-                                    <label for="Name" class="col-sm-3">Study Tools</label>
-                                    <div class="col-md-3">
-                                        <input type="radio" name="study_tools" id="study_tool_yes" value="yes" checked="checked"> Yes
-                                        <input type="radio" name="study_tools" id="study_tool_no" value="no"> No
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <label for="Name">Data Management</label>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="radio" name="management" id="management_yes" value="yes"> Yes
+                                            <input type="radio" name="management" id="management_no" value="no"> No
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="Name">Activity Log</label>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="radio" name="activity_log" id="log_yes" value="yes"> Yes
+                                            <input type="radio" name="activity_log" id="log_no" value="no"> No
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="Name" class="col-sm-3">Data Management</label>
-                                    <div class="col-md-3">
-                                        <input type="radio" name="management" id="management_yes" value="yes" checked="checked"> Yes
-                                        <input type="radio" name="management" id="management_no" value="no"> No
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <label>Certification</label>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="radio" name="certification" id="certification_yes" value="yes"> Yes
+                                            <input type="radio" name="certification" id="certification_no" value="no"> No
+                                        </div>
+                                        <div class="col-md-3">
+                                        <label for="Name">Finance</label>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="radio" name="finance" id="finance_yes" value="yes"> Yes
+                                            <input type="radio" name="finance" id="finance_no" value="no"> No
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="Name" class="col-sm-3">Activity Log</label>
-                                    <div class="col-md-3">
-                                        <input type="radio" name="log" id="log_yes" value="yes" checked="checked"> Yes
-                                        <input type="radio" name="log" id="log_no" value="no"> No
                                     </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="Name" class="col-sm-3">Certification</label>
-                                    <div class="col-md-3">
-                                        <input type="radio" name="certification" id="certification_yes" value="yes" checked="checked"> Yes
-                                        <input type="radio" name="certification" id="certification_no" value="no"> No
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="Name" class="col-sm-3">Finance</label>
-                                    <div class="col-md-3">
-                                        <input type="radio" name="finance" id="finance_yes" value="yes" checked="checked"> Yes
-                                        <input type="radio" name="finance" id="finance_no" value="no"> No
-                                    </div>
-                                </div>
-
+                        </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                                <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
-                        </div>
-                    </div>
                 </form>
             </div>
         </div>
@@ -283,5 +333,13 @@
 <script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.html5.min.js') }}"></script>
 <script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('public/dist/js/datatable.script.js') }}"></script>
-
+<script type="text/javascript">
+    function validate() {
+        if (document.getElementById('study_add').checked) {
+            alert("checked");
+        } else {
+            alert("You didn't check it! Let me check it for you.");
+        }
+    }
+</script>
 @stop
