@@ -25,30 +25,12 @@ class UserController extends Controller
      */
     public function index()
     {
-<<<<<<< HEAD
-
-=======
-        //session(['current_study'=>$study->id,'study_short_name'=> $study->study_short_name]);
->>>>>>> fbb0c57de5a575f970a192a3f5b29c1522bc5479
         if (Auth::user()->can('users.create')) {
             $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
         }
 
-        if (Auth::user()->role->name == 'admin'){
-            $users  =   User::select('users.*','roles.name as role_name','roles.role_type')->with('role')->join('user_roles','user_roles.user_id','=','users.id')
-                ->join('roles','roles.id','=','user_roles.role_id')
-                ->where('roles.role_type','!=','study_role')
-                ->get();
-<<<<<<< HEAD
-            foreach ($users as $user){
-                dd($user);
-            }
-=======
-//            dd(count($users));
-//            foreach ($users as $user){
-//                dd($user);
-//            }
->>>>>>> fbb0c57de5a575f970a192a3f5b29c1522bc5479
+        if (hasPermission(auth()->user(),'studytools.index')){
+            $users  =   User::all();
         }
         else{
             $users = User::where('deleted_at','=',Null)
@@ -67,7 +49,6 @@ class UserController extends Controller
     {
         if (Auth::user()->can('users.create')) {
             $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
-            dd($roles);
 
             return view('userroles::users.create',compact('roles'));
         }
@@ -169,7 +150,7 @@ class UserController extends Controller
             $roles = Role::get();
             return view('userroles::users.edit', compact('user', 'roles'));
         }
-            return  redirect('dashboard');
+        return  redirect('dashboard');
     }
 
     /**
