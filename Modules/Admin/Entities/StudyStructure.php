@@ -2,6 +2,7 @@
 
 namespace Modules\Admin\Entities;
 
+use Modules\UserRoles\Entities\Role;
 use Modules\Admin\Scopes\StudyStructureOrderByScope;
 use Illuminate\Database\Eloquent\Model;
 class StudyStructure extends Model
@@ -21,5 +22,10 @@ class StudyStructure extends Model
     public function phases()
     {
         return $this->hasMany(PhaseSteps::class,'phase_id','id');
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'study_structures_roles', 'phase_id','role_id');
     }
 }

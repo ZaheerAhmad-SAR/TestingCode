@@ -3,6 +3,7 @@
 namespace Modules\Admin\Entities;
 
 use Modules\Admin\Scopes\PhaseStepOrderByScope;
+use Modules\UserRoles\Entities\Role;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Admin\Entities\StudyStructure;
 class PhaseSteps extends Model
@@ -33,6 +34,11 @@ class PhaseSteps extends Model
     public function sections()
     {
         return $this->hasMany(Section::class, 'phase_steps_id', 'step_id');
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'phase_steps_roles', 'step_id','role_id');
     }
 
 }
