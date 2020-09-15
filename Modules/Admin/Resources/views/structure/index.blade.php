@@ -49,6 +49,7 @@
                                     <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                         <span class="dropdown-item edit_phase"><i class="far fa-edit"></i>&nbsp; Edit</span>
+                                        <span class="dropdown-item assign_study_structures_roles" data-phase-id="{{$phase->id}}"><i class="far fa-user"></i>&nbsp; Assign Roles</span>
                                         <span class="dropdown-item"><i class="far fa-clone"></i>&nbsp; Clone</span>
                                         <span class="dropdown-item deletePhase"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                     </div>
@@ -88,6 +89,7 @@
                                             <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                 <span class="dropdown-item edit_steps"><i class="far fa-edit"></i>&nbsp; Edit</span>
                                                 <span class="dropdown-item addsection"><i class="far fa-file-code"></i>&nbsp; Add Section</span>
+                                                <span class="dropdown-item assign_phase_steps_roles" data-step-id="{{$step_value->step_id}}"><i class="far fa-user"></i>&nbsp; Assign Roles</span>
                                                 <span class="dropdown-item"><i class="far fa-clone"></i>&nbsp; Clone</span>
                                                 <span class="dropdown-item deleteStep"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                             </div>
@@ -311,6 +313,35 @@
         </div>
 </div>
 <!--  -->
+<!-- assign role to phase modle -->
+<div class="modal fade" tabindex="-1" role="dialog" id="assign_study_structures_roles" aria-labelledby="exampleModalLongTitle1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="alert alert-danger" style="display:none"></div>
+            <div class="modal-header ">
+                <p class="modal-title">Assign Roles</p>
+            </div>            
+            <div class="modal-body" id="assignRolesToPhaseMainDiv"></div>            
+        </div>
+    </div>
+</div>
+<!--  -->
+<!-- assign role to step modle -->
+<div class="modal fade" tabindex="-1" role="dialog" id="assign_phase_steps_roles" aria-labelledby="exampleModalLongTitle1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="alert alert-danger" style="display:none"></div>
+            <div class="modal-header ">
+                <p class="modal-title">Assign Roles</p>
+            </div>
+            <div class="modal-body" id="assignRolesToPhaseStepMainDiv">
+            
+            </div>            
+        </div>
+    </div>
+</div>
+<!--  -->
+
 
 @stop
 @section('styles')
@@ -681,6 +712,14 @@
                    })
                 }
             });
+            $('body').on('click','.assign_study_structures_roles',function(){
+                $('#assign_study_structures_roles').modal('show');
+                loadAssignRolesToPhaseForm($(this).data('phase-id'));
+            })
+            $('body').on('click','.assign_phase_steps_roles',function(){
+                $('#assign_phase_steps_roles').modal('show');
+                loadAssignRolesToPhaseStepForm($(this).data('step-id'));
+            })
 
         })
     function refresh_phase_in_stepForm(){
@@ -739,6 +778,60 @@
                }
             }
         });
+    }
+    function loadAssignRolesToPhaseForm(phase_id){
+        $.ajax({
+             url: 'getAssignRolesToPhaseForm',
+             type: 'POST',
+             data: {
+                "_token": "{{ csrf_token() }}",
+                'phase_id': phase_id
+            },
+            success: function(response){
+                $('#assignRolesToPhaseMainDiv').empty();
+                $("#assignRolesToPhaseMainDiv").html(response);               
+            }
+        });
+    }
+    function loadAssignRolesToPhaseStepForm(step_id){
+        $.ajax({
+             url: 'getAssignRolesToPhaseStepForm',
+             type: 'POST',
+             data: {
+                "_token": "{{ csrf_token() }}",
+                'step_id': step_id
+            },
+            success: function(response){
+                $('#assignRolesToPhaseStepMainDiv').empty();
+                $("#assignRolesToPhaseStepMainDiv").html(response);               
+            }
+        });
+    }
+    function submitAssignRolesToPhaseForm(e){
+        e.preventDefault();
+        $.ajax({
+             url: 'submitAssignRolesToPhaseForm',
+             type: 'POST',
+             data: $( "#assign_study_structures_roles_form" ).serialize(),
+            success: function(response){
+                $('#assignRolesToPhaseMainDiv').empty();
+                $("#assignRolesToPhaseMainDiv").html(response);               
+            }
+        });  
+        
+    }
+    function submitAssignRolesToPhaseStepsForm(e){
+        e.preventDefault();
+        $.ajax({
+             url: 'submitAssignRolesToPhaseStepForm',
+             type: 'POST',
+             data: $( "#assign_phase_steps_roles_form" ).serialize(),
+            success: function(response){
+                $('#assignRolesToPhaseStepMainDiv').empty();
+                $("#assignRolesToPhaseStepMainDiv").html(response);               
+            }
+        });  
+        
     }
     </script>
 @stop

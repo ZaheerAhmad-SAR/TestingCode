@@ -5,6 +5,8 @@ namespace Modules\UserRoles\Entities;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Admin\Entities\RoleStudy;
+use Modules\Admin\Entities\StudyStructure;
+use Modules\Admin\Entities\PhaseStep;
 
 class Role extends Model
 {
@@ -27,6 +29,16 @@ class Role extends Model
     public function study()
     {
         return $this->hasMany(RoleStudy::class);
+    }
+
+    public function phases()
+    {
+        return $this->belongsToMany(StudyStructure::class, 'study_structures_roles', 'role_id', 'phase_id');
+    }
+
+    public function steps()
+    {
+        return $this->belongsToMany(PhaseStep::class, 'phase_steps_roles', 'role_id', 'phase_id');
     }
 
 }
