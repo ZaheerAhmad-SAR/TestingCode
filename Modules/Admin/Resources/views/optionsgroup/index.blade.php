@@ -258,9 +258,10 @@
        function editOptionGroup() {
 
            $('body').on('click', '.editOptions', function (e) {
-               $('#OptionsGroupEditForm').trigger('reset');
+               //$('#OptionsGroupEditForm').trigger('reset');
                $('#editOptionGroups').modal('show');
                var id =($(this).attr("data-id"));
+               console.log(id);
                var url = "{{URL('/ocap_new/optionsGroup')}}";
                var newPath = url+ "/"+ id+"/edit/";
                $.ajaxSetup({
@@ -332,9 +333,9 @@
                    dataType: 'json',
                    success: function (data) {
                        $('#OptionsGroupEditForm').modal('hide');
-                       {{--window.setTimeout(function () {--}}
-                       {{--    location.href = '{{ route('optionsGroup.index') }}';--}}
-                       {{--}, 100);--}}
+                       window.setTimeout(function () {
+                           location.href = '{{ route('optionsGroup.index') }}';
+                       }, 100);
 
                    },
                    error: function (data) {

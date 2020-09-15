@@ -1,5 +1,4 @@
 @extends('layouts.home')
-
 @section('title')
     <title> Roles | {{ config('app.name', 'Laravel') }}</title>
 @stop
