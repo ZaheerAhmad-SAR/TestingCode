@@ -36,9 +36,11 @@
             <div class="col-12 mt-3">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
+                        @if(hasPermission(auth()->user(),'studies.create'))
                         <button type="button" class="btn btn-outline-primary" id="create-new-study" data-toggle="modal" data-target="#createStudy">
                             <i class="fa fa-plus"></i> Add Study
                         </button>
+                            @endif
                     </div>
                     <div class="card-body">
                         <table class="tablesaw table-bordered" data-tablesaw-mode="stack" id="studies_crud">
@@ -82,6 +84,7 @@
                                             </div>
                                         </td>
                                         <td>{{$study->study_status}}</td>
+                                        @if(hasPermission(auth()->user(),'studies.edit'))
                                         <td>
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
@@ -119,6 +122,9 @@
                                                 </div>
                                             </div>
                                         </td>
+                                            @else
+                                        <td></td>
+                                        @endif
                                     </tr>
                                     <?php $index++; ?>
                                 @endforeach
@@ -233,15 +239,15 @@
                             <div class="form-group row" style="margin-top: 10px;">
                                 <div class="col-md-2">
                                     <label for="disease_cohort">Disease Cohort</label>
-                                </div>     
+                                </div>
                                 <div class="col-md-7 appendfields">
                                     <input type="text" class="form-control" id="disease_cohort" name="disease_cohort[]" value="{{old('disease_cohort')}}" style="width: 90%;">
-                                </div>     
+                                </div>
                                 <div class="col-md-3" style="text-align: right">
                                     <button class="btn btn-outline-primary add_field"><i class="fa fa-plus"></i> Add New</button>
-                                </div>     
-                            </div>    
-                            
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                     <div class="modal-footer">

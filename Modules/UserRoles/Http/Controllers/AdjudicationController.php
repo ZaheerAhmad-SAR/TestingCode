@@ -2,31 +2,24 @@
 
 namespace Modules\UserRoles\Http\Controllers;
 
-use App\User;
+use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Modules\UserRoles\Entities\RolePermission;
 
-class DashboardController extends Controller
+class AdjudicationController extends Controller
 {
-    /*public function __construct() {
-        $this->middleware('can:users.dashboard');
-    }*/
     /**
      * Display a listing of the resource.
-     * @return Response
+     * @return Renderable
      */
     public function index()
     {
-        session(['current_study'=>'','study_short_name'=> '']);
-        $study = '';
-        return view('userroles::dashboard',compact('study'));
+        return view('userroles::index');
     }
 
     /**
      * Show the form for creating a new resource.
-     * @return Response
+     * @return Renderable
      */
     public function create()
     {
@@ -36,7 +29,7 @@ class DashboardController extends Controller
     /**
      * Store a newly created resource in storage.
      * @param Request $request
-     * @return Response
+     * @return Renderable
      */
     public function store(Request $request)
     {
@@ -46,7 +39,7 @@ class DashboardController extends Controller
     /**
      * Show the specified resource.
      * @param int $id
-     * @return Response
+     * @return Renderable
      */
     public function show($id)
     {
@@ -56,7 +49,7 @@ class DashboardController extends Controller
     /**
      * Show the form for editing the specified resource.
      * @param int $id
-     * @return Response
+     * @return Renderable
      */
     public function edit($id)
     {
@@ -67,7 +60,7 @@ class DashboardController extends Controller
      * Update the specified resource in storage.
      * @param Request $request
      * @param int $id
-     * @return Response
+     * @return Renderable
      */
     public function update(Request $request, $id)
     {
@@ -77,22 +70,10 @@ class DashboardController extends Controller
     /**
      * Remove the specified resource from storage.
      * @param int $id
-     * @return Response
+     * @return Renderable
      */
     public function destroy($id)
     {
         //
-    }
-
-    public function switch_role($role_id)
-    {
-        if ($role_id){
-            $user   =   User::find(auth()->user()->id);
-            $user->role_id  =   $role_id;
-            $user->save();
-        }
-
-        return redirect()->back();
-
     }
 }

@@ -21,11 +21,11 @@ class UserTableSeeder extends Seeder
     {
         Model::unguard();
 
-        $user   =   User::find(1);
+        $user   =   User::get();
         $role = Role::first();
         $role_id = $role->id;
 
-        if (!$user){
+        if (count($user) <= 0){
             $user =  User::create([
                 'id'    => Str::uuid(),
                  'role_id'  => $role_id,

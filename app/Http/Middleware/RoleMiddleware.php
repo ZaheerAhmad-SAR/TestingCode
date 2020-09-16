@@ -33,7 +33,7 @@ class RoleMiddleware
             }
             else{
                 $this->setDataToUser($request,$request->user(),$returnData,$route_valid=false);
-                return response()->view('errors.401');
+                return response()->view('userroles::dashboard');
             }
         }else{
             return redirect()->to('login');
