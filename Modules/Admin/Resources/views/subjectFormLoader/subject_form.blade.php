@@ -57,8 +57,9 @@
                                         @if(count($phase->phases))
                                         @php
                                         $firstStep = true;
+                                        $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyRoles($phase->id, $userRoleIds);                                        
                                         @endphp
-                                        @foreach ($phase->phases as $step)
+                                        @foreach ($steps as $step)
                                         <a class="contact_link badge p-1 badge-light m-1" href="javascript:void(0);"
                                             data-contacttype="contact-{{$step->step_id}}">
                                             {{$step->step_name}}
@@ -89,8 +90,9 @@
                         @foreach ($visitPhases as $phase)
                         @php
                         $firstStep = true;
+                        $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyRoles($phase->id, $userRoleIds);
                         @endphp
-                        @foreach ($phase->phases as $step)
+                        @foreach ($steps as $step)
                         @php
                         $sections = $step->sections;
                         if(count($sections)){

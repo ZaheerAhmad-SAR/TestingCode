@@ -26,6 +26,6 @@ class HomeController extends Controller
     {
         session(['current_study'=>'','study_short_name'=> '']);
 
-        return view('userroles::dashboard',compact('role_permissions'));
+        return view('userroles::dashboard');
     }
 }
