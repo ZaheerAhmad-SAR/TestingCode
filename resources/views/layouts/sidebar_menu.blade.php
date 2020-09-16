@@ -6,7 +6,7 @@
                 <ul class="@if(is_active('dashboard.index')) {{ 'active' }} @endif">
                   {{--  @if(hasPermission(auth()->user(),'dashboard.index'))--}}
                         <li class="nav-item @if(is_active('dashboard.index')) {{ 'active' }} @endif">
-                            <a href="{!! route('dashboard.index') !!}">
+                            <a href="{{ url('/') }}">
                                 <i class="icon-rocket"></i>
                                 Dashboard <span class="sr-only">(current)</span>
                             </a>
@@ -24,9 +24,9 @@
                         @endif
                 </ul>
             </li>
-            <li class="dropdown"><!-- <a href="#"><i class="icon-organization mr-1"></i> Study Tools</a> -->
+            @if(hasPermission(auth()->user(),'systemtools.index'))
+            <li class="dropdown">
                 <ul>
-                    @if(hasPermission(auth()->user(),'systemtools.index'))
                         <li class="dropdown"><a href="#"><i class="icon-grid"></i>System Tools</a>
                             <ul class="sub-menu">
                                 @if(hasPermission(auth()->user(),'systemusers.index'))
@@ -70,12 +70,12 @@
                                 @endif
                             </ul>
                         </li>
-                    @endif
                 </ul>
             </li>
-            <li class="dropdown"><!-- <a href="#"><i class="icon-organization mr-1"></i> Study Tools</a> -->
-                <ul>
-                    @if(hasPermission(auth()->user(),'studytools.index'))
+            @endif
+            @if(hasPermission(auth()->user(),'studytools.index'))
+                <li class="dropdown">
+                    <ul>
                         <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Tools</a>
                             <ul class="sub-menu">
                                 @if(hasPermission(auth()->user(),'studyusers.index'))
@@ -133,22 +133,22 @@
                                 </li>
                             </ul>
                         </li>
-                    @endif
                 </ul>
             </li>
-            <li class=""><!-- <a href="#"><i class="fas fa-laptop-medical mr-1"></i>Subject Management</a> -->
-                @if(!empty(session('current_study')))
-                    <ul class="@if(is_active('studies.show')) {{ 'active' }} @endif">
-                        @if(hasPermission(auth()->user(),'subjects.index'))
+            @endif
+            @if(hasPermission(auth()->user(),'subjects.index'))
+                <li class=""><!-- <a href="#"><i class="fas fa-laptop-medical mr-1"></i>Subject Management</a> -->
+                    @if(!empty(session('current_study')))
+                        <ul class="@if(is_active('studies.show')) {{ 'active' }} @endif">
                             <li class="nav-item @if(is_active('studies.show')) {{ ' active' }} @endif">
                                 <a href="{!! route('studies.show',session('current_study')) !!}">
                                     <i class="fas fa-hospital"></i>Subjects
                                 </a>
                             </li>
-                        @endif
                     </ul>
                 @endif
             </li>
+            @endif
             @if(hasPermission(auth()->user(),'qualitycontrol.index'))
                 <li class="dropdown"><a href="#"><i class="fas fa-sitemap"></i> Quality Control</a>
                     <ul>

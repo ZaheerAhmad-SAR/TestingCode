@@ -255,15 +255,13 @@
                                             <label for="Name">System Tools</label>
                                         </div>
                                         <div class="col-md-3">
-                                                <input type="radio" name="system_tools" id="system_tool_yes" value="yes"> Yes
-                                                <input type="radio" name="system_tools" id="system_tool_no" value="no"> No
+                                                <input type="checkbox" name="system_tools" id="system_tool" > Allow Permission
                                             </div>
                                         <div class="col-md-3">
                                             <label for="Name">Study Tools</label>
                                         </div>
                                         <div class="col-md-3">
-                                                <input type="radio" name="study_tools" id="study_tool_yes" value="yes"> Yes
-                                                <input type="radio" name="study_tools" id="study_tool_no" value="no"> No
+                                                <input type="checkbox" name="study_tools" id="study_tools" > Allow Permission
                                             </div>
                                     </div>
                                     <div class="form-group row">
@@ -271,15 +269,13 @@
                                             <label for="Name">Data Management</label>
                                         </div>
                                         <div class="col-md-3">
-                                            <input type="radio" name="management" id="management_yes" value="yes"> Yes
-                                            <input type="radio" name="management" id="management_no" value="no"> No
+                                            <input type="checkbox" name="management" id="management"> Allow Permission
                                         </div>
                                         <div class="col-md-3">
                                             <label for="Name">Activity Log</label>
                                         </div>
                                         <div class="col-md-3">
-                                            <input type="radio" name="activity_log" id="log_yes" value="yes"> Yes
-                                            <input type="radio" name="activity_log" id="log_no" value="no"> No
+                                            <input type="checkbox" name="activity_log" id="activity_log"> Allow Permission
                                         </div>
                                     </div>
                                     <div class="form-group row">
@@ -287,15 +283,13 @@
                                             <label>Certification</label>
                                         </div>
                                         <div class="col-md-3">
-                                            <input type="radio" name="certification" id="certification_yes" value="yes"> Yes
-                                            <input type="radio" name="certification" id="certification_no" value="no"> No
+                                            <input type="checkbox" name="certification" id="certification"> Allow Permission
                                         </div>
                                         <div class="col-md-3">
                                         <label for="Name">Finance</label>
                                         </div>
                                         <div class="col-md-3">
-                                            <input type="radio" name="finance" id="finance_yes" value="yes"> Yes
-                                            <input type="radio" name="finance" id="finance_no" value="no"> No
+                                            <input type="checkbox" name="finance" id="finance"> Allow Permission
                                         </div>
                                     </div>
                                     </div>
