@@ -3,6 +3,7 @@
 namespace Modules\UserRoles\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 
 class RolePermission extends Model

@@ -42,7 +42,7 @@ class StudyController extends Controller
             $sites = Site::all();
             //dd($sites);
         }
-        elseif($user->role->name == 'admin' && $user->user_type =='study_user'){
+        else{
             //dd('else');
             $studies  =   Study::paginate(3);
             $users = User::all();
@@ -147,7 +147,6 @@ class StudyController extends Controller
      */
     public function show(Study $study)
     {
-
         session(['current_study'=>$study->id,'study_short_name'=> $study->study_short_name]);
         $id = $study->id;
         $currentStudy = Study::find($id);
