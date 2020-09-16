@@ -255,7 +255,7 @@
                                             <label for="Name">System Tools</label>
                                         </div>
                                         <div class="col-md-3">
-                                                <input type="checkbox" name="system_tools" id="system_tool" > Allow Permission
+                                                <input type="checkbox" name="system_tools" id="system_tools" > Allow Permission
                                             </div>
                                         <div class="col-md-3">
                                             <label for="Name">Study Tools</label>

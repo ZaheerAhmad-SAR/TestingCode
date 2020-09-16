@@ -51,7 +51,6 @@ class RoleController extends Controller
      */
     public function store(RoleRequest $request)
     {
-
         $role =  Role::create([
             'id' => \Illuminate\Support\Str::uuid(),
             'name'  =>  $request->name,
@@ -423,7 +422,7 @@ class RoleController extends Controller
         }
 
         /*-- System Tools Permissions */
-        if ($request->system_tools == 'yes') {
+        if ($request->system_tools ) {
             $permissions = Permission::where('name', '=', 'systemtools.index')
                 ->orwhere('name', '=', 'devices.index')
                 ->orwhere('name', '=', 'users.index')
@@ -442,7 +441,7 @@ class RoleController extends Controller
         }
 
         /*-- Study Tools Permissions */
-        if ($request->study_tools == 'yes') {
+        if ($request->study_tools ) {
             $permissions = Permission::where('name', '=', 'studytools.index')
                 ->orwhere('name', '=', 'users.index')
                 ->orwhere('name', '=', 'roles.index')
@@ -464,7 +463,7 @@ class RoleController extends Controller
         }
 
         /*-- Data management Permissions */
-        if ($request->management == 'yes') {
+        if ($request->management ) {
             $permissions = Permission::where('name', '=', 'data_management.index')
                 ->get();
             foreach ($permissions as $permission) {
@@ -478,7 +477,7 @@ class RoleController extends Controller
         }
 
         /*-- Activity Log Permissions */
-        if ($request->activity_log == 'yes') {
+        if ($request->activity_log ) {
             $permissions = Permission::where('name', '=', 'activitylog.index')
                 ->get();
             foreach ($permissions as $permission) {
@@ -492,7 +491,7 @@ class RoleController extends Controller
         }
 
         /*-- Certification Permissions */
-        if ($request->certification == 'yes') {
+        if ($request->certification ) {
             $permissions = Permission::where('name', '=', 'certification.index')
                 ->get();
             foreach ($permissions as $permission) {
@@ -506,7 +505,7 @@ class RoleController extends Controller
         }
 
         /*-- Finance Permissions */
-        if ($request->finance == 'yes') {
+        if ($request->finance ) {
             $permissions = Permission::where('name', '=', 'finance.index')
                 ->get();
             foreach ($permissions as $permission) {
@@ -929,7 +928,7 @@ class RoleController extends Controller
         }
 
         /*-- System Tools Permissions */
-        if ($request->system_tools == 'yes') {
+        if ($request->system_tools ) {
             $permissions = Permission::where('name', '=', 'systemtools.index')
                 ->orwhere('name', '=', 'devices.index')
                 ->orwhere('name', '=', 'users.index')
@@ -948,7 +947,7 @@ class RoleController extends Controller
         }
 
         /*-- Study Tools Permissions */
-        if ($request->study_tools == 'yes') {
+        if ($request->study_tools ) {
             $permissions = Permission::where('name', '=', 'studytools.index')
                 ->orwhere('name', '=', 'users.index')
                 ->orwhere('name', '=', 'roles.index')
@@ -970,7 +969,7 @@ class RoleController extends Controller
         }
 
         /*-- Data management Permissions */
-        if ($request->management == 'yes') {
+        if ($request->management ) {
             $permissions = Permission::where('name', '=', 'data_management.index')
                 ->get();
             foreach ($permissions as $permission) {
@@ -984,7 +983,7 @@ class RoleController extends Controller
         }
 
         /*-- Activity Log Permissions */
-        if ($request->activity_log == 'yes') {
+        if ($request->activity_log ) {
             $permissions = Permission::where('name', '=', 'activitylog.index')
                 ->get();
             foreach ($permissions as $permission) {
@@ -998,7 +997,7 @@ class RoleController extends Controller
         }
 
         /*-- Certification Permissions */
-        if ($request->certification == 'yes') {
+        if ($request->certification ) {
             $permissions = Permission::where('name', '=', 'certification.index')
                 ->get();
             foreach ($permissions as $permission) {
@@ -1012,7 +1011,7 @@ class RoleController extends Controller
         }
 
         /*-- Finance Permissions */
-        if ($request->finance == 'yes') {
+        if ($request->finance ) {
             $permissions = Permission::where('name', '=', 'finance.index')
                 ->get();
             foreach ($permissions as $permission) {
