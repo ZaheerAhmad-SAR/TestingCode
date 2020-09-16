@@ -12,9 +12,9 @@ class SubjectFormLoaderController extends Controller
 {
     public function showSubjectForm($subjectId)
     {
-        //$userRoleIds = auth()->user()->user_roles()->pluck('role_id')->toArray();
-        $loginUser = \App\User::find('49021e35-8e14-4cbf-b4e2-0dd590a4cff4');
-        $userRoleIds = $loginUser->user_roles()->pluck('role_id')->toArray();
+        $userRoleIds = auth()->user()->user_roles()->pluck('role_id')->toArray();
+        //$loginUser = \App\User::find('49021e35-8e14-4cbf-b4e2-0dd590a4cff4');
+        //$userRoleIds = $loginUser->user_roles()->pluck('role_id')->toArray();
         
         $studyId = session('current_study');
         $visitPhases = StudyStructure::phasesbyRoles($studyId, $userRoleIds);
