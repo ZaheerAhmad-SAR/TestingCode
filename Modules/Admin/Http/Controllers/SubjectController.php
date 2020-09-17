@@ -24,11 +24,13 @@ class SubjectController extends Controller
     {
         $id = session('current_study');
         $currentStudy = Study::find($id);
+        $study = $currentStudy;
         $subjects = Subject::where('subjects.study_id','=',$id)
             ->join('sites','sites.id','=','subjects.site_id')
             ->get();
+        //dd($subjects);
         $sites = Study::with('sites')->get();
-        return view('admin::studies.show',compact('subjects','sites','currentStudy'));
+        return view('admin::studies.show',compact('subjects','sites','currentStudy','study'));
     }
 
     /**

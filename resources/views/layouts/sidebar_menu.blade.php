@@ -6,7 +6,7 @@
                 <ul class="@if(is_active('dashboard.index')) {{ 'active' }} @endif">
                   {{--  @if(hasPermission(auth()->user(),'dashboard.index'))--}}
                         <li class="nav-item @if(is_active('dashboard.index')) {{ 'active' }} @endif">
-                            <a href="{{ url('/') }}">
+                            <a href="{{ url('/dashboard') }}">
                                 <i class="icon-rocket"></i>
                                 Dashboard <span class="sr-only">(current)</span>
                             </a>
@@ -191,6 +191,22 @@
                     </ul>
                 </li>
             @endif
+            @if(hasPermission(auth()->user(),'adjudication.index'))
+                <li class=""><a href="#"><i class="fas fa-database"></i> Adjudication</a>
+                    <ul>
+                        <li>
+                            <a href="#">
+                                <i class="fas fa-list"></i> Adjudication List
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fas fa-chart-line"></i> Adjudication Status
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            @endif
             @if(hasPermission(auth()->user(),'data_management.index'))
                 <li class="dropdown">
                     <ul>
@@ -211,6 +227,7 @@
                     </ul>
                 </li>
             @endif
+            @if(hasPermission(auth()->user(),'queries.index'))
             <li class="dropdown">
                 <ul>
                     <li class="dropdown"><a href="#"><i class="fab fa-rocketchat"></i>Queries</a>
@@ -224,6 +241,7 @@
                     </li>
                 </ul>
             </li>
+            @endif
             @if(hasPermission(auth()->user(),'activitylog.index'))
                 <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Activity Log</a>
                     <ul >

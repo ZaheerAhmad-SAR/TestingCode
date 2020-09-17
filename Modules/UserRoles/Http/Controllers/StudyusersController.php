@@ -3,21 +3,22 @@
 namespace Modules\UserRoles\Http\Controllers;
 
 use App\User;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Input;
 use Modules\Admin\Entities\RoleStudyUser;
 use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Http\Requests\UserRequest;
 
+use Illuminate\Support\Str;
+
+
 class StudyusersController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      * @return Response
@@ -62,65 +63,35 @@ class StudyusersController extends Controller
      */
     public function store(UserRequest $request)
     {
-        $user_role = Auth::user()->role->name;
-        $user_id = Auth::user()->id;
-        //dd($user_id);
-        if ($user_role == 'admin'){
-            $user = User::create([
-                'id'    => Str::uuid(),
-                'name'  =>  $request->name,
-                'email' =>  $request->email,
-                'password'  =>  Hash::make($request->password),
-                'user_type' => 'System User',
-                'role_id'   => !empty($request->roles)?$request->roles[0]:2,
-                'created_by'   => $user_id
-            ]);
-
-            if(!empty($request->roles)){
+        if ($request->ajax()) {
+            $userID = $request->user_id;
+            $id = Str::uuid();
+            $user = User::updateOrCreate([
+                'id' => $id],
+                ['name' => $request->name,
+                    'email' => $request->email,
+                    'password' => encrypt($request->password),
+                    'created_by'    => \auth()->user()->id
+                ]);
+            if ($request->roles)
+            {
                 foreach ($request->roles as $role){
-                    UserRole::create([
+                    UserRole::updateOrCreate([
                         'id'    => Str::uuid(),
-                        'user_id'    =>  $user->id,
-                        'role_id'    =>  $role
+                        'user_id'     => $user->id,
+                        'role_id'   => $role
                     ]);
-                    RoleStudyUser::create([
+
+                    RoleStudyUser::updateOrCreate([
                         'id'    => Str::uuid(),
-                        'role_id' =>$role,
-                        'user_id' => $user->id,
+                        'user_id'     => $user->id,
+                        'role_id'   => $role,
                         'study_id' => ''
                     ]);
                 }
             }
         }
-        else{
-            $user = User::create([
-                'id'    => Str::uuid(),
-                'name'  =>  $request->name,
-                'email' =>  $request->email,
-                'password'  =>  Hash::make($request->password),
-                'user_type' => 'Study User',
-                'role_id'   => !empty($request->roles)?$request->roles[0]:2,
-                'created_by'   => $user_id
-            ]);
-
-            if(!empty($request->roles)){
-                foreach ($request->roles as $role){
-                    UserRole::create([
-                        'id'    => Str::uuid(),
-                        'user_id'    =>  $user->id,
-                        'role_id'    =>  $role
-                    ]);
-                    RoleStudyUser::create([
-                        'id'    => Str::uuid(),
-                        'role_id' =>$role,
-                        'user_id' => $user->id,
-                        'study_id' => ''
-                    ]);
-
-                }
-            }
-        }
-        return redirect()->route('users.index');
+        return \response()->json($user);
 
     }
 
@@ -144,12 +115,11 @@ class StudyusersController extends Controller
      */
     public function edit($id)
     {
-        if (Auth::user()->can('users.update')) {
-            $user = User::find(decrypt($id));
-            $roles = Role::get();
-            return view('userroles::users.edit', compact('user', 'roles'));
-        }
-        return  redirect('dashboard');
+        $where = array('id' => $id);
+        $user  = User::with('user_roles')->where($where)->first();
+        dd($user);
+
+        return \response()->json($user);
     }
 
     /**
@@ -194,5 +164,4 @@ class StudyusersController extends Controller
         dd('delete');
         $user = User::find($id);
     }
-
 }

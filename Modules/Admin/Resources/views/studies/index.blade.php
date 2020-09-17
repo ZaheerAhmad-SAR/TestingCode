@@ -24,8 +24,7 @@
 
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                         <li class="breadcrumb-item"><a href="{{route('dashboard.index')}}">Home</a></li>
-                        <li class="breadcrumb-item">Table</li>
-                        <li class="breadcrumb-item active"><a href="#">Studies Listing</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void(0)">Studies Listing</a></li>
                     </ol>
                 </div>
             </div>
@@ -90,8 +89,8 @@
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                     <span class="dropdown-item">
-                                                        <a href="{{route('studies.changeStatus',$study->id)}}" data-id="{{$study->id}}"  class="studyStatus" data-toggle="modal" data-target="#changeStatus-{{$study->id}}">
-                                                            <i class="fa fa-file-plus"></i> Change Status
+                                                        <a href="javascript:void(0)" id="change-status" data-id="{{$study->id}}" data-toggle="modal" data-target="#changeStatus-{{$study->id}}">
+                                                            <i class="icon-action-redo"></i> Change Status
                                                         </a>
                                                     </span>
                                                     <span class="dropdown-item">
@@ -244,7 +243,9 @@
                                     <input type="text" class="form-control" id="disease_cohort" name="disease_cohort[]" value="{{old('disease_cohort')}}" style="width: 90%;">
                                 </div>
                                 <div class="col-md-3" style="text-align: right">
+                                    @if(hasPermission(auth()->user(),'diseaseCohort.create'))
                                     <button class="btn btn-outline-primary add_field"><i class="fa fa-plus"></i> Add New</button>
+                                    @endif
                                 </div>
                             </div>
 
@@ -252,17 +253,15 @@
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                        @if(hasPermission(auth()->user(),'studies.store'))
                         <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                            @endif
                     </div>
                 </form>
-            </div>
-            <div class="modal-footer">
-
             </div>
         </div>
     </div>
 </div>
-
     <!-- cloneStudy -->
     <div class="modal fade" id="clone-study-modal" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="dialog">
@@ -281,6 +280,25 @@
                                 <button type="submit" class="btn custom-btn blue-color">
                                     <i class="fa fa-save blue-color"></i> Save</button>
                             </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="change_status" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="studyCrudModal">Change Status</h4>
+                </div>
+                <div class="modal-body">
+                    <form action="{{route('studies.cloneStudy')}}" name="changestatus" class="">
+                    @csrf
+                        <input type="hidden" class="" value="{{$study->id}}">
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
                         </div>
                     </form>
                 </div>
@@ -383,6 +401,7 @@
                 url: newPath,
                 success: function (data) {
                     console.log(data);
+                    location.reload();
                 },
                 error: function (data) {
                     console.log('Error:', data);
