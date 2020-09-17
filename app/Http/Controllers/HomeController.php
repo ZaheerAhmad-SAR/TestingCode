@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Modules\UserRoles\Entities\RolePermission;
 
 class HomeController extends Controller
 {
@@ -23,6 +24,8 @@ class HomeController extends Controller
      */
     public function index()
     {
+        session(['current_study'=>'','study_short_name'=> '']);
+
         return view('userroles::dashboard');
     }
 }

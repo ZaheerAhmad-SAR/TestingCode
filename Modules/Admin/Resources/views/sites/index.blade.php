@@ -37,9 +37,11 @@
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
+                        @if(hasPermission(auth()->user(),'sites.create'))
                         <button type="button" class="btn btn-outline-primary" data-toggle="modal"
                                 data-target="#siteModal"> <i class="fa fa-plus blue-color"></i>Add Site
                         </button>
+                            @endif
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -71,8 +73,12 @@
                                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                     <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
+                                                        @if(hasPermission(auth()->user(),'sites.edit'))
                                                         <span class="dropdown-item"><a data-toggle="modal" data-target="#siteModal" data-id="{{$site->id}}" class="editsiterecord"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
+                                                        @endif
+                                                        @if(hasPermission(auth()->user(),'sites.destroy'))
                                                         <span class="dropdown-item"><a data-id="{{$site->id}}" class="deletesiterecord"><i class="fa fa-trash"></i>&nbsp; Delete </a></span>
+                                                            @endif
                                                     </div>
                                                 </div>
                                             </td>
@@ -222,7 +228,9 @@
                                             <input type="hidden" name="site_id" id="site_id" value="">
                                         </div>
                                         <div class="modal-footer">
+                                            @if(hasPermission(auth()->user(),'sites.store'))
                                             <button type="submit" id="btn_site_info" class="btn btn-outline-primary"><i class="fa fa-save changeText"></i> Save</button>
+                                            @endif
                                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close redirectPage" aria-hidden="true"></i> Close</button>
                                         </div>
                                     </div>

@@ -152,6 +152,11 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
 
     //SubjectFormLoader
     Route::get('subject_form/{subject_id}','SubjectFormLoaderController@showSubjectForm')->name('showSubjectForm');
+    //Assign Roles ToPhase and Step
+    Route::post('getAssignRolesToPhaseForm','AssignRolesPhaseStepController@getAssignRolesToPhaseForm')->name('getAssignRolesToPhaseForm');
+    Route::post('getAssignRolesToPhaseStepForm','AssignRolesPhaseStepController@getAssignRolesToPhaseStepForm')->name('getAssignRolesToPhaseStepForm');
+    Route::post('submitAssignRolesToPhaseForm','AssignRolesPhaseStepController@submitAssignRolesToPhaseForm')->name('submitAssignRolesToPhaseForm');
+    Route::post('submitAssignRolesToPhaseStepForm','AssignRolesPhaseStepController@submitAssignRolesToPhaseStepForm')->name('submitAssignRolesToPhaseStepForm');
 
 });
 

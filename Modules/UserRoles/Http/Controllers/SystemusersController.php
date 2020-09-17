@@ -17,7 +17,7 @@ use Modules\UserRoles\Http\Requests\UserRequest;
 use Illuminate\Support\Str;
 
 
-class UserController extends Controller
+class SystemusersController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -64,32 +64,32 @@ class UserController extends Controller
     public function store(UserRequest $request)
     {
         if ($request->ajax()) {
-        $userID = $request->user_id;
-        $id = Str::uuid();
-        $user = User::updateOrCreate([
-            'id' => $id],
-            ['name' => $request->name,
-                'email' => $request->email,
-                'password' => encrypt($request->password),
-                'created_by'    => \auth()->user()->id
-            ]);
-        if ($request->roles)
-        {
-            foreach ($request->roles as $role){
-                UserRole::updateOrCreate([
-                    'id'    => Str::uuid(),
-                    'user_id'     => $user->id,
-                    'role_id'   => $role
+            $userID = $request->user_id;
+            $id = Str::uuid();
+            $user = User::updateOrCreate([
+                'id' => $id],
+                ['name' => $request->name,
+                    'email' => $request->email,
+                    'password' => encrypt($request->password),
+                    'created_by'    => \auth()->user()->id
                 ]);
+            if ($request->roles)
+            {
+                foreach ($request->roles as $role){
+                    UserRole::updateOrCreate([
+                        'id'    => Str::uuid(),
+                        'user_id'     => $user->id,
+                        'role_id'   => $role
+                    ]);
 
-                RoleStudyUser::updateOrCreate([
-                    'id'    => Str::uuid(),
-                    'user_id'     => $user->id,
-                    'role_id'   => $role,
-                    'study_id' => ''
-                ]);
+                    RoleStudyUser::updateOrCreate([
+                        'id'    => Str::uuid(),
+                        'user_id'     => $user->id,
+                        'role_id'   => $role,
+                        'study_id' => ''
+                    ]);
+                }
             }
-        }
         }
         return \response()->json($user);
 
@@ -117,6 +117,7 @@ class UserController extends Controller
     {
         $where = array('id' => $id);
         $user  = User::with('user_roles')->where($where)->first();
+        dd($user);
 
         return \response()->json($user);
     }

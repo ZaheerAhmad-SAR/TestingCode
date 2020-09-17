@@ -41,7 +41,6 @@
         <div class="col-12 col-sm-12 mt-3">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-
                     <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#assignSites">
                         <i class="fa fa-plus"></i> Assign Sites
                     </button>
