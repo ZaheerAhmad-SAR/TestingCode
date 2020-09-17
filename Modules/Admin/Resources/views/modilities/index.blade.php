@@ -128,7 +128,6 @@
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal" id="addphase-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            @if(hasPermission(auth()->user(),'mod'))
                             <button type="submit" class="btn btn-outline-primary" id="updateParent" ><i class="fa fa-save"></i> Save Changes</button>
                         </div>
                     </div>
