@@ -34,7 +34,7 @@ class Study extends Model
     }
 
     public function subjects(){
-        return $this->belongsTo(Subject::class);
+        return $this->hasOne(Subject::class);
     }
 
     public function diseaseCohort(){

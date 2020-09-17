@@ -7,85 +7,86 @@
         session(['current_study'=>$studyid]); @endphp
 
     <div class="container-fluid site-width">
-    <!-- START: Breadcrumbs-->
-    <div class="row ">
-        <div class="col-12  align-self-center">
-            <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
-                <div class="w-sm-100 mr-auto"><h4 class="mb-0">Users Details</h4></div>
-                <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
-                    <li class="breadcrumb-item">Dashboard</li>
-                    <li class="breadcrumb-item">Users</li>
-                </ol>
+        <!-- START: Breadcrumbs-->
+        <div class="row ">
+            <div class="col-12  align-self-center">
+                <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
+                    <div class="w-sm-100 mr-auto"><h4 class="mb-0">Users Details</h4></div>
+                    <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
+                        <li class="breadcrumb-item">Dashboard</li>
+                        <li class="breadcrumb-item">Users</li>
+                    </ol>
+                </div>
             </div>
         </div>
-    </div>
-    <!-- END: Breadcrumbs-->
+        <!-- END: Breadcrumbs-->
 
-    <!-- START: Card Data-->
-<div class="row">
- <div class="col-12 col-sm-12 mt-3">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#createuser">
-                        <i class="fa fa-plus"></i> Add User
-                    </button>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive list">
-                        <table class="table">
-                            <thead>
+        <!-- START: Card Data-->
+        <div class="row">
+            <div class="col-12 col-sm-12 mt-3">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        @if(hasPermission(auth()->user(),'users.create'))
+                            <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#user-crud-modal">
+                                <i class="fa fa-plus"></i> Add User
+                            </button>
+                        @endif
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive list">
+                            <table class="table table-bordered" id="laravel_crud">
+                                <thead>
                                 <tr>
                                     <th scope="col">Name</th>
                                     <th scope="col">Email</th>
                                     <th scope="col">Roles</th>
                                     <th scope="col">Actions</th>
                                 </tr>
-                            </thead>
-                            <tbody>
+                                </thead>
+                                <tbody id="users-crud">
                                 @foreach($users as $user)
-                                <tr>
-                                    <td>{{ucfirst($user->name)}}</td>
-                                    <td>{{$user->email}}</td>
-                                    <td>
-                                        @foreach($user->user_roles as $role)
-                                            {{ucfirst($role->role->name)}},
-                                        @endforeach
-                                    </td>
-                                    <td>
-                                        <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                            <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
-                                            <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                                    <span class="dropdown-item">
-                                                        <a href="javascript:void(0)" id="edit-device" data-id="{{ $user->id }}">
+                                    <tr>
+                                        <td>{{ucfirst($user->name)}}</td>
+                                        <td>{{$user->email}}</td>
+                                        <td>
+                                            @foreach($user->user_roles as $role)
+                                                {{ucfirst($role->role->name)}},
+                                            @endforeach
+                                        </td>
+                                        <td>
+                                            <div class="d-flex mt-3 mt-md-0 ml-auto">
+                                                <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                                <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
+                                                <span class="dropdown-item">
+                                                        <a href="javascript:void(0)" id="edit-user" data-id="{{ $user->id }}">
                                                             <i class="far fa-edit"></i>&nbsp; Edit </a>
                                                     </span>
-                                                <span class="dropdown-item">
-                                                            <a href="{{route('users.destroy',$user->id)}}" id="delete-device" data-id="{{ $user->id }}">
+                                                    <span class="dropdown-item">
+                                                            <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
                                                             <i class="far fa-edit"></i>&nbsp; Delete </a>
                                                     </span>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
+                                        </td>
+                                    </tr>
                                 @endforeach
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
-
         </div>
-</div>
-</div>
+    </div>
     <!-- END: Card DATA-->
     <!-- modal code  -->
-    <div class="modal fade" id="createuser" aria-hidden="true">
+    <div class="modal fade" id="user-crud-modal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="deviceCrudModal"></h4>
+                    <h4 class="modal-title" id="userCrudModal"></h4>
                 </div>
-                <form id="deviceForm" name="deviceForm" class="form-horizontal">
+                <form id="userForm" name="userForm" class="form-horizontal">
                     <div class="modal-body">
                         <input type="hidden" name="user_id" id="user_id">
                         <nav>
@@ -100,7 +101,7 @@
                                 <div class="form-group row" style="margin-top: 10px;">
                                     <label for="Name" class="col-md-3">Name</label>
                                     <div class="{!! ($errors->has('name')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
-                                        <input type="text" class="form-control" required="required" name="name" value="{{old('name')}}">
+                                        <input type="text" class="form-control" required="required" id="name" name="name" value="{{old('name')}}">
                                         @error('name')
                                         <span class="text-danger small">{{ $message }} </span>
                                         @enderror
@@ -109,7 +110,7 @@
                                 <div class="form-group row">
                                     <label for="Email" class="col-md-3">Email</label>
                                     <div class="{!! ($errors->has('email')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
-                                        <input type="email" class="form-control" name="email" required="required" value="{{old('email')}}"> @error('email')
+                                        <input type="email" class="form-control" name="email" id="email" required="required" value="{{old('email')}}"> @error('email')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
                                     </div>
@@ -117,7 +118,7 @@
                                 <div class="form-group row">
                                     <label for="password" class="col-md-3">Password</label>
                                     <div class="{!! ($errors->has('password')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
-                                        <input type="password" class="form-control" required="required" name="password" value="{{old('password')}}">
+                                        <input type="password" class="form-control" required="required" id="password" name="password" value="{{old('password')}}">
                                         @error('password')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
@@ -126,7 +127,7 @@
                                 <div class="form-group row">
                                     <label for="C-Password" class="col-md-3">Confirm Password</label>
                                     <div class="{!! ($errors->has('password_confirmation')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
-                                        <input type="password" class="form-control" required="required" name="password_confirmation" value="{{old('password_confirmation')}}">
+                                        <input type="password" class="form-control" required="required" id="password_confirmation" name="password_confirmation" value="{{old('password_confirmation')}}">
                                         @error('password_confirmation')
                                         <span class="text-danger small">{{ $message }} </span>
                                         @enderror
@@ -137,12 +138,6 @@
                                 <div class="form-group row" style="margin-top: 10px;">
                                     <label for="device_manufacturer" class="col-sm-3">Select Roles</label>
                                     <div class="{!! ($errors->has('roles')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                        {{--<select class="searchable" required="required" id="select_roles" multiple="multiple" name="roles[]">
-                                            @foreach($roles as $role)
-                                                <option value="{{$role->id}}">{{$role->name}}</option>
-                                            @endforeach
-                                        </select>--}}
-
                                         <select class="searchable" id="select-roles" multiple="multiple" name="roles[]">
                                             @foreach($roles as $role)
                                                 <option value="{{$role->id}}">{{$role->name}}</option>
@@ -160,7 +155,9 @@
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                        <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
+                        @if(hasPermission(auth()->user(),'users.store'))
+                        <button type="submit" class="btn btn-outline-primary" id="btn-save" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                        @endif
                     </div>
                 </form>
             </div>
@@ -170,13 +167,13 @@
 
 @stop
 @section('styles')
-<style>
-    div.dt-buttons{
-        display: none;
-    }
-</style>
-<link rel="stylesheet" href="{{ asset('public/dist/vendors/datatable/css/dataTables.bootstrap4.min.css') }}">
-<link rel="stylesheet" href="{{ asset('public/dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css') }}">
+    <style>
+        div.dt-buttons{
+            display: none;
+        }
+    </style>
+    <link rel="stylesheet" href="{{ asset('public/dist/vendors/datatable/css/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css') }}">
 @stop
 @section('script')
     <script src="{{ asset('public/dist/js/jquery.validate.min.js') }}"></script>
@@ -218,8 +215,6 @@
                 }
             });
         });
-
-
         $(document).ready(function () {
             $.ajaxSetup({
                 headers: {
@@ -227,38 +222,40 @@
                 }
             });
 
-            $('#create-new-device').click(function () {
-                $('#btn-save').val("create-device");
-                $('#deviceForm').trigger("reset");
-                $('#deviceCrudModal').html("New Device");
-                $('#device-crud-modal').modal('show');
+            $('#create-new-post').click(function () {
+                $('#btn-save').val("create-user");
+                $('#userForm').trigger("reset");
+                $('#userCrudModal').html("Add User");
+                $('#user-crud-modal').modal('show');
             });
 
-            $('body').on('click', '#edit-device', function () {
+            $('body').on('click', '#edit-user', function () {
                 var user_id = $(this).data('id');
-                // alert(device_id);
                 $.get('users/'+user_id+'/edit', function (data) {
-                    $('#deviceCrudModal').html("Edit Device");
-                    $('#btn-save').val("edit-device");
-                    $('#device-crud-modal').modal('show');
-                    $('#device_id').val(data.id);
+                    $('#userCrudModal').html("Edit user");
+                    $('#btn-save').val("edit-user");
+                    $('#user-crud-modal').modal('show');
+                    $('#user_id').val(data.id);
                     $('#name').val(data.name);
                     $('#email').val(data.email);
-                    $('#device_manufacturer').val(data.device_manufacturer);
-                });
+                    $('#password').val(data.password);
+                    $('#password_confirm').val(data.password);
+                    $('#roles').val(data.roles);
+                    /*$.each(data.roles,function (index, value) {
+                        console.log(value);
+                    })*/
+                })
             });
 
-            $('body').on('click', '.delete-device', function () {
-                var device_id = $(this).data("id");
-                alert(device_id);
+            $('body').on('click', '.delete-user', function () {
+                var user_id = $(this).data("id");
                 confirm("Are You sure want to delete !");
 
                 $.ajax({
                     type: "DELETE",
-                    url: "{{ url('devices')}}"+'/'+device_id,
+                    url: "{{ url('users')}}"+'/'+user_id,
                     success: function (data) {
-                        $("#device_id_" + device_id).remove();
-                        confirm('Deleted Successfully !!');
+                        $("#user_id_" + user_id).remove();
                     },
                     error: function (data) {
                         console.log('Error:', data);
@@ -267,45 +264,39 @@
             });
         });
 
-        if ($("#deviceForm").length > 0) {
-            $("#deviceForm").validate({
+        if ($("#userForm").length > 0) {
+            $("#userForm").validate({
+
                 submitHandler: function(form) {
-                    var t;
+
                     var actionType = $('#btn-save').val();
                     $('#btn-save').html('Sending..');
 
 
                     $.ajax({
-                        data: $('#deviceForm').serialize(),
+                        data: $('#userForm').serialize(),
                         url: "{{ route('users.store') }}",
                         type: "POST",
                         dataType: 'json',
                         success: function (data) {
-                            var device = '<tr id="user_id' + data.id + '"><td>' + data.id + '</td>' +
-                                '<td>' + data.name + '</td>' +
-                                '<td>' + data.email + '</td>' +
-                                '<td>' + data.password + '</td>'
-                                '<td>' + data.role + '</td>';
-                            device += '<td><a href="javascript:void(0)" id="edit-device" data-id="' + data.id + '" class="btn btn-info"> Edit</a></td>';
-                            device += '<td><a href="javascript:void(0)" id="delete-device" data-id="' + data.id + '" class="btn btn-danger delete-device">Delete</a></td></tr>';
+                            var user = '<tr id="user_id_' + data.id + '"><td>' + data.id + '</td><td>' + data.title + '</td><td>' + data.body + '</td>';
+                            user += '<td><a href="javascript:void(0)" id="edit-user" data-id="' + data.id + '" class="btn btn-info">Edit</a></td>';
+                            user += '<td><a href="javascript:void(0)" id="delete-user" data-id="' + data.id + '" class="btn btn-danger delete-user">Delete</a></td></tr>';
 
-                            if (actionType == "create-device") {
-                                $('#devices-crud').prepend(device);
-                                var t = setTimeout(function(){// wait for -- secs(2)
-                                    location.reload();
-                                }, 1000);
+                            if (actionType == "create-user") {
+                                $('#users-crud').prepend(user);
+                                if(data.success == true){ // if true (1)
+                                    setTimeout(function(){// wait for 5 secs(2)
+                                        location.reload(); // then reload the page.(3)
+                                    }, 100);
+                                }
                             } else {
-                                $("#user_id" + data.id).replaceWith(device);
+                                $("#user_id_" + data.id).replaceWith(user);
                             }
-                            $('#deviceForm').trigger("reset");
-                            $('#device-crud-modal').modal('hide');
+                            $('#userForm').trigger("reset");
+                            $('#user-crud-modal').modal('hide');
                             $('#btn-save').html('Save Changes');
-                            alert(data.success());
-                            if(data.success == true){
-                                var t = setTimeout(function(){// wait for -- secs(2)
-                                    location.reload();
-                                }, 1000);
-                            }
+
                         },
                         error: function (data) {
                             console.log('Error:', data);
@@ -317,22 +308,6 @@
         }
     </script>
 
-<script src="{{ asset('public/dist/vendors/datatable/js/jquery.dataTables.min.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
-<script src="{{ asset('public/dist/vendors/datatable/js/dataTables.bootstrap4.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/jszip/jszip.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/pdfmake/pdfmake.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/pdfmake/vfs_fonts.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/buttons/js/dataTables.buttons.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.bootstrap4.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.colVis.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.flash.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.html5.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.print.min.js') }}"></script>
-<script src="{{ asset('public/dist/js/datatable.script.js') }}"></script>
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
-
-
-
-
 @stop

@@ -41,6 +41,7 @@
                                     <tr>
                                 <td>{{ucfirst($role->name)}}</td>
                                 <td>{{ucfirst($role->description)}}</td>
+                                @if(hasPermission(auth()->user(),'roles.edit'))
                                 <td>
                                    <div class="d-flex mt-3 mt-md-0 ml-auto">
                                         <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
@@ -49,6 +50,7 @@
                                         </div>
                                     </div>
                                 </td>
+                                @endif
                             </tr>
                             @endforeach
                         </table>
@@ -315,25 +317,4 @@
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css') }}">
 @stop
 @section('script')
-<script src="{{ asset('public/dist/vendors/datatable/js/jquery.dataTables.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/js/dataTables.bootstrap4.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/jszip/jszip.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/pdfmake/pdfmake.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/pdfmake/vfs_fonts.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/buttons/js/dataTables.buttons.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.bootstrap4.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.colVis.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.flash.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.html5.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.print.min.js') }}"></script>
-<script src="{{ asset('public/dist/js/datatable.script.js') }}"></script>
-<script type="text/javascript">
-    function validate() {
-        if (document.getElementById('study_add').checked) {
-            alert("checked");
-        } else {
-            alert("You didn't check it! Let me check it for you.");
-        }
-    }
-</script>
 @stop

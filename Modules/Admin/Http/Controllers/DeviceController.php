@@ -71,31 +71,6 @@ class DeviceController extends Controller
             }
         }
         return \response()->json($device);
-
-        dd($request->all());
-        $request->validate([
-            'device_name:required',
-            'device_manufacturer:required',
-            'device_model:required'
-        ]);
-        $id = Str::uuid();
-
-        $device = Device::create([
-            'id'    => $id,
-            'device_name' => $request->device_name,
-            'device_manufacturer' => $request->device_manufacturer,
-            'device_model'=> $request->device_model
-        ]);
-
-        foreach ($request->modalities as $modility){
-            DeviceModility::create([
-                'id'    => Str::uuid(),
-                'device_id'     => $device->id,
-                'modility_id'   => $modility
-            ]);
-        }
-
-        return redirect()->route('devices.index')->with('success','Device created');
     }
 
     /**
