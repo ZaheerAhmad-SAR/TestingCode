@@ -17,6 +17,8 @@
             </div>
         </div>
         <!-- END: Breadcrumbs-->
+
+
         <div class="row">
             <div class="col-12 mt-3">
                 <div class="card">
@@ -51,18 +53,14 @@
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                                    @if(hasPermission(auth()->user(),'subjects.edit'))
                                                     <span class="dropdown-item">
                                                         <a href="javascript:void(0)" id="edit-device" data-id="{{ $subject->id }}">
                                                             <i class="far fa-edit"></i>&nbsp; Edit </a>
                                                     </span>
-                                                    @endif
-                                                        @if(hasPermission(auth()->user(),'subjects.destroy'))
                                                     <span class="dropdown-item">
                                                             <a href="{{route('users.destroy',$subject->id)}}" id="delete-device" data-id="{{ $subject->id }}">
                                                             <i class="far fa-edit"></i>&nbsp; Delete </a>
                                                     </span>
-                                                            @endif
                                                 </div>
                                             </div>
                                         </td>
@@ -151,9 +149,7 @@
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            @if(hasPermission(auth()->user(),'subjects.store'))
                             <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save</button>
-                            @endif
                         </div>
                     </form>
                 </div>
