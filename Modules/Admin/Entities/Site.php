@@ -38,4 +38,12 @@ class Site extends Model
     public function subjects(){
         return $this->hasMany(Subject::class);
     }
+
+    public function primaryInvestigator(){
+        return $this->hasMany(PrimaryInvestigator::class,'site_id','id');
+    }
+
+    public function studySite(){
+        return $this->hasOne(StudySite::class);
+    }
 }
