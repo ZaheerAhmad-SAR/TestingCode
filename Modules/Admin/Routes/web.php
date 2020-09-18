@@ -150,6 +150,10 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
 
     Route::post('studySite/updateStudySite','StudySiteController@updateStudySite')->name('updateStudySiteId');
 
+    Route::post('studySite/updatePrimaryInvestigator','StudySiteController@updatePrimaryInvestigator')->name('updatePI');
+
+    Route::post('studySite/insertCoordinators','StudySiteController@insertCoordinators')->name('insertCO');
+
     //SubjectFormLoader
     Route::get('subject_form/{subject_id}','SubjectFormLoaderController@showSubjectForm')->name('showSubjectForm');
     //Assign Roles ToPhase and Step

@@ -67,31 +67,39 @@
                                 </thead>
                                 <tbody>
                                 <input type="hidden" value="" id="global_site_id">
+
                                 @if(!empty($sites))
                                     @foreach($sites as $site)
                                         <tr>
                                             <td>{{ucfirst($site->site_code)}}</td>
                                             <td>{{ucfirst($site->site_name)}}</td>
                                             <td>
-                                                <span>
-                                                    <Select class="form-control" id="primaryInvestigator" name="primaryInvestigator[]">
+                                                <Select class="form-control primaryInvestigatorData" id="primaryInvestigator" name="primaryInvestigator">
                                                     @foreach($site->pi as $key => $pi)
                                                     @php
                                                     $pi_records = explode('/',$pi);
                                                     @endphp
-                                                        <option value="{{$pi_records[0]}}">{{$pi_records[1]}}</option>
+                                                            <option disabled="disabled">--Select PI--</option>
+                                                        <option value="{{$pi_records[0]}}" {{$pi_records[0]==$site->primaryInvestigator_id ? 'selected="selected"': ''}}>{{$pi_records[1]}}</option>
                                                     @endforeach
+
                                                 </Select>
-                                                </span>
+
+                                                <input type="hidden" id="table_site_study_id" name="table_site_study_id" value="{{$site->id}}">
+
                                             </td>
 
                                             <td>
                                                 <Select class="coordinatorsData" name="coordinators" id="coordinators" multiple data-allow-clear="1">
+
                                                     @foreach($site->ci as $key => $ci)
                                                         @php
                                                             $ci_records = explode('/',$ci);
                                                         @endphp
+                                                            @foreach($siteCoordinators as $siteC)
                                                         <option value="{{$ci_records[0]}}">{{$ci_records[1]}}</option>
+                                                        @endforeach
+
                                                     @endforeach
                                                 </Select></td>
                                             <td>{{ucfirst($site->site_city)}}</td>
@@ -1707,9 +1715,43 @@
                 });
 
                 $('.coordinatorsData').change(function(){
-                 var val = $(this).val();
+
+                 var coordinators_id = $(this).val();
+                 var id = $("#table_site_study_id").val();
+
+                 $.ajax({
+                        url: "{{route('insertCO')}}",
+                        type: 'POST',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            'coordinators_id':coordinators_id,'id':id
+                        },
+                        success:function(results){
+                            console.log(results);
+                        }
+                    });
 
                 });
+
+                $('.primaryInvestigatorData ').change(function(){
+
+                    var pi = $("#primaryInvestigator").val();
+                    var site_study_id = $("#site_study_id").val();
+
+                    $.ajax({
+                        url: "{{route('updatePI')}}",
+                        type: 'POST',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            'pi':pi,'site_study_id':site_study_id
+                        },
+                        success:function(results){
+                            console.log(results);
+                            $('#primaryInvestigator').attr('selected', 'true');
+                        }
+                    });
+                });
+
             </script>
             <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCEELbGoxVU_nvp6ayr2roHHnjN3hM_uec&libraries=places&callback=initAutocomplete" defer></script>
 @endsection
