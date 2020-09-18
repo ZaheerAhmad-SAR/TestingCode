@@ -160,7 +160,7 @@ class StudyController extends Controller
             ->get();
 
         $diseaseCohort = DiseaseCohort::where('study_id','=',$id)->get();
-        return view('admin::subjects.index',compact('study','subjects','currentStudy','site_study','diseaseCohort'));
+        return view('admin::studies.show',compact('study','subjects','currentStudy','site_study','diseaseCohort'));
     }
 
     /**
