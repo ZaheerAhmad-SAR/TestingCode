@@ -57,7 +57,8 @@
                                         @if(count($phase->phases))
                                         @php
                                         $firstStep = true;
-                                        $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyRoles($phase->id, $userRoleIds);                                        
+                                        $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyRoles($phase->id,
+                                        $userRoleIds);
                                         @endphp
                                         @foreach ($steps as $step)
                                         <a class="contact_link badge p-1 badge-light m-1" href="javascript:void(0);"
@@ -83,39 +84,36 @@
                 </div>
                 <div class="col-12 col-lg-10 mt-3 pl-lg-0">
                     <div class="card border h-100 contact-list-section">
-                        @if(count($visitPhases))
-                        @php
-                        $firstPhase = true;
-                        @endphp
-                        @foreach ($visitPhases as $phase)
-                        @php
-                        $firstStep = true;
-                        $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyRoles($phase->id, $userRoleIds);
-                        @endphp
-                        @foreach ($steps as $step)
-                        @php
-                        $sections = $step->sections;
-                        if(count($sections)){
-                        @endphp
                         <div class="card-body p-0">
                             <div class="contacts list">
+                                @if(count($visitPhases))
+                                @php
+                                $firstStep = true;
+                                @endphp
+                                @foreach ($visitPhases as $phase)
+                                @php
+                                $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyRoles($phase->id,
+                                $userRoleIds);
+                                @endphp
+                                @foreach ($steps as $step)
+                                @php
+                                $sections = $step->sections;
+                                if(count($sections)){
+                                @endphp
                                 <div class="contact contact-{{$step->step_id}}"
-                                    style="display: {{ ($firstPhase) ? 'block' : 'none' }};">
+                                    style="display: {{ ($firstStep) ? 'block' : 'none' }};">
                                     @include('admin::forms.section_loop', ['step'=>$step,
                                     'sections'=> $sections])
                                 </div>
+                                @php
+                                }
+                                $firstStep = false;
+                                @endphp
+                                @endforeach
+                                @endforeach
+                                @endif
                             </div>
                         </div>
-                        @php
-                        }
-                        $firstStep = false;
-                        @endphp
-                        @endforeach
-                        @php
-                        $firstPhase = false;
-                        @endphp
-                        @endforeach
-                        @endif
                     </div>
                 </div>
             </div>
