@@ -783,7 +783,7 @@
     }
     function loadAssignRolesToPhaseForm(phase_id){
         $.ajax({
-             url: 'getAssignRolesToPhaseForm',
+             url: "{{route('getAssignRolesToPhaseForm')}}",
              type: 'POST',
              data: {
                 "_token": "{{ csrf_token() }}",
@@ -797,7 +797,7 @@
     }
     function loadAssignRolesToPhaseStepForm(step_id){
         $.ajax({
-             url: 'getAssignRolesToPhaseStepForm',
+             url: "{{route('getAssignRolesToPhaseStepForm')}}",
              type: 'POST',
              data: {
                 "_token": "{{ csrf_token() }}",
@@ -812,7 +812,7 @@
     function submitAssignRolesToPhaseForm(e){
         e.preventDefault();
         $.ajax({
-             url: 'submitAssignRolesToPhaseForm',
+             url: "{{route('submitAssignRolesToPhaseForm')}}",
              type: 'POST',
              data: $( "#assign_study_structures_roles_form" ).serialize(),
             success: function(response){
@@ -825,7 +825,7 @@
     function submitAssignRolesToPhaseStepsForm(e){
         e.preventDefault();
         $.ajax({
-             url: 'submitAssignRolesToPhaseStepForm',
+             url: "{{route('submitAssignRolesToPhaseStepForm')}}",
              type: 'POST',
              data: $( "#assign_phase_steps_roles_form" ).serialize(),
             success: function(response){
