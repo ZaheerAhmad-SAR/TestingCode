@@ -6,8 +6,10 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
+use Modules\Admin\Entities\Coordinator;
 use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\OptionsGroup;
+use Modules\Admin\Entities\PrimaryInvestigator;
 use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\StudySite;
 use MongoDB\Driver\Query;
@@ -36,14 +38,30 @@ class StudySiteController extends Controller
         foreach ($sites as $site)
         {
             $siteArray[] = $site->site_id;
+            $primaryInvestigator  = PrimaryInvestigator::where('site_id',$site->site_id)->get();
+            $coordinators          = Coordinator::where('site_id',$site->site_id)->get();
+            $primaryArray = array();
+            $coordinatorArray = array();
+            foreach ($primaryInvestigator as $primary)
+            {
+                //$primaryArray[] = $primary->id.'/'. $primary->first_name.' '.$primary->last_name;
+                $primaryArray[] = $primary->id.'/'. $primary->first_name;
+            }
+            $site->pi=$primaryArray;
+            foreach ($coordinators as $coordinator)
+            {
+            //$coordinatorArray[] = $coordinator->id.'/'. $coordinator->first_name.' '.$coordinator->last_name;
+            $coordinatorArray[] = $coordinator->id.'/'. $coordinator->first_name;
+            }
+            $site->ci = $coordinatorArray;
 
         }
 
         $unassignSites = Site::select('sites.*')
             ->whereNotIn('sites.id', $siteArray)->get();
-
-        return view('admin::studies.studySiteNew',compact('sites','unassignSites'));
+        return view('admin::studies.studySiteNew',compact('sites','unassignSites','records'));
     }
+
 
     /**
      * Show the form for creating a new resource.

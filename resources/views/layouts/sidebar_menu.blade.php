@@ -241,10 +241,12 @@
                     </li>
                 </ul>
             </li>
+
+            @if(hasPermission(auth()->user(),'qualitycontrol.index'))
+                <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
+
             @endif
-            @if(hasPermission(auth()->user(),'activitylog.index'))
-                <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Activity Log</a>
-                    <ul >
+                    <ul>
                         <li>
                             <a href="#">
                                 <i class="fas fa-history"></i>
