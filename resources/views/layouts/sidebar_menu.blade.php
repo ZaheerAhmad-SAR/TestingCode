@@ -29,9 +29,9 @@
                 <ul>
                         <li class="dropdown"><a href="#"><i class="icon-grid"></i>System Tools</a>
                             <ul class="sub-menu">
-                                @if(hasPermission(auth()->user(),'systemusers.index'))
-                                    <li class="@if(is_active('systemusers.index')) {{ ' active' }} @endif">
-                                        <a href="{!! route('systemusers.index') !!}">
+                                @if(hasPermission(auth()->user(),'users.index'))
+                                    <li class="@if(is_active('users.index')) {{ ' active' }} @endif">
+                                        <a href="{!! route('users.index') !!}">
                                             System Users
                                         </a>
                                     </li>
@@ -141,7 +141,7 @@
                     @if(!empty(session('current_study')))
                         <ul class="@if(is_active('studies.show')) {{ 'active' }} @endif">
                             <li class="nav-item @if(is_active('studies.show')) {{ ' active' }} @endif">
-                                <a href="{!! route('studies.show',session('current_study')) !!}">
+                                <a href="{!! route('subjects.index') !!}">
                                     <i class="fas fa-hospital"></i>Subjects
                                 </a>
                             </li>
