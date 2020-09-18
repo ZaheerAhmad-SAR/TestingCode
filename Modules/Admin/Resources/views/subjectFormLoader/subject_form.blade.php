@@ -102,7 +102,7 @@
                                 @endphp
                                 <div class="contact contact-{{$step->step_id}}"
                                     style="display: {{ ($firstStep) ? 'block' : 'none' }};">
-                                    @include('admin::forms.section_loop', ['step'=>$step,
+                                    @include('admin::forms.section_loop', ['studyId'=>$studyId, 'phase'=>$phase, 'step'=>$step,
                                     'sections'=> $sections])
                                 </div>
                                 @php
