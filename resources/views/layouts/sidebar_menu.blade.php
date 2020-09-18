@@ -141,7 +141,7 @@
                     @if(!empty(session('current_study')))
                         <ul class="@if(is_active('studies.show')) {{ 'active' }} @endif">
                             <li class="nav-item @if(is_active('studies.show')) {{ ' active' }} @endif">
-                                <a href="{!! route('subjects.index') !!}">
+                                <a href="{!! route('studies.show',session('current_study')) !!}">
                                     <i class="fas fa-hospital"></i>Subjects
                                 </a>
                             </li>
