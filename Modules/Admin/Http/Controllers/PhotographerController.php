@@ -39,12 +39,9 @@ class PhotographerController extends Controller
      */
     public function store(Request $request)
     {
-        $site = Site::select('id')->latest()->first();
-
-        // dd($request->all());
         $photographer = Photographer::create([
             'id'    => \Illuminate\Support\Str::uuid(),
-            'site_id'=> $site->id,
+            'site_id'=> $request->site_id,
             'first_name' => $request->photographer_first_name,
             'mid_name' => empty($request->photographer_mid_name) ? Null : $request->photographer_mid_name,
             'last_name' => empty($request->photographer_last_name) ? Null : $request->photographer_last_name,
