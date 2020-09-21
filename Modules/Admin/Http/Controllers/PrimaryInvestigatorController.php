@@ -39,9 +39,6 @@ class PrimaryInvestigatorController extends Controller
      */
     public function store(Request $request)
     {
-
-
-        //$site = Site::select('id')->latest()->first();
         $pi = PrimaryInvestigator::create([
             'id'    => Str::uuid(),
             'site_id'=> $request->site_id,
@@ -98,13 +95,8 @@ class PrimaryInvestigatorController extends Controller
 
         PrimaryInvestigator::where('id', $request->pi_id)->update($data);
         $site_id  = $request->pi_site_id;
-
         $allPi    = PrimaryInvestigator::where('site_id',$site_id)->get();
-
-
         return response()->json($allPi);
-
-
     }
 
     /**
