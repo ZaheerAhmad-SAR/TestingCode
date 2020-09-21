@@ -71,8 +71,8 @@ class SiteController extends Controller
                 'site_phone'=> empty($request->site_phone) ? Null : $request->site_phone,
                 'site_email'=>empty($request->site_email)? Null : $request->site_email
             ]);
-            $new_site = Site::select('id')->latest()->first();
-            return response()->json(['success'=>'Site Info is added successfully']);
+            //$new_site = Site::select('id')->latest()->first();
+            return response()->json(['site_id' => $id,'success'=>'Site Info is added successfully']);
         }
     }
 

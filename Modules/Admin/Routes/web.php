@@ -144,9 +144,9 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
 
     Route::resource('studySite','StudySiteController');
 
-    //Route::get('studySite','StudySiteController@getAllPrimaryInvestigator')->name('studySite.getAllPrimaryInvestigator');
 
-    Route::post('studySite/update','StudySiteController@update')->name('updateStudySite');
+
+    Route::post('studySite/update','StudySiteController@update')->name('updateStudySiteForm');
 
     Route::post('studySite/updateStudySite','StudySiteController@updateStudySite')->name('updateStudySiteId');
 
