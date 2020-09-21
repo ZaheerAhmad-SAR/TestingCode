@@ -52,6 +52,7 @@
                                             @enderror
                                         </div>
                                     </div>
+{{--
                                     <div class="form-group row">
                                         <label for="password" class="col-md-3">Password</label>
                                         <div class="{!! ($errors->has('password')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
@@ -70,6 +71,7 @@
                                             @enderror
                                         </div>
                                     </div>
+--}}
                                 </div>
                                 <div class="tab-pane fade" id="nav-Modalities" role="tabpanel" aria-labelledby="nav-Validation-tab">
                                     <div class="form-group row" style="margin-top: 10px;">
@@ -80,13 +82,13 @@
                                                     <option value="{{$role->id}}">{{$role->name}}</option>
                                                 @endforeach
                                             </select>
-{{--                                            @foreach($roles as $role)
-                                                @foreach($currentRole as $current)
+                                                {{--@foreach($currentRole as $current)--}}
+                                            {{--@foreach($roles as $role)
                                                 <input type="checkbox" name="roles[]" multiple="multiple" class="" value="{{$role->id}}"
-                                                @if($current->role_id == $role->id) checked @endif>
+                                                --}}{{--@if($current->role_id == $role->id) checked @endif--}}{{-->
                                                     {{$role->name}}
-                                                @endforeach
                                                 @endforeach--}}
+                                                {{--@endforeach--}}
                                         </div>
                                         @error('roles')
                                         <span class="text-danger small">
