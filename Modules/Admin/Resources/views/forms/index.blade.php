@@ -395,6 +395,8 @@
    });
    
    $('body').on('click','.form-fields',function(){
+        $('#formfields').trigger('reset');
+        $('#formfields').attr('action', "{{route('addQuestions')}}");
         var id = $(this).attr("data-field-id");
         $('#question_type').val(id);
    })
@@ -441,25 +443,6 @@
         var step_class = $('select#steps');
         get_steps_phase_id(phase_id,step_class);
         $('#steps').trigger('change');
-        var options;
-        $("#wait").css("display", "block");
-        $.ajax({
-            url:'forms/step_by_phaseId/'+phase_id,
-            type:'post',
-            dataType: 'json',
-             data: {
-                "_token": "{{ csrf_token() }}",
-                "_method": 'GET',
-                'phase_id': phase_id
-            },
-            success:function(response){
-                $.each(response['data'],function(k,v){
-                    options += '<option value="'+v.step_id+'" >'+v.form_type+'-'+v.step_name+'</option>';
-                });
-            $('#steps').html(options);
-            $('#steps').trigger('change');
-            }
-        });
    })
     $('#steps').on('change',function(){
         var step_id = $(this).val();
@@ -475,7 +458,6 @@
             $('#up_question_sort').val(question_sort);
             $('#ChangeQuestionSort').modal('show');
         })
-    
         $('body').on('click', '.delete_ques',function(){
             var row = $(this).closest('div.custom_fields');
             var question_id = row.find('input.question_id').val();
