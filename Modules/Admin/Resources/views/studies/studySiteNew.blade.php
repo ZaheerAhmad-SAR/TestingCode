@@ -17,8 +17,8 @@
         }
     </style>
 
-    <link rel="stylesheet" href="{{ asset("public/dist/vendors/select2/css/select2.min.css") }}"/>
-    <link rel="stylesheet" href="{{ asset("public/dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
+{{--    <link rel="stylesheet" href="{{ asset("public/dist/vendors/select2/css/select2.min.css") }}"/>--}}
+{{--    <link rel="stylesheet" href="{{ asset("public/dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>--}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
 
 
@@ -79,8 +79,9 @@
                                                     @php
                                                     $pi_records = explode('/',$pi);
                                                     @endphp
-                                                            <option disabled="disabled">--Select PI--</option>
+                                                            <option>--Select PI--</option>
                                                         <option value="{{$pi_records[0]}}" {{$pi_records[0]==$site->primaryInvestigator_id ? 'selected="selected"': ''}}>{{$pi_records[1]}}</option>
+                                                        <input type="hidden" name="pi_id_value" value="{{$pi_records[0]}}">
                                                     @endforeach
 
                                                 </Select>
@@ -96,9 +97,8 @@
                                                         @php
                                                             $ci_records = explode('/',$ci);
                                                         @endphp
-                                                            @foreach($siteCoordinators as $siteC)
+
                                                         <option value="{{$ci_records[0]}}">{{$ci_records[1]}}</option>
-                                                        @endforeach
 
                                                     @endforeach
                                                 </Select></td>
@@ -766,8 +766,8 @@
             <script src="{{ asset("public/dist/vendors/datatable/editor/numeric-input-example.js") }}"></script>
             <script src="{{ asset("public/dist/js/datatableedit.script.js") }}"></script>
             <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
-            <script src="{{ asset("public/dist/vendors/select2/js/select2.full.min.js") }}"></script>
-            <script src="{{ asset("public/dist/js/select2.script.js") }}"></script>
+{{--            <script src="{{ asset("public/dist/vendors/select2/js/select2.full.min.js") }}"></script>--}}
+{{--            <script src="{{ asset("public/dist/js/select2.script.js") }}"></script>--}}
             <script type="text/javascript">
                 var placeSearch, autocomplete;
                 var componentForm = {
@@ -1635,6 +1635,7 @@
                     });
 
                 });
+
                 $("#studySiteForm").submit(function(e) {
                     var html = '';
                     $.ajaxSetup({
@@ -1645,7 +1646,7 @@
                     e.preventDefault();
                     $.ajax({
                         data: $('#studySiteForm').serialize(),
-                        url: "{{route('updateStudySite')}}",
+                        url: "{{route('updateStudySiteForm')}}",
                         type: "POST",
                         dataType: 'json',
                         success: function (results) {
@@ -1735,19 +1736,20 @@
 
                 $('.primaryInvestigatorData ').change(function(){
 
-                    var pi = $("#primaryInvestigator").val();
-                    var site_study_id = $("#site_study_id").val();
+                    var pi_id_value = $("#primaryInvestigator").val();
+                    var table_site_study_id = $("#table_site_study_id").val();
 
                     $.ajax({
                         url: "{{route('updatePI')}}",
                         type: 'POST',
                         data: {
                             "_token": "{{ csrf_token() }}",
-                            'pi':pi,'site_study_id':site_study_id
+                            'pi_id_value':pi_id_value,'table_site_study_id':table_site_study_id
                         },
                         success:function(results){
-                            console.log(results);
-                            $('#primaryInvestigator').attr('selected', 'true');
+                            window.setTimeout(function () {
+                                location.href = '{{ route('studySite.index') }}';
+                            }, 10);
                         }
                     });
                 });
