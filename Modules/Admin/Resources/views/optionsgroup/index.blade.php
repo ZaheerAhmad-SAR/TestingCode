@@ -24,9 +24,11 @@
  <div class="col-12 col-sm-12 mt-3">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
+                    @if(hasPermission(auth()->user(),'optionsGroup.create'))
                     <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#addOptionGroups">
                         <i class="fa fa-plus"></i> Add Option Groups
                     </button>
+                        @endif
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -258,9 +260,10 @@
        function editOptionGroup() {
 
            $('body').on('click', '.editOptions', function (e) {
-               $('#OptionsGroupEditForm').trigger('reset');
+               //$('#OptionsGroupEditForm').trigger('reset');
                $('#editOptionGroups').modal('show');
                var id =($(this).attr("data-id"));
+               console.log(id);
                var url = "{{URL('/ocap_new/optionsGroup')}}";
                var newPath = url+ "/"+ id+"/edit/";
                $.ajaxSetup({
@@ -332,9 +335,9 @@
                    dataType: 'json',
                    success: function (data) {
                        $('#OptionsGroupEditForm').modal('hide');
-                       {{--window.setTimeout(function () {--}}
-                       {{--    location.href = '{{ route('optionsGroup.index') }}';--}}
-                       {{--}, 100);--}}
+                       window.setTimeout(function () {
+                           location.href = '{{ route('optionsGroup.index') }}';
+                       }, 100);
 
                    },
                    error: function (data) {

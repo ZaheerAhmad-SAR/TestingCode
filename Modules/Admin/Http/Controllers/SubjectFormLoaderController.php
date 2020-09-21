@@ -10,12 +10,14 @@ use Modules\Admin\Entities\StudyStructure;
 
 class SubjectFormLoaderController extends Controller
 {
-    public function showSubjectForm($subjectId)
+    public function showSubjectForm($studyId, $subjectId)
     {
-        $studyId = session('current_study');
-        $visitPhases = StudyStructure::where('study_id', $studyId)->get();
-        
+        $userRoleIds = auth()->user()->user_roles()->pluck('role_id')->toArray();
+        //$studyId = session('current_study');
+        $visitPhases = StudyStructure::phasesbyRoles($studyId, $userRoleIds);
+
         return view('admin::subjectFormLoader.subject_form')
+        ->with('userRoleIds', $userRoleIds)
         ->with('subjectId', $subjectId)
         ->with('studyId', $studyId)
         ->with('visitPhases', $visitPhases);

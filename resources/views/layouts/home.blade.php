@@ -21,7 +21,9 @@
                     <ul class="ml-auto p-0 m-0 list-unstyled d-flex top-icon h-100">
                         <li style="margin-top: 5px;">
                         <span>
+                            @if(!empty(session('current_study')))
                             <strong>Current Study:</strong> {{session('study_short_name')}}
+                                @endif
                         </span>
                         </li>
                         <li class="d-inline-block align-self-center  d-block d-lg-none">

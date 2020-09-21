@@ -42,7 +42,7 @@ class OtherController extends Controller
 
         $others = Other::create([
             'id'    => Str::uuid(),
-            'site_id'=> $site->id,
+            'site_id'=> $request->site_id,
             'first_name' => $request->others_first_name,
             'mid_name' => empty($request->others_mid_name) ? Null : $request->others_mid_name,
             'last_name' => empty($request->others_last_name) ? Null : $request->others_last_name,

@@ -24,8 +24,11 @@
          <div class="col-12 col-sm-12 mt-3">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <button type="button" class="btn btn-outline-primary" id="create-new-device" data-toggle="modal" data-target="#createdevices"><i class="fa fa-plus"></i> Add Device
+                    @if(hasPermission(auth()->user(),'devices.create'))
+                    <button type="button" class="btn btn-outline-primary" id="create-new-device" data-toggle="modal" data-target="#createdevices">
+                        <i class="fa fa-plus"></i> Add Device
                     </button>
+                        @endif
                 </div>
                 <div class="card-body">
                     <div class="table-responsive list">
@@ -48,14 +51,18 @@
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
+                                                    @if(hasPermission(auth()->user(),'devices.edit'))
                                                     <span class="dropdown-item">
                                                         <a href="javascript:void(0)" id="edit-device" data-id="{{ $device->id }}">
                                                             <i class="far fa-edit"></i>&nbsp; Edit </a>
                                                     </span>
+                                                    @endif
+                                                        @if(hasPermission(auth()->user(),'devices.destroy'))
                                                     <span class="dropdown-item">
                                                             <a href="{{route('devices.destroy',$device->id)}}" id="delete-device" data-id="{{ $device->id }}">
                                                             <i class="far fa-edit"></i>&nbsp; Delete </a>
                                                     </span>
+                                                            @endif
                                                 </div>
                                             </div>
                                         </td>

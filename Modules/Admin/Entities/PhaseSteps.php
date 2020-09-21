@@ -3,8 +3,11 @@
 namespace Modules\Admin\Entities;
 
 use Modules\Admin\Scopes\PhaseStepOrderByScope;
+use Modules\UserRoles\Entities\Role;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Admin\Entities\StudyStructure;
+use Modules\Admin\Entities\PhaseSteps;
+
 class PhaseSteps extends Model
 {
     protected $fillable = ['step_id','phase_id','step_position','form_type','step_name','step_description','graders_number','q_c','eligibility'];
@@ -12,7 +15,7 @@ class PhaseSteps extends Model
     protected $table = 'phase_steps';
     protected $primaryKey = "step_id";
     protected $casts = [
-    	'step_id' => 'string'
+        'step_id' => 'string'
     ];
     
     protected static function boot()
@@ -26,8 +29,8 @@ class PhaseSteps extends Model
     //     return $this->belongsTo(StudyStructure::class,'step_id','phase_id');
     // }
     public function steps()
-	{
-    	return $this->belongsTo(StudyStructure::class,'phase_id','step_id');
+    {
+        return $this->belongsTo(StudyStructure::class, 'phase_id', 'step_id');
     }
     
     public function sections()
@@ -35,4 +38,17 @@ class PhaseSteps extends Model
         return $this->hasMany(Section::class, 'phase_steps_id', 'step_id');
     }
 
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class, 'phase_steps_roles', 'step_id', 'role_id');
+    }
+
+    static function phaseStepsbyRoles($phaseId, $userRoleIds)
+    {
+        return self::whereHas('roles', function ($query) use ($userRoleIds) {
+            $query->whereIn('role_id', $userRoleIds);
+        })
+        ->where('phase_id', $phaseId)
+        ->get();
+    }
 }

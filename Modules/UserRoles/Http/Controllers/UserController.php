@@ -47,13 +47,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        if (Auth::user()->can('users.create')) {
-            $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
+        $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
+        return view('userroles::users.create',compact('roles'));
 
-            return view('userroles::users.create',compact('roles'));
-        }
-
-        return redirect('dashboard');
     }
 
     /**
@@ -63,66 +59,34 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        $user_role = Auth::user()->role->name;
-        $user_id = Auth::user()->id;
-        //dd($user_id);
-        if ($user_role == 'admin'){
-            $user = User::create([
-                'id'    => Str::uuid(),
-                'name'  =>  $request->name,
-                'email' =>  $request->email,
-                'password'  =>  Hash::make($request->password),
-                'user_type' => 'System User',
-                'role_id'   => !empty($request->roles)?$request->roles[0]:2,
-                'created_by'   => $user_id
-            ]);
 
-            if(!empty($request->roles)){
-                foreach ($request->roles as $role){
-                    UserRole::create([
-                        'id'    => Str::uuid(),
-                        'user_id'    =>  $user->id,
-                        'role_id'    =>  $role
-                    ]);
-                    RoleStudyUser::create([
-                        'id'    => Str::uuid(),
-                        'role_id' =>$role,
-                        'user_id' => $user->id,
-                        'study_id' => ''
-                    ]);
-                }
+        $id = Str::uuid();
+        $user = User::create([
+            'id' => $id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'created_by'    => \auth()->user()->id
+            ]);
+        if ($request->roles)
+        {
+            foreach ($request->roles as $role){
+                $roles =UserRole::create([
+                    'id'    => Str::uuid(),
+                    'user_id'     => $user->id,
+                    'role_id'   => $role
+                ]);
+
+                $userrole = RoleStudyUser::create([
+                    'id'    => Str::uuid(),
+                    'user_id'     => $user->id,
+                    'role_id'   => $role,
+                    'study_id' => ''
+                ]);
             }
         }
-        else{
-            $user = User::create([
-                'id'    => Str::uuid(),
-                'name'  =>  $request->name,
-                'email' =>  $request->email,
-                'password'  =>  Hash::make($request->password),
-                'user_type' => 'Study User',
-                'role_id'   => !empty($request->roles)?$request->roles[0]:2,
-                'created_by'   => $user_id
-            ]);
 
-            if(!empty($request->roles)){
-                foreach ($request->roles as $role){
-                    UserRole::create([
-                        'id'    => Str::uuid(),
-                        'user_id'    =>  $user->id,
-                        'role_id'    =>  $role
-                    ]);
-                    RoleStudyUser::create([
-                        'id'    => Str::uuid(),
-                        'role_id' =>$role,
-                        'user_id' => $user->id,
-                        'study_id' => ''
-                    ]);
-
-                }
-            }
-        }
         return redirect()->route('users.index');
-
     }
 
     /**
@@ -133,7 +97,6 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        $user->delete();
 
         return redirect()->route('users.index')->with('success','User deleted');
     }
@@ -145,12 +108,12 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        if (Auth::user()->can('users.update')) {
-            $user = User::find(decrypt($id));
-            $roles = Role::get();
-            return view('userroles::users.edit', compact('user', 'roles'));
-        }
-        return  redirect('dashboard');
+        $user  = User::with('user_roles')
+        ->find($id);
+        $currentRole = $user->user_roles;
+        $roles = Role::all();
+        $password = Hash::needsRehash($user->password);
+        return view('userroles::users.edit',compact('user','roles','currentRole','password'));
     }
 
     /**
@@ -159,10 +122,8 @@ class UserController extends Controller
      * @param int $id
      * @return Response
      */
-    public function update(UserRequest $request, $id)
+    public function update(Request $request, $id)
     {
-
-
         $user   =   User::find($id);
         $user->update([
             'name'  =>  $request->name,

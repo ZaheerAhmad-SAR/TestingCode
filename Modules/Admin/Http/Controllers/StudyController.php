@@ -42,7 +42,7 @@ class StudyController extends Controller
             $sites = Site::all();
             //dd($sites);
         }
-        elseif($user->role->name == 'admin' && $user->user_type =='study_user'){
+        else{
             //dd('else');
             $studies  =   Study::paginate(3);
             $users = User::all();
@@ -56,8 +56,9 @@ class StudyController extends Controller
      * Show the form for creating a new resource.
      * @return Response
      */
-    public function studyStatus(Request $request){
-            $study_id = $request->study_id;
+    public function studyStatus(Request $request)
+    {
+        $study_id = $request->study_id;
 
             $study = Study::find($study_id);
 
@@ -147,7 +148,6 @@ class StudyController extends Controller
      */
     public function show(Study $study)
     {
-
         session(['current_study'=>$study->id,'study_short_name'=> $study->study_short_name]);
         $id = $study->id;
         $currentStudy = Study::find($id);
@@ -258,7 +258,7 @@ class StudyController extends Controller
                     ]);
                 }
             }
-            if ($study_subjects){
+            if ($mystudy->subjects){
                 foreach ($study_subjects as $subject){
                     $disease_id =$subject->disease_cohort_id;
                     $id = \Illuminate\Support\Str::uuid();

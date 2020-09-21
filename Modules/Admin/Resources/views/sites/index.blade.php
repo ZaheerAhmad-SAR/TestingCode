@@ -37,9 +37,11 @@
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
+                        @if(hasPermission(auth()->user(),'sites.create'))
                         <button type="button" class="btn btn-outline-primary" data-toggle="modal"
                                 data-target="#siteModal"> <i class="fa fa-plus blue-color"></i>Add Site
                         </button>
+                            @endif
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -71,8 +73,12 @@
                                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                     <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
+                                                        @if(hasPermission(auth()->user(),'sites.edit'))
                                                         <span class="dropdown-item"><a data-toggle="modal" data-target="#siteModal" data-id="{{$site->id}}" class="editsiterecord"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
+                                                        @endif
+                                                        @if(hasPermission(auth()->user(),'sites.destroy'))
                                                         <span class="dropdown-item"><a data-id="{{$site->id}}" class="deletesiterecord"><i class="fa fa-trash"></i>&nbsp; Delete </a></span>
+                                                            @endif
                                                     </div>
                                                 </div>
                                             </td>
@@ -222,7 +228,9 @@
                                             <input type="hidden" name="site_id" id="site_id" value="">
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="submit" id="btn_site_info" class="btn btn-outline-primary"><i class="fa fa-save changeText"></i> Save Changes</button>
+                                            @if(hasPermission(auth()->user(),'sites.store'))
+                                            <button type="submit" id="btn_site_info" class="btn btn-outline-primary"><i class="fa fa-save changeText"></i> Save</button>
+                                            @endif
                                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close redirectPage" aria-hidden="true"></i> Close</button>
                                         </div>
                                     </div>
@@ -232,7 +240,7 @@
                         <div role="tabpanel" class="tab-pane" id="primaryInvestigator">
                             <form name="primaryInvestigatorForm" id="primaryInvestigatorForm">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                <input type="hidden" name="site_id" value="{{!empty($site->id)}}">
+                                <input type="hidden" name="site_id" value="">
                                 <div class="row" style="margin-top: 15px;">
                                     <div class="col-md-6">
                                         <div class="{!! ($errors->has('first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
@@ -311,7 +319,7 @@
 
                                     <div class="col-md-12">
                                         <div class="pull-right" style="text-align: right;">
-                                            <button type="submit" id="pi_button" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
+                                            <button type="submit" id="pi_button" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save</button>
                                             <input type="hidden" name="pi_submit_actions" id="pi_submit_actions" value="Add">
                                             <input type="hidden" name="pi_id" id="pi_id" value="">
                                             <input type="hidden" name="pi_site_id" id="pi_site_id" value="">
@@ -344,7 +352,7 @@
                         <div role="tabpanel" class="tab-pane" id="coordinator">
                             <form  name="coordinatorForm" id="coordinatorForm">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                <input type="hidden" name="site_id" value="{{!empty($site->id)}}">
+                                <input type="hidden" name="site_id" value="">
                                 <div class="row" style="margin-top: 15px;">
                                     <div class="col-md-6">
                                         <div class="{!! ($errors->has('c_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
@@ -423,11 +431,11 @@
 
                                     <div class="col-md-12">
                                         <div class="pull-right" style="text-align: right;">
-                                            <button type="submit" id="c_button" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
+                                            <button type="submit" id="c_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
                                             <input type="hidden" name="c_submit_actions" id="c_submit_actions" value="Add">
                                             <input type="hidden" name="c_id" id="c_id" value="">
                                             <input type="hidden" name="c_site_id" id="c_site_id" value= "">
-                                            <button type="button"  id="reset_c_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
+                                            <button type="button"  id="reset_c_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true"></i>Reset</button>
                                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                                         </div>
                                         <br>
@@ -457,7 +465,7 @@
                             <form  name="photographerForm" id="photographerForm"
                                   enctype="multipart/form-data" method="POST">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                <input type="hidden" name="site_id"  value="{{!empty($site->id)}}">
+                                <input type="hidden" name="site_id"  value="">
                                 <div class="row" style="margin-top: 15px;">
                                     <div class="col-md-6">
                                         <div class="{!! ($errors->has('photographer_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
@@ -538,12 +546,12 @@
 
                                     <div class="col-md-12">
                                         <div class="pull-right" style="text-align: right;">
-                                            <button type="submit" id="photographer_button" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
+                                            <button type="submit" id="photographer_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
 
                                             <input type="hidden" name="photographer_submit_actions" id="photographer_submit_actions" value="Add">
                                             <input type="hidden" name="photo_id" id="photo_id" value="">
                                             <input type="hidden" name="photographer_site_id" id="photographer_site_id" value= "">
-                                            <button type="button"  id="reset_photographer_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
+                                            <button type="button"  id="reset_photographer_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true"></i>Reset</button>
                                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
 
                                         </div>
@@ -572,7 +580,7 @@
                         <div role="tabpanel" class="tab-pane" id="others">
                             <form  name="othersForm" id="othersForm">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                <input type="hidden" name="site_id"  value="{{!empty($site->id)}}">
+                                <input type="hidden" name="site_id"  value="">
                                 <div class="row" style="margin-top: 15px;">
                                     <div class="col-md-6">
                                         <div class="{!! ($errors->has('others_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
@@ -651,11 +659,11 @@
 
                                     <div class="col-md-12">
                                         <div class="pull-right" style="text-align: right;">
-                                            <button type="submit" id="others_button" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Chnages</button>
+                                            <button type="submit" id="others_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
                                             <input type="hidden" name="others_submit_actions" id="others_submit_actions" value="Add">
                                             <input type="hidden" name="others_id" id="others_id" value="">
                                             <input type="hidden" name="others_site_id" id="others_site_id" value= "">
-                                            <button type="button"  id="reset_others_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
+                                            <button type="button"  id="reset_others_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true"></i>Reset</button>
                                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close " aria-hidden="true"></i> Close</button>
                                         </div>
                                         <br>
@@ -1276,6 +1284,13 @@
                 success: function (results) {
                     $("#siteInfoForm :input").prop("disabled", true);
                     $('.addTabs').attr("data-toggle","tab"); // Add data-toggle tab after insert
+                    console.log(results.site_id);
+
+                    $('#primaryInvestigatorForm').find($('input[name="site_id"]').val(results.site_id));
+                    $('#coordinatorForm').find($('input[name="site_id"]').val(results.site_id));
+                    $('#photographerForm').find($('input[name="site_id"]').val(results.site_id));
+                    $('#othersForm').find($('input[name="site_id"]').val(results.site_id));
+
                 },
                 error: function (results) {
                     console.log('Error:', results);

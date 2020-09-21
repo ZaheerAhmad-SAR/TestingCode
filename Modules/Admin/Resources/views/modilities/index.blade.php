@@ -24,10 +24,14 @@
         <div class="row">
             <div class="eagle-divider"></div>
             <div class="col-lg-4 col-xl-4">
+                @if(hasPermission(auth()->user(),'modalities.create'))
                 Parent <button class="custom-btn blue-color" id="add_phase"> <i class="fa fa-plus blue-color"></i> add</button>
+                    @endif
             </div>
             <div class="col-lg-8  col-xl-8">
+                @if(hasPermission(auth()->user(),'childmodilities.create'))
                 Child <button class="custom-btn blue-color" id="add_steps"><i class="fa fa-plus blue-color"></i> add</button>
+                    @endif
             </div>
             <div class="col-lg-4 col-xl-4 mb-4 mt-3 pr-lg-0 flip-menu">
                 <a href="#" class="d-inline-block d-lg-none mt-1 flip-menu-close"><i class="icon-close"></i></a>

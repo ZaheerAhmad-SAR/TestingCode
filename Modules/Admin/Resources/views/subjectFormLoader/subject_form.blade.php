@@ -57,10 +57,12 @@
                                         @if(count($phase->phases))
                                         @php
                                         $firstStep = true;
+                                        $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyRoles($phase->id,
+                                        $userRoleIds);
                                         @endphp
-                                        @foreach ($phase->phases as $step)
-                                        <a class="contact_link badge p-1 badge-light m-1" href="javascript:void(0);"
-                                            data-contacttype="contact-{{$step->step_id}}">
+                                        @foreach ($steps as $step)
+                                        <a class="badge p-1 badge-light m-1" href="javascript:void(0);"
+                                            onclick="showSections('step_sections_{{$step->step_id}}');">
                                             {{$step->step_name}}
                                         </a>
                                         <br>
@@ -82,38 +84,36 @@
                 </div>
                 <div class="col-12 col-lg-10 mt-3 pl-lg-0">
                     <div class="card border h-100 contact-list-section">
-                        @if(count($visitPhases))
-                        @php
-                        $firstPhase = true;
-                        @endphp
-                        @foreach ($visitPhases as $phase)
-                        @php
-                        $firstStep = true;
-                        @endphp
-                        @foreach ($phase->phases as $step)
-                        @php
-                        $sections = $step->sections;
-                        if(count($sections)){
-                        @endphp
                         <div class="card-body p-0">
                             <div class="contacts list">
-                                <div class="contact contact-{{$step->step_id}}"
-                                    style="display: {{ ($firstPhase) ? 'block' : 'none' }};">
-                                    @include('admin::forms.section_loop', ['step'=>$step,
+                                @if(count($visitPhases))
+                                @php
+                                $firstStep = true;
+                                @endphp
+                                @foreach ($visitPhases as $phase)
+                                @php
+                                $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyRoles($phase->id,
+                                $userRoleIds);
+                                @endphp
+                                @foreach ($steps as $step)
+                                @php
+                                $sections = $step->sections;
+                                if(count($sections)){
+                                @endphp
+                                <div class="all_step_sections step_sections_{{$step->step_id}}"
+                                    style="display: {{ ($firstStep) ? 'block' : 'none' }};">
+                                    @include('admin::forms.section_loop', ['studyId'=>$studyId, 'subjectId'=>$subjectId, 'phase'=>$phase, 'step'=>$step,
                                     'sections'=> $sections])
                                 </div>
+                                @php
+                                }
+                                $firstStep = false;
+                                @endphp
+                                @endforeach
+                                @endforeach
+                                @endif
                             </div>
                         </div>
-                        @php
-                        }
-                        $firstStep = false;
-                        @endphp
-                        @endforeach
-                        @php
-                        $firstPhase = false;
-                        @endphp
-                        @endforeach
-                        @endif
                     </div>
                 </div>
             </div>
@@ -122,16 +122,15 @@
     </div>
     @stop
 
-    @section('styles')
+    @push('styles')
     @include('admin::forms.form_css')
-    @stop
+    @endpush
 
-    @section('script')
+    @push('script')
     <script>
-    $('.contact_link').on('click', function() {
-        $('.contact').hide();
-        $('.' + $(this).data("contacttype")).show(500);
-        return false;
-    });
+        function showSections(step_id_class){
+            $('.all_step_sections').hide(500);
+            $('.' + step_id_class).show(500);
+        }
     </script>
-    @stop
+    @endpush

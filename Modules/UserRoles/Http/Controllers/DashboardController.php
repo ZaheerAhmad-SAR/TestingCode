@@ -6,6 +6,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Modules\UserRoles\Entities\RolePermission;
 
 class DashboardController extends Controller
 {
@@ -18,6 +19,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        session(['current_study'=>'','study_short_name'=> '']);
         $study = '';
         return view('userroles::dashboard',compact('study'));
     }

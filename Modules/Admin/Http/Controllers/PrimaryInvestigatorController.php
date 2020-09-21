@@ -41,10 +41,10 @@ class PrimaryInvestigatorController extends Controller
     {
 
 
-        $site = Site::select('id')->latest()->first();
+        //$site = Site::select('id')->latest()->first();
         $pi = PrimaryInvestigator::create([
             'id'    => Str::uuid(),
-            'site_id'=> $site->id,
+            'site_id'=> $request->site_id,
             'first_name' => $request->pi_first_name,
             'mid_name' => empty($request->pi_mid_name) ? Null : $request->pi_mid_name,
             'last_name' => empty($request->pi_last_name) ? Null : $request->pi_last_name,

@@ -40,10 +40,9 @@
                     </select>
                 </div>
                 <div class="col-sm-2">
-                <button class="btn btn-outline-primary" onclick="showFormPreview();" style="background-color: white;"><i class="far fa-eye"></i> Preview</button>
-                
-                
-                </div>                        
+                <button class="btn btn-outline-primary" onclick="showFormPreview();" style="background-color: white;">
+                    <i class="far fa-eye"></i> Preview</button>
+                </div>
             </div>
         </div>
         <div class="col-lg-2 col-xl-2">
@@ -51,7 +50,7 @@
         </div>
         <div class="col-lg-10 col-xl-10 mb-4 mt-3 pr-lg-0 flip-menu">
             <div class="card border h-100 mail-menu-section display-sections">
-                    
+
             </div>
         </div>
         <div class="col-lg-2 col-xl-2 mb-4 mt-3 pl-lg-0">
@@ -96,6 +95,7 @@
                     <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
                         <div class="py-3 border-bottom border-primary">
                             <span class="text-muted font-w-600">Define Basic Attribute of Question</span><br>
+
                         </div>
                         <div class="form-group row" style="margin-top: 10px;">
                             <label for="Sorting" class="col-sm-2 col-form-label">Sort Number / Position</label>   
@@ -133,6 +133,7 @@
                                     <option value="{{ $value->id }}">{{ $value->field_type }}</option>
                                     @endforeach
                                 </select>
+
                             </div>
                         </div>
                         <div class="form-group row">
@@ -195,6 +196,7 @@
                         </div>
                         <div class="appendDatavalidations">
                             
+
                         </div>
                     </div>
                     <div class="tab-pane fade" id="nav-Dependencies" role="tabpanel" aria-labelledby="nav-Dependencies-tab">
@@ -332,8 +334,8 @@
     </div>
 </div>
 <!-- End -->
-@stop
-@section('styles')  
+@endsection
+@section('styles')
 <style>
     .custom_fields{
         border-bottom: 1px solid #F6F6F7;
@@ -344,16 +346,17 @@
     }
 </style>
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
-@stop
+@endsection
 @section('script')  
 <script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script> 
 <script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
 <script src="{{ asset('public/js/edit_crf.js') }}"></script>  
+
 <script>
    $('.addOptions').on('click',function(){
        $('.appendDataOptions').append('<div class="values_row_options"><div class="form-group row"><div class="form-group col-md-6"><input type="text" id="option_name" name="option_name[]" class="form-control" placeholder="Enter option name" style="background:white;"></div><div class="form-group col-md-4"><input type="number" placeholder="Option value" name="option_value[]" id="option_value" class="form-control" style="background:white;"></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove_option" style="margin-top: 3px;"></i></div></div></div>');
        return false;
-   });  
+   });
    $('.addvalidations').on('click',function(){
        $('.appendDatavalidations').append('<div class="values_row"><div class="form-group row" style="margin-top: 10px;"><div class="col-sm-2">Click on Fetch get to phases </div><div class="col-sm-4"><span style="float: right;"><input type="button" value="Fetch" class="btn btn-primary fetch_phases"></span><span><select class="form-control all_phases" style="width: 82%;"><option value="">--- Select Phase---</option></select></span></div><div class="col-sm-2">Steps / Visits</div><div class="col-sm-3"><select class="form-control all_forms"><option value="">---Select Step / Form---</option></select></div><div class="col-sm-1"><i class="btn btn-outline-danger fa fa-trash remove" style="cursor:pointer;float:right;margin-top:3px;"></i></div></div><div class="form-group row"><div class="col-sm-2"> Sections:</div><div class="col-sm-4"><select class="form-control all_sections"><option value="">---Forms / Sections---</option></select></div><div class="col-sm-2"> Questions:</div><div class="col-sm-4"><select class="form-control all_questions"><option value="">---Select Question---</option></select></div></div><div class="form-group row"><div class="col-sm-2"> Take Decision:</div><div class="col-sm-4"><select class="form-control decision"><option value="">---Based ON---</option><option value="question_value">Question Value</option><option value="custom_value">Custom Value</option></select> </div><div class="col-sm-2"> Condition:</div><div class="col-sm-4"><select class="form-control decision"><option value="and">AND</option><option value="or">OR</option></select></div></div><div class="form-group row"><div class="col-sm-2"> Operator:</div><div class="col-sm-4"><select class="form-control decision"><option value="">---Select---</option><option value="=">Equal</option><option value=">=">Greater OR Equal</option><option value="<=">Less OR Equal</option><option value="!=">Not Equal</option><option value=">">Greater Then</option><option value="<">Less</option></select></div><div class="col-sm-2 questionValue" style="display: none;">With:</div><div class="col-sm-4 questionValue" style="display: none;"><select class="form-control decision_question"><option value="">---Select Question---</option> </select></div><div class="col-sm-2 customValue" style="display: none;">Decision Value:</div><div class="col-sm-4 customValue" style="display: none;"><input type="text" name="custom_value" class="form-control custom_value" placeholder="Define Value"></div></div><div class="form-group row"><div class="col-sm-2"> Show a:</div><div class="col-sm-4"><select name="requiredvalidation_value" id="requiredvalidation_value" class="form-control"><option value="">Exclusion</option><option value="">Error</option><option value="">Warning</option></select> </div><div class="col-sm-2">Message:</div><div class="col-sm-4"><textarea name="validation_message" class="form-control" rows="1"></textarea></div></div></div>');
            
@@ -438,10 +441,29 @@
         var step_class = $('select#steps');
         get_steps_phase_id(phase_id,step_class);
         $('#steps').trigger('change');
+        var options;
+        $("#wait").css("display", "block");
+        $.ajax({
+            url:'forms/step_by_phaseId/'+phase_id,
+            type:'post',
+            dataType: 'json',
+             data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'GET',
+                'phase_id': phase_id
+            },
+            success:function(response){
+                $.each(response['data'],function(k,v){
+                    options += '<option value="'+v.step_id+'" >'+v.form_type+'-'+v.step_name+'</option>';
+                });
+            $('#steps').html(options);
+            $('#steps').trigger('change');
+            }
+        });
    })
     $('#steps').on('change',function(){
         var step_id = $(this).val();
-        display_sections(step_id);   
+        display_sections(step_id);
     })
     /// update Question sort
     $(document).ready(function(){
@@ -471,7 +493,7 @@
                        row.remove();
                     }
                 })
-            }           
+            }
         })
         // update question 
         $('body').on('click', '.Edit_ques',function(){
@@ -555,10 +577,10 @@
                 html +='</div>';
                 $('.display-sections').html(html);
                 $('#section_id').append(sections);
-                $("#wait").css("display", "none");   
-            }    
+                $("#wait").css("display", "none");
+            }
         });
-    }  
+    }
     // display question against form
     function getQuestions(id){
         var html2 = '';
@@ -598,10 +620,11 @@
                        html2 += '<div class="col-sm-6"> <input type="number" name="'+j.variable_name+'" value="" class="form-control"></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
                     }else if(j['form_field_type'].field_type ==='Dropdown'){
                        var optionsvalues = [];
-                       optionsvalues = j.option_value.split(','); 
+                       optionsvalues = j.option_value.split(',');
                        var options = [];
                        options = j.option_name.split(","); 
                        html2 += '<div class="form-group row custom_fields"><input type="hidden" class="question_id" value="'+j.question_id+'"><input type="hidden" class="question_sort" value="'+j.question_sort+'"><input type="hidden" class="question_type_id" value="'+j['form_field_type'].id+'"><input type="hidden" class="section_id" value="'+id+'"><input type="hidden" class="option_group_id" value="'+j.option_group_id+'"><input type="hidden" class="c_disk" value="'+j.c_disk+'"><input type="hidden" class="question_text" value="'+j.question_text+'"><input type="hidden" class="variable_name" value="'+j.variable_name+'"><input type="hidden" class="text_info" value="'+j.text_info+'"><input type="hidden" class="is_required" value="'+j.is_required+'"><input type="hidden" class="is_exportable_to_xls" value="'+j.is_exportable_to_xls+'"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div><div class="col-sm-6"><select name="'+j.option_group_name+'" class="form-control">';
+
                        $.each(options, function(k,v){
                             if(k !=''){
                                 html2 += '<option value="'+optionsvalues[k]+'">'+v+'<option>';
@@ -610,7 +633,7 @@
                        html2 += '</select></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
                     }else if(j['form_field_type'].field_type ==='Checkbox'){
                        var optionsvalues = [];
-                       optionsvalues = j.option_value.split(','); 
+                       optionsvalues = j.option_value.split(',');
                        var options = [];
                        options = j.option_name.split(",");
                        html2 += '<div class="form-group row custom_fields"><input type="hidden" class="question_id" value="'+j.question_id+'"><input type="hidden" class="question_sort" value="'+j.question_sort+'"><input type="hidden" class="question_type_id" value="'+j['form_field_type'].id+'"><input type="hidden" class="section_id" value="'+id+'"><input type="hidden" class="option_group_id" value="'+j.option_group_id+'"><input type="hidden" class="c_disk" value="'+j.c_disk+'"><input type="hidden" class="question_text" value="'+j.question_text+'"><input type="hidden" class="variable_name" value="'+j.variable_name+'"><input type="hidden" class="text_info" value="'+j.text_info+'"><input type="hidden" class="is_required" value="'+j.is_required+'"><input type="hidden" class="is_exportable_to_xls" value="'+j.is_exportable_to_xls+'"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div><div class="col-sm-6">';
@@ -632,15 +655,15 @@
                $('.questions_'+id).append(html2);
             }
         });
-        
-    } 
+
+    }
 
     function showFormPreview(){
            var route = '{{url('forms/show')}}';
            var phase_id = $('#phases').val();
-           var step_id = $('#steps').val();           
+           var step_id = $('#steps').val();
            window.open(route+'/'+phase_id+'/'+step_id);
-    } 
+    }
   // Add New Option Group
    function addOptionsGroup()
    {
@@ -667,9 +690,9 @@
            });
        });
    }
-   addOptionsGroup(); 
+   addOptionsGroup();
    function fetch_options(){
-        $('#option_group_id').html(''); 
+        $('#option_group_id').html('');
         var options = '<option value="">None</option>';
         $.ajax({
             url:"{{route('getall_options')}}",
@@ -679,10 +702,10 @@
                 $.each(res['data'], function(k,v){
                     options += '<option value="'+v.id+'">'+v.option_group_name+'</option>'
                 })
-            $('#option_group_id').append(options);    
+            $('#option_group_id').append(options);
             }
         });
    }
    </script> 
-   
-@stop
+
+@endsection
