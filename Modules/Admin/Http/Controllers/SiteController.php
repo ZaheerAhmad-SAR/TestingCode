@@ -72,6 +72,7 @@ class SiteController extends Controller
                 'site_phone'=> empty($request->site_phone) ? Null : $request->site_phone,
                 'site_email'=>empty($request->site_email)? Null : $request->site_email
             ]);
+           
             $new_site = Site::select('id')->latest()->first();
 
         // get event details
@@ -137,6 +138,7 @@ class SiteController extends Controller
             'site_state'=> empty($request->administrative_area_level_1)? Null : $request->administrative_area_level_1,
             'site_phone'=> empty($request->site_phone) ? Null : $request->site_phone
         );
+        
         Site::where('id', $request->site_id)->update($data);
 
          // get event details
