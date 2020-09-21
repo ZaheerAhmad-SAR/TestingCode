@@ -65,7 +65,7 @@ class UserController extends Controller
             'id' => $id,
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => encrypt($request->password),
             'created_by'    => \auth()->user()->id
             ]);
         if ($request->roles)
@@ -97,6 +97,7 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::find($id);
+        $user->delete();
 
         return redirect()->route('users.index')->with('success','User deleted');
     }
@@ -112,8 +113,8 @@ class UserController extends Controller
         ->find($id);
         $currentRole = $user->user_roles;
         $roles = Role::all();
-        $password = Hash::needsRehash($user->password);
-        return view('userroles::users.edit',compact('user','roles','currentRole','password'));
+
+        return view('userroles::users.edit',compact('user','roles','currentRole'));
     }
 
     /**
@@ -126,22 +127,24 @@ class UserController extends Controller
     {
         $user   =   User::find($id);
         $user->update([
+            'id' => $user->id,
             'name'  =>  $request->name,
             'email' =>  $request->email,
-            'password'  =>  Hash::make($request->password),
-            'role_id'   =>  !empty($request->roles)?$request->roles[0]:2
+            'role_id'   =>  !empty($request->roles)?$request->roles[0]:2,
+            'deleted_at' => Null
         ]);
         $userroles  = UserRole::where('user_id',$user->id)->get();
         foreach ($userroles as $role_id){
             $role_id->delete();
         }
         foreach ($request->roles as $role){
-            UserRole::create([
+            $new = UserRole::create([
+                'id'    => Str::uuid(),
                 'user_id'    =>  $user->id,
-                'role_id'    =>  $role
+                'role_id'    =>  $role,
             ]);
+            print_r($new);
         }
-
         return redirect()->route('users.index');
 
     }
