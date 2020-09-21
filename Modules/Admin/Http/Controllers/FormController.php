@@ -33,6 +33,12 @@ class FormController extends Controller
         $optionsData['data'] = $options_dropdown;
         echo json_encode($optionsData);
     }
+    public function get_phases($id)
+    {
+        $phases = StudyStructure::all();
+        $data['data'] = $phases;
+        echo json_encode($data);
+    }
     public function get_steps_by_phaseId($id)
     {
         $PhaseSteps = PhaseSteps::select('*')->where('phase_id',$id)->get();
@@ -82,7 +88,6 @@ class FormController extends Controller
     }
     public function add_questions(Request $request)
     {
-
         $id    = Str::uuid();
         $question_info = Question::create([
             'id' => $id, 
@@ -114,6 +119,9 @@ class FormController extends Controller
             'validation_rules' => $request->validation_rules, 
         ]);
         return redirect()->route('forms.index');
+    }
+    public function update_questions(Request $request){
+        dd($request->all());
     }
     /**
      * Show the specified resource.

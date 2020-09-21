@@ -67,5 +67,6 @@
         <!-- START: Page JS-->
         @yield('script')
         <!-- END: Page JS-->
+        
     </body>
 </html>
