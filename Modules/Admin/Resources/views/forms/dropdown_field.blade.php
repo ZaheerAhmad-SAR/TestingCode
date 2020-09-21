@@ -10,7 +10,7 @@ $options = array_combine ( $option_names , $option_values );
     <label class="">{{$question->question_text}}</label>
     <select name="field_{{$question->id}}" class="form-control-ocap bg-transparent">
         @foreach($options as $option_name=>$option_value)
-        <option value="{{$option_value}}">{{$option_name}}
+        <option value="{{$option_value}}" {{($answer->answer == $option_value)? 'selected':''}}>{{$option_name}}
         <option>
             @endforeach
     </select>

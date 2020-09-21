@@ -24,7 +24,7 @@
         <link rel="stylesheet" href="{{ asset('public/dist/css/multi-select.css') }}">
         <link rel="stylesheet" href="{{ asset('public/dist/vendors/fontawesome/css/all.min.css') }}"/>
         <link rel="stylesheet" href="{{ asset('public/css/fstdropdown.min.css') }}"/>
-
+        @stack('styles')
         <!-- END: Custom CSS-->
         <style>
             #settingbutton{
@@ -66,6 +66,7 @@
 
         <!-- START: Page JS-->
         @yield('script')
+        @stack('script')
         <!-- END: Page JS-->
     </body>
 </html>
