@@ -55,7 +55,7 @@
                                     <div class="form-group row">
                                         <label for="password" class="col-md-3">Password</label>
                                         <div class="{!! ($errors->has('password')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
-                                            <input type="password" class="form-control" required="required" id="password" name="password" value="{{decrypt($user->password)}}">
+                                            <input type="password" class="form-control" required="required" id="password" name="password" value="{{($user->password)}}">
                                             @error('password')
                                             <span class="text-danger small"> {{ $message }} </span>
                                             @enderror
@@ -75,19 +75,18 @@
                                     <div class="form-group row" style="margin-top: 10px;">
                                         <label for="user_roles" class="col-sm-3">Select Roles</label>
                                         <div class="{!! ($errors->has('roles')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                            {{--<select class="searchable" id="select-roles" multiple="multiple" name="roles[]">
+                                            <select class="searchable" id="select-roles" multiple="multiple" name="roles[]">
                                                 @foreach($roles as $role)
                                                     <option value="{{$role->id}}">{{$role->name}}</option>
                                                 @endforeach
-                                            </select>--}}
-
-                                            @foreach($roles as $role)
+                                            </select>
+{{--                                            @foreach($roles as $role)
                                                 @foreach($currentRole as $current)
-                                                <input type="checkbox" name="roles[]" class="" value="{{$role->id}}"
+                                                <input type="checkbox" name="roles[]" multiple="multiple" class="" value="{{$role->id}}"
                                                 @if($current->role_id == $role->id) checked @endif>
                                                     {{$role->name}}
                                                 @endforeach
-                                                @endforeach
+                                                @endforeach--}}
                                         </div>
                                         @error('roles')
                                         <span class="text-danger small">
