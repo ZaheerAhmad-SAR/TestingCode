@@ -25,13 +25,18 @@ function search_auth($arr, $auth)
     }
     return false;
 }
-function hasPermission($user, $routeName) {
-    $role = $user->role;
+
+function hasPermission($user, $routeName){
+    $roles = $user->user_roles;
+    foreach ($roles as $role) {
+        $role = $role;
+    }
     $permission = Permission::where('name','=',$routeName)->first();
 
-    $rolePermission = RolePermission::where('role_id',$role->id)
-                    ->where('permission_id',$permission->id)->first();
-        if ($rolePermission) {
+    $rolePermission = RolePermission::where('role_id',$role->role_id)
+        ->where('permission_id',$permission->id)->first();
+        if ($rolePermission){
+
         return true;
     }
     else {

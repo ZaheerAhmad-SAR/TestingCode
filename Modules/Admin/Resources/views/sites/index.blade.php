@@ -240,7 +240,7 @@
                         <div role="tabpanel" class="tab-pane" id="primaryInvestigator">
                             <form name="primaryInvestigatorForm" id="primaryInvestigatorForm">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                <input type="hidden" name="site_id" value="{{!empty($site->id)}}">
+                                <input type="hidden" name="site_id" value="">
                                 <div class="row" style="margin-top: 15px;">
                                     <div class="col-md-6">
                                         <div class="{!! ($errors->has('first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
@@ -352,7 +352,7 @@
                         <div role="tabpanel" class="tab-pane" id="coordinator">
                             <form  name="coordinatorForm" id="coordinatorForm">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                <input type="hidden" name="site_id" value="{{!empty($site->id)}}">
+                                <input type="hidden" name="site_id" value="">
                                 <div class="row" style="margin-top: 15px;">
                                     <div class="col-md-6">
                                         <div class="{!! ($errors->has('c_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
@@ -465,7 +465,7 @@
                             <form  name="photographerForm" id="photographerForm"
                                   enctype="multipart/form-data" method="POST">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                <input type="hidden" name="site_id"  value="{{!empty($site->id)}}">
+                                <input type="hidden" name="site_id"  value="">
                                 <div class="row" style="margin-top: 15px;">
                                     <div class="col-md-6">
                                         <div class="{!! ($errors->has('photographer_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
@@ -580,7 +580,7 @@
                         <div role="tabpanel" class="tab-pane" id="others">
                             <form  name="othersForm" id="othersForm">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                <input type="hidden" name="site_id"  value="{{!empty($site->id)}}">
+                                <input type="hidden" name="site_id"  value="">
                                 <div class="row" style="margin-top: 15px;">
                                     <div class="col-md-6">
                                         <div class="{!! ($errors->has('others_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
@@ -1283,7 +1283,12 @@
                 dataType: 'json',
                 success: function (results) {
                     $("#siteInfoForm :input").prop("disabled", true);
-                    $('.addTabs').attr("data-toggle","tab"); // Add data-toggle tab after insert
+                    $('.addTabs').attr("data-toggle","tab"); // Add data-toggle tab after inserts
+                    $('#primaryInvestigatorForm').find($('input[name="site_id"]').val(results.site_id));
+                    $('#coordinatorForm').find($('input[name="site_id"]').val(results.site_id));
+                    $('#photographerForm').find($('input[name="site_id"]').val(results.site_id));
+                    $('#othersForm').find($('input[name="site_id"]').val(results.site_id));
+
                 },
                 error: function (results) {
                     console.log('Error:', results);

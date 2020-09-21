@@ -59,24 +59,25 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
+
         $id = Str::uuid();
         $user = User::create([
             'id' => $id,
             'name' => $request->name,
             'email' => $request->email,
-            'password' => encrypt($request->password),
+            'password' => Hash::make($request->password),
             'created_by'    => \auth()->user()->id
             ]);
         if ($request->roles)
         {
             foreach ($request->roles as $role){
-                UserRole::updateOrCreate([
+                $roles =UserRole::create([
                     'id'    => Str::uuid(),
                     'user_id'     => $user->id,
                     'role_id'   => $role
                 ]);
 
-                RoleStudyUser::updateOrCreate([
+                $userrole = RoleStudyUser::create([
                     'id'    => Str::uuid(),
                     'user_id'     => $user->id,
                     'role_id'   => $role,
@@ -84,6 +85,7 @@ class UserController extends Controller
                 ]);
             }
         }
+
         return redirect()->route('users.index');
     }
 
@@ -95,7 +97,6 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        $user->delete();
 
         return redirect()->route('users.index')->with('success','User deleted');
     }
@@ -111,7 +112,8 @@ class UserController extends Controller
         ->find($id);
         $currentRole = $user->user_roles;
         $roles = Role::all();
-        return view('userroles::users.edit',compact('user','roles','currentRole'));
+        $password = Hash::needsRehash($user->password);
+        return view('userroles::users.edit',compact('user','roles','currentRole','password'));
     }
 
     /**
@@ -131,7 +133,7 @@ class UserController extends Controller
         ]);
         $userroles  = UserRole::where('user_id',$user->id)->get();
         foreach ($userroles as $role_id){
-            dd($role_id->delete());
+            $role_id->delete();
         }
         foreach ($request->roles as $role){
             UserRole::create([

@@ -79,8 +79,9 @@
                                                     @php
                                                     $pi_records = explode('/',$pi);
                                                     @endphp
-                                                            <option disabled="disabled">--Select PI--</option>
+                                                            <option>--Select PI--</option>
                                                         <option value="{{$pi_records[0]}}" {{$pi_records[0]==$site->primaryInvestigator_id ? 'selected="selected"': ''}}>{{$pi_records[1]}}</option>
+                                                        <input type="hidden" name="pi_id_value" value="{{$pi_records[0]}}">
                                                     @endforeach
 
                                                 </Select>
@@ -96,9 +97,8 @@
                                                         @php
                                                             $ci_records = explode('/',$ci);
                                                         @endphp
-                                                            @foreach($siteCoordinators as $siteC)
+
                                                         <option value="{{$ci_records[0]}}">{{$ci_records[1]}}</option>
-                                                        @endforeach
 
                                                     @endforeach
                                                 </Select></td>
@@ -289,7 +289,9 @@
                                                 <input type="hidden" name="site_id" id="site_id" value="">
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="submit" id="btn_site_info" class="btn btn-outline-primary"><i class="fa fa-save changeText"></i> Save</button>
+                                                @if(hasPermission(auth()->user(),'sites.store'))
+                                                    <button type="submit" id="btn_site_info" class="btn btn-outline-primary"><i class="fa fa-save changeText"></i> Save</button>
+                                                @endif
                                                 <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close redirectPage" aria-hidden="true"></i> Close</button>
                                             </div>
                                         </div>
@@ -299,7 +301,7 @@
                             <div role="tabpanel" class="tab-pane" id="primaryInvestigator">
                                 <form name="primaryInvestigatorForm" id="primaryInvestigatorForm">
                                     <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                    <input type="hidden" name="site_id" value="{{!empty($site->id)}}">
+                                    <input type="hidden" name="site_id" value="">
                                     <div class="row" style="margin-top: 15px;">
                                         <div class="col-md-6">
                                             <div class="{!! ($errors->has('first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
@@ -411,7 +413,7 @@
                             <div role="tabpanel" class="tab-pane" id="coordinator">
                                 <form  name="coordinatorForm" id="coordinatorForm">
                                     <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                    <input type="hidden" name="site_id" value="{{!empty($site->id)}}">
+                                    <input type="hidden" name="site_id" value="">
                                     <div class="row" style="margin-top: 15px;">
                                         <div class="col-md-6">
                                             <div class="{!! ($errors->has('c_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
@@ -524,7 +526,7 @@
                                 <form  name="photographerForm" id="photographerForm"
                                        enctype="multipart/form-data" method="POST">
                                     <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                    <input type="hidden" name="site_id"  value="{{!empty($site->id)}}">
+                                    <input type="hidden" name="site_id"  value="">
                                     <div class="row" style="margin-top: 15px;">
                                         <div class="col-md-6">
                                             <div class="{!! ($errors->has('photographer_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
@@ -639,7 +641,7 @@
                             <div role="tabpanel" class="tab-pane" id="others">
                                 <form  name="othersForm" id="othersForm">
                                     <input type="hidden" name="_token" value="{{csrf_token()}}">
-                                    <input type="hidden" name="site_id"  value="{{!empty($site->id)}}">
+                                    <input type="hidden" name="site_id"  value="">
                                     <div class="row" style="margin-top: 15px;">
                                         <div class="col-md-6">
                                             <div class="{!! ($errors->has('others_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
@@ -1635,6 +1637,7 @@
                     });
 
                 });
+
                 $("#studySiteForm").submit(function(e) {
                     var html = '';
                     $.ajaxSetup({
@@ -1645,7 +1648,7 @@
                     e.preventDefault();
                     $.ajax({
                         data: $('#studySiteForm').serialize(),
-                        url: "{{route('updateStudySite')}}",
+                        url: "{{route('updateStudySiteForm')}}",
                         type: "POST",
                         dataType: 'json',
                         success: function (results) {
@@ -1677,6 +1680,7 @@
                 });
 
                 $(document).ready(function() {
+
                     $('#select-sites').multiSelect({
                         selectableHeader: "<label for=''>All Sites</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
                         selectionHeader: "<label for=''>Assigned Sites</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
@@ -1732,25 +1736,27 @@
                     });
 
                 });
+                $(document).ready(function() {
+                    $('.primaryInvestigatorData ').change(function(){
+                        var pi_id_value = $("#primaryInvestigator").val();
+                        var table_site_study_id = $("#table_site_study_id").val();
 
-                $('.primaryInvestigatorData ').change(function(){
-
-                    var pi = $("#primaryInvestigator").val();
-                    var site_study_id = $("#site_study_id").val();
-
-                    $.ajax({
-                        url: "{{route('updatePI')}}",
-                        type: 'POST',
-                        data: {
-                            "_token": "{{ csrf_token() }}",
-                            'pi':pi,'site_study_id':site_study_id
-                        },
-                        success:function(results){
-                            console.log(results);
-                            $('#primaryInvestigator').attr('selected', 'true');
-                        }
+                        $.ajax({
+                            url: "{{route('updatePI')}}",
+                            type: 'POST',
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                'pi_id_value':pi_id_value,'table_site_study_id':table_site_study_id
+                            },
+                            success:function(results){
+                                window.setTimeout(function () {
+                                    location.href = '{{ route('studySite.index') }}';
+                                }, 10);
+                            }
+                        });
                     });
                 });
+
 
             </script>
             <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCEELbGoxVU_nvp6ayr2roHHnjN3hM_uec&libraries=places&callback=initAutocomplete" defer></script>

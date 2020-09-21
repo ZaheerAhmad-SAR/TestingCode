@@ -14,7 +14,7 @@ class AddPrimaryInvestigatorIdToSiteStudyTable extends Migration
     public function up()
     {
         Schema::table('site_study', function (Blueprint $table) {
-            $table->uuid('primaryInvestigator_id')->after('site_id');
+            $table->uuid('primaryInvestigator_id')->after('site_id')->nullable();
         });
     }
 
