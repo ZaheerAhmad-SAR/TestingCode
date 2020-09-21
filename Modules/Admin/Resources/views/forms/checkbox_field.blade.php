@@ -10,7 +10,7 @@ $options = array_combine ( $option_names , $option_values );
     <label class="">{{$question->question_text}}</label>
     @foreach($options as $option_name=>$option_value)
     <div class="custom-control custom-checkbox custom-control-inline">
-        <input type="checkbox" name="field_{{$question->id}}" value="{{$option_value}}"
+        <input type="checkbox" name="field_{{$question->id}}" value="{{$option_value}}" {{($answer->answer == $option_value)? 'checked':''}}
             class="custom-control-input">
         <label class="custom-control-label" for="customCheck1">{{$option_name}}</label>
     </div>
