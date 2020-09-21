@@ -151,8 +151,8 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
     Route::post('studySite/updateStudySite','StudySiteController@updateStudySite')->name('updateStudySiteId');
 
     //SubjectFormLoader
-    Route::get('subject_form/{subject_id}','SubjectFormLoaderController@showSubjectForm')->name('showSubjectForm');
-    Route::post('/subject_form/submitStudyPhaseStepQuestionForm','SubjectFormSubmissionController@submitForm')->name('submitStudyPhaseStepQuestionForm');    
+    Route::get('subject_form/{study_id}/{subject_id}','SubjectFormLoaderController@showSubjectForm')->name('showSubjectForm');
+    Route::post('/subject_form/submitStudyPhaseStepQuestionForm','SubjectFormSubmissionController@submitForm')->name('submitStudyPhaseStepQuestionForm');
     //Assign Roles ToPhase and Step
     Route::post('getAssignRolesToPhaseForm','AssignRolesPhaseStepController@getAssignRolesToPhaseForm')->name('getAssignRolesToPhaseForm');
     Route::post('getAssignRolesToPhaseStepForm','AssignRolesPhaseStepController@getAssignRolesToPhaseStepForm')->name('getAssignRolesToPhaseStepForm');

@@ -32,4 +32,18 @@ class Question extends Model
     {
        return $this->hasOne(OptionsGroup::class,'id','option_group_id')->withDefault();
     }
+
+    public function getAnswer($getAnswerArray)
+    {
+        $answer = Answer::where(function ($q) use ($getAnswerArray) {
+            foreach ($getAnswerArray as $key => $value) {
+                $q->where($key, '=', $value);
+            }
+        })->first();
+        if(null === $answer)
+        {
+            $answer = new Answer();
+        }
+        return $answer;
+    }
 }

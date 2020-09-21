@@ -542,7 +542,7 @@ class RoleController extends Controller
             ->get();
 
 
-        return view('userroles::roles.new_edit',compact('role','permissions','study_add'));
+        return view('userroles::roles.new_edit',compact('role','permissions'));
     }
 
     /**
