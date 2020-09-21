@@ -47,13 +47,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        if (Auth::user()->can('users.create')) {
-            $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
+        $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
+        return view('userroles::users.create',compact('roles'));
 
-            return view('userroles::users.create',compact('roles'));
-        }
-
-        return redirect('dashboard');
     }
 
     /**
@@ -63,15 +59,13 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        if ($request->ajax()) {
-        $userID = $request->user_id;
         $id = Str::uuid();
-        $user = User::updateOrCreate([
-            'id' => $id],
-            ['name' => $request->name,
-                'email' => $request->email,
-                'password' => encrypt($request->password),
-                'created_by'    => \auth()->user()->id
+        $user = User::create([
+            'id' => $id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => encrypt($request->password),
+            'created_by'    => \auth()->user()->id
             ]);
         if ($request->roles)
         {
@@ -90,9 +84,7 @@ class UserController extends Controller
                 ]);
             }
         }
-        }
-        return \response()->json($user);
-
+        return redirect()->route('users.index');
     }
 
     /**
@@ -115,10 +107,11 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $where = array('id' => $id);
-        $user  = User::with('user_roles')->where($where)->first();
-
-        return \response()->json($user);
+        $user  = User::with('user_roles')
+        ->find($id);
+        $currentRole = $user->user_roles;
+        $roles = Role::all();
+        return view('userroles::users.edit',compact('user','roles','currentRole'));
     }
 
     /**
@@ -127,10 +120,8 @@ class UserController extends Controller
      * @param int $id
      * @return Response
      */
-    public function update(UserRequest $request, $id)
+    public function update(Request $request, $id)
     {
-
-
         $user   =   User::find($id);
         $user->update([
             'name'  =>  $request->name,
@@ -140,7 +131,7 @@ class UserController extends Controller
         ]);
         $userroles  = UserRole::where('user_id',$user->id)->get();
         foreach ($userroles as $role_id){
-            $role_id->delete();
+            dd($role_id->delete());
         }
         foreach ($request->roles as $role){
             UserRole::create([

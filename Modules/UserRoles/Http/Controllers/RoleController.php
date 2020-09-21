@@ -540,8 +540,6 @@ class RoleController extends Controller
         $permissions = RolePermission::where('role_id','=',$role->id)
             ->join('permissions','permissions.id','=','permission_role.permission_id')
             ->get();
-
-
         return view('userroles::roles.new_edit',compact('role','permissions','study_add'));
     }
 
