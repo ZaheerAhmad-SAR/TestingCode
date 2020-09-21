@@ -24,7 +24,9 @@
     <div class="row">
         <div class="eagle-divider"></div>
         <div class="col-lg-4 col-xl-4">
+            @if(hasPermission(auth()->user(),'study.create'))
             Phases <button class="custom-btn blue-color" id="add_phase"> <i class="fa fa-plus blue-color"></i> add</button>
+            @endif
         </div>
         <div class="col-lg-8  col-xl-8">
             Steps <button class="custom-btn blue-color" id="add_steps"><i class="fa fa-plus blue-color"></i> add</button>
@@ -320,8 +322,8 @@
             <div class="alert alert-danger" style="display:none"></div>
             <div class="modal-header ">
                 <p class="modal-title">Assign Roles</p>
-            </div>            
-            <div class="modal-body" id="assignRolesToPhaseMainDiv"></div>            
+            </div>
+            <div class="modal-body" id="assignRolesToPhaseMainDiv"></div>
         </div>
     </div>
 </div>
@@ -335,8 +337,8 @@
                 <p class="modal-title">Assign Roles</p>
             </div>
             <div class="modal-body" id="assignRolesToPhaseStepMainDiv">
-            
-            </div>            
+
+            </div>
         </div>
     </div>
 </div>
@@ -781,7 +783,7 @@
     }
     function loadAssignRolesToPhaseForm(phase_id){
         $.ajax({
-             url: 'getAssignRolesToPhaseForm',
+             url: "{{route('getAssignRolesToPhaseForm')}}",
              type: 'POST',
              data: {
                 "_token": "{{ csrf_token() }}",
@@ -789,13 +791,13 @@
             },
             success: function(response){
                 $('#assignRolesToPhaseMainDiv').empty();
-                $("#assignRolesToPhaseMainDiv").html(response);               
+                $("#assignRolesToPhaseMainDiv").html(response);
             }
         });
     }
     function loadAssignRolesToPhaseStepForm(step_id){
         $.ajax({
-             url: 'getAssignRolesToPhaseStepForm',
+             url: "{{route('getAssignRolesToPhaseStepForm')}}",
              type: 'POST',
              data: {
                 "_token": "{{ csrf_token() }}",
@@ -803,35 +805,35 @@
             },
             success: function(response){
                 $('#assignRolesToPhaseStepMainDiv').empty();
-                $("#assignRolesToPhaseStepMainDiv").html(response);               
+                $("#assignRolesToPhaseStepMainDiv").html(response);
             }
         });
     }
     function submitAssignRolesToPhaseForm(e){
         e.preventDefault();
         $.ajax({
-             url: 'submitAssignRolesToPhaseForm',
+             url: "{{route('submitAssignRolesToPhaseForm')}}",
              type: 'POST',
              data: $( "#assign_study_structures_roles_form" ).serialize(),
             success: function(response){
                 $('#assignRolesToPhaseMainDiv').empty();
-                $("#assignRolesToPhaseMainDiv").html(response);               
+                $("#assignRolesToPhaseMainDiv").html(response);
             }
-        });  
-        
+        });
+
     }
     function submitAssignRolesToPhaseStepsForm(e){
         e.preventDefault();
         $.ajax({
-             url: 'submitAssignRolesToPhaseStepForm',
+             url: "{{route('submitAssignRolesToPhaseStepForm')}}",
              type: 'POST',
              data: $( "#assign_phase_steps_roles_form" ).serialize(),
             success: function(response){
                 $('#assignRolesToPhaseStepMainDiv').empty();
-                $("#assignRolesToPhaseStepMainDiv").html(response);               
+                $("#assignRolesToPhaseStepMainDiv").html(response);
             }
-        });  
-        
+        });
+
     }
     </script>
 @stop

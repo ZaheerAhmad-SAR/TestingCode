@@ -40,10 +40,9 @@
                     </select>
                 </div>
                 <div class="col-sm-2">
-                <button class="btn btn-outline-primary" onclick="showFormPreview();" style="background-color: white;"><i class="far fa-eye"></i> Preview</button>
-                
-                
-                </div>                        
+                <button class="btn btn-outline-primary" onclick="showFormPreview();" style="background-color: white;">
+                    <i class="far fa-eye"></i> Preview</button>
+                </div>
             </div>
         </div>
         <div class="col-lg-2 col-xl-2">
@@ -51,7 +50,7 @@
         </div>
         <div class="col-lg-10 col-xl-10 mb-4 mt-3 pr-lg-0 flip-menu">
             <div class="card border h-100 mail-menu-section display-sections">
-                    
+
             </div>
         </div>
         <div class="col-lg-2 col-xl-2 mb-4 mt-3 pl-lg-0">
@@ -80,7 +79,7 @@
                     </button>
                 </div>
                 <form action="{{route('addQuestions')}}" enctype="multipart/form-data" method="POST" id="formfields">
-                @csrf    
+                @csrf
                 <div class="modal-body">
                     <nav>
                         <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
@@ -97,34 +96,34 @@
                                 <span class="text-muted font-w-600">Define Basic Attribute of Question</span><br>
                             </div>
                             <div class="form-group row" style="margin-top: 10px;">
-                                <label for="Sorting" class="col-sm-3 col-form-label">Sort Number / Position</label>   
+                                <label for="Sorting" class="col-sm-3 col-form-label">Sort Number / Position</label>
                                 <div class="col-sm-9">
                                     <input type="Number" name="question_sort" id="question_sort" class="form-control" placeholder="Sort Number / Placement Place">
                                 </div>
                             </div>
-                            <div class="form-group row">    
-                                <label for="Sections" class="col-sm-3 col-form-label">Sections</label>   
+                            <div class="form-group row">
+                                <label for="Sections" class="col-sm-3 col-form-label">Sections</label>
                                 <div class="col-sm-9">
                                     <select name="section_id" id="section_id" class="form-control">
                                         <option value="">Choose Phase/Visit && Step/Form-Type Before Adding </option>
                                     </select>
                                 </div>
-                                
+
                             </div>
                             <div class="form-group row">
-                                <label for="C-DISC" class="col-sm-3 col-form-label">C-DISC <sup>*</sup></label>      
+                                <label for="C-DISC" class="col-sm-3 col-form-label">C-DISC <sup>*</sup></label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control" name="c_disk" id="c_disk" value="">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="label" class="col-sm-3 col-form-label"> Label <sup>*</sup></label>    
+                                <label for="label" class="col-sm-3 col-form-label"> Label <sup>*</sup></label>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control" name="question_text" id="question_text" value="">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <lable for='variable' class="col-sm-3 col-form-label">Variable name <sup>*</sup></lable>    
+                                <lable for='variable' class="col-sm-3 col-form-label">Variable name <sup>*</sup></lable>
                                 <div class="col-sm-9">
                                     <input type="text" class="form-control" name="variable_name" id="variable_name" value="">
                                 </div>
@@ -141,7 +140,7 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="Required" class="col-sm-3 col-form-label">Required <sup>*</sup></label>    
+                                <label for="Required" class="col-sm-3 col-form-label">Required <sup>*</sup></label>
                                 <div class="col-sm-9">
                                     <input type="radio" name="is_required" value="no"> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <input type="radio" name="is_required" value="yes" checked> Yes
@@ -149,20 +148,20 @@
                             </div>
                             <div class="view_to_numeric">
                                 <div class="form-group row">
-                                    <label for='limits' class="col-sm-3 col-form-label">Lower and upper limits: <sup>*</sup></label>    
+                                    <label for='limits' class="col-sm-3 col-form-label">Lower and upper limits: <sup>*</sup></label>
                                     <div class="col-sm-4">
                                         <input type="text" name="lower_limit" id="lower_limit" class="form-control" placeholder="Minimum">
-                                    </div>  
-                                    <div class="col-sm-5">  
+                                    </div>
+                                    <div class="col-sm-5">
                                         <input type="text" name="upper_limit" id="upper_limit" class="form-control" placeholder="Maximum">
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label">Field width <sup>*</sup></label>    
+                                    <label class="col-sm-3 col-form-label">Field width <sup>*</sup></label>
                                     <div class="col-sm-3">
                                         <input type="text" class="form-control" name="field_width" id="field_width" value="">
                                     </div>
-                                    <label class="col-sm-3">Measurement unit</label>    
+                                    <label class="col-sm-3">Measurement unit</label>
                                     <div class="col-sm-3">
                                         <input type="text" class="form-control" name="measurement_unit" id="measurement_unit" value="">
                                     </div>
@@ -170,7 +169,7 @@
                             </div>
                             <div class="optionGroup">
                                 <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label">Option group: </label>    
+                                    <label class="col-sm-3 col-form-label">Option group: </label>
                                     <div class="col-sm-6">
                                         <select name="option_group_id" id="option_group_id" class="form-control">
                                             <option value="">None</option>
@@ -188,20 +187,20 @@
                             </div>
                             <div class="view_to_textbox">
                                 <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label">Field width <sup>*</sup></label>    
+                                    <label class="col-sm-3 col-form-label">Field width <sup>*</sup></label>
                                     <div class="col-sm-9">
                                         <input type="text" class="form-control" name="field_width" id="field_width" value="">
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label">Measurement unit</label>    
+                                    <label class="col-sm-3 col-form-label">Measurement unit</label>
                                     <div class="col-sm-9">
                                         <input type="text" class="form-control" name="measurement_unit" id="measurement_unit" value="">
                                     </div>
                                 </div>
                             </div>
                              <div class="form-group row">
-                                <label class="col-sm-3 col-form-label">Text/info: <sup>*</sup></label>    
+                                <label class="col-sm-3 col-form-label">Text/info: <sup>*</sup></label>
                                 <div class="col-sm-9">
                                     <textarea name="text_info" id="text_info" cols="2" rows="2" class="form-control" style="height: 50px;"></textarea>
                                 </div>
@@ -212,7 +211,7 @@
                                 <span class="text-muted font-w-600">Default Validation</span><br>
                             </div>
                             <div class="form-group">
-                                <div class="col-sm-12" style="margin-top: 10px;"><button type="button" class="btn btn-outline-primary addvalidations"><i class="fa fa-plus"></i> Add Message</button></div>    
+                                <div class="col-sm-12" style="margin-top: 10px;"><button type="button" class="btn btn-outline-primary addvalidations"><i class="fa fa-plus"></i> Add Message</button></div>
                             </div>
                              <div class="appendDatavalidations">
                             </div>
@@ -222,26 +221,26 @@
                                 <span class="text-muted font-w-600">Define If Dependencies on any Question</span><br>
                             </div>
                             <div class="form-group row" style="margin-top: 10px;">
-                                <div class="col-sm-3">Field is dependent: <sup>*</sup></div>    
+                                <div class="col-sm-3">Field is dependent: <sup>*</sup></div>
                                 <div class="col-sm-9">
                                     <input type="radio" name="field_dependent" class="field_dependent" value="no" checked> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <input type="radio" name="field_dependent" class="field_dependent" value="yes" > Yes
                                 </div>
-                            </div>    
+                            </div>
                             <div class="append_if_yes">
-                                
+
                             </div>
                             </div>
-                      
+
                         <div class="tab-pane fade" id="nav-Annotations" role="tabpanel" aria-labelledby="nav-Annotations-tab">
                             <div class="py-3 border-bottom border-primary">
                                 <span class="text-muted font-w-600">Annotations</span><br>
                             </div>
                             <div class="form-group row" style="margin-top: 10px;">
-                                <div class="col-sm-12"><button type="button" class="btn btn-outline-primary addannotation"><i class="fa fa-plus"></i> Add annotation</button></div>    
+                                <div class="col-sm-12"><button type="button" class="btn btn-outline-primary addannotation"><i class="fa fa-plus"></i> Add annotation</button></div>
                             </div>
                             <div class="appendannotation">
-                                
+
                             </div>
                         </div>
                         <div class="tab-pane fade" id="nav-Advanced" role="tabpanel" aria-labelledby="nav-Advanced-tab">
@@ -249,7 +248,7 @@
                                 <span class="text-muted font-w-600">Click Yes If Need Result in Final Data Exports</span><br>
                             </div>
                             <div class="form-group row" style="margin-top: 10px;">
-                                <div class="col-sm-3">Exclude field in data exports: <sup>*</sup></div>    
+                                <div class="col-sm-3">Exclude field in data exports: <sup>*</sup></div>
                                 <div class="col-sm-9">
                                     <input type="radio" name="is_exportable_to_xls" value="no"> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <input type="radio" name="is_exportable_to_xls" value="yes" checked> Yes
@@ -341,7 +340,7 @@
 </div>
 <!-- End -->
 @stop
-@section('styles')  
+@section('styles')
 <style>
     .custom_fields{
         border-bottom: 1px solid #F6F6F7;
@@ -353,14 +352,14 @@
 </style>
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
 @stop
-@section('script')  
-<script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script> 
-<script src="{{ asset('public/dist/js/mail.script.js') }}"></script>  
+@section('script')
+<script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script>
+<script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
 <script>
    $('.addOptions').on('click',function(){
        $('.appendDataOptions').append('<div class="values_row_options"><div class="form-group row"><div class="form-group col-md-6"><input type="text" id="option_name" name="option_name[]" class="form-control" placeholder="Enter option name" style="background:white;"></div><div class="form-group col-md-4"><input type="number" placeholder="Option value" name="option_value[]" id="option_value" class="form-control" style="background:white;"></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove_option" style="margin-top: 3px;"></i></div></div></div>');
        return false;
-   });  
+   });
    $('.addvalidations').on('click',function(){
        $('.appendDatavalidations').append('<div class="values_row"><div class="form-group row"><div class="col-sm-2">If this field is:</div><div class="col-sm-4"><select name="requiredvalidation_value" id="requiredvalidation_value" class="form-control"><option value="">---Select Value---</option><option value="">One</option><option value="">Two</option><option value="">Three</option></select></div><div class="col-sm-5"><input type="text" placeholder="value" name="value" class="form-control"></div><div class="col-sm-1"><i class="btn btn-outline-danger fa fa-trash remove" style="cursor:pointer;"></i></div></div><div class="form-group row"><div class="col-sm-2"> Show a:</div><div class="col-sm-10"><select name="requiredvalidation_value" id="requiredvalidation_value" class="form-control"><option value="">Exclusion</option><option value="">Error</option><option value="">Warning</option></select></div></div><div class="form-group row"><div class="col-sm-2">Message:</div><div class="col-sm-10"><input type="text" name="validation_message" class="form-control"></div></div></div>');
        return false;
@@ -455,14 +454,14 @@
                 $.each(response['data'],function(k,v){
                     options += '<option value="'+v.step_id+'" >'+v.form_type+'-'+v.step_name+'</option>';
                 });
-            $('#steps').html(options); 
+            $('#steps').html(options);
             $('#steps').trigger('change');
-            }    
+            }
         });
    })
     $('#steps').on('change',function(){
         var step_id = $(this).val();
-        display_sections(step_id);   
+        display_sections(step_id);
     })
     /// update Question sort
     $(document).ready(function(){
@@ -511,7 +510,7 @@
                        row.remove();
                     }
                 })
-            }           
+            }
         })
     })
 
@@ -543,10 +542,10 @@
                 html +='</div>';
                 $('.display-sections').html(html);
                 $('#section_id').append(sections);
-                $("#wait").css("display", "none");   
-            }    
+                $("#wait").css("display", "none");
+            }
         });
-    }  
+    }
     // display question against form
     function getQuestions(id){
         var html2 = '';
@@ -586,9 +585,9 @@
                        html2 += '<div class="col-sm-6"> <input type="number" name="'+j.variable_name+'" value="" class="form-control"></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
                     }else if(j['form_field_type'].field_type ==='Dropdown'){
                        var optionsvalues = [];
-                       optionsvalues = j.option_value.split(','); 
+                       optionsvalues = j.option_value.split(',');
                        var options = [];
-                       options = j.option_name.split(","); 
+                       options = j.option_name.split(",");
                        html2 += '<div class="form-group row custom_fields"><input type="hidden" class="question_id" value="'+j.question_id+'"><input type="hidden" class="question_sort" value="'+j.question_sort+'"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div><div class="col-sm-6"><select name="'+j.option_group_name+'" class="form-control">';
                        $.each(options, function(k,v){
                             if(k !=''){
@@ -598,7 +597,7 @@
                        html2 += '</select></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
                     }else if(j['form_field_type'].field_type ==='Checkbox'){
                        var optionsvalues = [];
-                       optionsvalues = j.option_value.split(','); 
+                       optionsvalues = j.option_value.split(',');
                        var options = [];
                        options = j.option_name.split(",");
                        html2 += '<div class="form-group row custom_fields"><input type="hidden" class="question_id" value="'+j.question_id+'"><input type="hidden" class="question_sort" value="'+j.question_sort+'"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div><div class="col-sm-6">';
@@ -608,27 +607,27 @@
                        html2 += '</div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
                     }else if(j['form_field_type'].field_type ==='Textarea'){
                        html2 += '<div class="form-group row custom_fields"><input type="hidden" class="question_id" value="'+j.question_id+'"><input type="hidden" class="question_sort" value="'+j.question_sort+'"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
-                       html2 += '<div class="col-sm-6"> <textarea name="'+j.variable_name+'" value="" class="form-control"></textarea></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>'; 
+                       html2 += '<div class="col-sm-6"> <textarea name="'+j.variable_name+'" value="" class="form-control"></textarea></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
                     }else if(j['form_field_type'].field_type ==='Date & Time'){
                        html2 += '<div class="form-group row custom_fields"><input type="hidden" class="question_id" value="'+j.question_id+'"><input type="hidden" class="question_sort" value="'+j.question_sort+'"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
-                       html2 += '<div class="col-sm-6"> <input type="date" name="'+j.variable_name+'" value="" class="form-control"></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>'; 
+                       html2 += '<div class="col-sm-6"> <input type="date" name="'+j.variable_name+'" value="" class="form-control"></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
                     }else if(j['form_field_type'].field_type ==='Upload'){
                        html2 += '<div class="form-group row custom_fields"><input type="hidden" class="question_id" value="'+j.question_id+'"><input type="hidden" class="question_sort" value="'+j.question_sort+'"><div class="col-sm-4">'+j.question_sort+'. '+j.question_text+'</div>';
-                       html2 += '<div class="col-sm-6"> <input type="file" name="'+j.variable_name+'" value="" class="form-control"></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>'; 
+                       html2 += '<div class="col-sm-6"> <input type="file" name="'+j.variable_name+'" value="" class="form-control"></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
                     }
                });
                $('.questions_'+id).append(html2);
             }
         });
-        
-    } 
+
+    }
 
     function showFormPreview(){
            var route = '{{url('forms/show')}}';
            var phase_id = $('#phases').val();
-           var step_id = $('#steps').val();           
+           var step_id = $('#steps').val();
            window.open(route+'/'+phase_id+'/'+step_id);
-    } 
+    }
   // Add New Option Group
    function addOptionsGroup()
    {
@@ -655,9 +654,9 @@
            });
        });
    }
-   addOptionsGroup(); 
+   addOptionsGroup();
    function fetch_options(){
-        $('#option_group_id').html(''); 
+        $('#option_group_id').html('');
         var options = '<option value="">None</option>';
         $.ajax({
             url:"{{route('getall_options')}}",
@@ -667,9 +666,9 @@
                 $.each(res['data'], function(k,v){
                     options += '<option value="'+v.id+'">'+v.option_group_name+'</option>'
                 })
-            $('#option_group_id').append(options);    
+            $('#option_group_id').append(options);
             }
         });
    }
-   </script>     
+   </script>
 @stop

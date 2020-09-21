@@ -144,12 +144,19 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
 
     Route::resource('studySite','StudySiteController');
 
+    //Route::get('studySite','StudySiteController@getAllPrimaryInvestigator')->name('studySite.getAllPrimaryInvestigator');
+
     Route::post('studySite/update','StudySiteController@update')->name('updateStudySite');
 
     Route::post('studySite/updateStudySite','StudySiteController@updateStudySite')->name('updateStudySiteId');
 
+    Route::post('studySite/updatePrimaryInvestigator','StudySiteController@updatePrimaryInvestigator')->name('updatePI');
+
+    Route::post('studySite/insertCoordinators','StudySiteController@insertCoordinators')->name('insertCO');
+
     //SubjectFormLoader
     Route::get('subject_form/{subject_id}','SubjectFormLoaderController@showSubjectForm')->name('showSubjectForm');
+    Route::post('/subject_form/submitStudyPhaseStepQuestionForm','SubjectFormSubmissionController@submitForm')->name('submitStudyPhaseStepQuestionForm');    
     //Assign Roles ToPhase and Step
     Route::post('getAssignRolesToPhaseForm','AssignRolesPhaseStepController@getAssignRolesToPhaseForm')->name('getAssignRolesToPhaseForm');
     Route::post('getAssignRolesToPhaseStepForm','AssignRolesPhaseStepController@getAssignRolesToPhaseStepForm')->name('getAssignRolesToPhaseStepForm');

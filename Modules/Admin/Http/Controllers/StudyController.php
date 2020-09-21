@@ -56,8 +56,9 @@ class StudyController extends Controller
      * Show the form for creating a new resource.
      * @return Response
      */
-    public function studyStatus(Request $request){
-            $study_id = $request->study_id;
+    public function studyStatus(Request $request)
+    {
+        $study_id = $request->study_id;
 
             $study = Study::find($study_id);
 
@@ -257,7 +258,7 @@ class StudyController extends Controller
                     ]);
                 }
             }
-            if ($study_subjects){
+            if ($mystudy->subjects){
                 foreach ($study_subjects as $subject){
                     $disease_id =$subject->disease_cohort_id;
                     $id = \Illuminate\Support\Str::uuid();

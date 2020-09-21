@@ -20,15 +20,21 @@ class SubjectController extends Controller
      * Display a listing of the resource.
      * @return Response
      */
-    public function index()
+    public function index(Study $study)
     {
-        $id = session('current_study');
+        session(['current_study'=>$study->id,'study_short_name'=> $study->study_short_name]);
+        $id = $study->id;
         $currentStudy = Study::find($id);
         $subjects = Subject::where('subjects.study_id','=',$id)
             ->join('sites','sites.id','=','subjects.site_id')
             ->get();
-        $sites = Study::with('sites')->get();
-        return view('admin::studies.show',compact('subjects','sites','currentStudy'));
+        $site_study = StudySite::where('study_id','=',$id)
+            ->join('sites', 'sites.id','=','site_study.site_id')
+            ->select('sites.site_name','sites.id')
+            ->get();
+
+        $diseaseCohort = DiseaseCohort::where('study_id','=',$id)->get();
+        return view('admin::subjects.index',compact('study','subjects','currentStudy','site_study','diseaseCohort'));
     }
 
     /**

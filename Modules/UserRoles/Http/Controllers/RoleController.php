@@ -86,8 +86,6 @@ class RoleController extends Controller
         if ($request->study_view){
           $permissions = Permission::where('name','=','studies.index')
             ->get();
-            dd('only this');
-
             foreach ($permissions as $permission){
                 $permission_id = $permission->id;
                 $study_view = RolePermission::create([
@@ -542,8 +540,6 @@ class RoleController extends Controller
         $permissions = RolePermission::where('role_id','=',$role->id)
             ->join('permissions','permissions.id','=','permission_role.permission_id')
             ->get();
-
-
         return view('userroles::roles.new_edit',compact('role','permissions','study_add'));
     }
 
@@ -949,8 +945,6 @@ class RoleController extends Controller
         /*-- Study Tools Permissions */
         if ($request->study_tools ) {
             $permissions = Permission::where('name', '=', 'studytools.index')
-                ->orwhere('name', '=', 'users.index')
-                ->orwhere('name', '=', 'roles.index')
                 ->orwhere('name', '=', 'studySite.index')
                 ->orwhere('name', '=', 'studydesign.index')
                 ->orwhere('name', '=', 'study.index')
