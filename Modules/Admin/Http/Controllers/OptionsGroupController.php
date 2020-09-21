@@ -61,8 +61,7 @@ class OptionsGroupController extends Controller
         // Log the event
         $trailLog = new TrailLog;
         $trailLog->event_id = $uniqueID;
-        $trailLog->event_add = 'Option Group';
-        $trailLog->event_update = '';
+        $trailLog->event_type = 'Add';
         $trailLog->event_message = \Auth::user()->name.' added new option group '.$request->option_group_name.'.';
         $trailLog->user_id = \Auth::user()->id;
         $trailLog->user_name = \Auth::user()->name;
@@ -129,9 +128,8 @@ class OptionsGroupController extends Controller
         // Log the event
         $trailLog = new TrailLog;
         $trailLog->event_id = $request->options_groups_id;
-        $trailLog->event_add = '';
-        $trailLog->event_update = 'Option Group';
-        $trailLog->event_message = \Auth::user()->name.' update option group '.$request->option_group_name_edit.'.';
+        $trailLog->event_type = 'Update';
+        $trailLog->event_message = \Auth::user()->name.' updated option group '.$request->option_group_name_edit.'.';
         $trailLog->user_id = \Auth::user()->id;
         $trailLog->user_name = \Auth::user()->name;
         $trailLog->role_id = \Auth::user()->role_id;

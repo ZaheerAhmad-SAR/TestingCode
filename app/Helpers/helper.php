@@ -2,6 +2,7 @@
 use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\RolePermission;
 use Modules\Admin\Entities\OptionsGroup;
+use Modules\Admin\Entities\Site;
 
 function hasrole($role)
 {
@@ -49,6 +50,21 @@ function eventDetails($eventId, $eventType) {
             'option_group_name' => $eventData->option_group_name,
             'option_group_description' => $eventData->option_group_description,
             'option_layout' => $eventData->option_layout,
+            'created_at' => $eventData->created_at,
+            'updated_at' => $eventData->updated_at,
+        );
+    } else if($eventType == 'Site') {
+        // get event data
+        $eventData = Site::find($eventId);
+        // store data in event array
+        $data = array(
+            'site_name' => $eventData->site_name,
+            'site_address' => $eventData->site_address,
+            'site_city' => $eventData->site_city,
+            'site_state' => $eventData->site_state,
+            'site_code' => $eventData->site_code,
+            'site_country' => $eventData->site_country,
+            'site_phone' => $eventData->site_country,
             'created_at' => $eventData->created_at,
             'updated_at' => $eventData->updated_at,
         );

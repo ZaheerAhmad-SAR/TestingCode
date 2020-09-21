@@ -242,6 +242,7 @@
                 </ul>
             </li>
             @endif
+            
             @if(hasPermission(auth()->user(),'activitylog.index'))
                 <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
                     <ul >

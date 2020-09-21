@@ -19,8 +19,7 @@ class CreateTrailLogsTable extends Migration
             $table->string('user_name', 191);
             $table->char('role_id', 36);
             $table->char('event_id', 36);
-            $table->string('event_add', 191);
-            $table->string('event_update', 191);
+            $table->string('event_type', 191);
             $table->string('event_message', 191);
             $table->text('ip_address');
             $table->char('study_id', 36)->nullable();

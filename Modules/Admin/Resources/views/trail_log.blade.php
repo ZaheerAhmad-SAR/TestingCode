@@ -45,11 +45,9 @@
                                 <thead>
                                 <tr>
                                     <th>Name</th>
-                                    <th>Add</th>
-                                    <th>Update</th>
+                                    <th>Event Type</th>
                                     <th>Event Note</th>
                                     <th>IP Address</th>
-                                    <th>Study ID</th>
                                     <th>Date</th>
                                 </tr>
                                 </thead>
@@ -58,11 +56,9 @@
                                     @foreach($getLogs as $log)
                                     <tr>
                                         <td>{{$log->user_name}}</td>
-                                        <td>{{$log->event_add}}</td>
-                                        <td>{{$log->event_update}}</td>
+                                        <td>{{$log->event_type}}</td>
                                         <td>{{$log->event_message}}</td>
                                         <td>{{$log->ip_address}}</td>
-                                        <td>{{$log->study_id}}</td>
                                         <td>{{$log->created_at}}</td>
                                     </tr>
                                     @endforeach
