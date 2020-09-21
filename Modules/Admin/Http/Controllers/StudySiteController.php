@@ -11,6 +11,7 @@ use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\OptionsGroup;
 use Modules\Admin\Entities\PrimaryInvestigator;
 use Modules\Admin\Entities\Site;
+use Modules\Admin\Entities\SiteStudyCoordinator;
 use Modules\Admin\Entities\StudySite;
 use MongoDB\Driver\Query;
 use MongoDB\Driver\Session;
@@ -34,6 +35,7 @@ class StudySiteController extends Controller
             ,'sites.site_phone'
         )->join('sites','sites.id','=','site_study.site_id')
             ->where('site_study.study_id','=',session('current_study'))->get();
+        //dd($sites);
 
         foreach ($sites as $site)
         {
@@ -90,6 +92,7 @@ class StudySiteController extends Controller
      */
     public function show($id)
     {
+        dd('hitting');
         return view('admin::show');
     }
 
@@ -147,6 +150,31 @@ class StudySiteController extends Controller
         $data      = array('study_site_id' => $textValue);
         StudySite::where('id',$siteId)->update($data);
         return response()->json(['success'=>'Study site is updated successfully!!!!']);
+    }
+    public function updatePrimaryInvestigator(Request $request)
+    {
+        $pi = trim($_POST['pi']);
+        $site_study_id    = $_POST['table_site_study_id'];
+        $data      = array('primaryInvestigator_id' => $pi);
+        StudySite::where('id',$site_study_id)->update($data);
+        return response()->json(['success'=>'Primary investigator is updated successfully!!!!']);
+    }
+
+    public function insertCoordinators(Request $request)
+    {
+
+        $site_study_id    = $_POST['table_site_study_id'];
+        $coordinators = $_POST['coordinators_id'];
+        foreach ($coordinators as $coordinator)
+        {
+            $row = SiteStudyCoordinator::where('coordinator_id',$coordinator)->delete();
+            $result = SiteStudyCoordinator::create([
+                'id'    => Str::uuid(),
+                'site_study_id' =>$site_study_id,
+                'coordinator_id'=>$coordinator,
+            ]);
+        }
+        return response()->json(['success'=>'Primary investigator is updated successfully!!!!']);
     }
 
     /**

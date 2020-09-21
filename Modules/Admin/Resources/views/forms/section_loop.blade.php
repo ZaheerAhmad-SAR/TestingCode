@@ -33,7 +33,7 @@
                             @endphp
                             @foreach ($sections as $key=>$section)
                             <div class="tab-pane fade {{ ($firstSection) ? 'active show' : '' }}" id="tab{{$section->id}}">
-                                @include('admin::forms.section_questions', ['section'=> $section])
+                                @include('admin::forms.section_questions', ['studyId'=> isset($studyId) ? $studyId:0, 'phase'=> $phase, 'step'=> $step, 'section'=> $section])
                                 @include('admin::forms.section_next_previous', ['key'=> $key, 'first'=>0, 'last'=>$last])                                
                             </div>
                             @php
