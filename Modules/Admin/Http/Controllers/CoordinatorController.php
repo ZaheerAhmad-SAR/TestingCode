@@ -37,8 +37,6 @@ class CoordinatorController extends Controller
      */
     public function store(Request $request)
     {
-        //$site = Site::select('id')->latest()->first();
-        //dd($request->all());
         $coordinator = Coordinator::create([
             'id'    => Str::uuid(),
             'site_id'=> $request->site_id,

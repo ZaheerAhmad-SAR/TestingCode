@@ -1283,9 +1283,7 @@
                 dataType: 'json',
                 success: function (results) {
                     $("#siteInfoForm :input").prop("disabled", true);
-                    $('.addTabs').attr("data-toggle","tab"); // Add data-toggle tab after insert
-                    console.log(results.site_id);
-
+                    $('.addTabs').attr("data-toggle","tab"); // Add data-toggle tab after inserts
                     $('#primaryInvestigatorForm').find($('input[name="site_id"]').val(results.site_id));
                     $('#coordinatorForm').find($('input[name="site_id"]').val(results.site_id));
                     $('#photographerForm').find($('input[name="site_id"]').val(results.site_id));

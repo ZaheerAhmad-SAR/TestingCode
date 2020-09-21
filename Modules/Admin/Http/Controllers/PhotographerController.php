@@ -39,9 +39,6 @@ class PhotographerController extends Controller
      */
     public function store(Request $request)
     {
-        $site = Site::select('id')->latest()->first();
-
-        // dd($request->all());
         $photographer = Photographer::create([
             'id'    => \Illuminate\Support\Str::uuid(),
             'site_id'=> $request->site_id,

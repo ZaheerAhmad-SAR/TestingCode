@@ -38,7 +38,7 @@ $formNameStr = str_replace('-', '_', $section->id);
         @include('admin::forms.upload_field', ['question'=> $question, 'answer'=> $answer])
         @endif
         @endforeach
-        @if($subjectId != 0)
+        @if((bool)$subjectId)
         <div class="row">
             <div class="col-md-4 offset-md-8">
                 <button type="submit" class="btn btn-success float-right">Submit</button>

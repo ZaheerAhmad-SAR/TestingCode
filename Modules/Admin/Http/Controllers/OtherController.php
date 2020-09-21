@@ -38,8 +38,6 @@ class OtherController extends Controller
      */
     public function store(Request $request)
     {
-        $site = Site::select('id')->latest()->first();
-
         $others = Other::create([
             'id'    => Str::uuid(),
             'site_id'=> $request->site_id,
