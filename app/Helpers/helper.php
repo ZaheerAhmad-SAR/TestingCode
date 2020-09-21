@@ -24,10 +24,13 @@ function search_auth($arr, $auth)
     return false;
 }
 function hasPermission($user, $routeName){
-    $role = $user->role;
+    $roles = $user->user_roles;
+    foreach ($roles as $role){
+        $role = $role;
+    }
     $permission = Permission::where('name','=',$routeName)->first();
 
-    $rolePermission = RolePermission::where('role_id',$role->id)
+    $rolePermission = RolePermission::where('role_id',$role->role_id)
         ->where('permission_id',$permission->id)->first();
         if ($rolePermission){
         return true;

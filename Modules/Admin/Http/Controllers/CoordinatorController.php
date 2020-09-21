@@ -37,11 +37,11 @@ class CoordinatorController extends Controller
      */
     public function store(Request $request)
     {
-        $site = Site::select('id')->latest()->first();
+        //$site = Site::select('id')->latest()->first();
         //dd($request->all());
         $coordinator = Coordinator::create([
             'id'    => Str::uuid(),
-            'site_id'=> $site->id,
+            'site_id'=> $request->site_id,
             'first_name' => $request->c_first_name,
             'mid_name' => empty($request->c_mid_name) ? Null : $request->c_mid_name,
             'last_name' => empty($request->c_last_name) ? Null : $request->c_last_name,

@@ -11,6 +11,7 @@ use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\OptionsGroup;
 use Modules\Admin\Entities\PrimaryInvestigator;
 use Modules\Admin\Entities\Site;
+use Modules\Admin\Entities\SiteStudyCoordinator;
 use Modules\Admin\Entities\StudySite;
 use MongoDB\Driver\Query;
 use MongoDB\Driver\Session;
@@ -34,6 +35,7 @@ class StudySiteController extends Controller
             ,'sites.site_phone'
         )->join('sites','sites.id','=','site_study.site_id')
             ->where('site_study.study_id','=',session('current_study'))->get();
+        //dd($sites);
 
         foreach ($sites as $site)
         {
@@ -90,6 +92,7 @@ class StudySiteController extends Controller
      */
     public function show($id)
     {
+        dd('hitting');
         return view('admin::show');
     }
 
@@ -112,30 +115,37 @@ class StudySiteController extends Controller
     public function update(Request $request)
     {
 
+        $others = '';
         $sites = $request->sites;
         $current_study = session('current_study');
         $result = StudySite::where('study_id', $current_study)->delete();
-        foreach ($sites as $site)
+        if (!empty($sites))
         {
-            $exploadRecord = explode("_",$site);
-            if($exploadRecord[1]){
-                $others = StudySite::create([
-                    'id'    => Str::uuid(),
-                    'site_id' =>$exploadRecord[0],
-                    'study_site_id'=>$exploadRecord[1],
-                    'study_id'=>session('current_study')
-
-                ]);
-            }
-            else
+            foreach ($sites as $site)
             {
-                $others = StudySite::create([
-                    'id'    => Str::uuid(),
-                    'site_id' =>$exploadRecord[0],
-                    'study_id'=>session('current_study')
-                ]);
+                $exploadRecord = explode("_",$site);
+
+                if($exploadRecord[1]){
+
+                    $others = StudySite::create([
+                        'id'    => Str::uuid(),
+                        'site_id' =>$exploadRecord[0],
+                        'study_site_id'=>$exploadRecord[1],
+                        'study_id'=>session('current_study')
+
+                    ]);
+                }
+                else
+                {
+                    $others = StudySite::create([
+                        'id'    => Str::uuid(),
+                        'site_id' =>$exploadRecord[0],
+                        'study_id'=>session('current_study')
+                    ]);
+                }
             }
         }
+
         return response()->json([$others]);
         //return response()->json(['success'=>'Study site is updated successfully!!!!']);
     }
@@ -147,6 +157,31 @@ class StudySiteController extends Controller
         $data      = array('study_site_id' => $textValue);
         StudySite::where('id',$siteId)->update($data);
         return response()->json(['success'=>'Study site is updated successfully!!!!']);
+    }
+    public function updatePrimaryInvestigator(Request $request)
+    {
+        $pi_id_value = $_POST['pi_id_value'];
+        $table_site_study_id   = $_POST['table_site_study_id'];
+        $data      = array('primaryInvestigator_id' => $pi_id_value);
+        StudySite::where('id',$table_site_study_id)->update($data);
+        return response()->json(['success'=>'Primary investigator is updated successfully!!!!']);
+    }
+
+    public function insertCoordinators(Request $request)
+    {
+
+        $site_study_id    = $_POST['table_site_study_id'];
+        $coordinators = $_POST['coordinators_id'];
+        foreach ($coordinators as $coordinator)
+        {
+            $row = SiteStudyCoordinator::where('coordinator_id',$coordinator)->delete();
+            $result = SiteStudyCoordinator::create([
+                'id'    => Str::uuid(),
+                'site_study_id' =>$site_study_id,
+                'coordinator_id'=>$coordinator,
+            ]);
+        }
+        return response()->json(['success'=>'Primary investigator is updated successfully!!!!']);
     }
 
     /**

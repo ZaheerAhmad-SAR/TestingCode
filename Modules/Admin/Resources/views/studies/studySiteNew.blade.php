@@ -17,8 +17,8 @@
         }
     </style>
 
-    <link rel="stylesheet" href="{{ asset("public/dist/vendors/select2/css/select2.min.css") }}"/>
-    <link rel="stylesheet" href="{{ asset("public/dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
+{{--    <link rel="stylesheet" href="{{ asset("public/dist/vendors/select2/css/select2.min.css") }}"/>--}}
+{{--    <link rel="stylesheet" href="{{ asset("public/dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>--}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
 
 
@@ -67,31 +67,39 @@
                                 </thead>
                                 <tbody>
                                 <input type="hidden" value="" id="global_site_id">
+
                                 @if(!empty($sites))
                                     @foreach($sites as $site)
                                         <tr>
                                             <td>{{ucfirst($site->site_code)}}</td>
                                             <td>{{ucfirst($site->site_name)}}</td>
                                             <td>
-                                                <span>
-                                                    <Select class="form-control" id="primaryInvestigator" name="primaryInvestigator[]">
+                                                <Select class="form-control primaryInvestigatorData" id="primaryInvestigator" name="primaryInvestigator">
                                                     @foreach($site->pi as $key => $pi)
                                                     @php
                                                     $pi_records = explode('/',$pi);
                                                     @endphp
-                                                        <option value="{{$pi_records[0]}}">{{$pi_records[1]}}</option>
+                                                            <option>--Select PI--</option>
+                                                        <option value="{{$pi_records[0]}}" {{$pi_records[0]==$site->primaryInvestigator_id ? 'selected="selected"': ''}}>{{$pi_records[1]}}</option>
+                                                        <input type="hidden" name="pi_id_value" value="{{$pi_records[0]}}">
                                                     @endforeach
+
                                                 </Select>
-                                                </span>
+
+                                                <input type="hidden" id="table_site_study_id" name="table_site_study_id" value="{{$site->id}}">
+
                                             </td>
 
                                             <td>
                                                 <Select class="coordinatorsData" name="coordinators" id="coordinators" multiple data-allow-clear="1">
+
                                                     @foreach($site->ci as $key => $ci)
                                                         @php
                                                             $ci_records = explode('/',$ci);
                                                         @endphp
+
                                                         <option value="{{$ci_records[0]}}">{{$ci_records[1]}}</option>
+
                                                     @endforeach
                                                 </Select></td>
                                             <td>{{ucfirst($site->site_city)}}</td>
@@ -758,8 +766,8 @@
             <script src="{{ asset("public/dist/vendors/datatable/editor/numeric-input-example.js") }}"></script>
             <script src="{{ asset("public/dist/js/datatableedit.script.js") }}"></script>
             <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
-            <script src="{{ asset("public/dist/vendors/select2/js/select2.full.min.js") }}"></script>
-            <script src="{{ asset("public/dist/js/select2.script.js") }}"></script>
+{{--            <script src="{{ asset("public/dist/vendors/select2/js/select2.full.min.js") }}"></script>--}}
+{{--            <script src="{{ asset("public/dist/js/select2.script.js") }}"></script>--}}
             <script type="text/javascript">
                 var placeSearch, autocomplete;
                 var componentForm = {
@@ -1627,6 +1635,7 @@
                     });
 
                 });
+
                 $("#studySiteForm").submit(function(e) {
                     var html = '';
                     $.ajaxSetup({
@@ -1637,7 +1646,7 @@
                     e.preventDefault();
                     $.ajax({
                         data: $('#studySiteForm').serialize(),
-                        url: "{{route('updateStudySite')}}",
+                        url: "{{route('updateStudySiteForm')}}",
                         type: "POST",
                         dataType: 'json',
                         success: function (results) {
@@ -1707,9 +1716,44 @@
                 });
 
                 $('.coordinatorsData').change(function(){
-                 var val = $(this).val();
+
+                 var coordinators_id = $(this).val();
+                 var id = $("#table_site_study_id").val();
+
+                 $.ajax({
+                        url: "{{route('insertCO')}}",
+                        type: 'POST',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            'coordinators_id':coordinators_id,'id':id
+                        },
+                        success:function(results){
+                            console.log(results);
+                        }
+                    });
 
                 });
+
+                $('.primaryInvestigatorData ').change(function(){
+
+                    var pi_id_value = $("#primaryInvestigator").val();
+                    var table_site_study_id = $("#table_site_study_id").val();
+
+                    $.ajax({
+                        url: "{{route('updatePI')}}",
+                        type: 'POST',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            'pi_id_value':pi_id_value,'table_site_study_id':table_site_study_id
+                        },
+                        success:function(results){
+                            window.setTimeout(function () {
+                                location.href = '{{ route('studySite.index') }}';
+                            }, 10);
+                        }
+                    });
+                });
+
             </script>
             <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCEELbGoxVU_nvp6ayr2roHHnjN3hM_uec&libraries=places&callback=initAutocomplete" defer></script>
 @endsection
