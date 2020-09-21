@@ -31,7 +31,7 @@ class SystemusersController extends Controller
         if (hasPermission(auth()->user(),'studytools.index')){
             $users  =   User::all();
         }
-        else{
+        else {
             $users = User::where('deleted_at','=',Null)
                 ->where('user_type','=','study_user')
                 ->get();

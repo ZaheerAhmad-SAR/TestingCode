@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
 use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\OptionsGroup;
+use Modules\Admin\Entities\TrailLog;
 
 class OptionsGroupController extends Controller
 {
@@ -44,14 +45,34 @@ class OptionsGroupController extends Controller
         $input['option_value']  = $request->option_value;
         $name   = implode(',',(array)$input['option_name']);
         $value  = implode(',',(array)$input['option_value']);
+        $uniqueID = Str::uuid();
         $others = OptionsGroup::create([
-                'id'    => Str::uuid(),
+                'id' => $uniqueID,
                 'option_group_name' => $request->option_group_name,
                 'option_group_description' => empty($request->option_group_description) ? Null : $request->option_group_description,
                 'option_layout' => empty($request->option_layout) ? Null : $request->option_layout,
                 'option_name'=>empty($name) ? Null :$name,
                 'option_value'=>empty($value) ? Null: $value
             ]);
+
+        // get event details
+        $getEventDetails = eventDetails($uniqueID, 'Option Group');
+
+        // Log the event
+        $trailLog = new TrailLog;
+        $trailLog->event_id = $uniqueID;
+        $trailLog->event_add = 'Option Group';
+        $trailLog->event_update = '';
+        $trailLog->event_message = \Auth::user()->name.' added new option group '.$request->option_group_name.'.';
+        $trailLog->user_id = \Auth::user()->id;
+        $trailLog->user_name = \Auth::user()->name;
+        $trailLog->role_id = \Auth::user()->role_id;
+        $trailLog->ip_address = $request->ip();
+        $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
+        $trailLog->event_url = url('optionsGroup');
+        $trailLog->event_details = json_encode($getEventDetails);
+        $trailLog->save();
+
        return response()->json([$others,'success'=>'others data is added successfully']);
     }
 
@@ -101,6 +122,24 @@ class OptionsGroupController extends Controller
             'option_value'=>empty($value) ? Null: $value
         );
         OptionsGroup::where('id', $request->options_groups_id)->update($data);
+
+        // get event details
+        $getEventDetails = eventDetails($request->options_groups_id, 'Option Group');
+
+        // Log the event
+        $trailLog = new TrailLog;
+        $trailLog->event_id = $request->options_groups_id;
+        $trailLog->event_add = '';
+        $trailLog->event_update = 'Option Group';
+        $trailLog->event_message = \Auth::user()->name.' update option group '.$request->option_group_name_edit.'.';
+        $trailLog->user_id = \Auth::user()->id;
+        $trailLog->user_name = \Auth::user()->name;
+        $trailLog->role_id = \Auth::user()->role_id;
+        $trailLog->ip_address = $request->ip();
+        $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
+        $trailLog->event_url = url('optionsGroup');
+        $trailLog->event_details = json_encode($getEventDetails);
+        $trailLog->save();
 
         return response()->json(['success'=>'Option Group  is Updated successfully.']);
     }

@@ -18,7 +18,7 @@ Route::prefix('admin')->group(function() {
     Route::get('/', 'AdminController@index');
 });
 
-Route::group(['middleware' => ['auth','web']],function(){
+Route::group(['middleware' => ['auth','web']],function() {
 
    });
 Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],function(){
@@ -157,4 +157,9 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
     Route::post('submitAssignRolesToPhaseStepForm','AssignRolesPhaseStepController@submitAssignRolesToPhaseStepForm')->name('submitAssignRolesToPhaseStepForm');
 
 });
+
+// CHM-Amir--
+Route::get('trail-log', 'TrailLogController@index')->name('trail.log');
+
+
 

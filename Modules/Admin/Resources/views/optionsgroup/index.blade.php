@@ -242,6 +242,7 @@
                    type: "POST",
                    dataType: 'json',
                    success: function (results) {
+
                        window.setTimeout(function () {
                            location.href = '{{ route('optionsGroup.index') }}';
                        }, 100);
