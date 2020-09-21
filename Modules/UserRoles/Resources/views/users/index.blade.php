@@ -1,4 +1,3 @@
-
 @extends ('layouts.home')
 @section('content')
     <div class="container-fluid site-width">
@@ -22,7 +21,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         @if(hasPermission(auth()->user(),'users.create'))
-                            <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#user-crud-modal">
+                            <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#createUser">
                                 <i class="fa fa-plus"></i> Add User
                             </button>
                         @endif
@@ -53,12 +52,13 @@
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                 <span class="dropdown-item">
-                                                        <a href="javascript:void(0)" id="edit-user" data-id="{{ $user->id }}">
-                                                            <i class="far fa-edit"></i>&nbsp; Edit </a>
-                                                    </span>
+                                                    <a href="{!! route('users.edit',$user->id) !!}">
+                                                        <i class="far fa-edit"></i>&nbsp; Edit
+                                                    </a>
+                                                </span>
                                                     <span class="dropdown-item">
-                                                            <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
-                                                            <i class="far fa-edit"></i>&nbsp; Delete </a>
+                                                    <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
+                                                        <i class="far fa-edit"></i>&nbsp; Delete </a>
                                                     </span>
                                                 </div>
                                             </div>
@@ -75,15 +75,15 @@
     </div>
     <!-- END: Card DATA-->
     <!-- modal code  -->
-    <div class="modal fade" id="user-crud-modal" aria-hidden="true">
+    <div class="modal fade" tabindex="-1" role="dialog" id="createUser">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header">
-                    <h4 class="modal-title" id="userCrudModal"></h4>
+                    <p class="modal-title">Add User</p>
                 </div>
-                <form id="userForm" name="userForm" class="form-horizontal">
+                <form action="{{route('users.store')}}" enctype="multipart/form-data" method="POST">
                     <div class="modal-body">
-                        <input type="hidden" name="user_id" id="user_id">
                         <nav>
                             <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
                                 <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-Basic" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
@@ -151,7 +151,7 @@
                     <div class="modal-footer">
                         <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                         @if(hasPermission(auth()->user(),'users.store'))
-                        <button type="submit" class="btn btn-outline-primary" id="btn-save" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                            <button type="submit" class="btn btn-outline-primary" id="btn-save" value="create"><i class="fa fa-save"></i> Save Changes</button>
                         @endif
                     </div>
                 </form>
@@ -211,97 +211,6 @@
                 }
             });
         });
-        $(document).ready(function () {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
-            $('#create-new-post').click(function () {
-                $('#btn-save').val("create-user");
-                $('#userForm').trigger("reset");
-                $('#userCrudModal').html("Add User");
-                $('#user-crud-modal').modal('show');
-            });
-
-            $('body').on('click', '#edit-user', function () {
-                var user_id = $(this).data('id');
-                $.get('users/'+user_id+'/edit', function (data) {
-                    $('#userCrudModal').html("Edit user");
-                    $('#btn-save').val("edit-user");
-                    $('#user-crud-modal').modal('show');
-                    $('#user_id').val(data.id);
-                    $('#name').val(data.name);
-                    $('#email').val(data.email);
-                    $('#password').val(data.password);
-                    $('#password_confirm').val(data.password);
-                    $('#roles').val(data.roles);
-                    /*$.each(data.roles,function (index, value) {
-                        console.log(value);
-                    })*/
-                })
-            });
-
-            $('body').on('click', '.delete-user', function () {
-                var user_id = $(this).data("id");
-                confirm("Are You sure want to delete !");
-
-                $.ajax({
-                    type: "DELETE",
-                    url: "{{ url('users')}}"+'/'+user_id,
-                    success: function (data) {
-                        $("#user_id_" + user_id).remove();
-                    },
-                    error: function (data) {
-                        console.log('Error:', data);
-                    }
-                });
-            });
-        });
-
-        if ($("#userForm").length > 0) {
-            $("#userForm").validate({
-
-                submitHandler: function(form) {
-
-                    var actionType = $('#btn-save').val();
-                    $('#btn-save').html('Sending..');
-
-
-                    $.ajax({
-                        data: $('#userForm').serialize(),
-                        url: "{{ route('users.store') }}",
-                        type: "POST",
-                        dataType: 'json',
-                        success: function (data) {
-                            var user = '<tr id="user_id_' + data.id + '"><td>' + data.id + '</td><td>' + data.title + '</td><td>' + data.body + '</td>';
-                            user += '<td><a href="javascript:void(0)" id="edit-user" data-id="' + data.id + '" class="btn btn-info">Edit</a></td>';
-                            user += '<td><a href="javascript:void(0)" id="delete-user" data-id="' + data.id + '" class="btn btn-danger delete-user">Delete</a></td></tr>';
-
-                            if (actionType == "create-user") {
-                                $('#users-crud').prepend(user);
-                                if(data.success == true){ // if true (1)
-                                    setTimeout(function(){// wait for 5 secs(2)
-                                        location.reload(); // then reload the page.(3)
-                                    }, 100);
-                                }
-                            } else {
-                                $("#user_id_" + data.id).replaceWith(user);
-                            }
-                            $('#userForm').trigger("reset");
-                            $('#user-crud-modal').modal('hide');
-                            $('#btn-save').html('Save Changes');
-
-                        },
-                        error: function (data) {
-                            console.log('Error:', data);
-                            $('#btn-save').html('Save Changes');
-                        }
-                    });
-                }
-            })
-        }
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
