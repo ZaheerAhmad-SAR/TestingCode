@@ -1112,7 +1112,7 @@
                 dataType: 'json',
                 success: function (results) {
                     var coordinator_id = results[0].id;
-                    console.log(coordinator_id);
+
                     var html    =   '';
                     if(c_submit_actions == 'Add')
                     {
