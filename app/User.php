@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Modules\Admin\Entities\Study;
+use Modules\Admin\Entities\TrailLog;
 use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\UserRole;
@@ -169,5 +170,11 @@ class User extends Authenticatable
         return false;
     }
 
+    public function logs()
+    {
+        //return $this->hasOne(User::class, 'user_id', 'id');
+        //return $this->hasOne(User::class);
+        return $this->hasMany(TrailLog::class);
+    }
 
 }

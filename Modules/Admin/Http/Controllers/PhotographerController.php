@@ -39,8 +39,9 @@ class PhotographerController extends Controller
      */
     public function store(Request $request)
     {
+        $id = \Illuminate\Support\Str::uuid();
         $photographer = Photographer::create([
-            'id'    => \Illuminate\Support\Str::uuid(),
+            'id'    => $id,
             'site_id'=> $request->site_id,
             'first_name' => $request->photographer_first_name,
             'mid_name' => empty($request->photographer_mid_name) ? Null : $request->photographer_mid_name,
@@ -48,6 +49,9 @@ class PhotographerController extends Controller
             'phone'=> empty($request->photographer_phone) ? Null : $request->photographer_phone,
             'email'=>empty($request->photographer_email)? Null : $request->photographer_email
         ]);
+
+        // log event details
+        $logEventDetails = eventDetails($id, 'Photographer', 'Add', $request->ip());
 
         return response()->json([$photographer,'success'=>'Photographer is added successfully']);
     }
@@ -99,6 +103,9 @@ class PhotographerController extends Controller
         $photographer_site_id  = $request->photographer_site_id;
 
         $allphotographer    = Photographer::where('site_id',$photographer_site_id)->get();
+
+         // log event details
+        $logEventDetails = eventDetails($request->photo_id, 'Photographer', 'Update', $request->ip());
 
         return response()->json($allphotographer);
 

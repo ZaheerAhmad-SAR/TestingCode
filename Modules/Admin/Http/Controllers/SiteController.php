@@ -10,6 +10,7 @@ use Modules\Admin\Entities\Coordinator;
 use Modules\Admin\Entities\Photographer;
 use Modules\Admin\Entities\PrimaryInvestigator;
 use Modules\Admin\Entities\Site;
+use Modules\Admin\Entities\TrailLog;
 
 class SiteController extends Controller
 {
@@ -53,13 +54,14 @@ class SiteController extends Controller
             'site_phone:required|numeric|max:15',
             'site_email:required|email',
         ]);
-        $id = Str::uuid();
+
         if (Site::where('site_code', $request->site_code)->exists()) {
 
             return response()->json(['code'=>'Code must be unique']);
         }
         else
         {
+            $id = Str::uuid();
             $site = Site::create([
                 'id'    => $id,
                 'site_code'=> empty($request->site_code) ? Null : $request->site_code,
@@ -71,7 +73,12 @@ class SiteController extends Controller
                 'site_phone'=> empty($request->site_phone) ? Null : $request->site_phone,
                 'site_email'=>empty($request->site_email)? Null : $request->site_email
             ]);
+
+            // log event details
+            $logEventDetails = eventDetails($id, 'Site', 'Add', $request->ip());
+   
             return response()->json(['site_id' => $id,'success'=>'Site Info is added successfully']);
+
         }
     }
 
@@ -117,7 +124,12 @@ class SiteController extends Controller
             'site_state'=> empty($request->administrative_area_level_1)? Null : $request->administrative_area_level_1,
             'site_phone'=> empty($request->site_phone) ? Null : $request->site_phone
         );
+        
         Site::where('id', $request->site_id)->update($data);
+
+        // log event details
+        $logEventDetails = eventDetails($request->site_id, 'Site', 'Update', $request->ip());
+
         return response()->json(['success'=>'Site Info is updated successfully']);
 
     }

@@ -68,5 +68,6 @@
         @yield('script')
         @stack('script')
         <!-- END: Page JS-->
+        
     </body>
 </html>

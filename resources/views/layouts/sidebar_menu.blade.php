@@ -131,6 +131,13 @@
                                         Preferences
                                     </a>
                                 </li>
+                                @if(hasPermission(auth()->user(),'studySite.index'))
+                                    <li class="@if(is_active('studySite.index')) {{ ' active' }} @endif">
+                                        <a  href="{!! route('studySite.index') !!}">
+                                            Annotations
+                                        </a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                 </ul>
@@ -241,16 +248,16 @@
                     </li>
                 </ul>
             </li>
-
-            @if(hasPermission(auth()->user(),'qualitycontrol.index'))
-                <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
-
             @endif
-                    <ul>
+            
+            @if(hasPermission(auth()->user(),'activitylog.index'))
+                <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
+                    <ul >
+
                         <li>
-                            <a href="#">
+                            <a href="{{route('trail.log')}}">
                                 <i class="fas fa-history"></i>
-                                Activities
+                                Audit Trail
                             </a>
                         </li>
                     </ul>
