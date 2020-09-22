@@ -55,22 +55,8 @@ class OptionsGroupController extends Controller
                 'option_value'=>empty($value) ? Null: $value
             ]);
 
-        // get event details
-        $getEventDetails = eventDetails($uniqueID, 'Option Group');
-
-        // Log the event
-        $trailLog = new TrailLog;
-        $trailLog->event_id = $uniqueID;
-        $trailLog->event_type = 'Add';
-        $trailLog->event_message = \Auth::user()->name.' added new option group '.$request->option_group_name.'.';
-        $trailLog->user_id = \Auth::user()->id;
-        $trailLog->user_name = \Auth::user()->name;
-        $trailLog->role_id = \Auth::user()->role_id;
-        $trailLog->ip_address = $request->ip();
-        $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
-        $trailLog->event_url = url('optionsGroup');
-        $trailLog->event_details = json_encode($getEventDetails);
-        $trailLog->save();
+        // log event details
+        $logEventDetails = eventDetails($uniqueID, 'Option Group', 'Add', $request->ip());
 
        return response()->json([$others,'success'=>'others data is added successfully']);
     }
@@ -122,22 +108,8 @@ class OptionsGroupController extends Controller
         );
         OptionsGroup::where('id', $request->options_groups_id)->update($data);
 
-        // get event details
-        $getEventDetails = eventDetails($request->options_groups_id, 'Option Group');
-
-        // Log the event
-        $trailLog = new TrailLog;
-        $trailLog->event_id = $request->options_groups_id;
-        $trailLog->event_type = 'Update';
-        $trailLog->event_message = \Auth::user()->name.' updated option group '.$request->option_group_name_edit.'.';
-        $trailLog->user_id = \Auth::user()->id;
-        $trailLog->user_name = \Auth::user()->name;
-        $trailLog->role_id = \Auth::user()->role_id;
-        $trailLog->ip_address = $request->ip();
-        $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
-        $trailLog->event_url = url('optionsGroup');
-        $trailLog->event_details = json_encode($getEventDetails);
-        $trailLog->save();
+        // log event details
+        $logEventDetails = eventDetails($request->options_groups_id, 'Option Group', 'Update', $request->ip());
 
         return response()->json(['success'=>'Option Group  is Updated successfully.']);
     }
