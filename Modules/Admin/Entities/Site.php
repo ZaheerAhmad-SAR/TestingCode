@@ -25,8 +25,7 @@ class Site extends Model
     }
 
     public function study(){
-        return $this
-            ->belongsToMany(Study::class, 'site_study', 'site_id', 'study_id')->get();
+        return $this->belongsToMany(Study::class, 'site_study', 'site_id', 'study_id');
 
     }
 

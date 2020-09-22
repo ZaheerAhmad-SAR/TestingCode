@@ -14,7 +14,7 @@ class CreateFormTypesTable extends Migration
     public function up()
     {
         Schema::create('form_types', function (Blueprint $table) {
-            $table->smallIncrements('id')->primary()->unique();
+            $table->smallIncrements('id')->unique();
             $table->string('form_type')->nullable();
             $table->timestamps();
         });
