@@ -14,6 +14,14 @@ class StudySite extends Model
         return $this->hasMany(PrimaryInvestigator::class,'site_id','id');
     }
 
+    public function siteStudyCoordinator()
+    {
+       return $this->hasMany(SiteStudyCoordinator::class,'site_study_id','id');
+    }
+    public function study(){
+        return $this->belongsTo(Study::class,'study_id','id');
+    }
+
    }
 
 

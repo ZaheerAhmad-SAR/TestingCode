@@ -54,13 +54,14 @@ class SiteController extends Controller
             'site_phone:required|numeric|max:15',
             'site_email:required|email',
         ]);
-        $id = Str::uuid();
+
         if (Site::where('site_code', $request->site_code)->exists()) {
 
             return response()->json(['code'=>'Code must be unique']);
         }
         else
         {
+            $id = Str::uuid();
             $site = Site::create([
                 'id'    => $id,
                 'site_code'=> empty($request->site_code) ? Null : $request->site_code,
@@ -73,23 +74,8 @@ class SiteController extends Controller
                 'site_email'=>empty($request->site_email)? Null : $request->site_email
             ]);
 
-        // get event details
-        $getEventDetails = eventDetails($id, 'Site');
-
-        // Log the event
-        $trailLog = new TrailLog;
-        $trailLog->event_id = $id;
-        $trailLog->event_type = 'Add';
-        $trailLog->event_message = \Auth::user()->name.' added site '.$request->site_name.'.';
-        $trailLog->user_id = \Auth::user()->id;
-        $trailLog->user_name = \Auth::user()->name;
-        $trailLog->role_id = \Auth::user()->role_id;
-        $trailLog->ip_address = $request->ip();
-        $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
-        $trailLog->event_url = url('sites');
-        $trailLog->event_details = json_encode($getEventDetails);
-        $trailLog->save();
-
+            // log event details
+            $logEventDetails = eventDetails($id, 'Site', 'Add', $request->ip());
    
             return response()->json(['site_id' => $id,'success'=>'Site Info is added successfully']);
 
@@ -141,22 +127,9 @@ class SiteController extends Controller
         
         Site::where('id', $request->site_id)->update($data);
 
-         // get event details
-        $getEventDetails = eventDetails($request->site_id, 'Site');
+        // log event details
+        $logEventDetails = eventDetails($request->site_id, 'Site', 'Update', $request->ip());
 
-        // Log the event
-        $trailLog = new TrailLog;
-        $trailLog->event_id = $request->site_id;
-        $trailLog->event_type = 'Update';
-        $trailLog->event_message = \Auth::user()->name.' updtaed site '.$request->site_name.'.';
-        $trailLog->user_id = \Auth::user()->id;
-        $trailLog->user_name = \Auth::user()->name;
-        $trailLog->role_id = \Auth::user()->role_id;
-        $trailLog->ip_address = $request->ip();
-        $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
-        $trailLog->event_url = url('sites');
-        $trailLog->event_details = json_encode($getEventDetails);
-        $trailLog->save();
         return response()->json(['success'=>'Site Info is updated successfully']);
 
     }
