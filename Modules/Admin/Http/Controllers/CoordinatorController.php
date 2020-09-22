@@ -37,8 +37,9 @@ class CoordinatorController extends Controller
      */
     public function store(Request $request)
     {
+        $id = Str::uuid();
         $coordinator = Coordinator::create([
-            'id'    => Str::uuid(),
+            'id'    => $id,
             'site_id'=> $request->site_id,
             'first_name' => $request->c_first_name,
             'mid_name' => empty($request->c_mid_name) ? Null : $request->c_mid_name,
@@ -47,9 +48,9 @@ class CoordinatorController extends Controller
             'email'=>empty($request->c_email)? Null : $request->c_email
         ]);
 
-
-
-
+        // log event details
+        $logEventDetails = eventDetails($id, 'Coordinator', 'Add', $request->ip());
+   
         return response()->json([$coordinator,'success'=>'Coordinator is added successfully!!!!']);
     }
 
@@ -100,6 +101,9 @@ class CoordinatorController extends Controller
         $c_site_id  = $request->c_site_id;
 
         $allCoordinator    = Coordinator::where('site_id',$c_site_id)->get();
+
+         // log event details
+        $logEventDetails = eventDetails($request->c_id, 'Coordinator', 'Update', $request->ip());
 
         return response()->json($allCoordinator);
 

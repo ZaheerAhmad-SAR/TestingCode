@@ -38,8 +38,9 @@ class OtherController extends Controller
      */
     public function store(Request $request)
     {
+        $id = Str::uuid();
         $others = Other::create([
-            'id'    => Str::uuid(),
+            'id'    => $id,
             'site_id'=> $request->site_id,
             'first_name' => $request->others_first_name,
             'mid_name' => empty($request->others_mid_name) ? Null : $request->others_mid_name,
@@ -47,6 +48,9 @@ class OtherController extends Controller
             'phone'=> empty($request->others_phone) ? Null : $request->others_phone,
             'email'=>empty($request->others_email)? Null : $request->others_email
         ]);
+
+        // log event details
+        $logEventDetails = eventDetails($id, 'Others', 'Add', $request->ip());
 
         return response()->json([$others,'success'=>'others data is added successfully']);
     }
@@ -98,6 +102,9 @@ class OtherController extends Controller
         $others_site_id  = $request->others_site_id;
 
         $allOthers    = Other::where('site_id',$others_site_id)->get();
+
+        // log event details
+        $logEventDetails = eventDetails($request->others_id, 'Others', 'Update', $request->ip());
 
         return response()->json($allOthers);
 
