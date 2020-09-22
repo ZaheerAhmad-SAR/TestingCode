@@ -24,7 +24,7 @@ class StudySiteController extends Controller
      * @return Renderable
      */
     public function index()
-    {
+    {$records='';$siteCoordinators='';
         $siteArray = array();
         $sites = StudySite::select('site_study.*'
             ,'sites.site_name'
@@ -154,13 +154,10 @@ class StudySiteController extends Controller
         $others = '';
         $sites = $request->sites;
         $current_study = session('current_study');
-
         $study = Study::find($current_study);
-        foreach($sites as $siteId){
-            $studySite = StudySite::find($siteId);
-            $study->studySites()->save($studySite);
-        }
-        return response()->json([$others]);
+        $study->studySites()->sync($sites);
+
+        return response()->json([$sites]);
     }
 
     public function updateStudySite(Request $request)

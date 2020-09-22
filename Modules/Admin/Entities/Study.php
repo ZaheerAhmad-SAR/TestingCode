@@ -46,7 +46,9 @@ class Study extends Model
     }
 
     public function studySites(){
-        return $this->hasMany(StudySite::class,'study_id','id');
+        return $this->belongsToMany(StudySite::class, 'site_study', 'study_id', 'site_id');
+
     }
+
 
 }
