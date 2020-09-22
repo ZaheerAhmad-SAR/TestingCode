@@ -45,4 +45,8 @@ class Study extends Model
         return $this->hasMany(RoleStudy::class);
     }
 
+    public function studySites(){
+        return $this->hasMany(StudySite::class,'study_id','id');
+    }
+
 }
