@@ -90,7 +90,7 @@
                                             </td>
 
                                             <td>
-                                                <Select class="coordinatorsData" name="coordinators" id="coordinators" multiple data-allow-clear="1">
+                                                <Select class="coordinatorsData multieSelectDropDown" name="coordinators" id="coordinators" multiple data-allow-clear="1">
 
                                                     @foreach($site->ci as $key => $ci)
 
