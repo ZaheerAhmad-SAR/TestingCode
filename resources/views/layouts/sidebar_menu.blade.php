@@ -131,9 +131,9 @@
                                         Preferences
                                     </a>
                                 </li>
-                                @if(hasPermission(auth()->user(),'studySite.index'))
-                                    <li class="@if(is_active('studySite.index')) {{ ' active' }} @endif">
-                                        <a  href="{!! route('studySite.index') !!}">
+                                @if(hasPermission(auth()->user(),'annotation.index'))
+                                    <li class="@if(is_active('annotation.index')) {{ ' active' }} @endif">
+                                        <a  href="{!! route('annotation.index') !!}">
                                             Annotations
                                         </a>
                                     </li>

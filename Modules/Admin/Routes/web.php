@@ -56,7 +56,10 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
     Route::DELETE('optionsGroup/destroy/{options_id}','OptionsGroupController@destroy')->name('destroyOptionsGroup');
     Route::post('getall_options','FormController@getall_options')->name('getall_options');
 
-
+    // routes for annotation
+    Route::resource('annotation','AnnotationController');
+    Route::post('annotation/updateAnnotation','AnnotationController@update_annotation')->name('updateAnnotation');
+    Route::DELETE('annotation/delete/{id}','AnnotationController@deleteAnnotation')->name('delete');
     // routes for form managment
     Route::resource('forms','FormController');
     Route::post('forms/add_questions','FormController@add_questions')->name('addQuestions');
