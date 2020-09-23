@@ -798,7 +798,7 @@
                 dataType: 'json',
                 success: function (results) {
                     console.log(results);
-                    var primary_investigator_id = results[0].id;
+                    var primary_investigator_id = results.id;
                     var html    =   '';
 
                     if(pi_submit_actions == 'Add') {
@@ -1112,7 +1112,7 @@
                 dataType: 'json',
                 success: function (results) {
                     var coordinator_id = results[0].id;
-                    console.log(coordinator_id);
+
                     var html    =   '';
                     if(c_submit_actions == 'Add')
                     {

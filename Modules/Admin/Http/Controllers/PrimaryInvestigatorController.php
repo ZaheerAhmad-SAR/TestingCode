@@ -11,6 +11,7 @@ use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\PrimaryInvestigator;
 use Modules\Admin\Entities\Section;
 use Modules\Admin\Entities\Site;
+use Modules\Admin\Entities\TrailLog;
 
 class PrimaryInvestigatorController extends Controller
 {
@@ -50,7 +51,10 @@ class PrimaryInvestigatorController extends Controller
             'email'=>empty($request->pi_email)? Null : $request->pi_email
         ]);
 
-        return response()->json([$pi,'success'=>'Primary Investigator is added successfully']);
+        // log event details
+        $logEventDetails = eventDetails($id, 'PI', 'Add', $request->ip());
+
+        return response()->json(['id' => $id,'success'=>'Primary Investigator is added successfully']);
 
     }
 
@@ -97,6 +101,10 @@ class PrimaryInvestigatorController extends Controller
         PrimaryInvestigator::where('id', $request->pi_id)->update($data);
         $site_id  = $request->pi_site_id;
         $allPi    = PrimaryInvestigator::where('site_id',$site_id)->get();
+
+        // get event details
+        $getEventDetails = eventDetails($request->pi_id, 'PI', 'Update', $request->ip());
+
         return response()->json($allPi);
     }
 

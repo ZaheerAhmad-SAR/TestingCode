@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateStudySiteTable extends Migration
+class CreateFormTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateStudySiteTable extends Migration
      */
     public function up()
     {
-        Schema::create('site_study', function (Blueprint $table) {
-            $table->increments('id');
-            $table->uuid('study_id');
-            $table->uuid('site_id');
-            $table->uuid('primaryInvestigator_id')->nullable();
+        Schema::create('form_types', function (Blueprint $table) {
+            $table->smallIncrements('id')->unique();
+            $table->string('form_type')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ class CreateStudySiteTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('study_site');
+        Schema::dropIfExists('form_types');
     }
 }

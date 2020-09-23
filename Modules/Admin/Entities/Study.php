@@ -45,4 +45,14 @@ class Study extends Model
     public function roles(){
         return $this->hasMany(RoleStudy::class);
     }
+<<<<<<< HEAD
+=======
+
+    public function studySites(){
+        return $this->belongsToMany(StudySite::class, 'site_study', 'study_id', 'site_id');
+
+    }
+
+
+>>>>>>> 97b3f60753144c5e736b08bb42d64d0a70740878
 }
