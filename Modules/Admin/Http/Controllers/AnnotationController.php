@@ -5,6 +5,8 @@ namespace Modules\Admin\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Str;
+use Modules\Admin\Entities\Annotation;
 
 class AnnotationController extends Controller
 {
@@ -14,7 +16,8 @@ class AnnotationController extends Controller
      */
     public function index()
     {
-        return view('admin::index');
+        $annotation = Annotation::select('*')->where('study_id',session('current_study'))->get();
+        return view('admin::annotation.index',compact('annotation'));
     }
 
     /**
@@ -33,9 +36,30 @@ class AnnotationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $id    = Str::uuid();
+        $annotation = Annotation::create([
+            'id' => $id, 
+            'study_id'    => session('current_study'),
+            'label' => $request->annotation_name
+        ]);
+        return redirect()->route('annotation.index');
     }
 
+    public function update_annotation(Request $request, $id=''){
+        $annotation = Annotation::find($request->annotation_id);
+        $annotation->label  =  $request->annotation_name;
+        $annotation->save();
+        return redirect()->route('annotation.index');
+    }
+    public function destroy($id)
+    {
+        
+    }
+    public function deleteAnnotation($id){
+       $annotation = Annotation::where('id',$id)->delete();
+       $Response['data'] = 'success';
+       echo json_encode($Response);  
+    }
     /**
      * Show the specified resource.
      * @param int $id
@@ -53,6 +77,7 @@ class AnnotationController extends Controller
      */
     public function edit($id)
     {
+
         return view('admin::edit');
     }
 
@@ -64,7 +89,7 @@ class AnnotationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        dd($request->all());
     }
 
     /**
@@ -72,8 +97,5 @@ class AnnotationController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function destroy($id)
-    {
-        //
-    }
+   
 }
