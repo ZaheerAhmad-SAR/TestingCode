@@ -39,18 +39,19 @@ class PhotographerController extends Controller
      */
     public function store(Request $request)
     {
-        $site = Site::select('id')->latest()->first();
-
-        // dd($request->all());
+        $id = \Illuminate\Support\Str::uuid();
         $photographer = Photographer::create([
-            'id'    => \Illuminate\Support\Str::uuid(),
-            'site_id'=> $site->id,
+            'id'    => $id,
+            'site_id'=> $request->site_id,
             'first_name' => $request->photographer_first_name,
             'mid_name' => empty($request->photographer_mid_name) ? Null : $request->photographer_mid_name,
             'last_name' => empty($request->photographer_last_name) ? Null : $request->photographer_last_name,
             'phone'=> empty($request->photographer_phone) ? Null : $request->photographer_phone,
             'email'=>empty($request->photographer_email)? Null : $request->photographer_email
         ]);
+
+        // log event details
+        $logEventDetails = eventDetails($id, 'Photographer', 'Add', $request->ip());
 
         return response()->json([$photographer,'success'=>'Photographer is added successfully']);
     }
@@ -103,6 +104,9 @@ class PhotographerController extends Controller
 
         $allphotographer    = Photographer::where('site_id',$photographer_site_id)->get();
 
+         // log event details
+        $logEventDetails = eventDetails($request->photo_id, 'Photographer', 'Update', $request->ip());
+
         return response()->json($allphotographer);
 
 
@@ -126,13 +130,9 @@ class PhotographerController extends Controller
 
     public function showPhotographerBySiteId(Request $request,$id)
     {
-
         if ($request->ajax()) {
-
             $result    = Photographer::where('site_id',$id)->get();
             return response()->json([$result]);
-
         }
-
     }
 }

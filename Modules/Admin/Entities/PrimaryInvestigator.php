@@ -10,4 +10,12 @@ class PrimaryInvestigator extends Model
 
     public $incrementing = false;
     protected $keyType = 'string';
+
+    public function site() {
+        return $this->belongsToMany(Site::class,'sites');
+    }
+    public function studySite(){
+        return $this->belongsToMany(StudySite::class,'site_study');
+    }
+
 }

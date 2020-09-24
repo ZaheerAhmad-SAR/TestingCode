@@ -1,5 +1,4 @@
 @extends('layouts.home')
-
 @section('title')
     <title> Update User Roles | {{ config('app.name', 'Laravel') }}</title>
 @stop

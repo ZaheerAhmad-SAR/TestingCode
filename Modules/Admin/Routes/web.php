@@ -18,7 +18,7 @@ Route::prefix('admin')->group(function() {
     Route::get('/', 'AdminController@index');
 });
 
-Route::group(['middleware' => ['auth','web']],function(){
+Route::group(['middleware' => ['auth','web']],function() {
 
    });
 Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],function(){
@@ -56,10 +56,15 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
     Route::DELETE('optionsGroup/destroy/{options_id}','OptionsGroupController@destroy')->name('destroyOptionsGroup');
     Route::post('getall_options','FormController@getall_options')->name('getall_options');
 
-
+    // routes for annotation
+    Route::resource('annotation','AnnotationController');
+    Route::post('annotation/updateAnnotation','AnnotationController@update_annotation')->name('updateAnnotation');
+    Route::DELETE('annotation/delete/{id}','AnnotationController@deleteAnnotation')->name('delete');
     // routes for form managment
     Route::resource('forms','FormController');
     Route::post('forms/add_questions','FormController@add_questions')->name('addQuestions');
+    Route::post('forms/updateQuestion','FormController@update_questions')->name('updateQuestion');
+    Route::get('forms/get_phases/{id}','FormController@get_phases')->name('get_phases');
     Route::get('forms/step_by_phaseId/{id}','FormController@get_steps_by_phaseId')->name('stepbyphaseId');
     Route::get('forms/sections_by_stepId/{id}','FormController@get_section_by_stepId')->name('sectionsbystepId');
     Route::post('studyStatus','StudyController@studyStatus')->name('study.studyStatus');
@@ -144,12 +149,19 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
 
     Route::resource('studySite','StudySiteController');
 
-    Route::post('studySite/update','StudySiteController@update')->name('updateStudySite');
+
+
+    Route::post('studySite/update','StudySiteController@update')->name('updateStudySiteForm');
 
     Route::post('studySite/updateStudySite','StudySiteController@updateStudySite')->name('updateStudySiteId');
 
+    Route::post('studySite/updatePrimaryInvestigator','StudySiteController@updatePrimaryInvestigator')->name('updatePI');
+
+    Route::post('studySite/insertCoordinators','StudySiteController@insertCoordinators')->name('insertCO');
+
     //SubjectFormLoader
-    Route::get('subject_form/{subject_id}','SubjectFormLoaderController@showSubjectForm')->name('showSubjectForm');
+    Route::get('subject_form/{study_id}/{subject_id}','SubjectFormLoaderController@showSubjectForm')->name('showSubjectForm');
+    Route::post('/subject_form/submitStudyPhaseStepQuestionForm','SubjectFormSubmissionController@submitForm')->name('submitStudyPhaseStepQuestionForm');
     //Assign Roles ToPhase and Step
     Route::post('getAssignRolesToPhaseForm','AssignRolesPhaseStepController@getAssignRolesToPhaseForm')->name('getAssignRolesToPhaseForm');
     Route::post('getAssignRolesToPhaseStepForm','AssignRolesPhaseStepController@getAssignRolesToPhaseStepForm')->name('getAssignRolesToPhaseStepForm');
@@ -157,4 +169,9 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
     Route::post('submitAssignRolesToPhaseStepForm','AssignRolesPhaseStepController@submitAssignRolesToPhaseStepForm')->name('submitAssignRolesToPhaseStepForm');
 
 });
+
+// CHM-Amir--
+Route::get('trail-log', 'TrailLogController@index')->name('trail.log');
+
+
 

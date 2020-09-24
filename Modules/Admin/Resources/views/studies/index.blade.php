@@ -271,8 +271,7 @@
                                 @enderror
                             </div>
                         </div>
-
-                            </div>
+                    </div>
                     <div class="modal-footer">
                         <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                         @if(hasPermission(auth()->user(),'studies.store'))

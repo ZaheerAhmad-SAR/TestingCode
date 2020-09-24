@@ -50,6 +50,7 @@ class UserController extends Controller
             $roles  =   Role::where('role_type','=','system_role')->get();
             return view('userroles::users.create',compact('roles'));
 
+        return redirect('dashboard');
     }
 
     /**
@@ -59,27 +60,25 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        if ($request->ajax()) {
-        $userID = $request->user_id;
+
         $id = Str::uuid();
-        $user = User::updateOrCreate([
+        $user = User::create([
             'id' => $id,
+            'name' => $request->name,
             'email' => $request->email,
-            ],
-            ['name' => $request->name,
-                'password' => encrypt($request->password),
-                'created_by'    => \auth()->user()->id
+            'password' => encrypt($request->password),
+            'created_by'    => \auth()->user()->id
             ]);
         if ($request->roles)
         {
             foreach ($request->roles as $role){
-                UserRole::updateOrCreate([
+                $roles =UserRole::create([
                     'id'    => Str::uuid(),
                     'user_id'     => $user->id,
                     'role_id'   => $role
                 ]);
 
-                RoleStudyUser::updateOrCreate([
+                $userrole = RoleStudyUser::create([
                     'id'    => Str::uuid(),
                     'user_id'     => $user->id,
                     'role_id'   => $role,
@@ -87,9 +86,8 @@ class UserController extends Controller
                 ]);
             }
         }
-        }
-        return \response()->json($user);
 
+        return redirect()->route('users.index');
     }
 
     /**
@@ -112,8 +110,10 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $where = array('id' => $id);
-        $user  = User::with('user_roles')->where($where)->first();
+        $user  = User::with('user_roles')
+        ->find($id);
+        $currentRole = $user->user_roles;
+        $roles = Role::all();
 
         return \response()->json($user);
     }
@@ -138,9 +138,10 @@ class UserController extends Controller
             $role_id->delete();
         }
         foreach ($request->roles as $role){
-            UserRole::create([
+            $new = UserRole::create([
+                'id'    => Str::uuid(),
                 'user_id'    =>  $user->id,
-                'role_id'    =>  $role
+                'role_id'    =>  $role,
             ]);
         }
 

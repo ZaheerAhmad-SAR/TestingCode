@@ -44,8 +44,11 @@
                             @endphp
                             @if(count($visitPhases))
                             @foreach ($visitPhases as $phase)
+                            @php
+                            $phaseIdStr = buildSafeStr($phase->id, 'phase_cls_');
+                            @endphp
                             <div class="card text-white bg-primary m-1">
-                                <div id="heading{{$phase->id}}" class="card-header" data-toggle="collapse"
+                            <div id="heading{{$phase->id}}" class="card-header {{ $phaseIdStr }}" data-toggle="collapse"
                                     data-target="#collapse{{$phase->id}}"
                                     aria-expanded="{{ ($firstPhase) ? 'true' : 'false' }}"
                                     aria-controls="collapse{{$phase->id}}">
@@ -57,11 +60,15 @@
                                         @if(count($phase->phases))
                                         @php
                                         $firstStep = true;
-                                        $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyRoles($phase->id, $userRoleIds);                                        
+                                        $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyRoles($phase->id,
+                                        $userRoleIds);
                                         @endphp
                                         @foreach ($steps as $step)
-                                        <a class="contact_link badge p-1 badge-light m-1" href="javascript:void(0);"
-                                            data-contacttype="contact-{{$step->step_id}}">
+                                        @php
+                                        $stepIdStr = buildSafeStr($step->step_id, 'step_cls_');
+                                        @endphp
+                                        <a class="badge p-1 badge-light m-1  {{ $stepIdStr }}" href="javascript:void(0);"
+                                            onclick="showSections('step_sections_{{$step->step_id}}');">
                                             {{$step->step_name}}
                                         </a>
                                         <br>
@@ -83,39 +90,38 @@
                 </div>
                 <div class="col-12 col-lg-10 mt-3 pl-lg-0">
                     <div class="card border h-100 contact-list-section">
-                        @if(count($visitPhases))
-                        @php
-                        $firstPhase = true;
-                        @endphp
-                        @foreach ($visitPhases as $phase)
-                        @php
-                        $firstStep = true;
-                        $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyRoles($phase->id, $userRoleIds);
-                        @endphp
-                        @foreach ($steps as $step)
-                        @php
-                        $sections = $step->sections;
-                        if(count($sections)){
-                        @endphp
                         <div class="card-body p-0">
                             <div class="contacts list">
-                                <div class="contact contact-{{$step->step_id}}"
-                                    style="display: {{ ($firstPhase) ? 'block' : 'none' }};">
-                                    @include('admin::forms.section_loop', ['step'=>$step,
-                                    'sections'=> $sections])
+                                @if(count($visitPhases))
+                                @php
+                                $firstStep = true;
+                                session(['already_one_form_is_resumable' => 0]);
+                                @endphp
+                                @foreach ($visitPhases as $phase)
+                                @php                                                                
+                                $phaseIdStr = buildSafeStr($phase->id, 'phase_cls_');
+                                $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyRoles($phase->id,
+                                $userRoleIds);
+                                @endphp
+                                @foreach ($steps as $step)
+                                @php
+                                $sections = $step->sections;
+                                if(count($sections)){
+                                @endphp
+                                <div class="all_step_sections step_sections_{{$step->step_id}}"
+                                    style="display: {{ ($firstStep) ? 'block' : 'none' }};">
+                                    @include('admin::forms.section_loop', ['studyId'=>$studyId, 'subjectId'=>$subjectId, 'phase'=>$phase, 'step'=>$step,
+                                    'sections'=> $sections, 'phaseIdStr'=>$phaseIdStr])
                                 </div>
+                                @php
+                                }
+                                $firstStep = false;
+                                @endphp
+                                @endforeach
+                                @endforeach
+                                @endif
                             </div>
                         </div>
-                        @php
-                        }
-                        $firstStep = false;
-                        @endphp
-                        @endforeach
-                        @php
-                        $firstPhase = false;
-                        @endphp
-                        @endforeach
-                        @endif
                     </div>
                 </div>
             </div>
@@ -124,16 +130,47 @@
     </div>
     @stop
 
-    @section('styles')
+    @push('styles')
     @include('admin::forms.form_css')
-    @stop
+    @endpush
 
-    @section('script')
+    @push('script')
     <script>
-    $('.contact_link').on('click', function() {
-        $('.contact').hide();
-        $('.' + $(this).data("contacttype")).show(500);
-        return false;
-    });
+        function showSections(step_id_class){
+            $('.all_step_sections').hide(500);
+            $('.' + step_id_class).show(500);
+        }
     </script>
-    @stop
+    <script>
+        function disableAllFormFields(formId){
+            $("#" + formId + " input").prop('disabled', true);
+        }
+        function enableAllFormFields(formId){
+            $("#" + formId + " input").prop('disabled', false);
+        }
+        function disableField(fieldId){
+            $("#" + fieldId).prop('disabled', true);
+        }
+        function enableField(fieldId){
+            $("#" + fieldId).prop('disabled', false);
+        }
+        function disableFieldByClass(cls){
+            $("." + cls).prop('disabled', true);
+        }
+        function enableFieldByClass(cls){
+            $("." + cls).prop('disabled', false);
+        }
+        
+        function submitRequest(frmData) {
+            $.ajax({
+                url: "{{ route('submitStudyPhaseStepQuestionForm') }}",
+                type: 'POST',
+                data: frmData,
+                success: function(response) {
+
+                }
+            });
+        }
+
+    </script>
+    @endpush

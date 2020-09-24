@@ -20,7 +20,7 @@ class FormFieldTypeSeederTableSeeder extends Seeder
         Model::unguard();
         $field_forms = FormFieldType::all();
         if (count($field_forms) <= 0){
-            $id = Str::uuid();
+            $id = 1;
             $form_filed_number = FormFieldType::create([
                 'id' => $id,
                 'field_type'    => 'Number',
@@ -29,7 +29,7 @@ class FormFieldTypeSeederTableSeeder extends Seeder
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now()
             ]);
-            $id = Str::uuid();
+            $id = 2;
             $form_filed_radio = FormFieldType::create([
                 'id' => $id,
                 'field_type'    => 'Radio',
@@ -38,7 +38,7 @@ class FormFieldTypeSeederTableSeeder extends Seeder
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now()
             ]);
-            $id = Str::uuid();
+            $id = 3;
             $form_filed_Dropdown = FormFieldType::create([
                 'id' => $id,
                 'field_type'    => 'Dropdown',
@@ -47,7 +47,7 @@ class FormFieldTypeSeederTableSeeder extends Seeder
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now()
             ]);
-            $id = Str::uuid();
+            $id = 4;
             $form_filed_Checkbox = FormFieldType::create([
                 'id' => $id,
                 'field_type'    => 'Checkbox',
@@ -56,7 +56,7 @@ class FormFieldTypeSeederTableSeeder extends Seeder
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now()
             ]);
-            $id = Str::uuid();
+            $id = 5;
             $form_filed_Text = FormFieldType::create([
                 'id' => $id,
                 'field_type'    => 'Text',
@@ -65,7 +65,7 @@ class FormFieldTypeSeederTableSeeder extends Seeder
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now()
             ]);
-            $id = Str::uuid();
+            $id = 6;
             $form_filed_Textarea = FormFieldType::create([
                 'id' => $id,
                 'field_type'    => 'Textarea',
@@ -74,7 +74,7 @@ class FormFieldTypeSeederTableSeeder extends Seeder
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now()
             ]);
-            $id = Str::uuid();
+            $id = 7;
             $form_filed_Date_Time = FormFieldType::create([
                 'id' => $id,
                 'field_type'    => 'Date & Time',
@@ -83,7 +83,7 @@ class FormFieldTypeSeederTableSeeder extends Seeder
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now()
             ]);
-            $id = Str::uuid();
+            $id = 8;
             $form_filed_Upload = FormFieldType::create([
                 'id' => $id,
                 'field_type'    => 'Upload',
@@ -92,7 +92,7 @@ class FormFieldTypeSeederTableSeeder extends Seeder
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now()
             ]);
-            $id = Str::uuid();
+            $id = 10;
             $form_filed_Upload = FormFieldType::create([
                 'id' => $id,
                 'field_type'    => 'Certification',

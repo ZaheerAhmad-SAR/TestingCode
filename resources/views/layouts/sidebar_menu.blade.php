@@ -131,6 +131,13 @@
                                         Preferences
                                     </a>
                                 </li>
+                                @if(hasPermission(auth()->user(),'annotation.index'))
+                                    <li class="@if(is_active('annotation.index')) {{ ' active' }} @endif">
+                                        <a  href="{!! route('annotation.index') !!}">
+                                            Annotations
+                                        </a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                 </ul>
@@ -242,13 +249,15 @@
                 </ul>
             </li>
             @endif
+            
             @if(hasPermission(auth()->user(),'activitylog.index'))
-                <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Activity Log</a>
+                <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
                     <ul >
+
                         <li>
-                            <a href="#">
+                            <a href="{{route('trail.log')}}">
                                 <i class="fas fa-history"></i>
-                                Activities
+                                Audit Trail
                             </a>
                         </li>
                     </ul>
