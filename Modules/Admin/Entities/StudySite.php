@@ -19,8 +19,13 @@ class StudySite extends Model
        return $this->hasMany(SiteStudyCoordinator::class,'site_study_id','id');
     }
 
+    public function siteStudyCoordinatorIds()
+    {
+       return $this->siteStudyCoordinator->pluck('coordinator_id')->toArray();
+    }
 
-   }
+
+}
 
 
 
