@@ -71,31 +71,24 @@
                                             <td>{{ucfirst($site->site_code)}}</td>
                                             <td>{{ucfirst($site->site_name)}}</td>
                                             <td>
-                                                <Select class="form-control primaryInvestigatorData" value="{{old('primaryInvestigator')}}"  id="primaryInvestigator" name="primaryInvestigator">
+                                            <Select class="form-control" value="{{old('primaryInvestigator')}}" id="primaryInvestigator_{{$site->id}}" name="primaryInvestigator_{{$site->id}}" onchange="updatePI('{{$site->id}}');">
                                                     <option>--Select PI--</option>
                                                     @foreach($site->pi as $key => $pi)
                                                     @php $pi_records = explode('/',$pi); @endphp
-                                                        <option value="{{$pi_records[0]}}" {{$pi_records[0]==$site->primaryInvestigator_id ? 'selected="selected"': ''}}>{{$pi_records[1]}}</option>
-                                                        <input type="hidden" name="pi_id_value" value="{{$pi_records[0]}}">
+                                                        <option value="{{$pi_records[0]}}" {{$pi_records[0]==$site->primaryInvestigator_id ? 'selected="selected"': ''}}>{{$pi_records[1]}}</option>                                                        
                                                     @endforeach
                                                 </Select>
-                                                <input type="hidden" id="table_site_study_id" name="table_site_study_id" value="{{$site->id}}">
+                                                <input type="hidden" id="table_site_study_id_{{$site->id}}" name="table_site_study_id_{{$site->id}}" value="{{$site->id}}">
                                             </td>
                                             <td>
-                                                <Select class="coordinatorsData multieSelectDropDown" name="coordinators" id="coordinators" multiple data-allow-clear="1">
-
-                                                    @foreach($site->ci as $key => $ci)
-
-
-                                                        @php  $array[] = '';
-
-                                                            $ci_records = explode('/',$ci);
-                                                        @endphp
-                                                        @foreach($siteCoordinators as $siteCO)
-                                                            @php $array =  explode(',',$siteCO->coordinator_id);  @endphp
-
-                                                        @endforeach
-                                                        <option value="{{$ci_records[0]}}" {{in_array($ci_records[0],$array) ? 'selected': ''}} >{{$ci_records[1]}}</option>
+                                            <Select class="coordinatorsData multieSelectDropDown" name="coordinators_{{$site->id}}" id="coordinators_{{$site->id}}" multiple data-allow-clear="1" onchange="assignCoordinator('{{$site->id}}');">
+                                            @php
+                                            $studySite = Modules\Admin\Entities\StudySite::find($site->id);
+                                            $siteCoordinatorsIdsArray = $studySite->siteStudyCoordinatorIds();                                            
+                                            $coordinators = Modules\Admin\Entities\Coordinator::where('site_id',$site->site_id)->get();
+                                            @endphp
+                                                    @foreach($coordinators as $coordinator)                                                        
+                                                        <option value="{{$coordinator->id}}" {{in_array($coordinator->id,$siteCoordinatorsIdsArray) ? 'selected': ''}} >{{$coordinator->first_name}}</option>
 
                                                     @endforeach
                                                 </Select>
@@ -1719,9 +1712,9 @@
                 });
 
 
-                    $('body ').on('change','.coordinatorsData',function(){
-                        var coordinators_id = $(this).val();
-                        var table_site_study_id = $("#table_site_study_id").val();
+                function assignCoordinator(site_id){
+                        var coordinators_id = $('#coordinators_'+site_id).val();
+                        var table_site_study_id = $("#table_site_study_id_"+site_id).val();
 
                  $.ajax({
                         url: "{{route('insertCO')}}",
@@ -1735,13 +1728,11 @@
                         }
                     });
 
-                });
+                }
 
-
-                $(document).ready(function() {
-                    $('body ').on('change','.primaryInvestigatorData',function(){
-                        var pi_id_value = $("#primaryInvestigator").val();
-                        var table_site_study_id = $("#table_site_study_id").val();
+                function updatePI(site_id){
+                    var pi_id_value = $("#primaryInvestigator_"+site_id).val();
+                    var table_site_study_id = $("#table_site_study_id_"+site_id).val();
 
                         $.ajax({
                             url: "{{route('updatePI')}}",
@@ -1756,8 +1747,7 @@
                                 }, 10);
                             }
                         });
-                    });
-                });
+                }                
 
 
             </script>
