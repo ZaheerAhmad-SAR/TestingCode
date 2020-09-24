@@ -44,8 +44,11 @@
                             @endphp
                             @if(count($visitPhases))
                             @foreach ($visitPhases as $phase)
+                            @php
+                            $phaseIdStr = buildSafeStr($phase->id, 'phase_cls_');
+                            @endphp
                             <div class="card text-white bg-primary m-1">
-                                <div id="heading{{$phase->id}}" class="card-header" data-toggle="collapse"
+                            <div id="heading{{$phase->id}}" class="card-header {{ $phaseIdStr }}" data-toggle="collapse"
                                     data-target="#collapse{{$phase->id}}"
                                     aria-expanded="{{ ($firstPhase) ? 'true' : 'false' }}"
                                     aria-controls="collapse{{$phase->id}}">
@@ -61,7 +64,10 @@
                                         $userRoleIds);
                                         @endphp
                                         @foreach ($steps as $step)
-                                        <a class="badge p-1 badge-light m-1" href="javascript:void(0);"
+                                        @php
+                                        $stepIdStr = buildSafeStr($step->step_id, 'step_cls_');
+                                        @endphp
+                                        <a class="badge p-1 badge-light m-1  {{ $stepIdStr }}" href="javascript:void(0);"
                                             onclick="showSections('step_sections_{{$step->step_id}}');">
                                             {{$step->step_name}}
                                         </a>
@@ -89,9 +95,11 @@
                                 @if(count($visitPhases))
                                 @php
                                 $firstStep = true;
+                                session(['already_one_form_is_resumable' => 0]);
                                 @endphp
                                 @foreach ($visitPhases as $phase)
-                                @php
+                                @php                                                                
+                                $phaseIdStr = buildSafeStr($phase->id, 'phase_cls_');
                                 $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyRoles($phase->id,
                                 $userRoleIds);
                                 @endphp
@@ -103,7 +111,7 @@
                                 <div class="all_step_sections step_sections_{{$step->step_id}}"
                                     style="display: {{ ($firstStep) ? 'block' : 'none' }};">
                                     @include('admin::forms.section_loop', ['studyId'=>$studyId, 'subjectId'=>$subjectId, 'phase'=>$phase, 'step'=>$step,
-                                    'sections'=> $sections])
+                                    'sections'=> $sections, 'phaseIdStr'=>$phaseIdStr])
                                 </div>
                                 @php
                                 }
@@ -132,5 +140,37 @@
             $('.all_step_sections').hide(500);
             $('.' + step_id_class).show(500);
         }
+    </script>
+    <script>
+        function disableAllFormFields(formId){
+            $("#" + formId + " input").prop('disabled', true);
+        }
+        function enableAllFormFields(formId){
+            $("#" + formId + " input").prop('disabled', false);
+        }
+        function disableField(fieldId){
+            $("#" + fieldId).prop('disabled', true);
+        }
+        function enableField(fieldId){
+            $("#" + fieldId).prop('disabled', false);
+        }
+        function disableFieldByClass(cls){
+            $("." + cls).prop('disabled', true);
+        }
+        function enableFieldByClass(cls){
+            $("." + cls).prop('disabled', false);
+        }
+        
+        function submitRequest(frmData) {
+            $.ajax({
+                url: "{{ route('submitStudyPhaseStepQuestionForm') }}",
+                type: 'POST',
+                data: frmData,
+                success: function(response) {
+
+                }
+            });
+        }
+
     </script>
     @endpush

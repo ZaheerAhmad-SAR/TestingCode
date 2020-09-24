@@ -998,7 +998,7 @@
         }
 
         function showFormPreview() {
-            var route = '{{ url('forms / show ') }}';
+            var route = <?php echo '"'.url('forms/show').'";';?>
             var phase_id = $('#phases').val();
             var step_id = $('#steps').val();
             window.open(route + '/' + phase_id + '/' + step_id);

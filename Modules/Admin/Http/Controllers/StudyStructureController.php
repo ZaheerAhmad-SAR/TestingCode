@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\PhaseSteps;
+use Modules\Admin\Entities\FormType;
 
 class StudyStructureController extends Controller
 {
@@ -22,7 +23,8 @@ class StudyStructureController extends Controller
                    ->orderBy('position', 'asc')
                    ->get();
         $steps = PhaseSteps::all();
-        return view('admin::structure.index',compact('phases','steps'));
+        $formTypes = FormType::all();
+        return view('admin::structure.index',compact('phases','steps', 'formTypes'));
     }
     public function getallphases(Request $request)
     {
@@ -31,7 +33,7 @@ class StudyStructureController extends Controller
                    ->orderBy('position', 'asc')
                    ->get();
         $phasesData['data'] = $phases;
-        echo json_encode($phasesData);            
+        echo json_encode($phasesData);
     }
     /**
      * Show the form for creating a new resource.
@@ -72,7 +74,7 @@ class StudyStructureController extends Controller
             'step_id'    => $id,
             'phase_id'    => $request->phase_id,
             'step_position'  =>  '1',
-            'form_type' =>  $request->form_type,
+            'form_type_id' =>  $request->form_type_id,
             'step_name' =>  $request->step_name,
             'step_description' =>  $request->step_description,
             'graders_number' =>  $request->graders_number,
@@ -90,7 +92,7 @@ class StudyStructureController extends Controller
         $phase = PhaseSteps::find($request->step_id);
         $phase->phase_id  =  $request->phase_id;
         $phase->step_position  =  '1';
-        $phase->form_type  =  $request->form_type;
+        $phase->form_type_id  =  $request->form_type_id;
         $phase->step_name  =  $request->step_name;
         $phase->step_description  =  $request->step_description;
         $phase->graders_number  =  $request->graders_number;
@@ -137,7 +139,7 @@ class StudyStructureController extends Controller
         $phase->save();
     }
 
-    
+
     /**
      * Remove the specified resource from storage.
      * @param int $id

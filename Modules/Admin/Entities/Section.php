@@ -22,7 +22,7 @@ class Section extends Model
         parent::boot();
         static::addGlobalScope(new SectionOrderByScope);
     }
-    
+
     public function step()
 	{
     	return $this->belongsTo(PhaseSteps::class,'phase_steps_id','id');
