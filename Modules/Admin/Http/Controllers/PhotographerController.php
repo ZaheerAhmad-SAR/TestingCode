@@ -133,13 +133,9 @@ class PhotographerController extends Controller
 
     public function showPhotographerBySiteId(Request $request,$id)
     {
-
         if ($request->ajax()) {
-
             $result    = Photographer::where('site_id',$id)->get();
             return response()->json([$result]);
-
         }
-
     }
 }

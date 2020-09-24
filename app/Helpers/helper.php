@@ -324,4 +324,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
     return $newData;
 }
 
+function buildSafeStr($id, $str = ''){
+    return $str . str_replace('-', '_', $id);
+}
 

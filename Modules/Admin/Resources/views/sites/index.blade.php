@@ -104,6 +104,7 @@
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header">
                     <p class="modal-title">Add New Site</p>
+                    <input type="hidden" name="site_id" id="site_id" value="">
                 </div>
                 <div class="modal-body">
 
@@ -225,7 +226,7 @@
                                                 <span class="input-danger small">{{ $message }}</span>
                                                 @enderror
                                             </div>
-                                            <input type="hidden" name="site_id" id="site_id" value="">
+
                                         </div>
                                         <div class="modal-footer">
                                             @if(hasPermission(auth()->user(),'sites.store'))
@@ -777,6 +778,7 @@
             var p_email           = $('#pi_email').val();
             var pi_id             = $('#pi_id').val();
             var pi_submit_actions = $('#pi_submit_actions').val();
+            $('#primaryInvestigatorForm').find($('input[name="site_id"]').val($('#site_id').val()));
             if(pi_submit_actions  == 'Add')
             {
                 var action_url = "{{ route('primaryinvestigator.store') }}";
@@ -983,6 +985,7 @@
             var photographer_email          = $('#photographer_email').val();
             var photo_id                    = $('#photo_id').val();
             var photographer_submit_actions = $('#photographer_submit_actions').val();
+            $('#photographerForm').find($('input[name="site_id"]').val($('#site_id').val()));
             if(photographer_submit_actions  == 'Add')
             {
                 var action_url = "{{ route('photographers.store') }}";
@@ -1089,6 +1092,7 @@
             var c_email      = $('#c_email').val();
             var c_id = $('#c_id').val();
             var c_submit_actions = $('#c_submit_actions').val();
+            $('#coordinatorForm').find($('input[name="site_id"]').val($('#site_id').val()));
 
             if(c_submit_actions == 'Add')
             {
@@ -1111,8 +1115,8 @@
                 type: "POST",
                 dataType: 'json',
                 success: function (results) {
+                    console.log(results);
                     var coordinator_id = results[0].id;
-                    console.log(coordinator_id);
                     var html    =   '';
                     if(c_submit_actions == 'Add')
                     {
@@ -1196,6 +1200,7 @@
             var others_email      = $('#others_email').val();
             var others_id         = $('#others_id').val();
             var others_submit_actions = $('#others_submit_actions').val();
+            $('#othersForm').find($('input[name="site_id"]').val($('#site_id').val()));
             if(others_submit_actions == 'Add')
             {
                 var action_url = "{{ route('others.store') }}";
@@ -1284,10 +1289,11 @@
                 success: function (results) {
                     $("#siteInfoForm :input").prop("disabled", true);
                     $('.addTabs').attr("data-toggle","tab"); // Add data-toggle tab after inserts
-                    $('#primaryInvestigatorForm').find($('input[name="site_id"]').val(results.site_id));
-                    $('#coordinatorForm').find($('input[name="site_id"]').val(results.site_id));
-                    $('#photographerForm').find($('input[name="site_id"]').val(results.site_id));
-                    $('#othersForm').find($('input[name="site_id"]').val(results.site_id));
+                    // $('#primaryInvestigatorForm').find($('input[name="site_id"]').val(results.site_id));
+                    // $('#coordinatorForm').find($('input[name="site_id"]').val(results.site_id));
+                    // $('#photographerForm').find($('input[name="site_id"]').val(results.site_id));
+                    // $('#othersForm').find($('input[name="site_id"]').val(results.site_id));
+                    $('#site_id').val(results.site_id);
 
                 },
                 error: function (results) {
@@ -1380,6 +1386,7 @@
                                 type: "GET",
                                 dataType: 'html',
                                 success: function (results) {
+                                    console.log(results);
                                     var parsedata = JSON.parse(results)[0];
                                     var html    =   '';
                                     $.each(parsedata, function(index,row)
@@ -1398,6 +1405,7 @@
                                         type: "GET",
                                         dataType: 'html',
                                         success: function (results) {
+                                            $('.photographertableAppend tbody tr').remove();
                                             var parsedata = JSON.parse(results)[0];
                                             $.each(parsedata, function(index,row)
                                             {
@@ -1411,12 +1419,14 @@
                                             });
                                             $('.photographertableAppend tbody').html(html);
 
+
                                             $('#photographerForm').trigger("reset");
                                             $.ajax({
                                                 type:"GET",
                                                 dataType: 'html',
                                                 url:new_other_url,
                                                 success : function(results) {
+                                                    $('.otherstableAppend tbody tr').remove();
                                                     var parsedata = JSON.parse(results)[0];
 
                                                     $.each(parsedata, function(index,row)
