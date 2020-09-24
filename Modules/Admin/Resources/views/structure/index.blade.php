@@ -73,7 +73,7 @@
                             <li class="py-3 px-2 mail-item tab_{{$step_value->phase_id}}" style="@if ($key === 0) display: block;  @endif">
                                 <input type="hidden" class="step_id" value="{{$step_value->step_id}}">
                                 <input type="hidden" class="step_phase_id" value="{{$step_value->phase_id}}">
-                                <input type="hidden" class="form_type" value="{{$step_value->form_type}}">
+                                <input type="hidden" class="form_type_id" value="{{$step_value->form_type_id}}">
                                 <input type="hidden" class="step_name" value="{{$step_value->step_name}}">
                                 <input type="hidden" class="step_position" value="{{$step_value->step_position}}">
                                 <input type="hidden" class="step_description" value="{{$step_value->step_description}}">
@@ -82,7 +82,7 @@
                                 <input type="hidden" class="eligibility" value="{{$step_value->eligibility}}">
                                 <div class="d-flex align-self-center align-middle">
                                     <div class="mail-content d-md-flex w-100">
-                                        <span class="mail-user">{{$step_value->form_type}} - {{$step_value->step_name}}</span>
+                                        <span class="mail-user">{{$step_value->form_type_id}} - {{$step_value->step_name}}</span>
                                         <p class="mail-subject">{{$step_value->step_description}}.</p>
                                         <div class="d-flex mt-3 mt-md-0 ml-auto">
                                             <div class="ml-md-auto mr-3 dot primary"></div>
@@ -185,12 +185,11 @@
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Form Type</label>
                                 <div class="col-md-9">
-                                    <select name="form_type" id="form_type" class="form-control" required>
-                                       <option value="">---Select Form Type---</option>
-                                       <option value="qc">QC</option>
-                                       <option value="grading">Grading</option>
-                                       <option value="eligibility">Eligibility</option>
-                                       <option value="other">Other</option>
+                                    <select name="form_type_id" id="form_type_id" class="form-control" required>
+                                        <option value="">---Select Form Type---</option>
+                                        @foreach($formTypes as $formType)
+                                            <option value="{{$formType->id}}">{{$formType->form_type}}</option>
+                                        @endforeach                                        
                                     </select>
                                 </div>
                             </div>
@@ -494,7 +493,7 @@
                 var APP_URL = {!! json_encode(url('/')) !!}
                 var step_id = $('input#step_id').val();
                 var phase_id = $('select#step_phase_id').val();
-                var form_type = $('select#form_type').val();
+                var form_type_id = $('select#form_type_id').val();
                 var step_name = $('input#step_name').val();
                 var step_description = $('input#step_description').val();
                 var graders_number = $('select#graders_number').val();
@@ -510,7 +509,7 @@
                             "_token": "{{ csrf_token() }}",
                             'step_id': step_id,
                             'phase_id': phase_id,
-                            'form_type': form_type,
+                            'form_type_id': form_type_id,
                             'step_name': step_name,
                             'step_description': step_description,
                             'graders_number': graders_number,
@@ -543,8 +542,8 @@
                                         if(res['data'][i].phases.length != 0){
                                             $.each(res['data'][i].phases,function(k,v){
                                             tr_str += "<li class='py-3 px-2 mail-item tab_"+id+"' style='"+active+"'>"
-                                                +'<input type="hidden" class="step_id" value="'+v.step_id+'"><input type="hidden" class="step_phase_id" value="'+v.phase_id+'"><input type="hidden" class="step_name" value="'+v.step_name+'"><input type="hidden" class="form_type" value="'+v.form_type+'"><input type="hidden" class="step_position" value="'+v.step_name+'"><input type="hidden" class="step_description" value="'+v.step_description+'"><input type="hidden" class="graders_number" value="'+v.graders_number+'"><input type="hidden" class="q_c" value="'+v.q_c+'"><input type="hidden" class="eligibility" value="'+v.eligibility+'">'
-                                                +"<div class='d-flex align-self-center align-middle'><div class='mail-content d-md-flex w-100'><span class='mail-user'>"+v.form_type+" - "+v.step_name+"</span><p class='mail-subject'>"+v.step_description+".</p><div class='d-flex mt-3 mt-md-0 ml-auto'><div class='ml-md-auto mr-3 dot primary'></div><p class='ml-auto mail-date mb-0'>"+v.created_at+"</p><a class='ml-3' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><i class='fas fa-cog'></i></a><div class='dropdown-menu p-0 m-0 dropdown-menu-right'><span class='dropdown-item edit_steps'><i class='far fa-edit'></i>&nbsp; Edit</span><span class='dropdown-item addsection'><i class='far fa-file-code'></i>&nbsp; Add Section</span><span class='dropdown-item'><i class='far fa-clone'></i>&nbsp; Clone</span><span class='dropdown-item deleteStep'><i class='far fa-trash-alt'></i>&nbsp; Delete</span></div></div></div></div>";
+                                                +'<input type="hidden" class="step_id" value="'+v.step_id+'"><input type="hidden" class="step_phase_id" value="'+v.phase_id+'"><input type="hidden" class="step_name" value="'+v.step_name+'"><input type="hidden" class="form_type_id" value="'+v.form_type_id+'"><input type="hidden" class="step_position" value="'+v.step_name+'"><input type="hidden" class="step_description" value="'+v.step_description+'"><input type="hidden" class="graders_number" value="'+v.graders_number+'"><input type="hidden" class="q_c" value="'+v.q_c+'"><input type="hidden" class="eligibility" value="'+v.eligibility+'">'
+                                                +"<div class='d-flex align-self-center align-middle'><div class='mail-content d-md-flex w-100'><span class='mail-user'>"+v.form_type_id+" - "+v.step_name+"</span><p class='mail-subject'>"+v.step_description+".</p><div class='d-flex mt-3 mt-md-0 ml-auto'><div class='ml-md-auto mr-3 dot primary'></div><p class='ml-auto mail-date mb-0'>"+v.created_at+"</p><a class='ml-3' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><i class='fas fa-cog'></i></a><div class='dropdown-menu p-0 m-0 dropdown-menu-right'><span class='dropdown-item edit_steps'><i class='far fa-edit'></i>&nbsp; Edit</span><span class='dropdown-item addsection'><i class='far fa-file-code'></i>&nbsp; Add Section</span><span class='dropdown-item'><i class='far fa-clone'></i>&nbsp; Clone</span><span class='dropdown-item deleteStep'><i class='far fa-trash-alt'></i>&nbsp; Delete</span></div></div></div></div>";
                                                 tr_str  += "</li>";
                                             });
                                         }else{
@@ -577,7 +576,7 @@
                 var row = $(this).closest('li.mail-item');
                 var id = row.find('input.step_id').val();
                 var phase_id = row.find('input.step_phase_id').val();
-                var form_type = row.find('input.form_type').val();
+                var form_type_id = row.find('input.form_type_id').val();
                 var name = row.find('input.step_name').val();
                 var position = row.find('input.step_position').val();
                 var description = row.find('input.step_description').val();
@@ -586,7 +585,7 @@
                 var eligibility = row.find('input.eligibility').val();
                 $('#step_id').val(id);
                 $('#step_phase_id').val(phase_id);
-                $('#form_type').val(form_type);
+                $('#form_type_id').val(form_type_id);
                 $('#step_name').val(name);
                 $('#step_position').val(position);
                 $('#step_description').val(description);

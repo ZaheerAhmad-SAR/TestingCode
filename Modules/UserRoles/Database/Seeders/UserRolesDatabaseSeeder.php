@@ -19,7 +19,7 @@ class UserRolesDatabaseSeeder extends Seeder
         $this->call(FormFieldTypeSeederTableSeeder::class);
         $this->call(PermissionTableSeeder::class);
         $this->call(RoleTableSeeder::class);
-        $this->call(UserTableSeeder::class);
-
+        $this->call(FormTypeTableSeeder::class);
+        $this->call(UserTableSeeder::class);        
     }
 }

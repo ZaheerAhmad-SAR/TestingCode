@@ -9,11 +9,15 @@ use Illuminate\Support\Str;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\Section;
 use Modules\Admin\Entities\Answer;
+use Modules\Admin\Entities\FormStatus;
 
 class SubjectFormSubmissionController extends Controller
 {
     public function submitForm(Request $request)
     {
+        $form_filled_by_user_id = auth()->user()->id;
+        $form_filled_by_user_role_id = auth()->user()->id;
+
         $sectionId = $request->sectionId;
         $section = Section::find($sectionId);
         $questions = $section->questions;
@@ -52,20 +56,34 @@ class SubjectFormSubmissionController extends Controller
                 unset($answerArray);
             }
         }
-        if ($request->has('term_cond_' . buildFormName($request->sectionId))) {
 
-            $data = [
-                'form_filled_by_user_id' => auth()->user()->id,
-                'form_filled_by_user_role_id' => auth()->user()->id,
-                'subject_id' => $request->subjectId,
-                'study_id' => $request->studyId,
-                'study_structures_id' => $request->phaseId,
-                'phase_steps_id' => $request->stepId,
-                'section_id' => $request->sectionId,
-                'form_type_id' => $request->formTypeId,
-                'form_status' => ''
-            ];
+        $getFormStatusArray = [
+            'form_filled_by_user_id' => $form_filled_by_user_id,
+            'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
+            'subject_id' => $request->subjectId,
+            'study_id' => $request->studyId,
+            'study_structures_id' => $request->phaseId,
+            'phase_steps_id' => $request->stepId,
+            'section_id' => $request->sectionId,
+        ];
+        $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
+        if (null === $formStatusObj) {
+            $formStatusObj = $this->insertFormStatus($request, $getFormStatusArray);
+        } elseif ($request->has(buildSafeStr($request->sectionId, 'terms_cond_'))) {
+            $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
+            $formStatusObj->form_status = 'complete';
+            $formStatusObj->update();
         }
         echo 'ok';
+    }
+
+    private function insertFormStatus($request, $getFormStatusArray)
+    {
+        $formStatusData = [
+            'id' => Str::uuid(),
+            'form_type_id' => $request->formTypeId,
+            'form_status' => 'resumable'
+        ] + $getFormStatusArray;
+        return FormStatus::create($formStatusData);
     }
 }

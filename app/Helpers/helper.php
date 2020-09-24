@@ -232,7 +232,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip) {
     return $data;
 }
 
-function buildFormName($section_id){
-    return str_replace('-', '_', $section_id);
+function buildSafeStr($id, $str = ''){
+    return $str . str_replace('-', '_', $id);
 }
 
