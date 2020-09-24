@@ -43,6 +43,7 @@ class StudySiteController extends Controller
             $siteArray[] = $site->site_id;
             $primaryInvestigator  = PrimaryInvestigator::where('site_id',$site->site_id)->get();
             $coordinators          = Coordinator::where('site_id',$site->site_id)->get();
+
             $primaryArray = array();
             $coordinatorArray = array();
             foreach ($primaryInvestigator as $primary)
@@ -191,7 +192,7 @@ class StudySiteController extends Controller
                 'coordinator_id'=>$coordinator,
             ]);
         }
-        return response()->json(['success'=>'Primary investigator is updated successfully!!!!']);
+        return response()->json([$result,'success'=>'Primary investigator is updated successfully!!!!']);
     }
 
     /**

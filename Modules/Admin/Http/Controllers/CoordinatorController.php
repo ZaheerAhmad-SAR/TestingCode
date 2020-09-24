@@ -50,7 +50,7 @@ class CoordinatorController extends Controller
 
         // log event details
         $logEventDetails = eventDetails($id, 'Coordinator', 'Add', $request->ip());
-   
+
         return response()->json([$coordinator,'success'=>'Coordinator is added successfully!!!!']);
     }
 

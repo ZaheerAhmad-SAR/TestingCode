@@ -16,11 +16,9 @@
             z-index: 10000 !important;
         }
     </style>
-
     <link rel="stylesheet" href="{{ asset("public/dist/vendors/select2/css/select2.min.css") }}"/>
     <link rel="stylesheet" href="{{ asset("public/dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
-
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
         <div class="row ">
@@ -73,22 +71,16 @@
                                             <td>{{ucfirst($site->site_code)}}</td>
                                             <td>{{ucfirst($site->site_name)}}</td>
                                             <td>
-                                                <Select class="form-control primaryInvestigatorData" id="primaryInvestigator" name="primaryInvestigator">
+                                                <Select class="form-control primaryInvestigatorData" value="{{old('primaryInvestigator')}}"  id="primaryInvestigator" name="primaryInvestigator">
                                                     <option>--Select PI--</option>
                                                     @foreach($site->pi as $key => $pi)
-                                                    @php
-                                                    $pi_records = explode('/',$pi);
-                                                    @endphp
+                                                    @php $pi_records = explode('/',$pi); @endphp
                                                         <option value="{{$pi_records[0]}}" {{$pi_records[0]==$site->primaryInvestigator_id ? 'selected="selected"': ''}}>{{$pi_records[1]}}</option>
                                                         <input type="hidden" name="pi_id_value" value="{{$pi_records[0]}}">
                                                     @endforeach
-
                                                 </Select>
-
                                                 <input type="hidden" id="table_site_study_id" name="table_site_study_id" value="{{$site->id}}">
-
                                             </td>
-
                                             <td>
                                                 <Select class="coordinatorsData multieSelectDropDown" name="coordinators" id="coordinators" multiple data-allow-clear="1">
 
@@ -100,13 +92,15 @@
                                                             $ci_records = explode('/',$ci);
                                                         @endphp
                                                         @foreach($siteCoordinators as $siteCO)
-                                                           @php $array =  explode(',',$siteCO->coordinator_id);  @endphp
+                                                            @php $array =  explode(',',$siteCO->coordinator_id);  @endphp
 
                                                         @endforeach
                                                         <option value="{{$ci_records[0]}}" {{in_array($ci_records[0],$array) ? 'selected': ''}} >{{$ci_records[1]}}</option>
 
                                                     @endforeach
-                                                </Select></td>
+                                                </Select>
+                                            </td>
+
                                             <td>{{ucfirst($site->site_city)}}</td>
                                             <td>{{ucfirst($site->site_state)}}</td>
                                             <td>{{ucfirst($site->site_country)}}</td>
@@ -760,7 +754,6 @@
             </div>
         </div>
         @endsection
-
         @section('styles')
             <link rel="stylesheet" href="{{ asset("public/dist/vendors/datatable/css/dataTables.bootstrap4.min.css") }}">
             <link rel="stylesheet" href="{{ asset("public/dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css") }}">
@@ -1661,6 +1654,7 @@
                             $('#select-sites').html('');
                             html +='<ul class="ms-list" tabindex="-1">';
                             $.each(results,function(i,v){
+                                console.log(results);
                                 if(i ==0){
                                     var selected = 'selected';
                                 }
@@ -1724,10 +1718,10 @@
                     });
                 });
 
-                $('.coordinatorsData').change(function(){
 
-                 var coordinators_id = $(this).val();
-                 var table_site_study_id = $("#table_site_study_id").val();
+                    $('body ').on('change','.coordinatorsData',function(){
+                        var coordinators_id = $(this).val();
+                        var table_site_study_id = $("#table_site_study_id").val();
 
                  $.ajax({
                         url: "{{route('insertCO')}}",
@@ -1742,8 +1736,10 @@
                     });
 
                 });
+
+
                 $(document).ready(function() {
-                    $('.primaryInvestigatorData ').change(function(){
+                    $('body ').on('change','.primaryInvestigatorData',function(){
                         var pi_id_value = $("#primaryInvestigator").val();
                         var table_site_study_id = $("#table_site_study_id").val();
 
