@@ -39,12 +39,22 @@ class FormController extends Controller
         $data['data'] = $phases;
         echo json_encode($data);
     }
+
     public function get_steps_by_phaseId($id)
     {
         $PhaseSteps = PhaseSteps::select('*')->where('phase_id',$id)->get();
-        $stepsData['data'] = $PhaseSteps;
+        $parentArray = $step = [];
+        foreach($PhaseSteps as $phaseStep){                        
+            $step['step_id'] = $phaseStep->step_id;
+            $step['form_type'] = $phaseStep->formType->form_type;
+            $step['step_name'] = $phaseStep->step_name;
+            $parentArray[] = $step;
+        }
+        
+        $stepsData['data'] = $parentArray;
         echo json_encode($stepsData);
     }
+
     public function get_section_by_stepId($id)
     {
         $section = Section::select('*')->where('phase_steps_id',$id)->orderBy('sort_number', 'asc')->get();

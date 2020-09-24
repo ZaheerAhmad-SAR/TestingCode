@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Admin\Entities\FormType;
 
-class FormTypeSeederTableSeeder extends Seeder
+class FormTypeTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.

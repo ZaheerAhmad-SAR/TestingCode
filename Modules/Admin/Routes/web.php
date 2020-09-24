@@ -56,7 +56,10 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
     Route::DELETE('optionsGroup/destroy/{options_id}','OptionsGroupController@destroy')->name('destroyOptionsGroup');
     Route::post('getall_options','FormController@getall_options')->name('getall_options');
 
-
+    // routes for annotation
+    Route::resource('annotation','AnnotationController');
+    Route::post('annotation/updateAnnotation','AnnotationController@update_annotation')->name('updateAnnotation');
+    Route::DELETE('annotation/delete/{id}','AnnotationController@deleteAnnotation')->name('delete');
     // routes for form managment
     Route::resource('forms','FormController');
     Route::post('forms/add_questions','FormController@add_questions')->name('addQuestions');
@@ -159,7 +162,6 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
     //SubjectFormLoader
     Route::get('subject_form/{study_id}/{subject_id}','SubjectFormLoaderController@showSubjectForm')->name('showSubjectForm');
     Route::post('/subject_form/submitStudyPhaseStepQuestionForm','SubjectFormSubmissionController@submitForm')->name('submitStudyPhaseStepQuestionForm');
-    Route::post('/subject_form/submitStudyPhaseStepSingleQuestion','SubjectFormSubmissionController@submitSingleQuestion')->name('submitStudyPhaseStepSingleQuestion');
     //Assign Roles ToPhase and Step
     Route::post('getAssignRolesToPhaseForm','AssignRolesPhaseStepController@getAssignRolesToPhaseForm')->name('getAssignRolesToPhaseForm');
     Route::post('getAssignRolesToPhaseStepForm','AssignRolesPhaseStepController@getAssignRolesToPhaseStepForm')->name('getAssignRolesToPhaseStepForm');
