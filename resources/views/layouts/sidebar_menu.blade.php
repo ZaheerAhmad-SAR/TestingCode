@@ -29,9 +29,9 @@
                 <ul>
                         <li class="dropdown"><a href="#"><i class="icon-grid"></i>System Tools</a>
                             <ul class="sub-menu">
-                                @if(hasPermission(auth()->user(),'systemusers.index'))
-                                    <li class="@if(is_active('systemusers.index')) {{ ' active' }} @endif">
-                                        <a href="{!! route('systemusers.index') !!}">
+                                @if(hasPermission(auth()->user(),'users.index'))
+                                    <li class="@if(is_active('users.index')) {{ ' active' }} @endif">
+                                        <a href="{!! route('users.index') !!}">
                                             System Users
                                         </a>
                                     </li>
@@ -85,9 +85,9 @@
                                         </a>
                                     </li>
                                 @endif
-                                @if(hasPermission(auth()->user(),'studyrole.index'))
-                                    <li class="@if(is_active('studyrole.index')) {{ ' active' }} @endif">
-                                        <a href="{!! route('studyrole.index') !!}">
+                                @if(hasPermission(auth()->user(),'studyRoles.index'))
+                                    <li class="@if(is_active('studyRoles.index')) {{ ' active' }} @endif">
+                                        <a href="{!! route('studyRoles.index') !!}">
                                             Study  Roles
                                         </a>
                                     </li>

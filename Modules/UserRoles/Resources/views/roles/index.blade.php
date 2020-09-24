@@ -100,6 +100,13 @@
                                         @enderror
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <div class="col-md-3">Role Type <sup>*</sup></div>
+                                    <div class="form-group col-md-9">
+                                        <input type="radio" name="role_type_name" id="for_system_user" value="system_role" checked> System Role &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" name="role_type_name" id="for_study_user" value="study_role"> Study Role
+                                    </div>
+                                </div>
                             </div>
                             <div class="tab-pane fade" id="nav-StudyActivities" role="tabpanel" aria-labelledby="nav-Validation-tab">
                                 <div class="form-group row" style="margin-top: 15px;">

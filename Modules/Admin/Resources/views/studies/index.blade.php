@@ -3,15 +3,15 @@
     <title> Studies | {{ config('app.name', 'Laravel') }}</title>
 @stop
 @section('styles')
-    <link rel="stylesheet" href="{{ asset("public/dist/vendors/tablesaw/tablesaw.css") }}">
-    <link rel="stylesheet"  href="{{ asset('public/dist/vendors/chartjs/Chart.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/dist/vendors/morris/morris.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/dist/vendors/weather-icons/css/pe-icon-set-weather.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/dist/vendors/chartjs/Chart.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/dist/vendors/starrr/starrr.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/dist/vendors/fontawesome/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/dist/vendors/ionicons/css/ionicons.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-2.0.3.css') }}">
+    <link rel="stylesheet" href="{{ asset("dist/vendors/tablesaw/tablesaw.css") }}">
+    <link rel="stylesheet"  href="{{ asset('dist/vendors/chartjs/Chart.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('dist/vendors/morris/morris.css') }}">
+    <link rel="stylesheet" href="{{ asset('dist/vendors/weather-icons/css/pe-icon-set-weather.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('dist/vendors/chartjs/Chart.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('dist/vendors/starrr/starrr.css') }}">
+    <link rel="stylesheet" href="{{ asset('dist/vendors/fontawesome/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('dist/vendors/ionicons/css/ionicons.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('dist/vendors/jquery-jvectormap/jquery-jvectormap-2.0.3.css') }}">
 @stop
 
 @section('content')
@@ -53,6 +53,7 @@
                                 </th>
                                 <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block">Progress Bar</th>
                                 <th scope="col" data-tablesaw-priority="1">Status</th>
+                                <th scope="col" data-tablesaw-priority="1">Study Admin</th>
                                 <th scope="col" data-tablesaw-priority="4">Action</th>
                             </tr>
                             </thead>
@@ -83,6 +84,7 @@
                                             </div>
                                         </td>
                                         <td>{{$study->study_status}}</td>
+                                        <td></td>
                                         @if(hasPermission(auth()->user(),'studies.edit'))
                                         <td>
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
@@ -153,6 +155,7 @@
                         <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
                             <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-Basic" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
                             <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-Disease" role="tab" aria-controls="nav-profile" aria-selected="false">Disease Cohort</a>
+                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-users" role="tab" aria-controls="nav-profile" aria-selected="false">Study Admin</a>
                         </div>
                     </nav>
                     <div class="tab-content" id="nav-tabContent">
@@ -248,9 +251,28 @@
                                     @endif
                                 </div>
                             </div>
-
                         </div>
-                    </div>
+
+                        {{-- Assign Users --}}
+                        <div class="tab-pane fade" id="nav-users" role="tabpanel" aria-labelledby="nav-Validation-tab">
+                            <div class="form-group row" style="margin-top: 10px;">
+                                <label for="study_users" class="col-sm-3">Select Users</label>
+                                <div class="{!! ($errors->has('users')) ?'col-sm-9 has-error':'col-sm-9' !!}">
+                                    <select class="searchable" id="select-users" multiple="multiple" name="users[]">
+                                        @foreach($users as $user)
+                                        <option value="{{$user->id}}">{{$user->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                @error('users')
+                                <span class="text-danger small">
+                                    {{ $message }}
+                                    </span>
+                                @enderror
+                            </div>
+                        </div>
+
+                            </div>
                     <div class="modal-footer">
                         <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                         @if(hasPermission(auth()->user(),'studies.store'))
@@ -307,10 +329,10 @@
     </div>
 @endsection
 @section('script')
-    <script src="{{ asset('public/dist/js/jquery.validate.min.js') }}"></script>
-    <script  src="{{ asset('public/dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
-    <script  src="{{ asset('public/dist/vendors/lineprogressbar/jquery.barfiller.js') }}"></script>
-    <script src="{{ asset('public/dist/js/home.script.js') }}"></script>
+    <script src="{{ asset('dist/js/jquery.validate.min.js') }}"></script>
+    <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
+    <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.barfiller.js') }}"></script>
+    <script src="{{ asset('dist/js/home.script.js') }}"></script>
     <script>
     $(document).ready(function(){
             $('.add_field').on('click',function (e) {

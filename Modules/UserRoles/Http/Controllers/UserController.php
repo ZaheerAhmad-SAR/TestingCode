@@ -26,7 +26,7 @@ class UserController extends Controller
     public function index()
     {
         if (Auth::user()->can('users.create')) {
-            $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
+            $roles  =   Role::where('role_type','=','system_role')->get();
         }
 
         if (hasPermission(auth()->user(),'studytools.index')){
@@ -47,13 +47,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        if (Auth::user()->can('users.create')) {
-            $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
-
+            $roles  =   Role::where('role_type','=','system_role')->get();
             return view('userroles::users.create',compact('roles'));
-        }
 
-        return redirect('dashboard');
     }
 
     /**
@@ -67,9 +63,10 @@ class UserController extends Controller
         $userID = $request->user_id;
         $id = Str::uuid();
         $user = User::updateOrCreate([
-            'id' => $id],
+            'id' => $id,
+            'email' => $request->email,
+            ],
             ['name' => $request->name,
-                'email' => $request->email,
                 'password' => encrypt($request->password),
                 'created_by'    => \auth()->user()->id
             ]);
@@ -129,8 +126,6 @@ class UserController extends Controller
      */
     public function update(UserRequest $request, $id)
     {
-
-
         $user   =   User::find($id);
         $user->update([
             'name'  =>  $request->name,
@@ -160,7 +155,6 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        dd('delete');
         $user = User::find($id);
     }
 }

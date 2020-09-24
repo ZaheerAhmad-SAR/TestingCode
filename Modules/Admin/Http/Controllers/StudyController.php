@@ -28,9 +28,12 @@ class StudyController extends Controller
     {
       $user = User::with('studies','user_roles')->find(Auth::id());
         //$user = User::with('studies')->find(Auth::id());
-        if ($user->role->name == 'admin'){
+       if(hasPermission(\auth()->user(),'users.create')){
             $studies  =   Study::orderBy('study_short_name')->get();
-            $users = User::all();
+            $users = User::select('users.*')->join('user_roles','user_roles.user_id','=','users.id')
+                ->join('roles','roles.id','=','user_roles.role_id')
+                ->where('roles.name','=','Study Admin')
+                ->get();
             $sites = Site::all(
             );
             //dd('admin');
@@ -76,7 +79,7 @@ class StudyController extends Controller
     public function create()
     {
         if (Auth::user()->can('users.create')) {
-            $users = User::select('name', 'id')->where('user_type', '==', 0)->get();
+            $users = User::all();
             $sites = Site::get();
             return view('admin::studies.create', compact('users','sites'));//->with(compact('permissions'));
         }
@@ -160,7 +163,7 @@ class StudyController extends Controller
             ->get();
 
         $diseaseCohort = DiseaseCohort::where('study_id','=',$id)->get();
-        return view('admin::subjects.index',compact('study','subjects','currentStudy','site_study','diseaseCohort'));
+        return view('admin::studies.show',compact('study','subjects','currentStudy','site_study','diseaseCohort'));
     }
 
     /**

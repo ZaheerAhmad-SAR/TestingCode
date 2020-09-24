@@ -63,6 +63,7 @@ class SystemusersController extends Controller
      */
     public function store(UserRequest $request)
     {
+        dd('system');
         if ($request->ajax()) {
             $userID = $request->user_id;
             $id = Str::uuid();

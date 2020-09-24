@@ -10,7 +10,7 @@ use Modules\Admin\Entities\PhaseStep;
 
 class Role extends Model
 {
-    protected $fillable = ['id','name','description','created_by'];
+    protected $fillable = ['id','name','description','role_type','created_by'];
     public $incrementing = false;
     public $keyType = 'string';
 

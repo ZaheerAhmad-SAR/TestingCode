@@ -26,7 +26,7 @@ class StudyusersController extends Controller
     public function index()
     {
         if (Auth::user()->can('users.create')) {
-            $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
+            $roles  =   Role::where('role_type','=','study_role')->get();
         }
 
         if (hasPermission(auth()->user(),'studytools.index')){
@@ -63,6 +63,7 @@ class StudyusersController extends Controller
      */
     public function store(UserRequest $request)
     {
+        dd('study user');
         if ($request->ajax()) {
             $userID = $request->user_id;
             $id = Str::uuid();
@@ -115,6 +116,7 @@ class StudyusersController extends Controller
      */
     public function edit($id)
     {
+        dd('study');
         $where = array('id' => $id);
         $user  = User::with('user_roles')->where($where)->first();
         dd($user);
