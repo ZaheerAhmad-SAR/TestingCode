@@ -61,7 +61,7 @@ class StudySiteController extends Controller
         }
         $unassignSites = Site::select('sites.*')
             ->whereNotIn('sites.id', $siteArray)->get();
-        return view('admin::studies.studySiteNew',compact('sites','unassignSites','records','coordinators','primaryInvestigator'));
+        return view('admin::studies.studySiteNew',compact('sites','unassignSites','records','siteCoordinators'));
     }
 
 
