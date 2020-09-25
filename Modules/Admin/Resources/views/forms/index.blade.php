@@ -221,116 +221,12 @@
                         <div class="py-3 border-bottom border-primary">
                             <span class="text-muted font-w-600">Default Validation</span><br>
                         </div>
-                       {{--  <div class="form-group">
+                        <div class="form-group">
                             <div class="col-sm-12" style="margin-top: 10px;padding-left: 0px;"><button type="button" class="btn btn-outline-primary addvalidations"><i class="fa fa-plus"></i> Add Message</button></div>    
-                        </div> --}}
-                        <div class="values_row">
-                            <div class="form-group row" style="margin-top: 10px;">
-                                <div class="col-sm-2"> Take Decision:</div>
-                                <div class="col-sm-4">
-                                    <select class="form-control decision"><option value="">---Based ON---</option><option value="question_value">Question Value</option><option value="custom_value">Custom Value</option></select> 
-                                </div>
-                                <div class="col-sm-2"> Operator:</div>
-                                <div class="col-sm-4">
-                                    <select class="form-control">
-                                        <option value="">---Select---</option>
-                                        <option value="=">Equal</option>
-                                        <option value=">=">Greater OR Equal</option>
-                                        <option value="<=">Less OR Equal</option>
-                                        <option value="!=">Not Equal</option>
-                                        <option value=">">Greater Then</option>
-                                        <option value="<">Less</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-sm-2 questionValue" style="display: none;">Section:</div>
-                                <div class="col-sm-4 questionValue" style="display: none;">
-                                    <select class="form-control decisionSections">
-                                        <option value="">---Section---</option> 
-                                    </select>
-                                </div>
-                                <div class="col-sm-2 questionValue" style="display: none;">With:</div>
-                                <div class="col-sm-4 questionValue" style="display: none;">
-                                    <select class="form-control decision_question">
-                                        <option value="">---Select Question---</option> 
-                                    </select>
-                                </div>
-                                <div class="col-sm-2 customValue" style="display: none;">Decision Value:</div>
-                                <div class="col-sm-4 customValue" style="display: none;">
-                                    <input type="text" name="custom_value" class="form-control custom_value" placeholder="Define Value">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-sm-2"> Condition:</div>
-                                <div class="col-sm-10">
-                                    <select class="form-control operators">
-                                        <option value="">Select if third conditon as well</option>
-                                        <option value="and">AND</option>
-                                        <option value="or">OR</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="third_condition" style="display: none;">
-                            <div class="form-group row">
-                                <div class="col-sm-2"> Take Decision:</div>
-                                <div class="col-sm-4">
-                                    <select class="form-control decision2">
-                                        <option value="">---Based ON---</option>
-                                        <option value="question_value_sec">Question Value</option>
-                                        <option value="custom_value_sec">Custom Value</option>
-                                    </select> 
-                                </div>
-                                <div class="col-sm-2"> Operator:</div>
-                                <div class="col-sm-4">
-                                    <select class="form-control">
-                                        <option value="">---Select---</option>
-                                        <option value="=">Equal</option>
-                                        <option value=">=">Greater OR Equal</option>
-                                        <option value="<=">Less OR Equal</option>
-                                        <option value="!=">Not Equal</option>
-                                        <option value=">">Greater Then</option>
-                                        <option value="<">Less</option>
-                                    </select>
-                                </div>
-                            </div>
-                             <div class="form-group row">
-                                <div class="col-sm-2 questionValue2" style="display: none;">Section:</div>
-                                <div class="col-sm-4 questionValue2" style="display: none;">
-                                    <select class="form-control decisionSections2">
-                                        <option value="">---Section---</option> 
-                                    </select>
-                                </div>
-                                <div class="col-sm-2 questionValue2" style="display: none;">With:</div>
-                                <div class="col-sm-4 questionValue2" style="display: none;">
-                                    <select class="form-control decision_question2">
-                                        <option value="">---Select Question---</option> 
-                                    </select>
-                                </div>
-                                <div class="col-sm-2 customValue2" style="display: none;">Decision Value:</div>
-                                <div class="col-sm-4 customValue2" style="display: none;">
-                                    <input type="text" name="custom_value" class="form-control custom_value" placeholder="Define Value">
-                                </div>
-                            </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-sm-2"> Show a:</div>
-                                <div class="col-sm-4">
-                                    <select name="requiredvalidation_value" id="requiredvalidation_value" class="form-control">
-                                        <option value="">Exclusion</option>
-                                        <option value="">Error</option>
-                                        <option value="">Warning</option>
-                                    </select> 
-                                </div>
-                                <div class="col-sm-2">Message:</div>
-                                <div class="col-sm-4">
-                                    <textarea name="validation_message" class="form-control" rows="1"></textarea>
-                                </div>
-                            </div>
-                        </div>    
-                        <div class="appendDatavalidations values_row">    
+                        </div>
+                        <div class="appendDatavalidations">  
+
                         </div>                        
-                      
                     </div>
                     <div class="tab-pane fade" id="nav-Dependencies" role="tabpanel" aria-labelledby="nav-Dependencies-tab">
                         <div class="py-3 border-bottom border-primary">
@@ -357,7 +253,7 @@
                         </div>
                         <div class="appendannotation">
                             
-                        </div>
+                        </div>    
                     </div>
                     <div class="tab-pane fade" id="nav-Advanced" role="tabpanel" aria-labelledby="nav-Advanced-tab">
                         <div class="py-3 border-bottom border-primary">
@@ -371,21 +267,52 @@
                             </div> 
                         </div> 
                     </div>          
-                            <div class="tab-pane fade" id="nav-Adjudication" role="tabpanel"
-                                aria-labelledby="nav-Advanced-tab">
-                                <div class="py-3 border-bottom border-primary">
-                                    <span class="text-muted font-w-600">Set Up Adjudication </span><br>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-sm-12" style="margin-top: 10px;padding-left: 0px;"><button type="button"
-                                            class="btn btn-outline-primary defineAdjudication"><i class="fa fa-plus"></i>
-                                            Define Adjudication</button></div>
-                                </div>
-                                <div class="appendAdj">
-
-                                </div>
+                        <div class="tab-pane fade" id="nav-Adjudication" role="tabpanel"
+                            aria-labelledby="nav-Advanced-tab">
+                            <div class="py-3 border-bottom border-primary">
+                                <span class="text-muted font-w-600">Set Up Adjudication Status On Current Question</span><br>
                             </div>
-
+                            <div class="form-group row" style="margin-top: 10px">
+                                <div class="col-sm-2">Adjudication</div>    
+                                <div class="col-sm-4">
+                                    <select class="form-control" name="adjudication" id="adjudication_status">
+                                        <option value="">---Adjudication Status---</option>
+                                        <option value="required"> Required </option>
+                                        <option value="not_required">Not Required </option>
+                                    </select>
+                                </div> 
+                                <div class="col-sm-2 display-none show_if_required">Based ON</div>    
+                                <div class="col-sm-4 display-none show_if_required">
+                                    <select class="form-control" name="adj_decision" id="adj_decision">
+                                        <option value="">---Decision---</option>
+                                        <option value="any_change">Any Change</option>
+                                        <option value="custom_value">Custom Value</option>
+                                        <option value="persent_value">Percentage Value</option>
+                                    </select>
+                                </div>    
+                            </div>
+                            <div class="show_if_custom_percent display-none">
+                                <div class="form-group row">
+                                    <div class="col-sm-2"> Operator:</div>
+                                    <div class="col-sm-4">
+                                        <select class="form-control">
+                                            <option value="">---Select---</option>
+                                            <option value="-">Difference</option>
+                                            <option value="=">Equal</option>
+                                            <option value=">=">Greater OR Equal</option>
+                                            <option value="<=">Less OR Equal</option>
+                                            <option value="!=">Not Equal</option>
+                                            <option value=">">Greater Then</option>
+                                            <option value="<">Less Then</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-2">Value:</div>
+                                    <div class="col-sm-4">
+                                        <input type="text" name="custom_percentage_value" class="form-control" placeholder="Define custom or percentage value for adjudication">
+                                    </div>
+                                </div>
+                            </div>    
+                        </div>
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close"
@@ -493,6 +420,9 @@
     .float-right{
         float: right;
     }
+    .display-none{
+        display: none;
+    }
 </style>
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
 @endsection
@@ -506,17 +436,12 @@
        $('.appendDataOptions').append('<div class="values_row_options"><div class="form-group row"><div class="form-group col-md-6"><input type="text" id="option_name" name="option_name[]" class="form-control" placeholder="Enter option name" style="background:white;"></div><div class="form-group col-md-4"><input type="number" placeholder="Option value" name="option_value[]" id="option_value" class="form-control" style="background:white;"></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove_option" style="margin-top: 3px;"></i></div></div></div>');
        return false;
    });
-   // $('.addvalidations').on('click',function(){
-   //     $('.appendDatavalidations').append('<div class="values_row"><div class="form-group row"><div class="col-sm-2"> Take Decision:</div><div class="col-sm-4"><select class="form-control decision"><option value="">---Based ON---</option><option value="question_value">Question Value</option><option value="custom_value">Custom Value</option></select> </div><div class="col-sm-2"> Condition:</div><div class="col-sm-4"><select class="form-control decision"><option value="and">AND</option><option value="or">OR</option></select></div></div><div class="form-group row"><div class="col-sm-2"> Operator:</div><div class="col-sm-4"><select class="form-control decision"><option value="">---Select---</option><option value="=">Equal</option><option value=">=">Greater OR Equal</option><option value="<=">Less OR Equal</option><option value="!=">Not Equal</option><option value=">">Greater Then</option><option value="<">Less</option></select></div><div class="col-sm-2 questionValue" style="display: none;">With:</div><div class="col-sm-4 questionValue" style="display: none;"><select class="form-control decision_question"><option value="">---Select Question---</option> </select></div><div class="col-sm-2 customValue" style="display: none;">Decision Value:</div><div class="col-sm-4 customValue" style="display: none;"><input type="text" name="custom_value" class="form-control custom_value" placeholder="Define Value"></div></div><div class="form-group row"><div class="col-sm-2"> Show a:</div><div class="col-sm-4"><select name="requiredvalidation_value" id="requiredvalidation_value" class="form-control"><option value="">Exclusion</option><option value="">Error</option><option value="">Warning</option></select> </div><div class="col-sm-2">Message:</div><div class="col-sm-4"><textarea name="validation_message" class="form-control" rows="1"></textarea></div></div></div>');
-           
-   //     return false;
-   // });
-   $('.defineAdjudication').on('click',function(){
-       $('.appendAdj').append('<div class="values_row"><div class="form-group row" style="margin-top: 10px;"><div class="col-sm-2">Click on Fetch get to phases </div><div class="col-sm-4"><span style="float: right;"><input type="button" value="Fetch" class="btn btn-primary fetch_phases"></span><span><select class="form-control all_phases" style="width: 82%;"><option value="">--- Select Phase---</option></select></span></div><div class="col-sm-2">Steps / Visits</div><div class="col-sm-3"><select class="form-control all_forms"><option value="">---Select Step / Form---</option></select></div><div class="col-sm-1"><i class="btn btn-outline-danger fa fa-trash remove" style="cursor:pointer;float:right;margin-top:3px;"></i></div></div><div class="form-group row"><div class="col-sm-2"> Sections:</div><div class="col-sm-4"><select class="form-control all_sections"><option value="">---Forms / Sections---</option></select></div><div class="col-sm-2"> Questions:</div><div class="col-sm-4"><select class="form-control all_questions"><option value="">---Select Question---</option></select></div></div><div class="form-group row"><div class="col-sm-2"> Take Decision:</div><div class="col-sm-4"><select class="form-control decision"><option value="">---Based ON---</option><option value="question_value">Question Value</option><option value="custom_value">Custom Value</option></select> </div><div class="col-sm-2"> Condition:</div><div class="col-sm-4"><select class="form-control decision"><option value="and">AND</option><option value="or">OR</option></select></div></div><div class="form-group row"><div class="col-sm-2"> Operator:</div><div class="col-sm-4"><select class="form-control decision"><option value="">---Select---</option><option value="=">Equal</option><option value=">=">Greater OR Equal</option><option value="<=">Less OR Equal</option><option value="!=">Not Equal</option><option value=">">Greater Then</option><option value="<">Less</option></select></div><div class="col-sm-2 questionValue" style="display: none;">With:</div><div class="col-sm-4 questionValue" style="display: none;"><select class="form-control decision_question"><option value="">---Select Question---</option> </select></div><div class="col-sm-2 customValue" style="display: none;">Decision Value:</div><div class="col-sm-4 customValue" style="display: none;"><input type="text" name="custom_value" class="form-control custom_value" placeholder="Define Value"></div></div><div class="form-group row"><div class="col-sm-2"> Show a:</div><div class="col-sm-4"><select name="requiredvalidation_value" id="requiredvalidation_value" class="form-control"><option value="">Exclusion</option><option value="">Error</option><option value="">Warning</option></select> </div><div class="col-sm-2">Message:</div><div class="col-sm-4"><textarea name="validation_message" class="form-control" rows="1"></textarea></div></div></div>');
+   $('.addvalidations').on('click',function(){
+       $('.appendDatavalidations').append('<div class="values_row"><div class="form-group row" style="margin-top: 10px;"><div class="col-sm-2"> Take Decision:</div><div class="col-sm-4"><select class="form-control decision"><option value="">---Based ON---</option><option value="question_value">Question Value</option><option value="custom_value">Custom Value</option></select></div><div class="col-sm-1"> Operator:</div><div class="col-sm-4"><select class="form-control"><option value="">---Select---</option><option value="=">Equal</option><option value=">=">Greater OR Equal</option><option value="<=">Less OR Equal</option><option value="!=">Not Equal</option><option value=">">Greater Then</option><option value="<">Less Then</option></select></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove" style="margin-top: 3px;"></i></div></div><div class="form-group row"><div class="col-sm-2 questionValue" style="display: none;">Section:</div><div class="col-sm-4 questionValue" style="display: none;"><span style="float:right;"><input type="button" class="btn btn-primary fetch_sections" value="Fetch"></span><span><select class="form-control decisionSections all_sections" style="width:82%"><option value="">---Section---</option></select></span></div><div class="col-sm-1 questionValue" style="display: none;">With:</div><div class="col-sm-5 questionValue" style="display: none;"><select class="form-control decision_question all_questions"><option value="">---Select Question---</option></select></div><div class="col-sm-2 customValue" style="display: none;">Decision Value:</div><div class="col-sm-4 customValue" style="display: none;"><input type="text" name="custom_value" class="form-control custom_value" placeholder="Define Value"></div></div><div class="form-group row"><div class="col-sm-2"> Condition:</div><div class="col-sm-10"><select class="form-control operators"><option value="">Select if third conditon as well</option><option value="and">AND</option><option value="or">OR</option></select></div></div><div class="third_condition" style="display: none;"><div class="form-group row"><div class="col-sm-2"> Take Decision:</div><div class="col-sm-4"><select class="form-control decision2"><option value="">---Based ON---</option><option value="question_value_sec">Question Value</option><option value="custom_value_sec">Custom Value</option></select></div><div class="col-sm-1"> Operator:</div><div class="col-sm-5"><select class="form-control"><option value="">---Select---</option><option value="=">Equal</option><option value=">=">Greater OR Equal</option><option value="<=">Less OR Equal</option><option value="!=">Not Equal</option><option value=">">Greater Then</option><option value="<">Less Then</option></select></div> </div><div class="form-group row"><div class="col-sm-2 questionValue2" style="display: none;">Section:</div><div class="col-sm-4 questionValue2" style="display: none;"><span style="float: right;"><input type="button" class="btn btn-primary fetch_sections2" value="Fetch"></span><span><select class="form-control decisionSections2 all_sections2" style="width:82%;"><option value="">---Section---</option></select></span></div><div class="col-sm-1 questionValue2" style="display: none;">With:</div><div class="col-sm-5 questionValue2" style="display: none;"><select class="form-control decision_question2 all_questions2"><option value="">---Select Question---</option></select></div><div class="col-sm-2 customValue2" style="display: none;">Decision Value:</div><div class="col-sm-4 customValue2" style="display: none;"><input type="text" name="custom_value" class="form-control custom_value" placeholder="Define Value"></div></div></div><div class="form-group row"><div class="col-sm-2"> Show a:</div><div class="col-sm-4"><select name="requiredvalidation_value" id="requiredvalidation_value" class="form-control"><option value="">Exclusion</option><option value="">Error</option><option value="">Warning</option></select></div><div class="col-sm-1">Message:</div><div class="col-sm-5"><textarea name="validation_message" class="form-control" rows="1"></textarea></div></div></div>');
            
        return false;
    });
-   
+ 
    $('body').on('click','.remove',function(){
         var row = $(this).closest('div.values_row');
         row.remove();
@@ -527,12 +452,18 @@
    })
    //
    $('.addannotation').on('click',function(){
-       $('.appendannotation').append('<div class="anno_values_row"><div class="form-group row"><div class="col-sm-2">Terminology:</div><div class="col-sm-9"><select name="terminology_value" id="terminology_value" class="form-control"><option value="">---Select Value---</option><option value="">One</option><option value="">Two</option><option value="">Three</option></select></div><div class="col-sm-1"><i class="btn btn-outline-danger fa fa-trash remove_anno" style="cursor:pointer;"></i></div></div><div class="form-group row"><div class="col-sm-2"> Value:</div><div class="col-sm-10"><input type="text" name="annotation_field_value" id="annotation_field_value" class="form-control"></div></div><div class="form-group row"><div class="col-sm-2">Description:</div><div class="col-md-10"><input type="text" name="annotation_message" class="form-control"></div></div></div>');
+       $('.appendannotation').append('<div class="anno_values_row"><div class="form-group row" style="margin-top: 10px;"><div class="col-sm-2">Terminology:</div><div class="col-sm-4"><span style="float: right;"><input type="button" value="Fetch" class="btn btn-primary fetch_annotation"></span><span><select id="terminology_value" name="terminology_value" class="form-control terminology_value" style="width: 82%;"><option value="">---Click on fetch to select Annotations---</option></select></span></div><div class="col-sm-1"> Value:</div><div class="col-sm-4"><input type="text" name="annotation_field_value" id="annotation_field_value" class="form-control"></div><div class="col-sm-1"><i class="btn btn-outline-danger fa fa-trash remove_anno" style="cursor:pointer;"></i></div></div><div class="form-group row"><div class="col-sm-2">Description:</div><div class="col-md-10"><textarea name="annotation_message" class="form-control" rows="2"></textarea></div></div></div>');
        return false;
    });
    $('body').on('click','.remove_anno',function(){
         var row = $(this).closest('div.anno_values_row');
         row.remove();
+   })
+   $('body').on('click','.fetch_annotation',function(){
+        var study_id = '{{ session("current_study") }}';
+        var row = $(this).closest('div.anno_values_row');
+        var anno_class = row.find('select.terminology_value');
+        get_all_annotations(study_id,anno_class);
    })
    $('.field_dependent').on('change',function(){
         var value = $(this).val();
@@ -567,12 +498,30 @@
         var section_class = row.find('select.all_sections');
         get_section_step_id(step_id,section_class);
    });
-    $('body').on('change','.all_sections',function(){
+   $('body').on('change','.all_sections',function(){
         var sec_id = $(this).val();
         var row = $(this).closest('div.values_row');
         var ques_class = row.find('select.all_questions');
         get_question_section_id(sec_id,ques_class);
-    });
+   });
+    $('body').on('click','.fetch_sections',function(){
+        var step_id = $('#steps').val();
+        var row = $(this).closest('div.values_row');
+        var section_class = row.find('select.all_sections');
+        get_section_step_id(step_id,section_class);
+    })
+    $('body').on('click','.fetch_sections2',function(){
+        var step_id = $('#steps').val();
+        var row = $(this).closest('div.values_row');
+        var section_class = row.find('select.all_sections2');
+        get_section_step_id(step_id,section_class);
+    })
+     $('body').on('change','.all_sections2',function(){
+        var sec_id = $(this).val();
+        var row = $(this).closest('div.values_row');
+        var ques_class = row.find('select.all_questions2');
+        get_question_section_id(sec_id,ques_class);
+   });
     $('body').on('change','.decision',function(){
         var value = $(this).val();
         var row = $(this).closest('div.values_row');
@@ -599,7 +548,15 @@
             row.find('.questionValue2').css('display', 'none');
         }
     });
-    
+      $('body').on('change','.operators',function(){
+        var value = $(this).val();
+        var row = $(this).closest('div.values_row');
+        if(value == 'and' || value == 'or'){
+            row.find('.third_condition').css('display', 'block');
+        }else if(value == ''){
+             row.find('.third_condition').css('display', 'none');
+        }
+    });
     $('#phases').on('change',function(){
         var phase_id = $(this).val();
         var step_class = $('select#steps');
@@ -624,45 +581,53 @@
         var ques_class = $('select.decision_question2');
         get_question_section_id(sec_id,ques_class); 
     });
-    $('.operators').on('change',function(){
+  
+    $('#adjudication_status').on('change',function(){
         var value = $(this).val();
-        if(value == 'and' || value == 'or'){
-            $('.third_condition').css('display', 'block');
-        }else if(value == ''){
-             $('.third_condition').css('display', 'none');
+        if(value =='required'){
+            $('.show_if_required').css('display', 'block');
+        }else{
+            $('.show_if_required').css('display', 'none');
+            $('.show_if_custom_percent').css('display', 'none');
         }
-    });
-    
-
-        /// update Question sort
-        $(document).ready(function() {
-            $('body').on('click', '.change_ques_sort', function() {
-                var row = $(this).closest('div.custom_fields');
-                var question_id = row.find('input.question_id').val();
-                var question_sort = row.find('input.question_sort').val();
-                $('#questionId').val(question_id);
-                $('#up_question_sort').val(question_sort);
-                $('#ChangeQuestionSort').modal('show');
-            })
-            $('body').on('click', '.delete_ques', function() {
-                var row = $(this).closest('div.custom_fields');
-                var question_id = row.find('input.question_id').val();
-                if (confirm('Are you sure to delete ?')) {
-                    $.ajax({
-                        url: 'forms/delete/' + question_id,
-                        type: 'post',
-                        data: {
-                            "_token": "{{ csrf_token() }}",
-                            "_method": 'DELETE',
-                            'questionId': question_id,
-                        },
-                        dataType: 'json',
-                        success: function(res) {
-                            row.remove();
-                        }
-                    })
-                }
-            })
+    })
+    $('#adj_decision').on('change',function(){
+        var value = $(this).val();
+        if(value =='custom_value' || value =='persent_value'){
+            $('.show_if_custom_percent').css('display', 'block');
+        }else{
+            $('.show_if_custom_percent').css('display', '');
+        }
+    })
+    /// update Question sort
+    $(document).ready(function() {
+        $('body').on('click', '.change_ques_sort', function() {
+            var row = $(this).closest('div.custom_fields');
+            var question_id = row.find('input.question_id').val();
+            var question_sort = row.find('input.question_sort').val();
+            $('#questionId').val(question_id);
+            $('#up_question_sort').val(question_sort);
+            $('#ChangeQuestionSort').modal('show');
+        })
+        $('body').on('click', '.delete_ques', function() {
+            var row = $(this).closest('div.custom_fields');
+            var question_id = row.find('input.question_id').val();
+            if (confirm('Are you sure to delete ?')) {
+                $.ajax({
+                    url: 'forms/delete/' + question_id,
+                    type: 'post',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "_method": 'DELETE',
+                        'questionId': question_id,
+                    },
+                    dataType: 'json',
+                    success: function(res) {
+                        row.remove();
+                    }
+                })
+            }
+        })
             // update question
             $('body').on('click', '.Edit_ques', function() {
                 $('#formfields').trigger('reset');

@@ -60,6 +60,7 @@ Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],functio
     Route::resource('annotation','AnnotationController');
     Route::post('annotation/updateAnnotation','AnnotationController@update_annotation')->name('updateAnnotation');
     Route::DELETE('annotation/delete/{id}','AnnotationController@deleteAnnotation')->name('delete');
+    Route::get('annotation/get_allAnnotations/{id}','AnnotationController@get_allAnnotations')->name('get_allAnnotations');
     // routes for form managment
     Route::resource('forms','FormController');
     Route::post('forms/add_questions','FormController@add_questions')->name('addQuestions');
