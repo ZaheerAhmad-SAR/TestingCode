@@ -144,7 +144,7 @@ addPrimaryInvestigator();
 // End of primary Investigator
 
 
-// Primary investigator Delete function
+// Primary Investigator Delete function
 function primaryinvestigatorDestroy()
 {
     $('body').on('click', '.deleteprimaryinvestigator', function () {

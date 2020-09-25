@@ -24,7 +24,7 @@ class StudySiteController extends Controller
      * @return Renderable
      */
     public function index()
-    {$records='';$siteCoordinators='';
+    {
         $siteArray = array();
         $sites = StudySite::select('site_study.*'
             ,'sites.site_name'
@@ -38,30 +38,19 @@ class StudySiteController extends Controller
             ->where('site_study.study_id','=',session('current_study'))->get();
         foreach ($sites as $site)
         {
-            $studySite = StudySite::find($site->id);
-            $siteCoordinators = $studySite->siteStudyCoordinator;
             $siteArray[] = $site->site_id;
             $primaryInvestigator  = PrimaryInvestigator::where('site_id',$site->site_id)->get();
-            $coordinators          = Coordinator::where('site_id',$site->site_id)->get();
-
             $primaryArray = array();
-            $coordinatorArray = array();
             foreach ($primaryInvestigator as $primary)
             {
                 //$primaryArray[] = $primary->id.'/'. $primary->first_name.' '.$primary->last_name;
                 $primaryArray[] = $primary->id.'/'. $primary->first_name;
             }
             $site->pi=$primaryArray;
-            foreach ($coordinators as $coordinator)
-            {
-            //$coordinatorArray[] = $coordinator->id.'/'. $coordinator->first_name.' '.$coordinator->last_name;
-            $coordinatorArray[] = $coordinator->id.'/'. $coordinator->first_name;
-            }
-            $site->ci = $coordinatorArray;
         }
         $unassignSites = Site::select('sites.*')
             ->whereNotIn('sites.id', $siteArray)->get();
-        return view('admin::studies.studySiteNew',compact('sites','unassignSites','records','coordinators','primaryInvestigator'));
+        return view('admin::studies.studySiteNew',compact('sites','unassignSites'));
     }
 
 
@@ -175,7 +164,7 @@ class StudySiteController extends Controller
         $table_site_study_id   = $_POST['table_site_study_id'];
         $data      = array('primaryInvestigator_id' => $pi_id_value);
         StudySite::where('id',$table_site_study_id)->update($data);
-        return response()->json(['success'=>'Primary investigator is updated successfully!!!!']);
+        return response()->json(['success'=>'Primary Investigator is updated successfully!']);
     }
 
     public function insertCoordinators(Request $request)
@@ -192,7 +181,7 @@ class StudySiteController extends Controller
                 'coordinator_id'=>$coordinator,
             ]);
         }
-        return response()->json([$result,'success'=>'Primary investigator is updated successfully!!!!']);
+        return response()->json([$result,'success'=>'Primary Investigator is updated successfully!!!!']);
     }
 
     /**

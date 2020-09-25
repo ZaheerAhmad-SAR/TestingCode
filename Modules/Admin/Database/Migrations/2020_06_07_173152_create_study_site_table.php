@@ -17,7 +17,6 @@ class CreateStudySiteTable extends Migration
             $table->increments('id');
             $table->uuid('study_id');
             $table->uuid('site_id');
-            $table->uuid('primaryInvestigator_id')->nullable();
             $table->timestamps();
         });
     }

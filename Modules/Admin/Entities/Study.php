@@ -52,5 +52,4 @@ class Study extends Model
     }
 
 
-
 }
