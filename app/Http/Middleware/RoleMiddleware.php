@@ -17,6 +17,7 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next)
     {
         $roles = $this->getRequiredRoleForRoute($request->route());
+       /* dd($request->user()->user_roles);*/
         $roles  =   $request->user()->role->name;
 
         if(!empty($request->user())){

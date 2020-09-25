@@ -3,16 +3,9 @@
     <title> Studies | {{ config('app.name', 'Laravel') }}</title>
 @stop
 @section('styles')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
     <link rel="stylesheet" href="{{ asset("dist/vendors/tablesaw/tablesaw.css") }}">
-    <link rel="stylesheet"  href="{{ asset('dist/vendors/chartjs/Chart.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('dist/vendors/morris/morris.css') }}">
-    <link rel="stylesheet" href="{{ asset('dist/vendors/weather-icons/css/pe-icon-set-weather.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('dist/vendors/chartjs/Chart.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('dist/vendors/starrr/starrr.css') }}">
-    <link rel="stylesheet" href="{{ asset('dist/vendors/fontawesome/css/all.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('dist/vendors/ionicons/css/ionicons.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('dist/vendors/jquery-jvectormap/jquery-jvectormap-2.0.3.css') }}">
-@stop
+    @stop
 
 @section('content')
     <div class="container-fluid site-width">
@@ -84,7 +77,13 @@
                                             </div>
                                         </td>
                                         <td>{{$study->study_status}}</td>
-                                        <td></td>
+                                        <td>
+                                            @if(!empty($study->users))
+                                               @foreach($study->users as $user)
+                                                    <strong>{!! ucfirst($user->name) !!},</strong>
+                                                @endforeach
+                                            @endif
+                                        </td>
                                         @if(hasPermission(auth()->user(),'studies.edit'))
                                         <td>
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
@@ -213,7 +212,7 @@
                                 </div>
                                 <label for="start_date" class="col-md-2">Start Date</label>
                                 <div class="{!! ($errors->has('start_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                    <input type="date" class="form-control" id="start_date" name="start_date" value="{{old('start_date')}}">
+                                    <input type="date" class="form-control" id="start_date" name="start_date" value="{{(\Carbon\Carbon::today())}}">
                                     @error('start_date')
                                     <span class="text-danger small"> {{ $message }} </span>
                                     @enderror

@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
 use Modules\Admin\Entities\RoleStudyUser;
+use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\Role;
+use Modules\UserRoles\Entities\RolePermission;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Http\Requests\UserRequest;
 
@@ -30,7 +32,16 @@ class StudyusersController extends Controller
         }
 
         if (hasPermission(auth()->user(),'studytools.index')){
-            $users  =   User::all();
+            $permissionsIdsArray = Permission::where(function($query){
+                $query->where('permissions.name','!=','studytools.create')
+                    ->orwhere('permissions.name','!=','studytools.store')
+                    ->orWhere('permissions.name','!=','studytools.edit')
+                    ->orwhere('permissions.name','!=','studytools.update');
+            })->distinct('id')->pluck('id')->toArray();
+
+            $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
+            $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
+            $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->get();
         }
         else{
             $users = User::where('deleted_at','=',Null)

@@ -66,7 +66,7 @@ class UserController extends Controller
             'id' => $id,
             'name' => $request->name,
             'email' => $request->email,
-            'password' => encrypt($request->password),
+            'password' => Hash::make($request->password),
             'created_by'    => \auth()->user()->id
             ]);
         if ($request->roles)
@@ -115,7 +115,7 @@ class UserController extends Controller
         $currentRole = $user->user_roles;
         $roles = Role::all();
 
-        return \response()->json($user);
+        return view('userroles::users.edit',compact('user','roles'));
     }
 
     /**
@@ -124,7 +124,7 @@ class UserController extends Controller
      * @param int $id
      * @return Response
      */
-    public function update(UserRequest $request, $id)
+    public function update(Request $request, $id)
     {
         $user   =   User::find($id);
         $user->update([

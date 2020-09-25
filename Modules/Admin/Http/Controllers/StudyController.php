@@ -15,6 +15,9 @@ use Illuminate\Support\Facades\Auth;
 use Modules\Admin\Entities\StudySite;
 use Modules\Admin\Entities\StudyUser;
 use Modules\Admin\Entities\Subject;
+use Modules\UserRoles\Entities\Permission;
+use Modules\UserRoles\Entities\RolePermission;
+use Modules\UserRoles\Entities\UserRole;
 use Psy\Util\Str;
 
 
@@ -29,11 +32,26 @@ class StudyController extends Controller
       $user = User::with('studies','user_roles')->find(Auth::id());
         //$user = User::with('studies')->find(Auth::id());
        if(hasPermission(\auth()->user(),'users.create')){
-            $studies  =   Study::orderBy('study_short_name')->get();
-            $users = User::select('users.*')->join('user_roles','user_roles.user_id','=','users.id')
-                ->join('roles','roles.id','=','user_roles.role_id')
-                ->where('roles.name','=','Study Admin')
-                ->get();
+            $studies  =   Study::with('users')->orderBy('study_short_name')->get();
+/*            $users = User::select('users.name as user_name','user_roles.*','permissions.id','permissions.name')
+                ->join('user_roles','user_roles.user_id','=','users.id')
+                ->join('permission_role','permission_role.role_id','=','user_roles.role_id')
+                ->join('permissions','permissions.id','=','permission_role.permission_id')
+                ->where('permissions.name','=','studytools.create')
+                ->orwhere('permissions.name','=','studytools.store')
+                ->where('permissions.name','=','studytools.edit')
+                ->orwhere('permissions.name','=','studytools.update')
+                ->get();*/
+           $permissionsIdsArray = Permission::where(function($query){
+               $query->where('permissions.name','=','studytools.create')
+                   ->orwhere('permissions.name','=','studytools.store')
+                   ->orWhere('permissions.name','=','studytools.edit')
+                   ->orwhere('permissions.name','=','studytools.update');
+           })->distinct('id')->pluck('id')->toArray();
+
+           $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
+           $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
+           $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->get();
             $sites = Site::all(
             );
             //dd('admin');

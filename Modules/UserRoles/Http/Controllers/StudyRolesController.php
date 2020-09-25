@@ -17,7 +17,7 @@ class StudyRolesController extends Controller
     public function index()
     {
         if (hasPermission(auth()->user(),'studytools.index')){
-            $roles  =  Role::where('role_type','=','study_role')->orderBY('name','asc')->get();
+            $study_roles  =  Role::where('role_type','=','study_role')->orderBY('name','asc')->get();
         }
 //        $permissions = Permission::all();
         $permissions = Permission::where('controller_name','=','grading')
@@ -26,7 +26,7 @@ class StudyRolesController extends Controller
             ->orwhere('controller_name','=','systemtools')
             ->get();
 
-        return view('userroles::roles.index',compact('roles','permissions'));
+        return view('userroles::roles.studyroles_index',compact('study_roles','permissions'));
 
     }
 

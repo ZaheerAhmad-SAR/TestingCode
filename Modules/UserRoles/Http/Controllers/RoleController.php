@@ -22,7 +22,8 @@ class RoleController extends Controller
     public function index()
     {
         if (hasPermission(auth()->user(),'systemtools.index')){
-            $roles  =  Role::where('role_type','=','system_role')->orderBY('name','asc')->get();
+            $system_roles  =  Role::where('role_type','=','system_role')->orderBY('name','asc')->get();
+            $study_roles  =  Role::where('role_type','=','study_role')->orderBY('name','asc')->get();
         }
 
 //        $permissions = Permission::all();
@@ -32,7 +33,7 @@ class RoleController extends Controller
             ->orwhere('controller_name','=','systemtools')
             ->get();
 
-        return view('userroles::roles.index',compact('roles','permissions'));
+        return view('userroles::roles.index',compact('study_roles','system_roles','permissions'));
     }
 
     /**
