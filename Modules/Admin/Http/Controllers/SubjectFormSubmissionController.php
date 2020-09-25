@@ -30,7 +30,7 @@ class SubjectFormSubmissionController extends Controller
         $answerFixedArray['section_id'] = $request->sectionId;
 
         foreach ($questions as $question) {
-            $form_field_name = 'field_' . $question->id;
+            $form_field_name = $question->formFields->variable_name;
             if ($request->has($form_field_name)) {
 
                 $answerArray = [];
@@ -69,8 +69,9 @@ class SubjectFormSubmissionController extends Controller
         $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
         if (null === $formStatusObj) {
             $formStatusObj = $this->insertFormStatus($request, $getFormStatusArray);
-        } elseif ($request->has(buildSafeStr($request->sectionId, 'terms_cond_'))) {
+        } elseif ($request->has(buildSafeStr($request->stepId, 'terms_cond_')) || ($request->has('edit_reason_text') && !empty($request->edit_reason_text))) {
             $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
+            $formStatusObj->edit_reason_text = $request->edit_reason_text;
             $formStatusObj->form_status = 'complete';
             $formStatusObj->update();
         }
@@ -82,7 +83,8 @@ class SubjectFormSubmissionController extends Controller
         $formStatusData = [
             'id' => Str::uuid(),
             'form_type_id' => $request->formTypeId,
-            'form_status' => 'resumable'
+            'edit_reason_text' => $request->edit_reason_text,
+            'form_status' => 'resumable',
         ] + $getFormStatusArray;
         return FormStatus::create($formStatusData);
     }
