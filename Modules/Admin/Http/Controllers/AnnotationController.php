@@ -63,6 +63,12 @@ class AnnotationController extends Controller
 
         return redirect()->route('annotation.index');
     }
+    public function get_allAnnotations($study_id){
+
+        $annotation = Annotation::select('*')->where('study_id',$study_id)->get();
+        $annotationData['data'] = $annotation;
+        echo json_encode($annotationData);
+    }
     public function destroy($id)
     {
         
