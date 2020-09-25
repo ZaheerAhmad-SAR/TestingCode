@@ -54,7 +54,7 @@
                                 <tr>
                                     <th>Code</th>
                                     <th>Name</th>
-                                    <th>Principal investigator</th>
+                                    <th>Principal Investigator</th>
                                     <th>Coordinator</th>
                                     <th>City</th>
                                     <th>State</th>
@@ -75,7 +75,7 @@
                                                     <option>--Select PI--</option>
                                                     @foreach($site->pi as $key => $pi)
                                                     @php $pi_records = explode('/',$pi); @endphp
-                                                        <option value="{{$pi_records[0]}}" {{$pi_records[0]==$site->primaryInvestigator_id ? 'selected="selected"': ''}}>{{$pi_records[1]}}</option>                                                        
+                                                        <option value="{{$pi_records[0]}}" {{$pi_records[0]==$site->primaryInvestigator_id ? 'selected="selected"': ''}}>{{$pi_records[1]}}</option>
                                                     @endforeach
                                                 </Select>
                                                 <input type="hidden" id="table_site_study_id_{{$site->id}}" name="table_site_study_id_{{$site->id}}" value="{{$site->id}}">
@@ -84,10 +84,10 @@
                                             <Select class="coordinatorsData multieSelectDropDown" name="coordinators_{{$site->id}}" id="coordinators_{{$site->id}}" multiple data-allow-clear="1" onchange="assignCoordinator('{{$site->id}}');">
                                             @php
                                             $studySite = Modules\Admin\Entities\StudySite::find($site->id);
-                                            $siteCoordinatorsIdsArray = $studySite->siteStudyCoordinatorIds();                                            
+                                            $siteCoordinatorsIdsArray = $studySite->siteStudyCoordinatorIds();
                                             $coordinators = Modules\Admin\Entities\Coordinator::where('site_id',$site->site_id)->get();
                                             @endphp
-                                                    @foreach($coordinators as $coordinator)                                                        
+                                                    @foreach($coordinators as $coordinator)
                                                         <option value="{{$coordinator->id}}" {{in_array($coordinator->id,$siteCoordinatorsIdsArray) ? 'selected': ''}} >{{$coordinator->first_name}}</option>
 
                                                     @endforeach
@@ -899,7 +899,7 @@
                 }
                 addPrimaryInvestigator();
                 // End of primary Investigator
-                // Primary investigator Delete function
+                // Primary Investigator Delete function
                 function primaryinvestigatorDestroy(){
                     $('body').on('click', '.deleteprimaryinvestigator', function () {
                         $.ajaxSetup({
@@ -1747,7 +1747,7 @@
                                 }, 10);
                             }
                         });
-                }                
+                }
 
 
             </script>
