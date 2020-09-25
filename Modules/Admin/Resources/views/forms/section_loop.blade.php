@@ -107,13 +107,20 @@
         <script>
             function submitSectionForms{{ $stepIdStr }}(stepIdStr) {
                 if ($('#terms_cond_'+stepIdStr).prop('checked')) {
+                    var anyFormEditable = false;
                     @foreach($sections as $key => $section)
                     @php
                     $sectionClsStr = buildSafeStr($section->id, 'sec_cls_');
                     $sectionIdStr = buildSafeStr($section->id, '');
                     @endphp
-                    submitForm('{{ $sectionIdStr }}', '{{ $sectionClsStr }}', '{{ $stepIdStr }}');
+                    if($('#fieldset_'+stepIdStr).prop('disabled') === false){
+                        anyFormEditable = true;
+                        submitForm('{{ $sectionIdStr }}', '{{ $sectionClsStr }}', '{{ $stepIdStr }}');
+                    }
                     @endforeach
+                    if(anyFormEditable === false){
+                        alert('Please make form editable first!');
+                    }
                 } else {
                     alert(
                         'Please acknowledge the truthfulness and correctness of information being submitting in this form!'

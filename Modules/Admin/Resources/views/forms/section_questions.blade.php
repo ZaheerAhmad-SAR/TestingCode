@@ -11,7 +11,7 @@
         </form>
         <form class="card-body" method="POST" name="form_{{ $sectionIdStr }}" id="form_{{ $sectionIdStr }}"
             onsubmit="return submitMe(event, '{{ $sectionIdStr }}', '{{ $sectionClsStr }}', '{{ $stepIdStr }}');">
-            <fieldset class="{{ $sectionClsStr }}">
+            <fieldset id="fieldset_{{$stepIdStr}}" class="{{ $sectionClsStr }}">
             @foreach ($section->questions as $question)
                 @php
                 $getAnswerArray = [

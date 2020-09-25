@@ -178,7 +178,7 @@
                 submitRequest(frmData);
                 disableFieldByClass(sectionClsStr);
                 setTimeout(function() {
-                   // location.reload();
+                   location.reload();
                 }, 1000);
 
             }
