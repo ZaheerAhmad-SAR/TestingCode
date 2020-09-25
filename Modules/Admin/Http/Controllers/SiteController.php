@@ -74,9 +74,11 @@ class SiteController extends Controller
                 'site_email'=>empty($request->site_email)? Null : $request->site_email
             ]);
 
+            $oldSite = [];
+
             // log event details
-            $logEventDetails = eventDetails($id, 'Site', 'Add', $request->ip());
-   
+            $logEventDetails = eventDetails($id, 'Site', 'Add', $request->ip(), $oldSite);
+            
             return response()->json(['site_id' => $id,'success'=>'Site Info is added successfully']);
 
         }
@@ -115,6 +117,8 @@ class SiteController extends Controller
      */
     public function update(Request $request)
     {
+        // get old site data for logs
+        $oldSite = Site::find($request->site_id);
         $data = array(
             'site_code'=> empty($request->site_code) ? Null : $request->site_code,
             'site_name' => empty($request->site_name) ? Null : $request->site_name,
@@ -128,7 +132,7 @@ class SiteController extends Controller
         Site::where('id', $request->site_id)->update($data);
 
         // log event details
-        $logEventDetails = eventDetails($request->site_id, 'Site', 'Update', $request->ip());
+        $logEventDetails = eventDetails($request->site_id, 'Site', 'Update', $request->ip(), $oldSite);
 
         return response()->json(['success'=>'Site Info is updated successfully']);
 

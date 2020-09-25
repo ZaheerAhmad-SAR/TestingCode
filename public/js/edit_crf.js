@@ -119,7 +119,7 @@ function get_steps_phase_id(id,step_class){
 
 function get_section_step_id(id,section_class){
    section_class.html(''); 
-   var options = '<option value="">---Forms / Sections---</option>';
+   var options = '<option value="">---Form / Sections---</option>';
    $.ajax({
         url:'forms/sections_by_stepId/'+id,
         type:'post',
@@ -155,6 +155,31 @@ function get_question_section_id(id,div_class){
         success:function(response){
             $.each(response['data'],function(k,v){
                 options += '<option value="'+v.question_id+'" >'+v.question_text+'</option>';
+            });
+            div_class.append(options); 
+        }
+    });    
+}
+
+// get all annotations
+
+
+
+function get_all_annotations(id,div_class){
+    div_class.html(''); 
+    var options = '<option value="">---Select Annotation---</option>';
+    $.ajax({
+        url:'annotation/get_allAnnotations/'+id,
+        type:'post',
+        dataType:'json',
+        data:{
+            "_token": "{{ csrf_token() }}",
+            "_method": 'GET',
+            'id': id
+        },
+        success:function(response){
+            $.each(response['data'],function(k,v){
+                options += '<option value="'+v.id+'" >'+v.label+'</option>';
             });
             div_class.append(options); 
         }

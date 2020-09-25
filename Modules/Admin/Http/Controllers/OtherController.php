@@ -49,8 +49,10 @@ class OtherController extends Controller
             'email'=>empty($request->others_email)? Null : $request->others_email
         ]);
 
+        $oldOthers = [];
+
         // log event details
-        $logEventDetails = eventDetails($id, 'Others', 'Add', $request->ip());
+        $logEventDetails = eventDetails($id, 'Others', 'Add', $request->ip(), $oldOthers);
 
         return response()->json([$others,'success'=>'others data is added successfully']);
     }
@@ -90,6 +92,9 @@ class OtherController extends Controller
      */
     public function update(Request $request)
     {
+        // get old data
+        $oldOthers = Other::find($request->others_id);
+
         $data = array (
             'first_name' => $request->others_first_name,
             'mid_name' => $request->others_mid_name,
@@ -104,7 +109,7 @@ class OtherController extends Controller
         $allOthers    = Other::where('site_id',$others_site_id)->get();
 
         // log event details
-        $logEventDetails = eventDetails($request->others_id, 'Others', 'Update', $request->ip());
+        $logEventDetails = eventDetails($request->others_id, 'Others', 'Update', $request->ip(), $oldOthers);
 
         return response()->json($allOthers);
 

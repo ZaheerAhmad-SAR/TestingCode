@@ -25,6 +25,7 @@ class CreateTrailLogsTable extends Migration
             $table->char('study_id', 36)->nullable();
             $table->text('event_url');
             $table->text('event_details')->nullable();
+            $table->text('event_old_details')->nullable();
             $table->timestamps();
         });
     }

@@ -48,8 +48,11 @@ class CoordinatorController extends Controller
             'email'=>empty($request->c_email)? Null : $request->c_email
         ]);
 
+        $oldCoordinator = [];
+
         // log event details
-        $logEventDetails = eventDetails($id, 'Coordinator', 'Add', $request->ip());
+        $logEventDetails = eventDetails($id, 'Coordinator', 'Add', $request->ip(), $oldCoordinator);
+   
 
         return response()->json([$coordinator,'success'=>'Coordinator is added successfully!!!!']);
     }
@@ -89,6 +92,8 @@ class CoordinatorController extends Controller
      */
     public function update(Request $request)
     {
+        // get old data for logs
+        $oldCoordinator = Coordinator::find($request->c_id);
         $data = array (
             'first_name' => $request->c_first_name,
             'mid_name' => $request->c_mid_name,
@@ -103,7 +108,7 @@ class CoordinatorController extends Controller
         $allCoordinator    = Coordinator::where('site_id',$c_site_id)->get();
 
          // log event details
-        $logEventDetails = eventDetails($request->c_id, 'Coordinator', 'Update', $request->ip());
+        $logEventDetails = eventDetails($request->c_id, 'Coordinator', 'Update', $request->ip(), $oldCoordinator);
 
         return response()->json($allCoordinator);
 

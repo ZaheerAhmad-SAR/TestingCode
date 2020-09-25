@@ -55,8 +55,10 @@ class OptionsGroupController extends Controller
                 'option_value'=>empty($value) ? Null: $value
             ]);
 
+        $oldOption = [];
+
         // log event details
-        $logEventDetails = eventDetails($uniqueID, 'Option Group', 'Add', $request->ip());
+        $logEventDetails = eventDetails($uniqueID, 'Option Group', 'Add', $request->ip(), $oldOption);
 
        return response()->json([$others,'success'=>'others data is added successfully']);
     }
@@ -93,6 +95,9 @@ class OptionsGroupController extends Controller
      */
     public function update(Request $request)
     {
+        // get old data for logs
+        $oldOption = OptionsGroup::find($request->options_groups_id);
+
         $input = $request->all();
         $input['option_name']   = $request->option_name_edit;
         $input['option_value']  = $request->option_value_edit;
@@ -109,7 +114,7 @@ class OptionsGroupController extends Controller
         OptionsGroup::where('id', $request->options_groups_id)->update($data);
 
         // log event details
-        $logEventDetails = eventDetails($request->options_groups_id, 'Option Group', 'Update', $request->ip());
+        $logEventDetails = eventDetails($request->options_groups_id, 'Option Group', 'Update', $request->ip(), $oldOption);
 
         return response()->json(['success'=>'Option Group  is Updated successfully.']);
     }
