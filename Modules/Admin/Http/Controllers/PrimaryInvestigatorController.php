@@ -51,8 +51,10 @@ class PrimaryInvestigatorController extends Controller
             'email'=>empty($request->pi_email)? Null : $request->pi_email
         ]);
 
+        $oldPA = [];
+
         // log event details
-        $logEventDetails = eventDetails($id, 'PI', 'Add', $request->ip());
+        $logEventDetails = eventDetails($id, 'PI', 'Add', $request->ip(), $oldPA);
 
         return response()->json(['id' => $id,'success'=>'Primary Investigator is added successfully']);
 
@@ -90,6 +92,8 @@ class PrimaryInvestigatorController extends Controller
      */
     public function update(Request $request)
     {
+        // get old data for logs
+        $oldPA = PrimaryInvestigator::find($request->pi_id);
         $data = array (
             'first_name' => $request->pi_first_name,
             'mid_name' => $request->pi_mid_name,
@@ -103,7 +107,7 @@ class PrimaryInvestigatorController extends Controller
         $allPi    = PrimaryInvestigator::where('site_id',$site_id)->get();
 
         // get event details
-        $getEventDetails = eventDetails($request->pi_id, 'PI', 'Update', $request->ip());
+        $getEventDetails = eventDetails($request->pi_id, 'PI', 'Update', $request->ip(), $oldPA);
 
         return response()->json($allPi);
     }

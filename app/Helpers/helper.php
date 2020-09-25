@@ -49,20 +49,35 @@ function hasPermission($user, $routeName){
     }
 }
 
-function eventDetails($eventId, $eventSection, $eventType, $ip) {
+function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
 
     $data = [];
+    $oldData = [];
+
+    ////////////////////// Option Group //////////////////////////////////////////
     if ($eventSection == 'Option Group') {
         // get event data
         $eventData = OptionsGroup::find($eventId);
         // store data in event array
-        $data = array(
+        $newData = array(
             'option_group_name' => $eventData->option_group_name,
             'option_group_description' => $eventData->option_group_description,
             'option_layout' => $eventData->option_layout,
-            'created_at' => $eventData->created_at,
-            'updated_at' => $eventData->updated_at,
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
         );
+        // check if it is update case
+        if ($eventType == 'Update') {
+            // store data in event array
+            $oldData = array(
+            'option_group_name' => $previousData->option_group_name,
+            'option_group_description' => $previousData->option_group_description,
+            'option_layout' => $previousData->option_layout,
+            'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+            );
+
+        } // update case ends
         // set message for log
         $messageType = $eventType == 'Add' ? 'added' : 'updated';
         // Log the event
@@ -76,14 +91,16 @@ function eventDetails($eventId, $eventSection, $eventType, $ip) {
         $trailLog->ip_address = $ip;
         $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
         $trailLog->event_url = url('optionsGroup');
-        $trailLog->event_details = json_encode($data);
+        $trailLog->event_details = json_encode($newData);
+        $trailLog->event_old_details = json_encode($oldData);
         $trailLog->save();
 
+    //////////////////////////////// Site ////////////////////////////////////////////////////////
     } else if($eventSection == 'Site') {
         // get event data
         $eventData = Site::find($eventId);
         // store data in event array
-        $data = array(
+        $newData = array(
             'site_code' => $eventData->site_code,
             'site_name' => $eventData->site_name,
             'site_address' => $eventData->site_address,
@@ -91,10 +108,26 @@ function eventDetails($eventId, $eventSection, $eventType, $ip) {
             'site_state' => $eventData->site_state,
             'site_code' => $eventData->site_code,
             'site_country' => $eventData->site_country,
-            'site_phone' => $eventData->site_country,
-            'created_at' => $eventData->created_at,
-            'updated_at' => $eventData->updated_at,
+            'site_phone' => $eventData->site_phone,
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
         );
+        // if it is update case
+        if($eventType == 'Update') {
+            
+            $oldData = array(
+            'site_code' => $previousData->site_code,
+            'site_name' => $previousData->site_name,
+            'site_address' => $previousData->site_address,
+            'site_city' => $previousData->site_city,
+            'site_state' => $previousData->site_state,
+            'site_code' => $previousData->site_code,
+            'site_country' => $previousData->site_country,
+            'site_phone' => $previousData->site_phone,
+            'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+            );
+        }
         // set message for log
         $messageType = $eventType == 'Add' ? 'added' : 'updated';
         // Log the event
@@ -108,22 +141,37 @@ function eventDetails($eventId, $eventSection, $eventType, $ip) {
         $trailLog->ip_address = $ip;
         $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
         $trailLog->event_url = url('sites');
-        $trailLog->event_details = json_encode($data);
+        $trailLog->event_details = json_encode($newData);
+        $trailLog->event_old_details = json_encode($oldData);
         $trailLog->save();
 
+    /////////////////////////////// Primary Investigator /////////////////////////////////////////////
     } else if($eventSection == 'PI') {
         // get event data
         $eventData = PrimaryInvestigator::find($eventId);
         // store data in event array
-        $data = array(
+        $newData = array(
             'first_name' => $eventData->first_name,
             'mid_name' => $eventData->mid_name,
             'last_name' => $eventData->last_name,
             'email' => $eventData->email,
             'phone' => $eventData->phone,
-            'created_at' => $eventData->created_at,
-            'updated_at' => $eventData->updated_at,
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
         );
+        // if it is update case
+        if($eventType == 'Update') {
+            
+            $oldData = array(
+            'first_name' => $previousData->first_name,
+            'mid_name' => $previousData->mid_name,
+            'last_name' => $previousData->last_name,
+            'email' => $previousData->email,
+            'phone' => $previousData->phone,
+            'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+            );
+        }
         // set message for log
         $messageType = $eventType == 'Add' ? 'added' : 'updated';
         // Log the event
@@ -137,22 +185,36 @@ function eventDetails($eventId, $eventSection, $eventType, $ip) {
         $trailLog->ip_address = $ip;
         $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
         $trailLog->event_url = url('sites');
-        $trailLog->event_details = json_encode($data);
+        $trailLog->event_details = json_encode($newData);
+        $trailLog->event_old_details = json_encode($oldData);
         $trailLog->save();
 
+    ///////////////////////////////////// Coordinator ///////////////////////////////////////////////////
     } else if($eventSection == 'Coordinator') {
         // get event data
         $eventData = Coordinator::find($eventId);
         // store data in event array
-        $data = array(
+        $newData = array(
             'first_name' => $eventData->first_name,
             'mid_name' => $eventData->mid_name,
             'last_name' => $eventData->last_name,
             'email' => $eventData->email,
             'phone' => $eventData->phone,
-            'created_at' => $eventData->created_at,
-            'updated_at' => $eventData->updated_at,
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
         );
+        // if it is update case
+        if ($eventType == 'Update') {
+            $oldData = array(
+            'first_name' => $previousData->first_name,
+            'mid_name' => $previousData->mid_name,
+            'last_name' => $previousData->last_name,
+            'email' => $previousData->email,
+            'phone' => $previousData->phone,
+            'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+            );
+        }
         // set message for log
         $messageType = $eventType == 'Add' ? 'added' : 'updated';
         // Log the event
@@ -166,22 +228,37 @@ function eventDetails($eventId, $eventSection, $eventType, $ip) {
         $trailLog->ip_address = $ip;
         $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
         $trailLog->event_url = url('sites');
-        $trailLog->event_details = json_encode($data);
+        $trailLog->event_details = json_encode($newData);
+        $trailLog->event_old_details = json_encode($oldData);
         $trailLog->save();
 
+    //////////////////////////////////////// Photographer /////////////////////////////////////////////
     } else if($eventSection == 'Photographer') {
         // get event data
         $eventData = Photographer::find($eventId);
         // store data in event array
-        $data = array(
+        $newData = array(
             'first_name' => $eventData->first_name,
             'mid_name' => $eventData->mid_name,
             'last_name' => $eventData->last_name,
             'email' => $eventData->email,
             'phone' => $eventData->phone,
-            'created_at' => $eventData->created_at,
-            'updated_at' => $eventData->updated_at,
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
         );
+        // if this is update case
+        if ($eventType == 'Update') {
+            
+            $oldData = array(
+            'first_name' => $previousData->first_name,
+            'mid_name' => $previousData->mid_name,
+            'last_name' => $previousData->last_name,
+            'email' => $previousData->email,
+            'phone' => $previousData->phone,
+            'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+            );
+        }
         // set message for log
         $messageType = $eventType == 'Add' ? 'added' : 'updated';
         // Log the event
@@ -195,22 +272,36 @@ function eventDetails($eventId, $eventSection, $eventType, $ip) {
         $trailLog->ip_address = $ip;
         $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
         $trailLog->event_url = url('sites');
-        $trailLog->event_details = json_encode($data);
+        $trailLog->event_details = json_encode($newData);
+        $trailLog->event_old_details = json_encode($oldData);
         $trailLog->save();
 
+    //////////////////////////////////////////// Others ////////////////////////////////////////////////
     } else if($eventSection == 'Others') {
         // get event data
         $eventData = Other::find($eventId);
         // store data in event array
-        $data = array(
+        $newData = array(
             'first_name' => $eventData->first_name,
             'mid_name' => $eventData->mid_name,
             'last_name' => $eventData->last_name,
             'email' => $eventData->email,
             'phone' => $eventData->phone,
-            'created_at' => $eventData->created_at,
-            'updated_at' => $eventData->updated_at,
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
         );
+        // if its update case
+        if ($eventType == 'Update') {
+            $oldData = array(
+            'first_name' => $previousData->first_name,
+            'mid_name' => $previousData->mid_name,
+            'last_name' => $previousData->last_name,
+            'email' => $previousData->email,
+            'phone' => $previousData->phone,
+            'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+            );
+        }
         // set message for log
         $messageType = $eventType == 'Add' ? 'added' : 'updated';
         // Log the event
@@ -224,12 +315,13 @@ function eventDetails($eventId, $eventSection, $eventType, $ip) {
         $trailLog->ip_address = $ip;
         $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
         $trailLog->event_url = url('sites');
-        $trailLog->event_details = json_encode($data);
+        $trailLog->event_details = json_encode($newData);
+        $trailLog->event_old_details = json_encode($oldData);
         $trailLog->save();
     }
 
     // return data
-    return $data;
+    return $newData;
 }
 
 function buildSafeStr($id, $str = ''){
