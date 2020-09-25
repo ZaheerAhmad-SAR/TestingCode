@@ -4,6 +4,9 @@
     <title> Sites | {{ config('app.name', 'Laravel') }}</title>
 @stop
 
+@section('styles')
+    .table{table-layout: fixed;}
+@endsection
 
 @section('content')
 
@@ -65,6 +68,7 @@
                             </table>
                             --}}
 
+                            {{--
                             <table class="table table-bordered" id="laravel_crud">
                                 <thead>
                                 <tr>
@@ -141,6 +145,87 @@
                                     </tr>
                                     @endif
                                 
+                                </tbody>
+                            </table>
+                            --}}
+
+                            <table class="table table-bordered" id="laravel_crud">
+                                <thead>
+                                    <tr>
+                                        <th>Action</th>
+                                        <th>Name</th>
+                                        <th>Event Type</th>
+                                        <th>Event Note</th>
+                                        <th>IP Address</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if(!$getLogs->isEmpty())
+                                    @foreach($getLogs as $log)
+                                    <tr>
+                                        <td style="text-align: center;">
+                                          <div class="btn-group btn-group-sm" role="group">
+                                            <i class="fas  h5 mr-2 fa-chevron-circle-down" data-toggle="collapse" data-target=".row-{{$log->id}}" style="font-size: 20px; color: #1e3d73;"></i>
+                                          </div>
+                                        </td>
+                                        <td>{{$log->user_name}}</td>
+                                        <td>{{$log->event_type}}</td>
+                                       
+                                        <td>{{$log->event_message}}</td>
+                                        
+                                        <td>{{$log->ip_address}}</td>
+                                        <td>{{$log->created_at}}</td>
+                                    </tr>
+                                    <tr class="collapse row-{{$log->id}}">
+                                        <td colspan="6">
+                                           <table class="table table-hover" style="width: 100%">
+                                                <thead class="table-secondary">
+                                                    @if($log->event_type == 'Add')
+                                                        <th>Name</th>
+                                                        <th>Value</th>
+                                                    @else
+                                                         <th>Name</th>
+                                                        <th>New Value</th>
+                                                        <th>Old Value</th>
+                                                    @endif
+                                                </thead>
+                                                <tbody>
+                                                    @php
+                                                        $newDetails = json_decode($log->event_details);
+                                                        $oldDetails = json_decode($log->event_old_details);
+                                                    @endphp
+
+                                                    <!-- for add event -->
+                                                    @if($log->event_type == 'Add')
+                                                        @foreach($newDetails as $key => $details)
+                                                        <tr>
+                                                            <td>{{$key}}</td>
+                                                            <td>{{$details}}</td>
+                                                        </tr>
+                                                        @endforeach
+
+                                                        <!-- for update event -->
+                                                        @else
+                                                        @foreach($newDetails as $key => $details)
+                                                        <tr>
+                                                            <td>{{$key}}</td>
+                                                            <td>{{$details}}</td>
+                                                            <td>{{$oldDetails->$key}}</td>
+                                                        </tr>
+                                                        @endforeach
+                                                    @endif
+                                                </tbody>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                      <!-- // -->
+                                    @endforeach
+                                    @else
+                                    <tr>
+                                        <td colspan="6" style="text-align: center;"> No record found.</td>
+                                    </tr>
+                                    @endif
                                 </tbody>
                             </table>
 
