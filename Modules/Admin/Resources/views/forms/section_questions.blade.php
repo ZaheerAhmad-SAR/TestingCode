@@ -1,4 +1,4 @@
-@if (count($section->questions))    
+@if (count($section->questions))
     <div class="form card mb-1">
         <form name="form_master_{{ $sectionIdStr }}" id="form_master_{{ $sectionIdStr }}">
             @csrf
@@ -52,8 +52,7 @@
                         <div class="custom-control custom-checkbox custom-control-inline">
                             <input type="checkbox" class="custom-control-input {{ $sectionClsStr }}" name="{{ buildSafeStr($section->id, 'terms_cond_') }}"
                                 id="{{ buildSafeStr($section->id, 'terms_cond_') }}">
-                            <label class="custom-control-label checkbox-primary" for="primary">I accept terms and
-                                conditions</label>
+                            <label class="custom-control-label checkbox-primary" for="primary">I acknowledge that the information submitted in this form is true and correct to the best of my knowledge.</label>
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -67,7 +66,7 @@
     @push('script_last')
         <script>
             @if( $formStatus == 'complete')
-            disableFieldByClass('{{ $sectionClsStr }}');            
+            disableFieldByClass('{{ $sectionClsStr }}');
             @elseif((bool)session('already_one_form_is_resumable'))
             disableFieldByClass('{{ $sectionClsStr }}');
             disableFieldByClass('{{ "next_".$sectionClsStr }}');
@@ -87,7 +86,7 @@
                             .serialize();
                         submitRequest(frmData);
                         disableFieldByClass('{{ $sectionClsStr }}');
-                        setTimeout(function(){location.reload();}, 5000);                        
+                        setTimeout(function(){location.reload();}, 5000);
                     } else {
                         alert('Please accept terms!');
                     }

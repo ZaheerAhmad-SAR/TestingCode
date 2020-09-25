@@ -130,7 +130,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip) {
         $trailLog = new TrailLog;
         $trailLog->event_id = $eventId;
         $trailLog->event_type = $eventType;
-        $trailLog->event_message = \Auth::user()->name.' '.$messageType.' primary investigator '.$eventData->first_name.'.';
+        $trailLog->event_message = \Auth::user()->name.' '.$messageType.' Primary Investigator '.$eventData->first_name.'.';
         $trailLog->user_id = \Auth::user()->id;
         $trailLog->user_name = \Auth::user()->name;
         $trailLog->role_id = \Auth::user()->role_id;

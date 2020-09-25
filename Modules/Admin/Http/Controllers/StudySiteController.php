@@ -37,16 +37,16 @@ class StudySiteController extends Controller
         )->join('sites','sites.id','=','site_study.site_id')
             ->where('site_study.study_id','=',session('current_study'))->get();
         foreach ($sites as $site)
-        {            
+        {
             $siteArray[] = $site->site_id;
             $primaryInvestigator  = PrimaryInvestigator::where('site_id',$site->site_id)->get();
-            $primaryArray = array();            
+            $primaryArray = array();
             foreach ($primaryInvestigator as $primary)
             {
                 //$primaryArray[] = $primary->id.'/'. $primary->first_name.' '.$primary->last_name;
                 $primaryArray[] = $primary->id.'/'. $primary->first_name;
             }
-            $site->pi=$primaryArray;                  
+            $site->pi=$primaryArray;
         }
         $unassignSites = Site::select('sites.*')
             ->whereNotIn('sites.id', $siteArray)->get();
@@ -159,12 +159,12 @@ class StudySiteController extends Controller
         return response()->json(['success'=>'Study site is updated successfully!!!!']);
     }
     public function updatePrimaryInvestigator(Request $request)
-    {        
+    {
         $pi_id_value = $_POST['pi_id_value'];
         $table_site_study_id   = $_POST['table_site_study_id'];
         $data      = array('primaryInvestigator_id' => $pi_id_value);
         StudySite::where('id',$table_site_study_id)->update($data);
-        return response()->json(['success'=>'Primary investigator is updated successfully!!!!']);
+        return response()->json(['success'=>'Primary Investigator is updated successfully!']);
     }
 
     public function insertCoordinators(Request $request)
@@ -181,7 +181,7 @@ class StudySiteController extends Controller
                 'coordinator_id'=>$coordinator,
             ]);
         }
-        return response()->json([$result,'success'=>'Primary investigator is updated successfully!!!!']);
+        return response()->json([$result,'success'=>'Primary Investigator is updated successfully!!!!']);
     }
 
     /**
