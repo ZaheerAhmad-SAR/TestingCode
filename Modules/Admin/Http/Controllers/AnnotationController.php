@@ -39,16 +39,28 @@ class AnnotationController extends Controller
         $id    = Str::uuid();
         $annotation = Annotation::create([
             'id' => $id, 
-            'study_id'    => session('current_study'),
+            'study_id' => session('current_study'),
             'label' => $request->annotation_name
         ]);
+
+        $oldAnnotation = [];
+
+        // log event details
+        $logEventDetails = eventDetails($id, 'Annotation', 'Add', $request->ip(), $oldAnnotation);
+
         return redirect()->route('annotation.index');
     }
 
-    public function update_annotation(Request $request, $id=''){
-        $annotation = Annotation::find($request->annotation_id);
-        $annotation->label  =  $request->annotation_name;
-        $annotation->save();
+    public function update_annotation(Request $request, $id='') {
+        // to get old record for logs
+        $oldAnnotation = Annotation::find($request->annotation_id);
+        $newAnnotation = Annotation::find($request->annotation_id);
+        $newAnnotation->label  =  $request->annotation_name;
+        $newAnnotation->save();
+
+        // log event details
+        $logEventDetails = eventDetails($request->annotation_id, 'Annotation', 'Update', $request->ip(), $oldAnnotation);
+
         return redirect()->route('annotation.index');
     }
     public function get_allAnnotations($study_id){

@@ -7,6 +7,7 @@ use Modules\Admin\Entities\PrimaryInvestigator;
 use Modules\Admin\Entities\Coordinator;
 use Modules\Admin\Entities\Photographer;
 use Modules\Admin\Entities\Other;
+use Modules\Admin\Entities\Annotation;
 use Modules\Admin\Entities\TrailLog;
 
 function hasrole($role)
@@ -51,7 +52,7 @@ function hasPermission($user, $routeName){
 
 function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
 
-    $data = [];
+    $newData = [];
     $oldData = [];
 
     ////////////////////// Option Group //////////////////////////////////////////
@@ -318,6 +319,43 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
         $trailLog->event_details = json_encode($newData);
         $trailLog->event_old_details = json_encode($oldData);
         $trailLog->save();
+    ///////////////////////////////////////////// Others Section ends //////////////////////////////////////    
+    } else if($eventSection == 'Annotation') {
+        // get event data
+        $eventData = Annotation::find($eventId);
+        // store data in event array
+        $newData = array(
+            'label' => $eventData->label, 
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
+        );
+        // if it is update case
+        if($eventType == 'Update') {
+            
+            $oldData = array(
+            'label' => $previousData->label,
+            'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+            );
+        }
+        // set message for log
+        $messageType = $eventType == 'Add' ? 'added' : 'updated';
+        // Log the event
+        $trailLog = new TrailLog;
+        $trailLog->event_id = $eventId;
+        $trailLog->event_type = $eventType;
+        $trailLog->event_message = \Auth::user()->name.' '.$messageType.' annotation '.$eventData->label.'.';
+        $trailLog->user_id = \Auth::user()->id;
+        $trailLog->user_name = \Auth::user()->name;
+        $trailLog->role_id = \Auth::user()->role_id;
+        $trailLog->ip_address = $ip;
+        $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
+        $trailLog->event_url = url('annotation');
+        $trailLog->event_details = json_encode($newData);
+        $trailLog->event_old_details = json_encode($oldData);
+        $trailLog->save();
+
+    /////////////////////////////// Annotaion Sections ends /////////////////////////////////////////////
     }
 
     // return data
