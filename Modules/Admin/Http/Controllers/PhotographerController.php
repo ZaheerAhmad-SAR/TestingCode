@@ -50,8 +50,9 @@ class PhotographerController extends Controller
             'email'=>empty($request->photographer_email)? Null : $request->photographer_email
         ]);
 
+        $oldPhotographer = [];
         // log event details
-        $logEventDetails = eventDetails($id, 'Photographer', 'Add', $request->ip());
+        $logEventDetails = eventDetails($id, 'Photographer', 'Add', $request->ip(), $oldPhotographer);
 
         return response()->json([$photographer,'success'=>'Photographer is added successfully']);
     }
@@ -91,6 +92,8 @@ class PhotographerController extends Controller
      */
     public function update(Request $request)
     {
+        // get old data for logs
+        $oldPhotographer = Photographer::find($request->photo_id);
         $data = array (
             'first_name' => $request->photographer_first_name,
             'mid_name' => $request->photographer_mid_name,
@@ -105,7 +108,7 @@ class PhotographerController extends Controller
         $allphotographer    = Photographer::where('site_id',$photographer_site_id)->get();
 
          // log event details
-        $logEventDetails = eventDetails($request->photo_id, 'Photographer', 'Update', $request->ip());
+        $logEventDetails = eventDetails($request->photo_id, 'Photographer', 'Update', $request->ip(), $oldPhotographer);
 
         return response()->json($allphotographer);
 
@@ -130,13 +133,9 @@ class PhotographerController extends Controller
 
     public function showPhotographerBySiteId(Request $request,$id)
     {
-
         if ($request->ajax()) {
-
             $result    = Photographer::where('site_id',$id)->get();
             return response()->json([$result]);
-
         }
-
     }
 }

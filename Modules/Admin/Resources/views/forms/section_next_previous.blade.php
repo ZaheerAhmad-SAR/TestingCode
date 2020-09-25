@@ -1,6 +1,6 @@
-@if ($key === $first)
+@if($key === $first)
     <div class="d-flex">
-        <button type="button" class="btn btn-primary nexttab ml-auto">Next</button>
+        <button type="button" class="btn btn-primary nexttab ml-auto {{ 'next_'.$sectionClsStr }}">Next</button>
     </div>
 @elseif($key === $last)
     <div class="d-flex">
@@ -9,6 +9,6 @@
 @else
     <div class="d-flex">
         <button type="button" class="btn btn-primary prevtab">Previous</button>
-        <button type="button" class="btn btn-primary nexttab ml-auto">Next</button>
+        <button type="button" class="btn btn-primary nexttab ml-auto {{ 'next_'.$sectionClsStr }}">Next</button>        
     </div>
 @endif
