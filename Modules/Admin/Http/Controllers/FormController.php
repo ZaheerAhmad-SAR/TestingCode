@@ -13,6 +13,7 @@ use Modules\Admin\Entities\Question;
 use Modules\Admin\Entities\OptionsGroup;
 use Modules\Admin\Entities\FormFieldType;
 use Modules\Admin\Entities\FormFields;
+use Modules\Admin\Entities\Annotation;
 
 class FormController extends Controller
 {
@@ -25,7 +26,8 @@ class FormController extends Controller
         $phases = StudyStructure::all();
         $option_groups = OptionsGroup::all();
         $fields = FormFieldType::all();
-        return view('admin::forms.index',compact('phases','option_groups','fields'));
+        $annotations = Annotation::all();
+        return view('admin::forms.index',compact('phases','option_groups','fields','annotations'));
     }
     public function getall_options()
     {
