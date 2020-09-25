@@ -69,6 +69,6 @@
         @stack('script')
         @stack('script_last')
         <!-- END: Page JS-->
-        
+
     </body>
 </html>
