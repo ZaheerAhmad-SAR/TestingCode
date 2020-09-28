@@ -10,7 +10,8 @@
             <input type="hidden" name="sectionId" value="{{ $section->id }}" />
         </form>
         <form class="card-body" method="POST" name="form_{{ $sectionIdStr }}" id="form_{{ $sectionIdStr }}"
-            onsubmit="return submitForm{{ $sectionIdStr }}(event);">
+            onsubmit="return submitMe(event, '{{ $sectionIdStr }}', '{{ $sectionClsStr }}', '{{ $stepIdStr }}');">
+            <fieldset id="fieldset_{{$stepIdStr}}" class="{{ $sectionClsStr }}">
             @foreach ($section->questions as $question)
                 @php
                 $getAnswerArray = [
@@ -46,25 +47,30 @@
                     'sectionClsStr'=>$sectionClsStr, 'sectionIdStr'=>$sectionIdStr])
                 @endif
             @endforeach
+        </fieldset>
             @if ((bool) $subjectId)
-                <div class="row">
-                    <div class="col-md-6 offset-md-4">
-                        <div class="custom-control custom-checkbox custom-control-inline">
-                            <input type="checkbox" class="custom-control-input {{ $sectionClsStr }}" name="{{ buildSafeStr($section->id, 'terms_cond_') }}"
-                                id="{{ buildSafeStr($section->id, 'terms_cond_') }}">
-                            <label class="custom-control-label checkbox-primary" for="primary">I acknowledge that the information submitted in this form is true and correct to the best of my knowledge.</label>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-success float-right {{ $sectionClsStr }}"
-                            id="submit_{{ $sectionIdStr }}">Submit</button>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="custom-control custom-checkbox custom-control-inline">
+                        <input type="checkbox" class="custom-control-input" name="{{ buildSafeStr($section->id, 'edit_form_check_') }}"
+                            id="{{ buildSafeStr($section->id, 'edit_form_check_') }}" onclick="showReasonField('{{ buildSafeStr($section->id, 'edit_form_check_') }}', '{{ buildSafeStr($section->id, 'edit_form_div_') }}', '{{ $sectionIdStr }}', '{{ $sectionClsStr }}');">
+                        <label class="custom-control-label checkbox-primary" for="primary">I want to edit that form.</label>
                     </div>
                 </div>
+                <div class="col-md-12" id="{{ buildSafeStr($section->id, 'edit_form_div_') }}" style="display: none;">
+                    <input type="text" name="edit_reason_text" id="edit_reason_text" class="form-control-ocap bg-transparent" value="" placeholder="Please put reason to edit form here"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">&nbsp;</div>
+            </div>
             @endif
+
         </form>
     </div>
     @push('script_last')
         <script>
+        $( document ).ready(function() {
             @if( $formStatus == 'complete')
             disableFieldByClass('{{ $sectionClsStr }}');
             @elseif((bool)session('already_one_form_is_resumable'))
@@ -78,32 +84,8 @@
             session(['already_one_form_is_resumable' => 1]);
             @endphp
             @endif
+        });
 
-            function submitForm{{$sectionIdStr}}(event) {
-                event.preventDefault();
-                    if ($('#terms_cond_{{ $sectionIdStr }}').prop('checked')) {
-                        var frmData = $("#form_master_{{ $sectionIdStr }}").serialize() + '&' + $("#form_{{ $sectionIdStr }}")
-                            .serialize();
-                        submitRequest(frmData);
-                        disableFieldByClass('{{ $sectionClsStr }}');
-                        setTimeout(function(){location.reload();}, 5000);
-                    } else {
-                        alert('Please accept terms!');
-                    }
-            }
-
-            function submitFormField{{$sectionIdStr}}(field_name) {
-                var frmData = $("#form_master_{{ $sectionIdStr }}").serialize();
-                var field_val;
-                if ($('input[name="' + field_name + '"]').attr('type') == 'radio') {
-                    field_val = $('input[name="' + field_name + '"]:checked').val();
-                } else {
-                    field_val = $('input[name="' + field_name + '"]').val();
-                }
-
-                frmData = frmData + '&' + field_name + '=' + field_val;
-                submitRequest(frmData);
-            }
         </script>
     @endpush
 @endif

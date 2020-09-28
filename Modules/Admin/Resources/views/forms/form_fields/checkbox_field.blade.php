@@ -1,5 +1,5 @@
 @php
-$field_name = 'field_' . $question->id;
+$field_name = $question->formfields->variable_name;
 $option_names = [];
 $option_values = [];
 $optionGroup = $question->optionsGroup;
@@ -12,7 +12,7 @@ $options = array_combine ( $option_names , $option_values );
     @foreach ($options as $option_name => $option_value)
         <div class="custom-control custom-checkbox custom-control-inline">
             <input type="checkbox" name="{{ $field_name }}"
-                onchange="submitFormField{{ $sectionIdStr }}('{{ $field_name }}');" value="{{ $option_value }}"
+                onchange="submitFormField('{{ $sectionIdStr }}', '{{ $field_name }}');" value="{{ $option_value }}"
         {{ $answer->answer == $option_value ? 'checked' : '' }} class="custom-control-input {{ $sectionClsStr }}">
             <label class="custom-control-label" for="customCheck1">{{ $option_name }}</label>
         </div>
