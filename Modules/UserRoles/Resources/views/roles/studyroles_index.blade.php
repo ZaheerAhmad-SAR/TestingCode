@@ -3,99 +3,66 @@
     <title> Roles | {{ config('app.name', 'Laravel') }}</title>
 @stop
 @section('content')
- <div class="container-fluid site-width">
-    <!-- START: Breadcrumbs-->
-    <div class="row ">
-        <div class="col-12  align-self-center">
-            <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
-                <div class="w-sm-100 mr-auto"><h4 class="mb-0">Roles Detail</h4></div>
-                <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
-                    <li class="breadcrumb-item">Dashboard</li>
-                    <li class="breadcrumb-item">Role</li>
-                </ol>
+    <div class="container-fluid site-width">
+        <!-- START: Breadcrumbs-->
+        <div class="row ">
+            <div class="col-12  align-self-center">
+                <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
+                    <div class="w-sm-100 mr-auto"><h4 class="mb-0">Roles Detail</h4></div>
+                    <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
+                        <li class="breadcrumb-item">Dashboard</li>
+                        <li class="breadcrumb-item">Role</li>
+                    </ol>
+                </div>
             </div>
         </div>
-    </div>
-    <!-- END: Breadcrumbs-->
+        <!-- END: Breadcrumbs-->
 
-    <!-- START: Card Data-->
-<div class="row">
- <div class="col-12 col-sm-12 mt-3">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                   @if(hasPermission(auth()->user(),'roles.create'))
-                        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#createRole">
-                            <i class="fa fa-plus"></i> Add Role
-                        </button>
-                       @endif
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <h6>System Roles</h6>
-                            <table class="table table-bordered">
-                            <tr>
-                                <th style="width: 45%">Name</th>
-                                <th style="width: 45%">Description</th>
-                                <th style="width: 10%">Action</th>
-                            </tr>
-                            @foreach($system_roles as $role)
-                                    <tr>
-                                <td>{{ucfirst($role->name)}}</td>
-                                <td>{{ucfirst($role->description)}}</td>
-                                @if(hasPermission(auth()->user(),'roles.edit'))
-                                <td>
-                                   <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                        <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
-                                        <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                            <span class="dropdown-item">
-                                                <a href="{!! route('roles.edit',encrypt($role->id)) !!}">
-                                                    <i class="far fa-edit"></i>&nbsp; Edit
-                                                </a>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </td>
-                                @endif
-                            </tr>
-                            @endforeach
-                        </table>
+        <!-- START: Card Data-->
+        <div class="row">
+            <div class="col-12 col-sm-12 mt-3">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
                         <h6>Study Roles</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
                             <table class="table table-bordered">
-                            <tr>
-                                <th style="width: 45%">Name</th>
-                                <th style="width: 45%">Description</th>
-                                <th style="width: 10%">Action</th>
-                            </tr>
-                            @foreach($study_roles as $role)
                                 <tr>
-                                    <td>{{ucfirst($role->name)}}</td>
-                                    <td>{{ucfirst($role->description)}}</td>
-                                    @if(hasPermission(auth()->user(),'roles.edit'))
-                                        <td>
-                                            <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                                <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
-                                                <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
+                                    <th style="width: 45%">Name</th>
+                                    <th style="width: 45%">Description</th>
+                                    <th style="width: 10%">Action</th>
+                                </tr>
+                                @foreach($study_roles as $role)
+                                    <tr>
+                                        <td>{{ucfirst($role->name)}}</td>
+                                        <td>{{ucfirst($role->description)}}</td>
+                                        @if(hasPermission(auth()->user(),'roles.edit'))
+                                            <td>
+                                                <div class="d-flex mt-3 mt-md-0 ml-auto">
+                                                    <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                                    <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                             <span class="dropdown-item">
                                                 <a href="{!! route('roles.edit',encrypt($role->id)) !!}">
                                                     <i class="far fa-edit"></i>&nbsp; Edit
                                                 </a>
                                             </span>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                    @endif
-                                </tr>
-                            @endforeach
-                        </table>
+                                            </td>
+                                        @endif
+                                    </tr>
+                                @endforeach
+                            </table>
+                        </div>
                     </div>
                 </div>
-            </div>
 
+            </div>
         </div>
-</div>
-    <!-- END: Card DATA-->
-</div>
-<!-- modal code  -->
+        <!-- END: Card DATA-->
+    </div>
+    <!-- modal code  -->
     <div class="modal fade" tabindex="-1" role="dialog" id="createRole">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
@@ -292,69 +259,69 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="nav-ManagementActivities" role="tabpanel">
-                                    <div class="form-group row" style="margin-top: 10px;">
-                                        <div class="col-md-3">
-                                            <label for="Name">System Tools</label>
-                                        </div>
-                                        <div class="col-md-3">
-                                                <input type="checkbox" name="system_tools" id="system_tools" > Allow Permission
-                                            </div>
-                                        <div class="col-md-3">
-                                            <label for="Name">Study Tools</label>
-                                        </div>
-                                        <div class="col-md-3">
-                                                <input type="checkbox" name="study_tools" id="study_tools" > Allow Permission
-                                            </div>
+                                <div class="form-group row" style="margin-top: 10px;">
+                                    <div class="col-md-3">
+                                        <label for="Name">System Tools</label>
                                     </div>
-                                    <div class="form-group row">
-                                        <div class="col-md-3">
-                                            <label for="Name">Data Management</label>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <input type="checkbox" name="management" id="management"> Allow Permission
-                                        </div>
-                                        <div class="col-md-3">
-                                            <label for="Name">Activity Log</label>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <input type="checkbox" name="activity_log" id="activity_log"> Allow Permission
-                                        </div>
+                                    <div class="col-md-3">
+                                        <input type="checkbox" name="system_tools" id="system_tools" > Allow Permission
                                     </div>
-                                    <div class="form-group row">
-                                        <div class="col-md-3">
-                                            <label>Certification</label>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <input type="checkbox" name="certification" id="certification"> Allow Permission
-                                        </div>
-                                        <div class="col-md-3">
+                                    <div class="col-md-3">
+                                        <label for="Name">Study Tools</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="checkbox" name="study_tools" id="study_tools" > Allow Permission
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <label for="Name">Data Management</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="checkbox" name="management" id="management"> Allow Permission
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="Name">Activity Log</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="checkbox" name="activity_log" id="activity_log"> Allow Permission
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        <label>Certification</label>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="checkbox" name="certification" id="certification"> Allow Permission
+                                    </div>
+                                    <div class="col-md-3">
                                         <label for="Name">Finance</label>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <input type="checkbox" name="finance" id="finance"> Allow Permission
-                                        </div>
                                     </div>
+                                    <div class="col-md-3">
+                                        <input type="checkbox" name="finance" id="finance"> Allow Permission
                                     </div>
-                        </div>
-                            <div class="modal-footer">
-                                <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                                <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
+                                </div>
                             </div>
                         </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
-<!-- modal code  -->
+    <!-- modal code  -->
 @endsection
 @section('styles')
-<style>
-    div.dt-buttons{
-        display: none;
-    }
-</style>
-<link rel="stylesheet" href="{{ asset('dist/vendors/datatable/css/dataTables.bootstrap4.min.css') }}">
-<link rel="stylesheet" href="{{ asset('dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css') }}">
+    <style>
+        div.dt-buttons{
+            display: none;
+        }
+    </style>
+    <link rel="stylesheet" href="{{ asset('dist/vendors/datatable/css/dataTables.bootstrap4.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css') }}">
 @stop
 @section('script')
 @stop

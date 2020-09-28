@@ -21,7 +21,11 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles  =  Role::orderBY('name','asc')->get();
+        if (hasPermission(auth()->user(),'systemtools.index')){
+            $system_roles  =  Role::where('role_type','=','system_role')->orderBY('name','asc')->get();
+            $study_roles  =  Role::where('role_type','=','study_role')->orderBY('name','asc')->get();
+        }
+
 //        $permissions = Permission::all();
         $permissions = Permission::where('controller_name','=','grading')
             ->orwhere('controller_name','=','qualitycontrol')
@@ -29,7 +33,7 @@ class RoleController extends Controller
             ->orwhere('controller_name','=','systemtools')
             ->get();
 
-        return view('userroles::roles.index',compact('roles','permissions'));
+        return view('userroles::roles.index',compact('study_roles','system_roles','permissions'));
     }
 
     /**
@@ -55,6 +59,7 @@ class RoleController extends Controller
             'id' => \Illuminate\Support\Str::uuid(),
             'name'  =>  $request->name,
             'description'   =>  $request->description,
+            'role_type' => $request->role_type_name,
             'created_by'    => auth()->user()->id,
         ]);
         /*-- Studies Permissions */
@@ -106,7 +111,6 @@ class RoleController extends Controller
                 ]);
             }
         }
-
         /*-- Subjects Permissions */
         if ($request->subjects_add){
             $permissions = Permission::where('name','=','subjects.create')
@@ -158,7 +162,6 @@ class RoleController extends Controller
                 ]);
             }
         }
-
         /*-- Grading Permissions */
         if ($request->grading_add){
             $permissions = Permission::where('name','=','grading.create')
@@ -210,7 +213,6 @@ class RoleController extends Controller
                 ]);
             }
         }
-
         /*-- Quality Control Permissions */
         if ($request->qualityControl_add){
             $permissions = Permission::where('name','=','qualitycontrol.create')
@@ -262,7 +264,6 @@ class RoleController extends Controller
                 ]);
             }
         }
-
         /*-- Adjudication Permissions --*/
         if ($request->adjudication_add){
             $permissions = Permission::where('name','=','adjudication.create')
@@ -314,7 +315,6 @@ class RoleController extends Controller
                 ]);
             }
         }
-
         /*-- Eligibility Permissions --*/
         if ($request->eligibility_add){
             $permissions = Permission::where('name','=','eligibility.create')
@@ -366,7 +366,6 @@ class RoleController extends Controller
                 ]);
             }
         }
-
         /*-- Queries Permissions --*/
         if ($request->queries_add){
             $permissions = Permission::where('name','=','queries.create')
@@ -418,7 +417,6 @@ class RoleController extends Controller
                 ]);
             }
         }
-
         /*-- System Tools Permissions */
         if ($request->system_tools ) {
             $permissions = Permission::where('name', '=', 'systemtools.index')
@@ -437,7 +435,6 @@ class RoleController extends Controller
 
             }
         }
-
         /*-- Study Tools Permissions */
         if ($request->study_tools ) {
             $permissions = Permission::where('name', '=', 'studytools.index')
@@ -515,8 +512,7 @@ class RoleController extends Controller
 
             }
         }
-
-        return redirect()->route('roles.index');
+         return redirect()->route('roles.index');
     }
 
     /**
@@ -561,7 +557,8 @@ class RoleController extends Controller
             $role->update([
             'id'    => $id,
             'name'  =>  $request->name,
-            'description'   =>  $request->description
+            'description'   =>  $request->description,
+            'role_type'     => $request->role_type
         ]);
         /*-- Studies Permissions */
         if ($request->study_add){

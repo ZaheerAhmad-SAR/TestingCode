@@ -10,7 +10,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
 use Modules\Admin\Entities\RoleStudyUser;
+use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\Role;
+use Modules\UserRoles\Entities\RolePermission;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Http\Requests\UserRequest;
 
@@ -26,11 +28,20 @@ class StudyusersController extends Controller
     public function index()
     {
         if (Auth::user()->can('users.create')) {
-            $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
+            $roles  =   Role::where('role_type','=','study_role')->get();
         }
 
         if (hasPermission(auth()->user(),'studytools.index')){
-            $users  =   User::all();
+            $permissionsIdsArray = Permission::where(function($query){
+                $query->where('permissions.name','!=','studytools.create')
+                    ->orwhere('permissions.name','!=','studytools.store')
+                    ->orWhere('permissions.name','!=','studytools.edit')
+                    ->orwhere('permissions.name','!=','studytools.update');
+            })->distinct('id')->pluck('id')->toArray();
+
+            $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
+            $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
+            $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->get();
         }
         else{
             $users = User::where('deleted_at','=',Null)
@@ -63,6 +74,7 @@ class StudyusersController extends Controller
      */
     public function store(UserRequest $request)
     {
+        dd('study user');
         if ($request->ajax()) {
             $userID = $request->user_id;
             $id = Str::uuid();
@@ -115,6 +127,7 @@ class StudyusersController extends Controller
      */
     public function edit($id)
     {
+        dd('study');
         $where = array('id' => $id);
         $user  = User::with('user_roles')->where($where)->first();
         dd($user);

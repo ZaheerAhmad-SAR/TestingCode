@@ -85,9 +85,9 @@
                                         </a>
                                     </li>
                                 @endif
-                                @if(hasPermission(auth()->user(),'studyrole.index'))
-                                    <li class="@if(is_active('studyrole.index')) {{ ' active' }} @endif">
-                                        <a href="{!! route('studyrole.index') !!}">
+                                @if(hasPermission(auth()->user(),'studyRoles.index'))
+                                    <li class="@if(is_active('studyRoles.index')) {{ ' active' }} @endif">
+                                        <a href="{!! route('studyRoles.index') !!}">
                                             Study  Roles
                                         </a>
                                     </li>

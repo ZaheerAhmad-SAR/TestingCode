@@ -1,15 +1,14 @@
 <?php
 
-namespace Modules\Admin\Http\Controllers;
+namespace Modules\UserRoles\Http\Controllers;
 
-use App\User;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Auth;
+use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\Role;
 
-class StudyRoleController extends Controller
+class StudyRolesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,30 +16,18 @@ class StudyRoleController extends Controller
      */
     public function index()
     {
-        $records = array(
-        [
-        'name'=>'Chris',
-        'email'=>'chris@oirrc.net',
-         'roles'=>'Quality Control'
-        ],
-       [
-        'name'=>'Edwin',
-        'email'=>'edwin@oirrc.net',
-         'roles'=>'Project Manager'
-        ],
-       [
-        'name'=>'Angus',
-        'email'=>'angus@oirrc.net',
-         'roles'=>'Grader'
-        ],
-         [
-        'name'=>'Eric',
-        'email'=>'eric@oirrc.net',
-         'roles'=>'Guest'
-        ],
-       );
+        if (hasPermission(auth()->user(),'studytools.index')){
+            $study_roles  =  Role::where('role_type','=','study_role')->orderBY('name','asc')->get();
+        }
+//        $permissions = Permission::all();
+        $permissions = Permission::where('controller_name','=','grading')
+            ->orwhere('controller_name','=','qualitycontrol')
+            ->orwhere('controller_name','=','studytools')
+            ->orwhere('controller_name','=','systemtools')
+            ->get();
 
-        return view('admin::studyrole.index',compact('records'));
+        return view('userroles::roles.studyroles_index',compact('study_roles','permissions'));
+
     }
 
     /**
@@ -49,7 +36,7 @@ class StudyRoleController extends Controller
      */
     public function create()
     {
-        return view('admin::create');
+        return view('userroles::create');
     }
 
     /**
@@ -69,7 +56,7 @@ class StudyRoleController extends Controller
      */
     public function show($id)
     {
-        return view('admin::show');
+        return view('userroles::show');
     }
 
     /**
@@ -79,7 +66,7 @@ class StudyRoleController extends Controller
      */
     public function edit($id)
     {
-        return view('admin::edit');
+        return view('userroles::edit');
     }
 
     /**
