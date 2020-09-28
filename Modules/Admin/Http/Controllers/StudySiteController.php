@@ -181,7 +181,7 @@ class StudySiteController extends Controller
                 'coordinator_id'=>$coordinator,
             ]);
         }
-        return response()->json([$result,'success'=>'Primary Investigator is updated successfully!!!!']);
+        return response()->json([$result,'success'=>'Coordinator is updated successfully!!!!']);
     }
 
     /**

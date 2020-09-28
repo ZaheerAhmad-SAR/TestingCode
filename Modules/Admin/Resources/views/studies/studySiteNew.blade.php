@@ -16,8 +16,8 @@
             z-index: 10000 !important;
         }
     </style>
-    <link rel="stylesheet" href="{{ asset("public/dist/vendors/select2/css/select2.min.css") }}"/>
-    <link rel="stylesheet" href="{{ asset("public/dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
+    <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2.min.css") }}"/>
+    <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
@@ -81,7 +81,7 @@
                                                 <input type="hidden" id="table_site_study_id_{{$site->id}}" name="table_site_study_id_{{$site->id}}" value="{{$site->id}}">
                                             </td>
                                             <td>
-                                            <Select class="coordinatorsData multieSelectDropDown" name="coordinators_{{$site->id}}" id="coordinators_{{$site->id}}" multiple data-allow-clear="1" onchange="assignCoordinator('{{$site->id}}');">
+                                            <Select class="coordinatorsData multieSelectDropDown" data-id="{{$site->id}}" name="coordinators_{{$site->id}}" id="coordinators_{{$site->id}}" multiple data-allow-clear="1" onchange="assignCoordinator('{{$site->id}}');">
                                             @php
                                             $studySite = Modules\Admin\Entities\StudySite::find($site->id);
                                             $siteCoordinatorsIdsArray = $studySite->siteStudyCoordinatorIds();
@@ -748,19 +748,19 @@
         </div>
         @endsection
         @section('styles')
-            <link rel="stylesheet" href="{{ asset("public/dist/vendors/datatable/css/dataTables.bootstrap4.min.css") }}">
-            <link rel="stylesheet" href="{{ asset("public/dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css") }}">
+            <link rel="stylesheet" href="{{ asset("dist/vendors/datatable/css/dataTables.bootstrap4.min.css") }}">
+            <link rel="stylesheet" href="{{ asset("dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css") }}">
         @endsection
         @section('script')
-            <script src="{{ asset("public/dist/vendors/datatable/js/jquery.dataTables.min.js") }}"></script>
+            <script src="{{ asset("dist/vendors/datatable/js/jquery.dataTables.min.js") }}"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
-            <script src="{{ asset("public/dist/vendors/datatable/js/dataTables.bootstrap4.min.js") }}"></script>
-            <script src="{{ asset("public/dist/vendors/datatable/editor/mindmup-editabletable.js") }}"></script>
-            <script src="{{ asset("public/dist/vendors/datatable/editor/numeric-input-example.js") }}"></script>
-            <script src="{{ asset("public/dist/js/datatableedit.script.js") }}"></script>
+            <script src="{{ asset("dist/vendors/datatable/js/dataTables.bootstrap4.min.js") }}"></script>
+            <script src="{{ asset("dist/vendors/datatable/editor/mindmup-editabletable.js") }}"></script>
+            <script src="{{ asset("dist/vendors/datatable/editor/numeric-input-example.js") }}"></script>
+            <script src="{{ asset("dist/js/datatableedit.script.js") }}"></script>
             <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
-            <script src="{{ asset("public/dist/vendors/select2/js/select2.full.min.js") }}"></script>
-            <script src="{{ asset("public/dist/js/select2.script.js") }}"></script>
+            <script src="{{ asset("dist/vendors/select2/js/select2.full.min.js") }}"></script>
+            <script src="{{ asset("dist/js/select2.script.js") }}"></script>
             <script type="text/javascript">
                 var placeSearch, autocomplete;
                 var componentForm = {
@@ -1711,6 +1711,14 @@
                     });
                 });
 
+
+                $('#coordinators_').on('select2:unselecting', function (e) {
+                    alert('fdfdfdfd');
+                    var coordinators_id = $(this).attr('data-id');
+                    console.log(coordinators_id);
+                    // var table_site_study_id = $("#table_site_study_id_").val();
+                    // console.log(table_site_study_id);
+                });
 
                 function assignCoordinator(site_id){
                         var coordinators_id = $('#coordinators_'+site_id).val();
