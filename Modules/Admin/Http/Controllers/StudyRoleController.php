@@ -2,12 +2,14 @@
 
 namespace Modules\Admin\Http\Controllers;
 
+use App\User;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Admin\Entities\crushFtpTransmission;
+use Illuminate\Support\Facades\Auth;
+use Modules\UserRoles\Entities\Role;
 
-class TransmissionController extends Controller
+class StudyRoleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,19 +17,30 @@ class TransmissionController extends Controller
      */
     public function index()
     {
-        return view('admin::index');
-    }
+        $records = array(
+        [
+        'name'=>'Chris',
+        'email'=>'chris@oirrc.net',
+         'roles'=>'Quality Control'
+        ],
+       [
+        'name'=>'Edwin',
+        'email'=>'edwin@oirrc.net',
+         'roles'=>'Project Manager'
+        ],
+       [
+        'name'=>'Angus',
+        'email'=>'angus@oirrc.net',
+         'roles'=>'Grader'
+        ],
+         [
+        'name'=>'Eric',
+        'email'=>'eric@oirrc.net',
+         'roles'=>'Guest'
+        ],
+       );
 
-    /**
-     * Display a listing of the resource.
-     * @return Renderable
-     */
-    public function transmissionData(Request $request)
-    {
-           $data = crushFtpTransmission::create([
-               'data' => $request->all()
-           ]);
-        return view('admin::index');
+        return view('admin::studyrole.index',compact('records'));
     }
 
     /**
