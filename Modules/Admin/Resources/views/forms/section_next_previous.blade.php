@@ -15,7 +15,7 @@
                 <button class="btn btn-warning"
                     name="edit_form_button_{{ $stepIdStr }}"
                     id="edit_form_button_{{ $stepIdStr }}"
-                    onclick="showReasonField('edit_form_button_{{ $stepIdStr }}', 'edit_form_div_{{ $stepIdStr }}', 'edit_reason_text_{{ $stepIdStr }}', '{{ $stepClsStr }}');">
+                    onclick="openFormForEditing('edit_form_button_{{ $stepIdStr }}', 'edit_form_div_{{ $stepIdStr }}', 'edit_reason_text_{{ $stepIdStr }}', '{{ $stepClsStr }}', '{{ $sectionIdStr }}');">
                     Edit Form
                 </button>
             </div>

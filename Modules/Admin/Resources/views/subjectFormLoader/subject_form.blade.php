@@ -193,7 +193,8 @@
                     return true;
                 } else {
                     alert(
-                        'Please acknowledge the truthfulness and correctness of information being submitting in this form!');
+                        'Please acknowledge the truthfulness and correctness of information being submitting in this form!'
+                        );
                     return false;
                 }
             }
@@ -221,6 +222,19 @@
                     frmData = frmData + '&' + field_name + '=' + field_val + '&' + 'edit_reason_text=' + reason;
                     submitRequest(frmData);
                 }
+            }
+
+            function openFormForEditing(buttonId, divId, editFieldId, stepClsStr, sectionIdStr) {
+                    var frmData = $("#form_master_" + sectionIdStr).serialize();
+                    frmData = frmData + '&' + 'open_form_to_edit=1';
+                    $.ajax({
+                        url: "{{ route('openSubjectFormToEdit') }}",
+                        type: 'POST',
+                        data: frmData,
+                        success: function(response) {
+                            showReasonField(buttonId, divId, editFieldId, stepClsStr);
+                        }
+                    });
             }
 
             function submitRequest(frmData) {
