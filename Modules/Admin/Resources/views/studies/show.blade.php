@@ -54,8 +54,9 @@
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                     <span class="dropdown-item">
-                                                        <a href="javascript:void(0)" id="edit-device" data-id="{{ $subject->id }}">
-                                                            <i class="far fa-edit"></i>&nbsp; Edit </a>
+                                                        <a href="javascript:void(0)" id="study-status" class="changeStudyStatus"
+                                                           data-id="{{ $study->id }}" data-url="{{route('studies.changeStatus',$study->id)}}">
+                                                <i class="fa fa-plus"></i> Change Status</a>
                                                     </span>
                                                     <span class="dropdown-item">
                                                             <a href="{{route('users.destroy',$subject->id)}}" id="delete-device" data-id="{{ $subject->id }}">
@@ -156,6 +157,35 @@
             </div>
         </div>
     </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="editSubject">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="myModalLabel">Edit Subject</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to edit?
+                </div>
+                <div class="modal-footer">
+                    <form id="userForm" action="" method="post">
+                        @csrf
+                        @method('DELETE')
+                        {{ $study->id }}
+                        <input type="hidden" name="id">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('scripts')
+    <script>
+        $(document).
+    </script>
 @endsection

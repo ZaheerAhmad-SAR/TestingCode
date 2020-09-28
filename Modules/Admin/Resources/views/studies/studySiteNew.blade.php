@@ -16,8 +16,8 @@
             z-index: 10000 !important;
         }
     </style>
-    <link rel="stylesheet" href="{{ asset("public/dist/vendors/select2/css/select2.min.css") }}"/>
-    <link rel="stylesheet" href="{{ asset("public/dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
+    <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2.min.css") }}"/>
+    <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
@@ -748,19 +748,19 @@
         </div>
         @endsection
         @section('styles')
-            <link rel="stylesheet" href="{{ asset("public/dist/vendors/datatable/css/dataTables.bootstrap4.min.css") }}">
-            <link rel="stylesheet" href="{{ asset("public/dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css") }}">
+            <link rel="stylesheet" href="{{ asset("dist/vendors/datatable/css/dataTables.bootstrap4.min.css") }}">
+            <link rel="stylesheet" href="{{ asset("dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css") }}">
         @endsection
         @section('script')
-            <script src="{{ asset("public/dist/vendors/datatable/js/jquery.dataTables.min.js") }}"></script>
+            <script src="{{ asset("dist/vendors/datatable/js/jquery.dataTables.min.js") }}"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
-            <script src="{{ asset("public/dist/vendors/datatable/js/dataTables.bootstrap4.min.js") }}"></script>
-            <script src="{{ asset("public/dist/vendors/datatable/editor/mindmup-editabletable.js") }}"></script>
-            <script src="{{ asset("public/dist/vendors/datatable/editor/numeric-input-example.js") }}"></script>
-            <script src="{{ asset("public/dist/js/datatableedit.script.js") }}"></script>
+            <script src="{{ asset("dist/vendors/datatable/js/dataTables.bootstrap4.min.js") }}"></script>
+            <script src="{{ asset("dist/vendors/datatable/editor/mindmup-editabletable.js") }}"></script>
+            <script src="{{ asset("dist/vendors/datatable/editor/numeric-input-example.js") }}"></script>
+            <script src="{{ asset("dist/js/datatableedit.script.js") }}"></script>
             <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
-            <script src="{{ asset("public/dist/vendors/select2/js/select2.full.min.js") }}"></script>
-            <script src="{{ asset("public/dist/js/select2.script.js") }}"></script>
+            <script src="{{ asset("dist/vendors/select2/js/select2.full.min.js") }}"></script>
+            <script src="{{ asset("dist/js/select2.script.js") }}"></script>
             <script type="text/javascript">
                 var placeSearch, autocomplete;
                 var componentForm = {
