@@ -26,7 +26,7 @@ class UserController extends Controller
     public function index()
     {
         if (Auth::user()->can('users.create')) {
-            $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
+            $roles  =   Role::where('role_type','=','system_role')->get();
         }
 
         if (hasPermission(auth()->user(),'studytools.index')){
@@ -47,9 +47,10 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
-        return view('userroles::users.create',compact('roles'));
+            $roles  =   Role::where('role_type','=','system_role')->get();
+            return view('userroles::users.create',compact('roles'));
 
+        return redirect('dashboard');
     }
 
     /**
@@ -65,7 +66,7 @@ class UserController extends Controller
             'id' => $id,
             'name' => $request->name,
             'email' => $request->email,
-            'password' => encrypt($request->password),
+            'password' => Hash::make($request->password),
             'created_by'    => \auth()->user()->id
             ]);
         if ($request->roles)
@@ -114,7 +115,7 @@ class UserController extends Controller
         $currentRole = $user->user_roles;
         $roles = Role::all();
 
-        return view('userroles::users.edit',compact('user','roles','currentRole'));
+        return view('userroles::users.edit',compact('user','roles'));
     }
 
     /**
@@ -127,11 +128,10 @@ class UserController extends Controller
     {
         $user   =   User::find($id);
         $user->update([
-            'id' => $user->id,
             'name'  =>  $request->name,
             'email' =>  $request->email,
-            'role_id'   =>  !empty($request->roles)?$request->roles[0]:2,
-            'deleted_at' => Null
+            'password'  =>  Hash::make($request->password),
+            'role_id'   =>  !empty($request->roles)?$request->roles[0]:2
         ]);
         $userroles  = UserRole::where('user_id',$user->id)->get();
         foreach ($userroles as $role_id){
@@ -143,8 +143,8 @@ class UserController extends Controller
                 'user_id'    =>  $user->id,
                 'role_id'    =>  $role,
             ]);
-            print_r($new);
         }
+
         return redirect()->route('users.index');
 
     }
@@ -156,7 +156,6 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        dd('delete');
         $user = User::find($id);
     }
 }

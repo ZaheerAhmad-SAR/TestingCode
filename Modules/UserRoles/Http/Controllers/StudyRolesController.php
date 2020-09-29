@@ -1,13 +1,14 @@
 <?php
 
-namespace Modules\Admin\Http\Controllers;
+namespace Modules\UserRoles\Http\Controllers;
 
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Admin\Entities\crushFtpTransmission;
+use Modules\UserRoles\Entities\Permission;
+use Modules\UserRoles\Entities\Role;
 
-class TransmissionController extends Controller
+class StudyRolesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,19 +16,18 @@ class TransmissionController extends Controller
      */
     public function index()
     {
-        return view('admin::index');
-    }
+        if (hasPermission(auth()->user(),'studytools.index')){
+            $study_roles  =  Role::where('role_type','=','study_role')->orderBY('name','asc')->get();
+        }
+//        $permissions = Permission::all();
+        $permissions = Permission::where('controller_name','=','grading')
+            ->orwhere('controller_name','=','qualitycontrol')
+            ->orwhere('controller_name','=','studytools')
+            ->orwhere('controller_name','=','systemtools')
+            ->get();
 
-    /**
-     * Display a listing of the resource.
-     * @return Renderable
-     */
-    public function transmissionData(Request $request)
-    {
-           $data = crushFtpTransmission::create([
-               'data' => $request->all()
-           ]);
-        return view('admin::index');
+        return view('userroles::roles.studyroles_index',compact('study_roles','permissions'));
+
     }
 
     /**
@@ -36,7 +36,7 @@ class TransmissionController extends Controller
      */
     public function create()
     {
-        return view('admin::create');
+        return view('userroles::create');
     }
 
     /**
@@ -56,7 +56,7 @@ class TransmissionController extends Controller
      */
     public function show($id)
     {
-        return view('admin::show');
+        return view('userroles::show');
     }
 
     /**
@@ -66,7 +66,7 @@ class TransmissionController extends Controller
      */
     public function edit($id)
     {
-        return view('admin::edit');
+        return view('userroles::edit');
     }
 
     /**

@@ -98,7 +98,7 @@
                         <ul class="list-group list-unstyled">
                             <li class="p-4 border-bottom">
                                 <div class="w-100">
-                                    <a href="#"><img src="public/dist/images/chrome.png" alt="" class="img-fluid ml-0 mb-2  rounded-circle" width="20"></a>
+                                    <a href="#"><img src="dist/images/chrome.png" alt="" class="img-fluid ml-0 mb-2  rounded-circle" width="20"></a>
                                     <div class="barfiller h-7 rounded" data-color="#1ee0ac">
                                         <div class="tipWrap">
                                             <span class="tip rounded success">
@@ -111,7 +111,7 @@
                             </li>
                             <li class="p-4 border-bottom">
                                 <div class="w-100">
-                                    <a href="#"><img src="public/dist/images/firefox.png" alt="" class="img-fluid ml-0 mb-2  rounded-circle" width="20"></a>
+                                    <a href="#"><img src="dist/images/firefox.png" alt="" class="img-fluid ml-0 mb-2  rounded-circle" width="20"></a>
                                     <div class="barfiller h-7" data-color="#ffc107">
                                         <div class="tipWrap">
                                             <span class="tip rounded warning">
@@ -124,7 +124,7 @@
                             </li>
                             <li class="p-4 border-bottom">
                                 <div class="w-100">
-                                    <a href="#"><img src="public/dist/images/internet_explorer.png" alt="" class="img-fluid ml-0 mb-2  rounded-circle" width="20"></a>
+                                    <a href="#"><img src="dist/images/internet_explorer.png" alt="" class="img-fluid ml-0 mb-2  rounded-circle" width="20"></a>
                                     <div class="barfiller h-7" data-color="#17a2b8">
                                         <div class="tipWrap">
                                             <span class="tip rounded info">
@@ -137,7 +137,7 @@
                             </li>
                             <li class="p-4 border-bottom">
                                 <div class="w-100">
-                                    <a href="#"><img src="public/dist/images/opera.png" alt="" class="img-fluid ml-0 mb-2  rounded-circle" width="20"></a>
+                                    <a href="#"><img src="dist/images/opera.png" alt="" class="img-fluid ml-0 mb-2  rounded-circle" width="20"></a>
                                     <div class="barfiller h-7" data-color="#f64e60">
                                         <div class="tipWrap">
                                             <span class="tip rounded danger">
@@ -277,37 +277,37 @@
 </div>
 @stop
 @section('styles')
-<link rel="stylesheet"  href="{{ asset('public/dist/vendors/chartjs/Chart.min.css') }}">
-<link rel="stylesheet" href="{{ asset('public/dist/vendors/morris/morris.css') }}">
-<link rel="stylesheet" href="{{ asset('public/dist/vendors/weather-icons/css/pe-icon-set-weather.min.css') }}">
-<link rel="stylesheet" href="{{ asset('public/dist/vendors/chartjs/Chart.min.css') }}">
-<link rel="stylesheet" href="{{ asset('public/dist/vendors/starrr/starrr.css') }}">
-<link rel="stylesheet" href="{{ asset('public/dist/vendors/fontawesome/css/all.min.css') }}">
-<link rel="stylesheet" href="{{ asset('public/dist/vendors/ionicons/css/ionicons.min.css') }}">
-<link rel="stylesheet" href="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-2.0.3.css') }}">
+<link rel="stylesheet"  href="{{ asset('dist/vendors/chartjs/Chart.min.css') }}">
+<link rel="stylesheet" href="{{ asset('dist/vendors/morris/morris.css') }}">
+<link rel="stylesheet" href="{{ asset('dist/vendors/weather-icons/css/pe-icon-set-weather.min.css') }}">
+<link rel="stylesheet" href="{{ asset('dist/vendors/chartjs/Chart.min.css') }}">
+<link rel="stylesheet" href="{{ asset('dist/vendors/starrr/starrr.css') }}">
+<link rel="stylesheet" href="{{ asset('dist/vendors/fontawesome/css/all.min.css') }}">
+<link rel="stylesheet" href="{{ asset('dist/vendors/ionicons/css/ionicons.min.css') }}">
+<link rel="stylesheet" href="{{ asset('dist/vendors/jquery-jvectormap/jquery-jvectormap-2.0.3.css') }}">
 @stop
 @section('script')
-<script src="{{ asset('public/dist/vendors/raphael/raphael.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/morris/morris.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/chartjs/Chart.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/starrr/starrr.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-flot/jquery.canvaswrapper.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-flot/jquery.colorhelpers.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.saturated.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.browser.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.drawSeries.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.uiConstants.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.legend.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.pie.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/chartjs/Chart.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-2.0.3.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-world-mill.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-de-merc.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-us-aea.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/apexcharts/apexcharts.min.js') }}"></script>
-<script  src="{{ asset('public/dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
-<script  src="{{ asset('public/dist/vendors/lineprogressbar/jquery.barfiller.js') }}"></script>
+<script src="{{ asset('dist/vendors/raphael/raphael.min.js') }}"></script>
+<script src="{{ asset('dist/vendors/morris/morris.min.js') }}"></script>
+<script src="{{ asset('dist/vendors/chartjs/Chart.min.js') }}"></script>
+<script src="{{ asset('dist/vendors/starrr/starrr.js') }}"></script>
+<script src="{{ asset('dist/vendors/jquery-flot/jquery.canvaswrapper.js') }}"></script>
+<script src="{{ asset('dist/vendors/jquery-flot/jquery.colorhelpers.js') }}"></script>
+<script src="{{ asset('dist/vendors/jquery-flot/jquery.flot.js') }}"></script>
+<script src="{{ asset('dist/vendors/jquery-flot/jquery.flot.saturated.js') }}"></script>
+<script src="{{ asset('dist/vendors/jquery-flot/jquery.flot.browser.js') }}"></script>
+<script src="{{ asset('dist/vendors/jquery-flot/jquery.flot.drawSeries.js') }}"></script>
+<script src="{{ asset('dist/vendors/jquery-flot/jquery.flot.uiConstants.js') }}"></script>
+<script src="{{ asset('dist/vendors/jquery-flot/jquery.flot.legend.js') }}"></script>
+<script src="{{ asset('dist/vendors/jquery-flot/jquery.flot.pie.js') }}"></script>
+<script src="{{ asset('dist/vendors/chartjs/Chart.min.js') }}"></script>
+<script src="{{ asset('dist/vendors/jquery-jvectormap/jquery-jvectormap-2.0.3.min.js') }}"></script>
+<script src="{{ asset('dist/vendors/jquery-jvectormap/jquery-jvectormap-world-mill.js') }}"></script>
+<script src="{{ asset('dist/vendors/jquery-jvectormap/jquery-jvectormap-de-merc.js') }}"></script>
+<script src="{{ asset('dist/vendors/jquery-jvectormap/jquery-jvectormap-us-aea.js') }}"></script>
+<script src="{{ asset('dist/vendors/apexcharts/apexcharts.min.js') }}"></script>
+<script  src="{{ asset('dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
+<script  src="{{ asset('dist/vendors/lineprogressbar/jquery.barfiller.js') }}"></script>
 
-<script src="{{ asset('public/dist/js/home.script.js') }}"></script>
+<script src="{{ asset('dist/js/home.script.js') }}"></script>
 @stop
