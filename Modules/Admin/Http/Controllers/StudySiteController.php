@@ -184,6 +184,20 @@ class StudySiteController extends Controller
         return response()->json([$result,'success'=>'Coordinator is updated successfully!!!!']);
     }
 
+    public function deleteSiteCoordinator(Request $request)
+    {
+         $coordinators = $_POST['coordinator_id'];
+         $studySiteId  = trim($_POST['studySiteId']);
+        $records  = SiteStudyCoordinator::where('site_study_id',$studySiteId)->get();
+
+      foreach ($records as $record)
+        {
+             $coordinator = SiteStudyCoordinator::find($record->id);
+             $coordinator->delete();
+        }
+        return response()->json(['success'=>'Coordinator is Deleted successfully!!!!']);
+    }
+
     /**
      * Remove the specified resource from storage.
      * @param int $id
