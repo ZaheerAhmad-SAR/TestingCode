@@ -76,27 +76,6 @@
                                 $firstSection = false;
                                 @endphp
                             @endforeach
-                            @if ((bool) $subjectId)
-                                <div class="row">
-                                    <div class="col-md-12">&nbsp;</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-11">
-                                        <div class="custom-control custom-checkbox custom-control-inline">
-                                        <input type="checkbox" class="custom-control-input" name="terms_cond_{{ $stepIdStr }}"
-                                                id="terms_cond_{{ $stepIdStr }}" value="accepted">
-                                            <label class="custom-control-label checkbox-primary" for="primary">I
-                                                acknowledge that the information submitted in this form is true and
-                                                correct to the best of my knowledge.</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <button type="button" class="btn btn-success float-right"
-                                            onclick="submitSectionForms{{ $stepIdStr }}('{{ $stepIdStr }}');"
-                                            id="submit_{{ $stepIdStr }}">Submit</button>
-                                    </div>
-                                </div>
-                            @endif
                         </div>
                     </div>
                 </div>
@@ -105,27 +84,28 @@
     </div>
     @push('script')
         <script>
-            function submitSectionForms{{ $stepIdStr }}(stepIdStr) {
-                if ($('#terms_cond_'+stepIdStr).prop('checked')) {
-                    var anyFormEditable = false;
-                    @foreach($sections as $key => $section)
-                    @php
-                    $sectionClsStr = buildSafeStr($section->id, 'sec_cls_');
-                    $sectionIdStr = buildSafeStr($section->id, '');
-                    @endphp
-                    if($('#fieldset_'+stepIdStr).prop('disabled') === false){
-                        anyFormEditable = true;
-                        submitForm('{{ $sectionIdStr }}', '{{ $sectionClsStr }}', '{{ $stepIdStr }}');
+            function submitSectionForms{{ $stepIdStr }}(stepIdStr, stepClsStr) {
+                if (checkTermCond(stepIdStr)) {
+                    if (checkReason(stepIdStr)) {
+                        var anyFormEditable = false;
+                        @foreach($sections as $key => $section)
+                        @php
+                        $sectionClsStr = buildSafeStr($section->id, 'sec_cls_');
+                        $sectionIdStr = buildSafeStr($section->id, '');
+                        @endphp
+                        if ($('#fieldset_' + stepIdStr).prop('disabled') === false) {
+                            anyFormEditable = true;
+                            submitForm('{{ $sectionIdStr }}', '{{ $sectionClsStr }}', '{{ $stepIdStr }}');
+                        }
+                        @endforeach
+                        if (anyFormEditable === false) {
+                            alert('Please make form editable first!');
+                        } else {
+                            reloadPage(stepClsStr);
+                        }
                     }
-                    @endforeach
-                    if(anyFormEditable === false){
-                        alert('Please make form editable first!');
-                    }
-                } else {
-                    alert(
-                        'Please acknowledge the truthfulness and correctness of information being submitting in this form!'
-                    );
                 }
             }
-            </script>
-            @endpush
+
+        </script>
+    @endpush
