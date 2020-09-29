@@ -14,7 +14,10 @@ use Modules\Admin\Entities\OptionsGroup;
 use Modules\Admin\Entities\FormFieldType;
 use Modules\Admin\Entities\FormFields;
 use Modules\Admin\Entities\Annotation;
-
+use Modules\Admin\Entities\QuestionDependency;
+use Modules\Admin\Entities\QuestionValidation;
+use Modules\Admin\Entities\QuestionAdjudicationStatus;
+use Modules\Admin\Entities\AnnotationDescription;
 class FormController extends Controller
 {
     /**
@@ -114,7 +117,6 @@ class FormController extends Controller
             'dependent_on' => $request->dependent_on, 
             'annotations' => $request->dependent_on 
         ]);
-
         $last_id = Question::select('id')->latest()->first();
         $id    = Str::uuid();
         $form_field = FormFields::create([
@@ -129,6 +131,61 @@ class FormController extends Controller
             'question_info' => $request->question_info, 
             'text_info' => $request->text_info, 
             'validation_rules' => $request->validation_rules, 
+        ]);
+        /// question validation 
+        $id    = Str::uuid();
+        $Question_validation = [];
+        for ($i = 0; $i < count($request->decision_one); $i++) {
+            $Question_validation[] = [
+                'id' => $id,
+                'question_id' => $last_id->id,
+                'decision_one' => $request->decision_one[$i],
+                'opertaor_one' => $request->opertaor_one[$i],
+                'dep_on_question_one_id' => $request->dep_on_question_one_id[$i],
+                'condition' => $request->operator[$i],
+                'decision_two' => $request->decision_two[$i],
+                'opertaor_two' => $request->opertaor_two[$i],
+                'error_type' => $request->error_type[$i],
+                'error_message' => $request->error_message[$i]
+            ];
+        }
+        QuestionValidation::insert($Question_validation);
+
+        //Question dependencies 
+        $id    = Str::uuid();
+        $dependencies = QuestionDependency::create([
+            'id' => $id,
+            'question_id' => $last_id->id,
+            'q_d_status' => $request->q_d_status,
+            'dep_on_question_id' => $request->dep_on_question_id, 
+            'opertaor' => $request->opertaor, 
+            'custom_value' => $request->custom_value
+            
+        ]);
+        // Question annotation
+        $id    = Str::uuid();
+        $annotation = [];
+        for ($i = 0; $i < count($request->terminology_id); $i++) {
+            $annotation[] = [
+                'id' => $id,
+                'question_id' => $last_id->id,
+                'annotation_id' => $request->terminology_id[$i],
+                'value' => $request->value[$i],
+                'description' => $request->description[$i]
+            ];
+        }
+
+        AnnotationDescription::insert($annotation);
+        // Question Adjudication 
+        $id    = Str::uuid();
+        $adjStatus = QuestionAdjudicationStatus::create([
+            'id' => $id,
+            'question_id' => $last_id->id,
+            'adj_status' => $request->adj_status,
+            'decision_based_on' => $request->decision_based_on, 
+            'opertaor' => $request->opertaor, 
+            'custom_value' => $request->custom_value
+            
         ]);
         return redirect()->route('forms.index');
     }
