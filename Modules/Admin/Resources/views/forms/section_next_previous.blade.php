@@ -1,32 +1,25 @@
 @if ($key === $first)
     <div class="d-flex">
-        <button type="button" class="btn btn-primary nexttab ml-auto {{ 'next_' . $sectionClsStr }}">Next</button>
+        @if ((bool) $subjectId && ($formStatus === 'complete'))
+            <button class="btn btn-warning" name="edit_form_button_{{ $stepIdStr }}"
+                id="edit_form_button_{{ $stepIdStr }}"
+                onclick="openFormForEditing('{{ $stepIdStr }}', '{{ $stepClsStr }}', '{{ $sectionIdStr }}');">
+                Edit Form
+            </button>
+        @endif
+        <button type="button" class="btn btn-primary nexttab ml-auto {{ $studyClsStr }} {{ $stepClsStr }} {{ $sectionClsStr }}">Next</button>
+    </div>
+    <div class="row">
+        <div class="col-md-12" id="edit_form_div_{{ $stepIdStr }}" style="display: none;">
+            <input type="text" name="edit_reason_text_{{ $stepIdStr }}" id="edit_reason_text_{{ $stepIdStr }}"
+                class="form-control-ocap bg-transparent" value="" placeholder="Please put reason to edit form here" />
+        </div>
     </div>
 @elseif($key === $last)
     <div class="d-flex">
         <button type="button" class="btn btn-primary prevtab">Previous</button>
     </div>
     @if ((bool) $subjectId)
-        <div class="row">
-            <div class="col-md-12">&nbsp;</div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <button class="btn btn-warning"
-                    name="edit_form_button_{{ $stepIdStr }}"
-                    id="edit_form_button_{{ $stepIdStr }}"
-                    onclick="openFormForEditing('edit_form_button_{{ $stepIdStr }}', 'edit_form_div_{{ $stepIdStr }}', 'edit_reason_text_{{ $stepIdStr }}', '{{ $stepClsStr }}', '{{ $sectionIdStr }}');">
-                    Edit Form
-                </button>
-            </div>
-            <div class="col-md-12" id="edit_form_div_{{ $stepIdStr }}" style="display: none;">
-                <input type="text"
-                    name="edit_reason_text_{{ $stepIdStr }}"
-                    id="edit_reason_text_{{ $stepIdStr }}"
-                    class="form-control-ocap bg-transparent" value=""
-                    placeholder="Please put reason to edit form here" />
-            </div>
-        </div>
         <div class="row">
             <div class="col-md-12">&nbsp;</div>
         </div>

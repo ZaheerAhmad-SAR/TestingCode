@@ -69,7 +69,7 @@ class SubjectFormSubmissionController extends Controller
         $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
         if (null === $formStatusObj) {
             $formStatusObj = $this->insertFormStatus($request, $getFormStatusArray);
-        } elseif ($request->has(buildSafeStr($request->stepId, 'terms_cond_')) || ($request->has('edit_reason_text') && !empty($request->edit_reason_text))) {
+        } elseif ($request->has(buildSafeStr($request->stepId, 'terms_cond_'))) {
             $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
             $formStatusObj->edit_reason_text = $request->edit_reason_text;
             $formStatusObj->form_status = 'complete';
