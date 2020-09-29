@@ -143,6 +143,7 @@
                 $('.all_step_sections').hide(500);
                 $('.' + step_id_class).show(500);
             }
+
             function disableAllFormFields(formId) {
                 $("#" + formId + " input").prop('disabled', true);
             }
@@ -167,30 +168,47 @@
                 $("." + cls).prop('disabled', false);
             }
 
-            function submitMe(event, sectionIdStr, sectionClsStr, stepIdStr) {
-                event.preventDefault();
-                submitForm(sectionIdStr, sectionClsStr, stepIdStr);
-            }
-
             function submitForm(sectionIdStr, sectionClsStr, stepIdStr) {
-                var term_cond = $('#term_cond_' + stepIdStr + ':checked').val();
-                var frmData = $("#form_master_" + sectionIdStr).serialize() + '&' + $("#form_" + sectionIdStr).serialize() + '&term_cond_'+stepIdStr+'='+term_cond;
-                submitRequest(frmData);
-                disableFieldByClass(sectionClsStr);
-                setTimeout(function() {
-                   location.reload();
-                }, 1000);
-
+                if (checkTermCond(stepIdStr)) {
+                    if (checkReason(stepIdStr)) {
+                        var term_cond = $('#term_cond_' + stepIdStr + ':checked').val();
+                        var reason = $('#edit_reason_text_' + stepIdStr).val();
+                        var frmData = $("#form_master_" + sectionIdStr).serialize() + '&' + $("#form_" + sectionIdStr)
+                            .serialize() +
+                            '&term_cond_' + stepIdStr + '=' + term_cond + '&' + 'edit_reason_text=' + reason;
+                        submitRequest(frmData);
+                    }
+                }
             }
 
-            function submitFormField(sectionIdStr, field_name) {
-                if (
-                    (
-                        ($('#form_' + sectionIdStr + ' #edit_reason_text').prop('required') === true) &&
-                        ($('#form_' + sectionIdStr + ' #edit_reason_text').val() != '')
-                    ) ||
-                    ($('#form_' + sectionIdStr + ' #edit_reason_text').prop('required') === false)
-                ) {
+            function reloadPage(stepClsStr) {
+                setTimeout(function() {
+                    disableFieldByClass(stepClsStr);
+                    location.reload();
+                }, 1000);
+            }
+
+            function checkTermCond(stepIdStr) {
+                if ($('#terms_cond_' + stepIdStr).prop('checked')) {
+                    return true;
+                } else {
+                    alert(
+                        'Please acknowledge the truthfulness and correctness of information being submitting in this form!');
+                    return false;
+                }
+            }
+
+            function checkReason(stepIdStr) {
+                if (($('#edit_reason_text_' + stepIdStr).val() == '')) {
+                    alert('Please tell the reason to edit');
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+
+            function submitFormField(stepIdStr, sectionIdStr, field_name) {
+                if (checkReason(stepIdStr)) {
                     var frmData = $("#form_master_" + sectionIdStr).serialize();
                     var field_val;
                     if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
@@ -198,12 +216,10 @@
                     } else {
                         field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').val();
                     }
-                    var reason = $('#form_' + sectionIdStr + ' #edit_reason_text').val();
+                    var reason = $('#edit_reason_text_' + stepIdStr).val();
 
                     frmData = frmData + '&' + field_name + '=' + field_val + '&' + 'edit_reason_text=' + reason;
                     submitRequest(frmData);
-                } else {
-                    alert('Please tell the reason to edit');
                 }
             }
 
@@ -218,22 +234,15 @@
                 });
             }
 
-            function showReasonField(checkBoxId, divId, sectionIdStr, sectionClsStr) {
-                if ($('#'+checkBoxId).prop('checked') === true) {
-                    var reason_to_edit = prompt("Please enter reason to edit form");
-                    if (reason_to_edit !== null && reason_to_edit != "") {
-                        $("#" + divId).show(500);
-                        $('#form_' + sectionIdStr + ' #edit_reason_text').prop('required', true);
-                        $('#form_' + sectionIdStr + ' #edit_reason_text').val(reason_to_edit);
-                        enableFieldByClass(sectionClsStr);
-                    }
-                }else {
-                    $("#" + divId).hide(500);
-                    $('#form_' + sectionIdStr + ' #edit_reason_text').prop('required', false);
-                    $('#form_' + sectionIdStr + ' #edit_reason_text').val('');
-                    disableFieldByClass(sectionClsStr);
+            function showReasonField(buttonId, divId, editFieldId, stepClsStr) {
+                $("#" + divId).toggle(500);
+                if ($("#" + divId).css('display') === 'block') {
+                    $('#' + editFieldId).prop('required', true);
+                    enableFieldByClass(stepClsStr);
+                } else {
+                    $('#' + editFieldId).prop('required', false);
+                    disableFieldByClass(stepClsStr);
                 }
-
             }
 
         </script>
