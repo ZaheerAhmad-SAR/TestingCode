@@ -37,7 +37,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     Route::resource('subjects', 'SubjectController');
 
-    Route::resource('studyrole', 'StudyRoleController');
+    //Route::resource('studyrole','StudyRoleController');
 
     Route::resource('others', 'OtherController');
 
@@ -158,6 +158,9 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::post('studySite/updatePrimaryInvestigator', 'StudySiteController@updatePrimaryInvestigator')->name('updatePI');
 
     Route::post('studySite/insertCoordinators', 'StudySiteController@insertCoordinators')->name('insertCO');
+
+    Route::post('studySite/deleteSiteCoordinator', 'StudySiteController@deleteSiteCoordinator')->name('deleteCO');
+
 
     //SubjectFormLoader
     Route::get('subject_form/{study_id}/{subject_id}', 'SubjectFormLoaderController@showSubjectForm')->name('showSubjectForm');

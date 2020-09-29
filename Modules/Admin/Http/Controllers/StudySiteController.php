@@ -181,7 +181,21 @@ class StudySiteController extends Controller
                 'coordinator_id'=>$coordinator,
             ]);
         }
-        return response()->json([$result,'success'=>'Primary Investigator is updated successfully!!!!']);
+        return response()->json([$result,'success'=>'Coordinator is updated successfully!!!!']);
+    }
+
+    public function deleteSiteCoordinator(Request $request)
+    {
+         $coordinators = $_POST['coordinator_id'];
+         $studySiteId  = trim($_POST['studySiteId']);
+        $records  = SiteStudyCoordinator::where('site_study_id',$studySiteId)->get();
+
+      foreach ($records as $record)
+        {
+             $coordinator = SiteStudyCoordinator::find($record->id);
+             $coordinator->delete();
+        }
+        return response()->json(['success'=>'Coordinator is Deleted successfully!!!!']);
     }
 
     /**
