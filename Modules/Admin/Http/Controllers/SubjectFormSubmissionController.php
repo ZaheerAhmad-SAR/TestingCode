@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
-use Modules\Admin\Entities\StudyStructure;
+use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\Section;
 use Modules\Admin\Entities\Answer;
 use Modules\Admin\Entities\FormStatus;
@@ -69,10 +69,33 @@ class SubjectFormSubmissionController extends Controller
         $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
         if (null === $formStatusObj) {
             $formStatusObj = $this->insertFormStatus($request, $getFormStatusArray);
-        } elseif ($request->has(buildSafeStr($request->stepId, 'terms_cond_')) || ($request->has('edit_reason_text') && !empty($request->edit_reason_text))) {
+        } elseif ($request->has(buildSafeStr($request->stepId, 'terms_cond_'))) {
             $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
             $formStatusObj->edit_reason_text = $request->edit_reason_text;
             $formStatusObj->form_status = 'complete';
+            $formStatusObj->update();
+        }
+        echo 'ok';
+    }
+
+    public function openSubjectFormToEdit(Request $request)
+    {
+        $form_filled_by_user_id = auth()->user()->id;
+        $form_filled_by_user_role_id = auth()->user()->id;
+
+        $step = PhaseSteps::find($request->stepId);
+        foreach ($step->sections as $section) {
+            $getFormStatusArray = [
+                'form_filled_by_user_id' => $form_filled_by_user_id,
+                'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
+                'subject_id' => $request->subjectId,
+                'study_id' => $request->studyId,
+                'study_structures_id' => $request->phaseId,
+                'phase_steps_id' => $request->stepId,
+                'section_id' => $section->id,
+            ];
+            $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
+            $formStatusObj->form_status = 'resumable';
             $formStatusObj->update();
         }
         echo 'ok';

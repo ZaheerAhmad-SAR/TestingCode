@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddEditingReasonColumnInFormSubmitStatusTable extends Migration
+class CreateCrushFtpTransmissionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddEditingReasonColumnInFormSubmitStatusTable extends Migration
      */
     public function up()
     {
-        Schema::table('form_submit_status', function (Blueprint $table) {
-            $table->mediumText('edit_reason_text')->nullable();
+        Schema::create('crush_ftp_transmissions', function (Blueprint $table) {
+            $table->id();
+            $table->text('data');
+            $table->timestamps();
         });
     }
 
@@ -25,8 +27,6 @@ class AddEditingReasonColumnInFormSubmitStatusTable extends Migration
      */
     public function down()
     {
-        Schema::table('form_submit_status', function (Blueprint $table) {
-            $table->dropColumn('edit_reason_text');
-        });
+        Schema::dropIfExists('crush_ftp_transmissions');
     }
 }

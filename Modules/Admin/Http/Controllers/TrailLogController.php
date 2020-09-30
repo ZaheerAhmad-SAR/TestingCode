@@ -14,7 +14,6 @@ class TrailLogController extends Controller
 {
     //
     public function index(Request $request) {
-   
     	// check for system user and common users
     	if(Auth::user()->role->role_type == 'system_role') {
     		// get logs

@@ -123,9 +123,10 @@
     <link rel="stylesheet" href="{{ asset('dist/vendors/datatable/css/dataTables.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css') }}">
 @endsection
-@section('scripts')
+@section('script')
     <script type="text/javascript">
         $(document).ready(function() {
+            alert('edit role');
             $('#select-roles').multiSelect({
                 selectableHeader: "<label for=''>All Roles</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
                 selectionHeader: "<label for=''>Assigned Roles</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddEditingReasonColumnInFormSubmitStatusTable extends Migration
+class AddFieldsToAnnotationDescriptionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddEditingReasonColumnInFormSubmitStatusTable extends Migration
      */
     public function up()
     {
-        Schema::table('form_submit_status', function (Blueprint $table) {
-            $table->mediumText('edit_reason_text')->nullable();
+        Schema::table('annotation_descriptions', function (Blueprint $table) {
+            $table->uuid('annotation_id')->after('question_id')->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ class AddEditingReasonColumnInFormSubmitStatusTable extends Migration
      */
     public function down()
     {
-        Schema::table('form_submit_status', function (Blueprint $table) {
-            $table->dropColumn('edit_reason_text');
+        Schema::table('annotation_descriptions', function (Blueprint $table) {
+            $table->dropColumn('annotation_id');
         });
     }
 }

@@ -20,12 +20,14 @@
         @yield('styles')
         <!-- END: Page CSS-->
         <!-- START: Custom CSS-->
+
         <link rel="stylesheet" href="{{ asset('public/dist/css/main.css') }}">
         <link rel="stylesheet" href="{{ asset('public/dist/css/custom.css') }}">
         <link rel="stylesheet" href="{{ asset('public/dist/css/multi-select.css') }}">
         <link rel="stylesheet" href="{{ asset('public/dist/vendors/fontawesome/css/all.min.css') }}"/>
         <link rel="stylesheet" href="{{ asset('public/css/fstdropdown.min.css') }}"/>
 
+        @stack('styles')
         <!-- END: Custom CSS-->
         <style>
             #settingbutton{
@@ -67,6 +69,8 @@
 
         <!-- START: Page JS-->
         @yield('script')
+        @stack('script')
+        @stack('script_last')
         <!-- END: Page JS-->
     </body>
 </html>

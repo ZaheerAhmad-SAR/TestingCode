@@ -4,6 +4,10 @@
 /storage/*.key
 server.php
 /vendor
+.env
+.htaccess
+composer.json
+composer.lock
 .env.backup
 .phpunit.result.cache
 Homestead.json
@@ -15,4 +19,5 @@ yarn-error.log
 /resources/views/layouts/app.blade.php
 /resources/views/layouts/home.blade.php
 /Modules/UserRoles/Resources/views/dashboard.blade.php
+composer.lock
 

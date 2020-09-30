@@ -15,9 +15,12 @@
         .pac-container {
             z-index: 10000 !important;
         }
+        .select2-results__option[aria-selected=true] {
+            display: none;
+        }
     </style>
-    <link rel="stylesheet" href="{{ asset("public/dist/vendors/select2/css/select2.min.css") }}"/>
-    <link rel="stylesheet" href="{{ asset("public/dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
+    <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2.min.css") }}"/>
+    <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
@@ -81,7 +84,7 @@
                                                 <input type="hidden" id="table_site_study_id_{{$site->id}}" name="table_site_study_id_{{$site->id}}" value="{{$site->id}}">
                                             </td>
                                             <td>
-                                            <Select class="coordinatorsData multieSelectDropDown" name="coordinators_{{$site->id}}" id="coordinators_{{$site->id}}" multiple data-allow-clear="1" onchange="assignCoordinator('{{$site->id}}');">
+                                            <Select class="coordinatorsData multieSelectDropDown" data-id="{{$site->id}}" name="coordinators_{{$site->id}}" id="coordinators_{{$site->id}}" multiple data-allow-clear="1" onchange="assignCoordinator('{{$site->id}}');">
                                             @php
                                             $studySite = Modules\Admin\Entities\StudySite::find($site->id);
                                             $siteCoordinatorsIdsArray = $studySite->siteStudyCoordinatorIds();
@@ -748,19 +751,19 @@
         </div>
         @endsection
         @section('styles')
-            <link rel="stylesheet" href="{{ asset("public/dist/vendors/datatable/css/dataTables.bootstrap4.min.css") }}">
-            <link rel="stylesheet" href="{{ asset("public/dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css") }}">
+            <link rel="stylesheet" href="{{ asset("dist/vendors/datatable/css/dataTables.bootstrap4.min.css") }}">
+            <link rel="stylesheet" href="{{ asset("dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css") }}">
         @endsection
         @section('script')
-            <script src="{{ asset("public/dist/vendors/datatable/js/jquery.dataTables.min.js") }}"></script>
+            <script src="{{ asset("dist/vendors/datatable/js/jquery.dataTables.min.js") }}"></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
-            <script src="{{ asset("public/dist/vendors/datatable/js/dataTables.bootstrap4.min.js") }}"></script>
-            <script src="{{ asset("public/dist/vendors/datatable/editor/mindmup-editabletable.js") }}"></script>
-            <script src="{{ asset("public/dist/vendors/datatable/editor/numeric-input-example.js") }}"></script>
-            <script src="{{ asset("public/dist/js/datatableedit.script.js") }}"></script>
+            <script src="{{ asset("dist/vendors/datatable/js/dataTables.bootstrap4.min.js") }}"></script>
+            <script src="{{ asset("dist/vendors/datatable/editor/mindmup-editabletable.js") }}"></script>
+            <script src="{{ asset("dist/vendors/datatable/editor/numeric-input-example.js") }}"></script>
+            <script src="{{ asset("dist/js/datatableedit.script.js") }}"></script>
             <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
-            <script src="{{ asset("public/dist/vendors/select2/js/select2.full.min.js") }}"></script>
-            <script src="{{ asset("public/dist/js/select2.script.js") }}"></script>
+            <script src="{{ asset("dist/vendors/select2/js/select2.full.min.js") }}"></script>
+            <script src="{{ asset("dist/js/select2.script.js") }}"></script>
             <script type="text/javascript">
                 var placeSearch, autocomplete;
                 var componentForm = {
@@ -1711,6 +1714,41 @@
                     });
                 });
 
+                // override the select2 open event
+                $('.coordinatorsData').on('select2:unselect', function (e) {
+                    // get values of selected option
+                    var studySiteId = $(this).attr('data-id');
+                    var coordinator_id = e.params.data.id;
+
+                    // get the pop up selection
+                    var pop_up_selection = $('.select2-results__options');
+
+                    if (coordinator_id != null ) {
+                        // hide the selected values
+                        pop_up_selection.find("li[aria-selected=true]").hide();
+
+                    } else {
+                        // show all the selection values
+                        pop_up_selection.find("li[aria-selected=true]").show();
+                    }
+
+                    $.ajax({
+                        url: "{{route('deleteCO')}}",
+                        type: 'POST',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            'coordinator_id':coordinator_id,'studySiteId':studySiteId
+                        },
+                        success:function(results){
+                            console.log(results);
+                            window.setTimeout(function () {
+                                location.href = '{{ route('studySite.index') }}';
+                            }, 10);
+                        }
+                    });
+
+                });
+
 
                 function assignCoordinator(site_id){
                         var coordinators_id = $('#coordinators_'+site_id).val();
@@ -1725,6 +1763,9 @@
                         },
                         success:function(results){
                             console.log(results);
+                            window.setTimeout(function () {
+                                location.href = '{{ route('studySite.index') }}';
+                            }, 10);
                         }
                     });
 

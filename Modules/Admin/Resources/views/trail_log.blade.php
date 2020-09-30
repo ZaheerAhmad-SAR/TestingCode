@@ -56,12 +56,12 @@
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
 
-                    <form action="{{route('trail.log')}}" method="get">
+                    <form action="{{route('trail.log')}}" method="get" class="filter-form">
                         <div class="form-row" style="padding: 10px;">
                             
                             <div class="form-group col-md-3">
                                 <label for="inputEmail4">Name</label>
-                                <select class="form-control user_name" name="user_name" id="user_name">
+                                <select class="form-control user_name filter-form-data" name="user_name" id="user_name">
                                     <option value="">All Users</option>
                                     @foreach($getUsers as $filterUser)
                                         <option @if(request()->user_name == $filterUser->user_id) selected @endif value="{{$filterUser->user_id}}">{{$filterUser->name}}</option>
@@ -71,7 +71,7 @@
 
                             <div class="form-group col-md-2">
                                 <label for="inputState">Event Section</label>
-                                <select id="event_section" name="event_section" class="form-control">
+                                <select id="event_section" name="event_section" class="form-control filter-form-data">
                                     <option value="">All Sections</option>
                                     @foreach($eventSection as $key => $section)
                                     <option @if(request()->event_section == $key) selected @endif value="{{$key}}">{{$section}}</option>
@@ -81,7 +81,7 @@
 
                             <div class="form-group col-md-2">
                                 <label for="inputState">Event Type</label>
-                                <select id="event_type" name="event_type" class="form-control">
+                                <select id="event_type" name="event_type" class="form-control filter-form-data">
                                     <option value="">All Types</option>
                                     <option @if(request()->event_type == 'Add') selected @endif vale="Add">Add</option>
                                     <option  @if(request()->event_type == 'Update') selected @endif value="Update">Update</option>
@@ -90,11 +90,12 @@
 
                             <div class="form-group col-md-3"> 
                                 <label for="dt">Event Date</label> 
-                                <input type="text" name="event_date" id="event_date" class="form-control event_date" value="{{ request()->event_date }}"> 
+                                <input type="text" name="event_date" id="event_date" class="form-control event_date filter-form-data" value="{{ request()->event_date }}"> 
                             </div>
 
                             <div class="form-group col-md-2 mt-4">
-                                <button type="submit" class="btn btn-primary btn-lng">Filter Records</button>
+                                <button type="button" class="btn btn-primary reset-filter">Reset</button>
+                                <button type="submit" class="btn btn-primary btn-lng">Filter</button>
                             </div>
 
                         </div>
@@ -212,6 +213,15 @@
         $(this).toggleClass("fa-chevron-circle-right fa-chevron-circle-down");
     });
 
+    // reset filter form
+    $('.reset-filter').click(function(){
+        // reset values 
+        $('.filter-form').trigger("reset");
+        $('.filter-form-data').val("").trigger("change")
+        // submit the filter form
+        $('.filter-form').submit();
+    });
+
     // initialize date range picker
     $('input[name="event_date"]').daterangepicker({
         autoUpdateInput: false,
@@ -227,6 +237,7 @@
     $('input[name="event_date"]').on('cancel.daterangepicker', function(ev, picker) {
         $(this).val('');
     });
+
     // selct initialize
     $('.user_name').select2();
 </script>
