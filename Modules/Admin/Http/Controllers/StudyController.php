@@ -172,7 +172,7 @@ class StudyController extends Controller
         session(['current_study'=>$study->id,'study_short_name'=> $study->study_short_name]);
         $id = $study->id;
         $currentStudy = Study::find($id);
-        $subjects = Subject::where('subjects.study_id','=',$id)
+        $subjects = Subject::select('subjects.*','sites.site_name')->where('subjects.study_id','=',$id)
             ->join('sites','sites.id','=','subjects.site_id')
             ->get();
         $site_study = StudySite::where('study_id','=',$id)

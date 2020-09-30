@@ -13,7 +13,7 @@
 
 //dd(App::environment());
 
-Route::get('transmissions/transmissionData','TransmissionController@transmissionData')->name('transmissions.transmissionData');
+Route::post('transmissions/transmissionData','TransmissionController@transmissionData')->name('transmissions.transmissionData');
 Route::prefix('admin')->group(function() {
     Route::get('/', 'AdminController@index');
 });

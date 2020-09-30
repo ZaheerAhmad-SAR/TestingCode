@@ -112,10 +112,24 @@ class UserController extends Controller
     {
         $user  = User::with('user_roles')
         ->find($id);
-        $currentRole = $user->user_roles;
+        $currentRoles = UserRole::select('user_roles.*','roles.*')
+            ->join('roles','roles.id','user_roles.role_id')
+            ->where('user_roles.user_id','=',$user->id)
+            ->get();
+
+        $unassignedRoles = Role::select('roles.*')
+            ->join('user_roles','user_roles.role_id','roles.id')
+            ->where('user_roles.user_id','=',$user->id)
+            ->get();
+        foreach ($currentRoles as $currentRole){
+            $roleArray[] = $currentRole->role_id;
+        }
+        $unassignedRoles = Role::select('roles.*')
+            ->whereNotIn('roles.id', $roleArray)->get();
+
         $roles = Role::all();
 
-        return view('userroles::users.edit',compact('user','roles'));
+        return view('userroles::users.edit',compact('user','unassignedRoles','currentRoles'));
     }
 
     /**
