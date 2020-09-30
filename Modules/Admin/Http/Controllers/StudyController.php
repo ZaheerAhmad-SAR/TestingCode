@@ -44,6 +44,7 @@ class StudyController extends Controller
                 ->get();*/
             $permissionsIdsArray = Permission::where(function ($query) {
                 $query->where('permissions.name', '=', 'studytools.create')
+                    ->orwhere('permissions.name', '=', 'studytools.index')
                     ->orwhere('permissions.name', '=', 'studytools.store')
                     ->orWhere('permissions.name', '=', 'studytools.edit')
                     ->orwhere('permissions.name', '=', 'studytools.update');
@@ -53,7 +54,7 @@ class StudyController extends Controller
             $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
             $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->get();
             $sites = Site::all();
-            //dd('admin');
+//            dd($permissionsIdsArray);
         } elseif ($user->role->name == 'manager') {
             //dd('manager');
             $studies = Study::with('users')->get();
