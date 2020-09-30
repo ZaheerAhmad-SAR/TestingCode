@@ -8,10 +8,12 @@
             <input type="hidden" name="stepId" value="{{ $step->step_id }}" />
             <input type="hidden" name="formTypeId" value="{{ $step->form_type_id }}" />
             <input type="hidden" name="sectionId" value="{{ $section->id }}" />
+            <input type="hidden" class="form_hid_editing_status_{{ $stepIdStr }}" name="form_editing_status" id="form_editing_status" value="no" />
+            <input type="hidden" class="form_hid_status_{{ $stepIdStr }}" name="form_status" id="form_status" value="{{ $formStatus }}" />
+
         </form>
-        <form class="card-body" method="POST" name="form_{{ $sectionIdStr }}" id="form_{{ $sectionIdStr }}"
-            onsubmit="return submitMe(event, '{{ $sectionIdStr }}', '{{ $sectionClsStr }}', '{{ $stepIdStr }}');">
-            <fieldset id="fieldset_{{$stepIdStr}}" class="{{ $sectionClsStr }}">
+        <form class="card-body" method="POST" name="form_{{ $sectionIdStr }}" id="form_{{ $sectionIdStr }}">
+            <fieldset id="fieldset_{{$sectionIdStr}}" class="{{ $studyClsStr }} {{ $stepClsStr }} {{ $sectionClsStr }}">
             @foreach ($section->questions as $question)
                 @php
                 $getAnswerArray = [
@@ -48,42 +50,14 @@
                 @endif
             @endforeach
         </fieldset>
-            @if ((bool) $subjectId)
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="custom-control custom-checkbox custom-control-inline">
-                        <input type="checkbox" class="custom-control-input" name="{{ buildSafeStr($section->id, 'edit_form_check_') }}"
-                            id="{{ buildSafeStr($section->id, 'edit_form_check_') }}" onclick="showReasonField('{{ buildSafeStr($section->id, 'edit_form_check_') }}', '{{ buildSafeStr($section->id, 'edit_form_div_') }}', '{{ $sectionIdStr }}', '{{ $sectionClsStr }}');">
-                        <label class="custom-control-label checkbox-primary" for="primary">I want to edit that form.</label>
-                    </div>
-                </div>
-                <div class="col-md-12" id="{{ buildSafeStr($section->id, 'edit_form_div_') }}" style="display: none;">
-                    <input type="text" name="edit_reason_text" id="edit_reason_text" class="form-control-ocap bg-transparent" value="" placeholder="Please put reason to edit form here"/>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-12">&nbsp;</div>
-            </div>
-            @endif
-
         </form>
     </div>
     @push('script_last')
         <script>
         $( document ).ready(function() {
-            @if( $formStatus == 'complete')
-            disableFieldByClass('{{ $sectionClsStr }}');
-            @elseif((bool)session('already_one_form_is_resumable'))
-            disableFieldByClass('{{ $sectionClsStr }}');
-            disableFieldByClass('{{ "next_".$sectionClsStr }}');
-            @else
-            disableFieldByClass('{{ "next_".$sectionClsStr }}');
-            disableFieldByClass('{{ $stepClsStr }}');
-            enableFieldByClass('{{ $sectionClsStr }}');
-            @php
-            session(['already_one_form_is_resumable' => 1]);
-            @endphp
-            @endif
+            if($('#form_master_{{ $sectionIdStr }} #form_status').val() != 'complete'){
+                globalDisableByClass('{{ $studyClsStr }}', '{{ $stepClsStr }}');
+            }
         });
 
         </script>

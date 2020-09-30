@@ -14,7 +14,7 @@
                                 $sectionClsStr = buildSafeStr($section->id, 'sec_cls_');
                                 @endphp
                                 <li class="nav-item mr-auto mb-4">
-                                    <a class="nav-link p-0 {{ $stepClsStr }} {{ $sectionClsStr }} {{ $firstSection ? 'active' : '' }}"
+                                    <a class="nav-link p-0 {{ $studyClsStr }} {{ $stepClsStr }} {{ $sectionClsStr }} {{ $firstSection ? 'active' : '' }}"
                                         data-toggle="tab" href="#tab{{ $section->id }}">
                                         <div class="d-flex">
                                             <div class="mr-3 mb-0 h1">{{ $section->sort_number }}</div>
@@ -40,11 +40,6 @@
                                 @php
                                 $sectionClsStr = buildSafeStr($section->id, 'sec_cls_');
                                 $sectionIdStr = buildSafeStr($section->id, '');
-                                $studyId = isset($studyId) ? $studyId : 0;
-                                $subjectId = isset($subjectId) ? $subjectId : 0;
-
-                                $form_filled_by_user_id = auth()->user()->id;
-                                $form_filled_by_user_role_id = auth()->user()->id;
 
                                 $getFormStatusArray = [
                                 'form_filled_by_user_id' => $form_filled_by_user_id,
@@ -58,45 +53,25 @@
                                 $formStatusObj =
                                 \Modules\Admin\Entities\FormStatus::getFormStatusObj($getFormStatusArray);
                                 $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'NoStatus';
+
                                 $sharedData = [
-                                'studyId'=> $studyId, 'subjectId'=>$subjectId, 'phase'=> $phase,
-                                'step'=> $step, 'section'=> $section, 'formStatusObj'=> $formStatusObj,
-                                'formStatus'=> $formStatus, 'sectionIdStr'=> $sectionIdStr, 'sectionClsStr'=>
-                                $sectionClsStr,
-                                'stepClsStr'=> $stepClsStr
+                                'studyId' => $studyId, 'studyClsStr' => $studyClsStr, 'subjectId' => $subjectId, 'phase' => $phase,
+                                'step' => $step, 'section' => $section, 'formStatusObj' => $formStatusObj,
+                                'formStatus' => $formStatus, 'sectionIdStr' => $sectionIdStr,
+                                'sectionClsStr' => $sectionClsStr, 'stepClsStr'=> $stepClsStr,
+                                'key' => $key, 'first' => 0, 'last' => $last
                                 ];
+
                                 @endphp
                                 <div class="tab-pane fade {{ $firstSection ? 'active show' : '' }}"
                                     id="tab{{ $section->id }}">
                                     @include('admin::forms.section_questions', $sharedData )
-                                    @include('admin::forms.section_next_previous', ['key'=> $key, 'first'=>0,
-                                    'last'=>$last]+$sharedData)
+                                    @include('admin::forms.section_next_previous', $sharedData)
                                 </div>
                                 @php
                                 $firstSection = false;
                                 @endphp
                             @endforeach
-                            @if ((bool) $subjectId)
-                                <div class="row">
-                                    <div class="col-md-12">&nbsp;</div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-11">
-                                        <div class="custom-control custom-checkbox custom-control-inline">
-                                        <input type="checkbox" class="custom-control-input" name="terms_cond_{{ $stepIdStr }}"
-                                                id="terms_cond_{{ $stepIdStr }}" value="accepted">
-                                            <label class="custom-control-label checkbox-primary" for="primary">I
-                                                acknowledge that the information submitted in this form is true and
-                                                correct to the best of my knowledge.</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <button type="button" class="btn btn-success float-right"
-                                            onclick="submitSectionForms{{ $stepIdStr }}('{{ $stepIdStr }}');"
-                                            id="submit_{{ $stepIdStr }}">Submit</button>
-                                    </div>
-                                </div>
-                            @endif
                         </div>
                     </div>
                 </div>
@@ -105,27 +80,17 @@
     </div>
     @push('script')
         <script>
-            function submitSectionForms{{ $stepIdStr }}(stepIdStr) {
-                if ($('#terms_cond_'+stepIdStr).prop('checked')) {
-                    var anyFormEditable = false;
+            function submitSectionForms{{ $stepIdStr }}(stepIdStr, stepClsStr) {
+                if (checkTermCond(stepIdStr)) {
                     @foreach($sections as $key => $section)
-                    @php
-                    $sectionClsStr = buildSafeStr($section->id, 'sec_cls_');
-                    $sectionIdStr = buildSafeStr($section->id, '');
-                    @endphp
-                    if($('#fieldset_'+stepIdStr).prop('disabled') === false){
-                        anyFormEditable = true;
+                        @php
+                        $sectionClsStr = buildSafeStr($section->id, 'sec_cls_');
+                        $sectionIdStr = buildSafeStr($section->id, '');
+                        @endphp
                         submitForm('{{ $sectionIdStr }}', '{{ $sectionClsStr }}', '{{ $stepIdStr }}');
-                    }
                     @endforeach
-                    if(anyFormEditable === false){
-                        alert('Please make form editable first!');
-                    }
-                } else {
-                    alert(
-                        'Please acknowledge the truthfulness and correctness of information being submitting in this form!'
-                    );
+                        reloadPage(stepClsStr);
                 }
             }
-            </script>
-            @endpush
+        </script>
+    @endpush

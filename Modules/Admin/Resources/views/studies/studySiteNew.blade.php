@@ -15,6 +15,9 @@
         .pac-container {
             z-index: 10000 !important;
         }
+        .select2-results__option[aria-selected=true] {
+            display: none;
+        }
     </style>
     <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2.min.css") }}"/>
     <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
@@ -81,7 +84,7 @@
                                                 <input type="hidden" id="table_site_study_id_{{$site->id}}" name="table_site_study_id_{{$site->id}}" value="{{$site->id}}">
                                             </td>
                                             <td>
-                                            <Select class="coordinatorsData multieSelectDropDown" name="coordinators_{{$site->id}}" id="coordinators_{{$site->id}}" multiple data-allow-clear="1" onchange="assignCoordinator('{{$site->id}}');">
+                                            <Select class="coordinatorsData multieSelectDropDown" data-id="{{$site->id}}" name="coordinators_{{$site->id}}" id="coordinators_{{$site->id}}" multiple data-allow-clear="1" onchange="assignCoordinator('{{$site->id}}');">
                                             @php
                                             $studySite = Modules\Admin\Entities\StudySite::find($site->id);
                                             $siteCoordinatorsIdsArray = $studySite->siteStudyCoordinatorIds();
@@ -1711,6 +1714,41 @@
                     });
                 });
 
+                // override the select2 open event
+                $('.coordinatorsData').on('select2:unselect', function (e) {
+                    // get values of selected option
+                    var studySiteId = $(this).attr('data-id');
+                    var coordinator_id = e.params.data.id;
+
+                    // get the pop up selection
+                    var pop_up_selection = $('.select2-results__options');
+
+                    if (coordinator_id != null ) {
+                        // hide the selected values
+                        pop_up_selection.find("li[aria-selected=true]").hide();
+
+                    } else {
+                        // show all the selection values
+                        pop_up_selection.find("li[aria-selected=true]").show();
+                    }
+
+                    $.ajax({
+                        url: "{{route('deleteCO')}}",
+                        type: 'POST',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            'coordinator_id':coordinator_id,'studySiteId':studySiteId
+                        },
+                        success:function(results){
+                            console.log(results);
+                            window.setTimeout(function () {
+                                location.href = '{{ route('studySite.index') }}';
+                            }, 10);
+                        }
+                    });
+
+                });
+
 
                 function assignCoordinator(site_id){
                         var coordinators_id = $('#coordinators_'+site_id).val();
@@ -1725,6 +1763,9 @@
                         },
                         success:function(results){
                             console.log(results);
+                            window.setTimeout(function () {
+                                location.href = '{{ route('studySite.index') }}';
+                            }, 10);
                         }
                     });
 

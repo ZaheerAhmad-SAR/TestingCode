@@ -13,166 +13,165 @@
 
 //dd(App::environment());
 
-Route::get('transmissions/transmissionData','TransmissionController@transmissionData')->name('transmissions.transmissionData');
-Route::prefix('admin')->group(function() {
+Route::get('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
+Route::prefix('admin')->group(function () {
     Route::get('/', 'AdminController@index');
 });
 
-Route::group(['middleware' => ['auth','web']],function() {
+Route::group(['middleware' => ['auth', 'web']], function () {
+});
+Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], function () {
 
-   });
-Route::group(['middleware' => ['auth','web','roles'],'roles'=>['admin']],function(){
+    Route::resource('sites', 'SiteController');
+    Route::post('sites/update', 'SiteController@update')->name('updateSites');
+    Route::DELETE('sites/destroy/{sites_id}', 'SiteController@destroy')->name('destroysites');
 
-    Route::resource('sites','SiteController');
-    Route::post('sites/update','SiteController@update')->name('updateSites');
-    Route::DELETE('sites/destroy/{sites_id}','SiteController@destroy')->name('destroysites');
-
-    Route::resource('studies','StudyController');
-    Route::resource('devices','DeviceController');
-    Route::resource('modalities','ModilityController');
-    Route::resource('diseaseCohort','DiseaseCohortController');
-    Route::get('device/{id}','DeviceController@getModal');
+    Route::resource('studies', 'StudyController');
+    Route::resource('devices', 'DeviceController');
+    Route::resource('modalities', 'ModilityController');
+    Route::resource('diseaseCohort', 'DiseaseCohortController');
+    Route::get('device/{id}', 'DeviceController@getModal');
 
 
-    Route::post('modalities/update','ModilityController@update')->name('updateModalities');
+    Route::post('modalities/update', 'ModilityController@update')->name('updateModalities');
 
-    Route::resource('subjects','SubjectController');
+    Route::resource('subjects', 'SubjectController');
 
-    Route::resource('studyrole','StudyRoleController');
+    //Route::resource('studyrole','StudyRoleController');
 
-    Route::resource('others','OtherController');
+    Route::resource('others', 'OtherController');
 
-    Route::get('others/{id}/showOtherBySiteId','OtherController@showOtherBySiteId')->name('others.showOtherBySiteId');
+    Route::get('others/{id}/showOtherBySiteId', 'OtherController@showOtherBySiteId')->name('others.showOtherBySiteId');
 
-    Route::post('others/update','OtherController@update')->name('updateOthers');
+    Route::post('others/update', 'OtherController@update')->name('updateOthers');
 
     //routes for options groups
 
 
-    Route::resource('optionsGroup','OptionsGroupController');
+    Route::resource('optionsGroup', 'OptionsGroupController');
 
-    Route::post('optionsGroup/update','OptionsGroupController@update')->name('updateOptionsGroup');
+    Route::post('optionsGroup/update', 'OptionsGroupController@update')->name('updateOptionsGroup');
 
-    Route::DELETE('optionsGroup/destroy/{options_id}','OptionsGroupController@destroy')->name('destroyOptionsGroup');
-    Route::post('getall_options','FormController@getall_options')->name('getall_options');
+    Route::DELETE('optionsGroup/destroy/{options_id}', 'OptionsGroupController@destroy')->name('destroyOptionsGroup');
+    Route::post('getall_options', 'FormController@getall_options')->name('getall_options');
 
     // routes for annotation
-    Route::resource('annotation','AnnotationController');
-    Route::post('annotation/updateAnnotation','AnnotationController@update_annotation')->name('updateAnnotation');
-    Route::DELETE('annotation/delete/{id}','AnnotationController@deleteAnnotation')->name('delete');
-    Route::get('annotation/get_allAnnotations/{id}','AnnotationController@get_allAnnotations')->name('get_allAnnotations');
+    Route::resource('annotation', 'AnnotationController');
+    Route::post('annotation/updateAnnotation', 'AnnotationController@update_annotation')->name('updateAnnotation');
+    Route::DELETE('annotation/delete/{id}', 'AnnotationController@deleteAnnotation')->name('delete');
+    Route::get('annotation/get_allAnnotations/{id}', 'AnnotationController@get_allAnnotations')->name('get_allAnnotations');
     // routes for form managment
-    Route::resource('forms','FormController');
-    Route::post('forms/add_questions','FormController@add_questions')->name('addQuestions');
-    Route::post('forms/updateQuestion','FormController@update_questions')->name('updateQuestion');
-    Route::get('forms/get_phases/{id}','FormController@get_phases')->name('get_phases');
-    Route::get('forms/step_by_phaseId/{id}','FormController@get_steps_by_phaseId')->name('stepbyphaseId');
-    Route::get('forms/sections_by_stepId/{id}','FormController@get_section_by_stepId')->name('sectionsbystepId');
-    Route::post('studyStatus','StudyController@studyStatus')->name('study.studyStatus');
-    Route::post('changeStatus/{id}','StudyController@changeStatus')->name('studies.changeStatus');
-    Route::get('forms/get_allQuestions/{id}','FormController@get_allQuestions')->name('get_allQuestions');
-    Route::get('forms/show/{phase_id}/{step_id}','FormController@show')->name('forms.show');
-    Route::get('forms/changeSort/{id}','FormController@updateQustionsort')->name('changeSort');
-    Route::DELETE('forms/delete/{id}','FormController@deleteQuestion')->name('delete');
+    Route::resource('forms', 'FormController');
+    Route::post('forms/add_questions', 'FormController@add_questions')->name('addQuestions');
+    Route::post('forms/updateQuestion', 'FormController@update_questions')->name('updateQuestion');
+    Route::get('forms/get_phases/{id}', 'FormController@get_phases')->name('get_phases');
+    Route::get('forms/step_by_phaseId/{id}', 'FormController@get_steps_by_phaseId')->name('stepbyphaseId');
+    Route::get('forms/sections_by_stepId/{id}', 'FormController@get_section_by_stepId')->name('sectionsbystepId');
+    Route::post('studyStatus', 'StudyController@studyStatus')->name('study.studyStatus');
+    Route::post('changeStatus/{id}', 'StudyController@changeStatus')->name('studies.changeStatus');
+    Route::get('forms/get_allQuestions/{id}', 'FormController@get_allQuestions')->name('get_allQuestions');
+    Route::get('forms/show/{phase_id}/{step_id}', 'FormController@show')->name('forms.show');
+    Route::get('forms/changeSort/{id}', 'FormController@updateQustionsort')->name('changeSort');
+    Route::DELETE('forms/delete/{id}', 'FormController@deleteQuestion')->name('delete');
     //end
-     // routes for study managment
-    Route::resource('study','StudyStructureController');
-    Route::get('study_phases','StudyStructureController@getallphases')->name('getPhases');
-    Route::post('study/update','StudyStructureController@update')->name('updatePhase');
-    Route::DELETE('steps/delete_steps/{step_id}','StudyStructureController@destroySteps')->name('deleteSteps');
-    Route::post('steps/store_steps','StudyStructureController@store_steps')->name('steps.save');
-    Route::post('steps/updateSteps','StudyStructureController@update_steps')->name('steps.update');
-    Route::post('studies/studyStatus','StudyController@studyStatus')->name('studies.studyStatus');
-    Route::post('studies/cloneStudy','StudyController@cloneStudy')->name('studies.cloneStudy');
+    // routes for study managment
+    Route::resource('study', 'StudyStructureController');
+    Route::get('study_phases', 'StudyStructureController@getallphases')->name('getPhases');
+    Route::post('study/update', 'StudyStructureController@update')->name('updatePhase');
+    Route::DELETE('steps/delete_steps/{step_id}', 'StudyStructureController@destroySteps')->name('deleteSteps');
+    Route::post('steps/store_steps', 'StudyStructureController@store_steps')->name('steps.save');
+    Route::post('steps/updateSteps', 'StudyStructureController@update_steps')->name('steps.update');
+    Route::post('studies/studyStatus', 'StudyController@studyStatus')->name('studies.studyStatus');
+    Route::post('studies/cloneStudy', 'StudyController@cloneStudy')->name('studies.cloneStudy');
 
     //end
     // routes for adding sections
     // Route::resource('section','SectionController');
-    Route::resource('sections','SectionController');
-    Route::post('section','SectionController@getSectionby_id')->name('getSections');
-    Route::post('section/update','SectionController@update')->name('updateSections');
+    Route::resource('sections', 'SectionController');
+    Route::post('section', 'SectionController@getSectionby_id')->name('getSections');
+    Route::post('section/update', 'SectionController@update')->name('updateSections');
     //end
 
-    Route::resource('childmodilities','ChildModilitiesController');
+    Route::resource('childmodilities', 'ChildModilitiesController');
 
-    Route::post('childmodilities/update','ChildModilitiesController@update')->name('updateChildmodilities');
+    Route::post('childmodilities/update', 'ChildModilitiesController@update')->name('updateChildmodilities');
 
-    Route::get('modalities/{id}/childshow','ModilityController@child')->name('modalities.childshow');
+    Route::get('modalities/{id}/childshow', 'ModilityController@child')->name('modalities.childshow');
 
-    Route::resource('photographers','PhotographerController');
+    Route::resource('photographers', 'PhotographerController');
 
-    Route::get('photographers/{id}/showPhotographerBySiteId','PhotographerController@showPhotographerBySiteId')->name('photographers.showPhotographerBySiteId');
+    Route::get('photographers/{id}/showPhotographerBySiteId', 'PhotographerController@showPhotographerBySiteId')->name('photographers.showPhotographerBySiteId');
 
-    Route::post('photographers/update','PhotographerController@update')->name('updatePhotographers');
-
-
-    Route::resource('coordinator','CoordinatorController');
+    Route::post('photographers/update', 'PhotographerController@update')->name('updatePhotographers');
 
 
-    Route::get('coordinator/{id}/showCoordinatorBySiteId','CoordinatorController@showCoordinatorBySiteId')->name('coordinator.showCoordinatorBySiteId');
-
-    Route::post('coordinator/update','CoordinatorController@update')->name('updateCoordinator');
+    Route::resource('coordinator', 'CoordinatorController');
 
 
+    Route::get('coordinator/{id}/showCoordinatorBySiteId', 'CoordinatorController@showCoordinatorBySiteId')->name('coordinator.showCoordinatorBySiteId');
 
-    Route::resource('primaryinvestigator','PrimaryInvestigatorController');
-
-    Route::post('primaryinvestigator/update','PrimaryInvestigatorController@update')->name('updatePrimaryinvestigator');
-
-
-    Route::get('primaryinvestigator/{id}/showSiteId','PrimaryInvestigatorController@showSiteId')->name('primaryinvestigator.showSiteId');
-
-
-    Route::get('modalities/{id}/showChild','ModilityController@showChild')->name('modalities.showChild');
+    Route::post('coordinator/update', 'CoordinatorController@update')->name('updateCoordinator');
 
 
 
-    Route::get('modalities/{id}/editChild','ModilityController@editChild')->name('modalities.editChild');
+    Route::resource('primaryinvestigator', 'PrimaryInvestigatorController');
+
+    Route::post('primaryinvestigator/update', 'PrimaryInvestigatorController@update')->name('updatePrimaryinvestigator');
 
 
-    Route::get('modalities/{id}/destroy','ModilityController@destroy')->name('modalities.destroy');
+    Route::get('primaryinvestigator/{id}/showSiteId', 'PrimaryInvestigatorController@showSiteId')->name('primaryinvestigator.showSiteId');
 
-    Route::get('childmodilities/{id}/destroy','ChildModilitiesController@destroy')->name('childmodilities.destroy');
 
-    Route::get('childmodilities/{id}/restoreChild','ChildModilitiesController@restoreChild')->name('childmodilities.restoreChild');
-
-    Route::get('modalities/{id}/replicateParent','ModilityController@replicateParent')->name('modalities.replicateParent');
-
-    Route::get('modalities/{id}/restoreParent','ModilityController@restoreParent')->name('modalities.restoreParent');
-
-    Route::get('primaryinvestigator/{id}/destroy','PrimaryInvestigatorController@destroy')->name('primaryinvestigator.destroy');
-
-    Route::get('coordinator/{id}/destroy','CoordinatorController@destroy')->name('coordinator.destroy');
-
-    Route::get('others/{id}/destroy','OtherController@destroy')->name('others.destroy');
-
-    Route::get('photographers/{id}/destroy','PhotographerController@destroy')->name('photographers.destroy');
-
-    Route::resource('studySite','StudySiteController');
+    Route::get('modalities/{id}/showChild', 'ModilityController@showChild')->name('modalities.showChild');
 
 
 
-    Route::post('studySite/update','StudySiteController@update')->name('updateStudySiteForm');
+    Route::get('modalities/{id}/editChild', 'ModilityController@editChild')->name('modalities.editChild');
 
-    Route::post('studySite/updateStudySite','StudySiteController@updateStudySite')->name('updateStudySiteId');
 
-    Route::post('studySite/updatePrimaryInvestigator','StudySiteController@updatePrimaryInvestigator')->name('updatePI');
+    Route::get('modalities/{id}/destroy', 'ModilityController@destroy')->name('modalities.destroy');
 
-    Route::post('studySite/insertCoordinators','StudySiteController@insertCoordinators')->name('insertCO');
+    Route::get('childmodilities/{id}/destroy', 'ChildModilitiesController@destroy')->name('childmodilities.destroy');
+
+    Route::get('childmodilities/{id}/restoreChild', 'ChildModilitiesController@restoreChild')->name('childmodilities.restoreChild');
+
+    Route::get('modalities/{id}/replicateParent', 'ModilityController@replicateParent')->name('modalities.replicateParent');
+
+    Route::get('modalities/{id}/restoreParent', 'ModilityController@restoreParent')->name('modalities.restoreParent');
+
+    Route::get('primaryinvestigator/{id}/destroy', 'PrimaryInvestigatorController@destroy')->name('primaryinvestigator.destroy');
+
+    Route::get('coordinator/{id}/destroy', 'CoordinatorController@destroy')->name('coordinator.destroy');
+
+    Route::get('others/{id}/destroy', 'OtherController@destroy')->name('others.destroy');
+
+    Route::get('photographers/{id}/destroy', 'PhotographerController@destroy')->name('photographers.destroy');
+
+    Route::resource('studySite', 'StudySiteController');
+
+
+
+    Route::post('studySite/update', 'StudySiteController@update')->name('updateStudySiteForm');
+
+    Route::post('studySite/updateStudySite', 'StudySiteController@updateStudySite')->name('updateStudySiteId');
+
+    Route::post('studySite/updatePrimaryInvestigator', 'StudySiteController@updatePrimaryInvestigator')->name('updatePI');
+
+    Route::post('studySite/insertCoordinators', 'StudySiteController@insertCoordinators')->name('insertCO');
+
+    Route::post('studySite/deleteSiteCoordinator', 'StudySiteController@deleteSiteCoordinator')->name('deleteCO');
+
 
     //SubjectFormLoader
-    Route::get('subject_form/{study_id}/{subject_id}','SubjectFormLoaderController@showSubjectForm')->name('showSubjectForm');
-    Route::post('/subject_form/submitStudyPhaseStepQuestionForm','SubjectFormSubmissionController@submitForm')->name('submitStudyPhaseStepQuestionForm');
+    Route::get('subject_form/{study_id}/{subject_id}', 'SubjectFormLoaderController@showSubjectForm')->name('showSubjectForm');
+    Route::post('/subject_form/submitStudyPhaseStepQuestionForm', 'SubjectFormSubmissionController@submitForm')->name('submitStudyPhaseStepQuestionForm');
+    Route::post('/subject_form/openSubjectFormToEdit', 'SubjectFormSubmissionController@openSubjectFormToEdit')->name('openSubjectFormToEdit');
     //Assign Roles ToPhase and Step
-    Route::post('getAssignRolesToPhaseForm','AssignRolesPhaseStepController@getAssignRolesToPhaseForm')->name('getAssignRolesToPhaseForm');
-    Route::post('getAssignRolesToPhaseStepForm','AssignRolesPhaseStepController@getAssignRolesToPhaseStepForm')->name('getAssignRolesToPhaseStepForm');
-    Route::post('submitAssignRolesToPhaseForm','AssignRolesPhaseStepController@submitAssignRolesToPhaseForm')->name('submitAssignRolesToPhaseForm');
-    Route::post('submitAssignRolesToPhaseStepForm','AssignRolesPhaseStepController@submitAssignRolesToPhaseStepForm')->name('submitAssignRolesToPhaseStepForm');
-
+    Route::post('getAssignRolesToPhaseForm', 'AssignRolesPhaseStepController@getAssignRolesToPhaseForm')->name('getAssignRolesToPhaseForm');
+    Route::post('getAssignRolesToPhaseStepForm', 'AssignRolesPhaseStepController@getAssignRolesToPhaseStepForm')->name('getAssignRolesToPhaseStepForm');
+    Route::post('submitAssignRolesToPhaseForm', 'AssignRolesPhaseStepController@submitAssignRolesToPhaseForm')->name('submitAssignRolesToPhaseForm');
+    Route::post('submitAssignRolesToPhaseStepForm', 'AssignRolesPhaseStepController@submitAssignRolesToPhaseStepForm')->name('submitAssignRolesToPhaseStepForm');
 });
 
 // CHM-Amir--
 Route::get('trail-log', 'TrailLogController@index')->name('trail.log');
-
-
-

@@ -1,5 +1,17 @@
 @extends ('layouts.home')
 @section('content')
+    @php
+    $studyId = isset($studyId) ? $studyId : 0;
+    $studyClsStr = buildSafeStr($studyId, 'study_cls_');
+    $study = \Modules\Admin\Entities\Study::find($studyId);
+
+    $subjectId = isset($subjectId) ? $subjectId : 0;
+    $subject = \Modules\Admin\Entities\Subject::find($subjectId);
+
+    $form_filled_by_user_id = auth()->user()->id;
+    $form_filled_by_user_role_id = auth()->user()->id;
+    @endphp
+    <input type="hidden" name="already_global_disabled" id="already_global_disabled" value="no" />
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
         <div class="row ">
@@ -20,6 +32,22 @@
 
         <!-- START: Card Data-->
         <div class="row">
+            <div class="col-12 col-sm-12 mt-3">
+                <div class="card">
+                    <div class="card-header  justify-content-between align-items-center">
+                        <h4 class="card-title">Study and Subject details</h4>
+                    </div>
+                    <div class="card-body">
+                        <table>
+                            <tr><td>Study ID :</td><td>{{ $studyId }}</td></tr>
+                            <tr><td>Study Title :</td><td>{{ $study->study_title }}</td></tr>
+
+                            <tr><td>Subject ID :</td><td>{{ $subject->subject_id }}</td></tr>
+                            <tr><td>Study EYE :</td><td>{{ $subject->study_eye }}</td></tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
                     <div class="card-header  justify-content-between align-items-center">
@@ -97,7 +125,6 @@
                                     @if (count($visitPhases))
                                         @php
                                         $firstStep = true;
-                                        session(['already_one_form_is_resumable' => 0]);
                                         @endphp
                                         @foreach ($visitPhases as $phase)
                                             @php
@@ -109,12 +136,21 @@
                                                 @php
                                                 $sections = $step->sections;
                                                 if(count($sections)){
+                                                $dataArray = [
+                                                'studyId'=>$studyId,
+                                                'studyClsStr'=>$studyClsStr,
+                                                'subjectId'=>$subjectId,
+                                                'phase'=>$phase,
+                                                'step'=>$step,
+                                                'sections'=> $sections,
+                                                'phaseIdStr'=>$phaseIdStr,
+                                                'form_filled_by_user_id' => $form_filled_by_user_id,
+                                                'form_filled_by_user_role_id' => $form_filled_by_user_role_id
+                                                ];
                                                 @endphp
                                                 <div class="all_step_sections step_sections_{{ $step->step_id }}"
                                                     style="display: {{ $firstStep ? 'block' : 'none' }};">
-                                                    @include('admin::forms.section_loop', ['studyId'=>$studyId,
-                                                    'subjectId'=>$subjectId, 'phase'=>$phase, 'step'=>$step,
-                                                    'sections'=> $sections, 'phaseIdStr'=>$phaseIdStr])
+                                                    @include('admin::forms.section_loop', $dataArray)
                                                 </div>
                                                 @php
                                                 }
@@ -143,6 +179,7 @@
                 $('.all_step_sections').hide(500);
                 $('.' + step_id_class).show(500);
             }
+
             function disableAllFormFields(formId) {
                 $("#" + formId + " input").prop('disabled', true);
             }
@@ -159,52 +196,114 @@
                 $("#" + fieldId).prop('disabled', false);
             }
 
-            function disableFieldByClass(cls) {
+            function disableByClass(cls) {
                 $("." + cls).prop('disabled', true);
             }
 
-            function enableFieldByClass(cls) {
+            function globalDisableByClass(studyClsStr, sectionClsStr) {
+                if ($('#already_global_disabled').val() == 'no') {
+                    $("." + studyClsStr).prop('disabled', true);
+                    $('#already_global_disabled').val('yes')
+                    enableByClass(sectionClsStr);
+                }
+            }
+
+            function enableByClass(cls) {
                 $("." + cls).prop('disabled', false);
             }
 
-            function submitMe(event, sectionIdStr, sectionClsStr, stepIdStr) {
-                event.preventDefault();
-                submitForm(sectionIdStr, sectionClsStr, stepIdStr);
-            }
-
             function submitForm(sectionIdStr, sectionClsStr, stepIdStr) {
-                var term_cond = $('#term_cond_' + stepIdStr + ':checked').val();
-                var frmData = $("#form_master_" + sectionIdStr).serialize() + '&' + $("#form_" + sectionIdStr).serialize() + '&term_cond_'+stepIdStr+'='+term_cond;
-                submitRequest(frmData);
-                disableFieldByClass(sectionClsStr);
+                var submitFormFlag = true;
+                if (isFormInEditMode(sectionIdStr)) {
+                    if (checkReason(stepIdStr) === false) {
+                        submitFormFlag = false;
+                    }
+                }
+                if(submitFormFlag){
+                    var term_cond = $('#terms_cond_' + stepIdStr).val();
+                        var reason = $('#edit_reason_text_' + stepIdStr).val();
+                        var frmData = $("#form_master_" + sectionIdStr).serialize() + '&' + $("#form_" + sectionIdStr)
+                            .serialize() +
+                            '&terms_cond_' + stepIdStr + '=' + term_cond + '&' + 'edit_reason_text=' + reason;
+                        submitRequest(frmData);
+                }
+            }
+
+            function reloadPage(stepClsStr) {
                 setTimeout(function() {
-                   location.reload();
+                    //disableByClass(stepClsStr);
+                    location.reload();
                 }, 1000);
+            }
+
+            function checkTermCond(stepIdStr) {
+                if ($('#terms_cond_' + stepIdStr).prop('checked')) {
+                    return true;
+                } else {
+                    alert(
+                        'Please acknowledge the truthfulness and correctness of information being submitting in this form!'
+                    );
+                    return false;
+                }
+            }
+
+            function isFormInEditMode(sectionIdStr) {
+                var formStatus = $('#form_master_' + sectionIdStr + ' #form_status').val();
+                var formEditStatus = $('#form_master_' + sectionIdStr + ' #form_editing_status').val();
+                var returnVal = false;
+                if (formEditStatus == 'yes') {
+                    returnVal = true;
+                }
+
+                return returnVal;
+            }
+
+
+            function checkReason(stepIdStr) {
+                var returnVal = false;
+                if (($('#edit_reason_text_' + stepIdStr).val() == '')) {
+                    alert('Please tell the reason to edit');
+                } else {
+                    returnVal = true;
+                }
+                return returnVal;
+            }
+
+            function submitFormField(stepIdStr, sectionIdStr, field_name) {
+                var submitFormFlag = true;
+                if (isFormInEditMode(sectionIdStr)) {
+                    if (checkReason(stepIdStr) === false) {
+                        submitFormFlag = false;
+                    }
+                }
+                if(submitFormFlag){
+                    var frmData = $("#form_master_" + sectionIdStr).serialize();
+                        var field_val;
+                        if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
+                            field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').val();
+                        } else {
+                            field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').val();
+                        }
+                        var reason = $('#edit_reason_text_' + stepIdStr).val();
+
+                        frmData = frmData + '&' + field_name + '=' + field_val + '&' + 'edit_reason_text=' + reason;
+                        submitRequest(frmData);
+                }
+
 
             }
 
-            function submitFormField(sectionIdStr, field_name) {
-                if (
-                    (
-                        ($('#form_' + sectionIdStr + ' #edit_reason_text').prop('required') === true) &&
-                        ($('#form_' + sectionIdStr + ' #edit_reason_text').val() != '')
-                    ) ||
-                    ($('#form_' + sectionIdStr + ' #edit_reason_text').prop('required') === false)
-                ) {
-                    var frmData = $("#form_master_" + sectionIdStr).serialize();
-                    var field_val;
-                    if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
-                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').val();
-                    } else {
-                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').val();
+            function openFormForEditing(stepIdStr, stepClsStr, sectionIdStr) {
+                var frmData = $("#form_master_" + sectionIdStr).serialize();
+                frmData = frmData + '&' + 'open_form_to_edit=1';
+                $.ajax({
+                    url: "{{ route('openSubjectFormToEdit') }}",
+                    type: 'POST',
+                    data: frmData,
+                    success: function(response) {
+                        showReasonField(stepIdStr, stepClsStr, sectionIdStr);
                     }
-                    var reason = $('#form_' + sectionIdStr + ' #edit_reason_text').val();
-
-                    frmData = frmData + '&' + field_name + '=' + field_val + '&' + 'edit_reason_text=' + reason;
-                    submitRequest(frmData);
-                } else {
-                    alert('Please tell the reason to edit');
-                }
+                });
             }
 
             function submitRequest(frmData) {
@@ -213,27 +312,17 @@
                     type: 'POST',
                     data: frmData,
                     success: function(response) {
-
+                        //
                     }
                 });
             }
 
-            function showReasonField(checkBoxId, divId, sectionIdStr, sectionClsStr) {
-                if ($('#'+checkBoxId).prop('checked') === true) {
-                    var reason_to_edit = prompt("Please enter reason to edit form");
-                    if (reason_to_edit !== null && reason_to_edit != "") {
-                        $("#" + divId).show(500);
-                        $('#form_' + sectionIdStr + ' #edit_reason_text').prop('required', true);
-                        $('#form_' + sectionIdStr + ' #edit_reason_text').val(reason_to_edit);
-                        enableFieldByClass(sectionClsStr);
-                    }
-                }else {
-                    $("#" + divId).hide(500);
-                    $('#form_' + sectionIdStr + ' #edit_reason_text').prop('required', false);
-                    $('#form_' + sectionIdStr + ' #edit_reason_text').val('');
-                    disableFieldByClass(sectionClsStr);
-                }
-
+            function showReasonField(stepIdStr, stepClsStr, sectionIdStr) {
+                $("#edit_form_div_" + stepIdStr).show(500);
+                $('#edit_reason_text_' + stepIdStr).prop('required', true);
+                enableByClass(stepClsStr);
+                $('.form_hid_editing_status_' + stepIdStr).val('yes');
+                $('.form_hid_status_' + stepIdStr).val('resumable');
             }
 
         </script>
