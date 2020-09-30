@@ -18,6 +18,9 @@
         .select2-results__option[aria-selected=true] {
             display: none;
         }
+        span.select2-selection__clear {
+            display: none;
+        }
     </style>
     <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2.min.css") }}"/>
     <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
@@ -160,6 +163,7 @@
                     <div class="alert alert-danger" style="display:none"></div>
                     <div class="modal-header">
                         <p class="modal-title">Add New Site</p>
+                        <input type="hidden" name="site_id" id="site_id" value="">
                     </div>
                     <div class="modal-body">
 
@@ -281,7 +285,7 @@
                                                     <span class="input-danger small">{{ $message }}</span>
                                                     @enderror
                                                 </div>
-                                                <input type="hidden" name="site_id" id="site_id" value="">
+
                                             </div>
                                             <div class="modal-footer">
                                                 @if(hasPermission(auth()->user(),'sites.store'))
@@ -766,6 +770,7 @@
             <script src="{{ asset("dist/js/select2.script.js") }}"></script>
             <script type="text/javascript">
                 var placeSearch, autocomplete;
+
                 var componentForm = {
                     street_number: 'short_name',
                     route: 'long_name',
@@ -775,6 +780,7 @@
                     postal_code: 'short_name',
 
                 };
+
                 function initAutocomplete() {
                     // Create the autocomplete object, restricting the search predictions to
                     // geographical location types.
@@ -782,6 +788,7 @@
                         document.getElementById('autocomplete'), {types: ['geocode']});
                     autocomplete.addListener('place_changed', fillInAddress);
                 }
+
                 // [START region_fillform]
                 function fillInAddress() {
                     // Get the place details from the autocomplete object.
@@ -812,6 +819,7 @@
                         document.getElementById('fullAddr').disabled = false;
                     }
                 }
+
                 // Bias the autocomplete object to the user's geographical location,
                 // as supplied by the browser's 'navigator.geolocation' object.
                 function geolocate() {
@@ -829,8 +837,9 @@
                         });
                     }
                 }
+
                 // Add New Primary Investigator
-                function addPrimaryInvestigator() {
+                function addPrimaryInvestigator(){
                     $("#primaryInvestigatorForm").submit(function(e) {
                         var first_name        = $('#pi_first_name').val();
                         var p_mid_name        = $('#pi_mid_name').val();
@@ -839,6 +848,7 @@
                         var p_email           = $('#pi_email').val();
                         var pi_id             = $('#pi_id').val();
                         var pi_submit_actions = $('#pi_submit_actions').val();
+                        $('#primaryInvestigatorForm').find($('input[name="site_id"]').val($('#site_id').val()));
                         if(pi_submit_actions  == 'Add')
                         {
                             var action_url = "{{ route('primaryinvestigator.store') }}";
@@ -859,8 +869,8 @@
                             type: "POST",
                             dataType: 'json',
                             success: function (results) {
-                                var primary_investigator_id = results[0].id;
-
+                                console.log(results);
+                                var primary_investigator_id = results.id;
                                 var html    =   '';
 
                                 if(pi_submit_actions == 'Add') {
@@ -869,15 +879,17 @@
                                         '<td>'+first_name + '   '.repeat(4)+p_last_name+'</td>\n'+
                                         '<td>'+p_phone+'</td>\n' +
                                         '<td>'+p_email+'</td>\n' +
-                                        '<td><i style="color: #EA4335;" class="fa fa-trash deleteprimaryinvestigator" data-id ='+primary_investigator_id+'></i>&nbsp;&nbsp;<i style="color: #34A853;" class="icon-pencil editprimaryinvestigator" data-id ='+primary_investigator_id+'></i>'+
+                                        '<td><i style="color: #EA4335;" class="fa fa-trash deleteprimaryinvestigator" data-id ='+primary_investigator_id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editprimaryinvestigator" data-id ='+primary_investigator_id+'></i>'+
                                         '</td>\n' +
                                         '</tr>';
 
                                     $('.primaryInvestigatorTableAppend tbody').prepend(html);
                                 }
                                 else{
+
                                     $.each(results, function(index,row)
                                     {
+                                        console.log(results);
                                         html    += '<tr id='+row.id+'>\n'+
                                             '<td>'+row.first_name + '  '.repeat(4)+row.last_name+'</td>\n'+
                                             '<td>'+row.phone+'</td>\n' +
@@ -902,6 +914,7 @@
                 }
                 addPrimaryInvestigator();
                 // End of primary Investigator
+
                 // Primary Investigator Delete function
                 function primaryinvestigatorDestroy(){
                     $('body').on('click', '.deleteprimaryinvestigator', function () {
@@ -929,6 +942,7 @@
                     });
                 }
                 primaryinvestigatorDestroy();
+
                 function resetprimaryinvestigatorForm() {
                     $("#rest_pi_button").click(function(){
                         $("#pi_submit_actions").attr('value', 'Add');
@@ -936,6 +950,7 @@
                     });
                 }
                 resetprimaryinvestigatorForm();
+
                 function resetcoordinatorForm() {
                     $("#reset_c_button").click(function(){
                         $("#c_submit_actions").attr('value', 'Add');
@@ -943,22 +958,63 @@
                     });
                 }
                 resetcoordinatorForm();
-                function resetphotographerForm(){
+
+                function resetphotographerForm()
+                {
                     $("#reset_photographer_button").click(function(){
                         $("#photographer_submit_actions").attr('value', 'Add');
                         $("#photographerForm").trigger("reset");
                     });
                 }
                 resetphotographerForm();
-                function resetothersForm(){
+
+                function resetothersForm()
+                {
                     $("#reset_others_button").click(function(){
                         $("#others_submit_actions").attr('value', 'Add');
                         $("#othersForm").trigger("reset");
                     });
                 }
+
                 resetothersForm();
+                //// show Coordinator function
+
+                function showCoordinator() {
+                    $('body').on('click', '.editCoordinator', function (e) {
+                        $.ajaxSetup({
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            }
+                        });
+                        var id =($(this).attr("data-id"));
+                        var url = "{{URL('/ocap_new/coordinator')}}";
+                        var newPath = url+ "/"+ id+"/edit/";
+
+                        $.ajax({
+                            type:"GET",
+                            dataType: 'html',
+                            url:newPath,
+                            success : function(results) {
+                                var parsedata = JSON.parse(results)[0];
+                                console.log(parsedata);
+                                $('#c_id').val(parsedata.id);
+                                $('#c_site_id').val(parsedata.site_id);
+                                $('#c_submit_actions').val('Edit');
+                                $('#c_first_name').val(parsedata.first_name);
+                                $('#c_mid_name').val(parsedata.mid_name);
+                                $('#c_last_name').val(parsedata.last_name);
+                                $('#c_phone').val(parsedata.phone);
+                                $('#c_email').val(parsedata.email);
+                            }
+                        });
+                    });
+                }
+                showCoordinator();
+
+                //// showOthers function
+
                 //// show Primary Investigator function
-                function showPrimaryInvestigator(){
+                function showPrimaryInvestigator() {
                     $('body').on('click', '.editprimaryinvestigator', function (e) {
                         $.ajaxSetup({
                             headers: {
@@ -974,6 +1030,7 @@
                             url:newPath,
                             success : function(results) {
                                 var parsedata = JSON.parse(results)[0];
+                                console.log(parsedata);
                                 $('#pi_id').val(parsedata.id);
                                 $('#pi_site_id').val(parsedata.site_id);
                                 $('#pi_submit_actions').val('Edit');
@@ -988,7 +1045,8 @@
                 }
                 showPrimaryInvestigator();
                 // Add New Photographer
-                function addPhotographer(){
+                function addPhotographer()
+                {
                     $("#photographerForm").submit(function(e) {
                         var photographer_first_name     = $('#photographer_first_name').val();
                         var photographer_mid_name       = $('#photographer_mid_name').val();
@@ -997,6 +1055,7 @@
                         var photographer_email          = $('#photographer_email').val();
                         var photo_id                    = $('#photo_id').val();
                         var photographer_submit_actions = $('#photographer_submit_actions').val();
+                        $('#photographerForm').find($('input[name="site_id"]').val($('#site_id').val()));
                         if(photographer_submit_actions  == 'Add')
                         {
                             var action_url = "{{ route('photographers.store') }}";
@@ -1017,6 +1076,7 @@
                             type: "POST",
                             dataType: 'json',
                             success: function (results) {
+
                                 var photographer_id = results[0].id;
                                 var html    =   '';
                                 if(photographer_submit_actions == 'Add')
@@ -1056,8 +1116,12 @@
                 addPhotographer();
                 // End of Photographer
                 ///////////////////////
+
+
                 //// show Photographer function
-                function showPhotographer(){
+
+                function showPhotographer()
+                {
                     $('body').on('click', '.editPhotographer', function (e) {
                         $.ajaxSetup({
                             headers: {
@@ -1086,8 +1150,10 @@
                     });
                 }
                 showPhotographer();
+
                 // Add New Coordinator
-                function addCoordinator(){
+                function addCoordinator()
+                {
                     $("#coordinatorForm").submit(function(e) {
                         var c_first_name   = $('#c_first_name').val();
                         var c_mid_name   = $('#c_mid_name').val();
@@ -1096,6 +1162,7 @@
                         var c_email      = $('#c_email').val();
                         var c_id = $('#c_id').val();
                         var c_submit_actions = $('#c_submit_actions').val();
+                        $('#coordinatorForm').find($('input[name="site_id"]').val($('#site_id').val()));
 
                         if(c_submit_actions == 'Add')
                         {
@@ -1118,8 +1185,8 @@
                             type: "POST",
                             dataType: 'json',
                             success: function (results) {
+                                console.log(results);
                                 var coordinator_id = results[0].id;
-                                console.log(coordinator_id);
                                 var html    =   '';
                                 if(c_submit_actions == 'Add')
                                 {
@@ -1157,40 +1224,9 @@
                 }
                 addCoordinator();
                 // End of Coordinator
-                //// show Coordinator function
-                function showCoordinator(){
-                    $('body').on('click', '.editCoordinator', function (e) {
-                        $.ajaxSetup({
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            }
-                        });
-                        var id =($(this).attr("data-id"));
-                        var url = "{{URL('/ocap_new/coordinator')}}";
-                        var newPath = url+ "/"+ id+"/edit/";
 
-                        $.ajax({
-                            type:"GET",
-                            dataType: 'html',
-                            url:newPath,
-                            success : function(results) {
-                                var parsedata = JSON.parse(results)[0];
-                                console.log(parsedata);
-                                $('#c_id').val(parsedata.id);
-                                $('#c_site_id').val(parsedata.site_id);
-                                $('#c_submit_actions').val('Edit');
-                                $('#c_first_name').val(parsedata.first_name);
-                                $('#c_mid_name').val(parsedata.mid_name);
-                                $('#c_last_name').val(parsedata.last_name);
-                                $('#c_phone').val(parsedata.phone);
-                                $('#c_email').val(parsedata.email);
-                            }
-                        });
-                    });
-                }
-                showCoordinator();
-                //// showOthers function
-                function showOthers(){
+                function showOthers()
+                {
                     $('body').on('click', '.editOthers', function (e) {
                         $.ajaxSetup({
                             headers: {
@@ -1220,9 +1256,12 @@
                         });
                     });
                 }
+
                 showOthers();
+
                 // Add New Others
-                function addOthers(){
+                function addOthers()
+                {
                     $("#othersForm").submit(function(e) {
                         var others_first_name = $('#others_first_name').val();
                         var others_mid_name   = $('#others_mid_name').val();
@@ -1231,6 +1270,7 @@
                         var others_email      = $('#others_email').val();
                         var others_id         = $('#others_id').val();
                         var others_submit_actions = $('#others_submit_actions').val();
+                        $('#othersForm').find($('input[name="site_id"]').val($('#site_id').val()));
                         if(others_submit_actions == 'Add')
                         {
                             var action_url = "{{ route('others.store') }}";
@@ -1261,7 +1301,7 @@
                                         '<td>' + others_first_name + '   '.repeat(4) + others_last_name + '</td>\n' +
                                         '<td>' + others_phone + '</td>\n' +
                                         '<td>' + others_email + '</td>\n' +
-                                        '<td><i style="color: #EA4335;" class="fa fa-trash deleteOthers" data-id =' + others_id + '></i>&nbsp;&nbsp;<i style="color: #34A853;cursor: pointer;" data-id = ' + others_id + ' class="icon-pencil editOthers"></i></td>\n' +
+                                        '<td><i style="color: #EA4335;" class="fa fa-trash deleteOthers" data-id =' + others_id + '></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" data-id = ' + others_id + ' class="icon-pencil editOthers"></i></td>\n' +
                                         '</tr>';
 
                                     $('.otherstableAppend tbody').prepend(html);
@@ -1296,9 +1336,15 @@
                 }
                 addOthers();
                 // End of Others
+
+
                 // Add New Site Info
-                function addSiteInfo(){
+                function addSiteInfo()
+                {
+
                     $("#siteInfoForm").submit(function(e) {
+
+
                         $.ajaxSetup({
                             headers: {
                                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1313,10 +1359,12 @@
                             success: function (results) {
                                 $("#siteInfoForm :input").prop("disabled", true);
                                 $('.addTabs').attr("data-toggle","tab"); // Add data-toggle tab after inserts
-                                $('#primaryInvestigatorForm').find($('input[name="site_id"]').val(results.site_id));
-                                $('#coordinatorForm').find($('input[name="site_id"]').val(results.site_id));
-                                $('#photographerForm').find($('input[name="site_id"]').val(results.site_id));
-                                $('#othersForm').find($('input[name="site_id"]').val(results.site_id));
+                                // $('#primaryInvestigatorForm').find($('input[name="site_id"]').val(results.site_id));
+                                // $('#coordinatorForm').find($('input[name="site_id"]').val(results.site_id));
+                                // $('#photographerForm').find($('input[name="site_id"]').val(results.site_id));
+                                // $('#othersForm').find($('input[name="site_id"]').val(results.site_id));
+                                $('#site_id').val(results.site_id);
+
                             },
                             error: function (results) {
                                 console.log('Error:', results);
@@ -1327,14 +1375,21 @@
                 }
                 addSiteInfo();
                 // End of Add Site Info
-                function checkIfSiteCodeExist(){
+
+
+                function checkIfSiteCodeExist()
+                {
                     $('#site_code').focus(function () {
                         var siteCode = $('#site_code').val();
                         console.log(siteCode);
                     });
                 }
+
                 checkIfSiteCodeExist();
+
+
                 function editSiteInfo() {
+
                     $('body').on('click', '.editsiterecord', function (e) {
                         $('.modal-title').text('Edit Site');
                         var id =($(this).attr("data-id"));
@@ -1366,6 +1421,7 @@
                             success : function(results) {
                                 $('.addTabs').attr("data-toggle","tab"); // Add data-toggle tab after insert
                                 var parsedata = JSON.parse(results)[0];
+                                console.log(parsedata);
                                 $('#site_id').val(parsedata.id);
                                 $('#site_code').val(parsedata.site_code);
                                 $('#site_name').val(parsedata.site_name);
@@ -1379,12 +1435,14 @@
                                     dataType: 'html',
                                     url:new_pi_url,
                                     success : function(results) {
+                                        console.log(results);
                                         var parsedata = JSON.parse(results)[0];
                                         var html    =   '';
                                         $.each(parsedata, function(index,row)
                                         {
+                                            console.log(parsedata);
                                             html    += '<tr id='+row.id+'>\n'+
-                                                '<td>'+row.first_name + '  '.repeat(4)+row.last_name+'</td>\n'+
+                                                '<td>'+row.first_name+ '  '.repeat(4)+row.last_name+'</td>\n'+
                                                 '<td>'+row.phone+'</td>\n' +
                                                 '<td>'+row.email+'</td>\n' +
                                                 '<td><i style="color: #EA4335;" class="fa fa-trash deleteprimaryinvestigator" data-id ='+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editprimaryinvestigator" data-id ='+row.id+'></i>'+
@@ -1398,6 +1456,7 @@
                                             type: "GET",
                                             dataType: 'html',
                                             success: function (results) {
+                                                console.log(results);
                                                 var parsedata = JSON.parse(results)[0];
                                                 var html    =   '';
                                                 $.each(parsedata, function(index,row)
@@ -1416,6 +1475,7 @@
                                                     type: "GET",
                                                     dataType: 'html',
                                                     success: function (results) {
+                                                        $('.photographertableAppend tbody tr').remove();
                                                         var parsedata = JSON.parse(results)[0];
                                                         $.each(parsedata, function(index,row)
                                                         {
@@ -1429,12 +1489,14 @@
                                                         });
                                                         $('.photographertableAppend tbody').html(html);
 
+
                                                         $('#photographerForm').trigger("reset");
                                                         $.ajax({
                                                             type:"GET",
                                                             dataType: 'html',
                                                             url:new_other_url,
                                                             success : function(results) {
+                                                                $('.otherstableAppend tbody tr').remove();
                                                                 var parsedata = JSON.parse(results)[0];
 
                                                                 $.each(parsedata, function(index,row)
@@ -1464,9 +1526,14 @@
                         });
 
                     });
+
                 }
                 editSiteInfo();
-                function updateSiteInfo(){
+
+
+
+                function updateSiteInfo()
+                {
                     $("#siteInfoForm").submit(function(e) {
                         $.ajaxSetup({
                             headers: {
@@ -1491,8 +1558,10 @@
                     });
                 }
                 updateSiteInfo();
+
                 //  Coordinator Delete function
-                function  coordinatorDestroy (){
+                function  coordinatorDestroy ()
+                {
                     $('body').on('click', '.deleteCoordinator', function () {
 
                         $.ajaxSetup({
@@ -1521,8 +1590,13 @@
                     });
                 }
                 coordinatorDestroy();
+
+
+
                 //  Photographer Delete function
-                function  photographerDestroy () {
+
+                function  photographerDestroy ()
+                {
                     $('body').on('click', '.deletePhotographer', function () {
 
                         $.ajaxSetup({
@@ -1551,8 +1625,12 @@
                     });
                 }
                 photographerDestroy();
+
+
                 //  Delete Others function
-                function  othersDestroy (){
+
+                function  othersDestroy ()
+                {
                     $('body').on('click', '.deleteOthers', function () {
 
                         $.ajaxSetup({
@@ -1581,8 +1659,13 @@
                     });
                 }
                 othersDestroy();
+
+
+
+
                 ///  Options Delete function
-                function  sitesDestroy (){
+                function  sitesDestroy ()
+                {
                     $('body').on('click','.deletesiterecord',function(){
                         var id = $(this).data('id');
                         if (confirm("Are you sure to delete?")) {
@@ -1605,6 +1688,8 @@
                     });
                 }
                 sitesDestroy();
+
+                ///  Delete  Specific Row function
 
                 $('body').on('click','.studySitetableData',function (){
                     $('#global_site_id').val('')
