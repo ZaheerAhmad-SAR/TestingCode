@@ -1,16 +1,5 @@
 @extends ('layouts.home')
 @section('content')
-    @php
-    $studyId = isset($studyId) ? $studyId : 0;
-    $studyClsStr = buildSafeStr($studyId, 'study_cls_');
-    $study = \Modules\Admin\Entities\Study::find($studyId);
-
-    $subjectId = isset($subjectId) ? $subjectId : 0;
-    $subject = \Modules\Admin\Entities\Subject::find($subjectId);
-
-    $form_filled_by_user_id = auth()->user()->id;
-    $form_filled_by_user_role_id = auth()->user()->id;
-    @endphp
     <input type="hidden" name="already_global_disabled" id="already_global_disabled" value="no" />
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
@@ -39,11 +28,10 @@
                     </div>
                     <div class="card-body">
                         <table>
-                            <tr><td>Study ID :</td><td>{{ $studyId }}</td></tr>
-                            <tr><td>Study Title :</td><td>{{ $study->study_title }}</td></tr>
-
                             <tr><td>Subject ID :</td><td>{{ $subject->subject_id }}</td></tr>
                             <tr><td>Study EYE :</td><td>{{ $subject->study_eye }}</td></tr>
+                            <tr><td>Site Name :</td><td>{{ $site->site_name }}</td></tr>
+                            <tr><td>Site Code :</td><td>{{ $site->site_code }}</td></tr>
                         </table>
                     </div>
                 </div>
