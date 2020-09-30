@@ -9,8 +9,8 @@ $options = array_combine ( $option_names , $option_values );
 @endphp
 <div class="form-group">
     <label class="">{{ $question->question_text }}</label>
-    <select name="{{ $field_name }}" onchange="submitFormField('{{ $sectionIdStr }}', '{{ $field_name }}');"
-        class="form-control-ocap bg-transparent {{ $sectionClsStr }}">
+    <select name="{{ $field_name }}" onchange="submitFormField('{{ $stepIdStr }}', '{{ $sectionIdStr }}', '{{ $field_name }}');"
+        class="form-control-ocap bg-transparent">
         @foreach ($options as $option_name => $option_value)
             <option value="{{ $option_value }}" {{ $answer->answer == $option_value ? 'selected' : '' }}>
                 {{ $option_name }}

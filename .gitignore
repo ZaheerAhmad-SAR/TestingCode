@@ -5,6 +5,7 @@
 server.php
 /vendor
 .env
+composer.json
 .env.backup
 .phpunit.result.cache
 Homestead.json
@@ -12,3 +13,4 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 /Modules/UserRoles/Http/Controllers/UserController.php;
+composer.lock
