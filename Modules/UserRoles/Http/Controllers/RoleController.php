@@ -512,7 +512,13 @@ class RoleController extends Controller
 
             }
         }
-         return redirect()->route('roles.index');
+
+        $oldRole = [];
+
+        // log event details
+        $logEventDetails = eventDetails($role->id, 'System Role', 'Add', $request->ip(), $oldRole);
+
+        return redirect()->route('roles.index');
     }
 
     /**
@@ -550,6 +556,8 @@ class RoleController extends Controller
     public function update(RoleRequest $request, $id)
     {
             $role   =   Role::find($id);
+            // get old roles data for trail log
+            $oldRole = $role;
             $role_permissions   =   RolePermission::where('role_id','=',$id)->get();
             foreach ($role_permissions as $role_permission) {
                 $role_permission->delete();
@@ -767,7 +775,7 @@ class RoleController extends Controller
         }
 
         /*-- Adjudication Permissions --*/
-        if ($request->adjudication_add){
+        if ($request->adjudication_add) {
             $permissions = Permission::where('name','=','adjudication.create')
                 ->orwhere('name','=','adjudication.store')
                 ->get();
@@ -1017,6 +1025,8 @@ class RoleController extends Controller
             }
         }
 
+         // log event details
+        $logEventDetails = eventDetails($role->id, 'System Role', 'Update', $request->ip(), $oldRole);
 
         return redirect()->route('roles.index');
     }
