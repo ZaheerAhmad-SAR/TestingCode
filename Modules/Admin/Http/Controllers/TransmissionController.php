@@ -5,7 +5,7 @@ namespace Modules\Admin\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Admin\Entities\crushFtpTransmission;
+use Modules\Admin\Entities\CrushFtpTransmission;
 
 class TransmissionController extends Controller
 {
@@ -22,13 +22,13 @@ class TransmissionController extends Controller
      * Display a listing of the resource.
      * @return Renderable
      */
-    public function transmissionData()
+    public function transmissionData(Request $request)
     {
-        dd('transmissions');
-       $data = crushFtpTransmission::create([
-               'data' => ''
-           ]);
-        return view('admin::index');
+        $data = ['firstFieldData' => $request->firstFieldData, 'secondFieldData' => $request->secondFieldData];
+        $cFtpTrans = CrushFtpTransmission::create([
+            'data' => json_encode($data),
+        ]);
+        return $data;
     }
 
     /**
@@ -37,10 +37,9 @@ class TransmissionController extends Controller
      */
     public function create()
     {
-        $data = crushFtpTransmission::create([
+        $data = CrushFtpTransmission::create([
             'data' => ''
         ]);
-
     }
 
     /**
@@ -59,7 +58,7 @@ class TransmissionController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function show($id='')
+    public function show($id = '')
     {
         dd($id);
         return view('admin::show');
