@@ -23,7 +23,7 @@ class CreateFormSubmitStatusTable extends Migration
             $table->uuid('phase_steps_id')->nullable();
             $table->uuid('section_id')->nullable();
             $table->smallInteger('form_type_id')->nullable();
-            $table->enum('form_status', array('resumable', 'incomplete', 'complete'))->default('resumable');
+            $table->enum('form_status', array('resumable', 'incomplete', 'complete'))->default('incomplete');
             $table->timestamps();
         });
     }
