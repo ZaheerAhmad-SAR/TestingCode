@@ -43,8 +43,7 @@ class StudyController extends Controller
                 ->orwhere('permissions.name','=','studytools.update')
                 ->get();*/
             $permissionsIdsArray = Permission::where(function ($query) {
-                $query->where('permissions.name', '=', 'studytools.create')
-                    ->orwhere('permissions.name', '=', 'studytools.index')
+                $query->where('permissions.name', '=', 'studytools.index')
                     ->orwhere('permissions.name', '=', 'studytools.store')
                     ->orWhere('permissions.name', '=', 'studytools.edit')
                     ->orwhere('permissions.name', '=', 'studytools.update');
@@ -109,12 +108,13 @@ class StudyController extends Controller
     public function store(Request $request)
     {
         $studyID = $request->study_id;
+        //dd($request->all());
         $study   =   Study::updateOrCreate(
             [
                 'id' => $studyID
             ],
             [
-                'id'    => \Illuminate\Support\Str::uuid(),
+                'id'    => !empty($studyID)?$studyID:\Illuminate\Support\Str::uuid(),
                 'study_short_name'  =>  $request->study_short_name,
                 'study_title' => $request->study_title,
                 'study_status'  => 'Development',
@@ -132,7 +132,7 @@ class StudyController extends Controller
 
         if (!empty($request->users)) {
             foreach ($request->users as $user) {
-                StudyUser::create([
+                StudyUser::updateOrCreate([
                     'id'    => \Illuminate\Support\Str::uuid(),
                     'user_id' => $user,
                     'study_id' => $study->id
@@ -152,11 +152,14 @@ class StudyController extends Controller
 
         if (!empty($request->disease_cohort)) {
             foreach ($request->disease_cohort as $disease_cohort) {
-                $diseaseCohort = DiseaseCohort::create([
-                    'id'    => \Illuminate\Support\Str::uuid(),
-                    'study_id'  => $study->id,
-                    'name'      => $disease_cohort
-                ]);
+                    $checkDiseaseCohort = DiseaseCohort::find($disease_cohort);
+                if (empty($checkDiseaseCohort)) {
+                    $diseaseCohort = DiseaseCohort::updateOrCreate([
+                        'id' => \Illuminate\Support\Str::uuid(),
+                        'study_id' => $study->id,
+                        'name' => $disease_cohort
+                    ]);
+                }
             }
         }
 
