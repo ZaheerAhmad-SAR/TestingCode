@@ -2,12 +2,14 @@
 
 namespace Modules\Admin\Http\Controllers;
 
+use App\User;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Admin\Entities\CrushFtpTransmission;
+use Illuminate\Support\Facades\Auth;
+use Modules\UserRoles\Entities\Role;
 
-class TransmissionController extends Controller
+class StudyRoleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,20 +17,30 @@ class TransmissionController extends Controller
      */
     public function index()
     {
-        dd('index');
-    }
+        $records = array(
+        [
+        'name'=>'Chris',
+        'email'=>'chris@oirrc.net',
+         'roles'=>'Quality Control'
+        ],
+       [
+        'name'=>'Edwin',
+        'email'=>'edwin@oirrc.net',
+         'roles'=>'Project Manager'
+        ],
+       [
+        'name'=>'Angus',
+        'email'=>'angus@oirrc.net',
+         'roles'=>'Grader'
+        ],
+         [
+        'name'=>'Eric',
+        'email'=>'eric@oirrc.net',
+         'roles'=>'Guest'
+        ],
+       );
 
-    /**
-     * Display a listing of the resource.
-     * @return Renderable
-     */
-    public function transmissionData(Request $request)
-    {
-        $data = ['firstFieldData' => $request->firstFieldData, 'secondFieldData' => $request->secondFieldData];
-        $cFtpTrans = CrushFtpTransmission::create([
-            'data' => json_encode($data),
-        ]);
-        return $data;
+        return view('admin::studyrole.index',compact('records'));
     }
 
     /**
@@ -37,9 +49,7 @@ class TransmissionController extends Controller
      */
     public function create()
     {
-        $data = CrushFtpTransmission::create([
-            'data' => ''
-        ]);
+        return view('admin::create');
     }
 
     /**
@@ -49,8 +59,7 @@ class TransmissionController extends Controller
      */
     public function store(Request $request)
     {
-        dd('store');
-        return view('admin::index');
+        //
     }
 
     /**
@@ -58,9 +67,8 @@ class TransmissionController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function show($id = '')
+    public function show($id)
     {
-        dd($id);
         return view('admin::show');
     }
 
@@ -71,7 +79,6 @@ class TransmissionController extends Controller
      */
     public function edit($id)
     {
-        dd('edit');
         return view('admin::edit');
     }
 
@@ -83,7 +90,7 @@ class TransmissionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd('update');
+        //
     }
 
     /**

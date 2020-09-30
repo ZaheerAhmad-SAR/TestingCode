@@ -22,19 +22,20 @@ class SubjectController extends Controller
      */
     public function index(Study $study)
     {
-        session(['current_study'=>$study->id,'study_short_name'=> $study->study_short_name]);
+        session(['current_study' => $study->id, 'study_short_name' => $study->study_short_name]);
         $id = $study->id;
         $currentStudy = Study::find($id);
-        $subjects = Subject::where('subjects.study_id','=',$id)
-            ->join('sites','sites.id','=','subjects.site_id')
+        $subjects = Subject::select(['subjects.*', 'sites.site_name', 'sites.site_address', 'sites.site_city', 'sites.site_state', 'sites.site_code', 'sites.site_country', 'sites.site_phone'])
+            ->where('subjects.study_id', '=', $id)
+            ->join('sites', 'sites.id', '=', 'subjects.site_id')
             ->get();
-        $site_study = StudySite::where('study_id','=',$id)
-            ->join('sites', 'sites.id','=','site_study.site_id')
-            ->select('sites.site_name','sites.id')
+        $site_study = StudySite::where('study_id', '=', $id)
+            ->join('sites', 'sites.id', '=', 'site_study.site_id')
+            ->select('sites.site_name', 'sites.id')
             ->get();
 
-        $diseaseCohort = DiseaseCohort::where('study_id','=',$id)->get();
-        return view('admin::subjects.index',compact('study','subjects','currentStudy','site_study','diseaseCohort'));
+        $diseaseCohort = DiseaseCohort::where('study_id', '=', $id)->get();
+        return view('admin::subjects.index', compact('study', 'subjects', 'currentStudy', 'site_study', 'diseaseCohort'));
     }
 
     /**
@@ -53,7 +54,7 @@ class SubjectController extends Controller
      */
     public function store(Request $request)
     {
-       //dd($request->all());
+        //dd($request->all());
         $id = Str::uuid();
         $subject = Subject::create([
             'id'    => $id,
@@ -72,16 +73,16 @@ class SubjectController extends Controller
 
         $id = session('current_study');
         $currentStudy = Study::find($id);
-        $subjects = Subject::where('subjects.study_id','=',$id)->get();
-        $site_study = StudySite::where('study_id','=',$id)
-            ->join('sites', 'sites.id','=','site_study.site_id')
-            ->select('sites.site_name','sites.id')
+        $subjects = Subject::where('subjects.study_id', '=', $id)->get();
+        $site_study = StudySite::where('study_id', '=', $id)
+            ->join('sites', 'sites.id', '=', 'site_study.site_id')
+            ->select('sites.site_name', 'sites.id')
             ->get();
 
-        $diseaseCohort = DiseaseCohort::where('study_id','=',$id)->get();
+        $diseaseCohort = DiseaseCohort::where('study_id', '=', $id)->get();
 
 
-        return view('admin::studies.show',compact('currentStudy','subjects','site_study','diseaseCohort','study'));
+        return view('admin::studies.show', compact('currentStudy', 'subjects', 'site_study', 'diseaseCohort', 'study'));
         //return \response()->json();
 
     }
@@ -114,7 +115,7 @@ class SubjectController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        dd($request->all());
     }
 
     /**

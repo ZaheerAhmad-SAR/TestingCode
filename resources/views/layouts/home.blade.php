@@ -9,7 +9,7 @@
                     <a href="{{ url('/') }}" class="horizontal-logo text-left">
                 <span class="h4 font-weight-bold align-self-center mb-0 ml-auto">
                     OIRRC
-                 <img src="{{asset('dist/images/Logo.gif')}}" alt="OIRRC" style="width: 50px;">
+                 <img src="{{asset('public/dist/images/Logo.gif')}}" alt="OIRRC" style="width: 50px;">
                 </span>
                     </a>
                 </div>
@@ -34,7 +34,7 @@
                         <li class="dropdown user-profile align-self-center d-inline-block">
                             <a href="#" class="nav-link py-0" data-toggle="dropdown" aria-expanded="false">
                                 <div class="media">
-                                    <img src="{{asset('dist/images/author.jpg')}}" alt="" class="d-flex img-fluid rounded-circle" width="29">
+                                    <img src="{{asset('public/dist/images/author.jpg')}}" alt="" class="d-flex img-fluid rounded-circle" width="29">
                                 </div>
                             </a>
                             <div class="dropdown-menu border dropdown-menu-right p-0">

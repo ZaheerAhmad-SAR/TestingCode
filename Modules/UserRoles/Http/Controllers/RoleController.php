@@ -438,6 +438,10 @@ class RoleController extends Controller
         /*-- Study Tools Permissions */
         if ($request->study_tools ) {
             $permissions = Permission::where('name', '=', 'studytools.index')
+                ->orwhere('name', '=', 'studytools.create')
+                ->orwhere('name', '=', 'studytools.store')
+                ->orwhere('name', '=', 'studytools.edit')
+                ->orwhere('name', '=', 'studytools.update')
                 ->orwhere('name', '=', 'users.index')
                 ->orwhere('name', '=', 'roles.index')
                 ->orwhere('name', '=', 'studySite.index')
