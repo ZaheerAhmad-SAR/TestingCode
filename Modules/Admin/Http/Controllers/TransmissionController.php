@@ -15,17 +15,18 @@ class TransmissionController extends Controller
      */
     public function index()
     {
-        return view('admin::index');
+        dd('index');
     }
 
     /**
      * Display a listing of the resource.
      * @return Renderable
      */
-    public function transmissionData(Request $request)
+    public function transmissionData()
     {
-           $data = crushFtpTransmission::create([
-               'data' => $request->all()
+        dd('transmissions');
+       $data = crushFtpTransmission::create([
+               'data' => ''
            ]);
         return view('admin::index');
     }
@@ -36,7 +37,10 @@ class TransmissionController extends Controller
      */
     public function create()
     {
-        return view('admin::create');
+        $data = crushFtpTransmission::create([
+            'data' => ''
+        ]);
+
     }
 
     /**
@@ -46,7 +50,8 @@ class TransmissionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd('store');
+        return view('admin::index');
     }
 
     /**
@@ -54,8 +59,9 @@ class TransmissionController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function show($id)
+    public function show($id='')
     {
+        dd($id);
         return view('admin::show');
     }
 
@@ -66,6 +72,7 @@ class TransmissionController extends Controller
      */
     public function edit($id)
     {
+        dd('edit');
         return view('admin::edit');
     }
 
@@ -77,7 +84,7 @@ class TransmissionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        dd('update');
     }
 
     /**

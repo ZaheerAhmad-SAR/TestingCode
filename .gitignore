@@ -7,7 +7,6 @@ server.php
 .env
 .htaccess
 composer.json
-composer.lock
 .env.backup
 .phpunit.result.cache
 Homestead.json
