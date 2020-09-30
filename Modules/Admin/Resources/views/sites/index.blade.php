@@ -121,7 +121,12 @@
                     <!-- Tab panes -->
                     <div class="tab-content" id="nav-tabContent">
                         <div class="tab-pane fade show active" id="siteInfo" role="tabpanel" aria-labelledby="nav-Basic-tab">
+                            <div class="col-lg-12 success-alert-sec" style="display: none; margin-top: 10px;">
+                                <div class="success-msg-sec alert-primary success-msg text-center" role="alert" style="font-weight: bold;">
+                                </div>
+                            </div>
                             <form name="siteInfoForm" id="siteInfoForm">
+                                <input type="hidden" name="lastSiteId" id="lastSiteId" value="">
                                 @csrf
                                 <div class="col-lg-12">
                                     <div class="panel-body">
@@ -200,7 +205,7 @@
                                             <div class="col-md-6">
                                                 <div class="{!! ($errors->has('postal_code')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
                                                     <label>Zip Code</label>
-                                                    <input type="text" class="form-control" id="postal_code" name="postal_code" value="{{old('postal_code')}}" required/>
+                                                    <input type="text" class="form-control" id="postal_code" name="postal_code" value="{{old('postal_code')}}"/>
                                                 </div>
                                                 @error('postal_code')
                                                 <span class="input-danger small">{{ $message }}</span>
@@ -799,7 +804,7 @@
                 type: "POST",
                 dataType: 'json',
                 success: function (results) {
-                    console.log(results);
+                    //console.log(results);
                     var primary_investigator_id = results.id;
                     var html    =   '';
 
@@ -819,7 +824,7 @@
 
                         $.each(results, function(index,row)
                         {
-                            console.log(results);
+                            //console.log(results);
                             html    += '<tr id='+row.id+'>\n'+
                                 '<td>'+row.first_name + '  '.repeat(4)+row.last_name+'</td>\n'+
                                 '<td>'+row.phone+'</td>\n' +
@@ -854,7 +859,7 @@
                 }
             });
             var primary_investigator_id = $(this).data("id");
-            var url = "{{URL('/ocap_new/primaryinvestigator')}}";
+            var url = "{{URL('/primaryinvestigator')}}";
             var newPath = url+ "/"+ primary_investigator_id+"/destroy/";
             if( confirm("Are You sure want to delete !") ==true)
             {
@@ -917,7 +922,7 @@
                 }
             });
             var id =($(this).attr("data-id"));
-            var url = "{{URL('/ocap_new/coordinator')}}";
+            var url = "{{URL('/coordinator')}}";
             var newPath = url+ "/"+ id+"/edit/";
 
             $.ajax({
@@ -952,7 +957,7 @@
                 }
             });
             var id =($(this).attr("data-id"));
-            var url = "{{URL('/ocap_new/primaryinvestigator')}}";
+            var url = "{{URL('/primaryinvestigator')}}";
             var newPath = url+ "/"+ id+"/edit/";
             $.ajax({
                 type:"GET",
@@ -1059,7 +1064,7 @@
                 }
             });
             var id =($(this).attr("data-id"));
-            var url = "{{URL('/ocap_new/photographers')}}";;
+            var url = "{{URL('/photographers')}}";;
             var newPath = url+ "/"+ id+"/edit/";
             $.ajax({
                 type:"GET",
@@ -1115,7 +1120,7 @@
                 type: "POST",
                 dataType: 'json',
                 success: function (results) {
-                    console.log(results);
+                    //console.log(results);
                     var coordinator_id = results[0].id;
                     var html    =   '';
                     if(c_submit_actions == 'Add')
@@ -1164,7 +1169,7 @@
                 }
             });
             var id =($(this).attr("data-id"));
-            var url = "{{URL('/ocap_new/others')}}";
+            var url = "{{URL('/others')}}";
             var newPath = url+ "/"+ id+"/edit/";
 
             $.ajax({
@@ -1271,10 +1276,7 @@
     // Add New Site Info
     function addSiteInfo()
     {
-
         $("#siteInfoForm").submit(function(e) {
-
-
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1290,11 +1292,7 @@
                     $("#siteInfoForm :input").prop("disabled", true);
                     $('.addTabs').attr("data-toggle","tab"); // Add data-toggle tab after inserts
                     // $('#primaryInvestigatorForm').find($('input[name="site_id"]').val(results.site_id));
-                    // $('#coordinatorForm').find($('input[name="site_id"]').val(results.site_id));
-                    // $('#photographerForm').find($('input[name="site_id"]').val(results.site_id));
-                    // $('#othersForm').find($('input[name="site_id"]').val(results.site_id));
                     $('#site_id').val(results.site_id);
-
                 },
                 error: function (results) {
                     console.log('Error:', results);
@@ -1311,32 +1309,27 @@
     {
         $('#site_code').focus(function () {
             var siteCode = $('#site_code').val();
-            console.log(siteCode);
         });
     }
 
     checkIfSiteCodeExist();
 
-
-    function editSiteInfo() {
-
         $('body').on('click', '.editsiterecord', function (e) {
             $('.modal-title').text('Edit Site');
             var id =($(this).attr("data-id"));
-
-            var url = "{{URL('/ocap_new/sites')}}";
+            var url = "{{URL('/sites')}}";
             var newPath = url+ "/"+ id+"/edit/";
 
-            var pi_url = "{{URL('/ocap_new/primaryinvestigator')}}";
+            var pi_url = "{{URL('/primaryinvestigator')}}";
             var new_pi_url = pi_url+ "/"+ id+"/showSiteId/";
 
-            var co_url = "{{URL('/ocap_new/coordinator')}}";
+            var co_url = "{{URL('/coordinator')}}";
             var new_co_url = co_url+ "/"+ id+"/showCoordinatorBySiteId/";
 
-            var ph_url = "{{URL('/ocap_new/photographers')}}";
+            var ph_url = "{{URL('/photographers')}}";
             var new_ph_url = ph_url+ "/"+ id+"/showPhotographerBySiteId/";
 
-            var other_url = "{{URL('/ocap_new/others')}}";
+            var other_url = "{{URL('/others')}}";
             var new_other_url = other_url+ "/"+ id+"/showOtherBySiteId/";
 
             $.ajaxSetup({
@@ -1349,10 +1342,12 @@
                 dataType: 'html',
                 url:newPath,
                 success : function(results) {
+                    console.log(results);
                     $('.addTabs').attr("data-toggle","tab"); // Add data-toggle tab after insert
                     var parsedata = JSON.parse(results)[0];
                     console.log(parsedata);
                     $('#site_id').val(parsedata.id);
+                    $('#lastSiteId').val(parsedata.id);
                     $('#site_code').val(parsedata.site_code);
                     $('#site_name').val(parsedata.site_name);
                     $('#fullAddr').val(parsedata.site_address);
@@ -1365,12 +1360,12 @@
                         dataType: 'html',
                         url:new_pi_url,
                         success : function(results) {
-                            console.log(results);
+                            //console.log(results);
                             var parsedata = JSON.parse(results)[0];
                             var html    =   '';
                             $.each(parsedata, function(index,row)
                             {
-                                console.log(parsedata);
+                                //console.log(parsedata);
                                 html    += '<tr id='+row.id+'>\n'+
                                     '<td>'+row.first_name+ '  '.repeat(4)+row.last_name+'</td>\n'+
                                     '<td>'+row.phone+'</td>\n' +
@@ -1386,7 +1381,7 @@
                                 type: "GET",
                                 dataType: 'html',
                                 success: function (results) {
-                                    console.log(results);
+                                    //console.log(results);
                                     var parsedata = JSON.parse(results)[0];
                                     var html    =   '';
                                     $.each(parsedata, function(index,row)
@@ -1405,7 +1400,7 @@
                                         type: "GET",
                                         dataType: 'html',
                                         success: function (results) {
-                                            $('.photographertableAppend tbody tr').remove();
+                                            //$('.photographertableAppend tbody tr').remove();
                                             var parsedata = JSON.parse(results)[0];
                                             $.each(parsedata, function(index,row)
                                             {
@@ -1426,7 +1421,7 @@
                                                 dataType: 'html',
                                                 url:new_other_url,
                                                 success : function(results) {
-                                                    $('.otherstableAppend tbody tr').remove();
+                                                    //$('.otherstableAppend tbody tr').remove();
                                                     var parsedata = JSON.parse(results)[0];
 
                                                     $.each(parsedata, function(index,row)
@@ -1457,11 +1452,6 @@
 
         });
 
-    }
-    editSiteInfo();
-
-
-
     function updateSiteInfo()
     {
         $("#siteInfoForm").submit(function(e) {
@@ -1478,8 +1468,16 @@
                 type: "POST",
                 dataType: 'json',
                 success: function (data) {
-                    $("#siteInfoForm :input").prop("disabled", true);
-
+                    //$("#siteInfoForm :input").prop("disabled", true);
+                    if (data.success)
+                    {
+                        $('.success-msg-sec').html('');
+                        $('.success-msg-sec').html(data.success)
+                        $('.success-alert-sec').slideDown('slow');
+                        tId=setTimeout(function(){
+                            $(".success-alert-sec").slideUp('slow');
+                        }, 3000);
+                    }
                 },
                 error: function (data) {
                     console.log('Error:', data);
@@ -1502,7 +1500,7 @@
             var coordinator_id = $(this).data("id");
 
 
-            var url = "{{URL('/ocap_new/coordinator/')}}";
+            var url = "{{URL('/coordinator/')}}";
             var newPath = url+ "/"+ coordinator_id+"/destroy/";
             if( confirm("Are You sure want to delete !") ==true)
             {
@@ -1537,7 +1535,7 @@
             var photographer_id = $(this).data("id");
 
 
-            var url = "{{URL('/ocap_new/photographers/')}}";
+            var url = "{{URL('/photographers/')}}";
             var newPath = url+ "/"+ photographer_id+"/destroy/";
             if( confirm("Are You sure want to delete !") ==true)
             {
@@ -1571,7 +1569,7 @@
             var others_id = $(this).data("id");
 
 
-            var url = "{{URL('/ocap_new/others/')}}";
+            var url = "{{URL('/others/')}}";
             var newPath = url+ "/"+ others_id+"/destroy/";
             if( confirm("Are You sure want to delete !") ==true)
             {
