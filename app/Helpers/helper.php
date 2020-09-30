@@ -84,6 +84,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
         // Log the event
         $trailLog = new TrailLog;
         $trailLog->event_id = $eventId;
+        $trailLog->event_section = $eventSection;
         $trailLog->event_type = $eventType;
         $trailLog->event_message = \Auth::user()->name.' '.$messageType.' option group '.$eventData->option_group_name.'.';
         $trailLog->user_id = \Auth::user()->id;
@@ -134,6 +135,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
         // Log the event
         $trailLog = new TrailLog;
         $trailLog->event_id = $eventId;
+        $trailLog->event_section = $eventSection;
         $trailLog->event_type = $eventType;
         $trailLog->event_message = \Auth::user()->name.' '.$messageType.' site '.$eventData->site_name.'.';
         $trailLog->user_id = \Auth::user()->id;
@@ -178,6 +180,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
         // Log the event
         $trailLog = new TrailLog;
         $trailLog->event_id = $eventId;
+        $trailLog->event_section = $eventSection;
         $trailLog->event_type = $eventType;
         $trailLog->event_message = \Auth::user()->name.' '.$messageType.' Primary Investigator '.$eventData->first_name.'.';
         $trailLog->user_id = \Auth::user()->id;
@@ -221,6 +224,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
         // Log the event
         $trailLog = new TrailLog;
         $trailLog->event_id = $eventId;
+        $trailLog->event_section = $eventSection;
         $trailLog->event_type = $eventType;
         $trailLog->event_message = \Auth::user()->name.' '.$messageType.' coordinator '.$eventData->first_name.'.';
         $trailLog->user_id = \Auth::user()->id;
@@ -265,6 +269,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
         // Log the event
         $trailLog = new TrailLog;
         $trailLog->event_id = $eventId;
+        $trailLog->event_section = $eventSection;
         $trailLog->event_type = $eventType;
         $trailLog->event_message = \Auth::user()->name.' '.$messageType.' photographer '.$eventData->first_name.'.';
         $trailLog->user_id = \Auth::user()->id;
@@ -308,6 +313,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
         // Log the event
         $trailLog = new TrailLog;
         $trailLog->event_id = $eventId;
+        $trailLog->event_section = $eventSection;
         $trailLog->event_type = $eventType;
         $trailLog->event_message = \Auth::user()->name.' '.$messageType.' others '.$eventData->first_name.'.';
         $trailLog->user_id = \Auth::user()->id;
@@ -343,6 +349,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
         // Log the event
         $trailLog = new TrailLog;
         $trailLog->event_id = $eventId;
+        $trailLog->event_section = $eventSection;
         $trailLog->event_type = $eventType;
         $trailLog->event_message = \Auth::user()->name.' '.$messageType.' annotation '.$eventData->label.'.';
         $trailLog->user_id = \Auth::user()->id;
