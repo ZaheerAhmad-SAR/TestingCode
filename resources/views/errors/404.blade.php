@@ -1,10 +1,6 @@
 @extends('layouts.app')
 @section('title')
     404 page
-@stop
-@section('banner')
-    <div class="banner" style="background-image: url({{asset('images/banner01.jpg')}})">
-    </div>
 @endsection
 @section('content')
     <section class="section">
