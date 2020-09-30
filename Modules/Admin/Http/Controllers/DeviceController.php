@@ -61,8 +61,8 @@ class DeviceController extends Controller
                     'device_model' => $request->device_model,
                     'device_manufacturer' => $request->device_manufacturer
                 ]);
-            if($request->modalities != '') {
-                foreach ($request->modalities as $modality){
+           
+                foreach ($request->modalities as $modality) {
                     DeviceModility::updateOrCreate([
                         'id'    => Str::uuid(),
                         'device_id'     => $device->id,
@@ -70,7 +70,7 @@ class DeviceController extends Controller
 
                     ]);
                 }
-            }
+            
         }
         return \response()->json($device);
     }
@@ -113,7 +113,6 @@ class DeviceController extends Controller
      */
     public function update(Request $request, Device $device)
     {
-        dd('Hello');
         $device->update($request->all());
 
         return redirect()->route('devices.index');
