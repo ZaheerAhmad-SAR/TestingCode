@@ -19,7 +19,7 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        //
+        'transmissions/transmissionData'
     ];
 
 
@@ -30,13 +30,11 @@ class VerifyCsrfToken extends Middleware
 
         // Don't validate CSRF when testing.
 
-        if(env('APP_ENV') === 'testing') {
+        if (env('APP_ENV') === 'testing') {
 
             return true;
-
         }
 
         return parent::tokensMatch($request);
-
     }
 }
