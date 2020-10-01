@@ -8,7 +8,7 @@
             <input type="hidden" name="stepId" value="{{ $step->step_id }}" />
             <input type="hidden" name="formTypeId" value="{{ $step->form_type_id }}" />
             <input type="hidden" name="sectionId" value="{{ $section->id }}" />
-            <input type="hidden" class="form_hid_editing_status_{{ $stepIdStr }}" name="form_editing_status" id="form_editing_status" value="no" />
+            <input type="hidden" class="form_hid_editing_status_{{ $stepIdStr }}" name="form_editing_status" id="form_editing_status" value="{{ ($formStatus == 'resumable')? 'yes':'no' }}" />
             <input type="hidden" class="form_hid_status_{{ $stepIdStr }}" name="form_status" id="form_status" value="{{ $formStatus }}" />
 
         </form>

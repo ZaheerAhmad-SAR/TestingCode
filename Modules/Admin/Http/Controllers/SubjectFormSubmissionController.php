@@ -107,7 +107,7 @@ class SubjectFormSubmissionController extends Controller
             'id' => Str::uuid(),
             'form_type_id' => $request->formTypeId,
             'edit_reason_text' => $request->edit_reason_text,
-            'form_status' => 'resumable',
+            'form_status' => 'incomplete',
         ] + $getFormStatusArray;
         return FormStatus::create($formStatusData);
     }

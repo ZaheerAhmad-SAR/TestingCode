@@ -24,11 +24,11 @@ class TransmissionController extends Controller
      */
     public function transmissionData(Request $request)
     {
-        $data = ['firstFieldData' => $request->firstFieldData, 'secondFieldData' => $request->secondFieldData];
+        //$data = ['firstFieldData' => $request->firstFieldData, 'secondFieldData' => $request->secondFieldData];
         $cFtpTrans = CrushFtpTransmission::create([
-            'data' => json_encode($data),
+            'data' => $request,
         ]);
-        return $data;
+        //return $data;
     }
 
     /**

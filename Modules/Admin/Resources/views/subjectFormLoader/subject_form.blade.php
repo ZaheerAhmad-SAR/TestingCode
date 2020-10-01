@@ -28,10 +28,22 @@
                     </div>
                     <div class="card-body">
                         <table>
-                            <tr><td>Subject ID :</td><td>{{ $subject->subject_id }}</td></tr>
-                            <tr><td>Study EYE :</td><td>{{ $subject->study_eye }}</td></tr>
-                            <tr><td>Site Name :</td><td>{{ $site->site_name }}</td></tr>
-                            <tr><td>Site Code :</td><td>{{ $site->site_code }}</td></tr>
+                            <tr>
+                                <td>Subject ID :</td>
+                                <td>{{ $subject->subject_id }}</td>
+                            </tr>
+                            <tr>
+                                <td>Study EYE :</td>
+                                <td>{{ $subject->study_eye }}</td>
+                            </tr>
+                            <tr>
+                                <td>Site Name :</td>
+                                <td>{{ $site->site_name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Site Code :</td>
+                                <td>{{ $site->site_code }}</td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -82,12 +94,34 @@
                                                         @endphp
                                                         @foreach ($steps as $step)
                                                             @php
+                                                            $getFormStatusArray = [
+                                                            'form_filled_by_user_id' => $form_filled_by_user_id,
+                                                            'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
+                                                            'subject_id' => $subjectId,
+                                                            'study_id' => $studyId,
+                                                            'study_structures_id' => $phase->id,
+                                                            'phase_steps_id' => $step->step_id,
+                                                            ];
+                                                            $formStatusArray =
+                                                            \Modules\Admin\Entities\FormStatus::getFormStatusStepLevelObj($getFormStatusArray);
                                                             $stepIdStr = buildSafeStr($step->step_id, 'step_cls_');
                                                             @endphp
                                                             <a class="badge p-1 badge-light m-1  {{ $stepIdStr }}"
                                                                 href="javascript:void(0);"
                                                                 onclick="showSections('step_sections_{{ $step->step_id }}');">
                                                                 {{ $step->step_name }}
+
+                                                                 @foreach($formStatusArray['sections'] as $sectionStatusObj)
+                                                                     @if($sectionStatusObj->form_status == 'complete')
+                                                                        <img src="{{ url('images/green.png') }}" />
+                                                                     @endif
+                                                                     @if($sectionStatusObj->form_status == 'incomplete')
+                                                                     <img src="{{ url('images/red.png') }}" />
+                                                                     @endif
+                                                                     @if($sectionStatusObj->form_status == 'resumable')
+                                                                     <img src="{{ url('images/yellow.png') }}" />
+                                                                     @endif
+                                                                @endforeach
                                                             </a>
                                                             <br>
                                                             @php
@@ -207,14 +241,25 @@
                         submitFormFlag = false;
                     }
                 }
-                if(submitFormFlag){
+                if (submitFormFlag) {
                     var term_cond = $('#terms_cond_' + stepIdStr).val();
-                        var reason = $('#edit_reason_text_' + stepIdStr).val();
-                        var frmData = $("#form_master_" + sectionIdStr).serialize() + '&' + $("#form_" + sectionIdStr)
-                            .serialize() +
-                            '&terms_cond_' + stepIdStr + '=' + term_cond + '&' + 'edit_reason_text=' + reason;
+                    var reason = $('#edit_reason_text_' + stepIdStr).val();
+                    var frmData = $("#form_master_" + sectionIdStr).serialize() + '&' + $("#form_" + sectionIdStr)
+                        .serialize() +
+                        '&terms_cond_' + stepIdStr + '=' + term_cond + '&' + 'edit_reason_text=' + reason;
                         submitRequest(frmData);
                 }
+            }
+
+            function submitRequest(frmData) {
+                $.ajax({
+                    url: "{{ route('submitStudyPhaseStepQuestionForm') }}",
+                    type: 'POST',
+                    data: frmData,
+                    success: function(response) {
+                        //
+                    }
+                });
             }
 
             function reloadPage(stepClsStr) {
@@ -264,21 +309,19 @@
                         submitFormFlag = false;
                     }
                 }
-                if(submitFormFlag){
+                if (submitFormFlag) {
                     var frmData = $("#form_master_" + sectionIdStr).serialize();
-                        var field_val;
-                        if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
-                            field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').val();
-                        } else {
-                            field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').val();
-                        }
-                        var reason = $('#edit_reason_text_' + stepIdStr).val();
+                    var field_val;
+                    if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
+                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').val();
+                    } else {
+                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').val();
+                    }
+                    var reason = $('#edit_reason_text_' + stepIdStr).val();
 
-                        frmData = frmData + '&' + field_name + '=' + field_val + '&' + 'edit_reason_text=' + reason;
-                        submitRequest(frmData);
+                    frmData = frmData + '&' + field_name + '=' + field_val + '&' + 'edit_reason_text=' + reason;
+                    submitRequest(frmData);
                 }
-
-
             }
 
             function openFormForEditing(stepIdStr, stepClsStr, sectionIdStr) {
@@ -294,23 +337,12 @@
                 });
             }
 
-            function submitRequest(frmData) {
-                $.ajax({
-                    url: "{{ route('submitStudyPhaseStepQuestionForm') }}",
-                    type: 'POST',
-                    data: frmData,
-                    success: function(response) {
-                        //
-                    }
-                });
-            }
-
             function showReasonField(stepIdStr, stepClsStr, sectionIdStr) {
                 $("#edit_form_div_" + stepIdStr).show(500);
                 $('#edit_reason_text_' + stepIdStr).prop('required', true);
                 enableByClass(stepClsStr);
                 $('.form_hid_editing_status_' + stepIdStr).val('yes');
-                $('.form_hid_status_' + stepIdStr).val('resumable');
+                $('.form_hid_status_' + stepIdStr).val('incomplete');
             }
 
         </script>
