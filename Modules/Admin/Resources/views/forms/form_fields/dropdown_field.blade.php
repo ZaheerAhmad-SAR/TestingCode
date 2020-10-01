@@ -32,7 +32,7 @@ function validateData{{ $questionIdStr }}(field_name, fieldId){
 
     var inputField = document.getElementById(fieldId);
     if(inputField.value == ''){
-        alert(field_name + " is Required");
+        showAlert(field_name + " is Required");
         inputField.focus();
         return false;
     }

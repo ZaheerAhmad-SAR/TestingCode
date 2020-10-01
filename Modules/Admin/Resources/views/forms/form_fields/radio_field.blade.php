@@ -38,7 +38,7 @@ function validateData{{ $questionIdStr }}(field_name, fieldId){
         }
     }
     if(returnValue == false){
-        alert(field_name + " is Required");
+        showAlert(field_name + " is Required");
         return false;
     }
 }

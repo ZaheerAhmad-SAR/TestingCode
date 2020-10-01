@@ -1,6 +1,7 @@
 @extends ('layouts.home')
 @section('content')
     <input type="hidden" name="already_global_disabled" id="already_global_disabled" value="no" />
+    <input type="hidden" name="previous_alert_message" id="previous_alert_message" value="" />
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
         <div class="row ">
@@ -238,6 +239,14 @@
 
     @push('script')
         <script>
+            function showAlert(message){
+                var field = $("#previous_alert_message");
+                var previous_alert_message = field.val();
+                if(previous_alert_message != message){
+                    alert(message);
+                    field.val(message);
+                }
+            }
             function showSections(step_id_class) {
                 $('.all_step_sections').hide(500);
                 $('.' + step_id_class).show(500);
@@ -314,9 +323,7 @@
                 if ($('#terms_cond_' + stepIdStr).prop('checked')) {
                     return true;
                 } else {
-                    alert(
-                        'Please acknowledge the truthfulness and correctness of information being submitting in this form!'
-                    );
+                    showAlert('Please acknowledge the truthfulness and correctness of information being submitting in this form!');
                     return false;
                 }
             }
@@ -336,7 +343,7 @@
             function checkReason(stepIdStr) {
                 var returnVal = false;
                 if (($('#edit_reason_text_' + stepIdStr).val() == '')) {
-                    alert('Please tell the reason to edit');
+                    showAlert('Please tell the reason to edit');
                 } else {
                     returnVal = true;
                 }
