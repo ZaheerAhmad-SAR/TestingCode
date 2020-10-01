@@ -44,6 +44,11 @@ class StudyController extends Controller
             $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->get();
             $sites = Site::all();
         }
+        else{
+        $studies  =   Study::with('users')->orderBy('study_short_name')->get();
+        $users = User::all();
+        $sites = Site::all();
+        }
 
         return view('admin::studies.index', compact('studies', 'sites', 'users'));
     }
