@@ -93,6 +93,7 @@
                         $sectionClsStr = buildSafeStr($section->id, 'sec_cls_');
                         $sectionIdStr = buildSafeStr($section->id, '');
                         @endphp
+                        validateForm{{ $sectionIdStr }}();
                         var submitFormFlag = true;
                         if (isFormInEditMode('{{ $sectionIdStr }}')) {
                             if (checkReason(stepIdStr) === false) {

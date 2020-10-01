@@ -64,7 +64,7 @@
                                 <img src="{{url('images/green.png')}}"/>&nbsp;&nbsp;Complete
                             </div>
                             <div class="col-md-2">
-                                <img src="{{url('images/grey.png')}}"/>&nbsp;&nbsp;Not Started
+                                <img src="{{url('images/grey.png')}}"/>&nbsp;&nbsp;Incomplete
                             </div>
                             <div class="col-md-2">
                                 <img src="{{url('images/yellow.png')}}"/>&nbsp;&nbsp;Editing
@@ -74,6 +74,9 @@
                             </div>
                             <div class="col-md-2">
                                 <img src="{{url('images/black.png')}}"/>&nbsp;&nbsp;Not Required
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/no_status.png')}}"/>&nbsp;&nbsp;No Status
                             </div>
                         </div>
                     </div>
@@ -144,6 +147,9 @@
                                                                      @endif
                                                                      @if($sectionStatusObj->form_status == 'resumable')
                                                                         <img src="{{ url('images/yellow.png') }}"/>
+                                                                     @endif
+                                                                     @if($sectionStatusObj->form_status == 'no_status')
+                                                                        <img src="{{ url('images/no_status.png') }}"/>
                                                                      @endif
                                                                      @if($sectionStatusObj->form_status == 'adjudication')
                                                                         <img src="{{ url('images/red.png') }}"/>

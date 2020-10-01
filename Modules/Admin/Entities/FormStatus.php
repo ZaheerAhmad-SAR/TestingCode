@@ -11,7 +11,7 @@ class FormStatus extends Model
     protected $keyType = 'string';
 
     protected $attributes = [
-        'form_status' => 'incomplete',
+        'form_status' => 'no_status',
     ];
 
     public static function getFormStatusObj($getFormStatusArray)

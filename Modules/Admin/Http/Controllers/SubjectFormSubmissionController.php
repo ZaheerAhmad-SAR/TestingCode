@@ -95,8 +95,10 @@ class SubjectFormSubmissionController extends Controller
                 'section_id' => $section->id,
             ];
             $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
-            $formStatusObj->form_status = 'resumable';
-            $formStatusObj->update();
+            if (null !== $formStatusObj) {
+                $formStatusObj->form_status = 'resumable';
+                $formStatusObj->update();
+            }
         }
         echo 'ok';
     }
