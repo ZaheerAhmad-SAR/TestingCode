@@ -5,14 +5,14 @@
 @stop
 
 @section('styles')
-   
+
     <style type="text/css">
         /*.table{table-layout: fixed;}*/
 
-        .select2-container--default 
+        .select2-container--default
         .select2-selection--single {
             background-color: #fff;
-             border: transparent !important; 
+             border: transparent !important;
             border-radius: 4px;
         }
         .select2-selection__rendered {
@@ -58,7 +58,7 @@
 
                     <form action="{{route('trail.log')}}" method="get" class="filter-form">
                         <div class="form-row" style="padding: 10px;">
-                            
+
                             <div class="form-group col-md-3">
                                 <label for="inputEmail4">Name</label>
                                 <select class="form-control user_name filter-form-data" name="user_name" id="user_name">
@@ -88,9 +88,9 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-3"> 
-                                <label for="dt">Event Date</label> 
-                                <input type="text" name="event_date" id="event_date" class="form-control event_date filter-form-data" value="{{ request()->event_date }}"> 
+                            <div class="form-group col-md-3">
+                                <label for="dt">Event Date</label>
+                                <input type="text" name="event_date" id="event_date" class="form-control event_date filter-form-data" value="{{ request()->event_date }}">
                             </div>
 
                             <div class="form-group col-md-2 mt-4">
@@ -127,9 +127,9 @@
                                         </td>
                                         <td>{{$log->name}}</td>
                                         <td>{{$log->event_type}}</td>
-                                       
+
                                         <td>{{$log->event_message}}</td>
-                                        
+
                                         <td>{{$log->ip_address}}</td>
                                         <td>{{$log->created_at}}</td>
                                     </tr>
@@ -185,7 +185,7 @@
                                 </tbody>
                             </table>
 
-                          {{$getLogs->appends(['user_name' => \Request::get('user_name'), 'event_section' => \Request::get('event_section'), 'event_type' => \Request::get('event_type'), 'event_date' => \Request::get('event_date')])->links()}} 
+                          {{$getLogs->appends(['user_name' => \Request::get('user_name'), 'event_section' => \Request::get('event_section'), 'event_type' => \Request::get('event_type'), 'event_date' => \Request::get('event_date')])->links()}}
                         </div>
                     </div>
                 </div>
@@ -203,11 +203,11 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
 <!-- select2 -->
-<script src="{{ asset('public/dist/vendors/select2/js/select2.full.min.js') }}"></script>       
+<script src="{{ asset('public/dist/vendors/select2/js/select2.full.min.js') }}"></script>
 <script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
 
 <script type="text/javascript">
-   
+
     // toggle class for showing details
     $('.detail-icon').click(function(e){
         $(this).toggleClass("fa-chevron-circle-right fa-chevron-circle-down");
@@ -215,7 +215,7 @@
 
     // reset filter form
     $('.reset-filter').click(function(){
-        // reset values 
+        // reset values
         $('.filter-form').trigger("reset");
         $('.filter-form-data').val("").trigger("change")
         // submit the filter form

@@ -74,7 +74,7 @@ class SiteController extends Controller
                 'site_email'=>empty($request->site_email)? Null : $request->site_email
             ]);
 
-            $oldSite = [];
+            //$oldSite = [];
 
             // log event details
 

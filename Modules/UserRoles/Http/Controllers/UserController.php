@@ -31,6 +31,7 @@ class UserController extends Controller
 
         if (hasPermission(auth()->user(),'studytools.index')){
             $users  =   User::all();
+            $roles  =   Role::all();
         }
         else{
             $users = User::where('deleted_at','=',Null)
@@ -47,7 +48,10 @@ class UserController extends Controller
      */
     public function create()
     {
-            $roles  =   Role::where('role_type','=','system_role')->get();
+        if (hasPermission(auth()->user(),'studytools.index')){
+            $roles  =   Role::all();
+        }
+
             return view('userroles::users.create',compact('roles'));
 
         return redirect('dashboard');
