@@ -12,7 +12,7 @@ use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Http\Requests\RoleRequest;
 use Datatables;
 use Psy\Util\Str;
-
+use Vali
 class RoleController extends Controller
 {
     /**
@@ -55,11 +55,6 @@ class RoleController extends Controller
      */
     public function store(RoleRequest $request)
     {
-        $validate = $this->validate([
-            'name' => 'required|unique:roles',
-            'description' =>'required'
-        ]);
-        if($validate){
             $role =  Role::create([
                 'id' => \Illuminate\Support\Str::uuid(),
                 'name'  =>  $request->name,
@@ -522,7 +517,6 @@ class RoleController extends Controller
                 }
             }
 
-        }
 
 
         $oldRole = [];
