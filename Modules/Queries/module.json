@@ -1,0 +1,13 @@
+{
+    "name": "Queries",
+    "alias": "queries",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "Modules\\Queries\\Providers\\QueriesServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

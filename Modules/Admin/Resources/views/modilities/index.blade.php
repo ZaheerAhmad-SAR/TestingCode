@@ -277,8 +277,7 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
-                //var url = "{{URL('modalities')}}";
-                var url = "{{URL('/ocap/modalities')}}";
+                var url = "{{URL('modalities')}}";
                 var parent_id = $(this).data('id');
                 //alert(parent_id);
                 var newPath = url+ "/"+parent_id+"/edit/";
@@ -412,8 +411,6 @@
         /// update Modalities Function
         function updateModalities() {
             $("#editParentForm").submit(function(e) {
-
-
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
