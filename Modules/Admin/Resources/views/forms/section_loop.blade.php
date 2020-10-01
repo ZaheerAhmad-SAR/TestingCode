@@ -87,9 +87,19 @@
                         $sectionClsStr = buildSafeStr($section->id, 'sec_cls_');
                         $sectionIdStr = buildSafeStr($section->id, '');
                         @endphp
-                        submitForm('{{ $sectionIdStr }}', '{{ $sectionClsStr }}', '{{ $stepIdStr }}');
+                        var submitFormFlag = true;
+                        if (isFormInEditMode('{{ $sectionIdStr }}')) {
+                            if (checkReason(stepIdStr) === false) {
+                                submitFormFlag = false;
+                            }
+                        }
+                        if (submitFormFlag) {
+                            submitForm('{{ $sectionIdStr }}', '{{ $sectionClsStr }}', '{{ $stepIdStr }}');
+                        }
                     @endforeach
-                        reloadPage(stepClsStr);
+                        if(submitFormFlag){
+                            reloadPage(stepClsStr);
+                        }
                 }
             }
         </script>
