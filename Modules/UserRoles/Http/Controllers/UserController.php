@@ -87,6 +87,10 @@ class UserController extends Controller
             }
         }
 
+        $oldUser = [];
+        // log event details
+        $logEventDetails = eventDetails($id, 'System User', 'Add', $request->ip(), $oldUser);
+
         return redirect()->route('users.index');
     }
 
@@ -112,6 +116,7 @@ class UserController extends Controller
     {
         $user  = User::with('user_roles')
         ->find($id);
+
         $currentRoles = UserRole::select('user_roles.*','roles.*')
             ->join('roles','roles.id','user_roles.role_id')
             ->where('user_roles.user_id','=',$user->id)
@@ -140,13 +145,16 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // get old user data for trail log
+        $oldUser = User::where('id', $id)->first();
+        
         $user   =   User::find($id);
-        $user->update([
-            'name'  =>  $request->name,
-            'email' =>  $request->email,
-            'password'  =>  Hash::make($request->password),
-            'role_id'   =>  !empty($request->roles)?$request->roles[0]:2
-        ]);
+        $user->name  =  $request->name;
+        $user->email =  $request->email;
+        $user->password  =  Hash::make($request->password);
+        $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
+        $user->save();
+
         $userroles  = UserRole::where('user_id',$user->id)->get();
         foreach ($userroles as $role_id){
             $role_id->delete();
@@ -158,6 +166,9 @@ class UserController extends Controller
                 'role_id'    =>  $role,
             ]);
         }
+
+         // log event details
+        $logEventDetails = eventDetails($user->id, 'System User', 'Update', $request->ip(), $oldUser);
 
         return redirect()->route('users.index');
 
