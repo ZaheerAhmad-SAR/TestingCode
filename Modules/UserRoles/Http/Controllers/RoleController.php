@@ -5,6 +5,7 @@ namespace Modules\UserRoles\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Foundation\Validation\ValidatesRequests as Requests;
 use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\RolePermission;
@@ -12,7 +13,7 @@ use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Http\Requests\RoleRequest;
 use Datatables;
 use Psy\Util\Str;
-use Vali
+
 class RoleController extends Controller
 {
     /**
@@ -516,6 +517,7 @@ class RoleController extends Controller
 
                 }
             }
+
 
 
 
