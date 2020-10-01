@@ -854,7 +854,7 @@
                 }
             });
             var primary_investigator_id = $(this).data("id");
-            var url = "{{URL('/ocap_new/primaryinvestigator')}}";
+            var url = "{{URL('primaryinvestigator')}}";
             var newPath = url+ "/"+ primary_investigator_id+"/destroy/";
             if( confirm("Are You sure want to delete !") ==true)
             {
@@ -917,7 +917,7 @@
                 }
             });
             var id =($(this).attr("data-id"));
-            var url = "{{URL('/ocap_new/coordinator')}}";
+            var url = "{{URL('coordinator')}}";
             var newPath = url+ "/"+ id+"/edit/";
 
             $.ajax({
@@ -952,7 +952,7 @@
                 }
             });
             var id =($(this).attr("data-id"));
-            var url = "{{URL('/ocap_new/primaryinvestigator')}}";
+            var url = "{{URL('primaryinvestigator')}}";
             var newPath = url+ "/"+ id+"/edit/";
             $.ajax({
                 type:"GET",
@@ -1059,7 +1059,7 @@
                 }
             });
             var id =($(this).attr("data-id"));
-            var url = "{{URL('/ocap_new/photographers')}}";;
+            var url = "{{URL('photographers')}}";;
             var newPath = url+ "/"+ id+"/edit/";
             $.ajax({
                 type:"GET",
@@ -1164,7 +1164,7 @@
                 }
             });
             var id =($(this).attr("data-id"));
-            var url = "{{URL('/ocap_new/others')}}";
+            var url = "{{URL('others')}}";
             var newPath = url+ "/"+ id+"/edit/";
 
             $.ajax({
@@ -1324,19 +1324,19 @@
             $('.modal-title').text('Edit Site');
             var id =($(this).attr("data-id"));
 
-            var url = "{{URL('/ocap_new/sites')}}";
+            var url = "{{URL('sites')}}";
             var newPath = url+ "/"+ id+"/edit/";
 
-            var pi_url = "{{URL('/ocap_new/primaryinvestigator')}}";
+            var pi_url = "{{URL('primaryinvestigator')}}";
             var new_pi_url = pi_url+ "/"+ id+"/showSiteId/";
 
-            var co_url = "{{URL('/ocap_new/coordinator')}}";
+            var co_url = "{{URL('coordinator')}}";
             var new_co_url = co_url+ "/"+ id+"/showCoordinatorBySiteId/";
 
-            var ph_url = "{{URL('/ocap_new/photographers')}}";
+            var ph_url = "{{URL('photographers')}}";
             var new_ph_url = ph_url+ "/"+ id+"/showPhotographerBySiteId/";
 
-            var other_url = "{{URL('/ocap_new/others')}}";
+            var other_url = "{{URL('others')}}";
             var new_other_url = other_url+ "/"+ id+"/showOtherBySiteId/";
 
             $.ajaxSetup({
@@ -1502,7 +1502,7 @@
             var coordinator_id = $(this).data("id");
 
 
-            var url = "{{URL('/ocap_new/coordinator/')}}";
+            var url = "{{URL('coordinator/')}}";
             var newPath = url+ "/"+ coordinator_id+"/destroy/";
             if( confirm("Are You sure want to delete !") ==true)
             {
@@ -1537,7 +1537,7 @@
             var photographer_id = $(this).data("id");
 
 
-            var url = "{{URL('/ocap_new/photographers/')}}";
+            var url = "{{URL('photographers/')}}";
             var newPath = url+ "/"+ photographer_id+"/destroy/";
             if( confirm("Are You sure want to delete !") ==true)
             {
@@ -1571,7 +1571,7 @@
             var others_id = $(this).data("id");
 
 
-            var url = "{{URL('/ocap_new/others/')}}";
+            var url = "{{URL('others/')}}";
             var newPath = url+ "/"+ others_id+"/destroy/";
             if( confirm("Are You sure want to delete !") ==true)
             {
