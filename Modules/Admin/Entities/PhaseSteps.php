@@ -51,7 +51,6 @@ class PhaseSteps extends Model
         ->where('phase_id', $phaseId)
         ->get();
     }
-
     public function formType()
     {
         return $this->belongsTo(FormType::class, 'form_type_id', 'id');
