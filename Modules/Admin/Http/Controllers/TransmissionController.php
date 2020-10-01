@@ -5,7 +5,7 @@ namespace Modules\Admin\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Admin\Entities\crushFtpTransmission;
+use Modules\Admin\Entities\CrushFtpTransmission;
 
 class TransmissionController extends Controller
 {
@@ -15,7 +15,7 @@ class TransmissionController extends Controller
      */
     public function index()
     {
-        return view('admin::index');
+        dd('index');
     }
 
     /**
@@ -24,10 +24,11 @@ class TransmissionController extends Controller
      */
     public function transmissionData(Request $request)
     {
-           $data = crushFtpTransmission::create([
-               'data' => $request->all()
-           ]);
-        return view('admin::index');
+        //$data = ['firstFieldData' => $request->firstFieldData, 'secondFieldData' => $request->secondFieldData];
+        $cFtpTrans = CrushFtpTransmission::create([
+            'data' => $request,
+        ]);
+        //return $data;
     }
 
     /**
@@ -36,7 +37,9 @@ class TransmissionController extends Controller
      */
     public function create()
     {
-        return view('admin::create');
+        $data = CrushFtpTransmission::create([
+            'data' => ''
+        ]);
     }
 
     /**
@@ -46,7 +49,8 @@ class TransmissionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        dd('store');
+        return view('admin::index');
     }
 
     /**
@@ -54,8 +58,9 @@ class TransmissionController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function show($id)
+    public function show($id = '')
     {
+        dd($id);
         return view('admin::show');
     }
 
@@ -66,6 +71,7 @@ class TransmissionController extends Controller
      */
     public function edit($id)
     {
+        dd('edit');
         return view('admin::edit');
     }
 
@@ -77,7 +83,7 @@ class TransmissionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        dd('update');
     }
 
     /**

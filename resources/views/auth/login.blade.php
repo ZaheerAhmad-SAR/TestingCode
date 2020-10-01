@@ -6,7 +6,7 @@
             <form  action="{{ route('login') }}" method="POST" class="row row-eq-height lockscreen  mt-5 mb-5">
                 @csrf
                 <div class="lock-image col-12 col-sm-5" style="min-height: 400px;">
-                    <img src="{{asset('dist/images/Logo.gif')}}" alt="" style="width: 230px;margin-top: 120px;">
+                    <img src="{{asset('public/dist/images/Logo.gif')}}" alt="" style="width: 230px;margin-top: 120px;">
                 </div>
                 <div class="login-form col-12 col-sm-7">
                     <div class="form-group mb-3" style="margin-top: 60px;">

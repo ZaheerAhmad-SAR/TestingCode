@@ -75,12 +75,17 @@
                                 </div>
                                 <div class="tab-pane fade" id="nav-Modalities" role="tabpanel" aria-labelledby="nav-Validation-tab">
                                     <div class="form-group row" style="margin-top: 10px;">
-                                        <label for="user_roles" class="col-sm-3">Select Roles</label>
+                                        <label for="user_roles" class="col-sm-3"></label>
                                         <div class="{!! ($errors->has('roles')) ?'col-sm-9 has-error':'col-sm-9' !!}">
                                             <select class="searchable" id="select-roles" multiple="multiple" name="roles[]">
-                                                @foreach($roles as $role)
-                                                    <option value="{{$role->id}}">{{$role->name}}</option>
+                                                @foreach($currentRoles as $role)
+                                                    <option selected="selected" value="{{$role->id}}">{{$role->name}}</option>
                                                 @endforeach
+                                            @if(!empty($unassignedRoles))
+                                                    @foreach($unassignedRoles as $unassigned)
+                                                        <option name="to_be_selected"   class="assignRoles" value="{{$unassigned->id}}">{{$unassigned->name}}</option>
+                                                     @endforeach
+                                                @endif
                                             </select>
 
                                             {{--@foreach($currentRole as $current)--}}
@@ -126,7 +131,6 @@
 @section('script')
     <script type="text/javascript">
         $(document).ready(function() {
-            alert('edit role');
             $('#select-roles').multiSelect({
                 selectableHeader: "<label for=''>All Roles</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
                 selectionHeader: "<label for=''>Assigned Roles</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",

@@ -4,7 +4,7 @@ namespace Modules\Admin\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 
-class crushFtpTransmission extends Model
+class CrushFtpTransmission extends Model
 {
     protected $fillable = ['data'];
 }
