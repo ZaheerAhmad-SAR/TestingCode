@@ -3,6 +3,7 @@
 namespace Modules\Admin\Entities;
 
 use Modules\UserRoles\Entities\Role;
+use Modules\Admin\Entities\Study;
 use Modules\Admin\Scopes\StudyStructureOrderByScope;
 use Illuminate\Database\Eloquent\Model;
 
@@ -38,4 +39,8 @@ class StudyStructure extends Model
         ->where('study_id', $studyId)
         ->get();
     }
+    public function study(){
+        return $this->hasMany(study::class,'id','study_id');
+    }
+    
 }
