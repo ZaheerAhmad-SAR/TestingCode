@@ -14,7 +14,13 @@
                                 $sectionClsStr = buildSafeStr($section->id, 'sec_cls_');
                                 @endphp
                                 <li class="nav-item mr-auto mb-4">
-                                    <a class="nav-link p-0 {{ $studyClsStr }} {{ $stepClsStr }} {{ $sectionClsStr }} {{ $firstSection ? 'active' : '' }}"
+                                    <a class="nav-link p-0
+                                    {{ $studyClsStr }}
+                                    {{ $stepClsStr }}
+                                    {{ $sectionClsStr }}
+                                    {{ $firstSection ? 'active' : '' }}
+                                    {{ $firstSection ? 'first_navlink_'.$stepIdStr : '' }}"
+
                                         data-toggle="tab" href="#tab{{ $section->id }}">
                                         <div class="d-flex">
                                             <div class="mr-3 mb-0 h1">{{ $section->sort_number }}</div>
@@ -63,7 +69,7 @@
                                 ];
 
                                 @endphp
-                                <div class="tab-pane fade {{ $firstSection ? 'active show' : '' }}"
+                                <div class="tab-pane tab-pane_{{ $stepIdStr }} fade {{ $firstSection ? 'first_tab_'.$stepIdStr : '' }} {{ $firstSection ? 'active show' : '' }}"
                                     id="tab{{ $section->id }}">
                                     @include('admin::forms.section_questions', $sharedData )
                                     @include('admin::forms.section_next_previous', $sharedData)
@@ -98,7 +104,7 @@
                         }
                     @endforeach
                         if(submitFormFlag){
-                            reloadPage(stepClsStr);
+                            hideReasonField(stepIdStr, stepClsStr)
                         }
                 }
             }

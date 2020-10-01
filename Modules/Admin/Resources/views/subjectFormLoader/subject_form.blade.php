@@ -58,6 +58,24 @@
                         <span class="badge p-2 badge-warning mb-1">Graded by 1st grader</span>&nbsp;&nbsp;
                         <span class="badge p-2 badge-success mb-1">Graded by 2nd grader</span>&nbsp;&nbsp;
                         <span class="badge p-2 badge-danger mb-1">Required Adjudication</span>&nbsp;&nbsp;
+                        <div class="row">&nbsp;</div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img src="{{url('images/green.png')}}"/>&nbsp;&nbsp;Complete
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/grey.png')}}"/>&nbsp;&nbsp;Not Started
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/yellow.png')}}"/>&nbsp;&nbsp;Editing
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/red.png')}}"/>&nbsp;&nbsp;Adjudication
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/black.png')}}"/>&nbsp;&nbsp;Not Required
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -104,23 +122,36 @@
                                                             ];
                                                             $formStatusArray =
                                                             \Modules\Admin\Entities\FormStatus::getFormStatusStepLevelObj($getFormStatusArray);
-                                                            $stepIdStr = buildSafeStr($step->step_id, 'step_cls_');
+                                                            $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
+                                                            $stepIdStr = buildSafeStr($step->step_id, '');
+                                                            $imgSpanStepClsStr = buildSafeStr($step->step_id, 'img_section_status_');
                                                             @endphp
-                                                            <a class="badge p-1 badge-light m-1  {{ $stepIdStr }}"
+                                                            <a class="badge p-1 badge-light m-1  {{ $stepClsStr }}"
                                                                 href="javascript:void(0);"
-                                                                onclick="showSections('step_sections_{{ $step->step_id }}');">
+                                                                onclick="showSections('step_sections_{{ $stepIdStr }}');">
                                                                 {{ $step->step_name }}
 
                                                                  @foreach($formStatusArray['sections'] as $sectionStatusObj)
-                                                                     @if($sectionStatusObj->form_status == 'complete')
-                                                                        <img src="{{ url('images/green.png') }}" />
+                                                                 @php
+                                                                 $imgSpanSectionIdStr = buildSafeStr($sectionStatusObj->section_id, 'img_section_status_');
+                                                                 @endphp
+                                                                    <span class="{{ $imgSpanStepClsStr }}" id="{{ $imgSpanSectionIdStr }}">
+                                                                    @if($sectionStatusObj->form_status == 'complete')
+                                                                        <img src="{{ url('images/green.png') }}"/>
                                                                      @endif
                                                                      @if($sectionStatusObj->form_status == 'incomplete')
-                                                                     <img src="{{ url('images/red.png') }}" />
+                                                                        <img src="{{ url('images/grey.png') }}"/>
                                                                      @endif
                                                                      @if($sectionStatusObj->form_status == 'resumable')
-                                                                     <img src="{{ url('images/yellow.png') }}" />
+                                                                        <img src="{{ url('images/yellow.png') }}"/>
                                                                      @endif
+                                                                     @if($sectionStatusObj->form_status == 'adjudication')
+                                                                        <img src="{{ url('images/red.png') }}"/>
+                                                                     @endif
+                                                                     @if($sectionStatusObj->form_status == 'notrequired')
+                                                                        <img src="{{ url('images/black.png') }}"/>
+                                                                     @endif
+                                                                    </span>
                                                                 @endforeach
                                                             </a>
                                                             <br>
@@ -156,6 +187,9 @@
                                             @endphp
                                             @foreach ($steps as $step)
                                                 @php
+                                                $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
+                                                $stepIdStr = buildSafeStr($step->step_id, '');
+
                                                 $sections = $step->sections;
                                                 if(count($sections)){
                                                 $dataArray = [
@@ -170,7 +204,7 @@
                                                 'form_filled_by_user_role_id' => $form_filled_by_user_role_id
                                                 ];
                                                 @endphp
-                                                <div class="all_step_sections step_sections_{{ $step->step_id }}"
+                                                <div class="all_step_sections step_sections_{{ $stepIdStr }}"
                                                     style="display: {{ $firstStep ? 'block' : 'none' }};">
                                                     @include('admin::forms.section_loop', $dataArray)
                                                 </div>
@@ -332,17 +366,32 @@
                     type: 'POST',
                     data: frmData,
                     success: function(response) {
-                        showReasonField(stepIdStr, stepClsStr, sectionIdStr);
+                        showReasonField(stepIdStr, stepClsStr);
                     }
                 });
             }
 
-            function showReasonField(stepIdStr, stepClsStr, sectionIdStr) {
+            function showReasonField(stepIdStr, stepClsStr) {
                 $("#edit_form_div_" + stepIdStr).show(500);
                 $('#edit_reason_text_' + stepIdStr).prop('required', true);
                 enableByClass(stepClsStr);
                 $('.form_hid_editing_status_' + stepIdStr).val('yes');
-                $('.form_hid_status_' + stepIdStr).val('incomplete');
+                $('.form_hid_status_' + stepIdStr).val('resumable');
+                $('.img_section_status_' + stepIdStr).html('<img src="{{url('images/yellow.png')}}"/>');
+            }
+
+            function hideReasonField(stepIdStr, stepClsStr) {
+                $("#edit_form_div_" + stepIdStr).hide(500);
+                $('#edit_reason_text_' + stepIdStr).prop('required', false);
+                $('#edit_reason_text_' + stepIdStr).val('');
+                disableByClass(stepClsStr);
+                $('.form_hid_editing_status_' + stepIdStr).val('no');
+                $('.form_hid_status_' + stepIdStr).val('complete');
+                $('.img_section_status_' + stepIdStr).html('<img src="{{url('images/green.png')}}"/>');
+                $('.nav-link').removeClass('active');
+                $('.first_navlink_' + stepIdStr).addClass('active');
+                $('.tab-pane_' + stepIdStr).removeClass('active show');
+                $('.first_tab_' + stepIdStr).addClass('active show');
             }
 
         </script>
