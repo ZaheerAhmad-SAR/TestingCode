@@ -132,13 +132,17 @@ class StudyController extends Controller
 
         if (!empty($request->users)) {
             foreach ($request->users as $user) {
-                StudyUser::updateOrCreate([
-                    'id'    => \Illuminate\Support\Str::uuid(),
-                    'user_id' => $user,
-                    'study_id' => $study->id
-                ]);
+                    $user = StudyUser::find($user);
+                    if (empty($user)) {
+                        StudyUser::updateOrCreate([
+                            'id' => \Illuminate\Support\Str::uuid(),
+                            'user_id' => $user,
+                            'study_id' => $study->id
+                        ]);
+                    }
+                }
             }
-        }
+
         /*
         if (!empty($request->sites)) {
             foreach ($request->sites as $site) {
