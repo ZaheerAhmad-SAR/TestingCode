@@ -70,6 +70,7 @@ class TrailLogController extends Controller
                                 ->orderBy('users.name', 'asc')
                                 ->get();
 
+
     	} else {
     		// check if session for subject is set
     		if (Session::has('current_study')) {
@@ -81,7 +82,7 @@ class TrailLogController extends Controller
 					    			->paginate(15);
     		}
     	} // user role echeck ends
-      	
-    	return view('admin::trail_log', compact('getLogs', 'eventSection', 'getUsers'));
+
+    	return view('admin::trail_log', compact('getLogs', 'eventSection','getUsers'));
     }
 }

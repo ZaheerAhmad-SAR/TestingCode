@@ -55,12 +55,12 @@ class SiteController extends Controller
             'site_email:required|email',
         ]);
 
-        if (Site::where('site_code', $request->site_code)->exists()) {
-
-            return response()->json(['code'=>'Code must be unique']);
-        }
-        else
-        {
+//        if (Site::where('site_code','=', $request->site_code)->first()) {
+//
+//            return response()->json(['code'=>'Code must be unique']);
+//        }
+//        else
+//        {
             $id = Str::uuid();
             $site = Site::create([
                 'id'    => $id,
@@ -74,14 +74,15 @@ class SiteController extends Controller
                 'site_email'=>empty($request->site_email)? Null : $request->site_email
             ]);
 
-            $oldSite = [];
+            //$oldSite = [];
 
             // log event details
-            $logEventDetails = eventDetails($id, 'Site', 'Add', $request->ip(), $oldSite);
+
+            //$logEventDetails = eventDetails($id, 'Site', 'Add', $request->ip(), $oldSite);
 
             return response()->json(['site_id' => $id,'success'=>'Site Info is added successfully']);
 
-        }
+        //}
     }
 
     /**
@@ -132,7 +133,8 @@ class SiteController extends Controller
         Site::where('id', $request->lastSiteId)->update($data);
 
         // log event details
-        $logEventDetails = eventDetails($request->lastSiteId, 'Site', 'Update', $request->ip(), $oldSite);
+
+        //$logEventDetails = eventDetails($request->lastSiteId, 'Site', 'Update', $request->ip(), $oldSite);
 
         return response()->json(['success'=>'Site Info is updated successfully']);
 

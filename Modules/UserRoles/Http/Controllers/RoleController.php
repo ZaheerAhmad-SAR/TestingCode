@@ -5,6 +5,7 @@ namespace Modules\UserRoles\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Foundation\Validation\ValidatesRequests as Requests;
 use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\RolePermission;
@@ -55,11 +56,6 @@ class RoleController extends Controller
      */
     public function store(RoleRequest $request)
     {
-        $validate = $this->validate([
-            'name' => 'required|unique:roles',
-            'description' =>'required'
-        ]);
-        if($validate){
             $role =  Role::create([
                 'id' => \Illuminate\Support\Str::uuid(),
                 'name'  =>  $request->name,
@@ -522,7 +518,7 @@ class RoleController extends Controller
                 }
             }
 
-        }
+
 
 
         $oldRole = [];
