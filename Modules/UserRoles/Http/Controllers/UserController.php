@@ -30,7 +30,7 @@ class UserController extends Controller
         }
 
         if (hasPermission(auth()->user(),'studytools.index')){
-            $users  =   User::all();
+            $users  =  User::orderBY('name','asc')->get();
         }
         else{
             $users = User::where('deleted_at','=',Null)
@@ -129,10 +129,14 @@ class UserController extends Controller
         foreach ($currentRoles as $currentRole){
             $roleArray[] = $currentRole->role_id;
         }
-        $unassignedRoles = Role::select('roles.*')
+        if (!empty($roleArray)){
+            $unassignedRoles = Role::select('roles.*')
             ->whereNotIn('roles.id', $roleArray)->get();
+        }
+        else{
+            $unassignedRoles = Role::where('role_type','=','system_role' )->get();
+        }
 
-        $roles = Role::all();
 
         return view('userroles::users.edit',compact('user','unassignedRoles','currentRoles'));
     }
