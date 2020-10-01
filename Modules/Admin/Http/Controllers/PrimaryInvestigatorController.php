@@ -51,10 +51,10 @@ class PrimaryInvestigatorController extends Controller
             'email'=>empty($request->pi_email)? Null : $request->pi_email
         ]);
 
-        $oldPA = [];
+        //$oldPA = [];
 
         // log event details
-        $logEventDetails = eventDetails($id, 'PI', 'Add', $request->ip(), $oldPA);
+        //$logEventDetails = eventDetails($id, 'PI', 'Add', $request->ip(), $oldPA);
 
         return response()->json(['id' => $id,'success'=>'Primary Investigator is added successfully']);
 

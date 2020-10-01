@@ -1289,10 +1289,29 @@
                 type: "POST",
                 dataType: 'json',
                 success: function (results) {
-                    $("#siteInfoForm :input").prop("disabled", true);
-                    $('.addTabs').attr("data-toggle","tab"); // Add data-toggle tab after inserts
-                    // $('#primaryInvestigatorForm').find($('input[name="site_id"]').val(results.site_id));
-                    $('#site_id').val(results.site_id);
+                    if (results.success)
+                    {
+                        $('.success-msg-sec').html('');
+                        $('.success-msg-sec').html(results.success)
+                        $('.success-alert-sec').slideDown('slow');
+                        tId=setTimeout(function(){
+                            $(".success-alert-sec").slideUp('slow');
+                        }, 3000);
+                        $("#siteInfoForm :input").prop("disabled", true);
+                        $('.addTabs').attr("data-toggle","tab"); // Add data-toggle tab after inserts
+                        // $('#primaryInvestigatorForm').find($('input[name="site_id"]').val(results.site_id));
+                        $('#site_id').val(results.site_id);
+                    }
+
+                    // if (results.code)
+                    // {
+                    //     $('.success-msg-sec').html('');
+                    //     $('.success-msg-sec').html(results.success)
+                    //     $('.success-alert-sec').slideDown('slow');
+                    //     tId=setTimeout(function(){
+                    //         $(".success-alert-sec").slideUp('slow');
+                    //     }, 3000);
+                    // }
                 },
                 error: function (results) {
                     console.log('Error:', results);
