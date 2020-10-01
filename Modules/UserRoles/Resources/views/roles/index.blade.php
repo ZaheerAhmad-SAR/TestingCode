@@ -118,7 +118,7 @@
                                 <div class="form-group row" style="margin-top: 20px;">
                                     <label for="Name" class="col-sm-3 col-form-label">Name</label>
                                     <div class="{!! ($errors->has('name')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                        <input type="text" class="form-control" name="name" value="{{old('name')}}">
+                                        <input type="text" class="form-control" id="role_name" name="name" value="{{old('name')}}" required>
                                         @error('name')
                                         <span class="text-danger small">{{ $message }} </span>
                                         @enderror
@@ -127,7 +127,7 @@
                                 <div class="form-group row">
                                     <label for="Description" class="col-sm-3 col-form-label">Description</label>
                                     <div class="{!! ($errors->has('description')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                        <textarea class="form-control" name="description" value="{{old('description')}}"></textarea>
+                                        <textarea class="form-control" name="description" id="description" value="{{old('description')}}" required></textarea>
                                         @error('description')
                                         <span class="text-danger small">{{ $message }} </span>
                                         @enderror
@@ -341,6 +341,17 @@
                                 <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
                             </div>
                         </div>
+                    @if(count($errors))
+                        <div class="form-group">
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach($errors->all() as $error)
+                                        <li>{{$error}}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        </div>
+                    @endif
                 </form>
             </div>
         </div>
