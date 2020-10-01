@@ -67,7 +67,8 @@ class SubjectFormSubmissionController extends Controller
             'section_id' => $request->sectionId,
         ];
         $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
-        if (null === $formStatusObj) {
+
+        if ($formStatusObj->form_status == 'no_status') {
             $formStatusObj = $this->insertFormStatus($request, $getFormStatusArray);
         } elseif ($request->has(buildSafeStr($request->stepId, 'terms_cond_'))) {
             $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
@@ -75,7 +76,7 @@ class SubjectFormSubmissionController extends Controller
             $formStatusObj->form_status = 'complete';
             $formStatusObj->update();
         }
-        echo 'ok';
+        echo $formStatusObj->form_status;
     }
 
     public function openSubjectFormToEdit(Request $request)
@@ -100,7 +101,7 @@ class SubjectFormSubmissionController extends Controller
                 $formStatusObj->update();
             }
         }
-        echo 'ok';
+        echo $formStatusObj->form_status;
     }
 
     private function insertFormStatus($request, $getFormStatusArray)
