@@ -296,7 +296,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
             $auditMessage = \Auth::user()->name.' updated annotation '.$eventData->label.'.';
         }
        
-    /////////////////////////////// Annotaion Sections ends ///////////////////////////////////////////
+    ///////////////////////// Annotaion Sections ends ///////////////////////////////////////////
     } else if ($eventSection == 'System Role') {
         // get event data
         $eventData = Role::find($eventId);
