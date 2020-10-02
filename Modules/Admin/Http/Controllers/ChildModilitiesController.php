@@ -50,6 +50,10 @@ class ChildModilitiesController extends Controller
             'modility_id' =>$request->parent_id
         ]);
 
+        $oldModality = [];
+
+        // log event details
+        $logEventDetails = eventDetails($id, 'Child Modality', 'Add', $request->ip(), $oldModality);
 
         return response()->json(['Sucess'=>'Save succesfully']);
 
@@ -97,11 +101,15 @@ class ChildModilitiesController extends Controller
      */
     public function update(Request $request)
     {
+        $oldModality = ChildModilities::find($request->child_id);
 
         $data = array (
             'modility_name' => $request->modility_name
         );
         ChildModilities::where('id', $request->child_id)->update($data);
+
+        // log event details
+        $logEventDetails = eventDetails($request->child_id, 'Child Modality', 'Update', $request->ip(), $oldModality);
 
         return response()->json(['success'=>'Child Modility is Updated successfully.']);
     }

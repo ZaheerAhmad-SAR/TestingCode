@@ -59,7 +59,10 @@ class TrailLogController extends Controller
                 "Others" => "Others",
                 "Annotation" => "Annotation",
                 "Role" => "Role",
-                "User" => "User"
+                "User" => "User",
+                "Modality" => "Modality",
+                "Child Modality" => "Child Modality",
+                "Device" => "Device"
 
             );
 

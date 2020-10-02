@@ -26,8 +26,6 @@
         <div class="row">
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                    </div>
                         <div class="chat-screen">
                             <a href="#" class="chat-contact round-button d-inline-block d-lg-none"><i class="icon-menu"></i></a>
                             <a href="#" class="chat-profile d-inline-block d-lg-none"><img class="img-fluid  rounded-circle" src="dist/images/team-3.jpg" width="30" alt=""></a>
@@ -51,41 +49,13 @@
                                                     <li class="nav-item active px-3">
                                                         <a class="nav-link online-status green" data-toggle="tab" href="#tab1" role="tab" aria-selected="true">
                                                             <div class="media d-block d-flex text-left py-2">
-                                                                <img class="img-fluid mr-3 rounded-circle" src="dist/images/author2.jpg" alt="">
+                                                                <img class="img-fluid mr-3 rounded-circle" src="{{asset("dist/images/author2.jpg")}}" alt="">
                                                                 <div class="media-body align-self-center mt-0 color-primary d-flex">
-                                                                    <div class="message-content"> <b class="mb-1 font-weight-bold d-flex">Harry Jones</b>
-                                                                        How are you? ...
+                                                                    <div class="message-content"> <b class="mb-1 font-weight-bold d-flex">Waseem</b>
+                                                                        How are you?
                                                                         <br>
                                                                         <small class="body-color">23 hours ago</small></div>
                                                                     <div class="new-message ml-auto bg-primary text-white">3</div>
-
-                                                                </div>
-                                                            </div>
-                                                        </a>
-                                                    </li>
-                                                    <li class="nav-item  px-3">
-                                                        <a class="nav-link online-status green" data-toggle="tab" href="#tab2" role="tab" aria-selected="false">
-                                                            <div class="media d-block d-flex text-left py-2">
-                                                                <img class="img-fluid  mr-3 rounded-circle" src="dist/images/author3.jpg" alt="">
-                                                                <div class="media-body align-self-center mt-0 color-primary d-flex">
-                                                                    <div class="message-content"> <b class="mb-1 font-weight-bold d-flex">Daniel Taylor</b>
-                                                                        I am waiting ...
-                                                                        <br>
-                                                                        <small class="body-color">14 hours ago</small></div>
-                                                                    <div class="new-message ml-auto bg-primary text-white">1</div>
-
-                                                                </div>
-                                                            </div>
-                                                        </a>
-                                                    </li>
-
-                                                    <li class="nav-item px-3">
-                                                        <a class="nav-link online-status yellow" data-toggle="tab" href="#tab6" role="tab" aria-selected="false">
-                                                            <div class="media d-block d-flex text-left py-2">
-                                                                <img class="img-fluid  mr-3 rounded-circle" src="dist/images/author8.jpg" alt="">
-                                                                <div class="media-body align-self-center mt-0">
-                                                                    <b class="mb-1 font-weight-bold">Wood Walton</b><br>
-                                                                    Aldus PageMaker including versions ...
                                                                 </div>
                                                             </div>
                                                         </a>
@@ -94,17 +64,18 @@
                                             </div>
                                             <div class="tab-pane fade" id="tabs-week" role="tabpanel" aria-labelledby="tabs-week-tab">
                                                 <ul class="nav flex-column chat-menu" id="myTab1" role="tablist">
+                                                    @foreach($users as $user)
                                                     <li class="nav-item active px-3">
-                                                        <a class="nav-link" data-toggle="tab" href="#tab1" role="tab" aria-selected="true">
+                                                        <a class="nav-link" data-toggle="tab" href="#tab1-{{$user->id}}" role="tab" aria-selected="true">
                                                             <div class="media d-block d-flex text-left py-3">
-                                                                <img class="img-fluid  mr-3 rounded-circle" src="dist/images/author2.jpg" alt="">
+                                                                <img class="img-fluid  mr-3 rounded-circle" src="{{asset("dist/images/author2.jpg")}}" alt="">
                                                                 <div class="media-body align-self-center mt-0">
-                                                                    <b class="mb-1 font-weight-bold">Harry Jones</b><br>
-                                                                    Managing Partner at MDD
+                                                                    <b class="mb-1 font-weight-bold">{{$user->name}}</b><br>
                                                                 </div>
                                                             </div>
                                                         </a>
                                                     </li>
+                                                    @endforeach
                                                 </ul>
                                             </div>
                                         </div>
@@ -132,36 +103,6 @@
                                                             </div>
                                                         </li>
                                                     </ul>
-                                                    <!-- The Modal -->
-                                                    <div class="modal" id="call1">
-                                                        <div class="modal-dialog modal-dialog-centered">
-                                                            <div class="modal-content">
-
-                                                                <div class="modal-body p-0">
-                                                                    <ul class="nav flex-column chat-menu">
-                                                                        <li class="nav-item active px-3 py-4">
-                                                                            <div class="media d-block d-flex text-left py-3">
-                                                                                <img class="img-fluid mr-3 rounded-circle" src="dist/images/author2.jpg" alt="">
-                                                                                <div class="media-body align-self-center mt-0  d-flex">
-                                                                                    <div class="message-content"> <h6 class="mb-1 font-weight-bold d-flex">Harry Jones</h6>
-                                                                                        calling ...
-                                                                                        <br>
-                                                                                    </div>
-                                                                                    <div class="call-button ml-auto">
-                                                                                        <a href="#" class="call h4" data-toggle="modal" data-target="#call1"><i class="icon-phone"></i></a>
-                                                                                        <a href="#" class="video-call ml-2 h4 bg-danger"  data-dismiss="modal"><i class="icon-close"></i></a>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </li>
-                                                                    </ul>
-                                                                </div>
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-
 
                                                     <div class="scrollerchat p-3">
 
@@ -201,35 +142,6 @@
 
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-12 col-lg-4 col-xl-3 mt-lg-3 pl-lg-0">
-                                    <div class="card border h-100 chat-user-profile">
-                                        <ul class="nav flex-column">
-                                            <li class="nav-item active px-3">
-                                                <div class="media d-block d-flex text-left py-2">
-                                                    <div class="media-body align-self-center mt-0  d-flex">
-                                                        <div class="message-content my-1"> <h6 class="mb-1 font-weight-bold d-flex">Harry Jones</h6>
-                                                            Lead Web Developer - I can fix anything
-                                                            <br>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                        </ul>
-                                        <img class="img-fluid" src="dist/images/team-3.jpg" alt="">
-                                        <div class="px-3 py-4">
-                                            <b>Display Name</b>
-                                            <p>Harry</p>
-                                            <b>Local time</b>
-                                            <p>3:40AM</p>
-                                            <b>Email Address</b>
-                                            <p>harry@example.com</p>
-                                        </div>
-                                        <div class="d-flex outline-badge-primary border-0 mt-1">
-                                            <div class="w-50 text-center p-3 border-right"><a href="#" class="font-weight-bold">View Profile <i class="fas fa-arrow-right"></i></a></div>
-                                            <div class="w-50 text-center p-3"><a href="#" class="text-danger font-weight-bold">Logout <span class="icon-logout"></span></a></div>
                                         </div>
                                     </div>
                                 </div>

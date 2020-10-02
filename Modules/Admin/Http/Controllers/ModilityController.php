@@ -57,7 +57,6 @@ class ModilityController extends Controller
      */
     public function store(Request $request)
     {
-       //dd($request->all());
         $id = Str::uuid();
 
         if ($request->parent_yes == 1)
@@ -70,11 +69,12 @@ class ModilityController extends Controller
             ]);
         }
 
-//
+        $oldModality = [];
 
+        // log event details
+        $logEventDetails = eventDetails($id, 'Modality', 'Add', $request->ip(), $oldModality);
 
         return response()->json(['Sucess'=>'Save succesfully', $id]);
-
 
     }
 
@@ -154,11 +154,16 @@ class ModilityController extends Controller
      */
     public function update(Request $request)
     {
+        $oldModality = Modility::find($request->parent_id);
 
         $data = array (
             'modility_name' => $request->modility_name
         );
         Modility::where('id', $request->parent_id)->update($data);
+
+         // log event details
+
+        $logEventDetails = eventDetails($request->parent_id, 'Modality', 'Update', $request->ip(), $oldModality);
 
         return response()->json(['success'=>'Modility  is Updated successfully.']);
     }

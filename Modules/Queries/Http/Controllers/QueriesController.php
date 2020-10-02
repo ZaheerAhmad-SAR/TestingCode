@@ -6,6 +6,7 @@ use App\User;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class QueriesController extends Controller
 {
@@ -15,8 +16,10 @@ class QueriesController extends Controller
      */
     public function index()
     {
-        $users  =   User::all();
-        return view('queries::queries.index');
+
+        $users  =   User::where('id','!=',\auth()->user()->id)->get();
+        //dd($users);
+        return view('queries::queries.index',compact('users'));
 
     }
 

@@ -55,12 +55,6 @@ class SiteController extends Controller
             'site_email:required|email',
         ]);
 
-//        if (Site::where('site_code','=', $request->site_code)->first()) {
-//
-//            return response()->json(['code'=>'Code must be unique']);
-//        }
-//        else
-//        {
             $id = Str::uuid();
             $site = Site::create([
                 'id'    => $id,
@@ -80,10 +74,9 @@ class SiteController extends Controller
 
             $logEventDetails = eventDetails($id, 'Site', 'Add', $request->ip(), $oldSite);
 
-            return response()->json(['site_id' => $id,'success'=>'Site Info is added successfully']);
-
-        //}
+        return response()->json(['site_id' => $id,'success'=>'Site Info is added successfully']);
     }
+
 
     /**
      * Show the specified resource.

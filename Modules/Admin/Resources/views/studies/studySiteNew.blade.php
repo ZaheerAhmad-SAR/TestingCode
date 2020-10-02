@@ -46,13 +46,15 @@
             <div class="col-12 mt-3">
                 <div class="card">
                     <div class="card-header  justify-content-between align-items-center">
-                        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#assignSites">
-                            <i class="fa fa-plus"></i> Assign Sites
-                        </button>
+                        @if(hasPermission(auth()->user(),'studySite.update'))
+                            <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#assignSites">
+                                <i class="fa fa-plus"></i> Assign Sites
+                            </button>
+                        @endif
                         <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#siteModal">
                             <i class="fa fa-plus"></i> Add Site
                         </button>
-                    </div>
+                            </div>
                     <div class="card-body">
                         <div class="table-responsive">
                             <table id="example" class="display table dataTable table-striped table-bordered editable-table" >
@@ -814,7 +816,7 @@
                     e.preventDefault();
                     $.ajax({
                         data: $('#studySiteForm').serialize(),
-                        url: "{{route('updateStudySiteForm')}}",
+                        url: "{{route('studySite.update')}}",
                         type: "POST",
                         dataType: 'json',
                         success: function (results) {
