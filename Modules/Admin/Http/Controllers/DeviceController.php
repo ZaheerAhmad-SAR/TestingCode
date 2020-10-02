@@ -61,14 +61,16 @@ class DeviceController extends Controller
                     'device_model' => $request->device_model,
                     'device_manufacturer' => $request->device_manufacturer
                 ]);
-            foreach ($request->modalities as $modality){
-                DeviceModility::updateOrCreate([
-                    'id'    => Str::uuid(),
-                    'device_id'     => $device->id,
-                    'modility_id'   => $modality
+           
+                foreach ($request->modalities as $modality) {
+                    DeviceModility::updateOrCreate([
+                        'id'    => Str::uuid(),
+                        'device_id'     => $device->id,
+                        'modility_id'   => $modality
 
-                ]);
-            }
+                    ]);
+                }
+            
         }
         return \response()->json($device);
     }

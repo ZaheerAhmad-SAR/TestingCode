@@ -1,4 +1,5 @@
 <?php
+use App\User;
 use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\RolePermission;
 use Modules\Admin\Entities\OptionsGroup;
@@ -8,6 +9,7 @@ use Modules\Admin\Entities\Coordinator;
 use Modules\Admin\Entities\Photographer;
 use Modules\Admin\Entities\Other;
 use Modules\Admin\Entities\Annotation;
+use Modules\UserRoles\Entities\Role;
 use Modules\Admin\Entities\TrailLog;
 
 function hasrole($role)
@@ -54,11 +56,17 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
 
     $newData = [];
     $oldData = [];
+    $auditMessage = '';
+    $auditUrl = '';
 
     ////////////////////// Option Group //////////////////////////////////////////
     if ($eventSection == 'Option Group') {
         // get event data
         $eventData = OptionsGroup::find($eventId);
+        // set message for audit
+        $auditMessage = \Auth::user()->name.' added option group '.$eventData->option_group_name.'.';
+        // set audit url
+        $auditUrl = url('optionsGroup');
         // store data in event array
         $newData = array(
             'option_group_name' => $eventData->option_group_name,
@@ -78,29 +86,18 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
             'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
             );
 
+        $auditMessage = \Auth::user()->name.' updated option group '.$eventData->option_group_name.'.';
+
         } // update case ends
-        // set message for log
-        $messageType = $eventType == 'Add' ? 'added' : 'updated';
-        // Log the event
-        $trailLog = new TrailLog;
-        $trailLog->event_id = $eventId;
-        $trailLog->event_section = $eventSection;
-        $trailLog->event_type = $eventType;
-        $trailLog->event_message = \Auth::user()->name.' '.$messageType.' option group '.$eventData->option_group_name.'.';
-        $trailLog->user_id = \Auth::user()->id;
-        $trailLog->user_name = \Auth::user()->name;
-        $trailLog->role_id = \Auth::user()->role_id;
-        $trailLog->ip_address = $ip;
-        $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
-        $trailLog->event_url = url('optionsGroup');
-        $trailLog->event_details = json_encode($newData);
-        $trailLog->event_old_details = json_encode($oldData);
-        $trailLog->save();
 
     //////////////////////////////// Site ////////////////////////////////////////////////////////
     } else if($eventSection == 'Site') {
         // get event data
         $eventData = Site::find($eventId);
+        // set message for audit
+        $auditMessage = \Auth::user()->name.' added site '.$eventData->site_name.'.';
+        // set audit url
+        $auditUrl = url('sites');
         // store data in event array
         $newData = array(
             'site_code' => $eventData->site_code,
@@ -129,29 +126,19 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
             'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
             'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
             );
+
+            // set message for audit
+            $auditMessage = \Auth::user()->name.' updated site '.$eventData->site_name.'.';
         }
-        // set message for log
-        $messageType = $eventType == 'Add' ? 'added' : 'updated';
-        // Log the event
-        $trailLog = new TrailLog;
-        $trailLog->event_id = $eventId;
-        $trailLog->event_section = $eventSection;
-        $trailLog->event_type = $eventType;
-        $trailLog->event_message = \Auth::user()->name.' '.$messageType.' site '.$eventData->site_name.'.';
-        $trailLog->user_id = \Auth::user()->id;
-        $trailLog->user_name = \Auth::user()->name;
-        $trailLog->role_id = \Auth::user()->role_id;
-        $trailLog->ip_address = $ip;
-        $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
-        $trailLog->event_url = url('sites');
-        $trailLog->event_details = json_encode($newData);
-        $trailLog->event_old_details = json_encode($oldData);
-        $trailLog->save();
 
     /////////////////////////////// Primary Investigator /////////////////////////////////////////////
     } else if($eventSection == 'PI') {
         // get event data
         $eventData = PrimaryInvestigator::find($eventId);
+        // set message for audit
+        $auditMessage = \Auth::user()->name.' added primary investigator '.$eventData->first_name.'.';
+        // set audit url
+        $auditUrl = url('sites');
         // store data in event array
         $newData = array(
             'first_name' => $eventData->first_name,
@@ -174,29 +161,19 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
             'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
             'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
             );
+
+            // set message for audit
+            $auditMessage = \Auth::user()->name.' updated primary investigator '.$eventData->first_name.'.';
         }
-        // set message for log
-        $messageType = $eventType == 'Add' ? 'added' : 'updated';
-        // Log the event
-        $trailLog = new TrailLog;
-        $trailLog->event_id = $eventId;
-        $trailLog->event_section = $eventSection;
-        $trailLog->event_type = $eventType;
-        $trailLog->event_message = \Auth::user()->name.' '.$messageType.' Primary Investigator '.$eventData->first_name.'.';
-        $trailLog->user_id = \Auth::user()->id;
-        $trailLog->user_name = \Auth::user()->name;
-        $trailLog->role_id = \Auth::user()->role_id;
-        $trailLog->ip_address = $ip;
-        $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
-        $trailLog->event_url = url('sites');
-        $trailLog->event_details = json_encode($newData);
-        $trailLog->event_old_details = json_encode($oldData);
-        $trailLog->save();
 
     ///////////////////////////////////// Coordinator ///////////////////////////////////////////////////
     } else if($eventSection == 'Coordinator') {
         // get event data
         $eventData = Coordinator::find($eventId);
+        // set message for audit
+        $auditMessage = \Auth::user()->name.' added coordinator '.$eventData->first_name.'.';
+        // set audit url
+        $auditUrl = url('sites');
         // store data in event array
         $newData = array(
             'first_name' => $eventData->first_name,
@@ -218,29 +195,19 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
             'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
             'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
             );
+
+            // set message for audit
+            $auditMessage = \Auth::user()->name.' updated coordinator '.$eventData->first_name.'.';
         }
-        // set message for log
-        $messageType = $eventType == 'Add' ? 'added' : 'updated';
-        // Log the event
-        $trailLog = new TrailLog;
-        $trailLog->event_id = $eventId;
-        $trailLog->event_section = $eventSection;
-        $trailLog->event_type = $eventType;
-        $trailLog->event_message = \Auth::user()->name.' '.$messageType.' coordinator '.$eventData->first_name.'.';
-        $trailLog->user_id = \Auth::user()->id;
-        $trailLog->user_name = \Auth::user()->name;
-        $trailLog->role_id = \Auth::user()->role_id;
-        $trailLog->ip_address = $ip;
-        $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
-        $trailLog->event_url = url('sites');
-        $trailLog->event_details = json_encode($newData);
-        $trailLog->event_old_details = json_encode($oldData);
-        $trailLog->save();
 
     //////////////////////////////////////// Photographer /////////////////////////////////////////////
     } else if($eventSection == 'Photographer') {
         // get event data
         $eventData = Photographer::find($eventId);
+        // set message for audit
+        $auditMessage = \Auth::user()->name.' added photographer '.$eventData->first_name.'.';
+        // set audit url
+        $auditUrl = url('sites');
         // store data in event array
         $newData = array(
             'first_name' => $eventData->first_name,
@@ -263,29 +230,19 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
             'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
             'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
             );
+
+            // set message for audit
+            $auditMessage = \Auth::user()->name.' updated photographer '.$eventData->first_name.'.';
         }
-        // set message for log
-        $messageType = $eventType == 'Add' ? 'added' : 'updated';
-        // Log the event
-        $trailLog = new TrailLog;
-        $trailLog->event_id = $eventId;
-        $trailLog->event_section = $eventSection;
-        $trailLog->event_type = $eventType;
-        $trailLog->event_message = \Auth::user()->name.' '.$messageType.' photographer '.$eventData->first_name.'.';
-        $trailLog->user_id = \Auth::user()->id;
-        $trailLog->user_name = \Auth::user()->name;
-        $trailLog->role_id = \Auth::user()->role_id;
-        $trailLog->ip_address = $ip;
-        $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
-        $trailLog->event_url = url('sites');
-        $trailLog->event_details = json_encode($newData);
-        $trailLog->event_old_details = json_encode($oldData);
-        $trailLog->save();
 
     //////////////////////////////////////////// Others ////////////////////////////////////////////////
     } else if($eventSection == 'Others') {
         // get event data
         $eventData = Other::find($eventId);
+        // set message for audit
+        $auditMessage = \Auth::user()->name.' added others '.$eventData->first_name.'.';
+        // set audit url
+        $auditUrl = url('sites');
         // store data in event array
         $newData = array(
             'first_name' => $eventData->first_name,
@@ -307,28 +264,19 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
             'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
             'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
             );
+
+            // set message for audit
+            $auditMessage = \Auth::user()->name.' updated others '.$eventData->first_name.'.';
         }
-        // set message for log
-        $messageType = $eventType == 'Add' ? 'added' : 'updated';
-        // Log the event
-        $trailLog = new TrailLog;
-        $trailLog->event_id = $eventId;
-        $trailLog->event_section = $eventSection;
-        $trailLog->event_type = $eventType;
-        $trailLog->event_message = \Auth::user()->name.' '.$messageType.' others '.$eventData->first_name.'.';
-        $trailLog->user_id = \Auth::user()->id;
-        $trailLog->user_name = \Auth::user()->name;
-        $trailLog->role_id = \Auth::user()->role_id;
-        $trailLog->ip_address = $ip;
-        $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
-        $trailLog->event_url = url('sites');
-        $trailLog->event_details = json_encode($newData);
-        $trailLog->event_old_details = json_encode($oldData);
-        $trailLog->save();
-    ///////////////////////////////////////////// Others Section ends //////////////////////////////////////    
+        
+    /////////////////////////////// Others Section ends //////////////////////////////////////    
     } else if($eventSection == 'Annotation') {
         // get event data
         $eventData = Annotation::find($eventId);
+        // set message for audit
+        $auditMessage = \Auth::user()->name.' added annotation '.$eventData->label.'.';
+        // set audit url
+        $auditUrl = url('annotation');
         // store data in event array
         $newData = array(
             'label' => $eventData->label, 
@@ -343,31 +291,95 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
             'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
             'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
             );
+
+            // set message for audit
+            $auditMessage = \Auth::user()->name.' updated annotation '.$eventData->label.'.';
         }
-        // set message for log
-        $messageType = $eventType == 'Add' ? 'added' : 'updated';
-        // Log the event
-        $trailLog = new TrailLog;
-        $trailLog->event_id = $eventId;
-        $trailLog->event_section = $eventSection;
-        $trailLog->event_type = $eventType;
-        $trailLog->event_message = \Auth::user()->name.' '.$messageType.' annotation '.$eventData->label.'.';
-        $trailLog->user_id = \Auth::user()->id;
-        $trailLog->user_name = \Auth::user()->name;
-        $trailLog->role_id = \Auth::user()->role_id;
-        $trailLog->ip_address = $ip;
-        $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
-        $trailLog->event_url = url('annotation');
-        $trailLog->event_details = json_encode($newData);
-        $trailLog->event_old_details = json_encode($oldData);
-        $trailLog->save();
+       
+    ///////////////////////// Annotaion Sections ends ///////////////////////////////////////////
+    } else if ($eventSection == 'Role') {
+        // get event data
+        $eventData = Role::find($eventId);
+        // set message for audit
+        $auditMessage = \Auth::user()->name.' added role '.$eventData->name.'.';
+        // set audit url
+        $auditUrl = url('roles');
+        // store data in event array
+        $newData = array(
+            'name' => $eventData->name,
+            'description' => $eventData->description,
+            'role_type' => $eventData->role_type,
+            'created_by' => \Auth::user()->name,
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
+        );
+        // if it is update case
+        if($eventType == 'Update') {
+            
+            $oldData = array(
+                'name' => $previousData->name,
+                'description' => $previousData->description,
+                'role_type' => $previousData->role_type,
+                'created_by' => \Auth::user()->name,
+                'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+                'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+            );
 
-    /////////////////////////////// Annotaion Sections ends /////////////////////////////////////////////
-    }
+            // set message for audit
+            $auditMessage = \Auth::user()->name.' updated role '.$eventData->name.'.';
+        }
+       
+    ////////////////////////// Role Ends ///////////////////////////////////////////////////
+    } else if ($eventSection == 'User') {
+        // get event data
+        $eventData = User::find($eventId);
+        // set message for audit
+        $auditMessage = \Auth::user()->name.' added system user '.$eventData->name.'.';
+        // set audit url
+        $auditUrl = url('users');
+        // store data in event array
+        $newData = array(
+            'name' => $eventData->name,
+            'email' => $eventData->email,
+            'created_by' => \Auth::user()->name,
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
+        );
+        // if it is update case
+        if($eventType == 'Update') {
+            
+            $oldData = array(
+                'name' => $previousData->name,
+                'email' => $previousData->email,
+                'created_by' => \Auth::user()->name,
+                'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+                'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+            );
 
-    // return data
-    return $newData;
-}
+            // set message for audit
+            $auditMessage = \Auth::user()->name.' updated system user '.$eventData->name.'.';
+        }
+       
+    ////////////////////////// System Users Ends ///////////////////////////////////////////////////
+    } // main If else ends 
+
+    // Log the event
+    $trailLog = new TrailLog;
+    $trailLog->event_id = $eventId;
+    $trailLog->event_section = $eventSection;
+    $trailLog->event_type = $eventType;
+    $trailLog->event_message = $auditMessage;
+    $trailLog->user_id = \Auth::user()->id;
+    $trailLog->user_name = \Auth::user()->name;
+    $trailLog->role_id = \Auth::user()->role_id;
+    $trailLog->ip_address = $ip;
+    $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
+    $trailLog->event_url = $auditUrl;
+    $trailLog->event_details = json_encode($newData);
+    $trailLog->event_old_details = json_encode($oldData);
+    $trailLog->save();
+
+} // trail log function ends
 
 function buildSafeStr($id, $str = ''){
     return $str . str_replace('-', '_', $id);

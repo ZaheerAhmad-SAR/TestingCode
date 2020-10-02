@@ -74,6 +74,7 @@
             </li>
             @endif
             @if(hasPermission(auth()->user(),'studytools.index'))
+                @if(session('current_study'))
                 <li class="dropdown">
                     <ul>
                         <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Tools</a>
@@ -142,6 +143,7 @@
                         </li>
                 </ul>
             </li>
+            @endif
             @endif
             @if(hasPermission(auth()->user(),'subjects.index'))
                 <li class=""><!-- <a href="#"><i class="fas fa-laptop-medical mr-1"></i>Subject Management</a> -->
