@@ -16,7 +16,6 @@ class QueriesController extends Controller
     public function index()
     {
         $users  =   User::all();
-        dd($users);
         return view('queries::queries.index');
 
     }
