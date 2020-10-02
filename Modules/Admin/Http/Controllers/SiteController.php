@@ -80,7 +80,6 @@ class SiteController extends Controller
             $logEventDetails = eventDetails($id, 'Site', 'Add', $request->ip(), $oldSite);
             
             return response()->json(['site_id' => $id,'success'=>'Site Info is added successfully']);
-
         }
     }
 
