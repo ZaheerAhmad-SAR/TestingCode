@@ -1273,8 +1273,6 @@
     // End of Others
 
 
-
-
         $("#siteInfoForm").submit(function(e) {
             $.ajaxSetup({
                 headers: {
@@ -1392,6 +1390,7 @@
                                     '</td>\n' +
                                     '</tr>';
                             });
+                            $('.primaryInvestigatorTableAppend tbody').html('');
                             $('.primaryInvestigatorTableAppend tbody').html(html);
                             $.ajax({
                                 data: $('#coordinatorForm').serialize(),
@@ -1411,6 +1410,7 @@
                                             '<td><i style="color: #EA4335;" class="fa fa-trash deleteCoordinator" data-id ='+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editCoordinator" data-id ='+row.id+'></i></td>\n' +
                                             '</tr>';
                                     });
+                                    $('.CtableAppend tbody').html('');
                                     $('.CtableAppend tbody').html(html);
                                     $.ajax({
                                         data: $('#photographerForm').serialize(),
@@ -1420,6 +1420,7 @@
                                         success: function (results) {
                                             //$('.photographertableAppend tbody tr').remove();
                                             var parsedata = JSON.parse(results)[0];
+                                            var html    =   '';
                                             $.each(parsedata, function(index,row)
                                             {
                                                 //console.log(results[0].index);
@@ -1430,9 +1431,8 @@
                                                     '<td><i style="color: #EA4335;" class="fa fa-trash deletePhotographer" data-id = '+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editPhotographer" data-id = '+row.id+'></i></td>\n' +
                                                     '</tr>';
                                             });
+                                            $('.photographertableAppend tbody').html('');
                                             $('.photographertableAppend tbody').html(html);
-
-
                                             $('#photographerForm').trigger("reset");
                                             $.ajax({
                                                 type:"GET",
@@ -1441,7 +1441,7 @@
                                                 success : function(results) {
                                                     //$('.otherstableAppend tbody tr').remove();
                                                     var parsedata = JSON.parse(results)[0];
-
+                                                    var html    =   '';
                                                     $.each(parsedata, function(index,row)
                                                     {
                                                         html += '<tr id=' + row.id + '>\n' +
@@ -1452,6 +1452,7 @@
                                                             '</tr>';
                                                     });
 
+                                                    $('.otherstableAppend tbody').html('');
                                                     $('.otherstableAppend tbody').html(html);
 
                                                 }
