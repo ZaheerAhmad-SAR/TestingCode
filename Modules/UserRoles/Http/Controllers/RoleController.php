@@ -1029,6 +1029,7 @@ class RoleController extends Controller
                 ->orwhere('name','=','diseaseCohort.destroy')
                 ->get();
 
+
             foreach ($permissions as $permission) {
                 $permission_id = $permission->id;
                 $study_tools = RolePermission::create([

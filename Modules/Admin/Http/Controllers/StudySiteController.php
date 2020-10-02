@@ -142,13 +142,13 @@ class StudySiteController extends Controller
 
     public function update(Request $request)
     {
-        $others = '';
-        $sites = $request->sites;
-        $current_study = session('current_study');
-        $study = Study::find($current_study);
-        $study->studySites()->sync($sites);
+            $others = '';
+            $sites = $request->sites;
+            $current_study = session('current_study');
+            $study = Study::find($current_study);
+            $study->studySites()->sync($sites);
 
-        return response()->json([$sites]);
+            return response()->json([$sites]);
     }
 
     public function updateStudySite(Request $request)
