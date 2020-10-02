@@ -74,11 +74,11 @@ class SiteController extends Controller
                 'site_email'=>empty($request->site_email)? Null : $request->site_email
             ]);
 
-            //$oldSite = [];
+            $oldSite = [];
 
             // log event details
 
-            //$logEventDetails = eventDetails($id, 'Site', 'Add', $request->ip(), $oldSite);
+            $logEventDetails = eventDetails($id, 'Site', 'Add', $request->ip(), $oldSite);
 
             return response()->json(['site_id' => $id,'success'=>'Site Info is added successfully']);
 
@@ -136,7 +136,7 @@ class SiteController extends Controller
 
         // log event details
 
-        //$logEventDetails = eventDetails($request->lastSiteId, 'Site', 'Update', $request->ip(), $oldSite);
+        $logEventDetails = eventDetails($request->lastSiteId, 'Site', 'Update', $request->ip(), $oldSite);
 
         return response()->json(['success'=>'Site Info is updated successfully']);
 

@@ -14,8 +14,11 @@ class CreateQueriesTable extends Migration
     public function up()
     {
         Schema::create('queries', function (Blueprint $table) {
-            $table->id();
-
+            $table->uuid('id')->primary()->unique();
+            $table->uuid('sender_id')->nullable();
+            $table->uuid('receiver_id')->nullable();
+            $table->string('messages')->nullable();
+            $table->enum('status', ['read', 'unread'])->default('unread');
             $table->timestamps();
         });
     }
