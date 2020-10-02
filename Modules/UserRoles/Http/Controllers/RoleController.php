@@ -79,6 +79,12 @@ class RoleController extends Controller
             if ($request->study_edit){
                 $permissions = Permission::where('name','=','studies.edit')
                     ->orwhere('name','=','studies.update')
+                    ->orwhere('name','=','diseaseCohort.index')
+                    ->orwhere('name','=','diseaseCohort.create')
+                    ->orwhere('name','=','diseaseCohort.save')
+                    ->orwhere('name','=','diseaseCohort.edit')
+                    ->orwhere('name','=','diseaseCohort.update')
+                    ->orwhere('name','=','diseaseCohort.destroy')
                     ->get();
 
                 foreach ($permissions as $permission){
@@ -446,10 +452,20 @@ class RoleController extends Controller
                     ->orwhere('name', '=', 'users.index')
                     ->orwhere('name', '=', 'roles.index')
                     ->orwhere('name', '=', 'studySite.index')
+                    ->orwhere('name', '=', 'studySite.create')
+                    ->orwhere('name', '=', 'studySite.save')
+                    ->orwhere('name', '=', 'studySite.edit')
+                    ->orwhere('name', '=', 'studySite.update')
                     ->orwhere('name', '=', 'studydesign.index')
                     ->orwhere('name', '=', 'study.index')
                     ->orwhere('name', '=', 'forms.index')
                     ->orwhere('name', '=', 'optionsGroup.index')
+                    ->orwhere('name','=','diseaseCohort.index')
+                    ->orwhere('name','=','diseaseCohort.create')
+                    ->orwhere('name','=','diseaseCohort.save')
+                    ->orwhere('name','=','diseaseCohort.edit')
+                    ->orwhere('name','=','diseaseCohort.update')
+                    ->orwhere('name','=','diseaseCohort.destroy')
                     ->get();
 
                 foreach ($permissions as $permission) {
@@ -592,6 +608,12 @@ class RoleController extends Controller
         if ($request->study_edit){
             $permissions = Permission::where('name','=','studies.edit')
                 ->orwhere('name','=','studies.update')
+                ->orwhere('name','=','diseaseCohort.index')
+                ->orwhere('name','=','diseaseCohort.create')
+                ->orwhere('name','=','diseaseCohort.save')
+                ->orwhere('name','=','diseaseCohort.edit')
+                ->orwhere('name','=','diseaseCohort.update')
+                ->orwhere('name','=','diseaseCohort.destroy')
                 ->get();
 
             foreach ($permissions as $permission){
@@ -965,6 +987,12 @@ class RoleController extends Controller
                 ->orwhere('name', '=', 'study.index')
                 ->orwhere('name', '=', 'forms.index')
                 ->orwhere('name', '=', 'optionsGroup.index')
+                ->orwhere('name','=','diseaseCohort.index')
+                ->orwhere('name','=','diseaseCohort.create')
+                ->orwhere('name','=','diseaseCohort.save')
+                ->orwhere('name','=','diseaseCohort.edit')
+                ->orwhere('name','=','diseaseCohort.update')
+                ->orwhere('name','=','diseaseCohort.destroy')
                 ->get();
 
             foreach ($permissions as $permission) {
