@@ -5,6 +5,7 @@
 server.php
 /vendor
 .env
+.env_old
 .htaccess
 composer.json
 .env.backup
@@ -19,4 +20,3 @@ yarn-error.log
 /resources/views/layouts/home.blade.php
 /Modules/UserRoles/Resources/views/dashboard.blade.php
 composer.lock
-

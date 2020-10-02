@@ -152,7 +152,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
 
 
-    Route::post('studySite/update', 'StudySiteController@update')->name('updateStudySiteForm');
+    Route::post('studySite/update', 'StudySiteController@update')->name('studySite.update');
 
     Route::post('studySite/updateStudySite', 'StudySiteController@updateStudySite')->name('updateStudySiteId');
 
