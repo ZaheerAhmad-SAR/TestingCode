@@ -39,6 +39,15 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    protected function authenticated() {
+        if(hasPermission(\auth()->user(),'studytools.index')){
+            $roleId =  \auth()->user()->role_id;
+
+            return redirect()->route('studies.index');
+        }
+
+    }
+
     /*protected function authenticated(Request $request, $user)
     {
 

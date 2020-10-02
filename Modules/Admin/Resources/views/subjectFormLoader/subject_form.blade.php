@@ -1,17 +1,7 @@
 @extends ('layouts.home')
 @section('content')
-    @php
-    $studyId = isset($studyId) ? $studyId : 0;
-    $studyClsStr = buildSafeStr($studyId, 'study_cls_');
-    $study = \Modules\Admin\Entities\Study::find($studyId);
-
-    $subjectId = isset($subjectId) ? $subjectId : 0;
-    $subject = \Modules\Admin\Entities\Subject::find($subjectId);
-
-    $form_filled_by_user_id = auth()->user()->id;
-    $form_filled_by_user_role_id = auth()->user()->id;
-    @endphp
     <input type="hidden" name="already_global_disabled" id="already_global_disabled" value="no" />
+    <input type="hidden" name="previous_alert_message" id="previous_alert_message" value="" />
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
         <div class="row ">
@@ -39,11 +29,22 @@
                     </div>
                     <div class="card-body">
                         <table>
-                            <tr><td>Study ID :</td><td>{{ $studyId }}</td></tr>
-                            <tr><td>Study Title :</td><td>{{ $study->study_title }}</td></tr>
-
-                            <tr><td>Subject ID :</td><td>{{ $subject->subject_id }}</td></tr>
-                            <tr><td>Study EYE :</td><td>{{ $subject->study_eye }}</td></tr>
+                            <tr>
+                                <td>Subject ID :</td>
+                                <td>{{ $subject->subject_id }}</td>
+                            </tr>
+                            <tr>
+                                <td>Study EYE :</td>
+                                <td>{{ $subject->study_eye }}</td>
+                            </tr>
+                            <tr>
+                                <td>Site Name :</td>
+                                <td>{{ $site->site_name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Site Code :</td>
+                                <td>{{ $site->site_code }}</td>
+                            </tr>
                         </table>
                     </div>
                 </div>
@@ -58,6 +59,27 @@
                         <span class="badge p-2 badge-warning mb-1">Graded by 1st grader</span>&nbsp;&nbsp;
                         <span class="badge p-2 badge-success mb-1">Graded by 2nd grader</span>&nbsp;&nbsp;
                         <span class="badge p-2 badge-danger mb-1">Required Adjudication</span>&nbsp;&nbsp;
+                        <div class="row">&nbsp;</div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img src="{{url('images/complete.png')}}"/>&nbsp;&nbsp;Complete
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/incomplete.png')}}"/>&nbsp;&nbsp;Incomplete
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/resumable.png')}}"/>&nbsp;&nbsp;Editing
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/adjudication.png')}}"/>&nbsp;&nbsp;Adjudication
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/not_required.png')}}"/>&nbsp;&nbsp;Not Required
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/no_status.png')}}"/>&nbsp;&nbsp;No Status
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -94,12 +116,51 @@
                                                         @endphp
                                                         @foreach ($steps as $step)
                                                             @php
-                                                            $stepIdStr = buildSafeStr($step->step_id, 'step_cls_');
+                                                            $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
+                                                            $stepIdStr = buildSafeStr($step->step_id, '');
+                                                            $imgSpanStepClsStr = buildSafeStr($step->step_id, 'img_section_status_');
                                                             @endphp
-                                                            <a class="badge p-1 badge-light m-1  {{ $stepIdStr }}"
+                                                            <a class="badge p-1 badge-light m-1  {{ $stepClsStr }}"
                                                                 href="javascript:void(0);"
-                                                                onclick="showSections('step_sections_{{ $step->step_id }}');">
+                                                                onclick="showSections('step_sections_{{ $stepIdStr }}');">
                                                                 {{ $step->step_name }}
+
+                                                                 @foreach($step->sections as $section)
+                                                                 @php
+                                                                 $getFormStatusArray = [
+                                                                    'form_filled_by_user_id' => $form_filled_by_user_id,
+                                                                    'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
+                                                                    'subject_id' => $subjectId,
+                                                                    'study_id' => $studyId,
+                                                                    'study_structures_id' => $phase->id,
+                                                                    'phase_steps_id' => $step->step_id,
+                                                                    'section_id' => $section->id,
+                                                                    ];
+                                                                    $formStatusObj =
+                                                                    \Modules\Admin\Entities\FormStatus::getFormStatusObj($getFormStatusArray);
+                                                                 $imgSpanSectionIdStr = buildSafeStr($section->id, 'img_section_status_');
+                                                                 @endphp
+                                                                    <span class="{{ $imgSpanStepClsStr }}" id="{{ $imgSpanSectionIdStr }}">
+                                                                    @if($formStatusObj->form_status == 'complete')
+                                                                        <img src="{{ url('images/complete.png') }}"/>
+                                                                     @endif
+                                                                     @if($formStatusObj->form_status == 'incomplete')
+                                                                        <img src="{{ url('images/incomplete.png') }}"/>
+                                                                     @endif
+                                                                     @if($formStatusObj->form_status == 'resumable')
+                                                                        <img src="{{ url('images/resumable.png') }}"/>
+                                                                     @endif
+                                                                     @if($formStatusObj->form_status == 'no_status')
+                                                                        <img src="{{ url('images/no_status.png') }}"/>
+                                                                     @endif
+                                                                     @if($formStatusObj->form_status == 'adjudication')
+                                                                        <img src="{{ url('images/adjudication.png') }}"/>
+                                                                     @endif
+                                                                     @if($formStatusObj->form_status == 'notrequired')
+                                                                        <img src="{{ url('images/not_required.png') }}"/>
+                                                                     @endif
+                                                                    </span>
+                                                                @endforeach
                                                             </a>
                                                             <br>
                                                             @php
@@ -134,6 +195,9 @@
                                             @endphp
                                             @foreach ($steps as $step)
                                                 @php
+                                                $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
+                                                $stepIdStr = buildSafeStr($step->step_id, '');
+
                                                 $sections = $step->sections;
                                                 if(count($sections)){
                                                 $dataArray = [
@@ -148,7 +212,7 @@
                                                 'form_filled_by_user_role_id' => $form_filled_by_user_role_id
                                                 ];
                                                 @endphp
-                                                <div class="all_step_sections step_sections_{{ $step->step_id }}"
+                                                <div class="all_step_sections step_sections_{{ $stepIdStr }}"
                                                     style="display: {{ $firstStep ? 'block' : 'none' }};">
                                                     @include('admin::forms.section_loop', $dataArray)
                                                 </div>
@@ -175,6 +239,14 @@
 
     @push('script')
         <script>
+            function showAlert(message){
+                var field = $("#previous_alert_message");
+                var previous_alert_message = field.val();
+                if(previous_alert_message != message){
+                    alert(message);
+                    field.val(message);
+                }
+            }
             function showSections(step_id_class) {
                 $('.all_step_sections').hide(500);
                 $('.' + step_id_class).show(500);
@@ -219,14 +291,25 @@
                         submitFormFlag = false;
                     }
                 }
-                if(submitFormFlag){
+                if (submitFormFlag) {
                     var term_cond = $('#terms_cond_' + stepIdStr).val();
-                        var reason = $('#edit_reason_text_' + stepIdStr).val();
-                        var frmData = $("#form_master_" + sectionIdStr).serialize() + '&' + $("#form_" + sectionIdStr)
-                            .serialize() +
-                            '&terms_cond_' + stepIdStr + '=' + term_cond + '&' + 'edit_reason_text=' + reason;
-                        submitRequest(frmData);
+                    var reason = $('#edit_reason_text_' + stepIdStr).val();
+                    var frmData = $("#form_master_" + sectionIdStr).serialize() + '&' + $("#form_" + sectionIdStr)
+                        .serialize() +
+                        '&terms_cond_' + stepIdStr + '=' + term_cond + '&' + 'edit_reason_text=' + reason;
+                        submitRequest(frmData, sectionIdStr);
                 }
+            }
+
+            function submitRequest(frmData, sectionIdStr) {
+                $.ajax({
+                    url: "{{ route('submitStudyPhaseStepQuestionForm') }}",
+                    type: 'POST',
+                    data: frmData,
+                    success: function(response) {
+                        $('#img_section_status_' + sectionIdStr).html('<img src="{{url('/')}}/images/'+response+'.png"/>');
+                    }
+                });
             }
 
             function reloadPage(stepClsStr) {
@@ -240,9 +323,7 @@
                 if ($('#terms_cond_' + stepIdStr).prop('checked')) {
                     return true;
                 } else {
-                    alert(
-                        'Please acknowledge the truthfulness and correctness of information being submitting in this form!'
-                    );
+                    showAlert('Please acknowledge the truthfulness and correctness of information being submitting in this form!');
                     return false;
                 }
             }
@@ -262,7 +343,7 @@
             function checkReason(stepIdStr) {
                 var returnVal = false;
                 if (($('#edit_reason_text_' + stepIdStr).val() == '')) {
-                    alert('Please tell the reason to edit');
+                    showAlert('Please tell the reason to edit');
                 } else {
                     returnVal = true;
                 }
@@ -276,21 +357,19 @@
                         submitFormFlag = false;
                     }
                 }
-                if(submitFormFlag){
+                if (submitFormFlag) {
                     var frmData = $("#form_master_" + sectionIdStr).serialize();
-                        var field_val;
-                        if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
-                            field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').val();
-                        } else {
-                            field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').val();
-                        }
-                        var reason = $('#edit_reason_text_' + stepIdStr).val();
+                    var field_val;
+                    if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
+                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').val();
+                    } else {
+                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').val();
+                    }
+                    var reason = $('#edit_reason_text_' + stepIdStr).val();
 
-                        frmData = frmData + '&' + field_name + '=' + field_val + '&' + 'edit_reason_text=' + reason;
-                        submitRequest(frmData);
+                    frmData = frmData + '&' + field_name + '=' + field_val + '&' + 'edit_reason_text=' + reason;
+                    submitRequest(frmData, sectionIdStr);
                 }
-
-
             }
 
             function openFormForEditing(stepIdStr, stepClsStr, sectionIdStr) {
@@ -301,28 +380,32 @@
                     type: 'POST',
                     data: frmData,
                     success: function(response) {
-                        showReasonField(stepIdStr, stepClsStr, sectionIdStr);
+                        showReasonField(stepIdStr, stepClsStr);
                     }
                 });
             }
 
-            function submitRequest(frmData) {
-                $.ajax({
-                    url: "{{ route('submitStudyPhaseStepQuestionForm') }}",
-                    type: 'POST',
-                    data: frmData,
-                    success: function(response) {
-                        //
-                    }
-                });
-            }
-
-            function showReasonField(stepIdStr, stepClsStr, sectionIdStr) {
+            function showReasonField(stepIdStr, stepClsStr) {
                 $("#edit_form_div_" + stepIdStr).show(500);
                 $('#edit_reason_text_' + stepIdStr).prop('required', true);
                 enableByClass(stepClsStr);
                 $('.form_hid_editing_status_' + stepIdStr).val('yes');
                 $('.form_hid_status_' + stepIdStr).val('resumable');
+                $('.img_section_status_' + stepIdStr).html('<img src="{{url('images/resumable.png')}}"/>');
+            }
+
+            function hideReasonField(stepIdStr, stepClsStr) {
+                $("#edit_form_div_" + stepIdStr).hide(500);
+                $('#edit_reason_text_' + stepIdStr).prop('required', false);
+                $('#edit_reason_text_' + stepIdStr).val('');
+                disableByClass(stepClsStr);
+                $('.form_hid_editing_status_' + stepIdStr).val('no');
+                $('.form_hid_status_' + stepIdStr).val('complete');
+                $('.img_section_status_' + stepIdStr).html('<img src="{{url('images/complete.png')}}"/>');
+                $('.nav-link').removeClass('active');
+                $('.first_navlink_' + stepIdStr).addClass('active');
+                $('.tab-pane_' + stepIdStr).removeClass('active show');
+                $('.first_tab_' + stepIdStr).addClass('active show');
             }
 
         </script>

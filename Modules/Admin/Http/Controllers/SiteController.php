@@ -55,12 +55,12 @@ class SiteController extends Controller
             'site_email:required|email',
         ]);
 
-        if (Site::where('site_code', $request->site_code)->exists()) {
-
-            return response()->json(['code'=>'Code must be unique']);
-        }
-        else
-        {
+//        if (Site::where('site_code','=', $request->site_code)->first()) {
+//
+//            return response()->json(['code'=>'Code must be unique']);
+//        }
+//        else
+//        {
             $id = Str::uuid();
             $site = Site::create([
                 'id'    => $id,
@@ -77,11 +77,12 @@ class SiteController extends Controller
             $oldSite = [];
 
             // log event details
+
             $logEventDetails = eventDetails($id, 'Site', 'Add', $request->ip(), $oldSite);
-            
+
             return response()->json(['site_id' => $id,'success'=>'Site Info is added successfully']);
 
-        }
+        //}
     }
 
     /**
@@ -117,8 +118,10 @@ class SiteController extends Controller
      */
     public function update(Request $request)
     {
+
         // get old site data for logs
-        $oldSite = Site::find($request->site_id);
+        $oldSite = Site::find($request->lastSiteId);
+
         $data = array(
             'site_code'=> empty($request->site_code) ? Null : $request->site_code,
             'site_name' => empty($request->site_name) ? Null : $request->site_name,
@@ -126,13 +129,14 @@ class SiteController extends Controller
             'site_address'=>empty($request->fullAddr)? Null : $request->fullAddr,
             'site_city'=> empty($request->locality) ? Null : $request->locality,
             'site_state'=> empty($request->administrative_area_level_1)? Null : $request->administrative_area_level_1,
-            'site_phone'=> empty($request->site_phone) ? Null : $request->site_phone
+            'site_phone'=> empty($request->site_phone) ? Null : $request->site_phone,
         );
-        
-        Site::where('id', $request->site_id)->update($data);
+
+        Site::where('id', $request->lastSiteId)->update($data);
 
         // log event details
-        $logEventDetails = eventDetails($request->site_id, 'Site', 'Update', $request->ip(), $oldSite);
+
+        $logEventDetails = eventDetails($request->lastSiteId, 'Site', 'Update', $request->ip(), $oldSite);
 
         return response()->json(['success'=>'Site Info is updated successfully']);
 

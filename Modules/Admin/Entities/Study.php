@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\Admin\Entities\Annontation;
+use Modules\Admin\Entities\StudyStructure;
 
 class Study extends Model
 {
@@ -48,5 +49,8 @@ class Study extends Model
     public function studySites(){
         return $this->belongsToMany(StudySite::class, 'site_study', 'study_id', 'site_id');
 
+    }
+    public function phase(){
+        return $this->belongsTo(StudyStructure::class,'study_id','id');
     }
 }

@@ -244,12 +244,20 @@
                                     Overall Data Report
                                 </a>
                             </li>
+                            @if(hasPermission(auth()->user(),'queries.index'))
+                            <li>
+                                <a href="{{route('queries.index')}}">
+                                    Chat App
+                                </a>
+                            </li>
+                                @endif
                         </ul>
                     </li>
                 </ul>
             </li>
             @endif
-            
+
+
             @if(hasPermission(auth()->user(),'activitylog.index'))
                 <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
                     <ul >

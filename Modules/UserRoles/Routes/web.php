@@ -37,7 +37,6 @@ Route::group(['middleware' => ['auth','web','roles']],function(){
     Route::resource('finance','FinanceController');
     Route::resource('adjudication','AdjudicationController');
     Route::resource('eligibility','EligibilityController');
-    Route::resource('queries','QueriesController');
     Route::resource('studyRoles','StudyRolesController');
 
 });

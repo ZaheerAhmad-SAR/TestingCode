@@ -54,18 +54,6 @@ class User extends Authenticatable
     ];
     private $have_role;
 
-   /* public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function ($model) {
-            $model->id = Uuid::uuid();
-            $model->role_id = '8b276df5-1a82-4264-8305-84a960221e85';
-            //$role_id =
-        });
-    }*/
-
-
     public function allroles()
     {
         return $this->hasManyThrough(Role::class,UserRole::class,'role_id','id','id','id');
