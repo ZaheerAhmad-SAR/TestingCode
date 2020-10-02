@@ -13,7 +13,7 @@
 
 //dd(App::environment());
 
-Route::get('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
+Route::post('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
 Route::prefix('admin')->group(function () {
     Route::get('/', 'AdminController@index');
 });
@@ -76,6 +76,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     //end
     // routes for study managment
     Route::resource('study', 'StudyStructureController');
+    Route::get('get_steps', 'StudyStructureController@get_steps')->name('getSteps');
     Route::get('study_phases', 'StudyStructureController@getallphases')->name('getPhases');
     Route::post('study/update', 'StudyStructureController@update')->name('updatePhase');
     Route::DELETE('steps/delete_steps/{step_id}', 'StudyStructureController@destroySteps')->name('deleteSteps');

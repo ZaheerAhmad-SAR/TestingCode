@@ -4,7 +4,7 @@
     <head>
         <meta charset="UTF-8">
         <title>OCAP</title>
-        <link rel="shortcut icon" href="dist/images/favicon.ico" />
+    <link rel="shortcut icon" href="{{ url('dist/images/favicon.ico')}}" />
         <meta name="viewport" content="width=device-width,initial-scale=1">
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">

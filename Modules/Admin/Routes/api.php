@@ -12,8 +12,8 @@ use Illuminate\Http\Request;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::resource('transmissions','TransmissionController');
-Route::post('transmissions/transmissionData','TransmissionController@transmissionData')->name('transmissions.transmissionData');
+//Route::resource('transmissions','TransmissionController');
+Route::get('transmissions/transmissionData','TransmissionController@transmissionData')->name('transmissions.transmissionData');
 
 Route::middleware('auth:api')->get('/admin', function (Request $request) {
     return $request->user();

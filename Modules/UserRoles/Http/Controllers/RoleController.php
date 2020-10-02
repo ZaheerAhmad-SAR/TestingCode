@@ -5,6 +5,7 @@ namespace Modules\UserRoles\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
+use Illuminate\Foundation\Validation\ValidatesRequests as Requests;
 use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\RolePermission;
@@ -55,463 +56,486 @@ class RoleController extends Controller
      */
     public function store(RoleRequest $request)
     {
-        $role =  Role::create([
-            'id' => \Illuminate\Support\Str::uuid(),
-            'name'  =>  $request->name,
-            'description'   =>  $request->description,
-            'role_type' => $request->role_type_name,
-            'created_by'    => auth()->user()->id,
-        ]);
-        /*-- Studies Permissions */
-        if ($request->study_add){
-          $permissions = Permission::where('name','=','studies.create')
-              ->orwhere('name','=','studies.store')
-            ->get();
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $study_add = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+            $role =  Role::create([
+                'id' => \Illuminate\Support\Str::uuid(),
+                'name'  =>  $request->name,
+                'description'   =>  $request->description,
+                'role_type' => $request->role_type_name,
+                'created_by'    => auth()->user()->id,
+            ]);
+            /*-- Studies Permissions */
+            if ($request->study_add){
+                $permissions = Permission::where('name','=','studies.create')
+                    ->orwhere('name','=','studies.store')
+                    ->get();
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $study_add = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->study_edit){
-          $permissions = Permission::where('name','=','studies.edit')
-              ->orwhere('name','=','studies.update')
-            ->get();
+            if ($request->study_edit){
+                $permissions = Permission::where('name','=','studies.edit')
+                    ->orwhere('name','=','studies.update')
+                    ->orwhere('name','=','diseaseCohort.index')
+                    ->orwhere('name','=','diseaseCohort.create')
+                    ->orwhere('name','=','diseaseCohort.save')
+                    ->orwhere('name','=','diseaseCohort.edit')
+                    ->orwhere('name','=','diseaseCohort.update')
+                    ->orwhere('name','=','diseaseCohort.destroy')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $study_edit = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $study_edit = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->study_view){
-          $permissions = Permission::where('name','=','studies.index')
-            ->get();
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $study_view = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+            if ($request->study_view){
+                $permissions = Permission::where('name','=','studies.index')
+                    ->get();
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $study_view = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->study_delete){
-          $permissions = Permission::where('name','=','studies.destroy')
-            ->get();
+            if ($request->study_delete){
+                $permissions = Permission::where('name','=','studies.destroy')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $study_delete = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $study_delete = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        /*-- Subjects Permissions */
-        if ($request->subjects_add){
-            $permissions = Permission::where('name','=','subjects.create')
-                ->orwhere('name','=','subjects.store')
-                ->get();
+            /*-- Subjects Permissions */
+            if ($request->subjects_add){
+                $permissions = Permission::where('name','=','subjects.create')
+                    ->orwhere('name','=','subjects.store')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $subjects_add = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $subjects_add = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->subjects_edit){
-            $permissions = Permission::where('name','=','subjects.edit')
-                ->orwhere('name','=','subjects.update')
-                ->get();
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $subjects_edit = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+            if ($request->subjects_edit){
+                $permissions = Permission::where('name','=','subjects.edit')
+                    ->orwhere('name','=','subjects.update')
+                    ->get();
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $subjects_edit = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->subjects_view){
-            $permissions = Permission::where('name','=','subjects.index')
-                ->orwhere('name','=','studies.show')
-                ->get();
+            if ($request->subjects_view){
+                $permissions = Permission::where('name','=','subjects.index')
+                    ->orwhere('name','=','studies.show')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $subjects_view = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $subjects_view = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->subjects_delete){
-            $permissions = Permission::where('name','=','subjects.destroy')
-                ->get();
+            if ($request->subjects_delete){
+                $permissions = Permission::where('name','=','subjects.destroy')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $subjects_delete = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $subjects_delete = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        /*-- Grading Permissions */
-        if ($request->grading_add){
-            $permissions = Permission::where('name','=','grading.create')
-                ->orwhere('name','=','grading.store')
-                ->get();
+            /*-- Grading Permissions */
+            if ($request->grading_add){
+                $permissions = Permission::where('name','=','grading.create')
+                    ->orwhere('name','=','grading.store')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_add = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_add = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->grading_edit){
-            $permissions = Permission::where('name','=','grading.edit')
-                ->orwhere('name','=','grading.update')
-                ->get();
+            if ($request->grading_edit){
+                $permissions = Permission::where('name','=','grading.edit')
+                    ->orwhere('name','=','grading.update')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_edit = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_edit = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->grading_view){
-            $permissions = Permission::where('name','=','grading.index')
-                ->get();
+            if ($request->grading_view){
+                $permissions = Permission::where('name','=','grading.index')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_view = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_view = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->grading_delete){
-            $permissions = Permission::where('name','=','grading.destroy')
-                ->get();
+            if ($request->grading_delete){
+                $permissions = Permission::where('name','=','grading.destroy')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_delete = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_delete = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        /*-- Quality Control Permissions */
-        if ($request->qualityControl_add){
-            $permissions = Permission::where('name','=','qualitycontrol.create')
-                ->orwhere('name','=','qualitycontrol.store')
-                ->get();
+            /*-- Quality Control Permissions */
+            if ($request->qualityControl_add){
+                $permissions = Permission::where('name','=','qualitycontrol.create')
+                    ->orwhere('name','=','qualitycontrol.store')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_add = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_add = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->qualityControl_edit){
-            $permissions = Permission::where('name','=','qualitycontrol.edit')
-                ->orwhere('name','=','qualitycontrol.update')
-                ->get();
+            if ($request->qualityControl_edit){
+                $permissions = Permission::where('name','=','qualitycontrol.edit')
+                    ->orwhere('name','=','qualitycontrol.update')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_edit = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_edit = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->qualityControl_view){
-            $permissions = Permission::where('name','=','qualitycontrol.index')
-                ->get();
+            if ($request->qualityControl_view){
+                $permissions = Permission::where('name','=','qualitycontrol.index')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_view = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_view = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->qualityControl_delete){
-            $permissions = Permission::where('name','=','qualitycontrol.destroy')
-                ->get();
+            if ($request->qualityControl_delete){
+                $permissions = Permission::where('name','=','qualitycontrol.destroy')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_delete = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_delete = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        /*-- Adjudication Permissions --*/
-        if ($request->adjudication_add){
-            $permissions = Permission::where('name','=','adjudication.create')
-                ->orwhere('name','=','adjudication.store')
-                ->get();
+            /*-- Adjudication Permissions --*/
+            if ($request->adjudication_add){
+                $permissions = Permission::where('name','=','adjudication.create')
+                    ->orwhere('name','=','adjudication.store')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_add = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_add = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->adjudication_edit){
-            $permissions = Permission::where('name','=','adjudication.edit')
-                ->orwhere('name','=','adjudication.update')
-                ->get();
+            if ($request->adjudication_edit){
+                $permissions = Permission::where('name','=','adjudication.edit')
+                    ->orwhere('name','=','adjudication.update')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_edit = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_edit = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->adjudication_view){
-            $permissions = Permission::where('name','=','adjudication.index')
-                ->get();
+            if ($request->adjudication_view){
+                $permissions = Permission::where('name','=','adjudication.index')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_view = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_view = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->adjudication_delete){
-            $permissions = Permission::where('name','=','adjudication.destroy')
-                ->get();
+            if ($request->adjudication_delete){
+                $permissions = Permission::where('name','=','adjudication.destroy')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_delete = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_delete = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        /*-- Eligibility Permissions --*/
-        if ($request->eligibility_add){
-            $permissions = Permission::where('name','=','eligibility.create')
-                ->orwhere('name','=','eligibility.store')
-                ->get();
+            /*-- Eligibility Permissions --*/
+            if ($request->eligibility_add){
+                $permissions = Permission::where('name','=','eligibility.create')
+                    ->orwhere('name','=','eligibility.store')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_add = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_add = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->eligibility_edit){
-            $permissions = Permission::where('name','=','eligibility.edit')
-                ->orwhere('name','=','eligibility.update')
-                ->get();
+            if ($request->eligibility_edit){
+                $permissions = Permission::where('name','=','eligibility.edit')
+                    ->orwhere('name','=','eligibility.update')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_edit = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_edit = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->eligibility_view){
-            $permissions = Permission::where('name','=','eligibility.index')
-                ->get();
+            if ($request->eligibility_view){
+                $permissions = Permission::where('name','=','eligibility.index')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_view = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_view = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->eligibility_delete){
-            $permissions = Permission::where('name','=','eligibility.destroy')
-                ->get();
+            if ($request->eligibility_delete){
+                $permissions = Permission::where('name','=','eligibility.destroy')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_delete = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_delete = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        /*-- Queries Permissions --*/
-        if ($request->queries_add){
-            $permissions = Permission::where('name','=','queries.create')
-                ->orwhere('name','=','queries.store')
-                ->get();
+            /*-- Queries Permissions --*/
+            if ($request->queries_add){
+                $permissions = Permission::where('name','=','queries.create')
+                    ->orwhere('name','=','queries.store')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_add = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_add = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->queries_edit){
-            $permissions = Permission::where('name','=','queries.edit')
-                ->orwhere('name','=','queries.update')
-                ->get();
+            if ($request->queries_edit){
+                $permissions = Permission::where('name','=','queries.edit')
+                    ->orwhere('name','=','queries.update')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_edit = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_edit = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->queries_view){
-            $permissions = Permission::where('name','=','queries.index')
-                ->get();
+            if ($request->queries_view){
+                $permissions = Permission::where('name','=','queries.index')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_view = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_view = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        if ($request->queries_delete){
-            $permissions = Permission::where('name','=','queries.destroy')
-                ->get();
+            if ($request->queries_delete){
+                $permissions = Permission::where('name','=','queries.destroy')
+                    ->get();
 
-            foreach ($permissions as $permission){
-                $permission_id = $permission->id;
-                $grading_delete = RolePermission::create([
-                    'role_id'   => $role->id,
-                    'permission_id'   => $permission->id,
-                ]);
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $grading_delete = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
             }
-        }
-        /*-- System Tools Permissions */
-        if ($request->system_tools ) {
-            $permissions = Permission::where('name', '=', 'systemtools.index')
-                ->orwhere('name', '=', 'devices.index')
-                ->orwhere('name', '=', 'users.index')
-                ->orwhere('name', '=', 'roles.index')
-                ->orwhere('name', '=', 'sites.index')
-                ->orwhere('name', '=', 'modalities.index')
-                ->get();
-            foreach ($permissions as $permission) {
-                $permission_id = $permission->id;
-                $system_tools = RolePermission::create([
-                    'role_id' => $role->id,
-                    'permission_id' => $permission->id,
-                ]);
+            /*-- System Tools Permissions */
+            if ($request->system_tools ) {
+                $permissions = Permission::where('name', '=', 'systemtools.index')
+                    ->orwhere('name', '=', 'devices.index')
+                    ->orwhere('name', '=', 'users.index')
+                    ->orwhere('name', '=', 'roles.index')
+                    ->orwhere('name', '=', 'sites.index')
+                    ->orwhere('name', '=', 'modalities.index')
+                    ->get();
+                foreach ($permissions as $permission) {
+                    $permission_id = $permission->id;
+                    $system_tools = RolePermission::create([
+                        'role_id' => $role->id,
+                        'permission_id' => $permission->id,
+                    ]);
 
+                }
             }
-        }
-        /*-- Study Tools Permissions */
-        if ($request->study_tools ) {
-            $permissions = Permission::where('name', '=', 'studytools.index')
-                ->orwhere('name', '=', 'users.index')
-                ->orwhere('name', '=', 'roles.index')
-                ->orwhere('name', '=', 'studySite.index')
-                ->orwhere('name', '=', 'studydesign.index')
-                ->orwhere('name', '=', 'study.index')
-                ->orwhere('name', '=', 'forms.index')
-                ->orwhere('name', '=', 'optionsGroup.index')
-                ->get();
+            /*-- Study Tools Permissions */
+            if ($request->study_tools ) {
+                $permissions = Permission::where('name', '=', 'studytools.index')
+                    ->orwhere('name', '=', 'studytools.create')
+                    ->orwhere('name', '=', 'studytools.store')
+                    ->orwhere('name', '=', 'studytools.edit')
+                    ->orwhere('name', '=', 'studytools.update')
+                    ->orwhere('name', '=', 'users.index')
+                    ->orwhere('name', '=', 'roles.index')
+                    ->orwhere('name', '=', 'studySite.index')
+                    ->orwhere('name', '=', 'studySite.create')
+                    ->orwhere('name', '=', 'studySite.save')
+                    ->orwhere('name', '=', 'studySite.edit')
+                    ->orwhere('name', '=', 'studySite.update')
+                    ->orwhere('name', '=', 'studydesign.index')
+                    ->orwhere('name', '=', 'study.index')
+                    ->orwhere('name', '=', 'forms.index')
+                    ->orwhere('name', '=', 'optionsGroup.index')
+                    ->orwhere('name','=','diseaseCohort.index')
+                    ->orwhere('name','=','diseaseCohort.create')
+                    ->orwhere('name','=','diseaseCohort.save')
+                    ->orwhere('name','=','diseaseCohort.edit')
+                    ->orwhere('name','=','diseaseCohort.update')
+                    ->orwhere('name','=','diseaseCohort.destroy')
+                    ->get();
 
-            foreach ($permissions as $permission) {
-                $permission_id = $permission->id;
-                $study_tools = RolePermission::create([
-                    'role_id' => $role->id,
-                    'permission_id' => $permission->id,
-                ]);
+                foreach ($permissions as $permission) {
+                    $permission_id = $permission->id;
+                    $study_tools = RolePermission::create([
+                        'role_id' => $role->id,
+                        'permission_id' => $permission->id,
+                    ]);
 
+                }
             }
-        }
 
-        /*-- Data management Permissions */
-        if ($request->management ) {
-            $permissions = Permission::where('name', '=', 'data_management.index')
-                ->get();
-            foreach ($permissions as $permission) {
-                $permission_id = $permission->id;
-                $management = RolePermission::create([
-                    'role_id' => $role->id,
-                    'permission_id' => $permission->id,
-                ]);
+            /*-- Data management Permissions */
+            if ($request->management ) {
+                $permissions = Permission::where('name', '=', 'data_management.index')
+                    ->get();
+                foreach ($permissions as $permission) {
+                    $permission_id = $permission->id;
+                    $management = RolePermission::create([
+                        'role_id' => $role->id,
+                        'permission_id' => $permission->id,
+                    ]);
 
+                }
             }
-        }
 
-        /*-- Activity Log Permissions */
-        if ($request->activity_log ) {
-            $permissions = Permission::where('name', '=', 'activitylog.index')
-                ->get();
-            foreach ($permissions as $permission) {
-                $permission_id = $permission->id;
-                $activity_log = RolePermission::create([
-                    'role_id' => $role->id,
-                    'permission_id' => $permission->id,
-                ]);
+            /*-- Activity Log Permissions */
+            if ($request->activity_log ) {
+                $permissions = Permission::where('name', '=', 'activitylog.index')
+                    ->get();
+                foreach ($permissions as $permission) {
+                    $permission_id = $permission->id;
+                    $activity_log = RolePermission::create([
+                        'role_id' => $role->id,
+                        'permission_id' => $permission->id,
+                    ]);
 
+                }
             }
-        }
 
-        /*-- Certification Permissions */
-        if ($request->certification ) {
-            $permissions = Permission::where('name', '=', 'certification.index')
-                ->get();
-            foreach ($permissions as $permission) {
-                $permission_id = $permission->id;
-                $certification = RolePermission::create([
-                    'role_id' => $role->id,
-                    'permission_id' => $permission->id,
-                ]);
+            /*-- Certification Permissions */
+            if ($request->certification ) {
+                $permissions = Permission::where('name', '=', 'certification.index')
+                    ->get();
+                foreach ($permissions as $permission) {
+                    $permission_id = $permission->id;
+                    $certification = RolePermission::create([
+                        'role_id' => $role->id,
+                        'permission_id' => $permission->id,
+                    ]);
 
+                }
             }
-        }
 
-        /*-- Finance Permissions */
-        if ($request->finance ) {
-            $permissions = Permission::where('name', '=', 'finance.index')
-                ->get();
-            foreach ($permissions as $permission) {
-                $permission_id = $permission->id;
-                $finance = RolePermission::create([
-                    'role_id' => $role->id,
-                    'permission_id' => $permission->id,
-                ]);
+            /*-- Finance Permissions */
+            if ($request->finance ) {
+                $permissions = Permission::where('name', '=', 'finance.index')
+                    ->get();
+                foreach ($permissions as $permission) {
+                    $permission_id = $permission->id;
+                    $finance = RolePermission::create([
+                        'role_id' => $role->id,
+                        'permission_id' => $permission->id,
+                    ]);
 
+                }
             }
-        }
+
+
+
 
         $oldRole = [];
 
@@ -584,6 +608,12 @@ class RoleController extends Controller
         if ($request->study_edit){
             $permissions = Permission::where('name','=','studies.edit')
                 ->orwhere('name','=','studies.update')
+                ->orwhere('name','=','diseaseCohort.index')
+                ->orwhere('name','=','diseaseCohort.create')
+                ->orwhere('name','=','diseaseCohort.save')
+                ->orwhere('name','=','diseaseCohort.edit')
+                ->orwhere('name','=','diseaseCohort.update')
+                ->orwhere('name','=','diseaseCohort.destroy')
                 ->get();
 
             foreach ($permissions as $permission){
@@ -957,6 +987,12 @@ class RoleController extends Controller
                 ->orwhere('name', '=', 'study.index')
                 ->orwhere('name', '=', 'forms.index')
                 ->orwhere('name', '=', 'optionsGroup.index')
+                ->orwhere('name','=','diseaseCohort.index')
+                ->orwhere('name','=','diseaseCohort.create')
+                ->orwhere('name','=','diseaseCohort.save')
+                ->orwhere('name','=','diseaseCohort.edit')
+                ->orwhere('name','=','diseaseCohort.update')
+                ->orwhere('name','=','diseaseCohort.destroy')
                 ->get();
 
             foreach ($permissions as $permission) {

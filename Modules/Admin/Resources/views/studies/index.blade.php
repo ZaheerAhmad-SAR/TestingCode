@@ -82,6 +82,8 @@
                                                @foreach($study->users as $user)
                                                     <strong>{!! ucfirst($user->name) !!},</strong>
                                                 @endforeach
+                                                @else
+                                                <strong>{!! ucfirst($study->name) !!}</strong>
                                             @endif
                                         </td>
                                         @if(hasPermission(auth()->user(),'studies.edit'))
@@ -255,12 +257,15 @@
                         {{-- Assign Users --}}
                         <div class="tab-pane fade" id="nav-users" role="tabpanel" aria-labelledby="nav-Validation-tab">
                             <div class="form-group row" style="margin-top: 10px;">
-                                <label for="study_users" class="col-sm-3">Select Users</label>
+                                <label for="study_users" class="col-sm-3"></label>
                                 <div class="{!! ($errors->has('users')) ?'col-sm-9 has-error':'col-sm-9' !!}">
                                     <select class="searchable" id="select-users" multiple="multiple" name="users[]">
-                                        @foreach($users as $user)
+                                       @foreach($users as $user)
                                         <option value="{{$user->id}}">{{$user->name}}</option>
                                         @endforeach
+                                    </select>
+                                    <select class="searchable appendusers" id="select-users" multiple="multiple" name="users[]">
+
                                     </select>
                                 </div>
                                 @error('users')
@@ -326,7 +331,51 @@
         </div>
     </div>
 @endsection
+@section('styles')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
+@endsection
 @section('script')
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#select-users').multiSelect({
+                selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
+                selectionHeader: "<label for=''>Assigned Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
+                afterInit: function(ms){
+                    var that = this,
+                        $selectableSearch = that.$selectableUl.prev(),
+                        $selectionSearch = that.$selectionUl.prev(),
+                        selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
+                        selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
+
+                    that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+                        .on('keydown', function(e){
+                            if (e.which === 40){
+                                that.$selectableUl.focus();
+                                return false;
+                            }
+                        });
+
+                    that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+                        .on('keydown', function(e){
+                            if (e.which == 40){
+                                that.$selectionUl.focus();
+                                return false;
+                            }
+                        });
+                },
+                afterSelect: function(){
+                    this.qs1.cache();
+                    this.qs2.cache();
+                },
+                afterDeselect: function(){
+                    this.qs1.cache();
+                    this.qs2.cache();
+                }
+            });
+        });
+    </script>
     <script src="{{ asset('dist/js/jquery.validate.min.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.barfiller.js') }}"></script>
@@ -374,6 +423,7 @@
                 $('#end_date').val(data.end_date);
                 $('#description').val(data.description);
                 $('#disease_cohort').val(data.disease_cohort);
+                $('#users').val(data.users);
                 var html = '';
                 $('.appendfields').html('');
                 $.each(data.disease_cohort,function (index, value) {
@@ -381,6 +431,14 @@
                         '<input type="hidden" class="form-control" id="disease_cohort" name="disease_cohort[]" value="'+value.id+'" style="width: 90%;display: inline;"><input type="text" class="form-control" value="'+value.name+'" style="width: 90%;display: inline;">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>';
                 });
                 $('.appendfields').append(html);
+                var user = '';
+                $('.appendusers').html('');
+                $.each(data.users,function (index, value) {
+                    console.log(index,value);
+                    user += '<option value=" '+value.id+' ">'+value.name+'</option>';
+                });
+               $('.appendusers').append(user);
+
            })
         });
 

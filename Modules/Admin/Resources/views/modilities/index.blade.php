@@ -236,7 +236,9 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
+
             var url = "{{URL('modalities')}}";
+
             var parent_id = $(this).data('id');
             //alert(parent_id);
             var newPath = url+ "/"+parent_id+"/edit/";
@@ -277,8 +279,7 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
-                //var url = "{{URL('modalities')}}";
-                var url = "{{URL('/ocap/modalities')}}";
+                var url = "{{URL('modalities')}}";
                 var parent_id = $(this).data('id');
                 //alert(parent_id);
                 var newPath = url+ "/"+parent_id+"/edit/";
@@ -304,7 +305,9 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
+
                 var url = "{{URL('childmodilities/')}}";
+
                 var child_id = $(this).data('id');
 
                 var newPath = url+ "/"+child_id+"/edit/";
@@ -412,8 +415,6 @@
         /// update Modalities Function
         function updateModalities() {
             $("#editParentForm").submit(function(e) {
-
-
                 $.ajaxSetup({
                     headers: {
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -483,7 +484,7 @@
                     }
                 });
                 var parent_id = $(this).data("id");
-                var url = "{{URL('/ocap_new/modalities')}}";
+                var url = "{{URL('/modalities')}}";
                 var newPath = url+ "/"+ parent_id+"/destroy/";
                 if( confirm("Are You sure want to delete !") ==true)
                 {
@@ -532,7 +533,7 @@
                     }
                 });
                 var parent_id = $(this).data("id");
-                var url = "{{URL('/ocap_new/childmodilities')}}";
+                var url = "{{URL('/childmodilities')}}";
                 var newPath = url+ "/"+ parent_id+"/destroy/";
                 if( confirm("Are You sure want to delete !") ==true)
                 {
@@ -584,7 +585,7 @@
                     }
                 });
                 var parent_id = $(this).data("id");
-                var url = "{{URL('/ocap_new/childmodilities')}}";
+                var url = "{{URL('/childmodilities')}}";
                 var newPath = url+ "/"+ parent_id+"/restoreChild/";
                 $.ajax({
                     type: "GET",
@@ -610,7 +611,7 @@
                     }
                 });
                 var parent_id = $(this).data("id");
-                var url = "{{URL('/ocap_new/modalities')}}";
+                var url = "{{URL('/modalities')}}";
                 var newPath = url+ "/"+ parent_id+"/restoreParent/";
                 $.ajax({
                     type: "GET",
@@ -640,7 +641,7 @@
                 });
                 var parent_id = $(this).data("id");
                 console.log(parent_id);
-                var url = "{{URL('/ocap_new/modalities')}}";
+                var url = "{{URL('/modalities')}}";
                 var newPath = url+ "/"+ parent_id+"/replicateParent/";
                 $.ajax({
                     type: "GET",
@@ -664,7 +665,7 @@
             $('.showPhasesSteps').click(function() {
                 $.ajaxSetup({ headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
                 var id =($(this).attr("data-id"))
-                var url = "{{URL('ocap_new/modalities')}}";
+                var url = "{{URL('/modalities')}}";
                 var newPath = url+ "/"+ id+"/showChild/";
                 $.ajax({
                     type:"GET",

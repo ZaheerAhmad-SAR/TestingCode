@@ -67,7 +67,8 @@ class SubjectFormSubmissionController extends Controller
             'section_id' => $request->sectionId,
         ];
         $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
-        if (null === $formStatusObj) {
+
+        if ($formStatusObj->form_status == 'no_status') {
             $formStatusObj = $this->insertFormStatus($request, $getFormStatusArray);
         } elseif ($request->has(buildSafeStr($request->stepId, 'terms_cond_'))) {
             $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
@@ -75,7 +76,7 @@ class SubjectFormSubmissionController extends Controller
             $formStatusObj->form_status = 'complete';
             $formStatusObj->update();
         }
-        echo 'ok';
+        echo $formStatusObj->form_status;
     }
 
     public function openSubjectFormToEdit(Request $request)
@@ -95,10 +96,12 @@ class SubjectFormSubmissionController extends Controller
                 'section_id' => $section->id,
             ];
             $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
-            $formStatusObj->form_status = 'resumable';
-            $formStatusObj->update();
+            if (null !== $formStatusObj) {
+                $formStatusObj->form_status = 'resumable';
+                $formStatusObj->update();
+            }
         }
-        echo 'ok';
+        echo $formStatusObj->form_status;
     }
 
     private function insertFormStatus($request, $getFormStatusArray)
@@ -107,7 +110,7 @@ class SubjectFormSubmissionController extends Controller
             'id' => Str::uuid(),
             'form_type_id' => $request->formTypeId,
             'edit_reason_text' => $request->edit_reason_text,
-            'form_status' => 'resumable',
+            'form_status' => 'incomplete',
         ] + $getFormStatusArray;
         return FormStatus::create($formStatusData);
     }

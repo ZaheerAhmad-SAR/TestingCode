@@ -30,20 +30,10 @@ class StudyController extends Controller
     public function index()
     {
         $user = User::with('studies', 'user_roles')->find(Auth::id());
-        //$user = User::with('studies')->find(Auth::id());
         if (hasPermission(\auth()->user(), 'users.create')) {
             $studies  =   Study::with('users')->orderBy('study_short_name')->get();
-            /*            $users = User::select('users.name as user_name','user_roles.*','permissions.id','permissions.name')
-                ->join('user_roles','user_roles.user_id','=','users.id')
-                ->join('permission_role','permission_role.role_id','=','user_roles.role_id')
-                ->join('permissions','permissions.id','=','permission_role.permission_id')
-                ->where('permissions.name','=','studytools.create')
-                ->orwhere('permissions.name','=','studytools.store')
-                ->where('permissions.name','=','studytools.edit')
-                ->orwhere('permissions.name','=','studytools.update')
-                ->get();*/
             $permissionsIdsArray = Permission::where(function ($query) {
-                $query->where('permissions.name', '=', 'studytools.create')
+                $query->where('permissions.name', '=', 'studytools.index')
                     ->orwhere('permissions.name', '=', 'studytools.store')
                     ->orWhere('permissions.name', '=', 'studytools.edit')
                     ->orwhere('permissions.name', '=', 'studytools.update');
@@ -53,18 +43,18 @@ class StudyController extends Controller
             $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
             $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->get();
             $sites = Site::all();
-            //dd('admin');
-        } elseif ($user->role->name == 'manager') {
-            //dd('manager');
-            $studies = Study::with('users')->get();
-            $users = User::all();
-            $sites = Site::all();
-            //dd($sites);
-        } else {
-            //dd('else');
-            $studies  =   Study::paginate(3);
-            $users = User::all();
-            $sites = Site::all();
+        }
+        else{
+            $user=\auth()->user()->id;
+        $studies  =   StudyUser::select('study_user.*','users.*','studies.*')
+            ->join('users','users.id','=','study_user.user_id')
+            ->join('studies','studies.id','=','study_user.study_id')
+            ->where('users.id','=',\auth()->user()->id)
+            ->orderBy('study_short_name')->get();
+        //dd($studies);
+
+        $users = User::all();
+        $sites = Site::all();
         }
 
         return view('admin::studies.index', compact('studies', 'sites', 'users'));
@@ -76,6 +66,7 @@ class StudyController extends Controller
      */
     public function studyStatus(Request $request)
     {
+
         $study_id = $request->study_id;
 
         $study = Study::find($study_id);
@@ -108,12 +99,13 @@ class StudyController extends Controller
     public function store(Request $request)
     {
         $studyID = $request->study_id;
+        //dd($request->all());
         $study   =   Study::updateOrCreate(
             [
                 'id' => $studyID
             ],
             [
-                'id'    => \Illuminate\Support\Str::uuid(),
+                'id'    => !empty($studyID)?$studyID:\Illuminate\Support\Str::uuid(),
                 'study_short_name'  =>  $request->study_short_name,
                 'study_title' => $request->study_title,
                 'study_status'  => 'Development',
@@ -129,34 +121,32 @@ class StudyController extends Controller
             ]
         );
 
-        if (!empty($request->users)) {
+        if ($request->users != Null) {
             foreach ($request->users as $user) {
-                StudyUser::create([
-                    'id'    => \Illuminate\Support\Str::uuid(),
-                    'user_id' => $user,
-                    'study_id' => $study->id
-                ]);
+                    $studyuser = StudyUser::find($user);
+                    if (empty($studyuser)) {
+                        StudyUser::updateOrCreate([
+                            'id' => \Illuminate\Support\Str::uuid(),
+                            'user_id' => $user,
+                            'study_id' => $study->id
+                        ]);
+                    }
+                }
+            }
+        if ($request->disease_cohor != Null ) {
+            foreach ($request->disease_cohort as $disease_cohort) {
+                    $checkDiseaseCohort = DiseaseCohort::find($disease_cohort);
+                if (empty($checkDiseaseCohort)) {
+                    $diseaseCohort = DiseaseCohort::updateOrCreate([
+                        'id' => \Illuminate\Support\Str::uuid(),
+                        'study_id' => $study->id,
+                        'name' => $disease_cohort
+                    ]);
+                }
             }
         }
-        /*
-        if (!empty($request->sites)) {
-            foreach ($request->sites as $site) {
-                StudySite::create([
-                    'id'    => \Illuminate\Support\Str::uuid(),
-                    'study_id' => $study->id,
-                    'site_id' => $site
-                ]);
-            }
-        }*/
-
-        if (!empty($request->disease_cohort)) {
-            foreach ($request->disease_cohort as $disease_cohort) {
-                $diseaseCohort = DiseaseCohort::create([
-                    'id'    => \Illuminate\Support\Str::uuid(),
-                    'study_id'  => $study->id,
-                    'name'      => $disease_cohort
-                ]);
-            }
+        else{
+            return \response()->json($study);
         }
 
         return \response()->json($study);
@@ -171,6 +161,7 @@ class StudyController extends Controller
     {
         session(['current_study' => $study->id, 'study_short_name' => $study->study_short_name]);
         $id = $study->id;
+        $study_role= StudyUser::where('study_id','=',$id)->get();
         $currentStudy = Study::find($id);
 
         $subjects = Subject::select(['subjects.*', 'sites.site_name', 'sites.site_address', 'sites.site_city', 'sites.site_state', 'sites.site_code', 'sites.site_country', 'sites.site_phone'])
@@ -194,7 +185,12 @@ class StudyController extends Controller
     public function edit($id)
     {
         $where = array('id' => $id);
-        $study  = Study::with('diseaseCohort')->where($where)->first();
+        $studies  =   Study::with('users')
+            ->where('id','=',$id)
+            ->orderBy('study_short_name')->get();
+        $study  = Study::with('diseaseCohort','users')
+            ->find($id);
+
 
         return \response()->json($study);
     }
