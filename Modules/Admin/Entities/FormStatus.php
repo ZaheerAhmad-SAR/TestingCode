@@ -11,16 +11,20 @@ class FormStatus extends Model
     protected $keyType = 'string';
 
     protected $attributes = [
-        'form_status' => 'incomplete',
+        'form_status' => 'no_status',
     ];
 
     public static function getFormStatusObj($getFormStatusArray)
     {
-        return FormStatus::where(function ($q) use ($getFormStatusArray) {
+        $formStatusObject = FormStatus::where(function ($q) use ($getFormStatusArray) {
             foreach ($getFormStatusArray as $key => $value) {
                 $q->where($key, '=', $value);
             }
         })->first();
+        if (null === $formStatusObject) {
+            $formStatusObject = new FormStatus();
+        }
+        return $formStatusObject;
     }
 
     public static function getFormStatusStepLevelObj($getFormStatusArray)

@@ -236,6 +236,7 @@
                                         <div class="modal-footer">
                                             @if(hasPermission(auth()->user(),'sites.store'))
                                             <button type="submit" id="btn_site_info" class="btn btn-outline-primary"><i class="fa fa-save changeText"></i> Save</button>
+                                                <input type="hidden" name="sites_submit_actions" id="sites_submit_actions" value="Add">
                                             @endif
                                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close redirectPage" aria-hidden="true"></i> Close</button>
                                         </div>
@@ -859,7 +860,9 @@
                 }
             });
             var primary_investigator_id = $(this).data("id");
-            var url = "{{URL('/primaryinvestigator')}}";
+
+            var url = "{{URL('primaryinvestigator')}}";
+
             var newPath = url+ "/"+ primary_investigator_id+"/destroy/";
             if( confirm("Are You sure want to delete !") ==true)
             {
@@ -922,7 +925,9 @@
                 }
             });
             var id =($(this).attr("data-id"));
-            var url = "{{URL('/coordinator')}}";
+
+            var url = "{{URL('coordinator')}}";
+
             var newPath = url+ "/"+ id+"/edit/";
 
             $.ajax({
@@ -946,7 +951,6 @@
     }
     showCoordinator();
 
-    //// showOthers function
 
     //// show Primary Investigator function
     function showPrimaryInvestigator() {
@@ -957,7 +961,9 @@
                 }
             });
             var id =($(this).attr("data-id"));
-            var url = "{{URL('/primaryinvestigator')}}";
+
+            var url = "{{URL('primaryinvestigator')}}";
+
             var newPath = url+ "/"+ id+"/edit/";
             $.ajax({
                 type:"GET",
@@ -1064,7 +1070,9 @@
                 }
             });
             var id =($(this).attr("data-id"));
-            var url = "{{URL('/photographers')}}";;
+
+            var url = "{{URL('photographers')}}";;
+
             var newPath = url+ "/"+ id+"/edit/";
             $.ajax({
                 type:"GET",
@@ -1169,7 +1177,9 @@
                 }
             });
             var id =($(this).attr("data-id"));
-            var url = "{{URL('/others')}}";
+
+            var url = "{{URL('others')}}";
+
             var newPath = url+ "/"+ id+"/edit/";
 
             $.ajax({
@@ -1273,9 +1283,6 @@
     // End of Others
 
 
-    // Add New Site Info
-    function addSiteInfo()
-    {
         $("#siteInfoForm").submit(function(e) {
             $.ajaxSetup({
                 headers: {
@@ -1283,9 +1290,19 @@
                 }
             });
             e.preventDefault();
+
+            var sites_submit_actions = $('#sites_submit_actions').val();
+            if(sites_submit_actions == 'Add')
+            {
+                var action_url = "{{ route('sites.store') }}";
+            }
+            else
+            {
+                var action_url = "{{ route('updateSites') }}";
+            }
             $.ajax({
                 data: $('#siteInfoForm').serialize(),
-                url: "{{ route('sites.store') }}",
+                url: action_url,
                 type: "POST",
                 dataType: 'json',
                 success: function (results) {
@@ -1302,16 +1319,6 @@
                         // $('#primaryInvestigatorForm').find($('input[name="site_id"]').val(results.site_id));
                         $('#site_id').val(results.site_id);
                     }
-
-                    // if (results.code)
-                    // {
-                    //     $('.success-msg-sec').html('');
-                    //     $('.success-msg-sec').html(results.success)
-                    //     $('.success-alert-sec').slideDown('slow');
-                    //     tId=setTimeout(function(){
-                    //         $(".success-alert-sec").slideUp('slow');
-                    //     }, 3000);
-                    // }
                 },
                 error: function (results) {
                     console.log('Error:', results);
@@ -1319,9 +1326,7 @@
                 }
             });
         });
-    }
-    addSiteInfo();
-    // End of Add Site Info
+
 
 
     function checkIfSiteCodeExist()
@@ -1335,20 +1340,23 @@
 
         $('body').on('click', '.editsiterecord', function (e) {
             $('.modal-title').text('Edit Site');
+            $("#sites_submit_actions").attr('value', 'Edit');
             var id =($(this).attr("data-id"));
-            var url = "{{URL('/sites')}}";
+
+            var url = "{{URL('sites')}}";
             var newPath = url+ "/"+ id+"/edit/";
 
-            var pi_url = "{{URL('/primaryinvestigator')}}";
+            var pi_url = "{{URL('primaryinvestigator')}}";
             var new_pi_url = pi_url+ "/"+ id+"/showSiteId/";
 
-            var co_url = "{{URL('/coordinator')}}";
+            var co_url = "{{URL('coordinator')}}";
             var new_co_url = co_url+ "/"+ id+"/showCoordinatorBySiteId/";
 
-            var ph_url = "{{URL('/photographers')}}";
+            var ph_url = "{{URL('photographers')}}";
             var new_ph_url = ph_url+ "/"+ id+"/showPhotographerBySiteId/";
 
-            var other_url = "{{URL('/others')}}";
+            var other_url = "{{URL('others')}}";
+
             var new_other_url = other_url+ "/"+ id+"/showOtherBySiteId/";
 
             $.ajaxSetup({
@@ -1374,6 +1382,7 @@
                     $('#administrative_area_level_1').val(parsedata.site_state);
                     $('#site_phone').val(parsedata.site_phone);
                     $('#country').val(parsedata.site_country);
+                    //$('#sites_submit_actions').val('Edit');
                     $.ajax({
                         type:"GET",
                         dataType: 'html',
@@ -1393,6 +1402,7 @@
                                     '</td>\n' +
                                     '</tr>';
                             });
+                            $('.primaryInvestigatorTableAppend tbody').html('');
                             $('.primaryInvestigatorTableAppend tbody').html(html);
                             $.ajax({
                                 data: $('#coordinatorForm').serialize(),
@@ -1412,6 +1422,7 @@
                                             '<td><i style="color: #EA4335;" class="fa fa-trash deleteCoordinator" data-id ='+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editCoordinator" data-id ='+row.id+'></i></td>\n' +
                                             '</tr>';
                                     });
+                                    $('.CtableAppend tbody').html('');
                                     $('.CtableAppend tbody').html(html);
                                     $.ajax({
                                         data: $('#photographerForm').serialize(),
@@ -1421,6 +1432,7 @@
                                         success: function (results) {
                                             //$('.photographertableAppend tbody tr').remove();
                                             var parsedata = JSON.parse(results)[0];
+                                            var html    =   '';
                                             $.each(parsedata, function(index,row)
                                             {
                                                 //console.log(results[0].index);
@@ -1431,9 +1443,8 @@
                                                     '<td><i style="color: #EA4335;" class="fa fa-trash deletePhotographer" data-id = '+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editPhotographer" data-id = '+row.id+'></i></td>\n' +
                                                     '</tr>';
                                             });
+                                            $('.photographertableAppend tbody').html('');
                                             $('.photographertableAppend tbody').html(html);
-
-
                                             $('#photographerForm').trigger("reset");
                                             $.ajax({
                                                 type:"GET",
@@ -1442,7 +1453,7 @@
                                                 success : function(results) {
                                                     //$('.otherstableAppend tbody tr').remove();
                                                     var parsedata = JSON.parse(results)[0];
-
+                                                    var html    =   '';
                                                     $.each(parsedata, function(index,row)
                                                     {
                                                         html += '<tr id=' + row.id + '>\n' +
@@ -1453,6 +1464,7 @@
                                                             '</tr>';
                                                     });
 
+                                                    $('.otherstableAppend tbody').html('');
                                                     $('.otherstableAppend tbody').html(html);
 
                                                 }
@@ -1471,41 +1483,6 @@
 
         });
 
-    function updateSiteInfo()
-    {
-        $("#siteInfoForm").submit(function(e) {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            e.preventDefault();
-
-            $.ajax({
-                data: $('#siteInfoForm').serialize(),
-                url: "{{ route('updateSites') }}",
-                type: "POST",
-                dataType: 'json',
-                success: function (data) {
-                    //$("#siteInfoForm :input").prop("disabled", true);
-                    if (data.success)
-                    {
-                        $('.success-msg-sec').html('');
-                        $('.success-msg-sec').html(data.success)
-                        $('.success-alert-sec').slideDown('slow');
-                        tId=setTimeout(function(){
-                            $(".success-alert-sec").slideUp('slow');
-                        }, 3000);
-                    }
-                },
-                error: function (data) {
-                    console.log('Error:', data);
-                }
-            });
-        });
-    }
-    updateSiteInfo();
-
     //  Coordinator Delete function
     function  coordinatorDestroy ()
     {
@@ -1519,7 +1496,9 @@
             var coordinator_id = $(this).data("id");
 
 
-            var url = "{{URL('/coordinator/')}}";
+
+            var url = "{{URL('coordinator/')}}";
+
             var newPath = url+ "/"+ coordinator_id+"/destroy/";
             if( confirm("Are You sure want to delete !") ==true)
             {
@@ -1554,7 +1533,8 @@
             var photographer_id = $(this).data("id");
 
 
-            var url = "{{URL('/photographers/')}}";
+            var url = "{{URL('photographers/')}}";
+
             var newPath = url+ "/"+ photographer_id+"/destroy/";
             if( confirm("Are You sure want to delete !") ==true)
             {
@@ -1587,8 +1567,8 @@
             });
             var others_id = $(this).data("id");
 
+            var url = "{{URL('others/')}}";
 
-            var url = "{{URL('/others/')}}";
             var newPath = url+ "/"+ others_id+"/destroy/";
             if( confirm("Are You sure want to delete !") ==true)
             {
