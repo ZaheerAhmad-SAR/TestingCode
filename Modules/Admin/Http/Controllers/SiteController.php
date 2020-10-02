@@ -118,6 +118,7 @@ class SiteController extends Controller
      */
     public function update(Request $request)
     {
+
         // get old site data for logs
         $oldSite = Site::find($request->lastSiteId);
 
@@ -130,6 +131,7 @@ class SiteController extends Controller
             'site_state'=> empty($request->administrative_area_level_1)? Null : $request->administrative_area_level_1,
             'site_phone'=> empty($request->site_phone) ? Null : $request->site_phone,
         );
+
         Site::where('id', $request->lastSiteId)->update($data);
 
         // log event details

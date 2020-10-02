@@ -236,6 +236,7 @@
                                         <div class="modal-footer">
                                             @if(hasPermission(auth()->user(),'sites.store'))
                                             <button type="submit" id="btn_site_info" class="btn btn-outline-primary"><i class="fa fa-save changeText"></i> Save</button>
+                                                <input type="hidden" name="sites_submit_actions" id="sites_submit_actions" value="Add">
                                             @endif
                                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close redirectPage" aria-hidden="true"></i> Close</button>
                                         </div>
@@ -946,7 +947,6 @@
     }
     showCoordinator();
 
-    //// showOthers function
 
     //// show Primary Investigator function
     function showPrimaryInvestigator() {
@@ -1273,9 +1273,8 @@
     // End of Others
 
 
-    // Add New Site Info
-    function addSiteInfo()
-    {
+
+
         $("#siteInfoForm").submit(function(e) {
             $.ajaxSetup({
                 headers: {
@@ -1283,9 +1282,19 @@
                 }
             });
             e.preventDefault();
+
+            var sites_submit_actions = $('#sites_submit_actions').val();
+            if(sites_submit_actions == 'Add')
+            {
+                var action_url = "{{ route('sites.store') }}";
+            }
+            else
+            {
+                var action_url = "{{ route('updateSites') }}";
+            }
             $.ajax({
                 data: $('#siteInfoForm').serialize(),
-                url: "{{ route('sites.store') }}",
+                url: action_url,
                 type: "POST",
                 dataType: 'json',
                 success: function (results) {
@@ -1302,16 +1311,6 @@
                         // $('#primaryInvestigatorForm').find($('input[name="site_id"]').val(results.site_id));
                         $('#site_id').val(results.site_id);
                     }
-
-                    // if (results.code)
-                    // {
-                    //     $('.success-msg-sec').html('');
-                    //     $('.success-msg-sec').html(results.success)
-                    //     $('.success-alert-sec').slideDown('slow');
-                    //     tId=setTimeout(function(){
-                    //         $(".success-alert-sec").slideUp('slow');
-                    //     }, 3000);
-                    // }
                 },
                 error: function (results) {
                     console.log('Error:', results);
@@ -1319,9 +1318,7 @@
                 }
             });
         });
-    }
-    addSiteInfo();
-    // End of Add Site Info
+
 
 
     function checkIfSiteCodeExist()
@@ -1335,6 +1332,7 @@
 
         $('body').on('click', '.editsiterecord', function (e) {
             $('.modal-title').text('Edit Site');
+            $("#sites_submit_actions").attr('value', 'Edit');
             var id =($(this).attr("data-id"));
             var url = "{{URL('/sites')}}";
             var newPath = url+ "/"+ id+"/edit/";
@@ -1374,6 +1372,7 @@
                     $('#administrative_area_level_1').val(parsedata.site_state);
                     $('#site_phone').val(parsedata.site_phone);
                     $('#country').val(parsedata.site_country);
+                    //$('#sites_submit_actions').val('Edit');
                     $.ajax({
                         type:"GET",
                         dataType: 'html',
@@ -1470,41 +1469,6 @@
             });
 
         });
-
-    function updateSiteInfo()
-    {
-        $("#siteInfoForm").submit(function(e) {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            e.preventDefault();
-
-            $.ajax({
-                data: $('#siteInfoForm').serialize(),
-                url: "{{ route('updateSites') }}",
-                type: "POST",
-                dataType: 'json',
-                success: function (data) {
-                    //$("#siteInfoForm :input").prop("disabled", true);
-                    if (data.success)
-                    {
-                        $('.success-msg-sec').html('');
-                        $('.success-msg-sec').html(data.success)
-                        $('.success-alert-sec').slideDown('slow');
-                        tId=setTimeout(function(){
-                            $(".success-alert-sec").slideUp('slow');
-                        }, 3000);
-                    }
-                },
-                error: function (data) {
-                    console.log('Error:', data);
-                }
-            });
-        });
-    }
-    updateSiteInfo();
 
     //  Coordinator Delete function
     function  coordinatorDestroy ()
