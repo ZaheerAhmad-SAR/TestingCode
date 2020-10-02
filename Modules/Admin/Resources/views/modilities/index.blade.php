@@ -236,7 +236,9 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            var url = "{{URL('/modalities')}}";
+
+            var url = "{{URL('modalities')}}";
+
             var parent_id = $(this).data('id');
             //alert(parent_id);
             var newPath = url+ "/"+parent_id+"/edit/";
@@ -303,7 +305,9 @@
                         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                     }
                 });
-                var url = "{{URL('/childmodilities/')}}";
+
+                var url = "{{URL('childmodilities/')}}";
+
                 var child_id = $(this).data('id');
 
                 var newPath = url+ "/"+child_id+"/edit/";
@@ -458,9 +462,10 @@
                         console.log(data);
                         $('#childForm').trigger("reset");
                         $('#addsteps').modal('hide');
-                        window.setTimeout(function () {
-                            location.href = '{{ route('modalities.index') }}';
-                        }, 100);
+                        location.reload();
+                        // window.setTimeout(function () {
+                        //     location.href = '{{ route('modalities.index') }}';
+                        // }, 100);
                     },
                     error: function (data) {
                         console.log('Error:', data);
