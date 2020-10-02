@@ -55,12 +55,6 @@ class SiteController extends Controller
             'site_email:required|email',
         ]);
 
-//        if (Site::where('site_code','=', $request->site_code)->first()) {
-//
-//            return response()->json(['code'=>'Code must be unique']);
-//        }
-//        else
-//        {
             $id = Str::uuid();
             $site = Site::create([
                 'id'    => $id,

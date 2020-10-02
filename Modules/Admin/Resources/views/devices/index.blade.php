@@ -227,30 +227,31 @@
                         type: "POST",
                         dataType: 'json',
                         success: function (data) {
-                            var device = '<tr id="device_id_' + data.id + '"><td>' + data.id + '</td>' +
-                                '<td>' + data.device_name + '</td>' +
-                                '<td>' + data.device_manufacturer + '</td>' +
-                                '<td>' + data.device_model + '</td>';
-                            device += '<td><a href="javascript:void(0)" id="edit-device" data-id="' + data.id + '" class="btn btn-info"> Edit</a></td>';
-                           device += '<td><a href="javascript:void(0)" id="delete-device" data-id="' + data.id + '" class="btn btn-danger delete-device">Delete</a></td></tr>';
+                           //  var device = '<tr id="device_id_' + data.id + '"><td>' + data.id + '</td>' +
+                           //      '<td>' + data.device_name + '</td>' +
+                           //      '<td>' + data.device_manufacturer + '</td>' +
+                           //      '<td>' + data.device_model + '</td>';
+                           //  device += '<td><a href="javascript:void(0)" id="edit-device" data-id="' + data.id + '" class="btn btn-info"> Edit</a></td>';
+                           // device += '<td><a href="javascript:void(0)" id="delete-device" data-id="' + data.id + '" class="btn btn-danger delete-device">Delete</a></td></tr>';
 
-                            if (actionType == "create-device") {
-                                $('#devices-crud').prepend(device);
-                                var t = setTimeout(function(){// wait for -- secs(2)
-                                    location.reload();
-                                }, 1000);
-                            } else {
-                                $("#device_id_" + data.id).replaceWith(device);
-                            }
-                            $('#deviceForm').trigger("reset");
-                            $('#device-crud-modal').modal('hide');
-                            $('#btn-save').html('Save Changes');
-                            alert(data.success());
-                            if(data.success == true){
-                                var t = setTimeout(function(){// wait for -- secs(2)
-                                    location.reload();
-                                }, 1000);
-                            }
+                           //  if (actionType == "create-device") {
+                           //      $('#devices-crud').prepend(device);
+                           //      var t = setTimeout(function(){// wait for -- secs(2)
+                           //          location.reload();
+                           //      }, 1000);
+                           //  } else {
+                           //      $("#device_id_" + data.id).replaceWith(device);
+                           //  }
+                           //  $('#deviceForm').trigger("reset");
+                           //  $('#device-crud-modal').modal('hide');
+                           //  $('#btn-save').html('Save Changes');
+                           //  alert(data.success());
+                           //  if(data.success == true){
+                           //      var t = setTimeout(function(){// wait for -- secs(2)
+                           //          location.reload();
+                           //      }, 1000);
+                           //  }
+                           location.reload();
                         },
                         error: function (data) {
                             console.log('Error:', data);
