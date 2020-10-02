@@ -52,7 +52,7 @@ class StudyController extends Controller
             ->where('users.id','=',\auth()->user()->id)
             ->orderBy('study_short_name')->get();
         //dd($studies);
-            
+
         $users = User::all();
         $sites = Site::all();
         }
