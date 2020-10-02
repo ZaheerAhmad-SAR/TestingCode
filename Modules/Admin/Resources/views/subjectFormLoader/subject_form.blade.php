@@ -11,9 +11,10 @@
                         <h4 class="mb-0">Subject Phases</h4>
                     </div>
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
-                        <li class="breadcrumb-item">Home</li>
-                        <li class="breadcrumb-item">Forms</li>
-                        <li class="breadcrumb-item active"><a href="#">Form Type Here</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url('dashboard') }}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('studies') }}">Studies</a></li>
+                        <li class="breadcrumb-item active"><a href="{{ url('studies/'.$studyId) }}">Study Subjects</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void();">Form</a></li>
                     </ol>
                 </div>
             </div>
@@ -28,24 +29,41 @@
                         <h4 class="card-title">Study and Subject details</h4>
                     </div>
                     <div class="card-body">
-                        <table>
-                            <tr>
-                                <td>Subject ID :</td>
-                                <td>{{ $subject->subject_id }}</td>
-                            </tr>
-                            <tr>
-                                <td>Study EYE :</td>
-                                <td>{{ $subject->study_eye }}</td>
-                            </tr>
-                            <tr>
-                                <td>Site Name :</td>
-                                <td>{{ $site->site_name }}</td>
-                            </tr>
-                            <tr>
-                                <td>Site Code :</td>
-                                <td>{{ $site->site_code }}</td>
-                            </tr>
-                        </table>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <tr>
+                                            <th scope="row">Subject ID</th>
+                                            <td>{{ $subject->subject_id }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Study EYE</th>
+                                            <td>{{ $subject->study_eye }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Study Site ID</th>
+                                            <td>{{ $studySite->study_site_id }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <tr>
+                                            <th scope="row">Site Name</th>
+                                            <td>{{ $site->site_name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Site Code</th>
+                                            <td>{{ $site->site_code }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
