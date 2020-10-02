@@ -6,5 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Query extends Model
 {
-    protected $fillable = [];
+    protected $table = 'queries';
+    protected $fillable = ['id','sender_id','receiver_id','messages','status'];
+    protected $keyType = 'string';
 }

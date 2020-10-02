@@ -2,6 +2,7 @@
 
 namespace Modules\Queries\Http\Controllers;
 
+use App\User;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -14,6 +15,8 @@ class QueriesController extends Controller
      */
     public function index()
     {
+        $users  =   User::all();
+        dd($users);
         return view('queries::queries.index');
 
     }
