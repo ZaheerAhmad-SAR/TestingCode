@@ -50,7 +50,7 @@ class StudySiteController extends Controller
         }
         $unassignSites = Site::select('sites.*')
             ->whereNotIn('sites.id', $siteArray)->get();
-            
+
         return view('admin::studies.studySiteNew',compact('sites','unassignSites'));
     }
 
@@ -159,6 +159,7 @@ class StudySiteController extends Controller
         StudySite::where('id',$siteId)->update($data);
         return response()->json(['success'=>'Study site is updated successfully!!!!']);
     }
+
     public function updatePrimaryInvestigator(Request $request)
     {
         $pi_id_value = $_POST['pi_id_value'];
