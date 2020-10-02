@@ -82,6 +82,8 @@
                                                @foreach($study->users as $user)
                                                     <strong>{!! ucfirst($user->name) !!},</strong>
                                                 @endforeach
+                                                @else
+                                                <strong>{!! ucfirst($study->name) !!}</strong>
                                             @endif
                                         </td>
                                         @if(hasPermission(auth()->user(),'studies.edit'))
@@ -258,9 +260,14 @@
                                 <label for="study_users" class="col-sm-3"></label>
                                 <div class="{!! ($errors->has('users')) ?'col-sm-9 has-error':'col-sm-9' !!}">
                                     <select class="searchable" id="select-users" multiple="multiple" name="users[]">
-                                        @foreach($users as $user)
+                                       @foreach($users as $user)
                                         <option value="{{$user->id}}">{{$user->name}}</option>
                                         @endforeach
+
+                                    </select>
+
+                                    <select class="searchable appendusers" id="select-users" multiple="multiple" name="users[]">
+
                                     </select>
                                 </div>
                                 @error('users')
@@ -418,6 +425,7 @@
                 $('#end_date').val(data.end_date);
                 $('#description').val(data.description);
                 $('#disease_cohort').val(data.disease_cohort);
+                $('#users').val(data.users);
                 var html = '';
                 $('.appendfields').html('');
                 $.each(data.disease_cohort,function (index, value) {
@@ -425,6 +433,14 @@
                         '<input type="hidden" class="form-control" id="disease_cohort" name="disease_cohort[]" value="'+value.id+'" style="width: 90%;display: inline;"><input type="text" class="form-control" value="'+value.name+'" style="width: 90%;display: inline;">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>';
                 });
                 $('.appendfields').append(html);
+                var user = '';
+                $('.appendusers').html('');
+                $.each(data.users,function (index, value) {
+                    console.log(index,value);
+                    user += '<option value=" '+value.id+' ">'+value.name+'</option>';
+                });
+               $('.appendusers').append(user);
+
            })
         });
 
