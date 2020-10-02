@@ -27,6 +27,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be yes, on, 1, or true. This is useful for validating "Terms of Service" acceptance.',
                 'rule_group' => 'Radio-Checkbox-Select-Dropdown',
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             1 =>
@@ -37,6 +38,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must have a valid A or AAAA record according to the dns_get_record PHP function. The hostname of the provided URL is extracted using the parse_url PHP function before being passed to dns_get_record.',
                 'rule_group' => 'Text-Textarea-Email-Number-Date-Time-Month-Day-Year-URL',
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             2 =>
@@ -47,6 +49,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be a value after a given date. The dates will be passed into the strtotime PHP function:',
                 'rule_group' => 'Date-Time-Month-Day-Year',
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             3 =>
@@ -57,6 +60,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be a value after or equal to the given date. For more information, see the after rule.',
                 'rule_group' => 'Date-Time-Month-Day-Year',
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             4 =>
@@ -67,6 +71,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be entirely alphabetic characters.',
                 'rule_group' => 'Text-Textarea-Email',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             5 =>
@@ -77,6 +82,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation may have alpha-numeric characters, as well as dashes and underscores.',
                 'rule_group' => 'Text-Textarea-Email',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             6 =>
@@ -87,6 +93,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be entirely alpha-numeric characters.',
                 'rule_group' => 'Text-Textarea-Email',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             7 =>
@@ -97,6 +104,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be a PHP array.',
                 'rule_group' => 'Radio-Checkbox-Select-Dropdown',
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             8 =>
@@ -107,6 +115,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'Stop running validation rules after the first validation failure.',
                 'rule_group' => NULL,
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             9 =>
@@ -117,6 +126,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be a value preceding the given date. The dates will be passed into the PHP strtotime function. In addition, like the after rule, the name of another field under validation may be supplied as the value of date.',
                 'rule_group' => 'Date-Time-Month-Day-Year',
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             10 =>
@@ -127,6 +137,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be a value preceding or equal to the given date. The dates will be passed into the PHP strtotime function. In addition, like the after rule, the name of another field under validation may be supplied as the value of date.',
                 'rule_group' => 'Date-Time-Month-Day-Year',
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             11 =>
@@ -137,6 +148,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must have a size between the given min and max.',
                 'rule_group' => 'Number',
                 'is_active' => '1',
+                'is_range' => '1',
                 'is_related_to_other_field' => '0',
             ),
             12 =>
@@ -147,6 +159,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be able to be cast as a boolean. Accepted input are true, false, 1, 0, "1", and "0".',
                 'rule_group' => 'Radio-Checkbox-Select-Dropdown',
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             13 =>
@@ -157,6 +170,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must have a matching field of foo_confirmation. For example, if the field under validation is password, a matching password_confirmation field must be present in the input.',
                 'rule_group' => NULL,
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '1',
             ),
             14 =>
@@ -167,6 +181,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be a valid, non-relative date according to the strtotime PHP function.',
                 'rule_group' => 'Date-Time-Month-Day-Year',
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             15 =>
@@ -177,6 +192,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be equal to the given date. The dates will be passed into the PHP strtotime function.',
                 'rule_group' => 'Date-Time-Month-Day-Year',
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             16 =>
@@ -187,6 +203,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must match the given format. You should use either date or date_format when validating a field, not both. This validation rule supports all formats supported by PHP\'s DateTime class.',
                 'rule_group' => 'Date-Time-Month-Day-Year',
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             17 =>
@@ -197,6 +214,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must have a different value than field.',
                 'rule_group' => NULL,
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '1',
             ),
             18 =>
@@ -207,6 +225,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be numeric and must have an exact length of value.',
                 'rule_group' => 'Number',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             19 =>
@@ -217,6 +236,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be numeric and must have a length between the given min and max.',
                 'rule_group' => 'Number',
                 'is_active' => '1',
+                'is_range' => '1',
                 'is_related_to_other_field' => '0',
             ),
             20 =>
@@ -227,6 +247,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The file under validation must be an image meeting the dimension constraints as specified by the rule\'s parameters',
                 'rule_group' => 'Upload-File',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             21 =>
@@ -237,6 +258,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'When working with arrays, the field under validation must not have any duplicate',
                 'rule_group' => NULL,
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             22 =>
@@ -247,6 +269,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be formatted as an e-mail address.',
                 'rule_group' => 'Text-Textarea-Email',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             23 =>
@@ -257,6 +280,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must end with one of the given values.',
                 'rule_group' => NULL,
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             24 =>
@@ -267,6 +291,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation will be excluded from the request data returned by the validate and validated methods if the anotherfield field is equal to value.',
                 'rule_group' => NULL,
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '1',
             ),
             25 =>
@@ -277,6 +302,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation will be excluded from the request data returned by the validate and validated methods unless anotherfield\'s field is equal to value.',
                 'rule_group' => NULL,
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '1',
             ),
             26 =>
@@ -289,6 +315,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must exist on a given database table.',
                 'rule_group' => NULL,
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             27 =>
@@ -299,6 +326,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be a successfully uploaded file.',
                 'rule_group' => 'Upload-File',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             28 =>
@@ -309,6 +337,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must not be empty when it is present.',
                 'rule_group' => 'Text-Textarea-Email-Number-Date-Time-Month-Day-Year-URL',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             29 =>
@@ -319,6 +348,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be greater than the given field. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the size rule.',
                 'rule_group' => 'Number',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '1',
             ),
             30 =>
@@ -329,6 +359,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be greater than or equal to the given field. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the size rule.',
                 'rule_group' => 'Number',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '1',
             ),
             31 =>
@@ -339,6 +370,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The file under validation must be an image (jpeg, png, bmp, gif, svg, or webp)',
                 'rule_group' => 'Upload-File',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             32 =>
@@ -349,6 +381,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be included in the given list of values. Since this rule often requires you to implode an array, the Rule::in method may be used to fluently construct the rule',
                 'rule_group' => NULL,
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             33 =>
@@ -359,6 +392,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must exist in anotherfield\'s values.',
                 'rule_group' => NULL,
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '1',
             ),
             34 =>
@@ -369,6 +403,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be an integer.',
                 'rule_group' => 'Number',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             35 =>
@@ -381,6 +416,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be less than the given field. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the size rule.',
                 'rule_group' => 'Number',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '1',
             ),
             36 =>
@@ -391,6 +427,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be less than or equal to the given field. The two fields must be of the same type. Strings, numerics, arrays, and files are evaluated using the same conventions as the size rule.',
                 'rule_group' => 'Number',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '1',
             ),
             37 =>
@@ -401,6 +438,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be less than or equal to a maximum value. Strings, numerics, arrays, and files are evaluated in the same fashion as the size rule.',
                 'rule_group' => 'Number',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             38 =>
@@ -411,6 +449,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The file under validation must match one of the given MIME types:',
                 'rule_group' => 'Upload-File',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             39 =>
@@ -421,6 +460,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The file under validation must have a MIME type corresponding to one of the listed extensions.',
                 'rule_group' => 'Upload-File',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             40 =>
@@ -431,6 +471,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must have a minimum value.',
                 'rule_group' => 'Number',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             41 =>
@@ -441,6 +482,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must not be included in the given list of values.',
                 'rule_group' => 'Text-Textarea-Email-Number-Date-Time-Month-Day-Year-URL',
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             42 =>
@@ -451,6 +493,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be numeric.',
                 'rule_group' => 'Text-Textarea-Email-Number-Date-Time-Month-Day-Year-URL',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             43 =>
@@ -461,6 +504,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be present in the input data and not empty.',
                 'rule_group' => 'All',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             44 =>
@@ -471,6 +515,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be present and not empty if the anotherfield field is equal to any value.',
                 'rule_group' => 'All',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '1',
             ),
             45 =>
@@ -481,6 +526,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be present and not empty unless the anotherfield field is equal to any value.',
                 'rule_group' => 'All',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '1',
             ),
             46 =>
@@ -491,6 +537,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be present and not empty only if all of the other specified fields are present.',
                 'rule_group' => 'All',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '1',
             ),
             47 =>
@@ -501,6 +548,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be present and not empty only when any of the other specified fields are not present.',
                 'rule_group' => 'All',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '1',
             ),
             48 =>
@@ -511,6 +559,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be present and not empty only when all of the other specified fields are not present.',
                 'rule_group' => 'All',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '1',
             ),
             49 =>
@@ -521,6 +570,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The given field must match the field under validation.',
                 'rule_group' => 'Text-Textarea-Email-Number-Date-Time-Month-Day-Year-URL',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '1',
             ),
             50 =>
@@ -531,6 +581,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must have a size matching the given value. For string data, value corresponds to the number of characters. For numeric data, value corresponds to a given integer value (the attribute must also have the numeric or integer rule). For an array, size corresponds to the count of the array. For files, size corresponds to the file size in kilobytes.',
                 'rule_group' => 'All',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             51 =>
@@ -541,6 +592,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must start with one of the given values.',
                 'rule_group' => NULL,
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             52 =>
@@ -551,6 +603,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be a string. If you would like to allow the field to also be null, you should assign the nullable rule to the field.',
                 'rule_group' => 'Text-Textarea-Email-Number-Date-Time-Month-Day-Year-URL',
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             53 =>
@@ -561,6 +614,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must not exist within the given database table.',
                 'rule_group' => 'Text-Textarea-Email',
                 'is_active' => '0',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
             54 =>
@@ -571,6 +625,7 @@ class ValidationRulesTableSeeder extends Seeder
                 'description' => 'The field under validation must be a valid URL.',
                 'rule_group' => 'Text-Textarea-Email-Number-Date-Time-Month-Day-Year-URL',
                 'is_active' => '1',
+                'is_range' => '0',
                 'is_related_to_other_field' => '0',
             ),
         ));
