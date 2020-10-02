@@ -263,9 +263,7 @@
                                        @foreach($users as $user)
                                         <option value="{{$user->id}}">{{$user->name}}</option>
                                         @endforeach
-
                                     </select>
-
                                     <select class="searchable appendusers" id="select-users" multiple="multiple" name="users[]">
 
                                     </select>
