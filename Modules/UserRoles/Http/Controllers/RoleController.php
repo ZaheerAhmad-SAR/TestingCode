@@ -516,7 +516,7 @@ class RoleController extends Controller
         $oldRole = [];
 
         // log event details
-        $logEventDetails = eventDetails($role->id, 'System Role', 'Add', $request->ip(), $oldRole);
+        $logEventDetails = eventDetails($role->id, 'Role', 'Add', $request->ip(), $oldRole);
 
         return redirect()->route('roles.index');
     }
@@ -1026,7 +1026,7 @@ class RoleController extends Controller
         }
 
          // log event details
-        $logEventDetails = eventDetails($role->id, 'System Role', 'Update', $request->ip(), $oldRole);
+        $logEventDetails = eventDetails($role->id, 'Role', 'Update', $request->ip(), $oldRole);
 
         return redirect()->route('roles.index');
     }

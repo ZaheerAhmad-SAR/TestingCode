@@ -297,7 +297,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
         }
        
     ///////////////////////// Annotaion Sections ends ///////////////////////////////////////////
-    } else if ($eventSection == 'System Role') {
+    } else if ($eventSection == 'Role') {
         // get event data
         $eventData = Role::find($eventId);
         // set message for audit
@@ -330,7 +330,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
         }
        
     ////////////////////////// Role Ends ///////////////////////////////////////////////////
-    } else if ($eventSection == 'System User') {
+    } else if ($eventSection == 'User') {
         // get event data
         $eventData = User::find($eventId);
         // set message for audit

@@ -58,8 +58,8 @@ class TrailLogController extends Controller
                 "Photographer" => "Photographer",
                 "Others" => "Others",
                 "Annotation" => "Annotation",
-                "System Role" => "System Role",
-                "System User" => "System User"
+                "Role" => "Role",
+                "User" => "User"
 
             );
 

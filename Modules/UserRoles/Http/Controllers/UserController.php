@@ -89,7 +89,7 @@ class UserController extends Controller
 
         $oldUser = [];
         // log event details
-        $logEventDetails = eventDetails($id, 'System User', 'Add', $request->ip(), $oldUser);
+        $logEventDetails = eventDetails($id, 'User', 'Add', $request->ip(), $oldUser);
 
         return redirect()->route('users.index');
     }
@@ -168,7 +168,7 @@ class UserController extends Controller
         }
 
          // log event details
-        $logEventDetails = eventDetails($user->id, 'System User', 'Update', $request->ip(), $oldUser);
+        $logEventDetails = eventDetails($user->id, 'User', 'Update', $request->ip(), $oldUser);
 
         return redirect()->route('users.index');
 
