@@ -80,7 +80,7 @@
                                             <td>{{ucfirst($site->site_name)}}</td>
                                             <td>
                                             <Select class="form-control" value="{{old('primaryInvestigator')}}" id="primaryInvestigator_{{$site->id}}" name="primaryInvestigator_{{$site->id}}" onchange="updatePI('{{$site->id}}');">
-                                                    <option>--Select PI--</option>
+                                                    <option value="">--Select PI--</option>
                                                     @foreach($site->pi as $key => $pi)
                                                     @php $pi_records = explode('/',$pi); @endphp
                                                         <option value="{{$pi_records[0]}}" {{$pi_records[0]==$site->primaryInvestigator_id ? 'selected="selected"': ''}}>{{$pi_records[1]}}</option>
@@ -790,7 +790,7 @@
                     var site_id = $('#global_site_id').val();
 
                     $.ajax({
-                        url: "{{route('updateStudySiteId')}}",
+                        url: "{{route('studySite.updateStudySite')}}",
                         type: 'POST',
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -906,7 +906,7 @@
                     }
 
                     $.ajax({
-                        url: "{{route('deleteCO')}}",
+                        url: "{{route('studySite.deleteSiteCoordinator')}}",
                         type: 'POST',
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -928,7 +928,7 @@
                         var table_site_study_id = $("#table_site_study_id_"+site_id).val();
 
                  $.ajax({
-                        url: "{{route('insertCO')}}",
+                        url: "{{route('studySite.insertCoordinators')}}",
                         type: 'POST',
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -949,7 +949,7 @@
                     var table_site_study_id = $("#table_site_study_id_"+site_id).val();
 
                         $.ajax({
-                            url: "{{route('updatePI')}}",
+                            url: "{{route('studySite.updatePrimaryInvestigator')}}",
                             type: 'POST',
                             data: {
                                 "_token": "{{ csrf_token() }}",
