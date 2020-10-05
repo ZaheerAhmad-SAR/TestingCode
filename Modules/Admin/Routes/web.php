@@ -33,7 +33,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::get('device/{id}', 'DeviceController@getModal');
 
 
-    Route::post('modalities/update', 'ModilityController@update')->name('updateModalities');
+    Route::post('modalities/update', 'ModilityController@update')->name('modalities.update');
 
     Route::resource('subjects', 'SubjectController');
 
@@ -97,7 +97,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     Route::resource('childmodilities', 'ChildModilitiesController');
 
-    Route::post('childmodilities/update', 'ChildModilitiesController@update')->name('updateChildmodilities');
+    Route::post('childmodilities/update', 'ChildModilitiesController@update')->name('childmodilities.update');
 
     Route::get('modalities/{id}/childshow', 'ModilityController@child')->name('modalities.childshow');
 
