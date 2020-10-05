@@ -169,7 +169,7 @@
                     <h4 class="modal-title" id="deviceCrudModal">Edit Subject</h4>
                 </div>
                 <div  class="modal-body">
-                    <form action="{{route('subjects.update')}}" enctype="multipart/form-data" method="POST">
+                    <form action="{{route('subjects.store')}}" enctype="multipart/form-data" method="POST">
                         @csrf
                         <input type="hidden" value="{{$study->id}}" name="study_id">
                         <input type="hidden" name="id" id="id">
@@ -257,6 +257,7 @@
                 site_id = row.find('td.site_id').text()
                 disease = row.find('td.disease').text()
                 study_eye = row.find('td.study_eye').text();
+            alert(enrol_date);
             $('#id').val(id);
             $('#subject_id').val(subject_id);
             $('#enrollment_date').val(enrol_date);
