@@ -107,8 +107,9 @@ class StudySiteController extends Controller
     {
 
             $others = '';
-            $sites = $request->sites != '' ? $request->sites : [];
+            $sites = $request->sites != null ? $request->sites : [];
             $current_study =  \Session::get('current_study');
+
             // gte old study sites
             $oldStudySite = StudySite::select('sites.site_name')
             ->leftjoin('sites','sites.id', '=', 'site_study.site_id')
@@ -117,7 +118,8 @@ class StudySiteController extends Controller
             ->toArray();
 
             $study = Study::find($current_study);
-            $study->studySites()->sync($sites);
+
+            $syncSites = $study != null ? $study->studySites()->sync($sites) : [];
 
             // log event details
             $logEventDetails = eventDetails($current_study, 'Study Site', 'Update', $request->ip(), $oldStudySite);
