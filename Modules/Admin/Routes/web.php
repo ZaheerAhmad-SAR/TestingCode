@@ -50,9 +50,9 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     Route::resource('optionsGroup', 'OptionsGroupController');
 
-    Route::post('optionsGroup/update', 'OptionsGroupController@update')->name('updateOptionsGroup');
+    Route::post('optionsGroup/update', 'OptionsGroupController@update')->name('optionsGroup.update');
 
-    Route::DELETE('optionsGroup/destroy/{options_id}', 'OptionsGroupController@destroy')->name('destroyOptionsGroup');
+    Route::DELETE('optionsGroup/destroy/{options_id}', 'OptionsGroupController@destroy')->name('optionsGroup.destroy');
     Route::post('getall_options', 'FormController@getall_options')->name('getall_options');
 
     // routes for annotation
