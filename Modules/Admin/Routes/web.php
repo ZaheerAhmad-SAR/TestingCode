@@ -23,8 +23,8 @@ Route::group(['middleware' => ['auth', 'web']], function () {
 Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], function () {
 
     Route::resource('sites', 'SiteController');
-    Route::post('sites/update', 'SiteController@update')->name('updateSites');
-    Route::DELETE('sites/destroy/{sites_id}', 'SiteController@destroy')->name('destroysites');
+    Route::post('sites/update', 'SiteController@update')->name('sites.updateSites');
+    Route::DELETE('sites/destroy/{sites_id}', 'SiteController@destroy')->name('sites.destroy');
 
     Route::resource('studies', 'StudyController');
     Route::resource('devices', 'DeviceController');
@@ -43,7 +43,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     Route::get('others/{id}/showOtherBySiteId', 'OtherController@showOtherBySiteId')->name('others.showOtherBySiteId');
 
-    Route::post('others/update', 'OtherController@update')->name('updateOthers');
+    Route::post('others/update', 'OtherController@update')->name('others.update');
 
     //routes for options groups
 
@@ -105,7 +105,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     Route::get('photographers/{id}/showPhotographerBySiteId', 'PhotographerController@showPhotographerBySiteId')->name('photographers.showPhotographerBySiteId');
 
-    Route::post('photographers/update', 'PhotographerController@update')->name('updatePhotographers');
+    Route::post('photographers/update', 'PhotographerController@update')->name('photographers.update');
 
 
     Route::resource('coordinator', 'CoordinatorController');
@@ -113,13 +113,13 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     Route::get('coordinator/{id}/showCoordinatorBySiteId', 'CoordinatorController@showCoordinatorBySiteId')->name('coordinator.showCoordinatorBySiteId');
 
-    Route::post('coordinator/update', 'CoordinatorController@update')->name('updateCoordinator');
+    Route::post('coordinator/update', 'CoordinatorController@update')->name('coordinator.update');
 
 
 
     Route::resource('primaryinvestigator', 'PrimaryInvestigatorController');
 
-    Route::post('primaryinvestigator/update', 'PrimaryInvestigatorController@update')->name('updatePrimaryinvestigator');
+    Route::post('primaryinvestigator/update', 'PrimaryInvestigatorController@update')->name('primaryinvestigator.update');
 
 
     Route::get('primaryinvestigator/{id}/showSiteId', 'PrimaryInvestigatorController@showSiteId')->name('primaryinvestigator.showSiteId');

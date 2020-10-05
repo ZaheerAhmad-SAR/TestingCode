@@ -1049,7 +1049,7 @@
                         }
                         else
                         {
-                            var action_url = "{{ route('updatePrimaryinvestigator') }}";
+                            var action_url = "{{ route('primaryinvestigator.update') }}";
                         }
                         $.ajaxSetup({
                             headers: {
@@ -1110,7 +1110,7 @@
                 // End of primary Investigator
 
                 // Primary Investigator Delete function
-                function primaryinvestigatorDestroy(){
+
                     $('body').on('click', '.deleteprimaryinvestigator', function () {
                         $.ajaxSetup({
                             headers: {
@@ -1134,8 +1134,6 @@
                             });
                         }
                     });
-                }
-                primaryinvestigatorDestroy();
 
                 function resetprimaryinvestigatorForm() {
                     $("#rest_pi_button").click(function(){
@@ -1255,7 +1253,7 @@
                         }
                         else
                         {
-                            var action_url = "{{ route('updatePhotographers') }}";
+                            var action_url = "{{ route('photographers.update') }}";
                         }
                         $.ajaxSetup({
                             headers: {
@@ -1363,7 +1361,7 @@
                         }
                         else
                         {
-                            var action_url = "{{ route('updateCoordinator') }}";
+                            var action_url = "{{ route('coordinator.update') }}";
                         }
 
                         $.ajaxSetup({
@@ -1470,7 +1468,7 @@
                         }
                         else
                         {
-                            var action_url = "{{ route('updateOthers') }}";
+                            var action_url = "{{ route('others.update') }}";
                         }
                         $.ajaxSetup({
                             headers: {
@@ -1546,7 +1544,7 @@
                     }
                     else
                     {
-                        var action_url = "{{ route('updateSites') }}";
+                        var action_url = "{{ route('sites.updateSites') }}";
                     }
                     $.ajax({
                         data: $('#siteInfoForm').serialize(),
