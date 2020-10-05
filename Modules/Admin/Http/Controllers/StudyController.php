@@ -121,7 +121,7 @@ class StudyController extends Controller
                 ]
             );
 
-            if ($request->users != Null) {
+            if (!empty($request->users) && $request->users != Null) {
                 foreach ($request->users as $user) {
                     $studyuser = StudyUser::find($user);
                     if (empty($studyuser)) {
@@ -133,7 +133,7 @@ class StudyController extends Controller
                     }
                 }
             }
-            if (!empty($request->disease_cohort)) {
+            if (!empty($request->disease_cohort) && $request->disease_cohort != '') {
                 foreach ($request->disease_cohort as $disease_cohort) {
                     $checkDiseaseCohort = DiseaseCohort::find($disease_cohort);
                     if (empty($checkDiseaseCohort)) {
@@ -145,11 +145,10 @@ class StudyController extends Controller
                     }
                 }
             }
-            
+            else{
+                return \response()->json($study);
+            }
             return \response()->json($study);
-        }
-        else{
-            dd('not ajax');
         }
 
     }
