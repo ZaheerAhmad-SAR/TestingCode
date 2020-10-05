@@ -66,9 +66,11 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::post('forms/updateQuestion', 'FormController@update_questions')->name('updateQuestion');
     Route::get('forms/get_phases/{id}', 'FormController@get_phases')->name('get_phases');
     Route::get('forms/step_by_phaseId/{id}', 'FormController@get_steps_by_phaseId')->name('stepbyphaseId');
+    Route::get('forms/sections_against_step/{id}', 'FormController@get_sections_against_step')->name('sections_against_step');
     Route::get('forms/sections_by_stepId/{id}', 'FormController@get_section_by_stepId')->name('sectionsbystepId');
     Route::post('studyStatus', 'StudyController@studyStatus')->name('study.studyStatus');
     Route::post('changeStatus/{id}', 'StudyController@changeStatus')->name('studies.changeStatus');
+    Route::get('forms/get_Questions/{id}', 'FormController@get_Questions')->name('get_Questions');
     Route::get('forms/get_allQuestions/{id}', 'FormController@get_allQuestions')->name('get_allQuestions');
     Route::get('forms/show/{phase_id}/{step_id}', 'FormController@show')->name('forms.show');
     Route::get('forms/changeSort/{id}', 'FormController@updateQustionsort')->name('changeSort');

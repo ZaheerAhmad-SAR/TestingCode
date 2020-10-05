@@ -253,7 +253,7 @@
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Sort # / Position</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="sort_num" id="sort_num" placeholder="Sort Number">
+                                    <input type="number" class="form-control" name="sort_num" id="sort_num" placeholder="Sort Number">
 
                                 </div>
                             </div>

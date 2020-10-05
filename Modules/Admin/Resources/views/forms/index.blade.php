@@ -19,6 +19,13 @@
                 <div class="alert alert-primary success-msg" role="alert">
                 </div>
             </div>
+            @if(session()->has('message'))
+                <div class="col-lg-12 success-alert">
+                    <div class="alert alert-primary success-msg" role="alert">
+                        {{ session()->get('message') }}
+                    </div>
+                </div>
+            @endif
         </div>
         <!-- END: Breadcrumbs-->
 
@@ -116,13 +123,14 @@
                                 <div class="form-group row" style="margin-top: 10px;">
                                     <label for="Sorting" class="col-sm-2 col-form-label">Sort Number / Position</label>
                                     <div class="col-sm-4">
-                                        <input type="hidden" name="question_id" id="questionId_hide" value="">
+                                        <input type="hidden" name="id" id="questionId_hide" value="">
+                                        <input type="hidden" name="field_id" id="form_field_id" value="">
                                         <input type="Number" name="question_sort" id="question_sort" class="form-control"
                                             placeholder="Sort Number / Placement Place">
                                     </div>
                                     <label for="Sections" class="col-sm-2 col-form-label">Sections</label>
                                     <div class="col-sm-4">
-                                        <select name="section_id" id="section_id" class="form-control">
+                                        <select name="section_id" id="section_id" class="form-control basic_section">
                                             <option value="">Choose Phase/Visit && Step/Form-Type</option>
                                         </select>
                                     </div>
@@ -233,14 +241,40 @@
                             <span class="text-muted font-w-600">Define If Dependencies on any Question</span><br>
                         </div>
                         <div class="form-group row" style="margin-top: 10px;">
-                            <div class="col-sm-3">Field is dependent: <sup>*</sup></div>    
-                            <div class="col-sm-9">
-                                <input type="radio" name="q_d_status" class="field_dependent" value="no" checked> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <input type="radio" name="q_d_status" class="field_dependent" value="yes" > Yes
+                            <div class="col-sm-2">Field is dependent: <sup>*</sup></div>    
+                            <div class="col-sm-10">
+                                <input type="hidden" name="dependency_id" id="dependency_id">
+                                <input type="radio" name="q_d_status" class="field_dependent" id="field_dependent_no" value="no" checked> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="q_d_status" class="field_dependent" id="field_dependent_yes" value="yes" > Yes
                             </div>
                         </div>    
-                        <div class="append_if_yes">
-                            
+                        <div class="append_if_yes" style="display: none;">
+                            <div class="form-group row">
+                                <div class="col-sm-2"> Questions:</div>
+                                <div class="col-sm-4">
+                                    <select name="dep_on_question_id" class="form-control select_ques_for_dep" id="select_ques_for_dep">
+                                        <option value="">---Select Question---</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-2"> field operator:</div>
+                                <div class="col-sm-4">
+                                    <select name="opertaor" id="dependency_operator" class="form-control" name="dep_operator">
+                                        <option value="">---Select---</option>
+                                        <option value="=">Equal</option>
+                                        <option value=">=">Greater OR Equal</option>
+                                        <option value="<=">Less OR Equal</option>
+                                        <option value="!=">Not Equal</option>
+                                        <option value=">">Greater Then</option>
+                                        <option value="<">Less</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-2">Value:</div>
+                                <div class="col-sm-4">
+                                    <input type="text" name="custom_value" id="dependency_custom_value" class="form-control">
+                                </div>
+                            </div>
                         </div>
                         </div>
                   
@@ -273,12 +307,12 @@
                                 <span class="text-muted font-w-600">Set Up Adjudication Status On Current Question</span><br>
                             </div>
                             <div class="form-group row" style="margin-top: 10px">
+                                <input type="hidden" name="adj_id" id="adj_id">
                                 <div class="col-sm-2">Adjudication</div>    
                                 <div class="col-sm-4">
                                     <select class="form-control" name="adj_status" id="adj_status">
-                                        <option value="">---Adjudication Status---</option>
-                                        <option value="yes"> Required </option>
                                         <option value="no">Not Required </option>
+                                        <option value="yes"> Required </option>
                                     </select>
                                 </div> 
                                 <div class="col-sm-2 display-none show_if_required">Based ON</div>    
@@ -295,7 +329,7 @@
                                 <div class="form-group row">
                                     <div class="col-sm-2"> Operator:</div>
                                     <div class="col-sm-4">
-                                        <select class="form-control" name="opertaor">
+                                        <select class="form-control" name="opertaor" id="adj_operator">
                                             <option value="">---Select---</option>
                                             <option value="-">Difference</option>
                                             <option value="=">Equal</option>
@@ -308,7 +342,7 @@
                                     </div>
                                     <div class="col-sm-2">Value:</div>
                                     <div class="col-sm-4">
-                                        <input type="text" name="custom_value" class="form-control" placeholder="Define custom or percentage value for adjudication">
+                                        <input type="text" name="custom_value" id="adj_custom_value" class="form-control" placeholder="Define custom or percentage value for adjudication">
                                     </div>
                                 </div>
                             </div>    
@@ -432,584 +466,370 @@
 <script src="{{ asset('public/js/edit_crf.js') }}"></script>  
 
 <script>
-   $('.addOptions').on('click',function(){
-       $('.appendDataOptions').append('<div class="values_row_options"><div class="form-group row"><div class="form-group col-md-6"><input type="text" id="option_name" name="option_name[]" class="form-control" placeholder="Enter option name" style="background:white;"></div><div class="form-group col-md-4"><input type="number" placeholder="Option value" name="option_value[]" id="option_value" class="form-control" style="background:white;"></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove_option" style="margin-top: 3px;"></i></div></div></div>');
-       return false;
-   });
-   $('.addvalidations').on('click',function(){
-       $('.appendDatavalidations').append('<div class="values_row"><div class="form-group row" style="margin-top: 10px;"><div class="col-sm-2"> Take Decision:</div><div class="col-sm-4"><select name="decision_one[]" id="decision_one" class="form-control decision"><option value="">---Based ON---</option><option value="question_value">Question Value</option><option value="custom_value">Custom Value</option></select></div><div class="col-sm-1"> Operator:</div><div class="col-sm-4"><select name="opertaor_one[]" id="opertaor_one" class="form-control"><option value="">---Select---</option><option value="=">Equal</option><option value=">=">Greater OR Equal</option><option value="<=">Less OR Equal</option><option value="!=">Not Equal</option><option value=">">Greater Then</option><option value="<">Less Then</option></select></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove" style="margin-top: 3px;"></i></div></div><div class="form-group row"><div class="col-sm-2 questionValue" style="display: none;">Section:</div><div class="col-sm-4 questionValue" style="display: none;"><span style="float:right;"><input type="button" class="btn btn-primary fetch_sections" value="Fetch"></span><span><select class="form-control decisionSections all_sections" style="width:82%"><option value="">---Section---</option></select></span></div><div class="col-sm-1 questionValue" style="display: none;">With:</div><div class="col-sm-5 questionValue" style="display: none;"><select name="dep_on_question_one_id[]" class="form-control decision_question all_questions"><option value="">---Select Question---</option></select></div><div class="col-sm-2 customValue" style="display: none;">Decision Value:</div><div class="col-sm-4 customValue" style="display: none;"><input type="text" name="custom_value_one[]" class="form-control custom_value" placeholder="Define Value"></div></div><div class="form-group row"><div class="col-sm-2"> Condition:</div><div class="col-sm-10"><select name="operator[]" class="form-control operators"><option value="">Select if third conditon as well</option><option value="and">AND</option><option value="or">OR</option></select></div></div><div class="third_condition" style="display: none;"><div class="form-group row"><div class="col-sm-2"> Take Decision:</div><div class="col-sm-4"><select name="decision_two[]" class="form-control decision2"><option value="">---Based ON---</option><option value="question_value">Question Value</option><option value="custom_value">Custom Value</option></select></div><div class="col-sm-1"> Operator:</div><div class="col-sm-5"><select name="opertaor_two[]" class="form-control"><option value="">---Select---</option><option value="=">Equal</option><option value=">=">Greater OR Equal</option><option value="<=">Less OR Equal</option><option value="!=">Not Equal</option><option value=">">Greater Then</option><option value="<">Less Then</option></select></div> </div><div class="form-group row"><div class="col-sm-2 questionValue2" style="display: none;">Section:</div><div class="col-sm-4 questionValue2" style="display: none;"><span style="float: right;"><input type="button" class="btn btn-primary fetch_sections2" value="Fetch"></span><span><select class="form-control decisionSections2 all_sections2" style="width:82%;"><option value="">---Section---</option></select></span></div><div class="col-sm-1 questionValue2" style="display: none;">With:</div><div class="col-sm-5 questionValue2" style="display: none;"><select name="dep_on_question_two_id[]" class="form-control decision_question2 all_questions2"><option value="">---Select Question---</option></select></div><div class="col-sm-2 customValue2" style="display: none;">Decision Value:</div><div class="col-sm-4 customValue2" style="display: none;"><input type="text" name="custom_value_two[]" class="form-control custom_value" placeholder="Define Value"></div></div></div><div class="form-group row"><div class="col-sm-2"> Show a:</div><div class="col-sm-4"><select name="error_type[]" class="form-control"><option value="">Exclusion</option><option value="">Error</option><option value="">Warning</option></select></div><div class="col-sm-1">Message:</div><div class="col-sm-5"><textarea name="error_message[]" class="form-control" rows="1"></textarea></div></div></div>');
-           
-       return false;
-   });
- 
-   $('body').on('click','.remove',function(){
-        var row = $(this).closest('div.values_row');
-        row.remove();
-   })
-   $('body').on('click','.remove_option',function(){
-        var row = $(this).closest('div.values_row_options');
-        row.remove();
-   })
-   //
-   $('.addannotation').on('click',function(){
-       $('.appendannotation').append('<div class="anno_values_row"><div class="form-group row" style="margin-top: 10px;"><div class="col-sm-2">Terminology:</div><div class="col-sm-4"><span style="float: right;"><input type="button" value="Fetch" class="btn btn-primary fetch_annotation"></span><span><select name="terminology_id[]" class="form-control terminology_value" style="width: 82%;"><option value="">---Click on fetch to select Annotations---</option></select></span></div><div class="col-sm-1"> Value:</div><div class="col-sm-4"><input type="text" name="value[]" id="annotation_field_value" class="form-control"></div><div class="col-sm-1"><i class="btn btn-outline-danger fa fa-trash remove_anno" style="cursor:pointer;"></i></div></div><div class="form-group row"><div class="col-sm-2">Description:</div><div class="col-md-10"><textarea name="description[]" class="form-control" rows="2"></textarea></div></div></div>');
-       return false;
-   });
-   $('body').on('click','.remove_anno',function(){
-        var row = $(this).closest('div.anno_values_row');
-        row.remove();
-   })
-   $('body').on('click','.fetch_annotation',function(){
-        var study_id = '{{ session("current_study") }}';
-        var row = $(this).closest('div.anno_values_row');
-        var anno_class = row.find('select.terminology_value');
-        get_all_annotations(study_id,anno_class);
-   })
-   $('.field_dependent').on('change',function(){
-        var value = $(this).val();
-        if(value =='yes'){
-            $('.append_if_yes').append('<div class="values_row"><div class="form-group row" style="margin-top: 10px;"><div class="col-sm-2">Click on Fetch get to phases </div><div class="col-sm-4">   <span style="float: right;"><input type="button" value="Fetch" class="btn btn-primary fetch_phases"></span><span><select class="form-control all_phases" style="width: 82%;"><option value="">--- Select Phase---</option></select></span></div><div class="col-sm-2">Steps / Visits</div><div class="col-sm-3"><select class="form-control all_forms"><option value="">---Select Step / Form---</option></select></div><div class="col-sm-1"><i class="btn btn-outline-danger fa fa-trash remove" style="cursor:pointer;float:right;margin-top:3px;"></i></div></div><div class="form-group row"><div class="col-sm-2"> Sections:</div><div class="col-sm-4"><select class="form-control all_sections"><option value="">---Forms / Sections---</option></select></div><div class="col-sm-2"> Questions:</div><div class="col-sm-4"><select name="dep_on_question_id" class="form-control all_questions"><option value="">---Select Question---</option></select></div></div><div class="form-group row"><div class="col-sm-2"> field operator:</div><div class="col-sm-4"><select name="opertaor" class="form-control" name="dep_operator"><option value="">---Select---</option><option value="=">Equal</option><option value=">=">Greater OR Equal</option><option value="<=">Less OR Equal</option><option value="!=">Not Equal</option><option value=">">Greater Then</option><option value="<">Less</option></select></div><div class="col-sm-2">Value:</div><div class="col-sm-4"><input type="text" name="custom_value" class="form-control"></div></div></div>');
-        }else{
-            $('.append_if_yes').html('');
-        }
-   });
-   
-   $('body').on('click','.form-fields',function(){
-        $('#formfields').trigger('reset');
-        $('#formfields').attr('action', "{{route('addQuestions')}}");
-        var id = $(this).attr("data-field-id");
-        $('#question_type').val(id);
-   })
-   $('body').on('click','.fetch_phases',function(){
-        var phase_id = '1';
-        var row = $(this).closest('div.values_row');
-        var phase_class = row.find('select.all_phases');
-        get_all_phases(phase_id,phase_class);
-   })
-   $('body').on('change','.all_phases',function(){
-        var phase_id = $(this).val();
-        var row = $(this).closest('div.values_row');
-        var step_class = row.find('select.all_forms');
-        get_steps_phase_id(phase_id,step_class);
-   });
-   $('body').on('change','.all_forms',function(){
-        var step_id = $(this).val();
-        var row = $(this).closest('div.values_row');
-        var section_class = row.find('select.all_sections');
-        get_section_step_id(step_id,section_class);
-   });
-   $('body').on('change','.all_sections',function(){
-        var sec_id = $(this).val();
-        var row = $(this).closest('div.values_row');
-        var ques_class = row.find('select.all_questions');
-        get_question_section_id(sec_id,ques_class);
-   });
-    $('body').on('click','.fetch_sections',function(){
-        var step_id = $('#steps').val();
-        var row = $(this).closest('div.values_row');
-        var section_class = row.find('select.all_sections');
-        get_section_step_id(step_id,section_class);
+$(document).ready(function(){
+    var tId;
+    tId=setTimeout(function(){
+       $(".success-alert").slideUp('slow');
+    }, 4000);
+})
+$('.addOptions').on('click',function(){
+   $('.appendDataOptions').append('<div class="values_row_options"><div class="form-group row"><div class="form-group col-md-6"><input type="text" id="option_name" name="option_name[]" class="form-control" placeholder="Enter option name" style="background:white;"></div><div class="form-group col-md-4"><input type="number" placeholder="Option value" name="option_value[]" id="option_value" class="form-control" style="background:white;"></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove_option" style="margin-top: 3px;"></i></div></div></div>');
+   return false;
+});
+$('.addvalidations').on('click',function(){
+   $('.appendDatavalidations').append('<div class="values_row"><div class="form-group row" style="margin-top: 10px;"><div class="col-sm-2"> Take Decision:</div><div class="col-sm-4"><select name="decision_one[]" id="decision_one" class="form-control decision"><option value="">---Based ON---</option><option value="question_value">Question Value</option><option value="custom_value">Custom Value</option></select></div><div class="col-sm-1"> Operator:</div><div class="col-sm-4"><select name="opertaor_one[]" id="opertaor_one" class="form-control"><option value="">---Select---</option><option value="=">Equal</option><option value=">=">Greater OR Equal</option><option value="<=">Less OR Equal</option><option value="!=">Not Equal</option><option value=">">Greater Then</option><option value="<">Less Then</option></select></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove" style="margin-top: 3px;"></i></div></div><div class="form-group row"><div class="col-sm-2 questionValue" style="display: none;">Section:</div><div class="col-sm-4 questionValue" style="display: none;"><span style="float:right;"><input type="button" class="btn btn-primary fetch_sections" value="Fetch"></span><span><select class="form-control decisionSections all_sections" style="width:82%"><option value="">---Section---</option></select></span></div><div class="col-sm-1 questionValue" style="display: none;">With:</div><div class="col-sm-5 questionValue" style="display: none;"><select name="dep_on_question_one_id[]" class="form-control decision_question all_questions"><option value="">---Select Question---</option></select></div><div class="col-sm-2 customValue" style="display: none;">Decision Value:</div><div class="col-sm-4 customValue" style="display: none;"><input type="text" name="custom_value_one[]" class="form-control custom_value" placeholder="Define Value"></div></div><div class="form-group row"><div class="col-sm-2"> Condition:</div><div class="col-sm-10"><select name="operator[]" class="form-control operators"><option value="">Select if third conditon as well</option><option value="and">AND</option><option value="or">OR</option></select></div></div><div class="third_condition" style="display: none;"><div class="form-group row"><div class="col-sm-2"> Take Decision:</div><div class="col-sm-4"><select name="decision_two[]" class="form-control decision2"><option value="">---Based ON---</option><option value="question_value_sec">Question Value</option><option value="custom_value_sec">Custom Value</option></select></div><div class="col-sm-1"> Operator:</div><div class="col-sm-5"><select name="opertaor_two[]" class="form-control"><option value="">---Select---</option><option value="=">Equal</option><option value=">=">Greater OR Equal</option><option value="<=">Less OR Equal</option><option value="!=">Not Equal</option><option value=">">Greater Then</option><option value="<">Less Then</option></select></div> </div><div class="form-group row"><div class="col-sm-2 questionValue2" style="display: none;">Section:</div><div class="col-sm-4 questionValue2" style="display: none;"><span style="float: right;"><input type="button" class="btn btn-primary fetch_sections2" value="Fetch"></span><span><select class="form-control decisionSections2 all_sections2" style="width:82%;"><option value="">---Section---</option></select></span></div><div class="col-sm-1 questionValue2" style="display: none;">With:</div><div class="col-sm-5 questionValue2" style="display: none;"><select name="dep_on_question_two_id[]" class="form-control decision_question2 all_questions2"><option value="">---Select Question---</option></select></div><div class="col-sm-2 customValue2" style="display: none;">Decision Value:</div><div class="col-sm-4 customValue2" style="display: none;"><input type="text" name="custom_value_two[]" class="form-control custom_value" placeholder="Define Value"></div></div></div><div class="form-group row"><div class="col-sm-2"> Show a:</div><div class="col-sm-4"><select name="error_type[]" class="form-control"><option value="">Exclusion</option><option value="">Error</option><option value="">Warning</option></select></div><div class="col-sm-1">Message:</div><div class="col-sm-5"><textarea name="error_message[]" class="form-control" rows="1"></textarea></div></div></div>');
+       
+   return false;
+});
+
+$('body').on('click','.remove',function(){
+    var row = $(this).closest('div.values_row');
+    row.remove();
+})
+$('body').on('click','.remove_option',function(){
+    var row = $(this).closest('div.values_row_options');
+    row.remove();
+})
+//
+$('.addannotation').on('click',function(){
+   $('.appendannotation').append('<div class="anno_values_row"><div class="form-group row" style="margin-top: 10px;"><div class="col-sm-2">Terminology:</div><div class="col-sm-4"><span style="float: right;"><input type="button" value="Fetch" class="btn btn-primary fetch_annotation"></span><span><select name="terminology_id[]" class="form-control terminology_value" style="width: 82%;"><option value="">---Click on fetch to select Annotations---</option></select></span></div><div class="col-sm-1"> Value:</div><div class="col-sm-4"><input type="text" name="value[]" id="annotation_field_value" class="form-control"></div><div class="col-sm-1"><i class="btn btn-outline-danger fa fa-trash remove_anno" style="cursor:pointer;"></i></div></div><div class="form-group row"><div class="col-sm-2">Description:</div><div class="col-md-10"><textarea name="description[]" class="form-control" rows="2"></textarea></div></div></div>');
+   return false;
+});
+$('body').on('click','.remove_anno',function(){
+    var row = $(this).closest('div.anno_values_row');
+    row.remove();
+})
+$('body').on('click','.fetch_annotation',function(){
+    var study_id = '{{ session("current_study") }}';
+    var row = $(this).closest('div.anno_values_row');
+    var anno_class = row.find('select.terminology_value');
+    get_all_annotations(study_id,anno_class);
+})
+$('.field_dependent').on('change',function(){
+    var value = $(this).val();
+    if(value =='yes'){
+        $('.append_if_yes').css('display','block');
+    }else{
+        $('.append_if_yes').css('display','none');
+    }
+});
+
+$('body').on('click','.form-fields',function(){
+    $('#formfields').trigger('reset');
+    $('.modal-title').html('Add New Question');
+    $('#formfields').attr('action', "{{route('addQuestions')}}");
+    var id = $(this).attr("data-field-id");
+    $('#question_type').val(id);
+})
+$('body').on('click','.fetch_phases',function(){
+    var phase_id = '1';
+    var row = $(this).closest('div.values_row');
+    var phase_class = row.find('select.all_phases');
+    get_all_phases(phase_id,phase_class);
+})
+$('body').on('change','.all_phases',function(){
+    var phase_id = $(this).val();
+    var row = $(this).closest('div.values_row');
+    var step_class = row.find('select.all_forms');
+    get_steps_phase_id(phase_id,step_class);
+});
+$('body').on('change','.all_forms',function(){
+    var step_id = $(this).val();
+    var row = $(this).closest('div.values_row');
+    var section_class = row.find('select.all_sections');
+    section_against_step(step_id,section_class);
+});
+$('body').on('change','.all_sections',function(){
+    var sec_id = $(this).val();
+    var row = $(this).closest('div.values_row');
+    var ques_class = row.find('select.all_questions');
+    get_question_section_id(sec_id,ques_class);
+});
+$('body').on('click','.fetch_sections',function(){
+    var step_id = $('#steps').val();
+    var row = $(this).closest('div.values_row');
+    var section_class = row.find('select.all_sections');
+    section_against_step(step_id,section_class);
+})
+$('body').on('click','.fetch_sections2',function(){
+    var step_id = $('#steps').val();
+    var row = $(this).closest('div.values_row');
+    var section_class = row.find('select.all_sections2');
+    section_against_step(step_id,section_class);
+})
+ $('body').on('change','.all_sections2',function(){
+    var sec_id = $(this).val();
+    var row = $(this).closest('div.values_row');
+    var ques_class = row.find('select.all_questions2');
+    get_question_section_id(sec_id,ques_class);
+});
+$('body').on('change','.decision',function(){
+    var value = $(this).val();
+    var row = $(this).closest('div.values_row');
+    var sec_id = row.find('select.all_sections').val();
+    var ques_class = row.find('select.decision_question');
+    if(value == 'question_value'){
+        row.find('.questionValue').css('display', 'block');
+        row.find('.customValue').css('display', 'none');
+    }else if(value == 'custom_value'){
+        row.find('.customValue').css('display', 'block');
+        row.find('.questionValue').css('display', 'none');
+    }
+});
+$('body').on('change','.decision2',function(){
+    var value = $(this).val();
+    var row = $(this).closest('div.values_row');
+    var sec_id = row.find('select.all_sections').val();
+    var ques_class = row.find('select.decision_question2');
+    if(value == 'question_value_sec'){
+        row.find('.questionValue2').css('display', 'block');
+        row.find('.customValue2').css('display', 'none');
+    }else if(value == 'custom_value_sec'){
+        row.find('.customValue2').css('display', 'block');
+        row.find('.questionValue2').css('display', 'none');
+    }
+});
+$('body').on('change','.operators',function(){
+    var value = $(this).val();
+    var row = $(this).closest('div.values_row');
+    if(value == 'and' || value == 'or'){
+        row.find('.third_condition').css('display', 'block');
+    }else if(value == ''){
+         row.find('.third_condition').css('display', 'none');
+    }
+});
+$('#phases').on('change',function(){
+    var phase_id = $(this).val();
+    var step_class = $('select#steps');
+    get_steps_phase_id(phase_id,step_class);
+})
+$('#steps').on('change',function(){
+    var step_id = $(this).val();
+    var sec_class = $('select.decisionSections');
+    var sec_class2 = $('select.decisionSections2');
+    var basic_section = $('select.basic_section');
+    display_sections(step_id);
+    section_against_step(step_id,basic_section);
+});
+$('.decisionSections').on('change',function(){
+    var sec_id = $(this).val();
+    var ques_class = $('select.decision_question');
+    get_question_section_id(sec_id,ques_class); 
+});
+$('.decisionSections2').on('change',function(){
+    var sec_id = $(this).val();
+    var ques_class = $('select.decision_question2');
+    get_question_section_id(sec_id,ques_class); 
+});
+
+$('#adj_status').on('change',function(){
+    var value = $(this).val();
+    if(value =='yes'){
+        $('.show_if_required').css('display', 'block');
+    }else{
+        $('.show_if_required').css('display', 'none');
+        $('.show_if_custom_percent').css('display', 'none');
+    }
+})
+$('#decision_based_on').on('change',function(){
+    var value = $(this).val();
+    if(value =='custom' || value =='percentage'){
+        $('.show_if_custom_percent').css('display', 'block');
+    }else{
+        $('.show_if_custom_percent').css('display', '');
+    }
+})
+/// update Question sort
+$(document).ready(function() {
+    $('body').on('click', '.change_ques_sort', function() {
+        var row = $(this).closest('div.custom_fields');
+        var question_id = row.find('input.question_id').val();
+        var question_sort = row.find('input.question_sort').val();
+        $('#questionId').val(question_id);
+        $('#up_question_sort').val(question_sort);
+        $('#ChangeQuestionSort').modal('show');
     })
-    $('body').on('click','.fetch_sections2',function(){
-        var step_id = $('#steps').val();
-        var row = $(this).closest('div.values_row');
-        var section_class = row.find('select.all_sections2');
-        get_section_step_id(step_id,section_class);
-    })
-     $('body').on('change','.all_sections2',function(){
-        var sec_id = $(this).val();
-        var row = $(this).closest('div.values_row');
-        var ques_class = row.find('select.all_questions2');
-        get_question_section_id(sec_id,ques_class);
-   });
-    $('body').on('change','.decision',function(){
-        var value = $(this).val();
-        var row = $(this).closest('div.values_row');
-        var sec_id = row.find('select.all_sections').val();
-        var ques_class = row.find('select.decision_question');
-        if(value == 'question_value'){
-            row.find('.questionValue').css('display', 'block');
-            row.find('.customValue').css('display', 'none');
-        }else if(value == 'custom_value'){
-            row.find('.customValue').css('display', 'block');
-            row.find('.questionValue').css('display', 'none');
-        }
-    });
-    $('body').on('change','.decision2',function(){
-        var value = $(this).val();
-        var row = $(this).closest('div.values_row');
-        var sec_id = row.find('select.all_sections').val();
-        var ques_class = row.find('select.decision_question2');
-        if(value == 'question_value_sec'){
-            row.find('.questionValue2').css('display', 'block');
-            row.find('.customValue2').css('display', 'none');
-        }else if(value == 'custom_value_sec'){
-            row.find('.customValue2').css('display', 'block');
-            row.find('.questionValue2').css('display', 'none');
-        }
-    });
-      $('body').on('change','.operators',function(){
-        var value = $(this).val();
-        var row = $(this).closest('div.values_row');
-        if(value == 'and' || value == 'or'){
-            row.find('.third_condition').css('display', 'block');
-        }else if(value == ''){
-             row.find('.third_condition').css('display', 'none');
-        }
-    });
-    $('#phases').on('change',function(){
-        var phase_id = $(this).val();
-        var step_class = $('select#steps');
-        get_steps_phase_id(phase_id,step_class);
-        $('#steps').trigger('change');
-    })
-    $('#steps').on('change',function(){
-        var step_id = $(this).val();
-        var sec_class = $('select.decisionSections');
-        var sec_class2 = $('select.decisionSections2');
-        display_sections(step_id);
-        get_section_step_id(step_id,sec_class);
-        get_section_step_id(step_id,sec_class2);
-    });
-    $('.decisionSections').on('change',function(){
-        var sec_id = $(this).val();
-        var ques_class = $('select.decision_question');
-        get_question_section_id(sec_id,ques_class); 
-    });
-    $('.decisionSections2').on('change',function(){
-        var sec_id = $(this).val();
-        var ques_class = $('select.decision_question2');
-        get_question_section_id(sec_id,ques_class); 
-    });
-  
-    $('#adj_status').on('change',function(){
-        var value = $(this).val();
-        if(value =='yes'){
-            $('.show_if_required').css('display', 'block');
-        }else{
-            $('.show_if_required').css('display', 'none');
-            $('.show_if_custom_percent').css('display', 'none');
-        }
-    })
-    $('#decision_based_on').on('change',function(){
-        var value = $(this).val();
-        if(value =='custom' || value =='persent'){
-            $('.show_if_custom_percent').css('display', 'block');
-        }else{
-            $('.show_if_custom_percent').css('display', '');
-        }
-    })
-    /// update Question sort
-    $(document).ready(function() {
-        $('body').on('click', '.change_ques_sort', function() {
-            var row = $(this).closest('div.custom_fields');
-            var question_id = row.find('input.question_id').val();
-            var question_sort = row.find('input.question_sort').val();
-            $('#questionId').val(question_id);
-            $('#up_question_sort').val(question_sort);
-            $('#ChangeQuestionSort').modal('show');
-        })
-        $('body').on('click', '.delete_ques', function() {
-            var row = $(this).closest('div.custom_fields');
-            var question_id = row.find('input.question_id').val();
-            if (confirm('Are you sure to delete ?')) {
-                $.ajax({
-                    url: 'forms/delete/' + question_id,
-                    type: 'post',
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        "_method": 'DELETE',
-                        'questionId': question_id,
-                    },
-                    dataType: 'json',
-                    success: function(res) {
-                        row.remove();
-                    }
-                })
-            }
-        })
-            // update question
-            $('body').on('click', '.Edit_ques', function() {
-                $('#formfields').trigger('reset');
-                $('#formfields').attr('action', "{{ route('updateQuestion') }}");
-                var row = $(this).closest('div.custom_fields');
-                var ques_id = row.find('input.question_id').val();
-                var ques_type = row.find('input.question_type').val();
-                var ques_type_id = row.find('input.question_type_id').val();
-                var question_sort = row.find('input.question_sort').val();
-                var section_id = row.find('input.section_id').val();
-                var option_group_id = row.find('input.option_group_id').val();
-                var c_disk = row.find('input.c_disk').val();
-                var question_text = row.find('input.question_text').val();
-                var variable_name = row.find('input.variable_name').val();
-                var text_info = row.find('input.text_info').val();
-                var is_required = row.find('input.is_required').val();
-                var is_exportable_to_xls = row.find('input.is_exportable_to_xls').val();
-                var measurement_unit = row.find('input.measurement_unit').val();
-                var field_width = row.find('input.field_width').val();
-                var upper_limit = row.find('input.upper_limit').val();
-                var lower_limit = row.find('input.lower_limit').val();
-                $('#questionId_hide').val(ques_id);
-                $('#question_type').val(ques_type_id);
-                $('#question_type').trigger('change');
-                $('#question_sort').val(question_sort);
-                $('#section_id').val(section_id);
-                $('#option_group_id').val(option_group_id);
-                $('#c_disk').val(c_disk);
-                $('#question_text').val(question_text);
-                $('#variable_name').val(variable_name);
-                $('#text_info').val(text_info);
-                if (ques_type == 'Number') {
-                    $('#measurement_unit_text').val(measurement_unit);
-                    $('#field_width_text').val(field_width);
-                    $('#lower_limit_num').val(lower_limit);
-                    $('#upper_limit_num').val(upper_limit);
-                } else {
-                    $('#measurement_unit_text').val(measurement_unit);
-                    $('#field_width_text').val(field_width);
+    $('body').on('click', '.delete_ques', function() {
+        var row = $(this).closest('div.custom_fields');
+        var tId;
+        var question_id = row.find('input.question_id').val();
+        if (confirm('Are you sure to delete ?')) {
+            $.ajax({
+                url: 'forms/delete/' + question_id,
+                type: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'DELETE',
+                    'questionId': question_id,
+                },
+                dataType: 'json',
+                success: function(res) {
+                    row.remove();
+                    $('.success-msg').html('');
+                     $('.success-msg').html('Operation Done!')
+                     $('.success-alert').slideDown('slow');
+                     tId=setTimeout(function(){
+                        $(".success-alert").slideUp('slow');
+                     }, 4000);
                 }
-                if (is_required == 'yes') {
-                    $('#required_yes').prop('checked', true);
-                } else {
-                    $('#required_no').prop('checked', true);
-                }
-                if (is_exportable_to_xls == 'yes') {
-                    $('#is_exportable_to_xls_yes').prop('checked', true);
-                } else {
-                    $('#is_exportable_to_xls_no').prop('checked', true);
-                }
-                $('#addField').modal('show');
             })
-        })
-
-        function display_sections(step_id) {
-            var html = '';
-            var sections = '';
-            $("#wait").css("display", "block");
-            $.ajax({
-                url: 'forms/sections_by_stepId/' + step_id,
-                type: 'post',
-                dataType: 'json',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'GET',
-                    'step_id': step_id
-                },
-                success: function(response) {
-                    $('.display-sections').html('');
-                    $('#section_id').html('');
-                    html += '<div id="accordion">';
-                    $.each(response['data'], function(k, v) {
-                        var show = (k == 0) ? 'show' : '';
-                        html +=
-                            '<div class="card"><div class="card-header"><a class="card-link" data-toggle="collapse" href="#collapse_' +
-                            v.id + '">' + v.sort_number + '&nbsp;&nbsp;&nbsp;&nbsp;' + v.name +
-                            '</a></div><div id="collapse_' + v.id + '" class="collapse ' + show +
-                            '" data-parent="#accordion"><div class="card-body questions_' + v.id + '">';
-                        getQuestions(v.id);
-                        html += '</div></div></div>';
-                        sections += '<option value="' + v.id + '">' + v.name + '</option>'
-                    });
-                    html += '</div>';
-                    $('.display-sections').html(html);
-                    $('#section_id').append(sections);
-                    $("#wait").css("display", "none");
-                }
-            });
         }
-        // display question against form
-        function getQuestions(id) {
-            var html2 = '';
-            $.ajax({
-                url: 'forms/get_allQuestions/' + id,
-                type: 'post',
-                dataType: 'json',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'GET',
-                    'id': id
-                },
-                success: function(res) {
-                    $('questions_' + id).html('');
-                    $.each(res['data'], function(i, j) {
-                        console.log(j);
-                        if (j.option_layout === 'vertical') {
-                            var br = '<br>';
-                        } else {
-                            var br = '';
-                        }
-                        if (j['form_field_type'].field_type === 'Radio') {
-                            var options = [];
-                            var optionsvalues = [];
-                            optionsvalues = j.option_value.split(',');
-                            options = j.option_name.split(",");
-                            html2 +=
-                                '<div class="form-group row custom_fields"><input type="hidden" class="question_id" value="' +
-                                j.question_id + '"><input type="hidden" class="question_sort" value="' +
-                                j.question_sort +
-                                '"><input type="hidden" class="question_type_id" value="' + j[
-                                    'form_field_type'].id +
-                                '"><input type="hidden" class="section_id" value="' + id +
-                                '"><input type="hidden" class="option_group_id" value="' + j
-                                .option_group_id + '"><input type="hidden" class="c_disk" value="' + j
-                                .c_disk + '"><input type="hidden" class="question_text" value="' + j
-                                .question_text +
-                                '"><input type="hidden" class="variable_name" value="' + j
-                                .variable_name + '"><input type="hidden" class="text_info" value="' + j
-                                .text_info + '"><input type="hidden" class="is_required" value="' + j
-                                .is_required +
-                                '"><input type="hidden" class="is_exportable_to_xls" value="' + j
-                                .is_exportable_to_xls + '"><div class="col-sm-4">' + j.question_sort +
-                                '. ' + j.question_text + '</div><div class="col-sm-6">';
-                            $.each(options, function(k, v) {
-                                html2 += '<input type="radio" name="' + j.option_group_name +
-                                    '_' + j.question_id + '" value="' + optionsvalues[k] +
-                                    '"> &nbsp;' + v + '&nbsp;' + br;
-                            })
-                            html2 +=
-                                '</div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
-                        } else if (j['form_field_type'].field_type === 'Text') {
-                            html2 +=
-                                '<div class="form-group row custom_fields"><input type="hidden" class="question_id" value="' +
-                                j.question_id + '"><input type="hidden" class="question_sort" value="' +
-                                j.question_sort +
-                                '"><input type="hidden" class="question_type_id" value="' + j[
-                                    'form_field_type'].id +
-                                '"><input type="hidden" class="section_id" value="' + id +
-                                '"><input type="hidden" class="option_group_id" value="' + j
-                                .option_group_id + '"><input type="hidden" class="c_disk" value="' + j
-                                .c_disk + '"><input type="hidden" class="question_text" value="' + j
-                                .question_text +
-                                '"><input type="hidden" class="variable_name" value="' + j
-                                .variable_name + '"><input type="hidden" class="text_info" value="' + j
-                                .text_info + '"><input type="hidden" class="is_required" value="' + j
-                                .is_required +
-                                '"><input type="hidden" class="is_exportable_to_xls" value="' + j
-                                .is_exportable_to_xls +
-                                '"><input type="hidden" class="field_width" value="' + j.field_width +
-                                '"><input type="hidden" class="measurement_unit" value="' + j
-                                .measurement_unit +
-                                '"><input type="hidden" class="lower_limit" value="' + j.lower_limit +
-                                '"><input type="hidden" class="upper_limit" value="' + j.upper_limit +
-                                '"><input type="hidden" class="question_type" value="' + j[
-                                    'form_field_type'].field_type + '"><div class="col-sm-4">' + j
-                                .question_sort + '. ' + j.question_text + '</div>';
-                            html2 += '<div class="col-sm-6"> <input type="text" name="' + j
-                                .variable_name +
-                                '" value="" class="form-control"></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
-                        } else if (j['form_field_type'].field_type === 'Number') {
-                            html2 +=
-                                '<div class="form-group row custom_fields"><input type="hidden" class="question_id" value="' +
-                                j.question_id + '"><input type="hidden" class="question_sort" value="' +
-                                j.question_sort +
-                                '"><input type="hidden" class="question_type_id" value="' + j[
-                                    'form_field_type'].id +
-                                '"><input type="hidden" class="section_id" value="' + id +
-                                '"><input type="hidden" class="option_group_id" value="' + j
-                                .option_group_id + '"><input type="hidden" class="c_disk" value="' + j
-                                .c_disk + '"><input type="hidden" class="question_text" value="' + j
-                                .question_text +
-                                '"><input type="hidden" class="variable_name" value="' + j
-                                .variable_name + '"><input type="hidden" class="text_info" value="' + j
-                                .text_info + '"><input type="hidden" class="is_required" value="' + j
-                                .is_required +
-                                '"><input type="hidden" class="is_exportable_to_xls" value="' + j
-                                .is_exportable_to_xls +
-                                '"><input type="hidden" class="field_width" value="' + j.field_width +
-                                '"><input type="hidden" class="measurement_unit" value="' + j.measurement_unit +
-                                '"><input type="hidden" class="lower_limit" value="' + j.lower_limit +
-                                '"><input type="hidden" class="upper_limit" value="' + j.upper_limit +
-                                '"><input type="hidden" class="question_type" value="' + j[
-                                    'form_field_type'].field_type + '"><div class="col-sm-4">' + j
-                                .question_sort + '. ' + j.question_text + '</div>';
-                            html2 += '<div class="col-sm-6"> <input type="number" name="' + j
-                                .variable_name +
-                                '" value="" class="form-control"></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
-                        } else if (j['form_field_type'].field_type === 'Dropdown') {
-                            var optionsvalues = [];
-                            optionsvalues = j.option_value.split(',');
-                            var options = [];
-                            options = j.option_name.split(",");
-                            html2 +=
-                                '<div class="form-group row custom_fields"><input type="hidden" class="question_id" value="' +
-                                j.question_id + '"><input type="hidden" class="question_sort" value="' +
-                                j.question_sort +
-                                '"><input type="hidden" class="question_type_id" value="' + j[
-                                    'form_field_type'].id +
-                                '"><input type="hidden" class="section_id" value="' + id +
-                                '"><input type="hidden" class="option_group_id" value="' + j
-                                .option_group_id + '"><input type="hidden" class="c_disk" value="' + j
-                                .c_disk + '"><input type="hidden" class="question_text" value="' + j
-                                .question_text +
-                                '"><input type="hidden" class="variable_name" value="' + j
-                                .variable_name + '"><input type="hidden" class="text_info" value="' + j
-                                .text_info + '"><input type="hidden" class="is_required" value="' + j
-                                .is_required +
-                                '"><input type="hidden" class="is_exportable_to_xls" value="' + j
-                                .is_exportable_to_xls + '"><div class="col-sm-4">' + j.question_sort +
-                                '. ' + j.question_text + '</div><div class="col-sm-6"><select name="' +
-                                j.option_group_name + '" class="form-control">';
-
-                            $.each(options, function(k, v) {
-                                if (k != '') {
-                                    html2 += '<option value="' + optionsvalues[k] + '">' + v +
-                                        '<option>';
-                                }
-                            })
-                            html2 +=
-                                '</select></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
-                        } else if (j['form_field_type'].field_type === 'Checkbox') {
-                            var optionsvalues = [];
-                            optionsvalues = j.option_value.split(',');
-                            var options = [];
-                            options = j.option_name.split(",");
-                            html2 +=
-                                '<div class="form-group row custom_fields"><input type="hidden" class="question_id" value="' +
-                                j.question_id + '"><input type="hidden" class="question_sort" value="' +
-                                j.question_sort +
-                                '"><input type="hidden" class="question_type_id" value="' + j[
-                                    'form_field_type'].id +
-                                '"><input type="hidden" class="section_id" value="' + id +
-                                '"><input type="hidden" class="option_group_id" value="' + j
-                                .option_group_id + '"><input type="hidden" class="c_disk" value="' + j
-                                .c_disk + '"><input type="hidden" class="question_text" value="' + j
-                                .question_text +
-                                '"><input type="hidden" class="variable_name" value="' + j
-                                .variable_name + '"><input type="hidden" class="text_info" value="' + j
-                                .text_info + '"><input type="hidden" class="is_required" value="' + j
-                                .is_required +
-                                '"><input type="hidden" class="is_exportable_to_xls" value="' + j
-                                .is_exportable_to_xls + '"><div class="col-sm-4">' + j.question_sort +
-                                '. ' + j.question_text + '</div><div class="col-sm-6">';
-                            $.each(options, function(k, v) {
-                                html2 += '<input type="checkbox" name="' + j.option_group_name +
-                                    '" value="' + optionsvalues[k] + '"> &nbsp;' + v +
-                                    '&nbsp; ';
-                            })
-                            html2 +=
-                                '</div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
-                        } else if (j['form_field_type'].field_type === 'Textarea') {
-                            html2 +=
-                                '<div class="form-group row custom_fields"><input type="hidden" class="question_id" value="' +
-                                j.question_id + '"><input type="hidden" class="question_sort" value="' +
-                                j.question_sort +
-                                '"><input type="hidden" class="question_type_id" value="' + j[
-                                    'form_field_type'].id +
-                                '"><input type="hidden" class="section_id" value="' + id +
-                                '"><input type="hidden" class="option_group_id" value="' + j
-                                .option_group_id + '"><input type="hidden" class="c_disk" value="' + j
-                                .c_disk + '"><input type="hidden" class="question_text" value="' + j
-                                .question_text +
-                                '"><input type="hidden" class="variable_name" value="' + j
-                                .variable_name + '"><input type="hidden" class="text_info" value="' + j
-                                .text_info + '"><input type="hidden" class="is_required" value="' + j
-                                .is_required +
-                                '"><input type="hidden" class="is_exportable_to_xls" value="' + j
-                                .is_exportable_to_xls + '"><div class="col-sm-4">' + j.question_sort +
-                                '. ' + j.question_text + '</div>';
-                            html2 += '<div class="col-sm-6"> <textarea name="' + j.variable_name +
-                                '" value="" class="form-control"></textarea></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
-                        } else if (j['form_field_type'].field_type === 'Date & Time') {
-                            html2 +=
-                                '<div class="form-group row custom_fields"><input type="hidden" class="question_id" value="' +
-                                j.question_id + '"><input type="hidden" class="question_sort" value="' +
-                                j.question_sort +
-                                '"><input type="hidden" class="question_type_id" value="' + j[
-                                    'form_field_type'].id +
-                                '"><input type="hidden" class="section_id" value="' + id +
-                                '"><input type="hidden" class="option_group_id" value="' + j
-                                .option_group_id + '"><input type="hidden" class="c_disk" value="' + j
-                                .c_disk + '"><input type="hidden" class="question_text" value="' + j
-                                .question_text +
-                                '"><input type="hidden" class="variable_name" value="' + j
-                                .variable_name + '"><input type="hidden" class="text_info" value="' + j
-                                .text_info + '"><input type="hidden" class="is_required" value="' + j
-                                .is_required +
-                                '"><input type="hidden" class="is_exportable_to_xls" value="' + j
-                                .is_exportable_to_xls + '"><div class="col-sm-4">' + j.question_sort +
-                                '. ' + j.question_text + '</div>';
-                            html2 += '<div class="col-sm-6"> <input type="date" name="' + j
-                                .variable_name +
-                                '" value="" class="form-control"></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
-                        } else if (j['form_field_type'].field_type === 'Upload') {
-                            html2 +=
-                                '<div class="form-group row custom_fields"><input type="hidden" class="question_id" value="' +
-                                j.question_id + '"><input type="hidden" class="question_sort" value="' +
-                                j.question_sort +
-                                '"><input type="hidden" class="question_type_id" value="' + j[
-                                    'form_field_type'].id +
-                                '"><input type="hidden" class="section_id" value="' + id +
-                                '"><input type="hidden" class="option_group_id" value="' + j
-                                .option_group_id + '"><input type="hidden" class="c_disk" value="' + j
-                                .c_disk + '"><input type="hidden" class="question_text" value="' + j
-                                .question_text +
-                                '"><input type="hidden" class="variable_name" value="' + j
-                                .variable_name + '"><input type="hidden" class="text_info" value="' + j
-                                .text_info + '"><input type="hidden" class="is_required" value="' + j
-                                .is_required +
-                                '"><input type="hidden" class="is_exportable_to_xls" value="' + j
-                                .is_exportable_to_xls + '"><div class="col-sm-4">' + j.question_sort +
-                                '. ' + j.question_text + '</div>';
-                            html2 += '<div class="col-sm-6"> <input type="file" name="' + j
-                                .variable_name +
-                                '" value="" class="form-control"></div><div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
-                        }
-                    });
-                    $('.questions_' + id).append(html2);
-                }
-            });
-
+    })
+    // update question
+    $('body').on('click', '.Edit_ques', function() {
+        $('#formfields').trigger('reset');
+        $('.modal-title').html('Update Question')
+        $('#formfields').attr('action', "{{ route('updateQuestion') }}");
+        var row = $(this).closest('div.custom_fields')
+            tId = ''
+            ques_id = row.find('input.question_id').val()
+            ques_type = row.find('input.question_type').val()
+            ques_type_id = row.find('input.question_type_id').val()
+            question_sort = row.find('input.question_sort').val()
+            section_id = row.find('input.section_id').val()
+            option_group_id = row.find('input.option_group_id').val()
+            c_disk = row.find('input.c_disk').val()
+            question_text = row.find('input.question_text').val()
+            variable_name = row.find('input.variable_name').val()
+            formFields_id = row.find('input.formFields_id').val()
+            text_info = row.find('input.text_info').val()
+            is_required = row.find('input.is_required').val()
+            is_exportable_to_xls = row.find('input.is_exportable_to_xls').val()
+            measurement_unit = row.find('input.measurement_unit').val()
+            field_width = row.find('input.field_width').val()
+            upper_limit = row.find('input.upper_limit').val()
+            lower_limit = row.find('input.lower_limit').val()
+            dependency_id = row.find('input.dependency_id').val()
+            dependency_status = row.find('input.dependency_status').val()
+            dependency_question = row.find('input.dependency_question').val()
+            dependency_operator = row.find('input.dependency_operator').val()
+            dependency_custom_value = row.find('input.dependency_custom_value').val()
+            dependency_question_class = $('select.select_ques_for_dep')
+            adj_status = row.find('input.adj_status').val()
+            adj_decision_based = row.find('input.adj_decision_based').val()
+            adj_operator = row.find('input.adj_operator').val()
+            adj_custom_value = row.find('input.adj_custom_value').val()
+            adj_id = row.find('input.adj_id').val();
+        $('#questionId_hide').val(ques_id);
+        $('#question_type').val(ques_type_id);
+        $('#question_type').trigger('change');
+        $('#question_sort').val(question_sort);
+        $('#section_id').val(section_id);
+        $('#option_group_id').val(option_group_id);
+        $('#c_disk').val(c_disk);
+        $('#question_text').val(question_text);
+        $('#variable_name').val(variable_name);
+        $('#form_field_id').val(formFields_id);
+        $('#text_info').val(text_info);
+        if (ques_type == 'Number') {
+            $('#measurement_unit_text').val(measurement_unit);
+            $('#field_width_text').val(field_width);
+            $('#lower_limit_num').val(lower_limit);
+            $('#upper_limit_num').val(upper_limit);
+        } else {
+            $('#measurement_unit_text').val(measurement_unit);
+            $('#field_width_text').val(field_width);
         }
-
-        function showFormPreview() {
-            var route = <?php echo '"'.url('forms/show').'";';?>
-            var phase_id = $('#phases').val();
-            var step_id = $('#steps').val();
-            window.open(route + '/' + phase_id + '/' + step_id);
+        if (is_required == 'yes') {
+            $('#required_yes').prop('checked', true);
+        } else {
+            $('#required_no').prop('checked', true);
         }
-        // Add New Option Group
-        function addOptionsGroup() {
-            $("#OptionsGroupForm").submit(function(e) {
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                    }
-                });
-                e.preventDefault();
-                $.ajax({
-                    data: $('#OptionsGroupForm').serialize(),
-                    url: "{{ route('optionsGroup.store') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    success: function(results) {
-                        fetch_options();
-                        $('#OptionsGroupForm').trigger("reset");
-                        $("#optiongroup-close").click();
-                    },
-                    error: function(results) {
-                        console.log('Error:', results);
-                    }
-                });
-            });
+        if (is_exportable_to_xls == 'yes') {
+            $('#is_exportable_to_xls_yes').prop('checked', true);
+        } else {
+            $('#is_exportable_to_xls_no').prop('checked', true);
         }
-        addOptionsGroup();
-
-        function fetch_options() {
-            $('#option_group_id').html('');
-            var options = '<option value="">None</option>';
-            $.ajax({
-                url: "{{ route('getall_options') }}",
-                type: "post",
-                dataType: 'json',
-                success: function(res) {
-                    $.each(res['data'], function(k, v) {
-                        options += '<option value="' + v.id + '">' + v.option_group_name + '</option>'
-                    })
-                    $('#option_group_id').append(options);
-                }
-            });
+        $('#dependency_id').val(dependency_id);
+        if(dependency_status =='yes'){
+            $('#field_dependent_yes').prop('checked',true);
+            $('.field_dependent').trigger('change');
+        }else{
+            $('#field_dependent_no').prop('checked',true);
+            $('.field_dependent').trigger('change');
         }
+        get_question_section_id(section_id,dependency_question_class);
+        $('#dependency_operator').val(dependency_operator);
+        $('#dependency_custom_value').val(dependency_custom_value);
+        tId=setTimeout(function(){
+            $('#select_ques_for_dep').val(dependency_question);
+        }, 2000);
+        $('#adj_id').val(adj_id);
+        $('#adj_status').val(adj_status);
+        $('#adj_status').trigger('change');
+        $('#decision_based_on').val(adj_decision_based)
+        $('#decision_based_on').trigger('change');
+        $('#adj_operator').val(adj_operator);
+        $('#adj_custom_value').val(adj_custom_value);
+        $('#addField').modal('show');
+    })
+})
+function display_sections(step_id) {
+    var html = '';
+    var sections = '';
+    $("#wait").css("display", "block");
+    $.ajax({
+        url: 'forms/sections_by_stepId/' + step_id,
+        type: 'post',
+        dataType: 'html',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            "_method": 'GET',
+            'step_id': step_id
+        },
+        success: function(response) {
+            $('.display-sections').html(response);
+        }
+    });
+}
+function showFormPreview() {
+    var route = <?php echo '"'.url('forms/show').'";';?>
+    var phase_id = $('#phases').val();
+    var step_id = $('#steps').val();
+    window.open(route + '/' + phase_id + '/' + step_id);
+}
+// Add New Option Group
+function addOptionsGroup() {
+    $("#OptionsGroupForm").submit(function(e) {
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        e.preventDefault();
+        $.ajax({
+            data: $('#OptionsGroupForm').serialize(),
+            url: "{{ route('optionsGroup.store') }}",
+            type: "POST",
+            dataType: 'json',
+            success: function(results) {
+                fetch_options();
+                $('#OptionsGroupForm').trigger("reset");
+                $("#optiongroup-close").click();
+            },
+            error: function(results) {
+                console.log('Error:', results);
+            }
+        });
+    });
+}
+addOptionsGroup();
+function fetch_options() {
+    $('#option_group_id').html('');
+    var options = '<option value="">None</option>';
+    $.ajax({
+        url: "{{ route('getall_options') }}",
+        type: "post",
+        dataType: 'json',
+        success: function(res) {
+            $.each(res['data'], function(k, v) {
+                options += '<option value="' + v.id + '">' + v.option_group_name + '</option>'
+            })
+            $('#option_group_id').append(options);
+        }
+    });
+}
 
-    </script>
+</script>
 
 @endsection

@@ -38,7 +38,7 @@
                                 </div>
                             </a>
                             <div class="dropdown-menu border dropdown-menu-right p-0">
-                                <a href="" class="dropdown-item px-2 align-self-center d-flex">
+                                <a href="#" class="dropdown-item px-2 align-self-center d-flex" data-toggle="modal" data-target="#editProfile">
                                     <span class="icon-pencil mr-2 h6 mb-0"></span> Edit Profile</a>
                                 @foreach(auth()->user()->user_roles as $role)
                                     <a href="{{ route('switch_role',$role->role_id) }}"
@@ -58,6 +58,7 @@
             </nav>
         </div>
     </div>
+
     <!-- END: Header-->
 
     <!-- START: Main Menu-->
@@ -67,6 +68,16 @@
     <!-- START: Main Content-->
     <main style="min-height: 500px;">
         @yield('content')
+        <div class="modal" id="editProfile">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Edit Profile</h4>
+                </div>
+                <div class="modal-content">
+                    <p>Profile edit</p>
+                </div>
+            </div>
+        </div>
     </main>
     <!-- END: Content-->
 
