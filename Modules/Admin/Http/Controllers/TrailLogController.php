@@ -62,7 +62,8 @@ class TrailLogController extends Controller
                 "User" => "User",
                 "Modality" => "Modality",
                 "Child Modality" => "Child Modality",
-                "Device" => "Device"
+                "Device" => "Device",
+                "Study Site" => "Study Site"
 
             );
 

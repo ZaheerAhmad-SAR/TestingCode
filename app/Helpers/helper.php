@@ -14,6 +14,8 @@ use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\ChildModilities;
 use Modules\Admin\Entities\Device;
 use Modules\Admin\Entities\DeviceModility;
+use Modules\Admin\Entities\Study;
+use Modules\Admin\Entities\StudySite;
 use Modules\Admin\Entities\TrailLog;
 
 function hasrole($role)
@@ -458,6 +460,42 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
         }
        
     //////////////////////////// Device Ends /////////////////////////////////////////
+    } else if ($eventSection == 'Study Site') {
+        // get event data
+        $eventData = StudySite::select('sites.site_name')
+            ->leftjoin('sites','sites.id', '=', 'site_study.site_id')
+            ->where('site_study.study_id', $eventId)
+            ->pluck('sites.site_name')
+            ->toArray();
+
+        $eventData = $eventData != '' ? implode(', ', $eventData) : '';
+        // get study name
+        $getStudyName = Study::where('id', $eventId)->first();
+        // set message for audit
+        $auditMessage = \Auth::user()->name.' updated sites of study '.$getStudyName->study_title.'.';
+        // set audit url
+        $auditUrl = url('studySite');
+        // store data in event array
+        $newData = array(
+            'study_id' => $getStudyName->id,
+            'study_name' => $getStudyName->study_title,
+            'study_sites' => $eventData,
+            'created_at' => date("Y-m-d h:i:s", strtotime($getStudyName->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($getStudyName->updated_at)),
+        );
+        // if it is update case
+        if($eventType == 'Update') {
+            $previousData = $previousData != '' ? implode(', ', $previousData) : '';
+            $oldData = array(
+                'study_id' => $getStudyName->id,
+                'study_name' => $getStudyName->study_title,
+                'study_sites' => $previousData,
+                'created_at' => date("Y-m-d h:i:s", strtotime($getStudyName->created_at)),
+                'updated_at' => date("Y-m-d h:i:s", strtotime($getStudyName->updated_at)),
+            );
+        }
+       
+    //////////////////////////// Study Sites Ends /////////////////////////////////////////
     }  // main If else ends 
 
     // Log the event

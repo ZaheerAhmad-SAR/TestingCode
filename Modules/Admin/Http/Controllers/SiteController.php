@@ -128,7 +128,6 @@ class SiteController extends Controller
         Site::where('id', $request->lastSiteId)->update($data);
 
         // log event details
-
         $logEventDetails = eventDetails($request->lastSiteId, 'Site', 'Update', $request->ip(), $oldSite);
 
         return response()->json(['success'=>'Site Info is updated successfully']);
