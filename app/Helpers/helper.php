@@ -10,6 +10,10 @@ use Modules\Admin\Entities\Photographer;
 use Modules\Admin\Entities\Other;
 use Modules\Admin\Entities\Annotation;
 use Modules\UserRoles\Entities\Role;
+use Modules\Admin\Entities\Modility;
+use Modules\Admin\Entities\ChildModilities;
+use Modules\Admin\Entities\Device;
+use Modules\Admin\Entities\DeviceModility;
 use Modules\Admin\Entities\TrailLog;
 
 function hasrole($role)
@@ -361,7 +365,100 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
         }
        
     ////////////////////////// System Users Ends ///////////////////////////////////////////////////
-    } // main If else ends 
+    } else if ($eventSection == 'Modality') {
+        // get event data
+        $eventData = Modility::find($eventId);
+        // set message for audit
+        $auditMessage = \Auth::user()->name.' added modality '.$eventData->modility_name.'.';
+        // set audit url
+        $auditUrl = url('modalities');
+        // store data in event array
+        $newData = array(
+            'modility_name' => $eventData->modility_name,
+            'type' => "Parent Modality",
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
+        );
+        // if it is update case
+        if($eventType == 'Update') {
+            
+            $oldData = array(
+                'modility_name' => $previousData->modility_name,
+                'type' => "Parent Modality",
+                'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+                'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+            );
+
+            // set message for audit
+            $auditMessage = \Auth::user()->name.' updated modality '.$eventData->modility_name.'.';
+        }
+       
+    //////////////////////////// Modality Ends /////////////////////////////////////////
+    } else if ($eventSection == 'Child Modality') {
+        // get event data
+        $eventData = ChildModilities::find($eventId);
+        // set message for audit
+        $auditMessage = \Auth::user()->name.' added child modality '.$eventData->modility_name.'.';
+        // set audit url
+        $auditUrl = url('modalities');
+        // get parent modality of this child
+        $getParentModality = Modility::where('id', $eventData->modility_id)->first();
+        // store data in event array
+        $newData = array(
+            'modility_name' => $eventData->modility_name,
+            'type' => "Child Modality",
+            'parent_modality' => $getParentModality->modility_name,
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
+        );
+        // if it is update case
+        if($eventType == 'Update') {
+            
+            $oldData = array(
+                'modility_name' => $previousData->modility_name,
+                'type' => "Child Modality",
+                'parent_modality' => $getParentModality->modility_name,
+                'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+                'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+            );
+
+            // set message for audit
+            $auditMessage = \Auth::user()->name.' updated child modality '.$eventData->modility_name.'.';
+        }
+       
+    ////////////////////////// Child Modality Ends /////////////////////////////////////////
+    } else if ($eventSection == 'Device') {
+        // get event data
+        $eventData = Device::find($eventId);
+        // set message for audit
+        $auditMessage = \Auth::user()->name.' added device '.$eventData->device_name.'.';
+        // set audit url
+        $auditUrl = url('devices');
+        // store data in event array
+        $newData = array(
+            'device_name' => $eventData->device_name,
+            'device_model' => $eventData->device_model,
+            'device_manufacturer' => $eventData->device_manufacturer,
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
+        );
+        // if it is update case
+        if($eventType == 'Update') {
+            
+            $oldData = array(
+                'device_name' => $previousData->device_name,
+                'device_model' => $previousData->device_model,
+                'device_manufacturer' => $previousData->device_manufacturer,
+                'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+                'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+            );
+
+            // set message for audit
+            $auditMessage = \Auth::user()->name.' updated device '.$eventData->device_name.'.';
+        }
+       
+    //////////////////////////// Device Ends /////////////////////////////////////////
+    }  // main If else ends 
 
     // Log the event
     $trailLog = new TrailLog;

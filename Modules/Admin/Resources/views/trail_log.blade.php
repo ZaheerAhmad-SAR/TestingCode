@@ -240,6 +240,8 @@
 
     // selct initialize
     $('.user_name').select2();
+    $('select[name="event_section"]').select2();
+
 </script>
 @endsection
 
