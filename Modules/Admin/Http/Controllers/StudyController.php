@@ -98,31 +98,31 @@ class StudyController extends Controller
      */
     public function store(Request $request)
     {
-        $studyID = $request->study_id;
-        //dd($request->all());
-        $study   =   Study::updateOrCreate(
-            [
-                'id' => $studyID
-            ],
-            [
-                'id'    => !empty($studyID)?$studyID:\Illuminate\Support\Str::uuid(),
-                'study_short_name'  =>  $request->study_short_name,
-                'study_title' => $request->study_title,
-                'study_status'  => 'Development',
-                'study_code' => $request->study_code,
-                'protocol_number' => $request->protocol_number,
-                'study_phase' => $request->study_phase,
-                'trial_registry_id' => $request->trial_registry_id,
-                'study_sponsor' => $request->study_sponsor,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'description'   =>  $request->description,
-                'user_id'       => $request->user()->id
-            ]
-        );
+        if ($request->ajax()){
+            $studyID = $request->study_id;
+            $study   =   Study::updateOrCreate(
+                [
+                    'id' => $studyID
+                ],
+                [
+                    'id'    => !empty($studyID)?$studyID:\Illuminate\Support\Str::uuid(),
+                    'study_short_name'  =>  $request->study_short_name,
+                    'study_title' => $request->study_title,
+                    'study_status'  => 'Development',
+                    'study_code' => $request->study_code,
+                    'protocol_number' => $request->protocol_number,
+                    'study_phase' => $request->study_phase,
+                    'trial_registry_id' => $request->trial_registry_id,
+                    'study_sponsor' => $request->study_sponsor,
+                    'start_date' => $request->start_date,
+                    'end_date' => $request->end_date,
+                    'description'   =>  $request->description,
+                    'user_id'       => $request->user()->id
+                ]
+            );
 
-        if ($request->users != Null) {
-            foreach ($request->users as $user) {
+            if (!empty($request->users) && $request->users != Null) {
+                foreach ($request->users as $user) {
                     $studyuser = StudyUser::find($user);
                     if (empty($studyuser)) {
                         StudyUser::updateOrCreate([
@@ -133,23 +133,24 @@ class StudyController extends Controller
                     }
                 }
             }
-        if ($request->disease_cohor != Null ) {
-            foreach ($request->disease_cohort as $disease_cohort) {
+            if (!empty($request->disease_cohort) && $request->disease_cohort != '') {
+                foreach ($request->disease_cohort as $disease_cohort) {
                     $checkDiseaseCohort = DiseaseCohort::find($disease_cohort);
-                if (empty($checkDiseaseCohort)) {
-                    $diseaseCohort = DiseaseCohort::updateOrCreate([
-                        'id' => \Illuminate\Support\Str::uuid(),
-                        'study_id' => $study->id,
-                        'name' => $disease_cohort
-                    ]);
+                    if (empty($checkDiseaseCohort)) {
+                        $diseaseCohort = DiseaseCohort::updateOrCreate([
+                            'id' => \Illuminate\Support\Str::uuid(),
+                            'study_id' => $study->id,
+                            'name' => $disease_cohort
+                        ]);
+                    }
                 }
             }
-        }
-        else{
+            else{
+                return \response()->json($study);
+            }
             return \response()->json($study);
         }
 
-        return \response()->json($study);
     }
 
     /**

@@ -229,8 +229,7 @@
 
 
        // Add New Option Group
-       function addOptionsGroup()
-       {
+
            $("#OptionsGroupForm").submit(function(e) {
                $.ajaxSetup({
                    headers: {
@@ -255,16 +254,10 @@
                    }
                });
            });
-       }
-       addOptionsGroup();
-
-       function editOptionGroup() {
 
            $('body').on('click', '.editOptions', function (e) {
-               //$('#OptionsGroupEditForm').trigger('reset');
                $('#editOptionGroups').modal('show');
                var id =($(this).attr("data-id"));
-               console.log(id);
                var url = "{{URL('optionsGroup')}}";
                var newPath = url+ "/"+ id+"/edit/";
                $.ajaxSetup({
@@ -311,16 +304,11 @@
                    }
                });
            });
-       }
 
-       editOptionGroup();
 
 
        /// Update Child Modility Function
 
-
-       function updateOptionGroup ()
-       {
            $("#OptionsGroupEditForm").submit(function(e) {
                $.ajaxSetup({
                    headers: {
@@ -331,7 +319,7 @@
 
                $.ajax({
                    data: $('#OptionsGroupEditForm').serialize(),
-                   url: "{{ route('updateOptionsGroup') }}",
+                   url: "{{ route('optionsGroup.update') }}",
                    type: "POST",
                    dataType: 'json',
                    success: function (data) {
@@ -346,8 +334,6 @@
                    }
                });
            });
-       }
-       updateOptionGroup();
 
        //  Options Delete function
        $('body').on('click','.deleteOptions',function(){
