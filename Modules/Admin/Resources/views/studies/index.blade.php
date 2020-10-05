@@ -259,12 +259,11 @@
                             <div class="form-group row" style="margin-top: 10px;">
                                 <label for="study_users" class="col-sm-3"></label>
                                 <div class="{!! ($errors->has('users')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                    <select class="searchable" id="select-users" multiple="multiple" name="users[]">
+                                    <select class="searchable appendusers" id="select-users" multiple="multiple" name="users[]">
                                        @foreach($users as $user)
                                         <option value="{{$user->id}}">{{$user->name}}</option>
                                         @endforeach
                                     </select>
-                                   
                                 </div>
                                 @error('users')
                                 <span class="text-danger small">
@@ -309,6 +308,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="change_status" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -432,10 +432,11 @@
                 var user = '';
                 $('.appendusers').html('');
                 $.each(data.users,function (index, value) {
-                    console.log(index,value);
-                    user += '<option value=" '+value.id+' ">'+value.name+'</option>';
+                    //console.log(index,value);
+                    user += '<option selected="selected" value=" '+value.id+' ">'+value.name+'</option>';
+
                 });
-               $('.appendusers').append(user);
+               $('.appendusers').html(user);
 
            })
         });
@@ -487,7 +488,6 @@
 
     });
 
-
     if ($("#studyForm").length > 0) {
         $("#studyForm").validate({
             submitHandler: function(form) {
@@ -538,4 +538,19 @@
     }
 
 </script>
+    <script type="text/javascript">
+        $().ready(function() {
+            $('#add').click(function() {
+                return !$('#select1 option:selected').remove().appendTo('#select2');
+            });
+            $('#remove').click(function() {
+                return !$('#select2 option:selected').remove().appendTo('#select1');
+            });
+        });
+        $('form').submit(function() {
+            $('#select2 option').each(function(i) {
+                $(this).attr("selected", "selected");
+            });
+        });
+    </script>
 @endsection
