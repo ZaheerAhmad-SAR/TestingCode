@@ -820,6 +820,7 @@
                         type: "POST",
                         dataType: 'json',
                         success: function (results) {
+                    
                             $('#select-sites').html('');
                             html +='<ul class="ms-list" tabindex="-1">';
                             $.each(results,function(i,v){
