@@ -264,9 +264,7 @@
                                         <option value="{{$user->id}}">{{$user->name}}</option>
                                         @endforeach
                                     </select>
-                                    <select class="searchable appendusers" id="select-users" multiple="multiple" name="users[]">
-
-                                    </select>
+                                   
                                 </div>
                                 @error('users')
                                 <span class="text-danger small">

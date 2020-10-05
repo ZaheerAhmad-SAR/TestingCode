@@ -67,8 +67,15 @@ $('.updateSort').on('click',function(){
         dataType:'json',
         success:function(res){
             $('#question-sort-close').click();
-            var step_id = $('#steps').val();
+            var step_id = $('#steps').val()
+                tId;
             display_sections(step_id);
+            $('.success-msg').html('');
+            $('.success-msg').html('Question Sort Number Updated!')
+            $('.success-alert').slideDown('slow');
+            tId=setTimeout(function(){
+                $(".success-alert").slideUp('slow');
+            }, 4000);
         }
     })
 })
@@ -116,7 +123,6 @@ function get_steps_phase_id(id,step_class){
 }
 
 // get sections
-
 function get_section_step_id(id,section_class){
    section_class.html(''); 
    var options = '<option value="">---Form / Sections---</option>';
@@ -144,7 +150,7 @@ function get_question_section_id(id,div_class){
     div_class.html(''); 
     var options = '<option value="">---Select Question---</option>';
     $.ajax({
-        url:'forms/get_allQuestions/'+id,
+        url:'forms/get_Questions/'+id,
         type:'post',
         dataType:'json',
         data:{
@@ -154,7 +160,7 @@ function get_question_section_id(id,div_class){
         },
         success:function(response){
             $.each(response['data'],function(k,v){
-                options += '<option value="'+v.question_id+'" >'+v.question_text+'</option>';
+                options += '<option value="'+v.id+'" >'+v.question_text+'</option>';
             });
             div_class.append(options); 
         }
@@ -182,6 +188,28 @@ function get_all_annotations(id,div_class){
                 options += '<option value="'+v.id+'" >'+v.label+'</option>';
             });
             div_class.append(options); 
+        }
+    });    
+}
+
+// get sections for dropdown
+function section_against_step(id,section_class){
+   section_class.html(''); 
+   var options = '<option value="">---Form / Sections---</option>';
+   $.ajax({
+        url:'forms/sections_against_step/'+id,
+        type:'post',
+        dataType: 'json',
+         data: {
+            "_token": "{{ csrf_token() }}",
+            "_method": 'GET',
+            'step_id': id
+        },
+        success:function(response){
+             $.each(response['data'],function(k,v){
+                options += '<option value="'+v.id+'" >'+v.name+'</option>';
+            });
+            section_class.append(options); 
         }
     });    
 }
