@@ -102,46 +102,10 @@ class StudySiteController extends Controller
      * @param int $id
      * @return Renderable
      */
-//    public function update(Request $request)
-//    {
-//
-//        $others = '';
-//        $sites = $request->sites;
-//        $current_study = session('current_study');
-//        $result = StudySite::where('study_id', $current_study)->delete();
-//        if (!empty($sites))
-//        {
-//            foreach ($sites as $site)
-//            {
-//                $exploadRecord = explode("_",$site);
-//
-//                if($exploadRecord[1]){
-//
-//                    $others = StudySite::create([
-//                        'id'    => Str::uuid(),
-//                        'site_id' =>$exploadRecord[0],
-//                        'study_site_id'=>$exploadRecord[1],
-//                        'study_id'=>session('current_study')
-//
-//                    ]);
-//                }
-//                else
-//                {
-//                    $others = StudySite::create([
-//                        'id'    => Str::uuid(),
-//                        'site_id' =>$exploadRecord[0],
-//                        'study_id'=>session('current_study')
-//                    ]);
-//                }
-//            }
-//        }
-//
-//        return response()->json([$others]);
-//        //return response()->json(['success'=>'Study site is updated successfully!!!!']);
-//    }
 
     public function update(Request $request)
     {
+
             $others = '';
             $sites = $request->sites != '' ? $request->sites : [];
             $current_study =  \Session::get('current_study');
@@ -151,12 +115,6 @@ class StudySiteController extends Controller
             ->where('site_study.study_id', $current_study)
             ->pluck('sites.site_name')
             ->toArray();
-
-            // new study sites
-            // $newStudySite = Site::select('id', 'site_name')
-            // ->whereIn('id', $sites)
-            // ->pluck('site_name')
-            // ->toArray();
 
             $study = Study::find($current_study);
             $study->studySites()->sync($sites);
@@ -187,7 +145,6 @@ class StudySiteController extends Controller
 
     public function insertCoordinators(Request $request)
     {
-
         $table_site_study_id    = $_POST['table_site_study_id'];
         $coordinators = $_POST['coordinators_id'];
         foreach ($coordinators as $coordinator)
@@ -204,14 +161,14 @@ class StudySiteController extends Controller
 
     public function deleteSiteCoordinator(Request $request)
     {
-         $coordinators = $_POST['coordinator_id'];
-         $studySiteId  = trim($_POST['studySiteId']);
+        $coordinators = $_POST['coordinator_id'];
+        $studySiteId  = trim($_POST['studySiteId']);
         $records  = SiteStudyCoordinator::where('site_study_id',$studySiteId)->get();
 
-      foreach ($records as $record)
+        foreach ($records as $record)
         {
-             $coordinator = SiteStudyCoordinator::find($record->id);
-             $coordinator->delete();
+            $coordinator = SiteStudyCoordinator::find($record->id);
+            $coordinator->delete();
         }
         return response()->json(['success'=>'Coordinator is Deleted successfully!!!!']);
     }
