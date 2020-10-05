@@ -496,7 +496,54 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
         }
        
     //////////////////////////// Study Sites Ends /////////////////////////////////////////
-    }  // main If else ends 
+    } else if ($eventSection == 'Study') {
+        // get event data
+        $eventData = Study::find($eventId);
+        // set message for audit
+        $auditMessage = \Auth::user()->name.' added study '.$eventData->study_title.'.';
+        // set audit url
+        $auditUrl = url('studies');
+        // store data in event array
+        $newData = array(
+            'study_short_name'  =>  $eventData->study_short_name,
+            'study_title' => $eventData->study_title,
+            'study_status'  => 'Development',
+            'study_code' => $eventData->study_code,
+            'protocol_number' => $eventData->protocol_number,
+            'study_phase' => $eventData->study_phase,
+            'trial_registry_id' => $eventData->trial_registry_id,
+            'study_sponsor' => $eventData->study_sponsor,
+            'start_date' => $eventData->start_date,
+            'end_date' => $eventData->end_date,
+            'description'   =>  $eventData->description,
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
+        );
+        // if it is update case
+        if($eventType == 'Update') {
+            
+            $oldData = array(
+                'study_short_name'  =>  $previousData->study_short_name,
+                'study_title' => $previousData->study_title,
+                'study_status'  => 'Development',
+                'study_code' => $previousData->study_code,
+                'protocol_number' => $previousData->protocol_number,
+                'study_phase' => $previousData->study_phase,
+                'trial_registry_id' => $previousData->trial_registry_id,
+                'study_sponsor' => $previousData->study_sponsor,
+                'start_date' => $previousData->start_date,
+                'end_date' => $previousData->end_date,
+                'description'   =>  $previousData->description,
+                'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+                'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+            );
+
+            // set message for audit
+            $auditMessage = \Auth::user()->name.' updated study '.$eventData->study_title.'.';
+        }
+       
+    //////////////////////////// Device Ends /////////////////////////////////////////
+    } // main If else ends 
 
     // Log the event
     $trailLog = new TrailLog;
