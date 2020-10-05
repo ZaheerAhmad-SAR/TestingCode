@@ -46,4 +46,11 @@ class Question extends Model
         }
         return $answer;
     }
+    public function DependentQuestion(){
+        return $this->hasOne(QuestionDependency::class,'question_id','id')->withDefault();
+    }
+    
+    public function AdjStatus(){
+        return $this->hasOne(QuestionAdjudicationStatus::class,'question_id','id')->withDefault();
+    }
 }
