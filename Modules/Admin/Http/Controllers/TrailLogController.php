@@ -58,8 +58,11 @@ class TrailLogController extends Controller
                 "Photographer" => "Photographer",
                 "Others" => "Others",
                 "Annotation" => "Annotation",
-                "System Role" => "System Role",
-                "System User" => "System User"
+                "Role" => "Role",
+                "User" => "User",
+                "Modality" => "Modality",
+                "Child Modality" => "Child Modality",
+                "Device" => "Device"
 
             );
 
@@ -69,6 +72,7 @@ class TrailLogController extends Controller
                                 ->GroupBy('trail_logs.user_id')
                                 ->orderBy('users.name', 'asc')
                                 ->get();
+
 
     	} else {
     		// check if session for subject is set
@@ -81,7 +85,7 @@ class TrailLogController extends Controller
 					    			->paginate(15);
     		}
     	} // user role echeck ends
-      	
-    	return view('admin::trail_log', compact('getLogs', 'eventSection', 'getUsers'));
+
+    	return view('admin::trail_log', compact('getLogs', 'eventSection','getUsers'));
     }
 }

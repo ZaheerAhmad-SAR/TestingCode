@@ -67,7 +67,8 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'created_by'    => \auth()->user()->id
+            'created_by'    => \auth()->user()->id,
+            'role_id'   =>  !empty($request->roles)?$request->roles[0]:2
             ]);
         if ($request->roles)
         {
@@ -89,7 +90,7 @@ class UserController extends Controller
 
         $oldUser = [];
         // log event details
-        $logEventDetails = eventDetails($id, 'System User', 'Add', $request->ip(), $oldUser);
+        $logEventDetails = eventDetails($id, 'User', 'Add', $request->ip(), $oldUser);
 
         return redirect()->route('users.index');
     }
@@ -151,7 +152,7 @@ class UserController extends Controller
     {
         // get old user data for trail log
         $oldUser = User::where('id', $id)->first();
-        
+
         $user   =   User::find($id);
         $user->name  =  $request->name;
         $user->email =  $request->email;
@@ -172,7 +173,7 @@ class UserController extends Controller
         }
 
          // log event details
-        $logEventDetails = eventDetails($user->id, 'System User', 'Update', $request->ip(), $oldUser);
+        $logEventDetails = eventDetails($user->id, 'User', 'Update', $request->ip(), $oldUser);
 
         return redirect()->route('users.index');
 

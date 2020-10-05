@@ -1,10 +1,12 @@
 <?php
 
-namespace Modules\UserRoles\Http\Controllers;
+namespace Modules\Queries\Http\Controllers;
 
+use App\User;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class QueriesController extends Controller
 {
@@ -14,7 +16,11 @@ class QueriesController extends Controller
      */
     public function index()
     {
-        return view('userroles::index');
+
+        $users  =   User::where('id','!=',\auth()->user()->id)->get();
+        //dd($users);
+        return view('queries::queries.index',compact('users'));
+
     }
 
     /**
@@ -23,7 +29,7 @@ class QueriesController extends Controller
      */
     public function create()
     {
-        return view('userroles::create');
+        return view('queries::create');
     }
 
     /**
@@ -43,7 +49,7 @@ class QueriesController extends Controller
      */
     public function show($id)
     {
-        return view('userroles::show');
+        return view('queries::show');
     }
 
     /**
@@ -53,7 +59,7 @@ class QueriesController extends Controller
      */
     public function edit($id)
     {
-        return view('userroles::edit');
+        return view('queries::edit');
     }
 
     /**

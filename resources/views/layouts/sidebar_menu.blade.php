@@ -74,6 +74,7 @@
             </li>
             @endif
             @if(hasPermission(auth()->user(),'studytools.index'))
+                @if(session('current_study'))
                 <li class="dropdown">
                     <ul>
                         <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Tools</a>
@@ -142,6 +143,7 @@
                         </li>
                 </ul>
             </li>
+            @endif
             @endif
             @if(hasPermission(auth()->user(),'subjects.index'))
                 <li class=""><!-- <a href="#"><i class="fas fa-laptop-medical mr-1"></i>Subject Management</a> -->
@@ -244,12 +246,20 @@
                                     Overall Data Report
                                 </a>
                             </li>
+                            @if(hasPermission(auth()->user(),'queries.index'))
+                            <li>
+                                <a href="{{route('queries.index')}}">
+                                    Chat App
+                                </a>
+                            </li>
+                                @endif
                         </ul>
                     </li>
                 </ul>
             </li>
             @endif
-            
+
+
             @if(hasPermission(auth()->user(),'activitylog.index'))
                 <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
                     <ul >

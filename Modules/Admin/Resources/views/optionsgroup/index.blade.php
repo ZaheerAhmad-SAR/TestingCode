@@ -265,7 +265,7 @@
                $('#editOptionGroups').modal('show');
                var id =($(this).attr("data-id"));
                console.log(id);
-               var url = "{{URL('/ocap_new/optionsGroup')}}";
+               var url = "{{URL('optionsGroup')}}";
                var newPath = url+ "/"+ id+"/edit/";
                $.ajaxSetup({
                    headers: {
