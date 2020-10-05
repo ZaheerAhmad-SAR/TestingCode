@@ -156,13 +156,13 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     Route::post('studySite/update', 'StudySiteController@update')->name('studySite.update');
 
-    Route::post('studySite/updateStudySite', 'StudySiteController@updateStudySite')->name('updateStudySiteId');
+    Route::post('studySite/updateStudySite', 'StudySiteController@updateStudySite')->name('studySite.updateStudySite');
 
-    Route::post('studySite/updatePrimaryInvestigator', 'StudySiteController@updatePrimaryInvestigator')->name('updatePI');
+    Route::post('studySite/updatePrimaryInvestigator', 'StudySiteController@updatePrimaryInvestigator')->name('studySite.updatePrimaryInvestigator');
 
-    Route::post('studySite/insertCoordinators', 'StudySiteController@insertCoordinators')->name('insertCO');
+    Route::post('studySite/insertCoordinators', 'StudySiteController@insertCoordinators')->name('studySite.insertCoordinators');
 
-    Route::post('studySite/deleteSiteCoordinator', 'StudySiteController@deleteSiteCoordinator')->name('deleteCO');
+    Route::post('studySite/deleteSiteCoordinator', 'StudySiteController@deleteSiteCoordinator')->name('studySite.deleteSiteCoordinator');
 
 
     //SubjectFormLoader
