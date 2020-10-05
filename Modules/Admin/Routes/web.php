@@ -23,8 +23,8 @@ Route::group(['middleware' => ['auth', 'web']], function () {
 Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], function () {
 
     Route::resource('sites', 'SiteController');
-    Route::post('sites/update', 'SiteController@update')->name('updateSites');
-    Route::DELETE('sites/destroy/{sites_id}', 'SiteController@destroy')->name('destroysites');
+    Route::post('sites/update', 'SiteController@update')->name('sites.updateSites');
+    Route::DELETE('sites/destroy/{sites_id}', 'SiteController@destroy')->name('sites.destroy');
 
     Route::resource('studies', 'StudyController');
     Route::resource('devices', 'DeviceController');
@@ -43,7 +43,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     Route::get('others/{id}/showOtherBySiteId', 'OtherController@showOtherBySiteId')->name('others.showOtherBySiteId');
 
-    Route::post('others/update', 'OtherController@update')->name('updateOthers');
+    Route::post('others/update', 'OtherController@update')->name('others.update');
 
     //routes for options groups
 
@@ -66,9 +66,11 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::post('forms/updateQuestion', 'FormController@update_questions')->name('updateQuestion');
     Route::get('forms/get_phases/{id}', 'FormController@get_phases')->name('get_phases');
     Route::get('forms/step_by_phaseId/{id}', 'FormController@get_steps_by_phaseId')->name('stepbyphaseId');
+    Route::get('forms/sections_against_step/{id}', 'FormController@get_sections_against_step')->name('sections_against_step');
     Route::get('forms/sections_by_stepId/{id}', 'FormController@get_section_by_stepId')->name('sectionsbystepId');
     Route::post('studyStatus', 'StudyController@studyStatus')->name('study.studyStatus');
     Route::post('changeStatus/{id}', 'StudyController@changeStatus')->name('studies.changeStatus');
+    Route::get('forms/get_Questions/{id}', 'FormController@get_Questions')->name('get_Questions');
     Route::get('forms/get_allQuestions/{id}', 'FormController@get_allQuestions')->name('get_allQuestions');
     Route::get('forms/show/{phase_id}/{step_id}', 'FormController@show')->name('forms.show');
     Route::get('forms/changeSort/{id}', 'FormController@updateQustionsort')->name('changeSort');
@@ -103,7 +105,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     Route::get('photographers/{id}/showPhotographerBySiteId', 'PhotographerController@showPhotographerBySiteId')->name('photographers.showPhotographerBySiteId');
 
-    Route::post('photographers/update', 'PhotographerController@update')->name('updatePhotographers');
+    Route::post('photographers/update', 'PhotographerController@update')->name('photographers.update');
 
 
     Route::resource('coordinator', 'CoordinatorController');
@@ -111,13 +113,13 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     Route::get('coordinator/{id}/showCoordinatorBySiteId', 'CoordinatorController@showCoordinatorBySiteId')->name('coordinator.showCoordinatorBySiteId');
 
-    Route::post('coordinator/update', 'CoordinatorController@update')->name('updateCoordinator');
+    Route::post('coordinator/update', 'CoordinatorController@update')->name('coordinator.update');
 
 
 
     Route::resource('primaryinvestigator', 'PrimaryInvestigatorController');
 
-    Route::post('primaryinvestigator/update', 'PrimaryInvestigatorController@update')->name('updatePrimaryinvestigator');
+    Route::post('primaryinvestigator/update', 'PrimaryInvestigatorController@update')->name('primaryinvestigator.update');
 
 
     Route::get('primaryinvestigator/{id}/showSiteId', 'PrimaryInvestigatorController@showSiteId')->name('primaryinvestigator.showSiteId');

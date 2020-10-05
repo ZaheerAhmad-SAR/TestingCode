@@ -60,20 +60,89 @@ class FormController extends Controller
         echo json_encode($stepsData);
     }
 
-    public function get_section_by_stepId($id)
+    public function get_sections_against_step($id)
     {
         $section = Section::select('*')->where('phase_steps_id',$id)->orderBy('sort_number', 'asc')->get();
         $sectionData['data'] = $section;
         echo json_encode($sectionData);
     }
-    public function get_allQuestions($id)
-    {
-        $questions = Question::with('form_field_type','formFields')
-        ->join('form_field','form_field.question_id','=','question.id')
-        ->join('options_groups','options_groups.id','=','question.option_group_id' ,'left')
+    public function get_Questions($id){
+        $questions = Question::with('formFields','form_field_type','optionsGroup')
         ->where('question.section_id', '=', $id)->orderBy('question.question_sort', 'asc')->get();
         $questionsData['data'] = $questions;
         echo json_encode($questionsData);
+    }
+    public function get_section_by_stepId($id){
+        $section = Section::select('*')->where('phase_steps_id',$id)->orderBy('sort_number', 'asc')->get();
+        $section_contents = '';
+        $section_contents .= '<div id="accordion">';
+            foreach ($section as $key => $value) {
+                $show = ($key == 0) ? 'show' : '';
+                $section_contents .='<div class="card"><div class="card-header"><a class="card-link" data-toggle="collapse" href="#collapse_'.$value->id.'">'.$value->sort_number.'&nbsp;&nbsp;&nbsp;&nbsp;' .$value->name.'</a></div><div id="collapse_'.$value->id.'" class="collapse '.$show.'" data-parent="#accordion"><div class="card-body questions_'.$value->id.'">';
+                $section_contents .= $this->get_allQuestions($value->id);
+                $section_contents .= '</div></div></div>';
+            }
+        $section_contents .= '</div>'; 
+        return Response($section_contents);
+    }
+    public function get_allQuestions($id='')
+    {
+        $questions = Question::with('formFields','form_field_type','optionsGroup','DependentQuestion','AdjStatus')
+        ->where('question.section_id', '=', $id)->orderBy('question.question_sort', 'asc')->get();
+        $question_contents = '';
+        foreach ($questions as $ques_value) {
+            $question_contents .='<div class="form-group row custom_fields"><input type="hidden" class="question_id" value="'.$ques_value->id.'"><input type="hidden" class="formFields_id" value="'.$ques_value->formFields->id.'"><input type="hidden" class="question_sort" value="'.$ques_value->question_sort.'"><input type="hidden" class="question_type_id" value="'.$ques_value->form_field_type->id.'"><input type="hidden" class="section_id" value="'.$id.'"><input type="hidden" class="option_group_id" value="'.$ques_value->option_group_id.'"><input type="hidden" class="c_disk" value="'.$ques_value->c_disk.'"><input type="hidden" class="question_text" value="'.$ques_value->question_text.'"><input type="hidden" class="variable_name" value="'.$ques_value->formFields->variable_name.'"><input type="hidden" class="text_info" value="'.$ques_value->formFields->text_info.'"><input type="hidden" class="is_required" value="'.$ques_value->formFields->is_required.'"><input type="hidden" class="is_exportable_to_xls" value="'.$ques_value->formFields->is_exportable_to_xls.'"><input type="hidden" class="field_width" value="'.$ques_value->formFields->field_width.'"><input type="hidden" class="measurement_unit" value="'.$ques_value->measurement_unit.'"><input type="hidden" class="lower_limit" value="'.$ques_value->formFields->lower_limit.'"><input type="hidden" class="upper_limit" value="'.$ques_value->formFields->upper_limit.'"><input type="hidden" class="question_type" value="'.$ques_value->form_field_type->field_type.'"><input type="hidden" class="dependency_id" value="'.$ques_value->DependentQuestion->id.'"><input type="hidden" class="dependency_status" value="'.$ques_value->DependentQuestion->q_d_status.'"><input type="hidden" class="dependency_operator" value="'.$ques_value->DependentQuestion->opertaor.'"><input type="hidden" class="dependency_question" value="'.$ques_value->DependentQuestion->dep_on_question_id.'"><input type="hidden" class="dependency_custom_value" value="'.$ques_value->DependentQuestion->custom_value.'"><input type="hidden" class="adj_id" value="'.$ques_value->AdjStatus->id.'"><input type="hidden" class="adj_status" value="'.$ques_value->AdjStatus->adj_status.'"><input type="hidden" class="adj_decision_based" value="'.$ques_value->AdjStatus->decision_based_on.'"><input type="hidden" class="adj_operator" value="'.$ques_value->AdjStatus->opertaor.'"><input type="hidden" class="adj_custom_value" value="'.$ques_value->AdjStatus->custom_value.'">';
+            $question_contents .= '<div class="col-sm-4">'.$ques_value->question_sort.'. '.$ques_value->question_text.'</div>';
+            if ($ques_value->form_field_type->field_type =='Radio') {
+                  if($ques_value->optionsGroup->option_layout =='vertical'){
+                    $br = '<br>';
+                  }else{ $br = ''; }
+                  $option_name = explode(',', $ques_value->optionsGroup->option_name);
+                  $option_values = explode(',', $ques_value->optionsGroup->option_value);
+                  $question_contents .= '<div class="col-sm-6">';
+                  foreach ($option_name as $key => $name) {
+                      $question_contents .= '<input type="radio" name="question_'.$ques_value->id.'" value="'.$option_values[$key].'"> &nbsp;'.$name.'&nbsp;'.$br;
+                  }
+                  $question_contents .='</div>';  
+            }elseif ($ques_value->form_field_type->field_type == 'Number') {
+                $question_contents .=  '<div class="col-sm-6"> <input type="number" name="question_'.$ques_value->id.
+                            '" value="" class="form-control"></div>';                   
+            }elseif ($ques_value->form_field_type->field_type == 'Dropdown') {
+                $option_name = explode(',', $ques_value->optionsGroup->option_name);
+                $option_values = explode(',', $ques_value->optionsGroup->option_value);
+                $question_contents .= '<div class="col-sm-6"><select name="question_'.$ques_value->id.'" class="form-control">';
+                foreach ($option_name as $key => $name) {
+                      $question_contents .= '<option value="'.$option_values[$key].'">'.$name.'</option>';
+                } 
+                $question_contents .= '</select></div>';                  
+            }elseif($ques_value->form_field_type->field_type == 'Checkbox'){
+                if($ques_value->optionsGroup->option_layout =='vertical'){
+                    $br = '<br>';
+                  }else{ $br = ''; }
+                  $option_name = explode(',', $ques_value->optionsGroup->option_name);
+                  $option_values = explode(',', $ques_value->optionsGroup->option_value);
+                  $question_contents .= '<div class="col-sm-6">';
+                  foreach ($option_name as $key => $name) {
+                      $question_contents .= '<input type="checkbox" name="question_'.$ques_value->id.
+                                     '_'.$ques_value->question_id.'" value="'.$option_values[$key].'"> &nbsp;'.$name.'&nbsp;'.$br;
+                  }
+                  $question_contents .='</div>';  
+            }elseif($ques_value->form_field_type->field_type == 'Text'){
+                $question_contents .=  '<div class="col-sm-6"> <input type="text" name="question_'.$ques_value->id.
+                            '" value="" class="form-control"></div>';
+            }elseif($ques_value->form_field_type->field_type == 'Textarea'){
+                $question_contents .=  '<div class="col-sm-6"><textarea name="question_'.$ques_value->id.
+                            '" value="" class="form-control" row="2"></textarea></div>';
+            }elseif($ques_value->form_field_type->field_type == 'Date & Time'){
+                $question_contents .=  '<div class="col-sm-6"><input type="date" name="question_'.$ques_value->id.
+                            '" value="" class="form-control"></div>';
+            }elseif($ques_value->form_field_type->field_type == 'Upload'){
+                $question_contents .=  '<div class="col-sm-6"><input type="file" name="question_'.$ques_value->id.
+                            '" value="" class="form-control"></div>';
+            }
+            $question_contents .= '<div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
+        }
+        return $question_contents;
     }
     public function updateQustionsort(Request $request)
     {
@@ -135,22 +204,23 @@ class FormController extends Controller
         /// question validation 
         $id    = Str::uuid();
         $Question_validation = [];
-        for ($i = 0; $i < count($request->decision_one); $i++) {
-            $Question_validation[] = [
-                'id' => $id,
-                'question_id' => $last_id->id,
-                'decision_one' => $request->decision_one[$i],
-                'opertaor_one' => $request->opertaor_one[$i],
-                'dep_on_question_one_id' => $request->dep_on_question_one_id[$i],
-                'condition' => $request->operator[$i],
-                'decision_two' => $request->decision_two[$i],
-                'opertaor_two' => $request->opertaor_two[$i],
-                'error_type' => $request->error_type[$i],
-                'error_message' => $request->error_message[$i]
-            ];
+        if(isset($request->decision_one) && count($request->decision_one) >0){
+            for ($i = 0; $i < count($request->decision_one); $i++) {
+                $Question_validation[] = [
+                    'id' => $id,
+                    'question_id' => $last_id->id,
+                    'decision_one' => $request->decision_one[$i],
+                    'opertaor_one' => $request->opertaor_one[$i],
+                    'dep_on_question_one_id' => $request->dep_on_question_one_id[$i],
+                    'condition' => $request->operator[$i],
+                    'decision_two' => $request->decision_two[$i],
+                    'opertaor_two' => $request->opertaor_two[$i],
+                    'error_type' => $request->error_type[$i],
+                    'error_message' => $request->error_message[$i]
+                ];
+            }
+            QuestionValidation::insert($Question_validation);
         }
-        QuestionValidation::insert($Question_validation);
-
         //Question dependencies 
         $id    = Str::uuid();
         $dependencies = QuestionDependency::create([
@@ -165,17 +235,18 @@ class FormController extends Controller
         // Question annotation
         $id    = Str::uuid();
         $annotation = [];
-        for ($i = 0; $i < count($request->terminology_id); $i++) {
-            $annotation[] = [
-                'id' => $id,
-                'question_id' => $last_id->id,
-                'annotation_id' => $request->terminology_id[$i],
-                'value' => $request->value[$i],
-                'description' => $request->description[$i]
-            ];
+        if(isset($request->terminology_id) && count($request->terminology_id) >0){
+            for ($i = 0; $i < count($request->terminology_id); $i++) {
+                $annotation[] = [
+                    'id' => $id,
+                    'question_id' => $last_id->id,
+                    'annotation_id' => $request->terminology_id[$i],
+                    'value' => $request->value[$i],
+                    'description' => $request->description[$i]
+                ];
+            }
+            AnnotationDescription::insert($annotation);
         }
-
-        AnnotationDescription::insert($annotation);
         // Question Adjudication 
         $id    = Str::uuid();
         $adjStatus = QuestionAdjudicationStatus::create([
@@ -187,10 +258,47 @@ class FormController extends Controller
             'custom_value' => $request->custom_value
             
         ]);
-        return redirect()->route('forms.index');
+        return redirect()->route('forms.index')->with('message', 'Record Added Successfully!');
     }
     public function update_questions(Request $request){
-        dd($request->all());
+        $question_info = Question::find($request->id);
+            $question_info->form_field_type_id = $request->form_field_type_id; 
+            $question_info->section_id = $request->section_id; 
+            $question_info->option_group_id = $request->option_group_id;
+            $question_info->question_sort = $request->question_sort;
+            $question_info->question_text = $request->question_text; 
+            $question_info->c_disk = $request->c_disk; 
+            $question_info->measurement_unit = $request->measurement_unit; 
+            $question_info->is_dependent = $request->field_dependent; 
+            $question_info->dependent_on = $request->dependent_on; 
+            $question_info->annotations = $request->dependent_on;
+        $question_info->save();
+        $form_field = FormFields::where('id',$request->field_id)->first();
+            $form_field->variable_name = $request->variable_name;
+            $form_field->is_exportable_to_xls = $request->is_exportable_to_xls; 
+            $form_field->is_required = $request->is_required; 
+            $form_field->lower_limit = $request->lower_limit; 
+            $form_field->upper_limit = $request->upper_limit; 
+            $form_field->field_width = $request->field_width; 
+            $form_field->text_info = $request->question_info; 
+            $form_field->text_info = $request->text_info; 
+            $form_field->validation_rules = $request->validation_rules;
+        $form_field->save();
+        // Question dependency update 
+        $dependencies = QuestionDependency::where('id',$request->dependency_id)->first();
+        $dependencies->q_d_status = $request->q_d_status;
+        $dependencies->dep_on_question_id = $request->dep_on_question_id; 
+        $dependencies->opertaor = $request->opertaor; 
+        $dependencies->custom_value = $request->custom_value;
+        $dependencies->save();    
+        // update adjudication 
+        $adjStatus = QuestionAdjudicationStatus::where('id',$request->adj_id)->first();
+        $adjStatus->adj_status = $request->adj_status;
+        $adjStatus->decision_based_on = $request->decision_based_on; 
+        $adjStatus->opertaor = $request->opertaor; 
+        $adjStatus->custom_value = $request->custom_value;
+        $adjStatus->save();
+        return redirect()->route('forms.index')->with('message', 'Record Updated Successfully!');
     }
     /**
      * Show the specified resource.
