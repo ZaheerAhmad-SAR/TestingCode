@@ -163,7 +163,7 @@
                                 @csrf
                                 <label>Current query status: &nbsp; &nbsp;<i style="color: red;" class="fas fa-question-circle"></i> &nbsp;New</label>
                                 <div class="form-group row">
-                                    <label for="Name" class="col-sm-4 col-form-label">Assign Queries</label>
+                                    <label for="Name" class="col-sm-4 col-form-label">Queries Assigned to:</label>
                                     <div class="col-sm-8">
                                         <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="users" checked> Users</label> &nbsp;
                                         <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="roles" > Roles</label>
@@ -183,12 +183,16 @@
                                 <div class="form-group row rolesInput" style="display: none;">
                                     <label for="Name" class="col-sm-4 col-form-label">Roles:</label>
                                     <div class="col-sm-8">
-                                        <select class="form-control" name="roles" id="roles">
-                                            <option value="">Adjudication</option>
-                                            <option value="">Grader</option>
-                                            <option value="">QC</option>
-                                            <option value="">Project Manager</option>
-                                        </select>
+
+                                        <label class="checked-inline  col-form-label"><input type="checkbox" id="roles" name="roles" value="users"> Adjudication</label> &nbsp;
+                                        <label class="checked-inline  col-form-label"><input type="checkbox" id="roles" name="roles" value="roles" > Grader</label>
+                                        <label class="checked-inline  col-form-label"><input type="checkbox" id="roles" name="roles" value="roles" > QC</label>
+{{--                                        <select class="form-control" name="roles" id="roles">--}}
+{{--                                            <option value="">Adjudication</option>--}}
+{{--                                            <option value="">Grader</option>--}}
+{{--                                            <option value="">QC</option>--}}
+{{--                                            <option value="">Project Manager</option>--}}
+{{--                                        </select>--}}
                                     </div>
                                 </div>
                                 <div class="form-group row statusInput">
@@ -629,18 +633,15 @@
        $('input[type="radio"]').click(function (){
            if ($(this).is(':checked'))
            {
-            //$(".usersInput").show('slow');
-               $(".usersInput").show('fast');
-            $(".rolesInput").hide('slow');
-            //$(".statusInput").show('slow');
-            //$(".remarksInput").show('slow');
+            $(".usersInput").show();
+            $(".rolesInput").hide();
            }
            if ($(this).attr("value")=="roles")
            {
-            $(".usersInput").hide('slow');
-            $(".rolesInput").show('slow');
-            $(".statusInput").show('slow');
-            $(".remarksInput").show('slow');
+            $('.usersInput').css('display','none');
+            $(".rolesInput").show();
+            $(".statusInput").show();
+            $(".remarksInput").show();
            }
        });
     });
