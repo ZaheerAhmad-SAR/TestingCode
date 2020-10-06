@@ -9,7 +9,7 @@
                     <a href="{{ url('/') }}" class="horizontal-logo text-left">
                 <span class="h4 font-weight-bold align-self-center mb-0 ml-auto">
                     OIRRC
-                 <img src="{{asset('public/dist/images/Logo.gif')}}" alt="OIRRC" style="width: 50px;">
+                 {{-- <img src="{{asset('public/dist/images/Logo.gif')}}" alt="OIRRC" style="width: 50px;"> --}}
                 </span>
                     </a>
                 </div>
@@ -38,13 +38,14 @@
                                 </div>
                             </a>
                             <div class="dropdown-menu border dropdown-menu-right p-0">
-                                <a href="" class="dropdown-item px-2 align-self-center d-flex">
-                                    <span class="icon-pencil mr-2 h6 mb-0"></span> Edit Profile</a>
-                                @foreach(auth()->user()->user_roles as $role)
+                                <a href="{{route('users.updateProfile')}}" class="dropdown-item px-2 align-self-center d-flex">
+                                    <span class="icon-pencil mr-2 h6 mb-0"></span> Edit Profile
+                                </a>
+                             {{--    @foreach(auth()->user()->user_roles as $role)
                                     <a href="{{ route('switch_role',$role->role_id) }}"
                                        class="dropdown-item px-2 align-self-center d-flex">
                                         <span class="icon-user mr-2 h6 mb-0">{{ucfirst( $role->role->name)}}</span> Role</a>
-                                @endforeach
+                                @endforeach --}}
                                 <div class="dropdown-divider"></div>
                                 <a href="{{ route('logout') }}"  onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item px-2 text-danger align-self-center d-flex">
                                     <span class="icon-logout mr-2 h6  mb-0"></span> Sign Out</a>

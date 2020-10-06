@@ -70,7 +70,7 @@ class UserController extends Controller
             'created_by'    => \auth()->user()->id,
             'role_id'   =>  !empty($request->roles)?$request->roles[0]:2
             ]);
-        if ($request->roles)
+        if (!empty($request->roles))
         {
             foreach ($request->roles as $role){
                 $roles =UserRole::create([
@@ -100,14 +100,18 @@ class UserController extends Controller
      * @param int $id
      * @return Response
      */
+    public function update_profile()
+    {
+        $user = auth()->user();
+       
+        return view('userroles::users.profile',compact('user'));
+    }
     public function show($id)
     {
         $user = User::find($id);
         $user->delete();
-
         return redirect()->route('users.index')->with('success','User deleted');
     }
-
     /**
      * Show the form for editing the specified resource.
      * @param int $id
@@ -148,6 +152,13 @@ class UserController extends Controller
      * @param int $id
      * @return Response
      */
+    public function update_user(Request $request, $id){
+        $user = User::where('id', $id)->first();
+        $user->name  =  $request->name;
+        $user->email =  $request->email;
+        $user->save();
+        return redirect()->route('users.updateProfile')->with('message', 'Record Updated Successfully!');
+    }
     public function update(Request $request, $id)
     {
         // get old user data for trail log
@@ -159,7 +170,6 @@ class UserController extends Controller
         $user->password  =  Hash::make($request->password);
         $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
         $user->save();
-
         $userroles  = UserRole::where('user_id',$user->id)->get();
         foreach ($userroles as $role_id){
             $role_id->delete();
@@ -171,8 +181,7 @@ class UserController extends Controller
                 'role_id'    =>  $role,
             ]);
         }
-
-         // log event details
+     // log event details
         $logEventDetails = eventDetails($user->id, 'User', 'Update', $request->ip(), $oldUser);
 
         return redirect()->route('users.index');
