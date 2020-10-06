@@ -105,12 +105,26 @@ class StudySiteController extends Controller
 
     public function update(Request $request)
     {
-        $others = '';
-        $sites = $request->sites;
-        $current_study = session('current_study');
-        $study = Study::find($current_study);
-        $study->studySites()->sync($sites);
-        return response()->json([$sites]);
+
+            $others = '';
+            $sites = $request->sites != null ? $request->sites : [];
+            $current_study =  \Session::get('current_study');
+
+            // gte old study sites
+            $oldStudySite = StudySite::select('sites.site_name')
+            ->leftjoin('sites','sites.id', '=', 'site_study.site_id')
+            ->where('site_study.study_id', $current_study)
+            ->pluck('sites.site_name')
+            ->toArray();
+
+            $study = Study::find($current_study);
+
+            $syncSites = $study != null ? $study->studySites()->sync($sites) : [];
+
+            // log event details
+            $logEventDetails = eventDetails($current_study, 'Study Site', 'Update', $request->ip(), $oldStudySite);
+
+            return response()->json([$sites]);
     }
 
     public function updateStudySite(Request $request)

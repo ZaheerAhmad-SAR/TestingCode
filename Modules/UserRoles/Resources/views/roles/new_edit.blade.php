@@ -57,9 +57,9 @@
                                         <div class="form-group row">
                                             <div class="col-md-3">Role Type <sup>*</sup></div>
                                             <div class="form-group col-md-9">
-                                                <input type="radio" name="role_type" value="{{$role->role_type}}"
+                                                <input type="radio" name="role_type" value="system_role"
                                                 @if($role->role_type == 'system_role') checked="checked" @endif> System Role &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                <input type="radio" name="role_type" value="{{$role->role_type}}"
+                                                <input type="radio" name="role_type" value="study_role"
                                                        @if($role->role_type == 'study_role') checked="checked" @endif> Study Role
                                             </div>
                                         </div>                                    </div>

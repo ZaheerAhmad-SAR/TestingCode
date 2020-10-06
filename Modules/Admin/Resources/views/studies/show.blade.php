@@ -257,6 +257,7 @@
                 site_id = row.find('td.site_id').text()
                 disease = row.find('td.disease').text()
                 study_eye = row.find('td.study_eye').text();
+            alert(enrol_date);
             $('#id').val(id);
             $('#subject_id').val(subject_id);
             $('#enrollment_date').val(enrol_date);
