@@ -71,7 +71,6 @@ class SiteController extends Controller
             $oldSite = [];
 
             // log event details
-
             $logEventDetails = eventDetails($id, 'Site', 'Add', $request->ip(), $oldSite);
 
         return response()->json(['site_id' => $id,'success'=>'Site Info is added successfully']);
@@ -128,7 +127,6 @@ class SiteController extends Controller
         Site::where('id', $request->lastSiteId)->update($data);
 
         // log event details
-
         $logEventDetails = eventDetails($request->lastSiteId, 'Site', 'Update', $request->ip(), $oldSite);
 
         return response()->json(['success'=>'Site Info is updated successfully']);

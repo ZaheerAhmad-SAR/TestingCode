@@ -98,14 +98,16 @@ class StudyController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->ajax()){
+        if ($request->ajax()) {
+
             $studyID = $request->study_id;
+            $oldStudy = !empty($studyID) ? Study::find($studyID) : [];
             $study   =   Study::updateOrCreate(
                 [
                     'id' => $studyID
                 ],
                 [
-                    'id'    => !empty($studyID)?$studyID:\Illuminate\Support\Str::uuid(),
+                    'id'    => !empty($studyID) ? $studyID : \Illuminate\Support\Str::uuid(),
                     'study_short_name'  =>  $request->study_short_name,
                     'study_title' => $request->study_title,
                     'study_status'  => 'Development',
@@ -121,6 +123,16 @@ class StudyController extends Controller
                 ]
             );
 
+            //check if its add or update event
+            if (empty($studyID)) {
+                // log data
+                $logEventDetails = eventDetails($study->id, 'Study', 'Add', $request->ip(), $oldStudy);
+
+            } else {
+                // log data
+                $logEventDetails = eventDetails($studyID, 'Study', 'Update', $request->ip(), $oldStudy);
+            }
+
             if (!empty($request->users) && $request->users != Null) {
                 foreach ($request->users as $user) {
                     $studyuser = StudyUser::find($user);
@@ -133,6 +145,7 @@ class StudyController extends Controller
                     }
                 }
             }
+
             if (!empty($request->disease_cohort) && $request->disease_cohort != '') {
                 foreach ($request->disease_cohort as $disease_cohort) {
                     $checkDiseaseCohort = DiseaseCohort::find($disease_cohort);
@@ -145,7 +158,7 @@ class StudyController extends Controller
                     }
                 }
             }
-            else{
+            else {
                 return \response()->json($study);
             }
             return \response()->json($study);
