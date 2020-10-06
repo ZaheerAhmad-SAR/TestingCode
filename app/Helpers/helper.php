@@ -46,7 +46,6 @@ function hasPermission($user, $routeName){
         $role = $role;
     }
     $permission = Permission::where('name','=',$routeName)->first();
-
     $rolePermission = RolePermission::where('role_id',$role->role_id)
         ->where('permission_id',$permission->id)->first();
         if ($rolePermission){
