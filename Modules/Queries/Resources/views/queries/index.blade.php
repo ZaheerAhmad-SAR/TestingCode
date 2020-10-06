@@ -30,7 +30,7 @@
                             <a href="#" class="chat-contact round-button d-inline-block d-lg-none"><i class="icon-menu"></i></a>
                             <a href="#" class="chat-profile d-inline-block d-lg-none"><img class="img-fluid  rounded-circle" src="dist/images/team-3.jpg" width="30" alt=""></a>
                             <div class="row row-eq-height">
-                                <div class="col-12 col-lg-4 col-xl-3 mt-lg-3 pr-lg-0">
+                                <div class="col-12 col-lg-4 col-md-4">
                                     <div class="card border h-100 chat-contact-list">
                                         <div class="card-header d-flex justify-content-between align-items-center">
                                             <ul class="nav nav-tabs" id="tabs-tab" role="tablist">
@@ -81,7 +81,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-12 col-lg-4 col-xl-6 mt-3 pl-lg-0 pr-lg-0">
+                                <div class="col-12 col-lg-8 col-md-8 ">
                                     <div class="card border h-100 rounded-0">
                                         <div class="card-body p-0">
                                             <div class="tab-content" id="myTabContent">

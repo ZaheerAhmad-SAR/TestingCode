@@ -325,7 +325,7 @@
         }
         editChild();
         /// Update Child Modility Function
-        function updateChildmodilities (){
+
             $("#editChildForm").submit(function(e) {
                 $.ajaxSetup({
                     headers: {
@@ -336,7 +336,7 @@
 
                 $.ajax({
                     data: $('#editChildForm').serialize(),
-                    url: "{{ route('updateChildmodilities') }}",
+                    url: "{{ route('childmodilities.update') }}",
                     type: "POST",
                     dataType: 'json',
                     success: function (data) {
@@ -351,8 +351,7 @@
                     }
                 });
             });
-        }
-        updateChildmodilities();
+
         //// show Child function
         {{--function showChild() {--}}
         {{--    $('.list-group-item').click(function() {--}}
@@ -387,8 +386,6 @@
                     }
                 });
                 e.preventDefault();
-                $(this).html('Sending..');
-
                 $.ajax({
                     data: $('#parentForm').serialize(),
                     url: "{{ route('modalities.store') }}",
@@ -413,7 +410,7 @@
         }
         modalitiesStore();
         /// update Modalities Function
-        function updateModalities() {
+
             $("#editParentForm").submit(function(e) {
                 $.ajaxSetup({
                     headers: {
@@ -424,7 +421,7 @@
 
                 $.ajax({
                     data: $('#editParentForm').serialize(),
-                    url: "{{ route('updateModalities') }}",
+                    url: "{{ route('modalities.update') }}",
                     type: "POST",
                     dataType: 'json',
                     success: function (data) {
@@ -440,8 +437,7 @@
                 });
             });
 
-        }
-        updateModalities();
+
         /// end of update Modalities Function
         // Add Child function
         function childmodilitiesStore() {
@@ -452,7 +448,6 @@
                     }
                 });
                 e.preventDefault();
-                $(this).html('Sending..');
                 $.ajax({
                     data: $('#childForm').serialize(),
                     url: "{{ route('childmodilities.store') }}",
@@ -489,7 +484,7 @@
                 if( confirm("Are You sure want to delete !") ==true)
                 {
 
-                    $(this).parent().removeClass('old_row_parent').addClass('new_row_parent').html('<span href="#" data-id= '+parent_id+' class="dropdown-item restoreParent"><i class="far fa-trash-alt"></i>&nbsp;Undo</span><div id="parent_div">\n' +
+                    $(this).parent().removeClass('old_row_parent').addClass('new_row_parent').html('<span href="#" data-id= '+parent_id+' class="dropdown-item restoreParent"><i class="fas fa-trash-restore"></i>&nbsp;Undo</span><div id="parent_div">\n' +
                         '</div>');
 
                     var timeLeft = 15;
@@ -539,7 +534,7 @@
                 {
                     //$('.undoChild').append('<li class="list-group-item"><a href="#" data-id= '+parent_id+' class="restoreChild">Undo<i class="fa fa-undo" aria-hidden="true"></i></a></li>');
 
-                    $(this).parent().removeClass('old_row').addClass('new_row').html('<span href="#" data-id= '+parent_id+' class="restoreChild dropdown-item">Undo</span><div id="some_div">\n' +
+                    $(this).parent().removeClass('old_row').addClass('new_row').html('<span href="#" data-id= '+parent_id+' class="restoreChild dropdown-item"><i class="fas fa-trash-restore"></i>&nbsp;Undo</span><div id="some_div">\n' +
                         '</div>');
 
                     var timeLeft = 15;
@@ -564,7 +559,7 @@
                             console.log(data);
                             window.setTimeout(function () {
                                 location.href = '{{ route('modalities.index') }}';
-                            }, 30000);
+                            }, 15000);
                         },
                         error: function (data) {
                             console.log('Error:', data);

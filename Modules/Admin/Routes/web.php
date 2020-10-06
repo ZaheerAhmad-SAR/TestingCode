@@ -23,8 +23,8 @@ Route::group(['middleware' => ['auth', 'web']], function () {
 Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], function () {
 
     Route::resource('sites', 'SiteController');
-    Route::post('sites/update', 'SiteController@update')->name('updateSites');
-    Route::DELETE('sites/destroy/{sites_id}', 'SiteController@destroy')->name('destroysites');
+    Route::post('sites/update', 'SiteController@update')->name('sites.updateSites');
+    Route::DELETE('sites/destroy/{sites_id}', 'SiteController@destroy')->name('sites.destroy');
 
     Route::resource('studies', 'StudyController');
     Route::resource('devices', 'DeviceController');
@@ -33,7 +33,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::get('device/{id}', 'DeviceController@getModal');
 
 
-    Route::post('modalities/update', 'ModilityController@update')->name('updateModalities');
+    Route::post('modalities/update', 'ModilityController@update')->name('modalities.update');
 
     Route::resource('subjects', 'SubjectController');
 
@@ -43,16 +43,16 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     Route::get('others/{id}/showOtherBySiteId', 'OtherController@showOtherBySiteId')->name('others.showOtherBySiteId');
 
-    Route::post('others/update', 'OtherController@update')->name('updateOthers');
+    Route::post('others/update', 'OtherController@update')->name('others.update');
 
     //routes for options groups
 
 
     Route::resource('optionsGroup', 'OptionsGroupController');
 
-    Route::post('optionsGroup/update', 'OptionsGroupController@update')->name('updateOptionsGroup');
+    Route::post('optionsGroup/update', 'OptionsGroupController@update')->name('optionsGroup.update');
 
-    Route::DELETE('optionsGroup/destroy/{options_id}', 'OptionsGroupController@destroy')->name('destroyOptionsGroup');
+    Route::DELETE('optionsGroup/destroy/{options_id}', 'OptionsGroupController@destroy')->name('optionsGroup.destroy');
     Route::post('getall_options', 'FormController@getall_options')->name('getall_options');
 
     // routes for annotation
@@ -97,7 +97,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     Route::resource('childmodilities', 'ChildModilitiesController');
 
-    Route::post('childmodilities/update', 'ChildModilitiesController@update')->name('updateChildmodilities');
+    Route::post('childmodilities/update', 'ChildModilitiesController@update')->name('childmodilities.update');
 
     Route::get('modalities/{id}/childshow', 'ModilityController@child')->name('modalities.childshow');
 
@@ -105,7 +105,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     Route::get('photographers/{id}/showPhotographerBySiteId', 'PhotographerController@showPhotographerBySiteId')->name('photographers.showPhotographerBySiteId');
 
-    Route::post('photographers/update', 'PhotographerController@update')->name('updatePhotographers');
+    Route::post('photographers/update', 'PhotographerController@update')->name('photographers.update');
 
 
     Route::resource('coordinator', 'CoordinatorController');
@@ -113,13 +113,13 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     Route::get('coordinator/{id}/showCoordinatorBySiteId', 'CoordinatorController@showCoordinatorBySiteId')->name('coordinator.showCoordinatorBySiteId');
 
-    Route::post('coordinator/update', 'CoordinatorController@update')->name('updateCoordinator');
+    Route::post('coordinator/update', 'CoordinatorController@update')->name('coordinator.update');
 
 
 
     Route::resource('primaryinvestigator', 'PrimaryInvestigatorController');
 
-    Route::post('primaryinvestigator/update', 'PrimaryInvestigatorController@update')->name('updatePrimaryinvestigator');
+    Route::post('primaryinvestigator/update', 'PrimaryInvestigatorController@update')->name('primaryinvestigator.update');
 
 
     Route::get('primaryinvestigator/{id}/showSiteId', 'PrimaryInvestigatorController@showSiteId')->name('primaryinvestigator.showSiteId');
@@ -156,13 +156,13 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     Route::post('studySite/update', 'StudySiteController@update')->name('studySite.update');
 
-    Route::post('studySite/updateStudySite', 'StudySiteController@updateStudySite')->name('updateStudySiteId');
+    Route::post('studySite/updateStudySite', 'StudySiteController@updateStudySite')->name('studySite.updateStudySite');
 
-    Route::post('studySite/updatePrimaryInvestigator', 'StudySiteController@updatePrimaryInvestigator')->name('updatePI');
+    Route::post('studySite/updatePrimaryInvestigator', 'StudySiteController@updatePrimaryInvestigator')->name('studySite.updatePrimaryInvestigator');
 
-    Route::post('studySite/insertCoordinators', 'StudySiteController@insertCoordinators')->name('insertCO');
+    Route::post('studySite/insertCoordinators', 'StudySiteController@insertCoordinators')->name('studySite.insertCoordinators');
 
-    Route::post('studySite/deleteSiteCoordinator', 'StudySiteController@deleteSiteCoordinator')->name('deleteCO');
+    Route::post('studySite/deleteSiteCoordinator', 'StudySiteController@deleteSiteCoordinator')->name('studySite.deleteSiteCoordinator');
 
 
     //SubjectFormLoader
