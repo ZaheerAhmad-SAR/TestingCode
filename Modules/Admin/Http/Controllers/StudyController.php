@@ -162,6 +162,11 @@ class StudyController extends Controller
     {
         session(['current_study' => $study->id, 'study_short_name' => $study->study_short_name]);
         $id = $study->id;
+        $studies  =   StudyUser::select('study_user.*','users.*','studies.*')
+            ->join('users','users.id','=','study_user.user_id')
+            ->join('studies','studies.id','=','study_user.study_id')
+            ->where('users.id','=',\auth()->user()->id)
+            ->orderBy('study_short_name')->get();
         $study_role= StudyUser::where('study_id','=',$id)->get();
         $currentStudy = Study::find($id);
 
@@ -175,7 +180,7 @@ class StudyController extends Controller
             ->get();
 
         $diseaseCohort = DiseaseCohort::where('study_id', '=', $id)->get();
-        return view('admin::studies.show', compact('study', 'subjects', 'currentStudy', 'site_study', 'diseaseCohort'));
+        return view('admin::studies.show', compact('study', 'studies', 'subjects', 'currentStudy', 'site_study', 'diseaseCohort'));
     }
 
     /**
