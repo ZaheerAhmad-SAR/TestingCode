@@ -73,16 +73,6 @@
     <!-- START: Main Content-->
     <main style="min-height: 500px;">
         @yield('content')
-        <div class="modal" id="editProfile">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4>Edit Profile</h4>
-                </div>
-                <div class="modal-content">
-                    <p>Profile edit</p>
-                </div>
-            </div>
-        </div>
     </main>
     <!-- END: Content-->
 

@@ -83,12 +83,12 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <p></p>
+                                           <br>
                                             <div class="card">
                                                 <div class="card-body p-0">
                                                     <div  class="barfiller" data-color="green">
                                                         <div class="tipWrap">
-                                                 <span class="tip rounded info">
+                                                 <span class="tip rounded info" style="background: green !important;">
                                                      <span class="tip-arrow"></span>
                                                     </span>
                                                         </div>
@@ -96,12 +96,12 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <p></p>
+                                            <br>
                                             <div class="card">
                                                 <div class="card-body p-0">
                                                     <div  class="barfiller" data-color="red">
                                                         <div class="tipWrap">
-                                                 <span class="tip rounded info">
+                                                 <span class="tip rounded info" style="background: red !important;">
                                                      <span class="tip-arrow"></span>
                                                     </span>
                                                         </div>
@@ -565,22 +565,17 @@
                 $('.appendfields').append(html);
                 var user = '';
                 $('.appendusers').html('');
-                    alert('post loop');
+                var user_id = [];
+               $.each(data.users,function (index, value) {
+                   var id = value.id;
+                    user_id.push(id);
+               });
+               var users_id = user_id.join(',')
+               var users_id2 = "['" + users_id.split( "," ).join( "','" ) + "']";
+               console.log(users_id2);
 
-               setTimeout(
-                   function()
-                   {
-                       alert('in loop');
-                       $('#select-users option').each(function(index) {
+                   $('#select-users').multiSelect('select',['2babaf3d-9180-4b47-a715-7e0485d63715','84d6ca50-abe8-4f24-bf40-2d715d7fb2c9']);
 
-                           var str = "2babaf3d-9180-4b47-a715-7e0485d63715,84d6ca50-abe8-4f24-bf40-2d715d7fb2c9";
-                           var substr = str.split(',');
-                           if (substr[0] == $(this).val()) {
-                               $(this).attr('selected', 'selected');
-                               alert($(this).val()); ///For check
-                           }
-                       });
-                   }, 5000);
 
 
                //$('#select-users').multiSelect('select', String|Array);
