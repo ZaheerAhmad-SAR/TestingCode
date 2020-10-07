@@ -370,8 +370,9 @@ class FormController extends Controller
     }
     function deleteQuestion($id)
     {
-        $question = Question::where('id', $id)->delete();
-        $question = FormFields::where('question_id', $id)->delete();
+        Question::where('id', $id)->delete();
+        FormFields::where('question_id', $id)->delete();
+        QuestionValidation::where('question_id', $id)->delete();
         $Response['data'] = 'success';
         echo json_encode($Response);
     }

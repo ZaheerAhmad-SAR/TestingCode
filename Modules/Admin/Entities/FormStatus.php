@@ -40,4 +40,9 @@ class FormStatus extends Model
         }
         return ['step_id' => $step_id, 'sections' => $sectionArray];
     }
+
+    public function editReasons()
+    {
+        return $this->hasMany(FormRevisionHistory::class, 'form_submit_status_id', 'id');
+    }
 }

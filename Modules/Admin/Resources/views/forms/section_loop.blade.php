@@ -5,6 +5,12 @@
                     <div class="wizard wizard-white mb-4">
                         <ul class="nav nav-tabs d-block d-sm-flex">
                             @php
+                            $form_filled_by_user_id = ($form_filled_by_user_id ?? '');
+                            $form_filled_by_user_role_id = ($form_filled_by_user_role_id ?? '');
+                            $subjectId = ($subjectId ?? '');
+                            $studyId = ($studyId ?? '');
+                            $studyClsStr = ($studyClsStr ?? '');
+
                             $stepIdStr = buildSafeStr($step->step_id, '');
                             $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                             $firstSection = true;
@@ -15,7 +21,7 @@
                                 @endphp
                                 <li class="nav-item mr-auto mb-4">
                                     <a class="nav-link p-0
-                                    {{ $studyClsStr }}
+                                    {{ $studyClsStr ?? '' }}
                                     {{ $stepClsStr }}
                                     {{ $sectionClsStr }}
                                     {{ $firstSection ? 'active' : '' }}
