@@ -35,7 +35,7 @@
         <div class="col-lg-4 col-xl-4 mb-4 mt-3 pr-lg-0 flip-menu">
             <a href="#" class="d-inline-block d-lg-none mt-1 flip-menu-close"><i class="icon-close"></i></a>
             <div class="card border h-100 mail-menu-section ">
-                <ul class="list-unstyled inbox-nav  mb-0 mt-2 mail-menu" id="phases-group">
+                <ul class="list-unstyled inbox-nav mb-0 mt-2 mail-menu allphases" id="phases-group">
                     @foreach($phases as $key => $phase)
                     <li class="nav-item mail-item" style="border-bottom: 1px solid #F6F6F7;">
                         <div class="d-flex align-self-center align-middle">
@@ -70,7 +70,41 @@
                 <div class="card-body p-0">
                     <div class="scrollertodo">
                         <ul class="mail-app list-unstyled allsteps" id="steps-group">
-
+                        @foreach ($phases as $keys => $phase)
+                            
+                           @foreach ($phase->phases as $key => $step_value)
+                         
+                        <li class="py-3 px-2 mail-item tab_{{$step_value->phase_id}}" style="@if($keys ==0) display:block;@else  @endif">
+                            <input type="hidden" class="step_id" value="{{$step_value->step_id}}">
+                            <input type="hidden" class="step_phase_id" value="{{$step_value->phase_id}}">
+                            <input type="hidden" class="form_type_id" value="{{$step_value->form_type_id}}">
+                            <input type="hidden" class="step_name" value="{{$step_value->step_name}}">
+                            <input type="hidden" class="step_position" value="{{$step_value->step_position}}">
+                            <input type="hidden" class="step_description" value="{{$step_value->step_description}}">
+                            <input type="hidden" class="graders_number" value="{{$step_value->graders_number}}">
+                            <input type="hidden" class="q_c" value="{{$step_value->q_c}}">
+                            <input type="hidden" class="eligibility" value="{{$step_value->eligibility}}">
+                            <div class="d-flex align-self-center align-middle">
+                                <div class="mail-content d-md-flex w-100">
+                                    <span class="mail-user">{{$step_value->step_position}}. {{$step_value->formType->form_type}} - {{$step_value->step_name}}</span>
+                                    <p class="mail-subject">{{$step_value->step_description}}.</p>
+                                    <div class="d-flex mt-3 mt-md-0 ml-auto">
+                                        <div class="ml-md-auto mr-3 dot primary"></div>
+                                        <p class="ml-auto mail-date mb-0">{{$step_value->created_at}}</p>
+                                        <a href="#" class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog"></i></a>
+                                        <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
+                                            <span class="dropdown-item edit_steps"><i class="far fa-edit"></i>&nbsp; Edit</span>
+                                            <span class="dropdown-item addsection"><i class="far fa-file-code"></i>&nbsp; Add Section</span>
+                                            <span class="dropdown-item assign_phase_steps_roles" data-step-id="{{$step_value->step_id}}"><i class="far fa-user"></i>&nbsp; Assign Roles</span>
+                                            <span class="dropdown-item"><i class="far fa-clone"></i>&nbsp; Clone</span>
+                                            <span class="dropdown-item deleteStep"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        @endforeach
+                    @endforeach
                         </ul>
                     </div>
                 </div>
@@ -152,7 +186,7 @@
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Step Against</label>
                                 <div class="col-md-9">
-                                    <select name="phase_id" id="step_phase_id" class="form-control">
+                                    <select name="phase_id" id="step_phase_id" class="form-control allPhases_list">
                                         @foreach($phases as $key => $phase)
                                         <option value="{{$phase->id}}">{{$phase->name}}</option>
                                         @endforeach
@@ -338,22 +372,11 @@
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
 @endsection
 @section('script')
+<script src="{{ asset('public/js/edit_crf.js') }}"></script>
 <script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script>
 <script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
 <script>
 $(document).ready(function(){
-    if(res !=''){
-        load_steps();
-    }
-    function load_steps(){
-        $.ajax({
-            url:'get_steps',
-            dataType:'html',
-            success:function(res) {
-                $('.allsteps').html(res);
-            }
-        })
-    }
     // load add model for Phases addsteps
     $('#add_phase').on('click',function(){
         $('.modal-title').html('Add a Phase');
@@ -363,7 +386,6 @@ $(document).ready(function(){
     })
     // Save Phase
     $('#savePhase').on('click',function(){
-        var APP_URL = {!! json_encode(url('/')) !!}
         var id = $('input#phase_id').val();
         var name = $('input#phase_name').val();
         var position = $('input#phase_position').val();
@@ -384,49 +406,13 @@ $(document).ready(function(){
                     },
                 success: function(response){
                     $("#addphase-close").click();
-
-                    $.ajax({
-                        url:'study_phases',
-                        dataType: 'json',
-                        success:function(res){
-                           var len = 0;
-                           $('#phases-group').empty(); // Empty list
-                           if(res['data'] != null){
-                              len = res['data'].length;
-                           }
-                           if(len > 0){
-                              for(var i=0; i<len; i++){
-                                 var tId;
-                                 var id = res['data'][i].id;
-                                 var name = res['data'][i].name;
-                                 var position = res['data'][i].position;
-                                 var study_id = res['data'][i].study_id;
-                                 var duration = res['data'][i].duration;
-                                 var created_at = res['data'][i].created_at;
-                                 if(i ==0){
-                                    var active = 'nav-link active';
-                                    }else{
-                                        var active = '';
-                                  }
-                                 var tr_str = "<li class='nav-item mail-item' style='border-bottom: 1px solid #F6F6F7;'><div class='d-flex align-self-center align-middle'>"
-                                    +"<div class='mail-content d-md-flex w-100'><a data-mailtype='tab_"+id+"' class='"+active+"'><span class='mail-user'> "+position+" . "+name+" </span></a>"
-                                    +"<input type='hidden' class='phase_id' value='"+id+"'><input type='hidden' class='phase_name' value='"+name+"'><input type='hidden' class='phase_position' value='"+position+"'><input type='hidden' class='phase_duration' value='"+duration+"'>"
-                                    +"<div class='d-flex mt-3 mt-md-0 ml-auto'><span class='ml-3' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false' style='cursor: pointer;'><i class='fas fa-cog' style='margin-top: 12px;'></i></span><div class='dropdown-menu p-0 m-0 dropdown-menu-right'><span class='dropdown-item edit_phase'><i class='far fa-edit'></i>&nbsp; Edit</span><span class='dropdown-item'><i class='far fa-clone'></i>&nbsp; Clone</span><span class='dropdown-item deletePhase'><i class='far fa-trash-alt'></i>&nbsp; Delete</span></div></div></div></div>"
-                                    +"</li>";
-                                 $("#phases-group").append(tr_str);
-                                 $('#add_edit_phase').trigger('reset');
-                                 $('.success-msg').html('');
-                                 $('.success-msg').html('Operation Done!')
-                                 $('.success-alert').slideDown('slow');
-                                 tId=setTimeout(function(){
-                                    $(".success-alert").slideUp('slow');
-                                 }, 3000);
-                              }
-                            refresh_phase_in_stepForm();
-                            load_steps();
-                           }
-                        }
-                    })
+                    load_phases();
+                    $('.success-msg').html('');
+                    $('.success-msg').html('Operation Done!')
+                    $('.success-alert').slideDown('slow');
+                    tId=setTimeout(function(){
+                     $(".success-alert").slideUp('slow');
+                    }, 3000);
                 }
             });
         }
@@ -557,7 +543,6 @@ $(document).ready(function(){
     $('body').on('click','.deleteStep',function(){
         var row = $(this).closest('li');
         var step_id = row.find('input.step_id').val();
-        alert(step_id);
         var tId;
         if (confirm("Are you sure to delete?")) {
             $.ajax({
@@ -683,20 +668,30 @@ $(document).ready(function(){
     })
 
 })
-    function refresh_phase_in_stepForm(){
+    function load_phases(){
+        
         $.ajax({
             url:'study_phases',
-            dataType: 'json',
+            dataType: 'html',
             success:function(res){
-                $('#step_phase_id').html('')
-                var options = ''
-                $.each(res['data'], function(index,value){
-                    options += '<option value="'+value.id+'" >'+value.name+'</option>'
-                });
-                $('#step_phase_id').append(options);
+                $('.allphases').html(res);
+                load_steps();
+               
             }
-        });
+        })
     }
+    function load_steps(){
+        var allPhases_list = $('select.allPhases_list');
+        $.ajax({
+            url:'get_steps',
+            dataType:'html',
+            success:function(res){
+                $('.allsteps').html(res);
+                get_all_phases('1',allPhases_list);
+            }
+        })
+    }
+
     function Sections(id){
         $.ajax({
              url: 'section',

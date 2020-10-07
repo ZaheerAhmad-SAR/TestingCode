@@ -35,6 +35,7 @@ class SubjectController extends Controller
             ->get();
 
         $diseaseCohort = DiseaseCohort::where('study_id', '=', $id)->get();
+        
         return view('admin::subjects.index', compact('study', 'subjects', 'currentStudy', 'site_study', 'diseaseCohort'));
     }
 
@@ -175,4 +176,35 @@ class SubjectController extends Controller
     {
         //
     }
+
+    public function checkSubject(Request $request) {
+
+        if ($request->ajax()) {
+            // if add function
+            if($request->type == 'add') {
+
+                $checkSubject = Subject::where('study_id', \Session::get('current_study'))
+                                        ->where('subject_id', $request->subject_id)
+                                        ->first();
+                if($checkSubject != null) {
+                    return 'error';
+                } else {
+                    return 'success';
+                }
+
+            } elseif ($request->type == 'update') {
+
+                $checkSubject = Subject::where('study_id', \Session::get('current_study'))
+                                        ->where('id', '!=', $request->edit_id)
+                                        ->where('subject_id', $request->subject_id)
+                                        ->first();
+                if($checkSubject != null) {
+                    return 'error';
+                } else {
+                    return 'success';
+                }           
+
+            } // type if ends
+        } // ajax if ends
+    } // function ends
 }
