@@ -86,13 +86,13 @@
                                         </a>
                                     </li>
                                 @endif
-                                @if(hasPermission(auth()->user(),'studyRoles.index'))
+                               {{-- @if(hasPermission(auth()->user(),'studyRoles.index'))
                                     <li class="@if(is_active('studyRoles.index')) {{ ' active' }} @endif">
                                         <a href="{!! route('studyRoles.index') !!}">
                                             Study  Roles
                                         </a>
                                     </li>
-                                @endif
+                                @endif--}}
                                 @if(hasPermission(auth()->user(),'studySite.index'))
                                     <li class="@if(is_active('studySite.index')) {{ ' active' }} @endif">
                                         <a  href="{!! route('studySite.index') !!}">

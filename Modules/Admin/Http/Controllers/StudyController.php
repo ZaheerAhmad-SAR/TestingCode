@@ -41,7 +41,7 @@ class StudyController extends Controller
 
             $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
             $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
-            $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->get();
+            $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->orderBy('name','asc')->get();
             $sites = Site::all();
         }
         else{
@@ -145,20 +145,23 @@ class StudyController extends Controller
                     }
                 }
             }
-
             if (!empty($request->disease_cohort) && $request->disease_cohort != '') {
                 foreach ($request->disease_cohort as $disease_cohort) {
-                    $checkDiseaseCohort = DiseaseCohort::find($disease_cohort);
-                    if (empty($checkDiseaseCohort)) {
-                        $diseaseCohort = DiseaseCohort::updateOrCreate([
-                            'id' => \Illuminate\Support\Str::uuid(),
-                            'study_id' => $study->id,
-                            'name' => $disease_cohort
-                        ]);
+                    if (!empty($disease_cohort)) {
+                        dd('here');
+                        $checkDiseaseCohort = DiseaseCohort::find($disease_cohort);
+                        if (empty($checkDiseaseCohort)) {
+                            $diseaseCohort = DiseaseCohort::updateOrCreate([
+                                'id' => \Illuminate\Support\Str::uuid(),
+                                'study_id' => $study->id,
+                                'name' => $disease_cohort
+                            ]);
+                        }
                     }
                 }
             }
             else {
+                dd('else');
                 return \response()->json($study);
             }
             return \response()->json($study);
@@ -175,6 +178,11 @@ class StudyController extends Controller
     {
         session(['current_study' => $study->id, 'study_short_name' => $study->study_short_name]);
         $id = $study->id;
+        $studies  =   StudyUser::select('study_user.*','users.*','studies.*')
+            ->join('users','users.id','=','study_user.user_id')
+            ->join('studies','studies.id','=','study_user.study_id')
+            ->where('users.id','=',\auth()->user()->id)
+            ->orderBy('study_short_name')->get();
         $study_role= StudyUser::where('study_id','=',$id)->get();
         $currentStudy = Study::find($id);
 
@@ -188,7 +196,7 @@ class StudyController extends Controller
             ->get();
 
         $diseaseCohort = DiseaseCohort::where('study_id', '=', $id)->get();
-        return view('admin::studies.show', compact('study', 'subjects', 'currentStudy', 'site_study', 'diseaseCohort'));
+        return view('admin::studies.show', compact('study', 'studies', 'subjects', 'currentStudy', 'site_study', 'diseaseCohort'));
     }
 
     /**

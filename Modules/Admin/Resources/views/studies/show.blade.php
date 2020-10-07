@@ -171,7 +171,7 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content" >
                 <div class="modal-header">
-                    <h4 class="modal-title" id="deviceCrudModal">Edit Subject</h4>
+                    <h4 class="modal-title" id="">Edit Subject</h4>
                 </div>
                 <div  class="modal-body">
                     <form method="POST" enctype="multipart/form-data" id="edit_subject_form">
