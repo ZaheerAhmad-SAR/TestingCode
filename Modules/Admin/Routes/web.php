@@ -184,3 +184,5 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
 // CHM-Amir--
 Route::get('trail-log', 'TrailLogController@index')->name('trail.log');
+// for checking subject ID
+Route::get('check-subject', 'SubjectController@checkSubject')->name('subjects.check-suject');
