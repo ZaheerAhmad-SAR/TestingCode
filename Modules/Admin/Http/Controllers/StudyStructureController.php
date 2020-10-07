@@ -27,6 +27,7 @@ class StudyStructureController extends Controller
         $phases = $query->get();
         $steps = PhaseSteps::all();
         $formTypes = FormType::all();
+
         return view('admin::structure.index',compact('phases','steps', 'formTypes'));
     }
     public function get_steps(){
@@ -77,7 +78,7 @@ class StudyStructureController extends Controller
            }
        }
 
-    return Response ($html);   
+    return Response ($html);
     }
     public function getallphases(Request $request)
     {
@@ -218,7 +219,6 @@ class StudyStructureController extends Controller
         $phase->duration  =  $request->duration;
         $phase->save();
     }
-
 
     /**
      * Remove the specified resource from storage.

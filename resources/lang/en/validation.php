@@ -117,6 +117,8 @@ return [
     'url' => 'The :attribute format is invalid.',
     'uuid' => 'The :attribute must be a valid UUID.',
 
+    'in_range' => ':attribute value must be in range between :min - :max.',
+
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Language Lines

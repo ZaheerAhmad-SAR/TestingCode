@@ -1,5 +1,6 @@
 @extends ('layouts.home')
 @section('content')
+
 <div class="container-fluid site-width">
     <!-- START: Breadcrumbs-->
     <div class="row ">
@@ -63,6 +64,7 @@
                 </ul>
             </div>
         </div>
+
         <div class="col-lg-8 col-xl-8 mb-4 mt-3 pl-lg-0">
             <div class="card border h-100 mail-list-section">
                 <div class="card-body p-0">
@@ -111,6 +113,7 @@
     </div>
     <!-- END: Card DATA-->
 </div>
+
 <!-- phase modle -->
 <div class="modal fade" tabindex="-1" role="dialog" id="addphase" aria-labelledby="exampleModalLongTitle1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -197,7 +200,7 @@
                                         <option value="">---Select Form Type---</option>
                                         @foreach($formTypes as $formType)
                                             <option value="{{$formType->id}}">{{$formType->form_type}}</option>
-                                        @endforeach                                        
+                                        @endforeach
                                     </select>
                                 </div>
                             </div>
@@ -352,7 +355,7 @@
 <!--  -->
 
 
-@stop
+@endsection
 @section('styles')
 <style>
     .d-flex > span > i {
@@ -367,15 +370,13 @@
     }
 </style>
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
-@stop
+@endsection
 @section('script')
 <script src="{{ asset('public/js/edit_crf.js') }}"></script>
 <script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script>
 <script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
 <script>
 $(document).ready(function(){
-    //load_steps();
-    
     // load add model for Phases addsteps
     $('#add_phase').on('click',function(){
         $('.modal-title').html('Add a Phase');
@@ -789,4 +790,4 @@ $(document).ready(function(){
 
     }
     </script>
-@stop
+@endsection
