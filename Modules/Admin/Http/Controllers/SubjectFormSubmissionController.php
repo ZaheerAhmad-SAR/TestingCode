@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\Section;
 use Modules\Admin\Entities\Answer;
+use Modules\Admin\Entities\FormRevisionHistory;
 use Modules\Admin\Entities\FormStatus;
 use Modules\Admin\Entities\ValidationRule;
 use Modules\Admin\Entities\Question;
@@ -78,8 +79,19 @@ class SubjectFormSubmissionController extends Controller
             $formStatusObj->edit_reason_text = $request->edit_reason_text;
             $formStatusObj->form_status = 'complete';
             $formStatusObj->update();
+
+            $this->putFormRevisionHistory($request, $formStatusObj);
         }
         echo $formStatusObj->form_status;
+    }
+
+    private function putFormRevisionHistory($request, $formStatusObj)
+    {
+        $formRevisionHistory = new FormRevisionHistory();
+        $formRevisionHistory->id = Str::uuid();
+        $formRevisionHistory->form_submit_status_id = $formStatusObj->id;
+        $formRevisionHistory->edit_reason_text = $request->edit_reason_text;
+        $formRevisionHistory->save();
     }
 
     public function openSubjectFormToEdit(Request $request)
