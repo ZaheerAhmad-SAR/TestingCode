@@ -832,11 +832,13 @@ function fetch_options() {
 /**************************************************************/
 var validationRules =new Array;
 $('#question_type').on('change',function(){
-    var questionType = $('#question_type :selected').text();
-    filterRulesByQuestionType(questionType);
+    filterRulesByQuestionType();
 });
-
-function filterRulesByQuestionType(questionType){
+$('body').on('click','.form-fields',function(){
+        filterRulesByQuestionType();
+});
+function filterRulesByQuestionType(){
+    var questionType = $('#question_type :selected').text();
     $.ajax({
                 url: 'validationRules/filterRulesDataValidation/',
                 type: 'post',
@@ -885,7 +887,6 @@ function updateRulesDropDown(){
     $('.validationRuleDivCls').html(selectStr);
 }
 /**************************************************************/
-
 </script>
 
 @endsection
