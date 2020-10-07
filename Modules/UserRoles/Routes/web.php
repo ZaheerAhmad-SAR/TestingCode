@@ -38,6 +38,9 @@ Route::group(['middleware' => ['auth','web','roles']],function(){
     Route::resource('adjudication','AdjudicationController');
     Route::resource('eligibility','EligibilityController');
     Route::resource('studyRoles','StudyRolesController');
+    Route::get('update_profile', 'UserController@update_profile')->name('users.updateProfile');
+    Route::get('update_user/{id}', 'UserController@update_user')->name('users.updateUser');
+
 
 });
 Route::group(['middleware' => ['auth','web']],function(){

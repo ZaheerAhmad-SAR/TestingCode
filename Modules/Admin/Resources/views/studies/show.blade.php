@@ -3,6 +3,7 @@
     <title> View Study Details | {{ config('app.name', 'Laravel') }}</title>
 @stop
 @section('content')
+
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
         <div class="row ">
@@ -17,8 +18,6 @@
             </div>
         </div>
         <!-- END: Breadcrumbs-->
-
-
         <div class="row">
             <div class="col-12 mt-3">
                 <div class="card">
@@ -45,6 +44,8 @@
                                     <tr>
                                         <td class="id" style="display: none;">{{$subject->id}}</td>
                                         <td class="site_id" style="display: none;">{{$subject->site_id}}</td>
+                                        <td class="edit_study_eye" style="display: none;">{{$subject->study_eye}}</td>
+                                        <td class="edit_disease_cohort" style="display: none;">{{$subject->disease_cohort_id}}</td>
                                         <td class="eye" style="display: none;">{{$subject}}</td>
                                         <td class="subject_id"><a href="{{route('showSubjectForm',['study_id'=>$currentStudy->id,'subject_id'=>$subject->id])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
                                         </td>
@@ -59,14 +60,15 @@
                                                     <span class="dropdown-item">
    {{--                                                     <a href="javascript:void(0)" id="edit-subject" data-toggle="modal" data-id="{{ $subject->id }}" data-target="#editSubject">
                                                             <i class="far fa-edit"></i>&nbsp; Edit </a>
-   --}}                                                     <a href="javascript:void(0)" id="edit-subject" class="EditSubject" data-toggle="modal" data-target="#editSubject"
-                                                           data-id="{{ $subject->id }}" data-url="{{route('subjects.edit',$subject->id)}}">
-                                                <i class="far fa-edit"></i> Edit</a>
-                                                    </span>
-                                                    <span class="dropdown-item">
+   --}}                                                     
+                                                    <a href="javascript:void(0)" id="edit-subject" class="EditSubjects" data-id="{{ $subject->id }}" data-url="{{route('subjects.update', $subject->id)}}">
+                                                        <i class="far fa-edit"></i> Edit</a>
+                                                        </span>
+                                                        <span class="dropdown-item">
                                                             <a href="{{route('users.destroy',$subject->id)}}" id="delete-device" data-id="{{ $subject->id }}">
-                                                            <i class="far fa-edit"></i>&nbsp; Delete </a>
-                                                    </span>
+                                                            <i class="far fa-edit"></i>&nbsp; Delete
+                                                            </a>
+                                                        </span>
                                                 </div>
                                             </div>
                                         </td>
@@ -80,6 +82,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal" tabindex="-1" role="dialog" id="createSubjects">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content" >
@@ -91,7 +94,7 @@
                         @csrf
                         <input type="hidden" value="{{$study->id}}" name="study_id">
                         <input type="hidden" name="id" id="id">
-                        <input type="hidden" value="{{$study}}" name="user">
+                        <input type="hidden" value="{{$study}}" name="users">
                         <div class="form-group row" style="margin-top: 10px;">
                             <label for="subject_id" class="col-md-2">Subject ID</label>
                             <div class="{!! ($errors->has('subject_id')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
@@ -127,10 +130,10 @@
                             <div class="{!! ($errors->has('study_eye')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
                                 <select name="study_eye" id="study_eye" class="form-control">
                                     <option value="">Select Study Eye</option>
-                                    <option value="od">OD</option>
-                                    <option value="os">OS</option>
-                                    <option value="ou">OU</option>
-                                    <option value="na">NA</option>
+                                    <option value="OD">OD</option>
+                                    <option value="OS">OS</option>
+                                    <option value="OU">OU</option>
+                                    <option value="NA">NA</option>
                                 </select>
                                 @error('subject_site')
                                 <span class="text-danger small">{{ $message }} </span>
@@ -164,25 +167,115 @@
         </div>
     </div>
 
+    <div class="modal" tabindex="-1" role="dialog" id="editSubjects">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <h4 class="modal-title" id="deviceCrudModal">Edit Subject</h4>
+                </div>
+                <div  class="modal-body">
+                    <form method="POST" enctype="multipart/form-data" id="edit_subject_form">
+                        @method('PATCH')
+                        @csrf
+                      
+                       
+                        <input type="hidden" name="edit_id" id="edit_id">
+                        <div class="form-group row" style="margin-top: 10px;">
+
+                            <label for="subject_id" class="col-md-2">Subject ID</label>
+                            <div class="{!! ($errors->has('subject_id')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                <input type="text" class="form-control" id="edit_subject_id" name="subject_id" value="{{old('subject_id')}}">
+                                @error('subject_id')
+                                <span class="text-danger small">{{ $message }} </span>
+                                @enderror
+                            </div>
+                            <label for="study_short_name" class="col-md-2">Enrollment Date</label>
+                            <div class="{!! ($errors->has('enrollment_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                <input type="date" class="form-control" id="edit_enrollment_date" name="enrollment_date" value="{{old('enrollment_date')}}">
+                                @error('enrollment_date')
+                                <span class="text-danger small">{{ $message }} </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="site_id" class="col-md-2">Site</label>
+                            <div class="{!! ($errors->has('site_id')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                <select name="site_id" id="edit_site_id" class="form-control">
+                                    <option value="">Select Subject Site</option>
+                                    @if(!empty($site_study))
+                                        @foreach($site_study as $site)
+                                            <option class="dropdown" value="{{$site->id}}">{{$site->site_name}}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                                @error('site_id')
+                                <span class="text-danger small">{{ $message }} </span>
+                                @enderror
+                            </div>
+                            <label for="study_eye" class="col-md-2">Study Eye</label>
+                            <div class="{!! ($errors->has('study_eye')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                <select name="study_eye" id="edit_study_eye" class="form-control">
+                                    <option value="">Select Study Eye</option>
+                                    <option value="OD">OD</option>
+                                    <option value="OS">OS</option>
+                                    <option value="OU">OU</option>
+                                    <option value="NA">NA</option>
+                                </select>
+                                @error('subject_site')
+                                <span class="text-danger small">{{ $message }} </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="site_id" class="col-md-2">Disease Cohort</label>
+                            <div class="{!! ($errors->has('disease_cohort')) ?'form-group col-md-10 has-error':'form-group col-md-10' !!}">
+                                <select name="disease_cohort" id="edit_disease_cohort" class="form-control">
+                                    <option value="">Select Subject Disease Cohort</option>
+                                    @if(!empty($diseaseCohort))
+                                        {!! $diseaseCohort !!}
+                                        @foreach($diseaseCohort as $disease)
+                                            <option class="dropdown" value="{{$disease->id}}">{{$disease->name}}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                                @error('disease_cohort')
+                                <span class="text-danger small">{{ $message }} </span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 @section('script')
     <script>
-        $('body').on('click','.EditSubject',function () {
+        $('body').on('click','.EditSubjects',function () {
             var row = $(this).closest('tr')
                 id  = row.find('td.id').text()
                 subject_id  = row.find('td.subject_id').text()
                 enrol_date = row.find('td.enrol_date').text()
                 site_id = row.find('td.site_id').text()
-                disease = row.find('td.disease').text()
-                study_eye = row.find('td.study_eye').text();
-            alert(enrol_date);
-            $('#id').val(id);
-            $('#subject_id').val(subject_id);
-            $('#enrollment_date').val(enrol_date);
-            $('#site_id').val(site_id);
-            $('#study_eye').val(study_eye);
-            $('#disease_cohort').val(disease);
-            $('#createSubjects').modal('show');
+                disease = row.find('td.edit_disease_cohort').text()
+                study_eye = row.find('td.edit_study_eye').text();
+
+                console.log($(this).attr('data-url'));
+           
+            $('#edit_id').val(id);
+            $('#edit_subject_id').val(subject_id);
+            $('#edit_enrollment_date').val(enrol_date);
+            $('#edit_site_id').val(site_id);
+            $('#edit_study_eye').val(study_eye);
+            $('#edit_disease_cohort').val(disease);
+            // assign action attribute
+            $('#edit_subject_form').attr('action', $(this).attr('data-url'));
+            $('#editSubjects').modal('show');
         });
     </script>
 @endsection

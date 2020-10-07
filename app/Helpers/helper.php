@@ -14,6 +14,10 @@ use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\ChildModilities;
 use Modules\Admin\Entities\Device;
 use Modules\Admin\Entities\DeviceModility;
+use Modules\Admin\Entities\Study;
+use Modules\Admin\Entities\StudySite;
+use Modules\Admin\Entities\Subject;
+use Modules\Admin\Entities\DiseaseCohort;
 use Modules\Admin\Entities\TrailLog;
 
 function hasrole($role)
@@ -44,7 +48,6 @@ function hasPermission($user, $routeName){
         $role = $role;
     }
     $permission = Permission::where('name','=',$routeName)->first();
-
     $rolePermission = RolePermission::where('role_id',$role->role_id)
         ->where('permission_id',$permission->id)->first();
         if ($rolePermission){
@@ -458,7 +461,150 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
         }
        
     //////////////////////////// Device Ends /////////////////////////////////////////
-    }  // main If else ends 
+    } else if ($eventSection == 'Study Site') {
+        // get event data
+        $eventData = StudySite::select('sites.site_name')
+            ->leftjoin('sites','sites.id', '=', 'site_study.site_id')
+            ->where('site_study.study_id', $eventId)
+            ->pluck('sites.site_name')
+            ->toArray();
+
+        $eventData = $eventData != '' ? implode(', ', $eventData) : '';
+        // get study name
+        $getStudyName = Study::where('id', $eventId)->first();
+        // set message for audit
+        $auditMessage = \Auth::user()->name.' updated sites of study '.$getStudyName->study_title.'.';
+        // set audit url
+        $auditUrl = url('studySite');
+        // store data in event array
+        $newData = array(
+            'study_id' => $getStudyName->id,
+            'study_name' => $getStudyName->study_title,
+            'study_sites' => $eventData,
+            'created_at' => date("Y-m-d h:i:s", strtotime($getStudyName->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($getStudyName->updated_at)),
+        );
+        // if it is update case
+        if($eventType == 'Update') {
+            $previousData = $previousData != '' ? implode(', ', $previousData) : '';
+            $oldData = array(
+                'study_id' => $getStudyName->id,
+                'study_name' => $getStudyName->study_title,
+                'study_sites' => $previousData,
+                'created_at' => date("Y-m-d h:i:s", strtotime($getStudyName->created_at)),
+                'updated_at' => date("Y-m-d h:i:s", strtotime($getStudyName->updated_at)),
+            );
+        }
+       
+    //////////////////////////// Study Sites Ends /////////////////////////////////////////
+    } else if ($eventSection == 'Study') {
+        // get event data
+        $eventData = Study::find($eventId);
+        // set message for audit
+        $auditMessage = \Auth::user()->name.' added study '.$eventData->study_title.'.';
+        // set audit url
+        $auditUrl = url('studies');
+        // store data in event array
+        $newData = array(
+            'study_short_name'  =>  $eventData->study_short_name,
+            'study_title' => $eventData->study_title,
+            'study_status'  => 'Development',
+            'study_code' => $eventData->study_code,
+            'protocol_number' => $eventData->protocol_number,
+            'study_phase' => $eventData->study_phase,
+            'trial_registry_id' => $eventData->trial_registry_id,
+            'study_sponsor' => $eventData->study_sponsor,
+            'start_date' => $eventData->start_date,
+            'end_date' => $eventData->end_date,
+            'description'   =>  $eventData->description,
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
+        );
+        // if it is update case
+        if($eventType == 'Update') {
+            
+            $oldData = array(
+                'study_short_name'  =>  $previousData->study_short_name,
+                'study_title' => $previousData->study_title,
+                'study_status'  => 'Development',
+                'study_code' => $previousData->study_code,
+                'protocol_number' => $previousData->protocol_number,
+                'study_phase' => $previousData->study_phase,
+                'trial_registry_id' => $previousData->trial_registry_id,
+                'study_sponsor' => $previousData->study_sponsor,
+                'start_date' => $previousData->start_date,
+                'end_date' => $previousData->end_date,
+                'description'   =>  $previousData->description,
+                'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+                'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+            );
+
+            // set message for audit
+            $auditMessage = \Auth::user()->name.' updated study '.$eventData->study_title.'.';
+        }
+       
+    //////////////////////////// Study Ends /////////////////////////////////////////
+    } else if ($eventSection == 'Subject') {
+        // get event data
+        $eventData = Subject::find($eventId);
+
+        // set message for audit
+        $auditMessage = \Auth::user()->name.' added subject '.$eventData->subject_id.'.';
+        // set audit url
+        $auditUrl = url('subjects/'.$eventData->id);
+        // get site name
+        $site_study = StudySite::where('study_id', '=', \Session::get('current_study'))
+                                ->where('site_id', $eventData->site_id)
+                                ->join('sites', 'sites.id', '=', 'site_study.site_id')
+                                ->select('sites.site_name', 'sites.id')
+                                ->first();
+
+        // get disease cohort
+        $diseaseCohort = DiseaseCohort::where('study_id', '=', \Session::get('current_study'))
+                                        ->where('id', $eventData->disease_cohort_id)
+                                        ->first();
+        // store data in event array
+        $newData = array(
+            'study_id' => \Session::get('current_study'),
+            'subject_id' => $eventData->subject_id,
+            'enrollment_date' => $eventData->enrollment_date,
+            'site_name' => $site_study->site_name,
+            'disease_cohort' => $diseaseCohort->name,
+            'study_eye' => $eventData->study_eye,
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
+        );
+        // if it is update case
+        if($eventType == 'Update') {
+            // get site name
+            $old_site_study = StudySite::where('study_id', '=', $previousData->study_id)
+                                ->where('site_id', $previousData->site_id)
+                                ->join('sites', 'sites.id', '=', 'site_study.site_id')
+                                ->select('sites.site_name', 'sites.id')
+                                ->first();
+
+            // get disease cohort
+            $old_diseaseCohort = DiseaseCohort::where('study_id', '=', $previousData->study_id)
+                                        ->where('id', $previousData->disease_cohort_id)
+                                        ->first();
+            
+            $oldData = array(
+                'study_id' => $previousData->study_id,
+                'subject_id' => $previousData->subject_id,
+                'enrollment_date' => $previousData->enrollment_date,
+                'site_name' => $old_site_study->site_name,
+                'disease_cohort' => $old_diseaseCohort->name,
+                'study_eye' => $previousData->study_eye,
+                'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+                'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+            );
+
+            // set message for audit
+            $auditMessage = \Auth::user()->name.' updated subject '.$eventData->subject_id.'.';
+        }
+       
+    //////////////////////////// Subjects Ends /////////////////////////////////////////
+    } // main If else ends 
 
     // Log the event
     $trailLog = new TrailLog;

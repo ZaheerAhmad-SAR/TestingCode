@@ -112,6 +112,11 @@
                                                                 </i> Delete</a>
                                                     </span>
                                                     <span class="dropdown-item">
+                                                            <a href="#" data-id="{{$study->id}}" id="create-new-queries">
+                                                                <i class="fas fa-question-circle"  aria-hidden="true">
+                                                                </i> Queries</a>
+                                                    </span>
+                                                    <span class="dropdown-item">
                                                              <a href="#" class="addModalities">
                                                                 <i class="fa fa-object-group" aria-hidden="true"></i> Preferences
                                                              </a>
@@ -142,6 +147,84 @@
         </div>
         <!-- END: Card DATA-->
     </div>
+
+    <!-- phase modle -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="queries-modal" aria-labelledby="exampleModalLongTitle1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header ">
+                    <p class="modal-title">Add a Queries</p>
+                </div>
+                <form id="queriesForm" name="queriesForm">
+                    <div class="modal-body">
+                        <div id="exTab1">
+                            <div class="tab-content clearfix">
+                                @csrf
+                                <label>Current query status: &nbsp; &nbsp;<i style="color: red;" class="fas fa-question-circle"></i> &nbsp;New</label>
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-4 col-form-label">Queries Assigned to:</label>
+                                    <div class="col-sm-8">
+                                        <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="users" checked> Users</label> &nbsp;
+                                        <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="roles" > Roles</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row usersInput">
+                                    <label for="Name" class="col-sm-4 col-form-label">Users:</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" name="users" id="users">
+                                            <option value="">Saqib</option>
+                                            <option value="">Abid</option>
+                                            <option value="">Zaheer</option>
+                                            <option value="">Zeeshan</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row rolesInput" style="display: none;">
+                                    <label for="Name" class="col-sm-4 col-form-label">Roles:</label>
+                                    <div class="col-sm-8">
+
+                                        <label class="checked-inline  col-form-label"><input type="checkbox" id="roles" name="roles" value="users"> Adjudication</label> &nbsp;
+                                        <label class="checked-inline  col-form-label"><input type="checkbox" id="roles" name="roles" value="roles" > Grader</label>
+                                        <label class="checked-inline  col-form-label"><input type="checkbox" id="roles" name="roles" value="roles" > QC</label>
+{{--                                        <select class="form-control" name="roles" id="roles">--}}
+{{--                                            <option value="">Adjudication</option>--}}
+{{--                                            <option value="">Grader</option>--}}
+{{--                                            <option value="">QC</option>--}}
+{{--                                            <option value="">Project Manager</option>--}}
+{{--                                        </select>--}}
+                                    </div>
+                                </div>
+                                <div class="form-group row statusInput">
+                                    <label for="Name" class="col-sm-4 col-form-label">Change status to:</label>
+                                    <div class="col-sm-8">
+                                        <select class="form-control" name="queries_status" id="queries_status">
+                                            <option value="">Open</option>
+                                            <option value="">Unconfirmed</option>
+                                            <option value="">Confirmed</option>
+                                            <option value="">Resolved</option>
+                                            <option value="">Closed</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row remarksInput">
+                                    <label for="Name" class="col-sm-4 col-form-label">Remarks</label>
+                                    <div class="col-sm-8">
+                                        <textarea class="form-control" name="remarks" rows="2" id="remarks"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-danger" data-dismiss="modal" id="addphase-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="button" class="btn btn-outline-primary" id="savePhase"><i class="fa fa-save"></i> Save Changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- START: Modal-->
     <div class="modal fade" id="study-crud-modal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -259,12 +342,11 @@
                             <div class="form-group row" style="margin-top: 10px;">
                                 <label for="study_users" class="col-sm-3"></label>
                                 <div class="{!! ($errors->has('users')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                    <select class="searchable" id="select-users" multiple="multiple" name="users[]">
+                                    <select class="searchable appendusers" id="select-users" multiple="multiple" name="users[]">
                                        @foreach($users as $user)
                                         <option value="{{$user->id}}">{{$user->name}}</option>
                                         @endforeach
                                     </select>
-                                   
                                 </div>
                                 @error('users')
                                 <span class="text-danger small">
@@ -309,6 +391,7 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="change_status" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -404,6 +487,15 @@
             $('#study-crud-modal').modal('show');
         });
 
+        $('#create-new-queries').click(function () {
+            // $('#btn-save').val("create-study");
+            $('#queriesForm').trigger("reset");
+            $('#queries-modal').modal('show');
+            //$('#queries-modal').html("Add Queries");
+
+        });
+
+
         $('body').on('click', '#edit-study', function () {
             var study_id = $(this).data('id');
            var edit_study = $.get('studies/'+study_id+'/edit', function (data) {
@@ -432,10 +524,11 @@
                 var user = '';
                 $('.appendusers').html('');
                 $.each(data.users,function (index, value) {
-                    console.log(index,value);
-                    user += '<option value=" '+value.id+' ">'+value.name+'</option>';
+                    //console.log(index,value);
+                    user += '<option selected="selected" value=" '+value.id+' ">'+value.name+'</option>';
+
                 });
-               $('.appendusers').append(user);
+               $('.appendusers').html(user);
 
            })
         });
@@ -487,7 +580,6 @@
 
     });
 
-
     if ($("#studyForm").length > 0) {
         $("#studyForm").validate({
             submitHandler: function(form) {
@@ -537,5 +629,37 @@
         })
     }
 
+    $(document).ready(function (){
+       $('input[type="radio"]').click(function (){
+           if ($(this).is(':checked'))
+           {
+            $(".usersInput").show();
+            $(".rolesInput").hide();
+           }
+           if ($(this).attr("value")=="roles")
+           {
+            $('.usersInput').css('display','none');
+            $(".rolesInput").show();
+            $(".statusInput").show();
+            $(".remarksInput").show();
+           }
+       });
+    });
+
 </script>
+    <script type="text/javascript">
+        $().ready(function() {
+            $('#add').click(function() {
+                return !$('#select1 option:selected').remove().appendTo('#select2');
+            });
+            $('#remove').click(function() {
+                return !$('#select2 option:selected').remove().appendTo('#select1');
+            });
+        });
+        $('form').submit(function() {
+            $('#select2 option').each(function(i) {
+                $(this).attr("selected", "selected");
+            });
+        });
+    </script>
 @endsection

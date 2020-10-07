@@ -80,7 +80,7 @@
                                             <td>{{ucfirst($site->site_name)}}</td>
                                             <td>
                                             <Select class="form-control" value="{{old('primaryInvestigator')}}" id="primaryInvestigator_{{$site->id}}" name="primaryInvestigator_{{$site->id}}" onchange="updatePI('{{$site->id}}');">
-                                                    <option>--Select PI--</option>
+                                                    <option value="">--Select PI--</option>
                                                     @foreach($site->pi as $key => $pi)
                                                     @php $pi_records = explode('/',$pi); @endphp
                                                         <option value="{{$pi_records[0]}}" {{$pi_records[0]==$site->primaryInvestigator_id ? 'selected="selected"': ''}}>{{$pi_records[1]}}</option>
@@ -790,7 +790,7 @@
                     var site_id = $('#global_site_id').val();
 
                     $.ajax({
-                        url: "{{route('updateStudySiteId')}}",
+                        url: "{{route('studySite.updateStudySite')}}",
                         type: 'POST',
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -820,6 +820,7 @@
                         type: "POST",
                         dataType: 'json',
                         success: function (results) {
+                    
                             $('#select-sites').html('');
                             html +='<ul class="ms-list" tabindex="-1">';
                             $.each(results,function(i,v){
@@ -906,7 +907,7 @@
                     }
 
                     $.ajax({
-                        url: "{{route('deleteCO')}}",
+                        url: "{{route('studySite.deleteSiteCoordinator')}}",
                         type: 'POST',
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -928,7 +929,7 @@
                         var table_site_study_id = $("#table_site_study_id_"+site_id).val();
 
                  $.ajax({
-                        url: "{{route('insertCO')}}",
+                        url: "{{route('studySite.insertCoordinators')}}",
                         type: 'POST',
                         data: {
                             "_token": "{{ csrf_token() }}",
@@ -949,7 +950,7 @@
                     var table_site_study_id = $("#table_site_study_id_"+site_id).val();
 
                         $.ajax({
-                            url: "{{route('updatePI')}}",
+                            url: "{{route('studySite.updatePrimaryInvestigator')}}",
                             type: 'POST',
                             data: {
                                 "_token": "{{ csrf_token() }}",
@@ -1049,7 +1050,7 @@
                         }
                         else
                         {
-                            var action_url = "{{ route('updatePrimaryinvestigator') }}";
+                            var action_url = "{{ route('primaryinvestigator.update') }}";
                         }
                         $.ajaxSetup({
                             headers: {
@@ -1110,7 +1111,7 @@
                 // End of primary Investigator
 
                 // Primary Investigator Delete function
-                function primaryinvestigatorDestroy(){
+
                     $('body').on('click', '.deleteprimaryinvestigator', function () {
                         $.ajaxSetup({
                             headers: {
@@ -1134,8 +1135,6 @@
                             });
                         }
                     });
-                }
-                primaryinvestigatorDestroy();
 
                 function resetprimaryinvestigatorForm() {
                     $("#rest_pi_button").click(function(){
@@ -1255,7 +1254,7 @@
                         }
                         else
                         {
-                            var action_url = "{{ route('updatePhotographers') }}";
+                            var action_url = "{{ route('photographers.update') }}";
                         }
                         $.ajaxSetup({
                             headers: {
@@ -1363,7 +1362,7 @@
                         }
                         else
                         {
-                            var action_url = "{{ route('updateCoordinator') }}";
+                            var action_url = "{{ route('coordinator.update') }}";
                         }
 
                         $.ajaxSetup({
@@ -1470,7 +1469,7 @@
                         }
                         else
                         {
-                            var action_url = "{{ route('updateOthers') }}";
+                            var action_url = "{{ route('others.update') }}";
                         }
                         $.ajaxSetup({
                             headers: {
@@ -1546,7 +1545,7 @@
                     }
                     else
                     {
-                        var action_url = "{{ route('updateSites') }}";
+                        var action_url = "{{ route('sites.updateSites') }}";
                     }
                     $.ajax({
                         data: $('#siteInfoForm').serialize(),
