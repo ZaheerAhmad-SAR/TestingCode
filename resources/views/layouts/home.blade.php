@@ -38,16 +38,14 @@
                                 </div>
                             </a>
                             <div class="dropdown-menu border dropdown-menu-right p-0">
-<<<<<<< HEAD
                                 <a href="{{route('users.updateProfile')}}" class="dropdown-item px-2 align-self-center d-flex">
                                     <span class="icon-pencil mr-2 h6 mb-0"></span> Edit Profile
                                 </a>
                              {{--    @foreach(auth()->user()->user_roles as $role)
-=======
                                 <a href="#" class="dropdown-item px-2 align-self-center d-flex" data-toggle="modal" data-target="#editProfile">
                                     <span class="icon-pencil mr-2 h6 mb-0"></span> Edit Profile</a>
                                 @foreach(auth()->user()->user_roles as $role)
->>>>>>> 907c9df341e845f7d6a242e254efed0cd64643e7
+
                                     <a href="{{ route('switch_role',$role->role_id) }}"
                                        class="dropdown-item px-2 align-self-center d-flex">
                                         <span class="icon-user mr-2 h6 mb-0">{{ucfirst( $role->role->name)}}</span> Role</a>
@@ -75,16 +73,6 @@
     <!-- START: Main Content-->
     <main style="min-height: 500px;">
         @yield('content')
-        <div class="modal" id="editProfile">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4>Edit Profile</h4>
-                </div>
-                <div class="modal-content">
-                    <p>Profile edit</p>
-                </div>
-            </div>
-        </div>
     </main>
     <!-- END: Content-->
 

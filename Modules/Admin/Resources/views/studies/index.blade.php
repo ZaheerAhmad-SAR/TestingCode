@@ -28,11 +28,18 @@
             <div class="col-12 mt-3">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="col-md-3">
                         @if(hasPermission(auth()->user(),'studies.create'))
                         <button type="button" class="btn btn-outline-primary" id="create-new-study" data-toggle="modal" data-target="#createStudy">
                             <i class="fa fa-plus"></i> Add Study
                         </button>
+                        </div>
                             @endif
+                            <div class="col-md-9 align-items-left" style="padding: 0px 0px 0px 95px;">
+                                <button class="btn" disabled style="background:#17a2b8; color:white ">QC</button>
+                                <button class="btn" disabled style="background:green; color:white">Grader</button>
+                                <button class="btn" disabled style="background:red; color:white">Adjudication</button>
+                            </div>
                     </div>
                     <div class="card-body">
                         <table class="tablesaw table-bordered" data-tablesaw-mode="stack" id="studies_crud">
@@ -44,7 +51,7 @@
                                     <br>
                                     <br>Sponsor
                                 </th>
-                                <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block">Progress Bar</th>
+                                <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block">Progress bar</th>
                                 <th scope="col" data-tablesaw-priority="1">Status</th>
                                 <th scope="col" data-tablesaw-priority="1">Study Admin</th>
                                 <th scope="col" data-tablesaw-priority="4">Action</th>
@@ -63,6 +70,7 @@
                                             <br><br><p style="font-size: 14px; font-style: oblique">Sponsor: <strong>{{ucfirst($study->study_sponsor)}}</strong></p>
                                         </td>
                                         <td class="tablesaw-stack-block">
+                                            <p></p>
                                             <div class="card">
                                                 <div class="card-body p-0">
                                                     <div  class="barfiller" data-color="#17a2b8">
@@ -71,11 +79,38 @@
                                                      <span class="tip-arrow"></span>
                                                     </span>
                                                         </div>
+                                                        <span class="fill" data-percentage="{{rand(10,100)}}" style="color: red"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           <br>
+                                            <div class="card">
+                                                <div class="card-body p-0">
+                                                    <div  class="barfiller" data-color="green">
+                                                        <div class="tipWrap">
+                                                 <span class="tip rounded info" style="background: green !important;">
+                                                     <span class="tip-arrow"></span>
+                                                    </span>
+                                                        </div>
+                                                        <span class="fill" data-percentage="{{rand(10,100)}}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="card">
+                                                <div class="card-body p-0">
+                                                    <div  class="barfiller" data-color="red">
+                                                        <div class="tipWrap">
+                                                 <span class="tip rounded info" style="background: red !important;">
+                                                     <span class="tip-arrow"></span>
+                                                    </span>
+                                                        </div>
                                                         <span class="fill" data-percentage="{{rand(10,100)}}"></span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
+
                                         <td>{{$study->study_status}}</td>
                                         <td>
                                             @if(!empty($study->users))
@@ -347,7 +382,7 @@
                                         <option value="{{$user->id}}">{{$user->name}}</option>
                                         @endforeach
                                     </select>
-                                </div>
+
                                 @error('users')
                                 <span class="text-danger small">
                                     {{ $message }}
@@ -416,9 +451,16 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
 @endsection
 @section('script')
+    <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
-
     <script type="text/javascript">
+        // run callbacks
+        $('#select-users').multiSelect({
+            selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
+            selectionHeader: "<label for=''>Assigned Admins</label><input type='text' class='form-control appendusers' autocomplete='off' placeholder='search here'>",
+        });
+    </script>
+   {{-- <script type="text/javascript">
         $(document).ready(function() {
             $('#select-users').multiSelect({
                 selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
@@ -456,7 +498,7 @@
                 }
             });
         });
-    </script>
+    </script>--}}
     <script src="{{ asset('dist/js/jquery.validate.min.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.barfiller.js') }}"></script>
@@ -523,22 +565,44 @@
                 $('.appendfields').append(html);
                 var user = '';
                 $('.appendusers').html('');
-                $.each(data.users,function (index, value) {
-                    //console.log(index,value);
+                var user_id = [];
+               $.each(data.users,function (index, value) {
+                   var id = value.id;
+                    user_id.push(id);
+               });
+               var users_id = user_id.join(',')
+               var users_id2 = "['" + users_id.split( "," ).join( "','" ) + "']";
+               console.log(users_id2);
+
+                   $('#select-users').multiSelect('select',['2babaf3d-9180-4b47-a715-7e0485d63715','84d6ca50-abe8-4f24-bf40-2d715d7fb2c9']);
+
+
+
+               //$('#select-users').multiSelect('select', String|Array);
+               // $.each(values.split(","), function(i,e){
+               //
+               //     $('#select-users').multiSelect('select', '2babaf3d-9180-4b47-a715-7e0485d63715'|['2babaf3d-9180-4b47-a715-7e0485d63715', '84d6ca50-abe8-4f24-bf40-2d715d7fb2c9']);
+               // });
+             //$('.appendusers').val(['2babaf3d-9180-4b47-a715-7e0485d63715', '84d6ca50-abe8-4f24-bf40-2d715d7fb2c9']);
+              /*  $.each(data.users,function (index, value) {
+                    alert('here i am');
                     user += '<option selected="selected" value=" '+value.id+' ">'+value.name+'</option>';
 
-                });
-               $('.appendusers').html(user);
+                });*/
+
+              // $('.appendusers').html(user);
 
            })
         });
 
         $('body').on('click', '#delete-study', function () {
             var study_id = $(this).data("id");
-            confirm("Are You sure want to delete !");
             $.ajax({
                 type: "DELETE",
                 url: "{{ url('studies')}}"+'/'+study_id,
+                beforeSend:function(){
+                    return confirm("Are You sure want to delete !");
+                },
                 success: function (data) {
                     $("#study_id_" + study_id).remove();
                     if(data.success == true){ // if true (1)
@@ -563,11 +627,15 @@
             var parent_id = $(this).data("id");
             var newPath = "{{URL('studies/cloneStudy')}}";
             //alert(newPath)
-            confirm("Are You sure want to Clone !");
+
+
             $.ajax({
                 type: "POST",
                 data:{'id':parent_id},
                 url: newPath,
+                beforeSend:function(){
+                    return confirm("Are You sure want to Clone !");
+                },
                 success: function (data) {
                     console.log(data);
                     location.reload();

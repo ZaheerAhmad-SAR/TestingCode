@@ -27,6 +27,7 @@ class StudyStructureController extends Controller
         $phases = $query->get();
         $steps = PhaseSteps::all();
         $formTypes = FormType::all();
+
         return view('admin::structure.index',compact('phases','steps', 'formTypes'));
     }
     public function get_steps(){
@@ -77,19 +78,43 @@ class StudyStructureController extends Controller
            }
        }
 
-    return Response ($html);   
+    return Response ($html);
     }
     public function getallphases(Request $request)
     {
         $query = StudyStructure::select('*');
         $query->with('phases','study');
-       if ( null !== session('current_study') && !empty(session('current_study'))) {
+        if ( null !== session('current_study') && !empty(session('current_study'))) {
         $query->where('study_id', session('current_study'));
         }
         $query->orderBy('position', 'asc');
         $phases = $query->get();
-        $phasesData['data'] = $phases;
-        echo json_encode($phasesData);
+        $html = '';
+        foreach ($phases as $key => $phase) {
+          if($key ==0){
+                $active_phase = ' active';
+            }else{
+                $active_phase = '';
+            }
+          $html .= '<li class="nav-item mail-item" style="border-bottom: 1px solid #F6F6F7;"><div class="d-flex align-self-center align-middle"><div class="mail-content d-md-flex w-100"><a href="#" data-mailtype="tab_'.$phase->id.'" class="nav-link'.$active_phase.'"><span class="mail-user"> '.$phase->position.' . '.$phase->name.' </span></a><input type="hidden" class="phase_id" value="'.$phase->id.'">
+                        <input type="hidden" class="phase_study_id" value="'.$phase->study_id.'">
+                        <input type="hidden" class="phase_name" value="'.$phase->name.'">
+                        <input type="hidden" class="phase_position" value="'.$phase->position.'">
+                        <input type="hidden" class="phase_duration" value="'.$phase->duration.'">
+                        <div class="d-flex mt-3 mt-md-0 ml-auto">
+                            <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                            <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
+                                <span class="dropdown-item edit_phase"><i class="far fa-edit"></i>&nbsp; Edit</span>
+                                <span class="dropdown-item assign_study_structures_roles" data-phase-id="'.$phase->id.'"><i class="far fa-user"></i>&nbsp; Assign Roles</span>
+                                <span class="dropdown-item"><i class="far fa-clone"></i>&nbsp; Clone</span>
+                                <span class="dropdown-item deletePhase"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                </li>';
+        }
+      return Response ($html);
     }
     /**
      * Show the form for creating a new resource.
@@ -194,7 +219,6 @@ class StudyStructureController extends Controller
         $phase->duration  =  $request->duration;
         $phase->save();
     }
-
 
     /**
      * Remove the specified resource from storage.

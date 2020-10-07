@@ -358,7 +358,7 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                                   {{-- <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>--}}
                                     <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
                                 </div>
                             </div>
