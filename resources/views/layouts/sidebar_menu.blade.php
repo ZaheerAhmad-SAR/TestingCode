@@ -68,6 +68,13 @@
                                         </a>
                                     </li>
                                 @endif
+                                @if(hasPermission(auth()->user(),'annotation.index'))
+                                    <li class="@if(is_active('annotation.index')) {{ ' active' }} @endif">
+                                        <a  href="{!! route('annotation.index') !!}">
+                                            Annotations
+                                        </a>
+                                    </li>
+                                @endif
                             </ul>
                         </li>
                 </ul>
@@ -132,13 +139,7 @@
                                         Preferences
                                     </a>
                                 </li>
-                                @if(hasPermission(auth()->user(),'annotation.index'))
-                                    <li class="@if(is_active('annotation.index')) {{ ' active' }} @endif">
-                                        <a  href="{!! route('annotation.index') !!}">
-                                            Annotations
-                                        </a>
-                                    </li>
-                                @endif
+                               
                             </ul>
                         </li>
                 </ul>
@@ -163,17 +164,17 @@
                     <ul>
                         <li>
                             <a href="#">
+                                <i class="fas fa-file-import"></i> Transmissions
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
                                 <i class="fas fa-list"></i> Qc List
                             </a>
                         </li>
                         <li>
                             <a href="#">
                                 <i class="fas fa-chart-line"></i> Qc Status
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-file-import"></i> Import XML
                             </a>
                         </li>
                     </ul>

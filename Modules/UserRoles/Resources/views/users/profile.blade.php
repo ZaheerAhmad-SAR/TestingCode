@@ -55,7 +55,6 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                             @if(hasPermission(auth()->user(),'users.store'))
                                 <button type="submit" class="btn btn-outline-primary" id="btn-save" value="create"><i class="fa fa-save"></i> Save Changes</button>
                             @endif
