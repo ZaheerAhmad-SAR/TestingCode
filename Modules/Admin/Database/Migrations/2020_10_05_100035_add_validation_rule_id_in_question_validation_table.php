@@ -14,7 +14,7 @@ class AddValidationRuleIdInQuestionValidationTable extends Migration
     public function up()
     {
         Schema::table('question_validations', function (Blueprint $table) {
-            $table->uuid('validation_rule_id')->nullable();
+            $table->uuid('validation_rule_id')->after('question_id')->nullable();
         });
     }
 
