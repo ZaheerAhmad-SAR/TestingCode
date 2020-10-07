@@ -174,10 +174,36 @@ class SubjectFormSubmissionController extends Controller
             foreach ($question->validationRules as $validationRule) {
                 $validationRuleStr = '';
 
-                $validationRuleStr .= $validationRule->rule;
-
-                if ($validationRule->is_range == 1) {
-                    $validationRuleStr .= ':' . $question->formFields->lower_limit . ',' . $question->formFields->upper_limit;
+                if ($validationRule->is_range == 1 || (int)$validationRule->num_params == 2) {
+                    if (
+                        !empty($question->formFields->lower_limit) &&
+                        !empty($question->formFields->upper_limit)
+                    ) {
+                        $validationRuleStr .= $validationRule->rule;
+                        $validationRuleStr .= ':' . $question->formFields->lower_limit . ',' . $question->formFields->upper_limit;
+                    } else {
+                        return $this->abortValidationWithError();
+                    }
+                } elseif ((int)$validationRule->num_params == 1) {
+                    if (
+                        !empty($question->formFields->lower_limit)
+                    ) {
+                        $validationRuleStr .= $validationRule->rule;
+                        $validationRuleStr .= ':' . $question->formFields->lower_limit;
+                    } else {
+                        return $this->abortValidationWithError();
+                    }
+                } elseif ((string)$validationRule->num_params == 'unlimited') {
+                    if (
+                        !empty($question->formFields->lower_limit)
+                    ) {
+                        $validationRuleStr .= $validationRule->rule;
+                        $validationRuleStr .= ':' . $question->formFields->lower_limit;
+                    } else {
+                        return $this->abortValidationWithError();
+                    }
+                } else {
+                    $validationRuleStr .= $validationRule->rule;
                 }
 
                 $validationRulesArray[] = $validationRuleStr;
@@ -195,5 +221,13 @@ class SubjectFormSubmissionController extends Controller
             /************************************** */
             return $returnArray;
         }
+    }
+
+    private function abortValidationWithError()
+    {
+        $returnArray = [];
+        $returnArray['success'] = 'no';
+        $returnArray['error'] = 'Required parameters for validation are not available';
+        return $returnArray;
     }
 }

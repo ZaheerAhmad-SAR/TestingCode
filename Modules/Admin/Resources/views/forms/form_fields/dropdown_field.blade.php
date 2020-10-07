@@ -16,7 +16,7 @@ $options = array_combine ( $option_names , $option_values );
                 @foreach ($options as $option_name => $option_value)
                     <option value="{{ $option_value }}" {{ $answer->answer == $option_value ? 'selected' : '' }}>
                         {{ $option_name }}
-                    <option>
+                    </option>
                 @endforeach
             </select>
         </div>

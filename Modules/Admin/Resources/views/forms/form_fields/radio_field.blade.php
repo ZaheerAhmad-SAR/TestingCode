@@ -2,8 +2,13 @@
 $option_names = [];
 $option_values = [];
 $optionGroup = $question->optionsGroup;
-$option_values = explode(',', $optionGroup->option_value);
-$option_names = explode(',', $optionGroup->option_name);
+if(!empty($optionGroup->option_value)){
+    $option_values = explode(',', $optionGroup->option_value);
+    $option_names = explode(',', $optionGroup->option_name);
+}else{
+    $option_values = [1];
+    $option_names = [$question->formFields->text_info];
+}
 $options = array_combine ( $option_names , $option_values );
 @endphp
 <div class="form-group">
