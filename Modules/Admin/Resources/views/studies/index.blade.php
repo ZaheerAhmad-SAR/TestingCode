@@ -259,11 +259,15 @@
                             <div class="form-group row" style="margin-top: 10px;">
                                 <label for="study_users" class="col-sm-3"></label>
                                 <div class="{!! ($errors->has('users')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                    <select class="searchable appendusers" id="select-users" multiple="multiple" name="users[]">
+                                    <select class="searchable" id="select-users" multiple="multiple" name="users[]">
                                        @foreach($users as $user)
                                         <option value="{{$user->id}}">{{$user->name}}</option>
                                         @endforeach
                                     </select>
+
+                                    <select class="searchable appendusers" id="selected-users" multiple="multiple" name="users[]">
+                                    </select>
+
                                 </div>
                                 @error('users')
                                 <span class="text-danger small">
@@ -334,8 +338,15 @@
 @endsection
 @section('script')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
-
     <script type="text/javascript">
+        // run callbacks
+        $('#select-users').multiSelect({
+            selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
+            selectionHeader: "<label for=''>Assigned Admins</label><input type='text' class='form-control appendusers' autocomplete='off' placeholder='search here'>",
+
+        });
+    </script>
+   {{-- <script type="text/javascript">
         $(document).ready(function() {
             $('#select-users').multiSelect({
                 selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
@@ -373,7 +384,7 @@
                 }
             });
         });
-    </script>
+    </script>--}}
     <script src="{{ asset('dist/js/jquery.validate.min.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.barfiller.js') }}"></script>
@@ -443,10 +454,12 @@
 
         $('body').on('click', '#delete-study', function () {
             var study_id = $(this).data("id");
-            confirm("Are You sure want to delete !");
             $.ajax({
                 type: "DELETE",
                 url: "{{ url('studies')}}"+'/'+study_id,
+                beforeSend:function(){
+                    return confirm("Are You sure want to delete !");
+                },
                 success: function (data) {
                     $("#study_id_" + study_id).remove();
                     if(data.success == true){ // if true (1)
@@ -471,11 +484,15 @@
             var parent_id = $(this).data("id");
             var newPath = "{{URL('studies/cloneStudy')}}";
             //alert(newPath)
-            confirm("Are You sure want to Clone !");
+
+
             $.ajax({
                 type: "POST",
                 data:{'id':parent_id},
                 url: newPath,
+                beforeSend:function(){
+                    return confirm("Are You sure want to Clone !");
+                },
                 success: function (data) {
                     console.log(data);
                     location.reload();

@@ -445,6 +445,8 @@ class RoleController extends Controller
             /*-- Study Tools Permissions */
             if ($request->study_tools ) {
                 $permissions = Permission::where('name', '=', 'studytools.index')
+                    ->orwhere('name', '=', 'studyusers.index')
+                    ->orwhere('name', '=', 'studyRoles.index')
                     ->orwhere('name', '=', 'studySite.index')
                     ->orwhere('name', '=', 'studySite.create')
                     ->orwhere('name', '=', 'studySite.store')
@@ -475,6 +477,8 @@ class RoleController extends Controller
                     ->orwhere('name', '=', 'sections.edit')
                     ->orwhere('name', '=', 'sections.update')
                     ->orwhere('name', '=', 'sections.destroy')
+                    ->orwhere('name', '=', 'steps.save')
+                    ->orwhere('name', '=', 'steps.update')
                     ->orwhere('name', '=', 'forms.index')
                     ->orwhere('name', '=', 'forms.create')
                     ->orwhere('name', '=', 'forms.store')
@@ -492,9 +496,6 @@ class RoleController extends Controller
                     ->orwhere('name','=','diseaseCohort.update')
                     ->orwhere('name','=','diseaseCohort.destroy')
                     ->get();
-
-                dd($permissions);
-
 
                 foreach ($permissions as $permission) {
                     $permission_id = $permission->id;
@@ -1010,6 +1011,8 @@ class RoleController extends Controller
         /*-- Study Tools Permissions */
         if ($request->study_tools ) {
             $permissions = Permission::where('name', '=', 'studytools.index')
+                ->orwhere('name', '=', 'studyusers.index')
+                ->orwhere('name', '=', 'studyRoles.index')
                 ->orwhere('name', '=', 'studySite.index')
                 ->orwhere('name', '=', 'studySite.create')
                 ->orwhere('name', '=', 'studySite.store')

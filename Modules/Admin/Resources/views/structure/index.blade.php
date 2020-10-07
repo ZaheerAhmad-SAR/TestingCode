@@ -342,12 +342,14 @@
 <script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
 <script>
 $(document).ready(function(){
-    load_steps();
+    if(res !=''){
+        load_steps();
+    }
     function load_steps(){
         $.ajax({
             url:'get_steps',
             dataType:'html',
-            success:function(res){
+            success:function(res) {
                 $('.allsteps').html(res);
             }
         })
