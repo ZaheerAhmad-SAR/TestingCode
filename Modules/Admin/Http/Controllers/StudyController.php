@@ -148,7 +148,6 @@ class StudyController extends Controller
             if (!empty($request->disease_cohort) && $request->disease_cohort != '') {
                 foreach ($request->disease_cohort as $disease_cohort) {
                     if (!empty($disease_cohort)) {
-                        dd('here');
                         $checkDiseaseCohort = DiseaseCohort::find($disease_cohort);
                         if (empty($checkDiseaseCohort)) {
                             $diseaseCohort = DiseaseCohort::updateOrCreate([
