@@ -19,9 +19,8 @@
                                     {{ $stepClsStr }}
                                     {{ $sectionClsStr }}
                                     {{ $firstSection ? 'active' : '' }}
-                                    {{ $firstSection ? 'first_navlink_'.$stepIdStr : '' }}"
-
-                                        data-toggle="tab" href="#tab{{ $section->id }}">
+                                    {{ $firstSection ? 'first_navlink_' . $stepIdStr : '' }}" data-toggle="tab"
+                                        href="#tab{{ $section->id }}">
                                         <div class="d-flex">
                                             <div class="mr-3 mb-0 h1">{{ $section->sort_number }}</div>
                                             <div class="media-body align-self-center">
@@ -61,7 +60,8 @@
                                 $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'NoStatus';
 
                                 $sharedData = [
-                                'studyId' => $studyId, 'studyClsStr' => $studyClsStr, 'subjectId' => $subjectId, 'phase' => $phase,
+                                'studyId' => $studyId, 'studyClsStr' => $studyClsStr, 'subjectId' => $subjectId, 'phase'
+                                => $phase,
                                 'step' => $step, 'section' => $section, 'formStatusObj' => $formStatusObj,
                                 'formStatus' => $formStatus, 'sectionIdStr' => $sectionIdStr,
                                 'sectionClsStr' => $sectionClsStr, 'stepClsStr'=> $stepClsStr,
@@ -69,7 +69,7 @@
                                 ];
 
                                 @endphp
-                                <div class="tab-pane tab-pane_{{ $stepIdStr }} fade {{ $firstSection ? 'first_tab_'.$stepIdStr : '' }} {{ $firstSection ? 'active show' : '' }}"
+                                <div class="tab-pane tab-pane_{{ $stepIdStr }} fade {{ $firstSection ? 'first_tab_' . $stepIdStr : '' }} {{ $firstSection ? 'active show' : '' }}"
                                     id="tab{{ $section->id }}">
                                     @include('admin::forms.section_questions', $sharedData )
                                     @include('admin::forms.section_next_previous', $sharedData)
@@ -85,29 +85,5 @@
         </div>
     </div>
     @push('script')
-        <script>
-            function submitSectionForms{{ $stepIdStr }}(stepIdStr, stepClsStr) {
-                if (checkTermCond(stepIdStr)) {
-                    @foreach($sections as $key => $section)
-                        @php
-                        $sectionClsStr = buildSafeStr($section->id, 'sec_cls_');
-                        $sectionIdStr = buildSafeStr($section->id, '');
-                        @endphp
-                        validateForm{{ $sectionIdStr }}();
-                        var submitFormFlag = true;
-                        if (isFormInEditMode('{{ $sectionIdStr }}')) {
-                            if (checkReason(stepIdStr) === false) {
-                                submitFormFlag = false;
-                            }
-                        }
-                        if (submitFormFlag) {
-                            submitForm('{{ $sectionIdStr }}', '{{ $sectionClsStr }}', '{{ $stepIdStr }}');
-                        }
-                    @endforeach
-                        if(submitFormFlag){
-                            hideReasonField(stepIdStr, stepClsStr)
-                        }
-                }
-            }
-        </script>
+        @include('admin::forms.form_js', ['stepIdStr' => $stepIdStr, 'sections' => $sections])
     @endpush
