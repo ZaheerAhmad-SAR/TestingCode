@@ -21,6 +21,7 @@ class CreateValidationRulesTable extends Migration
             $table->text('rule_group')->nullable();
             $table->tinyInteger('is_active')->default('1');
             $table->tinyInteger('is_range')->default('0');
+            $table->string('num_params')->default('0');
             $table->tinyInteger('is_related_to_other_field')->default('1');
             $table->timestamps();
         });

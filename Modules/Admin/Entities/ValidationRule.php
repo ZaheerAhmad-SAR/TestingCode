@@ -2,7 +2,7 @@
 
 namespace Modules\Admin\Entities;
 
-use Modules\Admin\Scopes\ActiveScope;
+use Modules\Admin\Scopes\RuleActiveScope;
 use Illuminate\Database\Eloquent\Model;
 
 class ValidationRule extends Model
@@ -13,7 +13,7 @@ class ValidationRule extends Model
     protected static function boot()
     {
         parent::boot();
-        static::addGlobalScope(new ActiveScope);
+        static::addGlobalScope(new RuleActiveScope);
     }
 
     public function scopeWithRelatedToOtherFields($query)
@@ -26,8 +26,8 @@ class ValidationRule extends Model
         return $query->where('is_related_to_other_field', 0);
     }
 
-    public function Question()
+    public function questions()
     {
-        return $this->belongsToMany(Question::class, 'question_validations', 'rule_id', 'question_id');
+        return $this->belongsToMany(Question::class, 'question_validations', 'validation_rule_id', 'question_id');
     }
 }

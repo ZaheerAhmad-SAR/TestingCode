@@ -330,6 +330,87 @@
                 });
             }
 
+            function validateFormField(sectionIdStr, questionId, field_name) {
+                    var field_val;
+                    if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
+                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').val();
+                    } else {
+                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').val();
+                    }
+
+                    var frmData = $("#form_master_" + sectionIdStr).serialize()  + '&questionId=' + questionId + '&' + field_name + '=' + field_val;
+                    return validateSingleQuestion(frmData);
+
+            }
+
+            function validateForm(sectionIdStr) {
+                return new Promise(function (resolve, reject) {
+                    var frmData = $("#form_master_" + sectionIdStr).serialize() + '&' + $("#form_" + sectionIdStr).serialize();
+                    $.ajax({
+                        url: "{{ route('validateSectionQuestionsForm') }}",
+                        type: 'POST',
+                        data: frmData,
+                        dataType: 'JSON',
+                        success: function(response) {
+                            if(response.success == 'no'){
+                                reject(response.error);
+                            }else{
+                                resolve(response.success);
+                            }
+                        }
+                    });
+                })
+            }
+
+            function validateSingleQuestion(frmData) {
+                return new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: "{{ route('validateSingleQuestion') }}",
+                    type: 'POST',
+                    data: frmData,
+                    dataType: 'JSON',
+                    success: function(response) {
+                        if(response.success == 'no'){
+                            reject(response.error);
+                        }else{
+                            resolve(response.success);
+                        }
+                    }
+                });
+                })
+            }
+            function validateAndSubmitForm(sectionIdStr, sectionClsStr, stepIdStr){
+                const promise = validateForm(sectionIdStr);
+                promise
+                .then((data) => {
+                    console.log(data);
+                    submitForm(sectionIdStr, sectionClsStr, stepIdStr);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    handleValidationErrors(error);
+                });
+            }
+            function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, field_name, fieldId){
+                checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
+                const validationPromise = validateFormField(sectionIdStr, questionId, field_name);
+                validationPromise
+                .then((data) => {
+                    console.log(data)
+                    submitFormField(stepIdStr, sectionIdStr, field_name);
+                })
+                .then((data) => {
+                    console.log(data)
+                    validateDependentFields(sectionIdStr, questionId, field_name, fieldId);
+                })
+                .catch((error) => {
+                    console.log(error)
+                    handleValidationErrors(error);
+                });
+            }
+            function checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId){}
+            function validateDependentFields(sectionIdStr, questionId, field_name, fieldId){}
+            function handleValidationErrors(error) { alert(error); }
             function reloadPage(stepClsStr) {
                 setTimeout(function() {
                     //disableByClass(stepClsStr);
