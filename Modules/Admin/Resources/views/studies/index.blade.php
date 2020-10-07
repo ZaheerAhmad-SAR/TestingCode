@@ -28,11 +28,18 @@
             <div class="col-12 mt-3">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="col-md-3">
                         @if(hasPermission(auth()->user(),'studies.create'))
                         <button type="button" class="btn btn-outline-primary" id="create-new-study" data-toggle="modal" data-target="#createStudy">
                             <i class="fa fa-plus"></i> Add Study
                         </button>
+                        </div>
                             @endif
+                            <div class="col-md-9 align-items-left" style="padding: 0px 0px 0px 95px;">
+                                <button class="btn" disabled style="background:#17a2b8; color:white ">QC</button>
+                                <button class="btn" disabled style="background:green; color:white">Grader</button>
+                                <button class="btn" disabled style="background:red; color:white">Adjudication</button>
+                            </div>
                     </div>
                     <div class="card-body">
                         <table class="tablesaw table-bordered" data-tablesaw-mode="stack" id="studies_crud">
@@ -44,9 +51,7 @@
                                     <br>
                                     <br>Sponsor
                                 </th>
-                                <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block">QC</th>
-                                <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block">Grader</th>
-                                <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block">Adjudication</th>
+                                <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block">Progress bar</th>
                                 <th scope="col" data-tablesaw-priority="1">Status</th>
                                 <th scope="col" data-tablesaw-priority="1">Study Admin</th>
                                 <th scope="col" data-tablesaw-priority="4">Action</th>
@@ -64,7 +69,8 @@
                                             </a>
                                             <br><br><p style="font-size: 14px; font-style: oblique">Sponsor: <strong>{{ucfirst($study->study_sponsor)}}</strong></p>
                                         </td>
-                                        <td class="tablesaw-stack-block" style="width: 17%">
+                                        <td class="tablesaw-stack-block">
+                                            <p></p>
                                             <div class="card">
                                                 <div class="card-body p-0">
                                                     <div  class="barfiller" data-color="#17a2b8">
@@ -77,8 +83,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </td>
-                                        <td class="tablesaw-stack-block" style="width: 17%">
+                                            <p></p>
                                             <div class="card">
                                                 <div class="card-body p-0">
                                                     <div  class="barfiller" data-color="green">
@@ -91,8 +96,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </td>
-                                        <td class="tablesaw-stack-block" style="width: 17%">
+                                            <p></p>
                                             <div class="card">
                                                 <div class="card-body p-0">
                                                     <div  class="barfiller" data-color="red">
