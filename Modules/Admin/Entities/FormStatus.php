@@ -20,10 +20,7 @@ class FormStatus extends Model
             foreach ($getFormStatusArray as $key => $value) {
                 $q->where($key, '=', $value);
             }
-        })->first();
-        if (null === $formStatusObject) {
-            $formStatusObject = new FormStatus();
-        }
+        })->firstOrNew();
         return $formStatusObject;
     }
 
@@ -38,10 +35,7 @@ class FormStatus extends Model
                 foreach ($getFormStatusArray as $key => $value) {
                     $q->where($key, '=', $value);
                 }
-            })->first();
-            if (null === $formStatusObject) {
-                $formStatusObject = new FormStatus();
-            }
+            })->firstOrNew();
             $sectionArray[] = $formStatusObject;
         }
         return ['step_id' => $step_id, 'sections' => $sectionArray];
