@@ -35,7 +35,7 @@
             </div>
             <div class="col-md-1">
                 <button type="button" class="btn btn-success float-right"
-                    onclick="submitSectionForms{{ $stepIdStr }}('{{ $stepIdStr }}', '{{ $stepClsStr }}');"
+                    onclick="submitStepForms{{ $stepIdStr }}('{{ $stepIdStr }}', '{{ $stepClsStr }}');"
                     id="submit_{{ $stepIdStr }}">Submit</button>
             </div>
         </div>

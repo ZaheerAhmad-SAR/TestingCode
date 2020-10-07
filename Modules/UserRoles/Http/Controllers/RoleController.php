@@ -445,6 +445,8 @@ class RoleController extends Controller
             /*-- Study Tools Permissions */
             if ($request->study_tools ) {
                 $permissions = Permission::where('name', '=', 'studytools.index')
+                    ->orwhere('name', '=', 'studyusers.index')
+                    ->orwhere('name', '=', 'studyRoles.index')
                     ->orwhere('name', '=', 'studySite.index')
                     ->orwhere('name', '=', 'studySite.create')
                     ->orwhere('name', '=', 'studySite.store')
@@ -462,6 +464,21 @@ class RoleController extends Controller
                     ->orwhere('name', '=', 'studydesign.update')
                     ->orwhere('name', '=', 'studydesign.destory')
                     ->orwhere('name', '=', 'study.index')
+                    ->orwhere('name', '=', 'study.create')
+                    ->orwhere('name', '=', 'study.store')
+                    ->orwhere('name', '=', 'study.edit')
+                    ->orwhere('name', '=', 'study.update')
+                    ->orwhere('name', '=', 'study.destroy')
+                    ->orwhere('name', '=', 'steps.update')
+                    ->orwhere('name', '=', 'steps.store')
+                    ->orwhere('name', '=', 'sections.index')
+                    ->orwhere('name', '=', 'sections.create')
+                    ->orwhere('name', '=', 'sections.store')
+                    ->orwhere('name', '=', 'sections.edit')
+                    ->orwhere('name', '=', 'sections.update')
+                    ->orwhere('name', '=', 'sections.destroy')
+                    ->orwhere('name', '=', 'steps.save')
+                    ->orwhere('name', '=', 'steps.update')
                     ->orwhere('name', '=', 'forms.index')
                     ->orwhere('name', '=', 'forms.create')
                     ->orwhere('name', '=', 'forms.store')
@@ -994,6 +1011,8 @@ class RoleController extends Controller
         /*-- Study Tools Permissions */
         if ($request->study_tools ) {
             $permissions = Permission::where('name', '=', 'studytools.index')
+                ->orwhere('name', '=', 'studyusers.index')
+                ->orwhere('name', '=', 'studyRoles.index')
                 ->orwhere('name', '=', 'studySite.index')
                 ->orwhere('name', '=', 'studySite.create')
                 ->orwhere('name', '=', 'studySite.store')
@@ -1011,6 +1030,21 @@ class RoleController extends Controller
                 ->orwhere('name', '=', 'studydesign.update')
                 ->orwhere('name', '=', 'studydesign.destory')
                 ->orwhere('name', '=', 'study.index')
+                ->orwhere('name', '=', 'study.create')
+                ->orwhere('name', '=', 'study.store')
+                ->orwhere('name', '=', 'study.edit')
+                ->orwhere('name', '=', 'study.update')
+                ->orwhere('name', '=', 'study.destroy')
+                ->orwhere('name', '=', 'steps.update')
+                ->orwhere('name', '=', 'steps.store')
+                ->orwhere('name', '=', 'sections.index')
+                ->orwhere('name', '=', 'sections.create')
+                ->orwhere('name', '=', 'sections.store')
+                ->orwhere('name', '=', 'sections.edit')
+                ->orwhere('name', '=', 'sections.update')
+                ->orwhere('name', '=', 'sections.destroy')
+                ->orwhere('name', '=', 'steps.save')
+                ->orwhere('name', '=', 'steps.update')
                 ->orwhere('name', '=', 'forms.index')
                 ->orwhere('name', '=', 'forms.create')
                 ->orwhere('name', '=', 'forms.store')
@@ -1028,6 +1062,7 @@ class RoleController extends Controller
                 ->orwhere('name','=','diseaseCohort.update')
                 ->orwhere('name','=','diseaseCohort.destroy')
                 ->get();
+
 
 
             foreach ($permissions as $permission) {

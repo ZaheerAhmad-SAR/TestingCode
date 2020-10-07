@@ -11,9 +11,10 @@
                         <h4 class="mb-0">Subject Phases</h4>
                     </div>
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
-                        <li class="breadcrumb-item">Home</li>
-                        <li class="breadcrumb-item">Forms</li>
-                        <li class="breadcrumb-item active"><a href="#">Form Type Here</a></li>
+                    <li class="breadcrumb-item"><a href="{{ url('dashboard') }}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('studies') }}">Studies</a></li>
+                        <li class="breadcrumb-item active"><a href="{{ url('studies/'.$studyId) }}">Study Subjects</a></li>
+                        <li class="breadcrumb-item active"><a href="javascript:void();">Form</a></li>
                     </ol>
                 </div>
             </div>
@@ -28,24 +29,41 @@
                         <h4 class="card-title">Study and Subject details</h4>
                     </div>
                     <div class="card-body">
-                        <table>
-                            <tr>
-                                <td>Subject ID :</td>
-                                <td>{{ $subject->subject_id }}</td>
-                            </tr>
-                            <tr>
-                                <td>Study EYE :</td>
-                                <td>{{ $subject->study_eye }}</td>
-                            </tr>
-                            <tr>
-                                <td>Site Name :</td>
-                                <td>{{ $site->site_name }}</td>
-                            </tr>
-                            <tr>
-                                <td>Site Code :</td>
-                                <td>{{ $site->site_code }}</td>
-                            </tr>
-                        </table>
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <tr>
+                                            <th scope="row">Subject ID</th>
+                                            <td>{{ $subject->subject_id }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Study EYE</th>
+                                            <td>{{ $subject->study_eye }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Study Site ID</th>
+                                            <td>{{ $studySite->study_site_id }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <tr>
+                                            <th scope="row">Site Name</th>
+                                            <td>{{ $site->site_name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Site Code</th>
+                                            <td>{{ $site->site_code }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -312,6 +330,87 @@
                 });
             }
 
+            function validateFormField(sectionIdStr, questionId, field_name) {
+                    var field_val;
+                    if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
+                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').val();
+                    } else {
+                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').val();
+                    }
+
+                    var frmData = $("#form_master_" + sectionIdStr).serialize()  + '&questionId=' + questionId + '&' + field_name + '=' + field_val;
+                    return validateSingleQuestion(frmData);
+
+            }
+
+            function validateForm(sectionIdStr) {
+                return new Promise(function (resolve, reject) {
+                    var frmData = $("#form_master_" + sectionIdStr).serialize() + '&' + $("#form_" + sectionIdStr).serialize();
+                    $.ajax({
+                        url: "{{ route('validateSectionQuestionsForm') }}",
+                        type: 'POST',
+                        data: frmData,
+                        dataType: 'JSON',
+                        success: function(response) {
+                            if(response.success == 'no'){
+                                reject(response.error);
+                            }else{
+                                resolve(response.success);
+                            }
+                        }
+                    });
+                })
+            }
+
+            function validateSingleQuestion(frmData) {
+                return new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: "{{ route('validateSingleQuestion') }}",
+                    type: 'POST',
+                    data: frmData,
+                    dataType: 'JSON',
+                    success: function(response) {
+                        if(response.success == 'no'){
+                            reject(response.error);
+                        }else{
+                            resolve(response.success);
+                        }
+                    }
+                });
+                })
+            }
+            function validateAndSubmitForm(sectionIdStr, sectionClsStr, stepIdStr){
+                const promise = validateForm(sectionIdStr);
+                promise
+                .then((data) => {
+                    console.log(data);
+                    submitForm(sectionIdStr, sectionClsStr, stepIdStr);
+                })
+                .catch((error) => {
+                    console.log(error);
+                    handleValidationErrors(error);
+                });
+            }
+            function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, field_name, fieldId){
+                checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
+                const validationPromise = validateFormField(sectionIdStr, questionId, field_name);
+                validationPromise
+                .then((data) => {
+                    console.log(data)
+                    submitFormField(stepIdStr, sectionIdStr, field_name);
+                })
+                .then((data) => {
+                    console.log(data)
+                    validateDependentFields(sectionIdStr, questionId, field_name, fieldId);
+                })
+                .catch((error) => {
+                    console.log(error)
+                    handleValidationErrors(error);
+                });
+            }
+            function checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId){}
+            function validateDependentFields(sectionIdStr, questionId, field_name, fieldId){}
+            function handleValidationErrors(error) { alert(error); }
             function reloadPage(stepClsStr) {
                 setTimeout(function() {
                     //disableByClass(stepClsStr);

@@ -90,7 +90,7 @@
                     <h4 class="modal-title" id="deviceCrudModal">Add Subject</h4>
                 </div>
                 <div  class="modal-body">
-                    <form action="{{route('subjects.store')}}" enctype="multipart/form-data" method="POST">
+                    <form action="{{route('subjects.store')}}" enctype="multipart/form-data" method="POST" class="create-subject-form">
                         @csrf
                         <input type="hidden" value="{{$study->id}}" name="study_id">
                         <input type="hidden" name="id" id="id">
@@ -159,7 +159,7 @@
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save</button>
+                            <button type="submit" class="btn btn-outline-primary create-subject-btn"><i class="fa fa-save"></i> Save</button>
                         </div>
                     </form>
                 </div>
@@ -171,11 +171,11 @@
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content" >
                 <div class="modal-header">
-                    <h4 class="modal-title" id="deviceCrudModal">Edit Subject</h4>
+                    <h4 class="modal-title" id="">Edit Subject</h4>
                 </div>
                 <div  class="modal-body">
-                    <form method="POST" enctype="multipart/form-data" id="edit_subject_form">
-                        @method('PATCH')
+                    <form method="POST" enctype="multipart/form-data" class="edit-subject-form">
+                        @method('PUT')
                         @csrf
                       
                        
@@ -245,7 +245,7 @@
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save</button>
+                            <button type="submit" class="btn btn-outline-primary edit-subject-btn"><i class="fa fa-save"></i> Save</button>
                         </div>
                     </form>
                 </div>
@@ -274,8 +274,71 @@
             $('#edit_study_eye').val(study_eye);
             $('#edit_disease_cohort').val(disease);
             // assign action attribute
-            $('#edit_subject_form').attr('action', $(this).attr('data-url'));
+            $('.edit-subject-form').attr('action', $(this).attr('data-url'));
             $('#editSubjects').modal('show');
         });
+
+        // add form submit
+        $('.create-subject-btn').click(function(e){
+            e.preventDefault();
+            // hide message
+            $('.subject-message').remove();
+            var editID = '';
+            var subjectID = $('#createSubjects').find($('#subject_id')).val();
+            var type = 'add';
+            var message = '<span class="subject-message" style="color: red;">Subject ID is not unique.</span>';
+            
+            $.ajax({
+                type: "GET",
+                url: "{{route('subjects.check-suject')}}",
+                data: {
+                    edit_id : editID,
+                    subject_id: subjectID,
+                    type: type
+                },
+                success: function(data) {
+                    if (data == 'success') {
+                        // submit form
+                        $('.create-subject-form').submit();
+
+                    } else if (data == 'error') {
+
+                        $('#createSubjects').find($('#subject_id')).after(message);
+                    }
+                } // success ends
+            });
+
+        });
+
+        // edit form submit
+        $('.edit-subject-btn').click(function(e){
+            e.preventDefault();
+            // hide message
+            $('.edit-subject-message').remove();
+            var editID = $('#editSubjects').find($('#edit_id')).val();
+            var subjectID = $('#editSubjects').find($('#edit_subject_id')).val();
+            var type = 'update';
+            var message = '<span class="edit-subject-message" style="color: red;">Subject ID is not unique.</span>';
+            
+            $.ajax({
+                type: "GET",
+                url: "{{route('subjects.check-suject')}}",
+                data: {
+                    edit_id : editID,
+                    subject_id: subjectID,
+                    type: type
+                },
+                success: function(data) {
+                    if (data == 'success') {
+                        // submit form
+                        $('.edit-subject-form').submit();
+
+                    } else if (data == 'error') {
+                        $('#editSubjects').find($('#edit_subject_id')).after(message);
+                    }
+                } // success ends
+            });
+        });
+
     </script>
 @endsection

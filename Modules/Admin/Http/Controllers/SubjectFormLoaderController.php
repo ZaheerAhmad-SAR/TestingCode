@@ -10,6 +10,7 @@ use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\Subject;
 use Modules\Admin\Entities\Site;
+use Modules\Admin\Entities\StudySite;
 
 class SubjectFormLoaderController extends Controller
 {
@@ -28,6 +29,7 @@ class SubjectFormLoaderController extends Controller
         $subject = Subject::find($subjectId);
 
         $site = Site::find($subject->site_id);
+        $studySite = StudySite::where('study_id', $study->id)->where('site_id', $site->id)->firstOrNew();
 
         $form_filled_by_user_id = auth()->user()->id;
         $form_filled_by_user_role_id = auth()->user()->id;
@@ -41,6 +43,7 @@ class SubjectFormLoaderController extends Controller
             ->with('study', $study)
             ->with('subject', $subject)
             ->with('site', $site)
+            ->with('studySite', $studySite)
             ->with('form_filled_by_user_id', $form_filled_by_user_id)
             ->with('form_filled_by_user_role_id', $form_filled_by_user_role_id);
     }

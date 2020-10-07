@@ -26,7 +26,6 @@
                 $field_name = $question->formfields->variable_name;
                 $questionIdStr = buildSafeStr($question->id, '');
                 $fieldId = $field_name . '_' . $questionIdStr;
-                $js_script_to_push = '';
                 @endphp
                 @if ($question->form_field_type->field_type === 'Radio')
                     @include('admin::forms.form_fields.radio_field', ['question'=> $question, 'field_name'=> $field_name, 'questionIdStr'=> $questionIdStr, 'fieldId'=> $fieldId, 'answer'=> $answer,
@@ -53,13 +52,6 @@
                     @include('admin::forms.form_fields.upload_field', ['question'=> $question, 'field_name'=> $field_name, 'questionIdStr'=> $questionIdStr, 'fieldId'=> $fieldId, 'answer'=> $answer,
                     'sectionClsStr'=>$sectionClsStr, 'sectionIdStr'=>$sectionIdStr])
                 @endif
-
-
-                @php
-                $js_script_to_push .= "validateAndSubmitField".$questionIdStr."('".$stepIdStr."', '".$sectionIdStr."', '".$field_name."', '".$fieldId."');";
-                @endphp
-
-
             @endforeach
         </fieldset>
         </form>
@@ -71,7 +63,6 @@
                 globalDisableByClass('{{ $studyClsStr }}', '{{ $stepClsStr }}');
             }
         });
-        {!! 'function validateForm'.$sectionIdStr.'(){'.$js_script_to_push.'}' !!}
         </script>
     @endpush
 @endif

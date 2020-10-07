@@ -48,7 +48,7 @@
                                     <br>
                                     <br>Sponsor
                                 </th>
-                                <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block">Progress Bar</th>
+                                <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block">Progress bar</th>
                                 <th scope="col" data-tablesaw-priority="1">Status</th>
                                 <th scope="col" data-tablesaw-priority="1">Study Admin</th>
                                 <th scope="col" data-tablesaw-priority="4">Action</th>
@@ -67,6 +67,7 @@
                                             <br><br><p style="font-size: 14px; font-style: oblique">Sponsor: <strong>{{ucfirst($study->study_sponsor)}}</strong></p>
                                         </td>
                                         <td class="tablesaw-stack-block">
+                                            <p></p>
                                             <div class="card">
                                                 <div class="card-body p-0">
                                                     <div  class="barfiller" data-color="#17a2b8">
@@ -75,11 +76,38 @@
                                                      <span class="tip-arrow"></span>
                                                     </span>
                                                         </div>
+                                                        <span class="fill" data-percentage="{{rand(10,100)}}" style="color: red"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                           <br>
+                                            <div class="card">
+                                                <div class="card-body p-0">
+                                                    <div  class="barfiller" data-color="green">
+                                                        <div class="tipWrap">
+                                                 <span class="tip rounded info" style="background: green !important;">
+                                                     <span class="tip-arrow"></span>
+                                                    </span>
+                                                        </div>
+                                                        <span class="fill" data-percentage="{{rand(10,100)}}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <br>
+                                            <div class="card">
+                                                <div class="card-body p-0">
+                                                    <div  class="barfiller" data-color="red">
+                                                        <div class="tipWrap">
+                                                 <span class="tip rounded info" style="background: red !important;">
+                                                     <span class="tip-arrow"></span>
+                                                    </span>
+                                                        </div>
                                                         <span class="fill" data-percentage="{{rand(10,100)}}"></span>
                                                     </div>
                                                 </div>
                                             </div>
                                         </td>
+
                                         <td>{{$study->study_status}}</td>
                                         <td>
                                             @if(!empty($study->users))
@@ -343,7 +371,7 @@
                                         <option value="{{$user->id}}">{{$user->name}}</option>
                                         @endforeach
                                     </select>
-                                </div>
+
                                 @error('users')
                                 <span class="text-danger small">
                                     {{ $message }}
@@ -412,7 +440,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
 @endsection
 @section('script')
-
+    <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
     <!-- Queries Model scripts start -->
     <script src="{{ asset("dist/vendors/select2/js/select2.full.min.js") }}"></script>
@@ -640,33 +668,12 @@
            }
            if ($(this).attr("value")=="roles")
            {
-            //$("#users").empty();
-
             $('.usersInput').css('display','none');
             $(".rolesInput").show();
+            $(".statusInput").show();
             $(".remarksInput").show();
            }
        });
-    });
-
-    $('#savequeries').click(function (){
-        var queryAssignedTo = $("input[name='assignQueries']:checked").val();
-        if (queryAssignedTo == 'users')
-        {
-        var assignedUsers = $('#users').val();
-        var assignedRemarks = $('#remarks').val();
-        console.log(assignedUsers);
-        console.log(assignedRemarks);
-        }
-        if(queryAssignedTo =='roles')
-        {
-            var assignedRoles = $("input[name='roles']:checked").map(function() {
-                return this.value;
-            }).get().join(',');
-            var assignedRemarks = $('#remarks').val();
-            console.log(assignedRoles);
-            console.log(assignedRemarks);
-        }
     });
 
 </script>

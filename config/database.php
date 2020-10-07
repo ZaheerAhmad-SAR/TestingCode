@@ -49,7 +49,7 @@ return [
             'prefix'   => '',
         ],
 
-
+// for default database
         'mysql' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
@@ -59,6 +59,27 @@ return [
             'username' => env('DB_USERNAME', 'forge'),
             'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => false,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
+// for certify me application
+        'mysql_certify' => [
+            'driver' => 'mysql_certify_me',
+            'url' => env('DATABASE_URL_certify_me'),
+            'host' => env('DB_HOST_certify_me', '127.0.0.1'),
+            'port' => env('DB_PORT_certify_me', '3306'),
+            'database' => env('DB_DATABASE_certify_me', 'forge'),
+            'username' => env('DB_USERNAME_certify_me', 'forge'),
+            'password' => env('DB_PASSWORD_certify_me', ''),
+            'unix_socket' => env('DB_SOCKET_certify_me', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',

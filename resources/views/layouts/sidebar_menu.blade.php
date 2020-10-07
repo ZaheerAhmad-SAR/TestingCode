@@ -86,13 +86,13 @@
                                         </a>
                                     </li>
                                 @endif
-                                @if(hasPermission(auth()->user(),'studyRoles.index'))
+                               {{-- @if(hasPermission(auth()->user(),'studyRoles.index'))
                                     <li class="@if(is_active('studyRoles.index')) {{ ' active' }} @endif">
                                         <a href="{!! route('studyRoles.index') !!}">
                                             Study  Roles
                                         </a>
                                     </li>
-                                @endif
+                                @endif--}}
                                 @if(hasPermission(auth()->user(),'studySite.index'))
                                     <li class="@if(is_active('studySite.index')) {{ ' active' }} @endif">
                                         <a  href="{!! route('studySite.index') !!}">
@@ -216,6 +216,20 @@
                     </ul>
                 </li>
             @endif
+            <li class=""><a href="#"><i class="fas fa-database"></i> Certification Data</a>
+                <ul>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-list"></i> Photographers List
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-list"></i> Devices List
+                        </a>
+                    </li>
+                </ul>
+            </li>
             @if(hasPermission(auth()->user(),'data_management.index'))
                 <li class="dropdown">
                     <ul>

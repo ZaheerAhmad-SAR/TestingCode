@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Validator;
+use App\Rules\InRange;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -27,5 +29,18 @@ class AppServiceProvider extends ServiceProvider
 
         Schema::defaultStringLength(191);
 
+        /****************************** */
+        /****** Form Validations ****** */
+        /****************************** */
+        Validator::extend('in_range', function ($attribute, $value, $parameters, $validator) {
+            return (new InRange())->passes($attribute, $value, $parameters);
+        });
+        Validator::replacer('in_range', function ($message, $attribute, $rule, $parameters) {
+            return str_replace(
+                [':attribute', ':min', ':max'],
+                [$attribute, $parameters[0], $parameters[1]],
+                $message
+            );
+        });
     }
 }

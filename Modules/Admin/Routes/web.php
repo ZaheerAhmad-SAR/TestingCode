@@ -174,7 +174,15 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::post('getAssignRolesToPhaseStepForm', 'AssignRolesPhaseStepController@getAssignRolesToPhaseStepForm')->name('getAssignRolesToPhaseStepForm');
     Route::post('submitAssignRolesToPhaseForm', 'AssignRolesPhaseStepController@submitAssignRolesToPhaseForm')->name('submitAssignRolesToPhaseForm');
     Route::post('submitAssignRolesToPhaseStepForm', 'AssignRolesPhaseStepController@submitAssignRolesToPhaseStepForm')->name('submitAssignRolesToPhaseStepForm');
+
+    //Validation Rules
+    Route::post('validationRules/filterRulesDataValidation/', 'ValidationRuleController@filterRulesDataValidation')->name('filterRulesDataValidation');
+    // Form Validation
+    Route::post('/subject_form/validateSingleQuestion', 'SubjectFormSubmissionController@validateSingleQuestion')->name('validateSingleQuestion');
+    Route::post('/subject_form/validateSectionQuestionsForm', 'SubjectFormSubmissionController@validateSectionQuestionsForm')->name('validateSectionQuestionsForm');
 });
 
 // CHM-Amir--
 Route::get('trail-log', 'TrailLogController@index')->name('trail.log');
+// for checking subject ID
+Route::get('check-subject', 'SubjectController@checkSubject')->name('subjects.check-suject');
