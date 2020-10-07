@@ -41,7 +41,7 @@ class StudyController extends Controller
 
             $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
             $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
-            $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->get();
+            $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->orderBy('name','asc')->get();
             $sites = Site::all();
         }
         else{
@@ -145,20 +145,23 @@ class StudyController extends Controller
                     }
                 }
             }
-
             if (!empty($request->disease_cohort) && $request->disease_cohort != '') {
                 foreach ($request->disease_cohort as $disease_cohort) {
-                    $checkDiseaseCohort = DiseaseCohort::find($disease_cohort);
-                    if (empty($checkDiseaseCohort)) {
-                        $diseaseCohort = DiseaseCohort::updateOrCreate([
-                            'id' => \Illuminate\Support\Str::uuid(),
-                            'study_id' => $study->id,
-                            'name' => $disease_cohort
-                        ]);
+                    if (!empty($disease_cohort)) {
+                        dd('here');
+                        $checkDiseaseCohort = DiseaseCohort::find($disease_cohort);
+                        if (empty($checkDiseaseCohort)) {
+                            $diseaseCohort = DiseaseCohort::updateOrCreate([
+                                'id' => \Illuminate\Support\Str::uuid(),
+                                'study_id' => $study->id,
+                                'name' => $disease_cohort
+                            ]);
+                        }
                     }
                 }
             }
             else {
+                dd('else');
                 return \response()->json($study);
             }
             return \response()->json($study);

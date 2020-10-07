@@ -128,7 +128,7 @@
                         </div>
                             <div class="tab-pane fade" id="nav-Modalities" role="tabpanel" aria-labelledby="nav-Validation-tab">
                                 <div class="form-group row" style="margin-top: 10px;">
-                                    <label for="device_manufacturer" class="col-sm-3">Hold Command And Select Multiple</label>
+                                    <label for="device_manufacturer" class="col-sm-3"></label>
                                     <div class="{!! ($errors->has('roles')) ?'col-sm-9 has-error':'col-sm-9' !!}">
                                         <select class="searchable form-control" id="select-modality" multiple="multiple" name="modalities[]">
                                             @foreach($modilities as $modality)
@@ -275,5 +275,44 @@
 <script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.print.min.js') }}"></script>
 <script src="{{ asset('public/dist/js/datatable.script.js') }}"></script>
 <script src="{{ asset('public/dist/js/jquery.validate.min.js') }}"></script>
+    <script type="text/javascript">
+       $(document).ready(function() {
+           $('#select-modality').multiSelect({
+               selectableHeader: "<label for=''>All Modalities</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
+               selectionHeader: "<label for=''>Assigned Modalities</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
+               afterInit: function(ms){
+                   var that = this,
+                       $selectableSearch = that.$selectableUl.prev(),
+                       $selectionSearch = that.$selectionUl.prev(),
+                       selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
+                       selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
+
+                   that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+                       .on('keydown', function(e){
+                           if (e.which === 40){
+                               that.$selectableUl.focus();
+                               return false;
+                           }
+                       });
+
+                   that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+                       .on('keydown', function(e){
+                           if (e.which == 40){
+                               that.$selectionUl.focus();
+                               return false;
+                           }
+                       });
+               },
+               afterSelect: function(){
+                   this.qs1.cache();
+                   this.qs2.cache();
+               },
+               afterDeselect: function(){
+                   this.qs1.cache();
+                   this.qs2.cache();
+               }
+           });
+       });
+   </script>
 
 @stop

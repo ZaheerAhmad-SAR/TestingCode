@@ -44,7 +44,9 @@
                                     <br>
                                     <br>Sponsor
                                 </th>
-                                <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block">Progress Bar</th>
+                                <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block">QC</th>
+                                <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block">Grader</th>
+                                <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block">Adjudication</th>
                                 <th scope="col" data-tablesaw-priority="1">Status</th>
                                 <th scope="col" data-tablesaw-priority="1">Study Admin</th>
                                 <th scope="col" data-tablesaw-priority="4">Action</th>
@@ -62,10 +64,24 @@
                                             </a>
                                             <br><br><p style="font-size: 14px; font-style: oblique">Sponsor: <strong>{{ucfirst($study->study_sponsor)}}</strong></p>
                                         </td>
-                                        <td class="tablesaw-stack-block">
+                                        <td class="tablesaw-stack-block" style="width: 17%">
                                             <div class="card">
                                                 <div class="card-body p-0">
                                                     <div  class="barfiller" data-color="#17a2b8">
+                                                        <div class="tipWrap">
+                                                 <span class="tip rounded info">
+                                                     <span class="tip-arrow"></span>
+                                                    </span>
+                                                        </div>
+                                                        <span class="fill" data-percentage="{{rand(10,100)}}" style="color: red"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="tablesaw-stack-block" style="width: 17%">
+                                            <div class="card">
+                                                <div class="card-body p-0">
+                                                    <div  class="barfiller" data-color="green">
                                                         <div class="tipWrap">
                                                  <span class="tip rounded info">
                                                      <span class="tip-arrow"></span>
@@ -76,6 +92,21 @@
                                                 </div>
                                             </div>
                                         </td>
+                                        <td class="tablesaw-stack-block" style="width: 17%">
+                                            <div class="card">
+                                                <div class="card-body p-0">
+                                                    <div  class="barfiller" data-color="red">
+                                                        <div class="tipWrap">
+                                                 <span class="tip rounded info">
+                                                     <span class="tip-arrow"></span>
+                                                    </span>
+                                                        </div>
+                                                        <span class="fill" data-percentage="{{rand(10,100)}}"></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+
                                         <td>{{$study->study_status}}</td>
                                         <td>
                                             @if(!empty($study->users))
@@ -342,16 +373,12 @@
                             <div class="form-group row" style="margin-top: 10px;">
                                 <label for="study_users" class="col-sm-3"></label>
                                 <div class="{!! ($errors->has('users')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                    <select class="searchable" id="select-users" multiple="multiple" name="users[]">
+                                    <select class="searchable appendusers" id="select-users" multiple="multiple" name="users[]">
                                        @foreach($users as $user)
                                         <option value="{{$user->id}}">{{$user->name}}</option>
                                         @endforeach
                                     </select>
 
-                                    <select class="searchable appendusers" id="selected-users" multiple="multiple" name="users[]">
-                                    </select>
-
-                                </div>
                                 @error('users')
                                 <span class="text-danger small">
                                     {{ $message }}
@@ -420,13 +447,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
 @endsection
 @section('script')
+    <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
     <script type="text/javascript">
         // run callbacks
         $('#select-users').multiSelect({
             selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
             selectionHeader: "<label for=''>Assigned Admins</label><input type='text' class='form-control appendusers' autocomplete='off' placeholder='search here'>",
-
         });
     </script>
    {{-- <script type="text/javascript">
@@ -534,12 +561,37 @@
                 $('.appendfields').append(html);
                 var user = '';
                 $('.appendusers').html('');
-                $.each(data.users,function (index, value) {
-                    //console.log(index,value);
+                    alert('post loop');
+
+               setTimeout(
+                   function()
+                   {
+                       alert('in loop');
+                       $('#select-users option').each(function(index) {
+
+                           var str = "2babaf3d-9180-4b47-a715-7e0485d63715,84d6ca50-abe8-4f24-bf40-2d715d7fb2c9";
+                           var substr = str.split(',');
+                           if (substr[0] == $(this).val()) {
+                               $(this).attr('selected', 'selected');
+                               alert($(this).val()); ///For check
+                           }
+                       });
+                   }, 5000);
+
+
+               //$('#select-users').multiSelect('select', String|Array);
+               // $.each(values.split(","), function(i,e){
+               //
+               //     $('#select-users').multiSelect('select', '2babaf3d-9180-4b47-a715-7e0485d63715'|['2babaf3d-9180-4b47-a715-7e0485d63715', '84d6ca50-abe8-4f24-bf40-2d715d7fb2c9']);
+               // });
+             //$('.appendusers').val(['2babaf3d-9180-4b47-a715-7e0485d63715', '84d6ca50-abe8-4f24-bf40-2d715d7fb2c9']);
+              /*  $.each(data.users,function (index, value) {
+                    alert('here i am');
                     user += '<option selected="selected" value=" '+value.id+' ">'+value.name+'</option>';
 
-                });
-               $('.appendusers').html(user);
+                });*/
+
+              // $('.appendusers').html(user);
 
            })
         });
