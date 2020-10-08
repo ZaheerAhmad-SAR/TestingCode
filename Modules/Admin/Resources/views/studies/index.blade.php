@@ -300,7 +300,7 @@
                                     <label for="disease_cohort">Disease Cohort</label>
                                 </div>
                                 <div class="col-md-7 appendfields">
-                                    
+
                                 </div>
                                 <div class="col-md-3" style="text-align: right">
                                     @if(hasPermission(auth()->user(),'diseaseCohort.create'))
@@ -394,7 +394,7 @@
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
     <!-- Queries Model scripts start -->
-    <script src="{{ asset("dist/vendors/select2/js/select2.full.min.js") }}"></script>
+  <script src="{{ asset("dist/vendors/select2/js/select2.full.min.js") }}"></script>
     <script src="{{ asset("dist/js/select2.script.js") }}"></script>
 
     <!-- Queries Model scripts end -->
@@ -407,12 +407,13 @@
     })
 </script>
     <script type="text/javascript">
-       
+
         // run callbacks
         $('#select-users').multiSelect({
             selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
             selectionHeader: "<label for=''>Assigned Admins</label><input type='text' class='form-control appendusers' autocomplete='off' placeholder='search here'>",
-            
+        });
+
     </script>
     <script src="{{ asset('dist/js/jquery.validate.min.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
@@ -476,7 +477,7 @@
                 $('.appendusers').html('');
 
                 $.each(data.users,function (index, value) {
-                    
+
                     user += '<option selected="selected" value=" '+value.id+' " >'+value.name+'</option>';
 
                 });
@@ -539,7 +540,6 @@
         });
 
     });
-
-</script>
+    </script>
 
 @endsection
