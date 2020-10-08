@@ -58,7 +58,6 @@ class StudyController extends Controller
                     ->where('users.id','=',\auth()->user()->id)
                     ->where('studies.study_status','=','Live')
                     ->orderBy('study_short_name')->get();
-                dd($studies);
                 $study = '';
             }
             if (hasPermission(\auth()->user(),'adjudication.index')){
