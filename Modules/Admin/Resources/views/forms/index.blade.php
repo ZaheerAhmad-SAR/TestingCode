@@ -106,8 +106,6 @@
                                 <a class="nav-item nav-link" id="nav-Annotations-tab" data-toggle="tab"
                                     href="#nav-Annotations" role="tab" aria-controls="nav-contact"
                                     aria-selected="false">Annotations</a>
-                                <a class="nav-item nav-link" id="nav-Advanced-tab" data-toggle="tab" href="#nav-Advanced"
-                                    role="tab" aria-controls="nav-contact" aria-selected="false">Advanced</a>
                                 <a class="nav-item nav-link" id="nav-Advanced-tab" data-toggle="tab"
                                     href="#nav-Adjudication" role="tab" aria-controls="nav-contact"
                                     aria-selected="false">Adjudication</a>
@@ -164,19 +162,14 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="Required" class="col-sm-2 col-form-label">Required <sup>*</sup></label>
-                                    <div class="col-sm-4">
-                                        <input type="radio" name="is_required" id="required_yes" value="no"> No
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <input type="radio" name="is_required" id="required_no" value="yes" checked> Yes
-                                    </div>
-                                    <label for="Required" class="col-sm-2 col-form-label view_to_numeric">Uper $ Lower
+                                    <label for="Required" class="col-sm-2 col-form-label view_to_numeric">Uper Limit
                                         <sup>*</sup></label>
-                                    <div class="col-sm-2 view_to_numeric">
+                                    <div class="col-sm-4 view_to_numeric">
                                         <input type="number" name="lower_limit" id="lower_limit_num" class="form-control"
                                             placeholder="Minimum limits">
                                     </div>
-                                    <div class="col-sm-2 view_to_numeric">
+                                    <label for="Uper Limit" class="col-sm-2 col-form-label view_to_numeric">Lower Limit</label>
+                                    <div class="col-sm-4 view_to_numeric">
                                         <input type="number" name="upper_limit" id="upper_limit_num" class="form-control"
                                             placeholder="Maximum limits">
                                     </div>
@@ -216,9 +209,22 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
+                                    <label for="Required" class="col-sm-2 col-form-label">Required <sup>*</sup></label>
+                                    <div class="col-sm-4">
+                                        <input type="radio" name="is_required" id="required_yes" value="no"> No
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" name="is_required" id="required_no" value="yes" checked> Yes
+                                    </div>
+                                    <div class="col-sm-2">Exclude field in data exports: <sup>*</sup></div>
+                                    <div class="col-sm-4">
+                                        <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_no" value="no"> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_yes"  value="yes" checked> Yes
+                                    </div>
+                                </div>
+                                <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Text/info: <sup>*</sup></label>
                                     <div class="col-sm-10">
-                                        <textarea name="text_info" id="text_info" cols="2" rows="2" class="form-control"
+                                        <textarea name="text_info" id="text_info" cols="2" rows="1" class="summernote"
                                             style="height: 50px;"></textarea>
                                     </div>
                                 </div>
@@ -289,18 +295,7 @@
 
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="nav-Advanced" role="tabpanel" aria-labelledby="nav-Advanced-tab">
-                        <div class="py-3 border-bottom border-primary">
-                            <span class="text-muted font-w-600">Click Yes If Need Result in Final Data Exports</span><br>
-                        </div>
-                        <div class="form-group row" style="margin-top: 10px;">
-                            <div class="col-sm-3">Exclude field in data exports: <sup>*</sup></div>
-                            <div class="col-sm-9">
-                                <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_no" value="no"> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_yes"  value="yes" checked> Yes
-                            </div>
-                        </div>
-                    </div>
+                   
                         <div class="tab-pane fade" id="nav-Adjudication" role="tabpanel"
                             aria-labelledby="nav-Advanced-tab">
                             <div class="py-3 border-bottom border-primary">
@@ -331,11 +326,8 @@
                                     <div class="col-sm-4">
                                         <select class="form-control" name="opertaor" id="adj_operator">
                                             <option value="">---Select---</option>
-                                            <option value="-">Difference</option>
-                                            <option value="=">Equal</option>
-                                            <option value=">=">Greater OR Equal</option>
-                                            <option value="<=">Less OR Equal</option>
-                                            <option value="!=">Not Equal</option>
+                                            <option value=">=">Greater OR Equal(percent)</option>
+                                            <option value="<=">Less OR Equal(percent)</option>
                                             <option value=">">Greater Then</option>
                                             <option value="<">Less Then</option>
                                         </select>
@@ -459,8 +451,11 @@
     }
 </style>
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
+<link rel="stylesheet" href="{{ asset("public/dist/vendors/summernote/summernote-bs4.css") }}"> 
 @endsection
 @section('script')
+<script src="{{ asset("public/dist/vendors/summernote/summernote-bs4.js") }}"></script>
+<script src="{{ asset("public/dist/js/summernote.script.js") }}"></script>
 <script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script>
 <script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
 <script src="{{ asset('public/js/edit_crf.js') }}"></script>
@@ -476,11 +471,7 @@ $('.addOptions').on('click',function(){
    $('.appendDataOptions').append('<div class="values_row_options"><div class="form-group row"><div class="form-group col-md-6"><input type="text" id="option_name" name="option_name[]" class="form-control" placeholder="Enter option name" style="background:white;"></div><div class="form-group col-md-4"><input type="number" placeholder="Option value" name="option_value[]" id="option_value" class="form-control" style="background:white;"></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove_option" style="margin-top: 3px;"></i></div></div></div>');
    return false;
 });
-/*$('.addvalidations').on('click',function(){
-   $('.appendDatavalidations').append('<div class="values_row"><div class="form-group row" style="margin-top: 10px;"><div class="col-sm-2"> Take Decision:</div><div class="col-sm-4"><select name="decision_one[]" id="decision_one" class="form-control decision"><option value="">---Based ON---</option><option value="question_value">Question Value</option><option value="custom_value">Custom Value</option></select></div><div class="col-sm-1"> Operator:</div><div class="col-sm-4"><select name="opertaor_one[]" id="opertaor_one" class="form-control"><option value="">---Select---</option><option value="=">Equal</option><option value=">=">Greater OR Equal</option><option value="<=">Less OR Equal</option><option value="!=">Not Equal</option><option value=">">Greater Then</option><option value="<">Less Then</option></select></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove" style="margin-top: 3px;"></i></div></div><div class="form-group row"><div class="col-sm-2 questionValue" style="display: none;">Section:</div><div class="col-sm-4 questionValue" style="display: none;"><span style="float:right;"><input type="button" class="btn btn-primary fetch_sections" value="Fetch"></span><span><select class="form-control decisionSections all_sections" style="width:82%"><option value="">---Section---</option></select></span></div><div class="col-sm-1 questionValue" style="display: none;">With:</div><div class="col-sm-5 questionValue" style="display: none;"><select name="dep_on_question_one_id[]" class="form-control decision_question all_questions"><option value="">---Select Question---</option></select></div><div class="col-sm-2 customValue" style="display: none;">Decision Value:</div><div class="col-sm-4 customValue" style="display: none;"><input type="text" name="custom_value_one[]" class="form-control custom_value" placeholder="Define Value"></div></div><div class="form-group row"><div class="col-sm-2"> Condition:</div><div class="col-sm-10"><select name="operator[]" class="form-control operators"><option value="">Select if third conditon as well</option><option value="and">AND</option><option value="or">OR</option></select></div></div><div class="third_condition" style="display: none;"><div class="form-group row"><div class="col-sm-2"> Take Decision:</div><div class="col-sm-4"><select name="decision_two[]" class="form-control decision2"><option value="">---Based ON---</option><option value="question_value_sec">Question Value</option><option value="custom_value_sec">Custom Value</option></select></div><div class="col-sm-1"> Operator:</div><div class="col-sm-5"><select name="opertaor_two[]" class="form-control"><option value="">---Select---</option><option value="=">Equal</option><option value=">=">Greater OR Equal</option><option value="<=">Less OR Equal</option><option value="!=">Not Equal</option><option value=">">Greater Then</option><option value="<">Less Then</option></select></div> </div><div class="form-group row"><div class="col-sm-2 questionValue2" style="display: none;">Section:</div><div class="col-sm-4 questionValue2" style="display: none;"><span style="float: right;"><input type="button" class="btn btn-primary fetch_sections2" value="Fetch"></span><span><select class="form-control decisionSections2 all_sections2" style="width:82%;"><option value="">---Section---</option></select></span></div><div class="col-sm-1 questionValue2" style="display: none;">With:</div><div class="col-sm-5 questionValue2" style="display: none;"><select name="dep_on_question_two_id[]" class="form-control decision_question2 all_questions2"><option value="">---Select Question---</option></select></div><div class="col-sm-2 customValue2" style="display: none;">Decision Value:</div><div class="col-sm-4 customValue2" style="display: none;"><input type="text" name="custom_value_two[]" class="form-control custom_value" placeholder="Define Value"></div></div></div><div class="form-group row"><div class="col-sm-2"> Show a:</div><div class="col-sm-4"><select name="error_type[]" class="form-control"><option value="">Exclusion</option><option value="">Error</option><option value="">Warning</option></select></div><div class="col-sm-1">Message:</div><div class="col-sm-5"><textarea name="error_message[]" class="form-control" rows="1"></textarea></div></div></div>');
 
-   return false;
-});*/
 
 $('body').on('click','.remove',function(){
     var row = $(this).closest('div.values_row');
@@ -720,7 +711,8 @@ $(document).ready(function() {
         $('#question_text').val(question_text);
         $('#variable_name').val(variable_name);
         $('#form_field_id').val(formFields_id);
-        $('#text_info').val(text_info);
+        // $('#text_info').val();
+        $(".summernote").summernote("code", text_info);
         if (ques_type == 'Number') {
             $('#measurement_unit_text').val(measurement_unit);
             $('#field_width_text').val(field_width);
