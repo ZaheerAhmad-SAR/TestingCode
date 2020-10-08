@@ -365,7 +365,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="change_status" aria-hidden="true">
+   {{-- <div class="modal fade" id="change_status" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -383,7 +383,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>--}}
     @include('queries::queries.query_popup')
 @endsection
 @section('styles')
