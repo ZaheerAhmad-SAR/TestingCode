@@ -71,9 +71,9 @@
                     <div class="scrollertodo">
                         <ul class="mail-app list-unstyled allsteps" id="steps-group">
                         @foreach ($phases as $keys => $phase)
-                            
+
                            @foreach ($phase->phases as $key => $step_value)
-                         
+
                         <li class="py-3 px-2 mail-item tab_{{$step_value->phase_id}}" style="@if($keys ==0) display:block;@else  @endif">
                             <input type="hidden" class="step_id" value="{{$step_value->step_id}}">
                             <input type="hidden" class="step_phase_id" value="{{$step_value->phase_id}}">
@@ -669,14 +669,14 @@ $(document).ready(function(){
 
 })
     function load_phases(){
-        
+
         $.ajax({
             url:'study_phases',
             dataType: 'html',
             success:function(res){
                 $('.allphases').html(res);
                 load_steps();
-               
+
             }
         })
     }
@@ -737,7 +737,7 @@ $(document).ready(function(){
     }
     function loadAssignRolesToPhaseForm(phase_id){
         $.ajax({
-             url: "{{route('getAssignRolesToPhaseForm')}}",
+             url: "{{route('assignRolesPhaseStep.getAssignRolesToPhaseForm')}}",
              type: 'POST',
              data: {
                 "_token": "{{ csrf_token() }}",
@@ -751,7 +751,7 @@ $(document).ready(function(){
     }
     function loadAssignRolesToPhaseStepForm(step_id){
         $.ajax({
-             url: "{{route('getAssignRolesToPhaseStepForm')}}",
+             url: "{{route('assignRolesPhaseStep.getAssignRolesToPhaseStepForm')}}",
              type: 'POST',
              data: {
                 "_token": "{{ csrf_token() }}",
@@ -766,7 +766,7 @@ $(document).ready(function(){
     function submitAssignRolesToPhaseForm(e){
         e.preventDefault();
         $.ajax({
-             url: "{{route('submitAssignRolesToPhaseForm')}}",
+             url: "{{route('assignRolesPhaseStep.submitAssignRolesToPhaseForm')}}",
              type: 'POST',
              data: $( "#assign_study_structures_roles_form" ).serialize(),
             success: function(response){
@@ -779,7 +779,7 @@ $(document).ready(function(){
     function submitAssignRolesToPhaseStepsForm(e){
         e.preventDefault();
         $.ajax({
-             url: "{{route('submitAssignRolesToPhaseStepForm')}}",
+             url: "{{route('assignRolesPhaseStep.submitAssignRolesToPhaseStepForm')}}",
              type: 'POST',
              data: $( "#assign_phase_steps_roles_form" ).serialize(),
             success: function(response){
