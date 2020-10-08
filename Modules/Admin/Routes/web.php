@@ -30,6 +30,17 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('section', 'SectionController@getSectionby_id')->name('section.getSections');
     Route::post('section/update', 'SectionController@update')->name('section.updateSections');
     Route::get('forms/step_by_phaseId/{id}', 'FormController@get_steps_by_phaseId')->name('forms.stepbyphaseId');
+    Route::resource('forms', 'FormController');
+    Route::post('forms/add_questions', 'FormController@add_questions')->name('forms.addQuestions');
+    Route::post('forms/updateQuestion', 'FormController@update_questions')->name('forms.updateQuestion');
+    Route::get('forms/sections_against_step/{id}', 'FormController@get_sections_against_step')->name('forms.sections_against_step');
+    Route::get('forms/sections_by_stepId/{id}', 'FormController@get_section_by_stepId')->name('forms.sectionsbystepId');
+    Route::post('studyStatus', 'StudyController@studyStatus')->name('study.studyStatus');
+    Route::post('changeStatus/{id}', 'StudyController@changeStatus')->name('studies.changeStatus');
+    Route::get('forms/get_Questions/{id}', 'FormController@get_Questions')->name('forms.get_Questions');
+    Route::get('forms/get_allQuestions/{id}', 'FormController@get_allQuestions')->name('forms.get_allQuestions');
+    Route::get('forms/changeSort/{id}', 'FormController@updateQustionsort')->name('forms.changeSort');
+    Route::DELETE('forms/delete/{id}', 'FormController@deleteQuestion')->name('forms.delete');
 });
 Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], function () {
 
@@ -73,19 +84,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::DELETE('annotation/delete/{id}', 'AnnotationController@deleteAnnotation')->name('annotation.delete');
     Route::get('annotation/get_allAnnotations/{id}', 'AnnotationController@get_allAnnotations')->name('annotation.get_allAnnotations');
     // routes for form managment
-    Route::resource('forms', 'FormController');
-    Route::post('forms/add_questions', 'FormController@add_questions')->name('forms.addQuestions');
-    Route::post('forms/updateQuestion', 'FormController@update_questions')->name('forms.updateQuestion');
     
-    
-    Route::get('forms/sections_against_step/{id}', 'FormController@get_sections_against_step')->name('forms.sections_against_step');
-    Route::get('forms/sections_by_stepId/{id}', 'FormController@get_section_by_stepId')->name('forms.sectionsbystepId');
-    Route::post('studyStatus', 'StudyController@studyStatus')->name('study.studyStatus');
-    Route::post('changeStatus/{id}', 'StudyController@changeStatus')->name('studies.changeStatus');
-    Route::get('forms/get_Questions/{id}', 'FormController@get_Questions')->name('forms.get_Questions');
-    Route::get('forms/get_allQuestions/{id}', 'FormController@get_allQuestions')->name('forms.get_allQuestions');
-    Route::get('forms/changeSort/{id}', 'FormController@updateQustionsort')->name('forms.changeSort');
-    Route::DELETE('forms/delete/{id}', 'FormController@deleteQuestion')->name('forms.delete');
     //end
     // routes for study managment
     Route::resource('study', 'StudyStructureController');
