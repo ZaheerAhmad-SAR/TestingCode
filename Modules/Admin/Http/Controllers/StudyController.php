@@ -138,38 +138,47 @@ class StudyController extends Controller
             }
 
             if (!empty($request->users) && $request->users != Null) {
-                foreach ($request->users as $user) {
-                    $studyuser = StudyUser::find($user);
-                    if (empty($studyuser)) {
-                        StudyUser::updateOrCreate([
-                            'id' => \Illuminate\Support\Str::uuid(),
-                            'user_id' => $user,
-                            'study_id' => $study->id
-                        ]);
+                if($study->id){
+                    $studyusers = StudyUser::where('study_id','=',$study->id)->get();
+                    foreach ($studyusers as $user){
+                        $user->delete();
                     }
                 }
-            }
-            if (!empty($request->disease_cohort) && $request->disease_cohort != '') {
-                foreach ($request->disease_cohort as $disease_cohort) {
-                    if (!empty($disease_cohort)) {
-                        $checkDiseaseCohort = DiseaseCohort::find($disease_cohort);
-                        if (empty($checkDiseaseCohort)) {
-                            $diseaseCohort = DiseaseCohort::updateOrCreate([
+                foreach ($request->users as $user) {
+                            StudyUser::create([
                                 'id' => \Illuminate\Support\Str::uuid(),
-                                'study_id' => $study->id,
-                                'name' => $disease_cohort
+                                'user_id' => $user,
+                                'study_id' => $study->id
                             ]);
                         }
                     }
                 }
-            }
+
+            if (!empty($request->disease_cohort) && $request->disease_cohort != '') {
+                foreach ($request->disease_cohort as $request){
+                    $current_cohrot = DiseaseCohort::where('study_id','=',$studyID)
+                        ->where('id','=',$request)->get();
+                    $cohort = new DiseaseCohort();
+                    $id = $current_cohrot->id;
+                    $name = $current_cohrot->name;
+                }
+                if ($studyID){
+                    if (empty($current_cohrots)){
+                        foreach ($request->disease_cohort as $disease_cohort) {
+                            $diseaseCohort = DiseaseCohort::create([
+                                'id' => \Illuminate\Support\Str::uuid(),
+                                'study_id' => $study->id,
+                                'name' => $request->disease_cohort_name
+                            ]);
+                        }
+                    }
+                }
+                }
             else {
                 return \response()->json($study);
             }
             return \response()->json($study);
         }
-
-    }
 
     /**
      * Show the specified resource.
