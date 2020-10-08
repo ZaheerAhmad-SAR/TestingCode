@@ -55,7 +55,7 @@ class StudyController extends Controller
             ->join('studies','studies.id','=','study_user.study_id')
             ->where('users.id','=',\auth()->user()->id)
             ->orderBy('study_short_name')->get();
-        dd($studies);
+        //dd($studies);
 
         $users = User::all();
         $sites = Site::all();
