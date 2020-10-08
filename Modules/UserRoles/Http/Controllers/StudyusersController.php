@@ -27,9 +27,8 @@ class StudyusersController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->can('users.create')) {
             $roles  =   Role::where('role_type','=','study_role')->get();
-        }
+
 
         if (hasPermission(auth()->user(),'studytools.index')){
             $permissionsIdsArray = Permission::where(function($query){
