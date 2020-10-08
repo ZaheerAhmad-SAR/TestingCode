@@ -27,7 +27,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::DELETE('sites/destroy/{sites_id}', 'SiteController@destroy')->name('sites.destroy');
 
     Route::resource('studies', 'StudyController');
-    Route::get('studies/updateStudy', 'StudyController@update_study')->name('studies.updateStudy');
+    Route::post('studies/update_studies', 'StudyController@update_studies')->name('studies.update_studies');
     Route::resource('devices', 'DeviceController');
     Route::resource('modalities', 'ModilityController');
     Route::resource('diseaseCohort', 'DiseaseCohortController');
@@ -63,8 +63,8 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::get('annotation/get_allAnnotations/{id}', 'AnnotationController@get_allAnnotations')->name('annotation.get_allAnnotations');
     // routes for form managment
     Route::resource('forms', 'FormController');
-    Route::post('forms/add_questions', 'FormController@add_questions')->name('addQuestions');
-    Route::post('forms/updateQuestion', 'FormController@update_questions')->name('updateQuestion');
+    Route::post('forms/add_questions', 'FormController@add_questions')->name('forms.addQuestions');
+    Route::post('forms/updateQuestion', 'FormController@update_questions')->name('forms.updateQuestion');
     Route::get('forms/get_phases/{id}', 'FormController@get_phases')->name('get_phases');
     Route::get('forms/step_by_phaseId/{id}', 'FormController@get_steps_by_phaseId')->name('stepbyphaseId');
     Route::get('forms/sections_against_step/{id}', 'FormController@get_sections_against_step')->name('sections_against_step');

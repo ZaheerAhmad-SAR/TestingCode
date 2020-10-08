@@ -100,8 +100,7 @@ class StudyController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request){
         $id    = Str::uuid();
         $study = Study::create([
                 'id'    => $id,
@@ -146,6 +145,10 @@ class StudyController extends Controller
             }
         }
         return redirect()->route('studies.index')->with('message', 'Record Added Successfully!');
+    }
+    public function add_studies(Request $request)
+    {
+
     }
 
     /**
@@ -202,7 +205,10 @@ class StudyController extends Controller
      * @param int $id
      * @return Response
      */
-    public function update(Request $request)
+    public function update(Request $request){
+
+    }
+    public function update_studies(Request $request)
     {
         $study = Study::where('id', $request->study_id)->first();
         $study->study_short_name  =  $request->study_short_name;

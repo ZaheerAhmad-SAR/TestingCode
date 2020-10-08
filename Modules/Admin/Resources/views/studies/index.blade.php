@@ -217,7 +217,6 @@
                         {{-- Basic Info Tab --}}
                         <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
                             @csrf
-                            @method('PATCH')
                             <div class="form-group row" style="margin-top: 10px;">
                                 <label for="study_title" class="col-md-2">Title</label>
                                 <div class="{!! ($errors->has('study_title')) ?'form-group col-md-10 has-error':'form-group col-md-10' !!}">
@@ -447,7 +446,7 @@
 
 
         $('body').on('click', '#edit-study', function () {
-            $('#studyForm').attr('action', "{{route('studies.updateStudy')}}");
+            $('#studyForm').attr('action', "{{route('studies.update_studies')}}");
             var study_id = $(this).data('id');
            var edit_study = $.get('studies/'+study_id+'/edit', function (data) {
                 $('#studyCrudModal').html("Edit study");
