@@ -299,7 +299,7 @@
                                     <label for="disease_cohort">Disease Cohort</label>
                                 </div>
                                 <div class="col-md-7 appendfields">
-                                    
+
                                 </div>
                                 <div class="col-md-3" style="text-align: right">
                                     @if(hasPermission(auth()->user(),'diseaseCohort.create'))
@@ -406,12 +406,12 @@
     })
 </script>
     <script type="text/javascript">
-       
+
         // run callbacks
         $('#select-users').multiSelect({
             selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
             selectionHeader: "<label for=''>Assigned Admins</label><input type='text' class='form-control appendusers' autocomplete='off' placeholder='search here'>",
-            
+        });
     </script>
     <script src="{{ asset('dist/js/jquery.validate.min.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
@@ -475,7 +475,7 @@
                 $('.appendusers').html('');
 
                 $.each(data.users,function (index, value) {
-                    
+
                     user += '<option selected="selected" value=" '+value.id+' " >'+value.name+'</option>';
 
                 });
