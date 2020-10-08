@@ -164,7 +164,6 @@ class StudyController extends Controller
                 }
             }
             else {
-                dd('else');
                 return \response()->json($study);
             }
             return \response()->json($study);

@@ -258,6 +258,17 @@
             </div>
             <div class="modal-body">
                 <form id="studyForm" name="studyForm" class="form-horizontal">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <strong>Whoops!</strong> Please fill all required fields!.
+                            <br/>
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <input type="hidden" name="study_id" id="study_id">
                     <nav>
                         <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
@@ -366,7 +377,7 @@
                             <div class="form-group row" style="margin-top: 10px;">
                                 <label for="study_users" class="col-sm-3"></label>
                                 <div class="{!! ($errors->has('users')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                    <select class="searchable appendusers" id="select-users" multiple="multiple" name="users[]">
+                                    <select class="searchable" id="select-users" multiple="multiple" name="users[]">
                                        @foreach($users as $user)
                                         <option value="{{$user->id}}">{{$user->name}}</option>
                                         @endforeach
@@ -385,6 +396,7 @@
                         @if(hasPermission(auth()->user(),'studies.store'))
                         <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
                             @endif
+                    </div>
                     </div>
                 </form>
             </div>
@@ -553,12 +565,22 @@
                 $('.appendfields').append(html);
                 var user = '';
                 $('.appendusers').html('');
+
                 $.each(data.users,function (index, value) {
                     //console.log(index,value);
                     user += '<option selected="selected" value=" '+value.id+' ">'+value.name+'</option>';
 
                 });
                $('.appendusers').html(user);
+
+                var user_id = [];
+
+               $.each(data.users,function (index, value) {
+                   var id = value.id;
+                    user_id.push(id);
+               });
+               $('#select-users').multiSelect('deselect_all');
+               $('#select-users').multiSelect('select',user_id);
 
            })
         });
