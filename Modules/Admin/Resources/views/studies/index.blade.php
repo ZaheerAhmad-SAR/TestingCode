@@ -197,11 +197,11 @@
                                 <div class="form-group row">
                                     <label for="Name" class="col-sm-4 col-form-label">Queries Assigned to:</label>
                                     <div class="col-sm-8">
-                                        <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="users" checked> Users</label> &nbsp;
+                                        <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="users"> Users</label> &nbsp;
                                         <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="roles" > Roles</label>
                                     </div>
                                 </div>
-                                <div class="form-group row usersInput">
+                                <div class="form-group row usersInput" style="display: none;">
                                     <label for="Name" class="col-sm-4 col-form-label">Users:</label>
                                     <div class="col-sm-8">
                                         <select class="form-control multieSelectDropDown" multiple data-allow-clear="1" name="users" id="users">
@@ -231,7 +231,7 @@
 {{--                                        </select>--}}
 {{--                                    </div>--}}
 {{--                                </div>--}}
-                                <div class="form-group row remarksInput">
+                                <div class="form-group row remarksInput" style="display:none;">
                                     <label for="Name" class="col-sm-4 col-form-label">Remarks</label>
                                     <div class="col-sm-8">
                                         <textarea class="form-control" name="remarks" rows="2" id="remarks"></textarea>
@@ -584,7 +584,6 @@
         });
 
         $('body').on('click', '.clone-study', function () {
-
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -661,19 +660,43 @@
 
     $(document).ready(function (){
        $('input[type="radio"]').click(function (){
-           if ($(this).is(':checked'))
+           if ($(this).attr("value")=="users")
            {
+            $("input:checkbox").prop('checked',false);
             $(".usersInput").show();
+            $(".remarksInput").show();
             $(".rolesInput").hide();
+            $('#remarks').val('');
+
            }
            if ($(this).attr("value")=="roles")
            {
             $('.usersInput').css('display','none');
             $(".rolesInput").show();
-            $(".statusInput").show();
             $(".remarksInput").show();
+            $('#remarks').val('');
            }
        });
+    });
+
+    $('#savequeries').click(function (){
+        var queryAssignedTo = $("input[name='assignQueries']:checked").val();
+        if (queryAssignedTo == 'users')
+        {
+            var assignedUsers = $('#users').val();
+            var assignedRemarks = $('#remarks').val();
+            console.log(assignedUsers);
+            console.log(assignedRemarks);
+        }
+        if(queryAssignedTo =='roles')
+        {
+            var assignedRoles = $("input[name='roles']:checked").map(function() {
+                return this.value;
+            }).get().join(',');
+            var assignedRemarks = $('#remarks').val();
+            console.log(assignedRoles);
+            console.log(assignedRemarks);
+        }
     });
 
 </script>
