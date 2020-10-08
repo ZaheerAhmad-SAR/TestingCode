@@ -217,7 +217,12 @@
                         {{-- Basic Info Tab --}}
                         <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
                             @csrf
-                            @method('PATCH')
+                            <span class="for_add" style="display: none;">
+                                @method('POST')
+                            </span>
+                            <span class="for_update" style="display: none;">
+                                @method('PATCH')
+                            </span>
                             <div class="form-group row" style="margin-top: 10px;">
                                 <label for="study_title" class="col-md-2">Title</label>
                                 <div class="{!! ($errors->has('study_title')) ?'form-group col-md-10 has-error':'form-group col-md-10' !!}">
@@ -300,7 +305,7 @@
                                     <label for="disease_cohort">Disease Cohort</label>
                                 </div>
                                 <div class="col-md-7 appendfields">
-                                    
+
                                 </div>
                                 <div class="col-md-3" style="text-align: right">
                                     @if(hasPermission(auth()->user(),'diseaseCohort.create'))
@@ -394,7 +399,7 @@
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
     <!-- Queries Model scripts start -->
-    <script src="{{ asset("dist/vendors/select2/js/select2.full.min.js") }}"></script>
+  <script src="{{ asset("dist/vendors/select2/js/select2.full.min.js") }}"></script>
     <script src="{{ asset("dist/js/select2.script.js") }}"></script>
 
     <!-- Queries Model scripts end -->
@@ -407,12 +412,13 @@
     })
 </script>
     <script type="text/javascript">
-       
+
         // run callbacks
         $('#select-users').multiSelect({
             selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
             selectionHeader: "<label for=''>Assigned Admins</label><input type='text' class='form-control appendusers' autocomplete='off' placeholder='search here'>",
-            
+        });
+
     </script>
     <script src="{{ asset('dist/js/jquery.validate.min.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
@@ -438,6 +444,8 @@
         });
 
         $('#create-new-study').click(function () {
+            $('.for_add').css('display','block');
+            $('.for_update').css('display','none');
             $('#btn-save').val("create-study");
             $('#studyForm').trigger("reset");
             $('#studyCrudModal').html("Add Study");
@@ -447,6 +455,8 @@
 
 
         $('body').on('click', '#edit-study', function () {
+            $('.for_add').css('display','none');
+            $('.for_update').css('display','block');
             $('#studyForm').attr('action', "{{route('studies.updateStudy')}}");
             var study_id = $(this).data('id');
            var edit_study = $.get('studies/'+study_id+'/edit', function (data) {
@@ -476,7 +486,7 @@
                 $('.appendusers').html('');
 
                 $.each(data.users,function (index, value) {
-                    
+
                     user += '<option selected="selected" value=" '+value.id+' " >'+value.name+'</option>';
 
                 });
@@ -539,7 +549,6 @@
         });
 
     });
-
-</script>
+    </script>
 
 @endsection
