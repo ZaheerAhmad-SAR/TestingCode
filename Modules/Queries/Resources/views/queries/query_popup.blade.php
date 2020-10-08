@@ -113,6 +113,7 @@
                 $(".rolesInput").show();
                 $(".remarksInput").show();
                 $('#remarks').val('');
+                $(".select2-selection__choice").remove();
             }
         });
     });
