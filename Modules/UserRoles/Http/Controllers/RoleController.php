@@ -446,6 +446,11 @@ class RoleController extends Controller
             if ($request->study_tools ) {
                 $permissions = Permission::where('name', '=', 'studytools.index')
                     ->orwhere('name', '=', 'studyusers.index')
+                    ->orwhere('name', '=', 'users.create')
+                    ->orwhere('name', '=', 'users.index')
+                    ->orwhere('name', '=', 'users.store')
+                    ->orwhere('name', '=', 'users.edit')
+                    ->orwhere('name', '=', 'users.update')
                     ->orwhere('name', '=', 'studyRoles.index')
                     ->orwhere('name', '=', 'studySite.index')
                     ->orwhere('name', '=', 'studySite.create')
@@ -1012,6 +1017,11 @@ class RoleController extends Controller
         if ($request->study_tools ) {
             $permissions = Permission::where('name', '=', 'studytools.index')
                 ->orwhere('name', '=', 'studyusers.index')
+                ->orwhere('name', '=', 'users.index')
+                ->orwhere('name', '=', 'users.create')
+                ->orwhere('name', '=', 'users.store')
+                ->orwhere('name', '=', 'users.edit')
+                ->orwhere('name', '=', 'users.update')
                 ->orwhere('name', '=', 'studyRoles.index')
                 ->orwhere('name', '=', 'studySite.index')
                 ->orwhere('name', '=', 'studySite.create')

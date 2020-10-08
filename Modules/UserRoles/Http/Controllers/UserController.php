@@ -60,7 +60,6 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-
         $id = Str::uuid();
         $user = User::create([
             'id' => $id,
@@ -76,14 +75,8 @@ class UserController extends Controller
                 $roles =UserRole::create([
                     'id'    => Str::uuid(),
                     'user_id'     => $user->id,
-                    'role_id'   => $role
-                ]);
-
-                $userrole = RoleStudyUser::create([
-                    'id'    => Str::uuid(),
-                    'user_id'     => $user->id,
                     'role_id'   => $role,
-                    'study_id' => ''
+                    'study_id' => !empty(session('current_study'))?session('current_study'):''
                 ]);
             }
         }
@@ -103,7 +96,7 @@ class UserController extends Controller
     public function update_profile()
     {
         $user = auth()->user();
-       
+
         return view('userroles::users.profile',compact('user'));
     }
     public function show($id)
