@@ -72,7 +72,6 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::post('changeStatus/{id}', 'StudyController@changeStatus')->name('studies.changeStatus');
     Route::get('forms/get_Questions/{id}', 'FormController@get_Questions')->name('get_Questions');
     Route::get('forms/get_allQuestions/{id}', 'FormController@get_allQuestions')->name('get_allQuestions');
-    Route::get('forms/show/{phase_id}/{step_id}', 'FormController@show')->name('forms.show');
     Route::get('forms/changeSort/{id}', 'FormController@updateQustionsort')->name('changeSort');
     Route::DELETE('forms/delete/{id}', 'FormController@deleteQuestion')->name('delete');
     //end
@@ -163,26 +162,28 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::post('studySite/insertCoordinators', 'StudySiteController@insertCoordinators')->name('studySite.insertCoordinators');
 
     Route::post('studySite/deleteSiteCoordinator', 'StudySiteController@deleteSiteCoordinator')->name('studySite.deleteSiteCoordinator');
-
-
-    //SubjectFormLoader
-    Route::get('subjectFormLoader/{study_id}/{subject_id}', 'SubjectFormLoaderController@showSubjectForm')->name('subjectFormLoader.showSubjectForm');
-    Route::post('subjectFormLoader/submitStudyPhaseStepQuestionForm', 'SubjectFormSubmissionController@submitForm')->name('subjectFormLoader.submitStudyPhaseStepQuestionForm');
-    Route::post('subjectFormLoader/openSubjectFormToEdit', 'SubjectFormSubmissionController@openSubjectFormToEdit')->name('subjectFormLoader.openSubjectFormToEdit');
-    //Assign Roles ToPhase and Step
-    Route::post('assignRolesPhaseStep/getAssignRolesToPhaseForm', 'AssignRolesPhaseStepController@getAssignRolesToPhaseForm')->name('assignRolesPhaseStep.getAssignRolesToPhaseForm');
-    Route::post('assignRolesPhaseStep/getAssignRolesToPhaseStepForm', 'AssignRolesPhaseStepController@getAssignRolesToPhaseStepForm')->name('assignRolesPhaseStep.getAssignRolesToPhaseStepForm');
-    Route::post('assignRolesPhaseStep/submitAssignRolesToPhaseForm', 'AssignRolesPhaseStepController@submitAssignRolesToPhaseForm')->name('assignRolesPhaseStep.submitAssignRolesToPhaseForm');
-    Route::post('assignRolesPhaseStep/submitAssignRolesToPhaseStepForm', 'AssignRolesPhaseStepController@submitAssignRolesToPhaseStepForm')->name('assignRolesPhaseStep.submitAssignRolesToPhaseStepForm');
-
-    //Validation Rules
-    Route::post('validationRule/filterRulesDataValidation/', 'ValidationRuleController@filterRulesDataValidation')->name('validationRule.filterRulesDataValidation');
-    // Form Validation
-    Route::post('subjectFormSubmission/validateSingleQuestion', 'SubjectFormSubmissionController@validateSingleQuestion')->name('subjectFormSubmission.validateSingleQuestion');
-    Route::post('subjectFormSubmission/validateSectionQuestionsForm', 'SubjectFormSubmissionController@validateSectionQuestionsForm')->name('subjectFormSubmission.validateSectionQuestionsForm');
 });
 
 // CHM-Amir--
 Route::get('trail-log', 'TrailLogController@index')->name('trail.log');
 // for checking subject ID
 Route::get('check-subject', 'SubjectController@checkSubject')->name('subjects.check-suject');
+
+
+// Jawad
+Route::get('forms/show/{phase_id}/{step_id}', 'FormController@show')->name('forms.show');
+//SubjectFormLoader
+Route::get('subjectFormLoader/{study_id}/{subject_id}', 'SubjectFormLoaderController@showSubjectForm')->name('subjectFormLoader.showSubjectForm');
+Route::post('subjectFormLoader/submitStudyPhaseStepQuestionForm', 'SubjectFormSubmissionController@submitForm')->name('subjectFormLoader.submitStudyPhaseStepQuestionForm');
+Route::post('subjectFormLoader/openSubjectFormToEdit', 'SubjectFormSubmissionController@openSubjectFormToEdit')->name('subjectFormLoader.openSubjectFormToEdit');
+//Assign Roles ToPhase and Step
+Route::post('assignRolesPhaseStep/getAssignRolesToPhaseForm', 'AssignRolesPhaseStepController@getAssignRolesToPhaseForm')->name('assignRolesPhaseStep.getAssignRolesToPhaseForm');
+Route::post('assignRolesPhaseStep/getAssignRolesToPhaseStepForm', 'AssignRolesPhaseStepController@getAssignRolesToPhaseStepForm')->name('assignRolesPhaseStep.getAssignRolesToPhaseStepForm');
+Route::post('assignRolesPhaseStep/submitAssignRolesToPhaseForm', 'AssignRolesPhaseStepController@submitAssignRolesToPhaseForm')->name('assignRolesPhaseStep.submitAssignRolesToPhaseForm');
+Route::post('assignRolesPhaseStep/submitAssignRolesToPhaseStepForm', 'AssignRolesPhaseStepController@submitAssignRolesToPhaseStepForm')->name('assignRolesPhaseStep.submitAssignRolesToPhaseStepForm');
+
+//Validation Rules
+Route::post('validationRule/filterRulesDataValidation/', 'ValidationRuleController@filterRulesDataValidation')->name('validationRule.filterRulesDataValidation');
+// Form Validation
+Route::post('subjectFormSubmission/validateSingleQuestion', 'SubjectFormSubmissionController@validateSingleQuestion')->name('subjectFormSubmission.validateSingleQuestion');
+Route::post('subjectFormSubmission/validateSectionQuestionsForm', 'SubjectFormSubmissionController@validateSectionQuestionsForm')->name('subjectFormSubmission.validateSectionQuestionsForm');
