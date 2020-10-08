@@ -27,7 +27,7 @@ class FormController extends Controller
      */
     public function index()
     {
-        $phases = StudyStructure::all();
+        $phases = StudyStructure::select('*')->where('study_id', session('current_study'))->get();
         $option_groups = OptionsGroup::all();
         $fields = FormFieldType::all();
         $annotations = Annotation::all();
