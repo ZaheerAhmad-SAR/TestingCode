@@ -269,6 +269,17 @@
             </div>
             <div class="modal-body">
                 <form id="studyForm" name="studyForm" class="form-horizontal">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <strong>Whoops!</strong> Please fill all required fields!.
+                            <br/>
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <input type="hidden" name="study_id" id="study_id">
                     <nav>
                         <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
@@ -377,7 +388,7 @@
                             <div class="form-group row" style="margin-top: 10px;">
                                 <label for="study_users" class="col-sm-3"></label>
                                 <div class="{!! ($errors->has('users')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                    <select class="searchable appendusers" id="select-users" multiple="multiple" name="users[]">
+                                    <select class="searchable" id="select-users" multiple="multiple" name="users[]">
                                        @foreach($users as $user)
                                         <option value="{{$user->id}}">{{$user->name}}</option>
                                         @endforeach
@@ -566,32 +577,13 @@
                 var user = '';
                 $('.appendusers').html('');
                 var user_id = [];
+
                $.each(data.users,function (index, value) {
                    var id = value.id;
                     user_id.push(id);
                });
-               var users_id = user_id.join(',')
-               var users_id2 = "['" + users_id.split( "," ).join( "','" ) + "']";
-               console.log(users_id2);
-
-                   $('#select-users').multiSelect('select',['2babaf3d-9180-4b47-a715-7e0485d63715','84d6ca50-abe8-4f24-bf40-2d715d7fb2c9']);
-
-
-
-               //$('#select-users').multiSelect('select', String|Array);
-               // $.each(values.split(","), function(i,e){
-               //
-               //     $('#select-users').multiSelect('select', '2babaf3d-9180-4b47-a715-7e0485d63715'|['2babaf3d-9180-4b47-a715-7e0485d63715', '84d6ca50-abe8-4f24-bf40-2d715d7fb2c9']);
-               // });
-             //$('.appendusers').val(['2babaf3d-9180-4b47-a715-7e0485d63715', '84d6ca50-abe8-4f24-bf40-2d715d7fb2c9']);
-              /*  $.each(data.users,function (index, value) {
-                    alert('here i am');
-                    user += '<option selected="selected" value=" '+value.id+' ">'+value.name+'</option>';
-
-                });*/
-
-              // $('.appendusers').html(user);
-
+               $('#select-users').multiSelect('deselect_all');
+               $('#select-users').multiSelect('select',user_id);
            })
         });
 
