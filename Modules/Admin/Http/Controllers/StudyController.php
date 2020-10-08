@@ -34,7 +34,7 @@ class StudyController extends Controller
         $user = User::with('studies', 'user_roles')->find(Auth::id());
 //        $users_for_queries  =   User::where('id','!=',\auth()->user()->id)->get();
 //        $roles_for_queries  =  Role::where('role_type','=','study_role')->orderBY('name','asc')->get();
-        if (hasPermission(\auth()->user(), 'users.create')) {
+        if (hasPermission(\auth()->user(), 'systemtools.index')) {
             $studies  =   Study::with('users')->orderBy('study_short_name')->get();
             $permissionsIdsArray = Permission::where(function ($query) {
                 $query->where('permissions.name', '=', 'studytools.index')
@@ -55,7 +55,7 @@ class StudyController extends Controller
             ->join('studies','studies.id','=','study_user.study_id')
             ->where('users.id','=',\auth()->user()->id)
             ->orderBy('study_short_name')->get();
-        //dd($studies);
+        dd($studies);
 
         $users = User::all();
         $sites = Site::all();
