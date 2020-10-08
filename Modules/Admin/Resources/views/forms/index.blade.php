@@ -295,7 +295,7 @@
 
                         </div>
                     </div>
-                   
+
                         <div class="tab-pane fade" id="nav-Adjudication" role="tabpanel"
                             aria-labelledby="nav-Advanced-tab">
                             <div class="py-3 border-bottom border-primary">
@@ -451,7 +451,7 @@
     }
 </style>
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
-<link rel="stylesheet" href="{{ asset("public/dist/vendors/summernote/summernote-bs4.css") }}"> 
+<link rel="stylesheet" href="{{ asset("public/dist/vendors/summernote/summernote-bs4.css") }}">
 @endsection
 @section('script')
 <script src="{{ asset("public/dist/vendors/summernote/summernote-bs4.js") }}"></script>
@@ -832,7 +832,7 @@ $('body').on('click','.form-fields',function(){
 function filterRulesByQuestionType(){
     var questionType = $('#question_type :selected').text();
     $.ajax({
-                url: 'validationRules/filterRulesDataValidation/',
+                url: '{{route('validationRule.filterRulesDataValidation')}}',
                 type: 'post',
                 data: {
                     "_token": "{{ csrf_token() }}",
