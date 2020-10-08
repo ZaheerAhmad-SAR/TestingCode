@@ -16,8 +16,10 @@ use Modules\Admin\Entities\StudySite;
 use Modules\Admin\Entities\StudyUser;
 use Modules\Admin\Entities\Subject;
 use Modules\UserRoles\Entities\Permission;
+use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\RolePermission;
 use Modules\UserRoles\Entities\UserRole;
+use Modules\UserRoles\Http\Controllers\RoleController;
 use Psy\Util\Str;
 
 
@@ -30,6 +32,8 @@ class StudyController extends Controller
     public function index()
     {
         $user = User::with('studies', 'user_roles')->find(Auth::id());
+        $users_for_queries  =   User::where('id','!=',\auth()->user()->id)->get();
+        $roles_for_queries  =  Role::where('role_type','=','study_role')->orderBY('name','asc')->get();
         if (hasPermission(\auth()->user(), 'users.create')) {
             $studies  =   Study::with('users')->orderBy('study_short_name')->get();
             $permissionsIdsArray = Permission::where(function ($query) {
@@ -57,7 +61,7 @@ class StudyController extends Controller
         $sites = Site::all();
         }
 
-        return view('admin::studies.index', compact('studies', 'sites', 'users'));
+        return view('admin::studies.index', compact('studies', 'sites', 'users','roles_for_queries','users_for_queries'));
     }
 
     /**
