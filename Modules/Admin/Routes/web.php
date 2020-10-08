@@ -19,6 +19,16 @@ Route::prefix('admin')->group(function () {
 });
 
 Route::group(['middleware' => ['auth', 'web']], function () {
+    Route::get('get_steps', 'StudyStructureController@get_steps')->name('study.getSteps');
+    Route::get('study_phases', 'StudyStructureController@getallphases')->name('getPhases');
+    Route::get('forms/get_phases/{id}', 'FormController@get_phases')->name('forms.get_phases');
+    Route::post('study/update', 'StudyStructureController@update')->name('study.updatePhase');
+    Route::DELETE('steps/delete_steps/{step_id}', 'StudyStructureController@destroySteps')->name('steps.deleteSteps');
+    Route::post('steps/store_steps', 'StudyStructureController@store_steps')->name('steps.save');
+    Route::post('steps/updateSteps', 'StudyStructureController@update_steps')->name('steps.update');
+    Route::resource('sections', 'SectionController');
+    Route::post('section', 'SectionController@getSectionby_id')->name('section.getSections');
+    Route::post('section/update', 'SectionController@update')->name('section.updateSections');
 });
 Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], function () {
 
@@ -65,7 +75,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::resource('forms', 'FormController');
     Route::post('forms/add_questions', 'FormController@add_questions')->name('forms.addQuestions');
     Route::post('forms/updateQuestion', 'FormController@update_questions')->name('forms.updateQuestion');
-    Route::get('forms/get_phases/{id}', 'FormController@get_phases')->name('forms.get_phases');
+    
     Route::get('forms/step_by_phaseId/{id}', 'FormController@get_steps_by_phaseId')->name('forms.stepbyphaseId');
     Route::get('forms/sections_against_step/{id}', 'FormController@get_sections_against_step')->name('forms.sections_against_step');
     Route::get('forms/sections_by_stepId/{id}', 'FormController@get_section_by_stepId')->name('forms.sectionsbystepId');
@@ -78,21 +88,15 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     //end
     // routes for study managment
     Route::resource('study', 'StudyStructureController');
-    Route::get('get_steps', 'StudyStructureController@get_steps')->name('study.getSteps');
-    Route::get('study_phases', 'StudyStructureController@getallphases')->name('getPhases');
-    Route::post('study/update', 'StudyStructureController@update')->name('study.updatePhase');
-    Route::DELETE('steps/delete_steps/{step_id}', 'StudyStructureController@destroySteps')->name('steps.deleteSteps');
-    Route::post('steps/store_steps', 'StudyStructureController@store_steps')->name('steps.save');
-    Route::post('steps/updateSteps', 'StudyStructureController@update_steps')->name('steps.update');
+   
+    
     Route::post('studies/studyStatus', 'StudyController@studyStatus')->name('studies.studyStatus');
     Route::post('studies/cloneStudy', 'StudyController@cloneStudy')->name('studies.cloneStudy');
 
     //end
     // routes for adding sections
     // Route::resource('section','SectionController');
-    Route::resource('sections', 'SectionController');
-    Route::post('section', 'SectionController@getSectionby_id')->name('section.getSections');
-    Route::post('section/update', 'SectionController@update')->name('section.updateSections');
+
     //end
 
     Route::resource('childmodilities', 'ChildModilitiesController');
