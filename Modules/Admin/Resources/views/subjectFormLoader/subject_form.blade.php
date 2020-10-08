@@ -249,6 +249,7 @@
             </div>
             <!-- END: Card DATA-->
         </div>
+        @include('queries::queries.query_popup')
     @stop
 
     @push('styles')

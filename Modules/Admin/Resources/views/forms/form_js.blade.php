@@ -22,7 +22,8 @@ $sectionClsString = implode('", "', $sectionClsStringArray);
                 }
                 validateAndSubmitForm(sectionIdStr, sectionClsStrArray[key], stepIdStr);
             });
-            hideReasonField(stepIdStr, stepClsStr);
+            reloadPage();
+            //hideReasonField(stepIdStr, stepClsStr);
         }
     }
 
