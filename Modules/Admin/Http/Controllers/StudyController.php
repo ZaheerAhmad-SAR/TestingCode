@@ -50,7 +50,7 @@ class StudyController extends Controller
         }
         else{
             $user=\auth()->user()->id;
-            if (hasPermission(\auth()->user(),'grading.idex')){
+            if (hasPermission(\auth()->user(),'grading.index')){
                 $studies  =   StudyUser::select('study_user.*','users.*','studies.*')
                     ->join('users','users.id','=','study_user.user_id')
                     ->join('studies','studies.id','=','study_user.study_id')
@@ -99,7 +99,7 @@ class StudyController extends Controller
 
         $study = Study::find($study_id);
         $study = Study::where('id', $study_id)->update(['study_status'=> $request->status]);
-        
+
         //return \response()->json($data);
                 return redirect()->route('studies.index');
     }
