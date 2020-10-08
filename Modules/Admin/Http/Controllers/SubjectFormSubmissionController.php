@@ -27,6 +27,7 @@ class SubjectFormSubmissionController extends Controller
         $questions = $section->questions;
 
         $answerFixedArray = [];
+        $formRevisionDataArray = ['edit_reason_text' => $request->edit_reason_text];
         $answerFixedArray['study_id'] = $request->studyId;
         $answerFixedArray['subject_id'] = $request->subjectId;
         $answerFixedArray['study_structures_id'] = $request->phaseId;
@@ -35,13 +36,17 @@ class SubjectFormSubmissionController extends Controller
 
         foreach ($questions as $question) {
             $form_field_name = $question->formFields->variable_name;
+            $form_field_id = $question->formFields->id;
             if ($request->has($form_field_name)) {
+                $answer = $request->{$form_field_name};
+
+                $formDataArray = ['question_id' => $question->id, 'variable_name' => $form_field_name, 'field_id' => $form_field_id, 'answer' => $answer];
 
                 $answerArray = [];
                 $answerArray = $answerFixedArray;
 
                 $answerArray['question_id'] = $question->id;
-                $answerArray['field_id'] = $question->formFields->id;
+                $answerArray['field_id'] = $form_field_id;
                 /************************** */
                 $answerObj = Answer::where(function ($q) use ($answerArray) {
                     foreach ($answerArray as $key => $value) {
@@ -50,14 +55,16 @@ class SubjectFormSubmissionController extends Controller
                 })->first();
                 /************************** */
                 if ($answerObj) {
-                    $answerArray['answer'] = $request->{$form_field_name};
+                    $answerArray['answer'] = $answer;
                     $answerObj->update($answerArray);
                 } else {
                     $answerArray['id'] = Str::uuid();
-                    $answerArray['answer'] = $request->{$form_field_name};
+                    $answerArray['answer'] = $answer;
                     $answerObj = Answer::create($answerArray);
                 }
                 unset($answerArray);
+
+                $formRevisionDataArray['form_data'][] = $formDataArray;
             }
         }
 
@@ -79,18 +86,18 @@ class SubjectFormSubmissionController extends Controller
             $formStatusObj->edit_reason_text = $request->edit_reason_text;
             $formStatusObj->form_status = 'complete';
             $formStatusObj->update();
-
-            $this->putFormRevisionHistory($request, $formStatusObj);
         }
+        $this->putFormRevisionHistory($formRevisionDataArray, $formStatusObj);
         echo $formStatusObj->form_status;
     }
 
-    private function putFormRevisionHistory($request, $formStatusObj)
+    private function putFormRevisionHistory($formRevisionDataArray, $formStatusObj)
     {
         $formRevisionHistory = new FormRevisionHistory();
         $formRevisionHistory->id = Str::uuid();
         $formRevisionHistory->form_submit_status_id = $formStatusObj->id;
-        $formRevisionHistory->edit_reason_text = $request->edit_reason_text;
+        $formRevisionHistory->edit_reason_text = $formRevisionDataArray['edit_reason_text'];
+        $formRevisionHistory->form_data = json_encode($formRevisionDataArray['form_data']);
         $formRevisionHistory->save();
     }
 

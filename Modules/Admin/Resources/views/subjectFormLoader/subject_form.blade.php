@@ -326,7 +326,7 @@
 
             function submitRequest(frmData, sectionIdStr) {
                 $.ajax({
-                    url: "{{ route('submitStudyPhaseStepQuestionForm') }}",
+                    url: "{{ route('subjectFormLoader.submitStudyPhaseStepQuestionForm') }}",
                     type: 'POST',
                     data: frmData,
                     success: function(response) {
@@ -347,7 +347,7 @@
                 return new Promise(function (resolve, reject) {
                     var frmData = $("#form_master_" + sectionIdStr).serialize() + '&' + $("#form_" + sectionIdStr).serialize();
                     $.ajax({
-                        url: "{{ route('validateSectionQuestionsForm') }}",
+                        url: "{{ route('subjectFormSubmission.validateSectionQuestionsForm') }}",
                         type: 'POST',
                         data: frmData,
                         dataType: 'JSON',
@@ -365,7 +365,7 @@
             function validateSingleQuestion(frmData) {
                 return new Promise(function (resolve, reject) {
                 $.ajax({
-                    url: "{{ route('validateSingleQuestion') }}",
+                    url: "{{ route('subjectFormSubmission.validateSingleQuestion') }}",
                     type: 'POST',
                     data: frmData,
                     dataType: 'JSON',
@@ -495,7 +495,7 @@
                 var frmData = $("#form_master_" + sectionIdStr).serialize();
                 frmData = frmData + '&' + 'open_form_to_edit=1';
                 $.ajax({
-                    url: "{{ route('openSubjectFormToEdit') }}",
+                    url: "{{ route('subjectFormLoader.openSubjectFormToEdit') }}",
                     type: 'POST',
                     data: frmData,
                     success: function(response) {

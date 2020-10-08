@@ -138,7 +138,7 @@
 
         $('#annotation_id').val(id);
         $('#annotation_name').val(label);
-        $('#Annotation_form').attr('action', '{{route('updateAnnotation')}}');
+        $('#Annotation_form').attr('action', '{{route('annotation.updateAnnotation')}}');
         $('#addAnnotation').modal('show');
     })
      $('body').on('click','.deleteAnnotation',function(){
