@@ -32,8 +32,8 @@ class StudyController extends Controller
     public function index()
     {
         $user = User::with('studies', 'user_roles')->find(Auth::id());
-        $users_for_queries  =   User::where('id','!=',\auth()->user()->id)->get();
-        $roles_for_queries  =  Role::where('role_type','=','study_role')->orderBY('name','asc')->get();
+//        $users_for_queries  =   User::where('id','!=',\auth()->user()->id)->get();
+//        $roles_for_queries  =  Role::where('role_type','=','study_role')->orderBY('name','asc')->get();
         if (hasPermission(\auth()->user(), 'users.create')) {
             $studies  =   Study::with('users')->orderBy('study_short_name')->get();
             $permissionsIdsArray = Permission::where(function ($query) {
@@ -61,7 +61,7 @@ class StudyController extends Controller
         $sites = Site::all();
         }
 
-        return view('admin::studies.index', compact('studies', 'sites', 'users','roles_for_queries','users_for_queries'));
+        return view('admin::studies.index', compact('studies', 'sites', 'users'));
     }
 
     /**
@@ -138,38 +138,47 @@ class StudyController extends Controller
             }
 
             if (!empty($request->users) && $request->users != Null) {
-                foreach ($request->users as $user) {
-                    $studyuser = StudyUser::find($user);
-                    if (empty($studyuser)) {
-                        StudyUser::updateOrCreate([
-                            'id' => \Illuminate\Support\Str::uuid(),
-                            'user_id' => $user,
-                            'study_id' => $study->id
-                        ]);
+                if($study->id){
+                    $studyusers = StudyUser::where('study_id','=',$study->id)->get();
+                    foreach ($studyusers as $user){
+                        $user->delete();
                     }
                 }
-            }
-            if (!empty($request->disease_cohort) && $request->disease_cohort != '') {
-                foreach ($request->disease_cohort as $disease_cohort) {
-                    if (!empty($disease_cohort)) {
-                        $checkDiseaseCohort = DiseaseCohort::find($disease_cohort);
-                        if (empty($checkDiseaseCohort)) {
-                            $diseaseCohort = DiseaseCohort::updateOrCreate([
+                foreach ($request->users as $user) {
+                            StudyUser::create([
                                 'id' => \Illuminate\Support\Str::uuid(),
-                                'study_id' => $study->id,
-                                'name' => $disease_cohort
+                                'user_id' => $user,
+                                'study_id' => $study->id
                             ]);
                         }
                     }
                 }
-            }
+
+            if (!empty($request->disease_cohort) && $request->disease_cohort != '') {
+                foreach ($request->disease_cohort as $request){
+                    $current_cohrot = DiseaseCohort::where('study_id','=',$studyID)
+                        ->where('id','=',$request)->get();
+                    $cohort = new DiseaseCohort();
+                    $id = $current_cohrot->id;
+                    $name = $current_cohrot->name;
+                }
+                if ($studyID){
+                    if (empty($current_cohrots)){
+                        foreach ($request->disease_cohort as $disease_cohort) {
+                            $diseaseCohort = DiseaseCohort::create([
+                                'id' => \Illuminate\Support\Str::uuid(),
+                                'study_id' => $study->id,
+                                'name' => $request->disease_cohort_name
+                            ]);
+                        }
+                    }
+                }
+                }
             else {
                 return \response()->json($study);
             }
             return \response()->json($study);
         }
-
-    }
 
     /**
      * Show the specified resource.
