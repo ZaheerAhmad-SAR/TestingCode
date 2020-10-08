@@ -7,6 +7,11 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
+use Modules\Queries\Entities\Query;
+use Modules\Queries\Entities\QueryUser;
+use Modules\Queries\Entities\RoleQuery;
+use phpDocumentor\Reflection\Types\Null_;
 
 class QueriesController extends Controller
 {
@@ -39,7 +44,35 @@ class QueriesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+
+     $remarks         = $request->post('assignedRemarks');
+     $queryAssignedTo = $request->post('queryAssignedTo');
+     $roles           = $request->post('assignedRoles');
+     $users           = $request->post('assignedUsers');
+
+     if ($queryAssignedTo == 'users'){
+         $roles = Null;
+         $id = Str::uuid();
+         foreach ($users as $user)
+         {
+            QueryUser::create(['id'=>$id, 'user_id'=>$user]);
+         }
+     }
+     if ($queryAssignedTo == 'roles'){
+         $users = Null;
+         $id = Str::uuid();
+         foreach ($roles as $role)
+         {
+            RoleQuery::create(['id'=>$id, 'roles_id'=>$role]);
+         }
+
+         Query::create([
+          'id'=>Str::uuid(),
+          'parent_query_id'=> '0',
+          'messages'=>$remarks
+         ]);
+     }
+
     }
 
     /**

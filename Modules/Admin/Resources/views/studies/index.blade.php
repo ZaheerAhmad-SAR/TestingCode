@@ -3,10 +3,6 @@
     <title> Studies | {{ config('app.name', 'Laravel') }}</title>
 @stop
 @section('styles')
-    <!-- Queries Model style sheet start -->
-    <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2.min.css") }}"/>
-    <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
-    <!-- Queries Model style sheet end -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
     <link rel="stylesheet" href="{{ asset("dist/vendors/tablesaw/tablesaw.css") }}">
     @stop
@@ -392,11 +388,7 @@
 @section('script')
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
-    <!-- Queries Model scripts start -->
-    <script src="{{ asset("dist/vendors/select2/js/select2.full.min.js") }}"></script>
-    <script src="{{ asset("dist/js/select2.script.js") }}"></script>
 
-    <!-- Queries Model scripts end -->
 <script type="text/javascript">
  $(document).ready(function(){
         var tId;
@@ -412,6 +404,7 @@
             selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
             selectionHeader: "<label for=''>Assigned Admins</label><input type='text' class='form-control appendusers' autocomplete='off' placeholder='search here'>",
         });
+
     </script>
     <script src="{{ asset('dist/js/jquery.validate.min.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
