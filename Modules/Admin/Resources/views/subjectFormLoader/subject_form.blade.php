@@ -258,12 +258,17 @@
     @push('script')
         <script>
             function showAlert(message){
+                alert(message);
+                /*
                 var field = $("#previous_alert_message");
                 var previous_alert_message = field.val();
                 if(previous_alert_message != message){
                     alert(message);
                     field.val(message);
+                }else{
+                    field.val('');
                 }
+                */
             }
             function showSections(step_id_class) {
                 $('.all_step_sections').hide(500);
@@ -330,14 +335,9 @@
                 });
             }
 
-            function validateFormField(sectionIdStr, questionId, field_name) {
+            function validateFormField(sectionIdStr, questionId, field_name, fieldId) {
                     var field_val;
-                    if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
-                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').val();
-                    } else {
-                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').val();
-                    }
-
+                    field_val = getFormFieldValue(sectionIdStr, field_name, fieldId);
                     var frmData = $("#form_master_" + sectionIdStr).serialize()  + '&questionId=' + questionId + '&' + field_name + '=' + field_val;
                     return validateSingleQuestion(frmData);
 
@@ -393,11 +393,11 @@
             }
             function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, field_name, fieldId){
                 checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
-                const validationPromise = validateFormField(sectionIdStr, questionId, field_name);
+                const validationPromise = validateFormField(sectionIdStr, questionId, field_name, fieldId);
                 validationPromise
                 .then((data) => {
                     console.log(data)
-                    submitFormField(stepIdStr, sectionIdStr, field_name);
+                    submitFormField(stepIdStr, sectionIdStr, field_name, fieldId);
                 })
                 .then((data) => {
                     console.log(data)
@@ -449,26 +449,46 @@
                 return returnVal;
             }
 
-            function submitFormField(stepIdStr, sectionIdStr, field_name) {
+            function submitFormField(stepIdStr, sectionIdStr, field_name, fieldId) {
                 var submitFormFlag = true;
+                /*
                 if (isFormInEditMode(sectionIdStr)) {
                     if (checkReason(stepIdStr) === false) {
                         submitFormFlag = false;
                     }
                 }
+                */
                 if (submitFormFlag) {
                     var frmData = $("#form_master_" + sectionIdStr).serialize();
                     var field_val;
-                    if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
-                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').val();
-                    } else {
-                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').val();
-                    }
+                    field_val = getFormFieldValue(sectionIdStr, field_name, fieldId);
                     var reason = $('#edit_reason_text_' + stepIdStr).val();
 
                     frmData = frmData + '&' + field_name + '=' + field_val + '&' + 'edit_reason_text=' + reason;
                     submitRequest(frmData, sectionIdStr);
                 }
+            }
+
+            function getFormFieldValue(sectionIdStr, field_name, fieldId){
+                var field_val;
+                var checkedCheckBoxes = [];
+                if ($('#' + fieldId).is("textarea")) {
+                        field_val = $('#' + fieldId).val();
+                    } else if ($('#' + fieldId).is("select")) {
+                        field_val = $('#' + fieldId).find(":selected").val();
+                    } else if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
+                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').val();
+                    } else if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'checkbox') {
+
+                        $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').each(function(){
+                            checkedCheckBoxes.push($(this).val());
+                        });
+                        field_val = checkedCheckBoxes.join(",");
+
+                    } else {
+                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').val();
+                    }
+                    return field_val;
             }
 
             function openFormForEditing(stepIdStr, stepClsStr, sectionIdStr) {

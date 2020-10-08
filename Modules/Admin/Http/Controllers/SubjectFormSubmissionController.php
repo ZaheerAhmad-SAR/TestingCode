@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\Section;
 use Modules\Admin\Entities\Answer;
+use Modules\Admin\Entities\FormRevisionHistory;
 use Modules\Admin\Entities\FormStatus;
 use Modules\Admin\Entities\ValidationRule;
 use Modules\Admin\Entities\Question;
@@ -78,8 +79,19 @@ class SubjectFormSubmissionController extends Controller
             $formStatusObj->edit_reason_text = $request->edit_reason_text;
             $formStatusObj->form_status = 'complete';
             $formStatusObj->update();
+
+            $this->putFormRevisionHistory($request, $formStatusObj);
         }
         echo $formStatusObj->form_status;
+    }
+
+    private function putFormRevisionHistory($request, $formStatusObj)
+    {
+        $formRevisionHistory = new FormRevisionHistory();
+        $formRevisionHistory->id = Str::uuid();
+        $formRevisionHistory->form_submit_status_id = $formStatusObj->id;
+        $formRevisionHistory->edit_reason_text = $request->edit_reason_text;
+        $formRevisionHistory->save();
     }
 
     public function openSubjectFormToEdit(Request $request)
@@ -162,10 +174,36 @@ class SubjectFormSubmissionController extends Controller
             foreach ($question->validationRules as $validationRule) {
                 $validationRuleStr = '';
 
-                $validationRuleStr .= $validationRule->rule;
-
-                if ($validationRule->is_range == 1) {
-                    $validationRuleStr .= ':' . $question->formFields->lower_limit . ',' . $question->formFields->upper_limit;
+                if ($validationRule->is_range == 1 || (int)$validationRule->num_params == 2) {
+                    if (
+                        !empty($question->formFields->lower_limit) &&
+                        !empty($question->formFields->upper_limit)
+                    ) {
+                        $validationRuleStr .= $validationRule->rule;
+                        $validationRuleStr .= ':' . $question->formFields->lower_limit . ',' . $question->formFields->upper_limit;
+                    } else {
+                        return $this->abortValidationWithError();
+                    }
+                } elseif ((int)$validationRule->num_params == 1) {
+                    if (
+                        !empty($question->formFields->lower_limit)
+                    ) {
+                        $validationRuleStr .= $validationRule->rule;
+                        $validationRuleStr .= ':' . $question->formFields->lower_limit;
+                    } else {
+                        return $this->abortValidationWithError();
+                    }
+                } elseif ((string)$validationRule->num_params == 'unlimited') {
+                    if (
+                        !empty($question->formFields->lower_limit)
+                    ) {
+                        $validationRuleStr .= $validationRule->rule;
+                        $validationRuleStr .= ':' . $question->formFields->lower_limit;
+                    } else {
+                        return $this->abortValidationWithError();
+                    }
+                } else {
+                    $validationRuleStr .= $validationRule->rule;
                 }
 
                 $validationRulesArray[] = $validationRuleStr;
@@ -183,5 +221,13 @@ class SubjectFormSubmissionController extends Controller
             /************************************** */
             return $returnArray;
         }
+    }
+
+    private function abortValidationWithError()
+    {
+        $returnArray = [];
+        $returnArray['success'] = 'no';
+        $returnArray['error'] = 'Required parameters for validation are not available';
+        return $returnArray;
     }
 }
