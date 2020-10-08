@@ -35,7 +35,7 @@ class StudyController extends Controller
 //        $users_for_queries  =   User::where('id','!=',\auth()->user()->id)->get();
 //        $roles_for_queries  =  Role::where('role_type','=','study_role')->orderBY('name','asc')->get();
         if (hasPermission(\auth()->user(), 'systemtools.index')) {
-            $studies  =   Study::with('users')->orderBy('study_short_name')->get();
+            $studies  =   Study::with('users')->where('id','!=', Null)->orderBy('study_short_name')->get();
             $permissionsIdsArray = Permission::where(function ($query) {
                 $query->where('permissions.name', '=', 'studytools.index')
                     ->orwhere('permissions.name', '=', 'studytools.store')
@@ -95,20 +95,13 @@ class StudyController extends Controller
      */
     public function studyStatus(Request $request)
     {
-
-        $study_id = $request->study_id;
+        $study_id = $request->study_ID;
 
         $study = Study::find($study_id);
-
-        $studyStatus = Study::where('id', '=', $study_id)->update(array(
-            'study_status' => !empty($request->study_status) ? $request->study_status : 'Development'
-        ));
-
-        $data = [
-            'success' => true
-        ];
-        return \response()->json($data);
-        //        return view('admin::studies.index',compact('studies'))->json_encode($data);
+        $study = Study::where('id', $study_id)->update(['study_status'=> $request->status]);
+        
+        //return \response()->json($data);
+                return redirect()->route('studies.index');
     }
 
     public function create()
