@@ -691,7 +691,27 @@ $(document).ready(function(){
             }
         })
     }
-
+    /// get phases or visits
+function get_all_phases(id,phase_class){
+    phase_class.html('');
+    var options = '<option value="">---Select Phase / visits---</option>';
+    $.ajax({
+        url:'forms/get_phases/'+id,
+        type:'post',
+        dataType: 'json',
+         data: {
+            "_token": "{{ csrf_token() }}",
+            "_method": 'GET',
+            'id': id
+        },
+        success:function(response){
+            $.each(response['data'],function(k,v){
+                options += '<option value="'+v.id+'" >'+v.name+'</option>';
+            });
+            phase_class.append(options);
+        } 
+    });
+}
     function Sections(id){
         $.ajax({
              url: "{{route('section.getSections')}}",
