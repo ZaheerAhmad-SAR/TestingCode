@@ -125,7 +125,7 @@ class StudyController extends Controller
             for ($i = 0; $i < count($request->disease_cohort_name); $i++) {
                 $disease = [
                     'id' => Str::uuid(),
-                    'study_id' =>$last_id->id, 
+                    'study_id' =>$last_id->id,
                     'name' => $request->disease_cohort_name[$i],
                 ];
                 DiseaseCohort::insert($disease);
@@ -138,7 +138,7 @@ class StudyController extends Controller
             for ($i = 0; $i < count($request->users); $i++) {
                 $users = [
                     'id' => Str::uuid(),
-                    'study_id' =>$last_id->id, 
+                    'study_id' =>$last_id->id,
                     'user_id' => $request->users[$i],
                 ];
                 StudyUser::insert($users);
@@ -167,6 +167,7 @@ class StudyController extends Controller
             ->orderBy('study_short_name')->get();
         $study_role= StudyUser::where('study_id','=',$id)->get();
         $currentStudy = Study::find($id);
+        $study = Study::find($id);
 
         $subjects = Subject::select(['subjects.*', 'sites.site_name', 'sites.site_address', 'sites.site_city', 'sites.site_state', 'sites.site_code', 'sites.site_country', 'sites.site_phone'])
             ->where('subjects.study_id', '=', $id)
@@ -230,7 +231,7 @@ class StudyController extends Controller
             for ($i = 0; $i < count($request->disease_cohort_name); $i++) {
                 $disease = [
                     'id' => Str::uuid(),
-                    'study_id' =>$request->study_id, 
+                    'study_id' =>$request->study_id,
                     'name' => $request->disease_cohort_name[$i],
                 ];
                 DiseaseCohort::insert($disease);
@@ -243,7 +244,7 @@ class StudyController extends Controller
             for ($i = 0; $i < count($request->users); $i++) {
                 $users = [
                     'id' => Str::uuid(),
-                    'study_id' =>$request->study_id, 
+                    'study_id' =>$request->study_id,
                     'user_id' => $request->users[$i],
                 ];
                 StudyUser::insert($users);
@@ -252,7 +253,7 @@ class StudyController extends Controller
         return redirect()->route('studies.index')->with('message', 'Study updated successfully');
     }
 
-    
+
     /** get clone of the study */
     public function cloneStudy(Request $request)
     {

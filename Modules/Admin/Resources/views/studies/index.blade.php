@@ -299,7 +299,7 @@
                                     <label for="disease_cohort">Disease Cohort</label>
                                 </div>
                                 <div class="col-md-7 appendfields">
-                                    
+
                                 </div>
                                 <div class="col-md-3" style="text-align: right">
                                     @if(hasPermission(auth()->user(),'diseaseCohort.create'))
@@ -365,7 +365,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="change_status" aria-hidden="true">
+   {{-- <div class="modal fade" id="change_status" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -383,7 +383,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>--}}
     @include('queries::queries.query_popup')
 @endsection
 @section('styles')
@@ -406,12 +406,12 @@
     })
 </script>
     <script type="text/javascript">
-       
+
         // run callbacks
         $('#select-users').multiSelect({
             selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
             selectionHeader: "<label for=''>Assigned Admins</label><input type='text' class='form-control appendusers' autocomplete='off' placeholder='search here'>",
-            
+        });
     </script>
     <script src="{{ asset('dist/js/jquery.validate.min.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
@@ -475,7 +475,7 @@
                 $('.appendusers').html('');
 
                 $.each(data.users,function (index, value) {
-                    
+
                     user += '<option selected="selected" value=" '+value.id+' " >'+value.name+'</option>';
 
                 });
