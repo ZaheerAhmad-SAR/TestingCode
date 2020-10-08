@@ -50,7 +50,32 @@ class StudyController extends Controller
         }
         else{
             $user=\auth()->user()->id;
-        $studies  =   StudyUser::select('study_user.*','users.*','studies.*')
+            if (hasPermission(\auth()->user(),'grading.idex')){
+                $studies  =   StudyUser::select('study_user.*','users.*','studies.*')
+                    ->join('users','users.id','=','study_user.user_id')
+                    ->join('studies','studies.id','=','study_user.study_id')
+                    ->where('users.id','=',\auth()->user()->id)
+                    ->where('studies.status','=','live')
+                    ->orderBy('study_short_name')->get();
+            }
+            if (hasPermission(\auth()->user(),'adjudication.index')){
+                $studies  =   StudyUser::select('study_user.*','users.*','studies.*')
+                    ->join('users','users.id','=','study_user.user_id')
+                    ->join('studies','studies.id','=','study_user.study_id')
+                    ->where('users.id','=',\auth()->user()->id)
+                    ->where('studies.status','=','live')
+                    ->orderBy('study_short_name')->get();
+            }
+            if (hasPermission(\auth()->user(),'qualitycontrol.index')){
+                $studies  =   StudyUser::select('study_user.*','users.*','studies.*')
+                    ->join('users','users.id','=','study_user.user_id')
+                    ->join('studies','studies.id','=','study_user.study_id')
+                    ->where('users.id','=',\auth()->user()->id)
+                    ->where('studies.status','=','live')
+                    ->orderBy('study_short_name')->get();
+            }
+
+            $studies  =   StudyUser::select('study_user.*','users.*','studies.*')
             ->join('users','users.id','=','study_user.user_id')
             ->join('studies','studies.id','=','study_user.study_id')
             ->where('users.id','=',\auth()->user()->id)
