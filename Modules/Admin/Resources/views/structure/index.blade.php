@@ -676,7 +676,7 @@ $(document).ready(function(){
             success:function(res){
                 $('.allphases').html(res);
                 load_steps();
-
+                
             }
         })
     }
