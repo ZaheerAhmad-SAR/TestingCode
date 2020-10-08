@@ -25,6 +25,13 @@
                     </ol>
                 </div>
             </div>
+            @if(session()->has('message'))
+                <div class="col-lg-12 success-alert">
+                    <div class="alert alert-primary success-msg" role="alert">
+                        {{ session()->get('message') }}
+                    </div>
+                </div>
+            @endif
         </div>
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
@@ -60,12 +67,14 @@
                                 @foreach($studies as $study)
                                     <tr id="study_id_{{ $study->id }}">
                                         <td>{{$index}}</td>
+                                        <td class="studyID" style="display: none">{{ $study->id }}</td>
                                         <td class="title">
                                             <a class="" href="{{ route('studies.show', $study->id) }}">
                                                 {{ucfirst($study->study_short_name)}} : <strong>{{ucfirst($study->study_title)}}</strong>
                                             </a>
                                             <br><br><p style="font-size: 14px; font-style: oblique">Sponsor: <strong>{{ucfirst($study->study_sponsor)}}</strong></p>
                                         </td>
+
                                         <td class="tablesaw-stack-block">
                                             <p></p>
                                             <div class="card">
@@ -184,7 +193,7 @@
                 <h4 class="modal-title" id="studyCrudModal"></h4>
             </div>
             <div class="modal-body">
-                <form id="studyForm" name="studyForm" class="form-horizontal">
+                <form action="{{route('studies.store')}}" name="studyForm" id="studyForm" class="form-horizontal" method="POST">
                     @if ($errors->any())
                         <div class="alert alert-danger">
                             <strong>Whoops!</strong> Please fill all required fields!.
@@ -208,9 +217,11 @@
                         {{-- Basic Info Tab --}}
                         <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
                             @csrf
+                            @method('PATCH')
                             <div class="form-group row" style="margin-top: 10px;">
                                 <label for="study_title" class="col-md-2">Title</label>
                                 <div class="{!! ($errors->has('study_title')) ?'form-group col-md-10 has-error':'form-group col-md-10' !!}">
+                                    <input type="hidden" name="study_id" id="studyID" value="">
                                     <input type="text" class="form-control" id="study_title" name="study_title" value="{{old('study_title')}}"> @error('email')
                                     <span class="text-danger small"> {{ $message }} </span>
                                     @enderror
@@ -289,7 +300,7 @@
                                     <label for="disease_cohort">Disease Cohort</label>
                                 </div>
                                 <div class="col-md-7 appendfields">
-                                    <input type="text" class="form-control" id="disease_cohort" name="disease_cohort[]" value="{{old('disease_cohort')}}" style="width: 90%;">
+                                    
                                 </div>
                                 <div class="col-md-3" style="text-align: right">
                                     @if(hasPermission(auth()->user(),'diseaseCohort.create'))
@@ -387,9 +398,16 @@
     <script src="{{ asset("dist/js/select2.script.js") }}"></script>
 
     <!-- Queries Model scripts end -->
-
+<script type="text/javascript">
+ $(document).ready(function(){
+        var tId;
+        tId=setTimeout(function(){
+           $(".success-alert").slideUp('slow');
+        }, 4000);
+    })
+</script>
     <script type="text/javascript">
-
+       
         // run callbacks
         $('#select-users').multiSelect({
             selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
@@ -405,7 +423,7 @@
             $('.add_field').on('click',function (e) {
                 e.preventDefault();
                 $('.appendfields').append('<div class="disease_row" style="margin-top:10px;">' +
-                    '    <input type="text" class="form-control" id="disease_cohort" name="disease_cohort[]" value="" style="width: 90%;display: inline;">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>');
+                    '    <input type="text" class="form-control" name="disease_cohort_name[]" value="" style="width: 90%;display: inline;">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>');
             })
             $('body').on('click','.remove_field',function () {
                 var row = $(this).closest('div.disease_row');
@@ -423,16 +441,17 @@
             $('#btn-save').val("create-study");
             $('#studyForm').trigger("reset");
             $('#studyCrudModal').html("Add Study");
+            $('#studyForm').attr('action', "{{route('studies.store')}}");
             $('#study-crud-modal').modal('show');
         });
 
 
         $('body').on('click', '#edit-study', function () {
+            $('#studyForm').attr('action', "{{route('studies.updateStudy')}}");
             var study_id = $(this).data('id');
            var edit_study = $.get('studies/'+study_id+'/edit', function (data) {
                 $('#studyCrudModal').html("Edit study");
                 $('#btn-save').val("edit-study");
-                $('#study-crud-modal').modal('show');
                 $('#study_id').val(data.id);
                 $('#study_short_name').val(data.study_short_name);
                 $('#study_title').val(data.study_title);
@@ -445,19 +464,20 @@
                 $('#description').val(data.description);
                 $('#disease_cohort').val(data.disease_cohort);
                 $('#users').val(data.users);
+                $('#studyID').val(data.id);
                 var html = '';
                 $('.appendfields').html('');
                 $.each(data.disease_cohort,function (index, value) {
                     html += '<div class="disease_row" style="margin-top:10px;">' +
-                        '<input type="hidden" class="form-control" name="disease_cohort[]" value="'+value.id+'" style="width: 90%;display: inline;"><input type="text" id="disease_cohort" class="form-control" value="'+value.name+'" style="width: 90%;display: inline;" name="disease_cohort_name[]">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>';
+                        '<input type="text" class="form-control" value="'+value.name+'" style="width: 90%;display: inline;" name="disease_cohort_name[]">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>';
                 });
                 $('.appendfields').append(html);
                 var user = '';
                 $('.appendusers').html('');
 
                 $.each(data.users,function (index, value) {
-                    //console.log(index,value);
-                    user += '<option selected="selected" value=" '+value.id+' ">'+value.name+'</option>';
+                    
+                    user += '<option selected="selected" value=" '+value.id+' " >'+value.name+'</option>';
 
                 });
                $('.appendusers').html(user);
@@ -470,7 +490,7 @@
                });
                $('#select-users').multiSelect('deselect_all');
                $('#select-users').multiSelect('select',user_id);
-
+               $('#study-crud-modal').modal('show');
            })
         });
 
@@ -519,55 +539,6 @@
         });
 
     });
-
-    if ($("#studyForm").length > 0) {
-        $("#studyForm").validate({
-            submitHandler: function(form) {
-                var actionType = $('#btn-save').val();
-                $('#btn-save').html('Sending..');
-                $.ajax({
-                    data: $('#studyForm').serialize(),
-                    url: "{{ route('studies.store') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    success: function (data) {
-                        var study = '<tr id="study_id_' + data.id + '"><td>' + data.id + '</td>' +
-                            '<td>' + data.study_title + '</td>' +
-                            '<td>' + data.study_short_name + '</td>' +
-                            '<td>' + data.study_code + '</td>' +
-                            '<td>' + data.protocol_number + '</td>' +
-                            '<td>' + data.trial_registry_id + '</td>' +
-                            '<td>' + data.study_sponsor + '</td>' +
-                            '<td>' + data.start_date + '</td>' +
-                            '<td>' + data.end_date + '</td>' +
-                            '<td>' + data.description + '</td>' +
-                            '<td>' + data.disease_cohort + '</td>';
-                        study += '<td><a href="javascript:void(0)" id="edit-study" data-id="' + data.id + '" class="btn btn-info">Edit</a></td>';
-                        study += '<td><a href="javascript:void(0)" id="clone-study" data-id="' + data.id + '" class="btn btn-info"> Clone</a></td>';
-                        study += '<td><a href="javascript:void(0)" id="delete-study" data-id="' + data.id + '" class="btn btn-danger delete-study">Delete</a></td></tr>';
-
-
-                        if (actionType == "create-study") {
-                            $('#studys-crud').prepend(study);
-                            location.reload();
-                        } else {
-                            $("#study_id_" + data.id).replaceWith(study);
-                            location.reload();
-                        }
-
-                        $('#studyForm').trigger("reset");
-                        $('#study-crud-modal').modal('hide');
-                        $('#btn-save').html('Save Changes');
-
-                    },
-                    error: function (data) {
-                        console.log('Error:', data);
-                        $('#btn-save').html('Save Changes');
-                    }
-                });
-            }
-        })
-    }
 
 </script>
 
