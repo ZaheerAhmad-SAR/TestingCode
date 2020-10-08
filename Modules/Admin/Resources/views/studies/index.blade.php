@@ -127,7 +127,7 @@
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                     <span class="dropdown-item">
-                                                        <a href="javascript:void(0)" id="change-status" data-id="{{$study->id}}" data-toggle="modal" data-target="#changeStatus-{{$study->id}}">
+                                                        <a href="javascript:void(0)" id="change-status" data-id="{{$study->id}}" data-toggle="modal" data-target="#change_status-{{$study->id}}">
                                                             <i class="icon-action-redo"></i> Change Status
                                                         </a>
                                                     </span>
@@ -471,45 +471,6 @@
             selectionHeader: "<label for=''>Assigned Admins</label><input type='text' class='form-control appendusers' autocomplete='off' placeholder='search here'>",
         });
     </script>
-   {{-- <script type="text/javascript">
-        $(document).ready(function() {
-            $('#select-users').multiSelect({
-                selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
-                selectionHeader: "<label for=''>Assigned Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
-                afterInit: function(ms){
-                    var that = this,
-                        $selectableSearch = that.$selectableUl.prev(),
-                        $selectionSearch = that.$selectionUl.prev(),
-                        selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
-                        selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
-
-                    that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-                        .on('keydown', function(e){
-                            if (e.which === 40){
-                                that.$selectableUl.focus();
-                                return false;
-                            }
-                        });
-
-                    that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-                        .on('keydown', function(e){
-                            if (e.which == 40){
-                                that.$selectionUl.focus();
-                                return false;
-                            }
-                        });
-                },
-                afterSelect: function(){
-                    this.qs1.cache();
-                    this.qs2.cache();
-                },
-                afterDeselect: function(){
-                    this.qs1.cache();
-                    this.qs2.cache();
-                }
-            });
-        });
-    </script>--}}
     <script src="{{ asset('dist/js/jquery.validate.min.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.barfiller.js') }}"></script>
@@ -571,7 +532,7 @@
                 $('.appendfields').html('');
                 $.each(data.disease_cohort,function (index, value) {
                     html += '<div class="disease_row" style="margin-top:10px;">' +
-                        '<input type="hidden" class="form-control" id="disease_cohort" name="disease_cohort[]" value="'+value.id+'" style="width: 90%;display: inline;"><input type="text" class="form-control" value="'+value.name+'" style="width: 90%;display: inline;">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>';
+                        '<input type="hidden" class="form-control" name="disease_cohort[]" value="'+value.id+'" style="width: 90%;display: inline;"><input type="text" id="disease_cohort" class="form-control" value="'+value.name+'" style="width: 90%;display: inline;" name="disease_cohort_name[]">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>';
                 });
                 $('.appendfields').append(html);
                 var user = '';
@@ -707,19 +668,5 @@
     });
 
 </script>
-    <script type="text/javascript">
-        $().ready(function() {
-            $('#add').click(function() {
-                return !$('#select1 option:selected').remove().appendTo('#select2');
-            });
-            $('#remove').click(function() {
-                return !$('#select2 option:selected').remove().appendTo('#select1');
-            });
-        });
-        $('form').submit(function() {
-            $('#select2 option').each(function(i) {
-                $(this).attr("selected", "selected");
-            });
-        });
-    </script>
+
 @endsection
