@@ -370,12 +370,15 @@
                 <div class="modal-body">
                     <form action="{{route('studies.studyStatus')}}" name="changestatus" class="" method="post">
                     @csrf
+                        @if(!empty($study))
                         <input type="hidden" value="{{$study->id}}" id="study_ID" name="study_ID">
+                        @endif
                         <div class="form-group row">
                             <div class="col-md-3">Status</div>
                             <div class="col-md-6">
                                 <select class="form-control dropdown" name="status" id="status">
-                                    <option class="dropdown-item" value="Archive">Archive</option>
+                                    <option value="">Select Status</option>
+                                    <option value="Archived">Archive</option>
                                     <option value="Development">Development</option>
                                     <option value="Live">Live</option>
                                 </select>
