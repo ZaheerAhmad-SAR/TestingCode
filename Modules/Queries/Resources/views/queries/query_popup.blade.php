@@ -88,7 +88,7 @@
 
 <script type="text/javascript">
 
-    $('#create-new-queries').click(function () {
+    $('.create-new-queries').click(function () {
         // $('#btn-save').val("create-study");
         $('#queriesForm').trigger("reset");
         $('#queries-modal').modal('show');
@@ -124,18 +124,42 @@
         {
             var assignedUsers = $('#users').val();
             var assignedRemarks = $('#remarks').val();
-            console.log(assignedUsers);
-            console.log(assignedRemarks);
         }
         if(queryAssignedTo =='roles')
         {
-            var assignedRoles = $("input[name='roles']:checked").map(function() {
+            // var assignedRoles = $("input[name='roles']:checked").map(function() {
+            //     return this.value;
+            // }).get().join(',');
+
+            var assignedRoles = $('.ads_Checkbox:checked').map(function () {
                 return this.value;
-            }).get().join(',');
+            }).get();
             var assignedRemarks = $('#remarks').val();
-            console.log(assignedRoles);
-            console.log(assignedRemarks);
+
         }
+        $.ajax({
+            url:"{{route('queries.store')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'POST',
+                'assignedUsers': assignedUsers,
+                'assignedRemarks': assignedRemarks,
+                'queryAssignedTo':queryAssignedTo,
+                'assignedRoles':assignedRoles
+            },
+            success: function(response){
+                //$("#addqueries-close").click();
+                // $('.success-msg').html('');
+                // $('.success-msg').html('Operation Done!')
+                // $('.success-alert').slideDown('slow');
+                // tId=setTimeout(function(){
+                //     $(".success-alert").slideUp('slow');
+                // }, 3000);
+            }
+        });
+
+
     });
 
 </script>
