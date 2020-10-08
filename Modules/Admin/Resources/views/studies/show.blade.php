@@ -47,7 +47,7 @@
                                         <td class="edit_study_eye" style="display: none;">{{$subject->study_eye}}</td>
                                         <td class="edit_disease_cohort" style="display: none;">{{$subject->disease_cohort_id}}</td>
                                         <td class="eye" style="display: none;">{{$subject}}</td>
-                                        <td class="subject_id"><a href="{{route('showSubjectForm',['study_id'=>$currentStudy->id,'subject_id'=>$subject->id])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
+                                        <td class="subject_id"><a href="{{route('subjectFormLoader.showSubjectForm',['study_id'=>$currentStudy->id,'subject_id'=>$subject->id])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
                                         </td>
                                         <td class="enrol_date">{{$subject->enrollment_date}}</td>
                                         <td class="site_name">{{!empty($subject->site_name)?$subject->site_name:'SiteName'}}</td>
@@ -60,7 +60,7 @@
                                                     <span class="dropdown-item">
    {{--                                                     <a href="javascript:void(0)" id="edit-subject" data-toggle="modal" data-id="{{ $subject->id }}" data-target="#editSubject">
                                                             <i class="far fa-edit"></i>&nbsp; Edit </a>
-   --}}                                                     
+   --}}
                                                     <a href="javascript:void(0)" id="edit-subject" class="EditSubjects" data-id="{{ $subject->id }}" data-url="{{route('subjects.update', $subject->id)}}">
                                                         <i class="far fa-edit"></i> Edit</a>
                                                         </span>
@@ -177,8 +177,8 @@
                     <form method="POST" enctype="multipart/form-data" class="edit-subject-form">
                         @method('PUT')
                         @csrf
-                      
-                       
+
+
                         <input type="hidden" name="edit_id" id="edit_id">
                         <div class="form-group row" style="margin-top: 10px;">
 
@@ -266,7 +266,7 @@
                 study_eye = row.find('td.edit_study_eye').text();
 
                 console.log($(this).attr('data-url'));
-           
+
             $('#edit_id').val(id);
             $('#edit_subject_id').val(subject_id);
             $('#edit_enrollment_date').val(enrol_date);
@@ -287,7 +287,7 @@
             var subjectID = $('#createSubjects').find($('#subject_id')).val();
             var type = 'add';
             var message = '<span class="subject-message" style="color: red;">Subject ID is not unique.</span>';
-            
+
             $.ajax({
                 type: "GET",
                 url: "{{route('subjects.check-suject')}}",
@@ -319,7 +319,7 @@
             var subjectID = $('#editSubjects').find($('#edit_subject_id')).val();
             var type = 'update';
             var message = '<span class="edit-subject-message" style="color: red;">Subject ID is not unique.</span>';
-            
+
             $.ajax({
                 type: "GET",
                 url: "{{route('subjects.check-suject')}}",
