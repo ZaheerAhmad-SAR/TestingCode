@@ -58,9 +58,9 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     // routes for annotation
     Route::resource('annotation', 'AnnotationController');
-    Route::post('annotation/updateAnnotation', 'AnnotationController@update_annotation')->name('updateAnnotation');
-    Route::DELETE('annotation/delete/{id}', 'AnnotationController@deleteAnnotation')->name('delete');
-    Route::get('annotation/get_allAnnotations/{id}', 'AnnotationController@get_allAnnotations')->name('get_allAnnotations');
+    Route::post('annotation/updateAnnotation', 'AnnotationController@update_annotation')->name('annotation.updateAnnotation');
+    Route::DELETE('annotation/delete/{id}', 'AnnotationController@deleteAnnotation')->name('annotation.delete');
+    Route::get('annotation/get_allAnnotations/{id}', 'AnnotationController@get_allAnnotations')->name('annotation.get_allAnnotations');
     // routes for form managment
     Route::resource('forms', 'FormController');
     Route::post('forms/add_questions', 'FormController@add_questions')->name('addQuestions');
@@ -78,10 +78,10 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     //end
     // routes for study managment
     Route::resource('study', 'StudyStructureController');
-    Route::get('get_steps', 'StudyStructureController@get_steps')->name('getSteps');
+    Route::get('get_steps', 'StudyStructureController@get_steps')->name('study.getSteps');
     Route::get('study_phases', 'StudyStructureController@getallphases')->name('getPhases');
-    Route::post('study/update', 'StudyStructureController@update')->name('updatePhase');
-    Route::DELETE('steps/delete_steps/{step_id}', 'StudyStructureController@destroySteps')->name('deleteSteps');
+    Route::post('study/update', 'StudyStructureController@update')->name('study.updatePhase');
+    Route::DELETE('steps/delete_steps/{step_id}', 'StudyStructureController@destroySteps')->name('steps.deleteSteps');
     Route::post('steps/store_steps', 'StudyStructureController@store_steps')->name('steps.save');
     Route::post('steps/updateSteps', 'StudyStructureController@update_steps')->name('steps.update');
     Route::post('studies/studyStatus', 'StudyController@studyStatus')->name('studies.studyStatus');
@@ -91,8 +91,8 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     // routes for adding sections
     // Route::resource('section','SectionController');
     Route::resource('sections', 'SectionController');
-    Route::post('section', 'SectionController@getSectionby_id')->name('getSections');
-    Route::post('section/update', 'SectionController@update')->name('updateSections');
+    Route::post('section', 'SectionController@getSectionby_id')->name('section.getSections');
+    Route::post('section/update', 'SectionController@update')->name('section.updateSections');
     //end
 
     Route::resource('childmodilities', 'ChildModilitiesController');

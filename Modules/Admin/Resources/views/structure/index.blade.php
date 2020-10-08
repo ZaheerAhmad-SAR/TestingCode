@@ -395,7 +395,7 @@ $(document).ready(function(){
             alert('Please fill all the required fields');
         }else{
             $.ajax({
-                url: (id == '') ? 'study' : 'study/update',
+                url: (id == '') ? "{{route('study.store')}}" : "{{route('study.updatePhase')}}",
                 type: 'POST',
                 data: {
                     "_token": "{{ csrf_token() }}",
@@ -577,7 +577,7 @@ $(document).ready(function(){
             alert('Please fill all the required fields');
         }else{
             $.ajax({
-                url: (section_id == '') ? 'sections' : 'section/update',
+                url: (section_id == '') ? "{{route('sections.store')}}" : "{{route('section.updateSections')}}",
                 type: 'POST',
                 data: {
                     "_token": "{{ csrf_token() }}",
@@ -683,7 +683,7 @@ $(document).ready(function(){
     function load_steps(){
         var allPhases_list = $('select.allPhases_list');
         $.ajax({
-            url:'get_steps',
+            url:"{{route('study.getSteps')}}",
             dataType:'html',
             success:function(res){
                 $('.allsteps').html(res);
@@ -694,7 +694,7 @@ $(document).ready(function(){
 
     function Sections(id){
         $.ajax({
-             url: 'section',
+             url: "{{route('section.getSections')}}",
              type: 'POST',
              dataType: 'json',
              data: {
