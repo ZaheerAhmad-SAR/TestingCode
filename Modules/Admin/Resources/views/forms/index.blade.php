@@ -90,7 +90,7 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <form action="{{ route('addQuestions') }}" enctype="multipart/form-data" method="POST" id="formfields">
+                <form action="{{ route('forms.addQuestions') }}" enctype="multipart/form-data" method="POST" id="formfields">
                     @csrf
                     <div class="modal-body">
                         <nav>
@@ -508,7 +508,7 @@ $('.field_dependent').on('change',function(){
 $('body').on('click','.form-fields',function(){
     $('#formfields').trigger('reset');
     $('.modal-title').html('Add New Question');
-    $('#formfields').attr('action', "{{route('addQuestions')}}");
+    $('#formfields').attr('action', "{{route('forms.addQuestions')}}");
     var id = $(this).attr("data-field-id");
     $('#question_type').val(id);
 })
@@ -670,7 +670,7 @@ $(document).ready(function() {
     $('body').on('click', '.Edit_ques', function() {
         $('#formfields').trigger('reset');
         $('.modal-title').html('Update Question')
-        $('#formfields').attr('action', "{{ route('updateQuestion') }}");
+        $('#formfields').attr('action', "{{ route('forms.updateQuestion') }}");
         var row = $(this).closest('div.custom_fields')
             tId = ''
             ques_id = row.find('input.question_id').val()
