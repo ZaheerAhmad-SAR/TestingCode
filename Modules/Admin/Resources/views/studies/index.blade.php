@@ -3,6 +3,10 @@
     <title> Studies | {{ config('app.name', 'Laravel') }}</title>
 @stop
 @section('styles')
+    <!-- Queries Model style sheet start -->
+    <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2.min.css") }}"/>
+    <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
+    <!-- Queries Model style sheet end -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
     <link rel="stylesheet" href="{{ asset("dist/vendors/tablesaw/tablesaw.css") }}">
     @stop
@@ -28,18 +32,11 @@
             <div class="col-12 mt-3">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <div class="col-md-3">
                         @if(hasPermission(auth()->user(),'studies.create'))
                         <button type="button" class="btn btn-outline-primary" id="create-new-study" data-toggle="modal" data-target="#createStudy">
                             <i class="fa fa-plus"></i> Add Study
                         </button>
-                        </div>
                             @endif
-                            <div class="col-md-9 align-items-left" style="padding: 0px 0px 0px 95px;">
-                                <button class="btn" disabled style="background:#17a2b8; color:white ">QC</button>
-                                <button class="btn" disabled style="background:green; color:white">Grader</button>
-                                <button class="btn" disabled style="background:red; color:white">Adjudication</button>
-                            </div>
                     </div>
                     <div class="card-body">
                         <table class="tablesaw table-bordered" data-tablesaw-mode="stack" id="studies_crud">
@@ -183,8 +180,8 @@
         <!-- END: Card DATA-->
     </div>
 
-    <!-- phase modle -->
-    <div class="modal fade" tabindex="-1" role="dialog" id="queries-modal" aria-labelledby="exampleModalLongTitle1" aria-hidden="true">
+    <!-- queries modal -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="queries-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
@@ -200,49 +197,41 @@
                                 <div class="form-group row">
                                     <label for="Name" class="col-sm-4 col-form-label">Queries Assigned to:</label>
                                     <div class="col-sm-8">
-                                        <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="users" checked> Users</label> &nbsp;
+                                        <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="users"> Users</label> &nbsp;
                                         <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="roles" > Roles</label>
                                     </div>
                                 </div>
-                                <div class="form-group row usersInput">
+                                <div class="form-group row usersInput" style="display: none;">
                                     <label for="Name" class="col-sm-4 col-form-label">Users:</label>
                                     <div class="col-sm-8">
-                                        <select class="form-control" name="users" id="users">
-                                            <option value="">Saqib</option>
-                                            <option value="">Abid</option>
-                                            <option value="">Zaheer</option>
-                                            <option value="">Zeeshan</option>
+                                        <select class="form-control multieSelectDropDown" multiple data-allow-clear="1" name="users" id="users">
+                                            @foreach($users_for_queries as $user)
+                                            <option value="{{$user->id}}">{{$user->name}}</option>
+                                            @endforeach
                                         </select>
                                     </div>
                                 </div>
                                 <div class="form-group row rolesInput" style="display: none;">
                                     <label for="Name" class="col-sm-4 col-form-label">Roles:</label>
                                     <div class="col-sm-8">
-
-                                        <label class="checked-inline  col-form-label"><input type="checkbox" id="roles" name="roles" value="users"> Adjudication</label> &nbsp;
-                                        <label class="checked-inline  col-form-label"><input type="checkbox" id="roles" name="roles" value="roles" > Grader</label>
-                                        <label class="checked-inline  col-form-label"><input type="checkbox" id="roles" name="roles" value="roles" > QC</label>
-{{--                                        <select class="form-control" name="roles" id="roles">--}}
-{{--                                            <option value="">Adjudication</option>--}}
-{{--                                            <option value="">Grader</option>--}}
-{{--                                            <option value="">QC</option>--}}
-{{--                                            <option value="">Project Manager</option>--}}
+                                        @foreach($roles_for_queries as $role)
+                                            <label class="checked-inline  col-form-label"><input type="checkbox" class="ads_Checkbox" id="roles" name="roles" value="{{$role->id}}"> {{$role->name}} </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+{{--                                <div class="form-group row statusInput">--}}
+{{--                                    <label for="Name" class="col-sm-4 col-form-label">Change status to:</label>--}}
+{{--                                    <div class="col-sm-8">--}}
+{{--                                        <select class="form-control" name="queries_status" id="queries_status">--}}
+{{--                                            <option value="">Open</option>--}}
+{{--                                            <option value="">Unconfirmed</option>--}}
+{{--                                            <option value="">Confirmed</option>--}}
+{{--                                            <option value="">Resolved</option>--}}
+{{--                                            <option value="">Closed</option>--}}
 {{--                                        </select>--}}
-                                    </div>
-                                </div>
-                                <div class="form-group row statusInput">
-                                    <label for="Name" class="col-sm-4 col-form-label">Change status to:</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-control" name="queries_status" id="queries_status">
-                                            <option value="">Open</option>
-                                            <option value="">Unconfirmed</option>
-                                            <option value="">Confirmed</option>
-                                            <option value="">Resolved</option>
-                                            <option value="">Closed</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row remarksInput">
+{{--                                    </div>--}}
+{{--                                </div>--}}
+                                <div class="form-group row remarksInput" style="display:none;">
                                     <label for="Name" class="col-sm-4 col-form-label">Remarks</label>
                                     <div class="col-sm-8">
                                         <textarea class="form-control" name="remarks" rows="2" id="remarks"></textarea>
@@ -251,8 +240,8 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-outline-danger" data-dismiss="modal" id="addphase-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="button" class="btn btn-outline-primary" id="savePhase"><i class="fa fa-save"></i> Save Changes</button>
+                            <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="button" class="btn btn-outline-primary" id="savequeries"><i class="fa fa-save"></i> Save Changes</button>
                         </div>
                     </div>
                 </form>
@@ -408,6 +397,7 @@
                         <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
                             @endif
                     </div>
+                    </div>
                 </form>
             </div>
         </div>
@@ -464,14 +454,13 @@
 @section('script')
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
+    <!-- Queries Model scripts start -->
+    <script src="{{ asset("dist/vendors/select2/js/select2.full.min.js") }}"></script>
+    <script src="{{ asset("dist/js/select2.script.js") }}"></script>
+
+    <!-- Queries Model scripts end -->
+
     <script type="text/javascript">
-        // run callbacks
-        $('#select-users').multiSelect({
-            selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
-            selectionHeader: "<label for=''>Assigned Admins</label><input type='text' class='form-control appendusers' autocomplete='off' placeholder='search here'>",
-        });
-    </script>
-   {{-- <script type="text/javascript">
         $(document).ready(function() {
             $('#select-users').multiSelect({
                 selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
@@ -509,7 +498,7 @@
                 }
             });
         });
-    </script>--}}
+    </script>
     <script src="{{ asset('dist/js/jquery.validate.min.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.barfiller.js') }}"></script>
@@ -576,6 +565,14 @@
                 $('.appendfields').append(html);
                 var user = '';
                 $('.appendusers').html('');
+
+                $.each(data.users,function (index, value) {
+                    //console.log(index,value);
+                    user += '<option selected="selected" value=" '+value.id+' ">'+value.name+'</option>';
+
+                });
+               $('.appendusers').html(user);
+
                 var user_id = [];
 
                $.each(data.users,function (index, value) {
@@ -584,17 +581,16 @@
                });
                $('#select-users').multiSelect('deselect_all');
                $('#select-users').multiSelect('select',user_id);
+
            })
         });
 
         $('body').on('click', '#delete-study', function () {
             var study_id = $(this).data("id");
+            confirm("Are You sure want to delete !");
             $.ajax({
                 type: "DELETE",
                 url: "{{ url('studies')}}"+'/'+study_id,
-                beforeSend:function(){
-                    return confirm("Are You sure want to delete !");
-                },
                 success: function (data) {
                     $("#study_id_" + study_id).remove();
                     if(data.success == true){ // if true (1)
@@ -610,7 +606,6 @@
         });
 
         $('body').on('click', '.clone-study', function () {
-
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -619,15 +614,11 @@
             var parent_id = $(this).data("id");
             var newPath = "{{URL('studies/cloneStudy')}}";
             //alert(newPath)
-
-
+            confirm("Are You sure want to Clone !");
             $.ajax({
                 type: "POST",
                 data:{'id':parent_id},
                 url: newPath,
-                beforeSend:function(){
-                    return confirm("Are You sure want to Clone !");
-                },
                 success: function (data) {
                     console.log(data);
                     location.reload();
@@ -691,19 +682,43 @@
 
     $(document).ready(function (){
        $('input[type="radio"]').click(function (){
-           if ($(this).is(':checked'))
+           if ($(this).attr("value")=="users")
            {
+            $("input:checkbox").prop('checked',false);
             $(".usersInput").show();
+            $(".remarksInput").show();
             $(".rolesInput").hide();
+            $('#remarks').val('');
+
            }
            if ($(this).attr("value")=="roles")
            {
             $('.usersInput').css('display','none');
             $(".rolesInput").show();
-            $(".statusInput").show();
             $(".remarksInput").show();
+            $('#remarks').val('');
            }
        });
+    });
+
+    $('#savequeries').click(function (){
+        var queryAssignedTo = $("input[name='assignQueries']:checked").val();
+        if (queryAssignedTo == 'users')
+        {
+            var assignedUsers = $('#users').val();
+            var assignedRemarks = $('#remarks').val();
+            console.log(assignedUsers);
+            console.log(assignedRemarks);
+        }
+        if(queryAssignedTo =='roles')
+        {
+            var assignedRoles = $("input[name='roles']:checked").map(function() {
+                return this.value;
+            }).get().join(',');
+            var assignedRemarks = $('#remarks').val();
+            console.log(assignedRoles);
+            console.log(assignedRemarks);
+        }
     });
 
 </script>
