@@ -90,6 +90,7 @@
             </div>
         </div>
     </div>
+    @include('queries::queries.query_popup')
     @push('script')
         @include('admin::forms.form_js', ['stepIdStr' => $stepIdStr, 'sections' => $sections])
     @endpush
