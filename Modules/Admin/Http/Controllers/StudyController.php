@@ -55,7 +55,7 @@ class StudyController extends Controller
                     ->join('users','users.id','=','study_user.user_id')
                     ->join('studies','studies.id','=','study_user.study_id')
                     ->where('users.id','=',\auth()->user()->id)
-                    ->where('studies.status','=','live')
+                    ->where('studies.study_status','=','Live')
                     ->orderBy('study_short_name')->get();
             }
             if (hasPermission(\auth()->user(),'adjudication.index')){
@@ -63,7 +63,7 @@ class StudyController extends Controller
                     ->join('users','users.id','=','study_user.user_id')
                     ->join('studies','studies.id','=','study_user.study_id')
                     ->where('users.id','=',\auth()->user()->id)
-                    ->where('studies.status','=','live')
+                    ->where('studies.study_status','=','live')
                     ->orderBy('study_short_name')->get();
             }
             if (hasPermission(\auth()->user(),'qualitycontrol.index')){
@@ -71,7 +71,7 @@ class StudyController extends Controller
                     ->join('users','users.id','=','study_user.user_id')
                     ->join('studies','studies.id','=','study_user.study_id')
                     ->where('users.id','=',\auth()->user()->id)
-                    ->where('studies.status','=','live')
+                    ->where('studies.study_status','=','live')
                     ->orderBy('study_short_name')->get();
             }
 
