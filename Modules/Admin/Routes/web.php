@@ -27,6 +27,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::DELETE('sites/destroy/{sites_id}', 'SiteController@destroy')->name('sites.destroy');
 
     Route::resource('studies', 'StudyController');
+    Route::get('studies/updateStudy', 'StudyController@update_study')->name('studies.updateStudy');
     Route::resource('devices', 'DeviceController');
     Route::resource('modalities', 'ModilityController');
     Route::resource('diseaseCohort', 'DiseaseCohortController');
