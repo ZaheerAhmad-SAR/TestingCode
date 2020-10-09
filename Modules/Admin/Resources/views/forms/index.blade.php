@@ -162,13 +162,13 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="Required" class="col-sm-2 col-form-label view_to_numeric">Uper Limit
+                                    <label for="Required" class="col-sm-2 col-form-label view_to_numeric">Upper Limit
                                         <sup>*</sup></label>
                                     <div class="col-sm-4 view_to_numeric">
                                         <input type="number" name="lower_limit" id="lower_limit_num" class="form-control"
                                             placeholder="Minimum limits">
                                     </div>
-                                    <label for="Uper Limit" class="col-sm-2 col-form-label view_to_numeric">Lower Limit</label>
+                                    <label for="Upper Limit" class="col-sm-2 col-form-label view_to_numeric">Lower Limit</label>
                                     <div class="col-sm-4 view_to_numeric">
                                         <input type="number" name="upper_limit" id="upper_limit_num" class="form-control"
                                             placeholder="Maximum limits">
@@ -215,7 +215,7 @@
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <input type="radio" name="is_required" id="required_no" value="yes" checked> Yes
                                     </div>
-                                    <div class="col-sm-2">Exclude field in data exports: <sup>*</sup></div>
+                                    <div class="col-sm-2">Exports: <sup>*</sup></div>
                                     <div class="col-sm-4">
                                         <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_no" value="no"> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_yes"  value="yes" checked> Yes
@@ -496,10 +496,16 @@ $('body').on('click','.fetch_annotation',function(){
     var anno_class = row.find('select.terminology_value');
     get_all_annotations(study_id,anno_class);
 })
+$('#section_id').on('change',function(){
+    $('.field_dependent').trigger('change');
+})
 $('.field_dependent').on('change',function(){
     var value = $(this).val();
+    var sec_id = $('#section_id').val();
+    var ques_class = $('.select_ques_for_dep');
     if(value =='yes'){
         $('.append_if_yes').css('display','block');
+        get_question_section_id(sec_id,ques_class);
     }else{
         $('.append_if_yes').css('display','none');
     }

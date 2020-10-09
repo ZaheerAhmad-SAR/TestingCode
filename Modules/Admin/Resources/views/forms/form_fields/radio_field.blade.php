@@ -16,7 +16,7 @@ $options = array_combine ( $option_names , $option_values );
     <div class="row">
         <div class="col-10">
             @foreach ($options as $option_name => $option_value)
-                <div class="custom-control custom-radio custom-control-inline">
+                <div class="custom-control custom-radio {{ ($optionGroup->option_layout == 'horizontal')? 'custom-control-inline':''}}">
                     <input type="radio" name="{{ $field_name }}"
                         onchange="validateAndSubmitField('{{ $stepIdStr }}', '{{ $sectionIdStr }}', '{{ $question->id }}', '{{ $field_name }}', '{{ $fieldId }}');"
                         value="{{ $option_value }}" {{ $answer->answer == $option_value ? 'checked' : '' }}

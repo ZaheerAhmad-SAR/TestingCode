@@ -12,11 +12,18 @@ use Modules\Admin\Entities\Subject;
 use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\StudySite;
 
+use App\User;
+use Modules\UserRoles\Entities\Role;
+use Modules\UserRoles\Entities\RolePermission;
+use Modules\UserRoles\Entities\Permission;
+use Modules\UserRoles\Entities\UserRole;
+
 class SubjectFormLoaderController extends Controller
 {
     public function showSubjectForm($studyId, $subjectId)
     {
         $userRoleIds = auth()->user()->user_roles()->pluck('role_id')->toArray();
+
         //$studyId = session('current_study');
         $visitPhases = StudyStructure::phasesbyRoles($studyId, $userRoleIds);
 
