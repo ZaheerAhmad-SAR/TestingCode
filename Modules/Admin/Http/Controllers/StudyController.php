@@ -78,12 +78,14 @@ class StudyController extends Controller
                     ->orderBy('study_short_name')->get();
                 $study = '';
             }
-
-            $studies  =   StudyUser::select('study_user.*','users.*','studies.*')
-            ->join('users','users.id','=','study_user.user_id')
-            ->join('studies','studies.id','=','study_user.study_id')
-            ->where('users.id','=',\auth()->user()->id)
-            ->orderBy('study_short_name')->get();
+            if (hasPermission(\auth()->user(),'studytools.index')) {
+                $studies = StudyUser::select('study_user.*', 'users.*', 'studies.*')
+                    ->join('users', 'users.id', '=', 'study_user.user_id')
+                    ->join('studies', 'studies.id', '=', 'study_user.study_id')
+                    ->where('users.id', '=', \auth()->user()->id)
+                    ->orderBy('study_short_name')->get();
+                $study = '';
+            }
         //dd($studies);
 
         $users = User::all();

@@ -58,6 +58,7 @@
                             </tr>
                             </thead>
                             <tbody>
+                            {!! dd($studies) !!}
                             @if(count($studies) !=0)
                                 <?php $index= 1; ?>
                                 @foreach($studies as $study)
