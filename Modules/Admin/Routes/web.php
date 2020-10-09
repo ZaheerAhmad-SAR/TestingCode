@@ -180,9 +180,12 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     // Form Validation
     Route::post('/subject_form/validateSingleQuestion', 'SubjectFormSubmissionController@validateSingleQuestion')->name('validateSingleQuestion');
     Route::post('/subject_form/validateSectionQuestionsForm', 'SubjectFormSubmissionController@validateSectionQuestionsForm')->name('validateSectionQuestionsForm');
+
+    // CHM-Amir--
+    //Route::get('trails-log', 'TrailLogController@index')->name('trails.log');
+    Route::get('trails-log', 'TrailLogController@index')->name('activitylog.index');
 });
 
-// CHM-Amir--
-Route::get('trail-log', 'TrailLogController@index')->name('trail.log');
+
 // for checking subject ID
 Route::get('check-subject', 'SubjectController@checkSubject')->name('subjects.check-suject');

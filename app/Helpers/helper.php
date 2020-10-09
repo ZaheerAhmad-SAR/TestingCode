@@ -139,7 +139,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData) {
         }
 
     /////////////////////////////// Primary Investigator /////////////////////////////////////////////
-    } else if($eventSection == 'PI') {
+    } else if($eventSection == 'Primary Investigator') {
         // get event data
         $eventData = PrimaryInvestigator::find($eventId);
         // set message for audit
