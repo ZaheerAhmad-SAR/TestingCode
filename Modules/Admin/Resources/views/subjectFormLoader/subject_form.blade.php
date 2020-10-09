@@ -73,11 +73,13 @@
                         <h4 class="card-title">Grading legend</h4>
                     </div>
                     <div class="card-body">
+                        <!--
                         <span class="badge p-2 badge-light mb-1">Not Graded</span>&nbsp;&nbsp;
                         <span class="badge p-2 badge-warning mb-1">Graded by 1st grader</span>&nbsp;&nbsp;
                         <span class="badge p-2 badge-success mb-1">Graded by 2nd grader</span>&nbsp;&nbsp;
                         <span class="badge p-2 badge-danger mb-1">Required Adjudication</span>&nbsp;&nbsp;
                         <div class="row">&nbsp;</div>
+                        -->
                         <div class="row">
                             <div class="col-md-2">
                                 <img src="{{url('images/complete.png')}}"/>&nbsp;&nbsp;Complete
