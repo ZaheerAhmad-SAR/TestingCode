@@ -218,7 +218,6 @@ class UserController extends Controller
         $user   =   User::find($id);
         $user->name  =  $request->name;
         $user->email =  $request->email;
-        $user->password  =  Hash::make($request->password);
         $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
         $user->save();
         $userroles  = UserRole::where('user_id',$user->id)->get();
