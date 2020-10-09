@@ -21,7 +21,6 @@
                 <div class="navbar-right ml-auto h-100">
                     <ul class="ml-auto p-0 m-0 list-unstyled d-flex top-icon h-100">
                         <li style="margin-top: 5px;">
-                            <span>Logged User: {!! auth()->user()->name !!}</span>
                         <span>
                             @if(!empty(session('current_study')))
                             <strong>Current Study:</strong> {{session('study_short_name')}}
@@ -39,6 +38,7 @@
                                 </div>
                             </a>
                             <div class="dropdown-menu border dropdown-menu-right p-0">
+                                <a href="#" class="dropdown-item px-2 align-self-center d-flex"><span><strong>Logged User: {!! auth()->user()->name !!}</strong></span></a>
                                 <a href="{{route('users.updateProfile')}}" class="dropdown-item px-2 align-self-center d-flex">
                                     <span class="icon-pencil mr-2 h6 mb-0"></span> Edit Profile
                                 </a>
