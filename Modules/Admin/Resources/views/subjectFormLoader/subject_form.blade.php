@@ -508,6 +508,7 @@
 
             function showReasonField(stepIdStr, stepClsStr) {
                 $("#edit_form_div_" + stepIdStr).show(500);
+                $("#edit_form_button_" + stepIdStr).hide(500);
                 $('#edit_reason_text_' + stepIdStr).prop('required', true);
                 enableByClass(stepClsStr);
                 $('.form_hid_editing_status_' + stepIdStr).val('yes');
