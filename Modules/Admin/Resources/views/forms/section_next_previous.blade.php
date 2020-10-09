@@ -3,16 +3,23 @@
         @if ((bool) $subjectId && ($formStatus === 'complete' || $formStatus === 'resumable'))
             <button class="btn btn-warning" name="edit_form_button_{{ $stepIdStr }}"
                 id="edit_form_button_{{ $stepIdStr }}"
-                onclick="openFormForEditing('{{ $stepIdStr }}', '{{ $stepClsStr }}', '{{ $sectionIdStr }}');">
+                onclick="openFormForEditing('{{ $stepIdStr }}', '{{ $stepClsStr }}', '{{ $sectionIdStr }}');"
+                style="display: {{ $formStatus == 'resumable' ? 'none' : 'block' }};">
                 Edit Form
             </button>
         @endif
-        <button type="button" class="btn btn-primary nexttab ml-auto {{ $studyClsStr }} {{ $stepClsStr }} {{ $sectionClsStr }}">Next</button>
+        <button type="button"
+            class="btn btn-primary nexttab ml-auto {{ $studyClsStr }} {{ $stepClsStr }} {{ $sectionClsStr }}">Next</button>
     </div>
     <div class="row">
-        <div class="col-md-12" id="edit_form_div_{{ $stepIdStr }}" style="display: {{ ($formStatus == 'resumable')? 'block':'none' }};">
-            <input type="text" name="edit_reason_text_{{ $stepIdStr }}" id="edit_reason_text_{{ $stepIdStr }}"
-                class="form-control-ocap bg-transparent" value="" placeholder="Please put reason to edit form here" />
+        <div class="col-md-12" id="edit_form_div_{{ $stepIdStr }}"
+            style="display: {{ $formStatus == 'resumable' ? 'block' : 'none' }};">
+            <div class="form-group">
+                <label class="">Reason to edit form :</label>
+                <input type="text" name="edit_reason_text_{{ $stepIdStr }}" id="edit_reason_text_{{ $stepIdStr }}"
+                    class="form-control-ocap bg-transparent" value=""
+                    placeholder="Please put reason to edit form here" />
+            </div>
         </div>
     </div>
 @elseif($key === $last)

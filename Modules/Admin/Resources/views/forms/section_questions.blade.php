@@ -61,6 +61,8 @@
         $( document ).ready(function() {
             if($('#form_master_{{ $sectionIdStr }} #form_status').val() != 'complete'){
                 globalDisableByClass('{{ $studyClsStr }}', '{{ $stepClsStr }}');
+            }else{
+                hideReasonField('{{ $stepIdStr }}', '{{ $stepClsStr }}');
             }
         });
         </script>
