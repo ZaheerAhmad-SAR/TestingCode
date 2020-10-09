@@ -82,10 +82,10 @@
                         -->
                         <div class="row">
                             <div class="col-md-2">
-                                <img src="{{url('images/complete.png')}}"/>&nbsp;&nbsp;Complete
+                                <img src="{{url('images/no_status.png')}}"/>&nbsp;&nbsp;Not Initiated
                             </div>
                             <div class="col-md-2">
-                                <img src="{{url('images/incomplete.png')}}"/>&nbsp;&nbsp;Incomplete
+                                <img src="{{url('images/incomplete.png')}}"/>&nbsp;&nbsp;Initiated
                             </div>
                             <div class="col-md-2">
                                 <img src="{{url('images/resumable.png')}}"/>&nbsp;&nbsp;Editing
@@ -94,10 +94,10 @@
                                 <img src="{{url('images/adjudication.png')}}"/>&nbsp;&nbsp;Adjudication
                             </div>
                             <div class="col-md-2">
-                                <img src="{{url('images/not_required.png')}}"/>&nbsp;&nbsp;Not Required
+                                <img src="{{url('images/complete.png')}}"/>&nbsp;&nbsp;Complete
                             </div>
                             <div class="col-md-2">
-                                <img src="{{url('images/no_status.png')}}"/>&nbsp;&nbsp;No Status
+                                <img src="{{url('images/not_required.png')}}"/>&nbsp;&nbsp;Not Required
                             </div>
                         </div>
                     </div>
