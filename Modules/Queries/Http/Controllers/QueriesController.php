@@ -3,6 +3,7 @@
 namespace Modules\Queries\Http\Controllers;
 
 use App\User;
+use http\Env\Response;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -49,29 +50,28 @@ class QueriesController extends Controller
      $queryAssignedTo = $request->post('queryAssignedTo');
      $roles           = $request->post('assignedRoles');
      $users           = $request->post('assignedUsers');
+     $id              = Str::uuid();
 
-     if ($queryAssignedTo == 'users'){
-         $roles = Null;
-         $id = Str::uuid();
-         foreach ($users as $user)
-         {
-            QueryUser::create(['id'=>$id, 'user_id'=>$user]);
-         }
-     }
-     if ($queryAssignedTo == 'roles'){
-         $users = Null;
-         $id = Str::uuid();
-         foreach ($roles as $role)
-         {
-            RoleQuery::create(['id'=>$id, 'roles_id'=>$role]);
-         }
+            if ($queryAssignedTo == 'users')
+            {
+                $query           = Query::create([ 'id'=>$id, 'parent_query_id'=> 0,'messages'=>$remarks]);
+                foreach ($users as $user)
+                {
+                    $roles = (array)null;
+                    QueryUser::create(['id' => Str::uuid(), 'user_id' => $user, 'query_id' => $id]);
+                }
+            }
 
-         Query::create([
-          'id'=>Str::uuid(),
-          'parent_query_id'=> '0',
-          'messages'=>$remarks
-         ]);
-     }
+            if ($queryAssignedTo == 'roles')
+            {
+                $query           = Query::create([ 'id'=>$id, 'parent_query_id'=> 0,'messages'=>$remarks]);
+                foreach ($roles as $role) {
+                    $users = (array)null;
+                    RoleQuery::create(['id' => Str::uuid(), 'roles_id' => $role, 'query_id' => $id]);
+                }
+            }
+
+        return response()->json([$query,'success'=>'Queries is generate successfully!!!!']);
 
     }
 
