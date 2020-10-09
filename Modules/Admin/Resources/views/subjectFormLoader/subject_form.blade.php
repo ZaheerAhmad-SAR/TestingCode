@@ -73,17 +73,19 @@
                         <h4 class="card-title">Grading legend</h4>
                     </div>
                     <div class="card-body">
+                        <!--
                         <span class="badge p-2 badge-light mb-1">Not Graded</span>&nbsp;&nbsp;
                         <span class="badge p-2 badge-warning mb-1">Graded by 1st grader</span>&nbsp;&nbsp;
                         <span class="badge p-2 badge-success mb-1">Graded by 2nd grader</span>&nbsp;&nbsp;
                         <span class="badge p-2 badge-danger mb-1">Required Adjudication</span>&nbsp;&nbsp;
                         <div class="row">&nbsp;</div>
+                        -->
                         <div class="row">
                             <div class="col-md-2">
-                                <img src="{{url('images/complete.png')}}"/>&nbsp;&nbsp;Complete
+                                <img src="{{url('images/no_status.png')}}"/>&nbsp;&nbsp;Not Initiated
                             </div>
                             <div class="col-md-2">
-                                <img src="{{url('images/incomplete.png')}}"/>&nbsp;&nbsp;Incomplete
+                                <img src="{{url('images/incomplete.png')}}"/>&nbsp;&nbsp;Initiated
                             </div>
                             <div class="col-md-2">
                                 <img src="{{url('images/resumable.png')}}"/>&nbsp;&nbsp;Editing
@@ -92,10 +94,10 @@
                                 <img src="{{url('images/adjudication.png')}}"/>&nbsp;&nbsp;Adjudication
                             </div>
                             <div class="col-md-2">
-                                <img src="{{url('images/not_required.png')}}"/>&nbsp;&nbsp;Not Required
+                                <img src="{{url('images/complete.png')}}"/>&nbsp;&nbsp;Complete
                             </div>
                             <div class="col-md-2">
-                                <img src="{{url('images/no_status.png')}}"/>&nbsp;&nbsp;No Status
+                                <img src="{{url('images/not_required.png')}}"/>&nbsp;&nbsp;Not Required
                             </div>
                         </div>
                     </div>
@@ -141,7 +143,7 @@
                                                             <a class="badge p-1 badge-light m-1  {{ $stepClsStr }}"
                                                                 href="javascript:void(0);"
                                                                 onclick="showSections('step_sections_{{ $stepIdStr }}');">
-                                                                {{ $step->step_name }}
+                                                                {{ $step->formType->form_type . ' ' . $step->step_name }}
 
                                                                  @foreach($step->sections as $section)
                                                                  @php
@@ -258,12 +260,17 @@
     @push('script')
         <script>
             function showAlert(message){
+                alert(message);
+                /*
                 var field = $("#previous_alert_message");
                 var previous_alert_message = field.val();
                 if(previous_alert_message != message){
                     alert(message);
                     field.val(message);
+                }else{
+                    field.val('');
                 }
+                */
             }
             function showSections(step_id_class) {
                 $('.all_step_sections').hide(500);
@@ -321,7 +328,7 @@
 
             function submitRequest(frmData, sectionIdStr) {
                 $.ajax({
-                    url: "{{ route('submitStudyPhaseStepQuestionForm') }}",
+                    url: "{{ route('subjectFormLoader.submitStudyPhaseStepQuestionForm') }}",
                     type: 'POST',
                     data: frmData,
                     success: function(response) {
@@ -330,14 +337,9 @@
                 });
             }
 
-            function validateFormField(sectionIdStr, questionId, field_name) {
+            function validateFormField(sectionIdStr, questionId, field_name, fieldId) {
                     var field_val;
-                    if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
-                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').val();
-                    } else {
-                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').val();
-                    }
-
+                    field_val = getFormFieldValue(sectionIdStr, field_name, fieldId);
                     var frmData = $("#form_master_" + sectionIdStr).serialize()  + '&questionId=' + questionId + '&' + field_name + '=' + field_val;
                     return validateSingleQuestion(frmData);
 
@@ -347,7 +349,7 @@
                 return new Promise(function (resolve, reject) {
                     var frmData = $("#form_master_" + sectionIdStr).serialize() + '&' + $("#form_" + sectionIdStr).serialize();
                     $.ajax({
-                        url: "{{ route('validateSectionQuestionsForm') }}",
+                        url: "{{ route('subjectFormSubmission.validateSectionQuestionsForm') }}",
                         type: 'POST',
                         data: frmData,
                         dataType: 'JSON',
@@ -365,7 +367,7 @@
             function validateSingleQuestion(frmData) {
                 return new Promise(function (resolve, reject) {
                 $.ajax({
-                    url: "{{ route('validateSingleQuestion') }}",
+                    url: "{{ route('subjectFormSubmission.validateSingleQuestion') }}",
                     type: 'POST',
                     data: frmData,
                     dataType: 'JSON',
@@ -393,11 +395,11 @@
             }
             function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, field_name, fieldId){
                 checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
-                const validationPromise = validateFormField(sectionIdStr, questionId, field_name);
+                const validationPromise = validateFormField(sectionIdStr, questionId, field_name, fieldId);
                 validationPromise
                 .then((data) => {
                     console.log(data)
-                    submitFormField(stepIdStr, sectionIdStr, field_name);
+                    submitFormField(stepIdStr, sectionIdStr, field_name, fieldId);
                 })
                 .then((data) => {
                     console.log(data)
@@ -449,21 +451,19 @@
                 return returnVal;
             }
 
-            function submitFormField(stepIdStr, sectionIdStr, field_name) {
+            function submitFormField(stepIdStr, sectionIdStr, field_name, fieldId) {
                 var submitFormFlag = true;
+                /*
                 if (isFormInEditMode(sectionIdStr)) {
                     if (checkReason(stepIdStr) === false) {
                         submitFormFlag = false;
                     }
                 }
+                */
                 if (submitFormFlag) {
                     var frmData = $("#form_master_" + sectionIdStr).serialize();
                     var field_val;
-                    if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
-                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').val();
-                    } else {
-                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').val();
-                    }
+                    field_val = getFormFieldValue(sectionIdStr, field_name, fieldId);
                     var reason = $('#edit_reason_text_' + stepIdStr).val();
 
                     frmData = frmData + '&' + field_name + '=' + field_val + '&' + 'edit_reason_text=' + reason;
@@ -471,11 +471,33 @@
                 }
             }
 
+            function getFormFieldValue(sectionIdStr, field_name, fieldId){
+                var field_val;
+                var checkedCheckBoxes = [];
+                if ($('#' + fieldId).is("textarea")) {
+                        field_val = $('#' + fieldId).val();
+                    } else if ($('#' + fieldId).is("select")) {
+                        field_val = $('#' + fieldId).find(":selected").val();
+                    } else if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
+                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').val();
+                    } else if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'checkbox') {
+
+                        $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').each(function(){
+                            checkedCheckBoxes.push($(this).val());
+                        });
+                        field_val = checkedCheckBoxes.join(",");
+
+                    } else {
+                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').val();
+                    }
+                    return field_val;
+            }
+
             function openFormForEditing(stepIdStr, stepClsStr, sectionIdStr) {
                 var frmData = $("#form_master_" + sectionIdStr).serialize();
                 frmData = frmData + '&' + 'open_form_to_edit=1';
                 $.ajax({
-                    url: "{{ route('openSubjectFormToEdit') }}",
+                    url: "{{ route('subjectFormLoader.openSubjectFormToEdit') }}",
                     type: 'POST',
                     data: frmData,
                     success: function(response) {

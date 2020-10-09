@@ -27,7 +27,7 @@ class FormController extends Controller
      */
     public function index()
     {
-        $phases = StudyStructure::all();
+        $phases = StudyStructure::select('*')->where('study_id', session('current_study'))->get();
         $option_groups = OptionsGroup::all();
         $fields = FormFieldType::all();
         $annotations = Annotation::all();
@@ -41,7 +41,7 @@ class FormController extends Controller
     }
     public function get_phases($id)
     {
-        $phases = StudyStructure::all();
+        $phases = StudyStructure::select('*')->where('study_id', session('current_study'))->get();
         $data['data'] = $phases;
         echo json_encode($data);
     }
@@ -285,18 +285,20 @@ class FormController extends Controller
     }
     public function update_questions(Request $request)
     {
-        $question_info = Question::find($request->id);
-        $question_info->form_field_type_id = $request->form_field_type_id;
-        $question_info->section_id = $request->section_id;
-        $question_info->option_group_id = $request->option_group_id;
-        $question_info->question_sort = $request->question_sort;
-        $question_info->question_text = $request->question_text;
-        $question_info->c_disk = $request->c_disk;
-        $question_info->measurement_unit = $request->measurement_unit;
-        $question_info->is_dependent = $request->field_dependent;
-        $question_info->dependent_on = $request->dependent_on;
-        $question_info->annotations = $request->dependent_on;
-        $question_info->save();
+        // update Question basic attribute
+        $question_update = Question::where('id', $request->id)->first();
+        $question_update->form_field_type_id = $request->form_field_type_id;
+        $question_update->section_id = $request->section_id;
+        $question_update->option_group_id = $request->option_group_id;
+        $question_update->question_sort = $request->question_sort;
+        $question_update->question_text = $request->question_text;
+        $question_update->c_disk = $request->c_disk;
+        $question_update->measurement_unit = $request->measurement_unit;
+        $question_update->is_dependent = $request->field_dependent;
+        $question_update->dependent_on = $request->dependent_on;
+        $question_update->annotations = $request->dependent_on;
+        $question_update->save();
+        // update form fields
         $form_field = FormFields::where('id', $request->field_id)->first();
         $form_field->variable_name = $request->variable_name;
         $form_field->is_exportable_to_xls = $request->is_exportable_to_xls;
@@ -308,20 +310,25 @@ class FormController extends Controller
         $form_field->text_info = $request->text_info;
         $form_field->validation_rules = $request->validation_rules;
         $form_field->save();
+
         // Question dependency update
-        $dependencies = QuestionDependency::where('id', $request->dependency_id)->first();
-        $dependencies->q_d_status = $request->q_d_status;
-        $dependencies->dep_on_question_id = $request->dep_on_question_id;
-        $dependencies->opertaor = $request->opertaor;
-        $dependencies->custom_value = $request->custom_value;
-        $dependencies->save();
+        if(!empty($request->dependency_id)){
+            $dependencies = QuestionDependency::where('id', $request->dependency_id)->first();
+            $dependencies->q_d_status = $request->q_d_status;
+            $dependencies->dep_on_question_id = $request->dep_on_question_id;
+            $dependencies->opertaor = $request->opertaor;
+            $dependencies->custom_value = $request->custom_value;
+            $dependencies->save();
+        }
         // update adjudication
-        $adjStatus = QuestionAdjudicationStatus::where('id', $request->adj_id)->first();
-        $adjStatus->adj_status = $request->adj_status;
-        $adjStatus->decision_based_on = $request->decision_based_on;
-        $adjStatus->opertaor = $request->opertaor;
-        $adjStatus->custom_value = $request->custom_value;
-        $adjStatus->save();
+        if(!empty($request->adj_id)){
+            $adjStatus = QuestionAdjudicationStatus::where('id', $request->adj_id)->first();
+            $adjStatus->adj_status = $request->adj_status;
+            $adjStatus->decision_based_on = $request->decision_based_on;
+            $adjStatus->opertaor = $request->opertaor;
+            $adjStatus->custom_value = $request->custom_value;
+            $adjStatus->save();
+        }
         return redirect()->route('forms.index')->with('message', 'Record Updated Successfully!');
     }
     /**
@@ -370,8 +377,9 @@ class FormController extends Controller
     }
     function deleteQuestion($id)
     {
-        $question = Question::where('id', $id)->delete();
-        $question = FormFields::where('question_id', $id)->delete();
+        Question::where('id', $id)->delete();
+        FormFields::where('question_id', $id)->delete();
+        QuestionValidation::where('question_id', $id)->delete();
         $Response['data'] = 'success';
         echo json_encode($Response);
     }

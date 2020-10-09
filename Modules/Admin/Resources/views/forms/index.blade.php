@@ -90,7 +90,7 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <form action="{{ route('addQuestions') }}" enctype="multipart/form-data" method="POST" id="formfields">
+                <form action="{{ route('forms.addQuestions') }}" enctype="multipart/form-data" method="POST" id="formfields">
                     @csrf
                     <div class="modal-body">
                         <nav>
@@ -106,8 +106,6 @@
                                 <a class="nav-item nav-link" id="nav-Annotations-tab" data-toggle="tab"
                                     href="#nav-Annotations" role="tab" aria-controls="nav-contact"
                                     aria-selected="false">Annotations</a>
-                                <a class="nav-item nav-link" id="nav-Advanced-tab" data-toggle="tab" href="#nav-Advanced"
-                                    role="tab" aria-controls="nav-contact" aria-selected="false">Advanced</a>
                                 <a class="nav-item nav-link" id="nav-Advanced-tab" data-toggle="tab"
                                     href="#nav-Adjudication" role="tab" aria-controls="nav-contact"
                                     aria-selected="false">Adjudication</a>
@@ -164,19 +162,14 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="Required" class="col-sm-2 col-form-label">Required <sup>*</sup></label>
-                                    <div class="col-sm-4">
-                                        <input type="radio" name="is_required" id="required_yes" value="no"> No
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <input type="radio" name="is_required" id="required_no" value="yes" checked> Yes
-                                    </div>
-                                    <label for="Required" class="col-sm-2 col-form-label view_to_numeric">Uper $ Lower
+                                    <label for="Required" class="col-sm-2 col-form-label view_to_numeric">Upper Limit
                                         <sup>*</sup></label>
-                                    <div class="col-sm-2 view_to_numeric">
+                                    <div class="col-sm-4 view_to_numeric">
                                         <input type="number" name="lower_limit" id="lower_limit_num" class="form-control"
                                             placeholder="Minimum limits">
                                     </div>
-                                    <div class="col-sm-2 view_to_numeric">
+                                    <label for="Upper Limit" class="col-sm-2 col-form-label view_to_numeric">Lower Limit</label>
+                                    <div class="col-sm-4 view_to_numeric">
                                         <input type="number" name="upper_limit" id="upper_limit_num" class="form-control"
                                             placeholder="Maximum limits">
                                     </div>
@@ -216,9 +209,22 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
+                                    <label for="Required" class="col-sm-2 col-form-label">Required <sup>*</sup></label>
+                                    <div class="col-sm-4">
+                                        <input type="radio" name="is_required" id="required_yes" value="no"> No
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" name="is_required" id="required_no" value="yes" checked> Yes
+                                    </div>
+                                    <div class="col-sm-2">Exports: <sup>*</sup></div>
+                                    <div class="col-sm-4">
+                                        <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_no" value="no"> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_yes"  value="yes" checked> Yes
+                                    </div>
+                                </div>
+                                <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Text/info: <sup>*</sup></label>
                                     <div class="col-sm-10">
-                                        <textarea name="text_info" id="text_info" cols="2" rows="2" class="form-control"
+                                        <textarea name="text_info" id="text_info" cols="2" rows="1" class="summernote"
                                             style="height: 50px;"></textarea>
                                     </div>
                                 </div>
@@ -289,18 +295,7 @@
 
                         </div>
                     </div>
-                    <div class="tab-pane fade" id="nav-Advanced" role="tabpanel" aria-labelledby="nav-Advanced-tab">
-                        <div class="py-3 border-bottom border-primary">
-                            <span class="text-muted font-w-600">Click Yes If Need Result in Final Data Exports</span><br>
-                        </div>
-                        <div class="form-group row" style="margin-top: 10px;">
-                            <div class="col-sm-3">Exclude field in data exports: <sup>*</sup></div>
-                            <div class="col-sm-9">
-                                <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_no" value="no"> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_yes"  value="yes" checked> Yes
-                            </div>
-                        </div>
-                    </div>
+
                         <div class="tab-pane fade" id="nav-Adjudication" role="tabpanel"
                             aria-labelledby="nav-Advanced-tab">
                             <div class="py-3 border-bottom border-primary">
@@ -331,11 +326,8 @@
                                     <div class="col-sm-4">
                                         <select class="form-control" name="opertaor" id="adj_operator">
                                             <option value="">---Select---</option>
-                                            <option value="-">Difference</option>
-                                            <option value="=">Equal</option>
-                                            <option value=">=">Greater OR Equal</option>
-                                            <option value="<=">Less OR Equal</option>
-                                            <option value="!=">Not Equal</option>
+                                            <option value=">=">Greater OR Equal(percent)</option>
+                                            <option value="<=">Less OR Equal(percent)</option>
                                             <option value=">">Greater Then</option>
                                             <option value="<">Less Then</option>
                                         </select>
@@ -459,8 +451,11 @@
     }
 </style>
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
+<link rel="stylesheet" href="{{ asset("public/dist/vendors/summernote/summernote-bs4.css") }}">
 @endsection
 @section('script')
+<script src="{{ asset("public/dist/vendors/summernote/summernote-bs4.js") }}"></script>
+<script src="{{ asset("public/dist/js/summernote.script.js") }}"></script>
 <script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script>
 <script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
 <script src="{{ asset('public/js/edit_crf.js') }}"></script>
@@ -476,11 +471,7 @@ $('.addOptions').on('click',function(){
    $('.appendDataOptions').append('<div class="values_row_options"><div class="form-group row"><div class="form-group col-md-6"><input type="text" id="option_name" name="option_name[]" class="form-control" placeholder="Enter option name" style="background:white;"></div><div class="form-group col-md-4"><input type="number" placeholder="Option value" name="option_value[]" id="option_value" class="form-control" style="background:white;"></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove_option" style="margin-top: 3px;"></i></div></div></div>');
    return false;
 });
-/*$('.addvalidations').on('click',function(){
-   $('.appendDatavalidations').append('<div class="values_row"><div class="form-group row" style="margin-top: 10px;"><div class="col-sm-2"> Take Decision:</div><div class="col-sm-4"><select name="decision_one[]" id="decision_one" class="form-control decision"><option value="">---Based ON---</option><option value="question_value">Question Value</option><option value="custom_value">Custom Value</option></select></div><div class="col-sm-1"> Operator:</div><div class="col-sm-4"><select name="opertaor_one[]" id="opertaor_one" class="form-control"><option value="">---Select---</option><option value="=">Equal</option><option value=">=">Greater OR Equal</option><option value="<=">Less OR Equal</option><option value="!=">Not Equal</option><option value=">">Greater Then</option><option value="<">Less Then</option></select></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove" style="margin-top: 3px;"></i></div></div><div class="form-group row"><div class="col-sm-2 questionValue" style="display: none;">Section:</div><div class="col-sm-4 questionValue" style="display: none;"><span style="float:right;"><input type="button" class="btn btn-primary fetch_sections" value="Fetch"></span><span><select class="form-control decisionSections all_sections" style="width:82%"><option value="">---Section---</option></select></span></div><div class="col-sm-1 questionValue" style="display: none;">With:</div><div class="col-sm-5 questionValue" style="display: none;"><select name="dep_on_question_one_id[]" class="form-control decision_question all_questions"><option value="">---Select Question---</option></select></div><div class="col-sm-2 customValue" style="display: none;">Decision Value:</div><div class="col-sm-4 customValue" style="display: none;"><input type="text" name="custom_value_one[]" class="form-control custom_value" placeholder="Define Value"></div></div><div class="form-group row"><div class="col-sm-2"> Condition:</div><div class="col-sm-10"><select name="operator[]" class="form-control operators"><option value="">Select if third conditon as well</option><option value="and">AND</option><option value="or">OR</option></select></div></div><div class="third_condition" style="display: none;"><div class="form-group row"><div class="col-sm-2"> Take Decision:</div><div class="col-sm-4"><select name="decision_two[]" class="form-control decision2"><option value="">---Based ON---</option><option value="question_value_sec">Question Value</option><option value="custom_value_sec">Custom Value</option></select></div><div class="col-sm-1"> Operator:</div><div class="col-sm-5"><select name="opertaor_two[]" class="form-control"><option value="">---Select---</option><option value="=">Equal</option><option value=">=">Greater OR Equal</option><option value="<=">Less OR Equal</option><option value="!=">Not Equal</option><option value=">">Greater Then</option><option value="<">Less Then</option></select></div> </div><div class="form-group row"><div class="col-sm-2 questionValue2" style="display: none;">Section:</div><div class="col-sm-4 questionValue2" style="display: none;"><span style="float: right;"><input type="button" class="btn btn-primary fetch_sections2" value="Fetch"></span><span><select class="form-control decisionSections2 all_sections2" style="width:82%;"><option value="">---Section---</option></select></span></div><div class="col-sm-1 questionValue2" style="display: none;">With:</div><div class="col-sm-5 questionValue2" style="display: none;"><select name="dep_on_question_two_id[]" class="form-control decision_question2 all_questions2"><option value="">---Select Question---</option></select></div><div class="col-sm-2 customValue2" style="display: none;">Decision Value:</div><div class="col-sm-4 customValue2" style="display: none;"><input type="text" name="custom_value_two[]" class="form-control custom_value" placeholder="Define Value"></div></div></div><div class="form-group row"><div class="col-sm-2"> Show a:</div><div class="col-sm-4"><select name="error_type[]" class="form-control"><option value="">Exclusion</option><option value="">Error</option><option value="">Warning</option></select></div><div class="col-sm-1">Message:</div><div class="col-sm-5"><textarea name="error_message[]" class="form-control" rows="1"></textarea></div></div></div>');
 
-   return false;
-});*/
 
 $('body').on('click','.remove',function(){
     var row = $(this).closest('div.values_row');
@@ -505,10 +496,16 @@ $('body').on('click','.fetch_annotation',function(){
     var anno_class = row.find('select.terminology_value');
     get_all_annotations(study_id,anno_class);
 })
+$('#section_id').on('change',function(){
+    $('.field_dependent').trigger('change');
+})
 $('.field_dependent').on('change',function(){
     var value = $(this).val();
+    var sec_id = $('#section_id').val();
+    var ques_class = $('.select_ques_for_dep');
     if(value =='yes'){
         $('.append_if_yes').css('display','block');
+        get_question_section_id(sec_id,ques_class);
     }else{
         $('.append_if_yes').css('display','none');
     }
@@ -517,7 +514,7 @@ $('.field_dependent').on('change',function(){
 $('body').on('click','.form-fields',function(){
     $('#formfields').trigger('reset');
     $('.modal-title').html('Add New Question');
-    $('#formfields').attr('action', "{{route('addQuestions')}}");
+    $('#formfields').attr('action', "{{route('forms.addQuestions')}}");
     var id = $(this).attr("data-field-id");
     $('#question_type').val(id);
 })
@@ -679,7 +676,7 @@ $(document).ready(function() {
     $('body').on('click', '.Edit_ques', function() {
         $('#formfields').trigger('reset');
         $('.modal-title').html('Update Question')
-        $('#formfields').attr('action', "{{ route('updateQuestion') }}");
+        $('#formfields').attr('action', "{{ route('forms.updateQuestion') }}");
         var row = $(this).closest('div.custom_fields')
             tId = ''
             ques_id = row.find('input.question_id').val()
@@ -720,7 +717,8 @@ $(document).ready(function() {
         $('#question_text').val(question_text);
         $('#variable_name').val(variable_name);
         $('#form_field_id').val(formFields_id);
-        $('#text_info').val(text_info);
+        // $('#text_info').val();
+        $(".summernote").summernote("code", text_info);
         if (ques_type == 'Number') {
             $('#measurement_unit_text').val(measurement_unit);
             $('#field_width_text').val(field_width);
@@ -840,7 +838,7 @@ $('body').on('click','.form-fields',function(){
 function filterRulesByQuestionType(){
     var questionType = $('#question_type :selected').text();
     $.ajax({
-                url: 'validationRules/filterRulesDataValidation/',
+                url: '{{route('validationRule.filterRulesDataValidation')}}',
                 type: 'post',
                 data: {
                     "_token": "{{ csrf_token() }}",
@@ -876,7 +874,176 @@ $('.addvalidations').on('click',function(){
     updateRulesDropDown();
    return false;
 });
+/// update sort and delete Questions
 
+$('.updateSort').on('click',function(){
+    var questionId = $('#questionId').val();
+    var sort_value = $('#up_question_sort').val();
+    $.ajax({
+        url:'forms/changeSort/'+questionId,
+        type: 'post',
+        data:{
+            "_token": "{{ csrf_token() }}",
+            "_method": 'GET',
+            'questionId':questionId,
+            'sort_value':sort_value
+        },
+        dataType:'json',
+        success:function(res){
+            $('#question-sort-close').click();
+            var step_id = $('#steps').val()
+                tId;
+            display_sections(step_id);
+            $('.success-msg').html('');
+            $('.success-msg').html('Question Sort Number Updated!')
+            $('.success-alert').slideDown('slow');
+            tId=setTimeout(function(){
+                $(".success-alert").slideUp('slow');
+            }, 4000);
+        }
+    })
+})
+
+/// get steps
+function get_steps_phase_id(id,step_class){
+    step_class.html('');
+    var options = '<option value="">---Select Step / Form---</option>';
+    var url_route = "{{ URL('forms/step_by_phaseId') }}"
+        url_route = url_route+"/"+id;
+
+    $.ajax({
+        url:url_route,
+        type:'post',
+        dataType: 'json',
+         data: {
+            "_token": "{{ csrf_token() }}",
+            "_method": 'GET',
+            'phase_id': id
+        },
+        success:function(response){
+            $.each(response['data'],function(k,v){
+                options += '<option value="'+v.step_id+'" >'+v.form_type+'-'+v.step_name+'</option>';
+            });
+            step_class.append(options);
+        } 
+    });
+}
+// get sections
+function get_section_step_id(id,section_class){
+   section_class.html(''); 
+   var options = '<option value="">---Form / Sections---</option>';
+   $.ajax({
+        url:'forms/sections_by_stepId/'+id,
+        type:'post',
+        dataType: 'json',
+         data: {
+            "_token": "{{ csrf_token() }}",
+            "_method": 'GET',
+            'step_id': id
+        },
+        success:function(response){
+             $.each(response['data'],function(k,v){
+                options += '<option value="'+v.id+'" >'+v.name+'</option>';
+            });
+            section_class.append(options); 
+        }
+    });    
+}
+// for new route
+/// get phases or visits
+function get_all_phases(id,phase_class){
+    phase_class.html('');
+    var options = '<option value="">---Select Phase / visits---</option>';
+    $.ajax({
+        url:'forms/get_phases/'+id,
+        type:'post',
+        dataType: 'json',
+         data: {
+            "_token": "{{ csrf_token() }}",
+            "_method": 'GET',
+            'id': id
+        },
+        success:function(response){
+            $.each(response['data'],function(k,v){
+                options += '<option value="'+v.id+'" >'+v.name+'</option>';
+            });
+            phase_class.append(options);
+        } 
+    });
+}
+
+
+
+// get Question
+
+function get_question_section_id(id,div_class){
+    div_class.html(''); 
+    var options = '<option value="">---Select Question---</option>';
+    $.ajax({
+        url:'forms/get_Questions/'+id,
+        type:'post',
+        dataType:'json',
+        data:{
+            "_token": "{{ csrf_token() }}",
+            "_method": 'GET',
+            'id': id
+        },
+        success:function(response){
+            $.each(response['data'],function(k,v){
+                options += '<option value="'+v.id+'" >'+v.question_text+'</option>';
+            });
+            div_class.append(options); 
+        }
+    });    
+}
+
+// get all annotations
+
+
+
+function get_all_annotations(id,div_class){
+    div_class.html(''); 
+    var options = '<option value="">---Select Annotation---</option>';
+    $.ajax({
+        url:'annotation/get_allAnnotations/'+id,
+        type:'post',
+        dataType:'json',
+        data:{
+            "_token": "{{ csrf_token() }}",
+            "_method": 'GET',
+            'id': id
+        },
+        success:function(response){
+            $.each(response['data'],function(k,v){
+                options += '<option value="'+v.id+'" >'+v.label+'</option>';
+            });
+            div_class.append(options); 
+        }
+    });    
+}
+
+// get sections for dropdown
+function section_against_step(id,section_class){
+   section_class.html(''); 
+   var options = '<option value="">---Form / Sections---</option>';
+   $.ajax({
+        url:'forms/sections_against_step/'+id,
+        type:'post',
+        dataType: 'json',
+         data: {
+            "_token": "{{ csrf_token() }}",
+            "_method": 'GET',
+            'step_id': id
+        },
+        success:function(response){
+             $.each(response['data'],function(k,v){
+                options += '<option value="'+v.id+'" >'+v.name+'</option>';
+            });
+            section_class.append(options); 
+        }
+    });    
+}
+// for new route end
 function updateRulesDropDown(){
     var selectStr = '<select name="validation_rules[]" class="form-control validationRuleDdCls">';
     for(var i = 0; i < validationRules.length; i++) {

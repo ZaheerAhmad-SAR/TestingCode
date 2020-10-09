@@ -10,11 +10,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
 use Modules\Admin\Entities\RoleStudyUser;
+use Modules\Admin\Entities\StudyUser;
 use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Http\Requests\UserRequest;
-
 use Illuminate\Support\Str;
+
 
 
 class UserController extends Controller
@@ -29,15 +30,26 @@ class UserController extends Controller
             $roles  =   Role::where('role_type','=','system_role')->get();
         }
 
-        if (hasPermission(auth()->user(),'studytools.index')){
+        if (hasPermission(auth()->user(),'systemtools.index')){
+            session(['current_study'=>'']);
             $users  =  User::orderBY('name','asc')->get();
+            $studyusers = User::where('id','!=',\auth()->user()->id)->get();
         }
         else{
+            session(['current_study'=>'']);
             $users = User::where('deleted_at','=',Null)
                 ->where('user_type','=','study_user')
                 ->get();
+
+
+            $studyusers = UserRole::select('users.*','user_roles.study_id')
+                ->join('users','users.id','=','user_roles.user_id')
+                ->where('id','!=',\auth()->user()->id)
+                ->where('user_roles.study_id','!=',session('current_study'))->distinct()
+                ->get();
         }
-        return view('userroles::users.index',compact('users','roles'));
+
+        return view('userroles::users.index',compact('users','roles','studyusers'));
 
     }
 
@@ -60,39 +72,67 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-
-        $id = Str::uuid();
-        $user = User::create([
-            'id' => $id,
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'created_by'    => \auth()->user()->id,
-            'role_id'   =>  !empty($request->roles)?$request->roles[0]:2
+        if(session('current_study')){
+            $id = Str::uuid();
+            $user = User::create([
+                'id' => $id,
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'created_by'    => \auth()->user()->id,
+                'role_id'   =>  !empty($request->roles)?$request->roles[0]:2
             ]);
-        if (!empty($request->roles))
-        {
-            foreach ($request->roles as $role){
-                $roles =UserRole::create([
-                    'id'    => Str::uuid(),
-                    'user_id'     => $user->id,
-                    'role_id'   => $role
-                ]);
-
-                $userrole = RoleStudyUser::create([
-                    'id'    => Str::uuid(),
-                    'user_id'     => $user->id,
-                    'role_id'   => $role,
-                    'study_id' => ''
-                ]);
+            if (!empty($request->roles))
+            {
+                foreach ($request->roles as $role){
+                    $roles =UserRole::create([
+                        'id'    => Str::uuid(),
+                        'user_id'     => $user->id,
+                        'role_id'   => $role,
+                        'study_id' => !empty(session('current_study'))?session('current_study'):''
+                    ]);
+                    if (session('current_study')){
+                        $studyuser = StudyUser::create([
+                            'id'    => Str::uuid(),
+                            'user_id'     => $user->id,
+                            'study_id' => !empty(session('current_study'))?session('current_study'):''
+                        ]);
+                    }
+                }
             }
+            $oldUser = [];
+            // log event details
+            $logEventDetails = eventDetails($id, 'User', 'Add', $request->ip(), $oldUser);
+            return redirect()->route('studyusers.index');
         }
+        else {
+            $id = Str::uuid();
+            $user = User::create([
+                'id' => $id,
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'created_by'    => \auth()->user()->id,
+                'role_id'   =>  !empty($request->roles)?$request->roles[0]:2
+            ]);
+            if (!empty($request->roles))
+            {
+                foreach ($request->roles as $role){
+                    $roles =UserRole::create([
+                        'id'    => Str::uuid(),
+                        'user_id'     => $user->id,
+                        'role_id'   => $role,
+                        'study_id' => !empty(session('current_study'))?session('current_study'):''
+                    ]);
+                }
+            }
+            $oldUser = [];
+            // log event details
+            $logEventDetails = eventDetails($id, 'User', 'Add', $request->ip(), $oldUser);
 
-        $oldUser = [];
-        // log event details
-        $logEventDetails = eventDetails($id, 'User', 'Add', $request->ip(), $oldUser);
+            return redirect()->route('users.index');
 
-        return redirect()->route('users.index');
+        }
     }
 
     /**
@@ -100,10 +140,21 @@ class UserController extends Controller
      * @param int $id
      * @return Response
      */
+
+    public function assign_users(Request $request){
+        $study_user = UserRole::create([
+            'id'    => Str::uuid(),
+            'user_id' => $request->study_user,
+            'role_id'   => $request->user_role,
+            'study_id'  => session('current_study')
+        ]);
+        return redirect()->route('studyusers.index');
+    }
+
     public function update_profile()
     {
         $user = auth()->user();
-       
+
         return view('userroles::users.profile',compact('user'));
     }
     public function show($id)

@@ -21,6 +21,13 @@
                     </ol>
                 </div>
             </div>
+            @if(session()->has('message'))
+                <div class="col-lg-12 success-alert">
+                    <div class="alert alert-primary success-msg" role="alert">
+                        {{ session()->get('message') }}
+                    </div>
+                </div>
+            @endif
         </div>
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
@@ -28,18 +35,11 @@
             <div class="col-12 mt-3">
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <div class="col-md-3">
                         @if(hasPermission(auth()->user(),'studies.create'))
                         <button type="button" class="btn btn-outline-primary" id="create-new-study" data-toggle="modal" data-target="#createStudy">
                             <i class="fa fa-plus"></i> Add Study
                         </button>
-                        </div>
                             @endif
-                            <div class="col-md-9 align-items-left" style="padding: 0px 0px 0px 95px;">
-                                <button class="btn" disabled style="background:#17a2b8; color:white ">QC</button>
-                                <button class="btn" disabled style="background:green; color:white">Grader</button>
-                                <button class="btn" disabled style="background:red; color:white">Adjudication</button>
-                            </div>
                     </div>
                     <div class="card-body">
                         <table class="tablesaw table-bordered" data-tablesaw-mode="stack" id="studies_crud">
@@ -63,12 +63,14 @@
                                 @foreach($studies as $study)
                                     <tr id="study_id_{{ $study->id }}">
                                         <td>{{$index}}</td>
+                                        <td class="studyID" style="display: none">{{ $study->id }}</td>
                                         <td class="title">
                                             <a class="" href="{{ route('studies.show', $study->id) }}">
                                                 {{ucfirst($study->study_short_name)}} : <strong>{{ucfirst($study->study_title)}}</strong>
                                             </a>
                                             <br><br><p style="font-size: 14px; font-style: oblique">Sponsor: <strong>{{ucfirst($study->study_sponsor)}}</strong></p>
                                         </td>
+
                                         <td class="tablesaw-stack-block">
                                             <p></p>
                                             <div class="card">
@@ -83,12 +85,12 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <p></p>
+                                           <br>
                                             <div class="card">
                                                 <div class="card-body p-0">
                                                     <div  class="barfiller" data-color="green">
                                                         <div class="tipWrap">
-                                                 <span class="tip rounded info">
+                                                 <span class="tip rounded info" style="background: green !important;">
                                                      <span class="tip-arrow"></span>
                                                     </span>
                                                         </div>
@@ -96,12 +98,12 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <p></p>
+                                            <br>
                                             <div class="card">
                                                 <div class="card-body p-0">
                                                     <div  class="barfiller" data-color="red">
                                                         <div class="tipWrap">
-                                                 <span class="tip rounded info">
+                                                 <span class="tip rounded info" style="background: red !important;">
                                                      <span class="tip-arrow"></span>
                                                     </span>
                                                         </div>
@@ -127,7 +129,7 @@
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                     <span class="dropdown-item">
-                                                        <a href="javascript:void(0)" id="change-status" data-id="{{$study->id}}" data-toggle="modal" data-target="#changeStatus-{{$study->id}}">
+                                                        <a href="javascript:void(0)" id="change-status" data-target-id="{{$study->id}}" data-toggle="modal" data-target="#change_status">
                                                             <i class="icon-action-redo"></i> Change Status
                                                         </a>
                                                     </span>
@@ -146,11 +148,7 @@
                                                                 <i class="fa fa-trash"  aria-hidden="true">
                                                                 </i> Delete</a>
                                                     </span>
-                                                    <span class="dropdown-item">
-                                                            <a href="#" data-id="{{$study->id}}" id="create-new-queries">
-                                                                <i class="fas fa-question-circle"  aria-hidden="true">
-                                                                </i> Queries</a>
-                                                    </span>
+                                                    @include('queries::queries.query_popup_span',['study_id'=>$study->id])
                                                     <span class="dropdown-item">
                                                              <a href="#" class="addModalities">
                                                                 <i class="fa fa-object-group" aria-hidden="true"></i> Preferences
@@ -183,83 +181,6 @@
         <!-- END: Card DATA-->
     </div>
 
-    <!-- phase modle -->
-    <div class="modal fade" tabindex="-1" role="dialog" id="queries-modal" aria-labelledby="exampleModalLongTitle1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="alert alert-danger" style="display:none"></div>
-                <div class="modal-header ">
-                    <p class="modal-title">Add a Queries</p>
-                </div>
-                <form id="queriesForm" name="queriesForm">
-                    <div class="modal-body">
-                        <div id="exTab1">
-                            <div class="tab-content clearfix">
-                                @csrf
-                                <label>Current query status: &nbsp; &nbsp;<i style="color: red;" class="fas fa-question-circle"></i> &nbsp;New</label>
-                                <div class="form-group row">
-                                    <label for="Name" class="col-sm-4 col-form-label">Queries Assigned to:</label>
-                                    <div class="col-sm-8">
-                                        <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="users" checked> Users</label> &nbsp;
-                                        <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="roles" > Roles</label>
-                                    </div>
-                                </div>
-                                <div class="form-group row usersInput">
-                                    <label for="Name" class="col-sm-4 col-form-label">Users:</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-control" name="users" id="users">
-                                            <option value="">Saqib</option>
-                                            <option value="">Abid</option>
-                                            <option value="">Zaheer</option>
-                                            <option value="">Zeeshan</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row rolesInput" style="display: none;">
-                                    <label for="Name" class="col-sm-4 col-form-label">Roles:</label>
-                                    <div class="col-sm-8">
-
-                                        <label class="checked-inline  col-form-label"><input type="checkbox" id="roles" name="roles" value="users"> Adjudication</label> &nbsp;
-                                        <label class="checked-inline  col-form-label"><input type="checkbox" id="roles" name="roles" value="roles" > Grader</label>
-                                        <label class="checked-inline  col-form-label"><input type="checkbox" id="roles" name="roles" value="roles" > QC</label>
-{{--                                        <select class="form-control" name="roles" id="roles">--}}
-{{--                                            <option value="">Adjudication</option>--}}
-{{--                                            <option value="">Grader</option>--}}
-{{--                                            <option value="">QC</option>--}}
-{{--                                            <option value="">Project Manager</option>--}}
-{{--                                        </select>--}}
-                                    </div>
-                                </div>
-                                <div class="form-group row statusInput">
-                                    <label for="Name" class="col-sm-4 col-form-label">Change status to:</label>
-                                    <div class="col-sm-8">
-                                        <select class="form-control" name="queries_status" id="queries_status">
-                                            <option value="">Open</option>
-                                            <option value="">Unconfirmed</option>
-                                            <option value="">Confirmed</option>
-                                            <option value="">Resolved</option>
-                                            <option value="">Closed</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row remarksInput">
-                                    <label for="Name" class="col-sm-4 col-form-label">Remarks</label>
-                                    <div class="col-sm-8">
-                                        <textarea class="form-control" name="remarks" rows="2" id="remarks"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-outline-danger" data-dismiss="modal" id="addphase-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="button" class="btn btn-outline-primary" id="savePhase"><i class="fa fa-save"></i> Save Changes</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
     <!-- START: Modal-->
     <div class="modal fade" id="study-crud-modal" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -268,7 +189,18 @@
                 <h4 class="modal-title" id="studyCrudModal"></h4>
             </div>
             <div class="modal-body">
-                <form id="studyForm" name="studyForm" class="form-horizontal">
+                <form action="{{route('studies.store')}}" name="studyForm" id="studyForm" class="form-horizontal" method="POST">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <strong>Whoops!</strong> Please fill all required fields!.
+                            <br/>
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <input type="hidden" name="study_id" id="study_id">
                     <nav>
                         <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
@@ -284,6 +216,7 @@
                             <div class="form-group row" style="margin-top: 10px;">
                                 <label for="study_title" class="col-md-2">Title</label>
                                 <div class="{!! ($errors->has('study_title')) ?'form-group col-md-10 has-error':'form-group col-md-10' !!}">
+                                    <input type="hidden" name="study_id" id="studyID" value="">
                                     <input type="text" class="form-control" id="study_title" name="study_title" value="{{old('study_title')}}"> @error('email')
                                     <span class="text-danger small"> {{ $message }} </span>
                                     @enderror
@@ -362,7 +295,7 @@
                                     <label for="disease_cohort">Disease Cohort</label>
                                 </div>
                                 <div class="col-md-7 appendfields">
-                                    <input type="text" class="form-control" id="disease_cohort" name="disease_cohort[]" value="{{old('disease_cohort')}}" style="width: 90%;">
+
                                 </div>
                                 <div class="col-md-3" style="text-align: right">
                                     @if(hasPermission(auth()->user(),'diseaseCohort.create'))
@@ -377,7 +310,7 @@
                             <div class="form-group row" style="margin-top: 10px;">
                                 <label for="study_users" class="col-sm-3"></label>
                                 <div class="{!! ($errors->has('users')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                    <select class="searchable appendusers" id="select-users" multiple="multiple" name="users[]">
+                                    <select class="searchable" id="select-users" multiple="multiple" name="users[]">
                                        @foreach($users as $user)
                                         <option value="{{$user->id}}">{{$user->name}}</option>
                                         @endforeach
@@ -396,6 +329,7 @@
                         @if(hasPermission(auth()->user(),'studies.store'))
                         <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
                             @endif
+                    </div>
                     </div>
                 </form>
             </div>
@@ -427,16 +361,29 @@
         </div>
     </div>
 
-    <div class="modal fade" id="change_status" aria-hidden="true">
+   <div class="modal fade" id="change_status" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="studyCrudModal">Change Status</h4>
                 </div>
                 <div class="modal-body">
-                    <form action="{{route('studies.cloneStudy')}}" name="changestatus" class="">
+                    <form action="{{route('studies.studyStatus')}}" name="changestatus" class="" method="post">
                     @csrf
-                        <input type="hidden" class="" value="{{$study->id}}">
+                        @if(!empty($study))
+                        <input type="hidden" value="{{$study->id}}" id="study_ID" name="study_ID">
+                        @endif
+                        <div class="form-group row">
+                            <div class="col-md-3">Status</div>
+                            <div class="col-md-6">
+                                <select class="form-control dropdown" name="status" id="status">
+                                    <option value="">Select Status</option>
+                                    <option value="Archived">Archive</option>
+                                    <option value="Development">Development</option>
+                                    <option value="Live">Live</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                             <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
@@ -446,6 +393,7 @@
             </div>
         </div>
     </div>
+    @include('queries::queries.query_popup')
 @endsection
 @section('styles')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
@@ -453,52 +401,24 @@
 @section('script')
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+ $(document).ready(function(){
+       $('#change_status').on('show.bs.modal',function (e) {
+        var id = $(e.relatedTarget).data('target-id');
+        $('#study_ID').val(id);
+       })
+    })
+</script>
     <script type="text/javascript">
+
         // run callbacks
         $('#select-users').multiSelect({
             selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
             selectionHeader: "<label for=''>Assigned Admins</label><input type='text' class='form-control appendusers' autocomplete='off' placeholder='search here'>",
         });
+
     </script>
-   {{-- <script type="text/javascript">
-        $(document).ready(function() {
-            $('#select-users').multiSelect({
-                selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
-                selectionHeader: "<label for=''>Assigned Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
-                afterInit: function(ms){
-                    var that = this,
-                        $selectableSearch = that.$selectableUl.prev(),
-                        $selectionSearch = that.$selectionUl.prev(),
-                        selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
-                        selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
-
-                    that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-                        .on('keydown', function(e){
-                            if (e.which === 40){
-                                that.$selectableUl.focus();
-                                return false;
-                            }
-                        });
-
-                    that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-                        .on('keydown', function(e){
-                            if (e.which == 40){
-                                that.$selectionUl.focus();
-                                return false;
-                            }
-                        });
-                },
-                afterSelect: function(){
-                    this.qs1.cache();
-                    this.qs2.cache();
-                },
-                afterDeselect: function(){
-                    this.qs1.cache();
-                    this.qs2.cache();
-                }
-            });
-        });
-    </script>--}}
     <script src="{{ asset('dist/js/jquery.validate.min.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.barfiller.js') }}"></script>
@@ -508,7 +428,7 @@
             $('.add_field').on('click',function (e) {
                 e.preventDefault();
                 $('.appendfields').append('<div class="disease_row" style="margin-top:10px;">' +
-                    '    <input type="text" class="form-control" id="disease_cohort" name="disease_cohort[]" value="" style="width: 90%;display: inline;">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>');
+                    '    <input type="text" class="form-control" name="disease_cohort_name[]" value="" style="width: 90%;display: inline;">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>');
             })
             $('body').on('click','.remove_field',function () {
                 var row = $(this).closest('div.disease_row');
@@ -526,24 +446,17 @@
             $('#btn-save').val("create-study");
             $('#studyForm').trigger("reset");
             $('#studyCrudModal').html("Add Study");
+            $('#studyForm').attr('action', "{{route('studies.store')}}");
             $('#study-crud-modal').modal('show');
-        });
-
-        $('#create-new-queries').click(function () {
-            // $('#btn-save').val("create-study");
-            $('#queriesForm').trigger("reset");
-            $('#queries-modal').modal('show');
-            //$('#queries-modal').html("Add Queries");
-
         });
 
 
         $('body').on('click', '#edit-study', function () {
+            $('#studyForm').attr('action', "{{route('studies.update_studies')}}");
             var study_id = $(this).data('id');
            var edit_study = $.get('studies/'+study_id+'/edit', function (data) {
                 $('#studyCrudModal').html("Edit study");
                 $('#btn-save').val("edit-study");
-                $('#study-crud-modal').modal('show');
                 $('#study_id').val(data.id);
                 $('#study_short_name').val(data.study_short_name);
                 $('#study_title').val(data.study_title);
@@ -556,58 +469,42 @@
                 $('#description').val(data.description);
                 $('#disease_cohort').val(data.disease_cohort);
                 $('#users').val(data.users);
+                $('#studyID').val(data.id);
                 var html = '';
                 $('.appendfields').html('');
                 $.each(data.disease_cohort,function (index, value) {
                     html += '<div class="disease_row" style="margin-top:10px;">' +
-                        '<input type="hidden" class="form-control" id="disease_cohort" name="disease_cohort[]" value="'+value.id+'" style="width: 90%;display: inline;"><input type="text" class="form-control" value="'+value.name+'" style="width: 90%;display: inline;">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>';
+                        '<input type="text" class="form-control" value="'+value.name+'" style="width: 90%;display: inline;" name="disease_cohort_name[]">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>';
                 });
                 $('.appendfields').append(html);
                 var user = '';
                 $('.appendusers').html('');
-                    alert('post loop');
 
-               setTimeout(
-                   function()
-                   {
-                       alert('in loop');
-                       $('#select-users option').each(function(index) {
+                $.each(data.users,function (index, value) {
 
-                           var str = "2babaf3d-9180-4b47-a715-7e0485d63715,84d6ca50-abe8-4f24-bf40-2d715d7fb2c9";
-                           var substr = str.split(',');
-                           if (substr[0] == $(this).val()) {
-                               $(this).attr('selected', 'selected');
-                               alert($(this).val()); ///For check
-                           }
-                       });
-                   }, 5000);
+                    user += '<option selected="selected" value=" '+value.id+' " >'+value.name+'</option>';
 
+                });
+               $('.appendusers').html(user);
 
-               //$('#select-users').multiSelect('select', String|Array);
-               // $.each(values.split(","), function(i,e){
-               //
-               //     $('#select-users').multiSelect('select', '2babaf3d-9180-4b47-a715-7e0485d63715'|['2babaf3d-9180-4b47-a715-7e0485d63715', '84d6ca50-abe8-4f24-bf40-2d715d7fb2c9']);
-               // });
-             //$('.appendusers').val(['2babaf3d-9180-4b47-a715-7e0485d63715', '84d6ca50-abe8-4f24-bf40-2d715d7fb2c9']);
-              /*  $.each(data.users,function (index, value) {
-                    alert('here i am');
-                    user += '<option selected="selected" value=" '+value.id+' ">'+value.name+'</option>';
+                var user_id = [];
 
-                });*/
-
-              // $('.appendusers').html(user);
-
+               $.each(data.users,function (index, value) {
+                   var id = value.id;
+                    user_id.push(id);
+               });
+               $('#select-users').multiSelect('deselect_all');
+               $('#select-users').multiSelect('select',user_id);
+               $('#study-crud-modal').modal('show');
            })
         });
 
         $('body').on('click', '#delete-study', function () {
             var study_id = $(this).data("id");
+            confirm("Are You sure want to delete !");
             $.ajax({
                 type: "DELETE",
                 url: "{{ url('studies')}}"+'/'+study_id,
-                beforeSend:function(){
-                    return confirm("Are You sure want to delete !");
-                },
                 success: function (data) {
                     $("#study_id_" + study_id).remove();
                     if(data.success == true){ // if true (1)
@@ -623,7 +520,6 @@
         });
 
         $('body').on('click', '.clone-study', function () {
-
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -632,15 +528,11 @@
             var parent_id = $(this).data("id");
             var newPath = "{{URL('studies/cloneStudy')}}";
             //alert(newPath)
-
-
+            confirm("Are You sure want to Clone !");
             $.ajax({
                 type: "POST",
                 data:{'id':parent_id},
                 url: newPath,
-                beforeSend:function(){
-                    return confirm("Are You sure want to Clone !");
-                },
                 success: function (data) {
                     console.log(data);
                     location.reload();
@@ -653,86 +545,6 @@
 
     });
 
-    if ($("#studyForm").length > 0) {
-        $("#studyForm").validate({
-            submitHandler: function(form) {
-                var actionType = $('#btn-save').val();
-                $('#btn-save').html('Sending..');
-                $.ajax({
-                    data: $('#studyForm').serialize(),
-                    url: "{{ route('studies.store') }}",
-                    type: "POST",
-                    dataType: 'json',
-                    success: function (data) {
-                        var study = '<tr id="study_id_' + data.id + '"><td>' + data.id + '</td>' +
-                            '<td>' + data.study_title + '</td>' +
-                            '<td>' + data.study_short_name + '</td>' +
-                            '<td>' + data.study_code + '</td>' +
-                            '<td>' + data.protocol_number + '</td>' +
-                            '<td>' + data.trial_registry_id + '</td>' +
-                            '<td>' + data.study_sponsor + '</td>' +
-                            '<td>' + data.start_date + '</td>' +
-                            '<td>' + data.end_date + '</td>' +
-                            '<td>' + data.description + '</td>' +
-                            '<td>' + data.disease_cohort + '</td>';
-                        study += '<td><a href="javascript:void(0)" id="edit-study" data-id="' + data.id + '" class="btn btn-info">Edit</a></td>';
-                        study += '<td><a href="javascript:void(0)" id="clone-study" data-id="' + data.id + '" class="btn btn-info"> Clone</a></td>';
-                        study += '<td><a href="javascript:void(0)" id="delete-study" data-id="' + data.id + '" class="btn btn-danger delete-study">Delete</a></td></tr>';
-
-
-                        if (actionType == "create-study") {
-                            $('#studys-crud').prepend(study);
-                            location.reload();
-                        } else {
-                            $("#study_id_" + data.id).replaceWith(study);
-                            location.reload();
-                        }
-
-                        $('#studyForm').trigger("reset");
-                        $('#study-crud-modal').modal('hide');
-                        $('#btn-save').html('Save Changes');
-
-                    },
-                    error: function (data) {
-                        console.log('Error:', data);
-                        $('#btn-save').html('Save Changes');
-                    }
-                });
-            }
-        })
-    }
-
-    $(document).ready(function (){
-       $('input[type="radio"]').click(function (){
-           if ($(this).is(':checked'))
-           {
-            $(".usersInput").show();
-            $(".rolesInput").hide();
-           }
-           if ($(this).attr("value")=="roles")
-           {
-            $('.usersInput').css('display','none');
-            $(".rolesInput").show();
-            $(".statusInput").show();
-            $(".remarksInput").show();
-           }
-       });
-    });
-
 </script>
-    <script type="text/javascript">
-        $().ready(function() {
-            $('#add').click(function() {
-                return !$('#select1 option:selected').remove().appendTo('#select2');
-            });
-            $('#remove').click(function() {
-                return !$('#select2 option:selected').remove().appendTo('#select1');
-            });
-        });
-        $('form').submit(function() {
-            $('#select2 option').each(function(i) {
-                $(this).attr("selected", "selected");
-            });
-        });
-    </script>
+
 @endsection

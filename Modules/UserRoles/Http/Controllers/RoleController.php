@@ -63,6 +63,55 @@ class RoleController extends Controller
                 'role_type' => $request->role_type_name,
                 'created_by'    => auth()->user()->id,
             ]);
+            /*--Basic Role Permission */
+            if ($request->dashboard_add){
+                $permissions = Permission::where('name','=','dashboard.create')
+                    ->orwhere('name','=','dashboard.store')
+                    ->get();
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $study_add = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
+            }
+            if ($request->dashboard_edit){
+                $permissions = Permission::where('name','=','dashboard.edit')
+                    ->orwhere('name','=','dashboard.update')
+                    ->get();
+
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $study_edit = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
+            }
+            if ($request->dashboard_view){
+                $permissions = Permission::where('name','=','dashboard.index')
+                    ->get();
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $study_view = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
+            }
+            if ($request->dashboard_delete){
+                $permissions = Permission::where('name','=','dashboard.destroy')
+                    ->get();
+
+                foreach ($permissions as $permission){
+                    $permission_id = $permission->id;
+                    $study_delete = RolePermission::create([
+                        'role_id'   => $role->id,
+                        'permission_id'   => $permission->id,
+                    ]);
+                }
+            }
             /*-- Studies Permissions */
             if ($request->study_add){
                 $permissions = Permission::where('name','=','studies.create')
@@ -446,6 +495,11 @@ class RoleController extends Controller
             if ($request->study_tools ) {
                 $permissions = Permission::where('name', '=', 'studytools.index')
                     ->orwhere('name', '=', 'studyusers.index')
+                    ->orwhere('name', '=', 'users.create')
+                    ->orwhere('name', '=', 'users.index')
+                    ->orwhere('name', '=', 'users.store')
+                    ->orwhere('name', '=', 'users.edit')
+                    ->orwhere('name', '=', 'users.update')
                     ->orwhere('name', '=', 'studyRoles.index')
                     ->orwhere('name', '=', 'studySite.index')
                     ->orwhere('name', '=', 'studySite.create')
@@ -621,6 +675,55 @@ class RoleController extends Controller
             'description'   =>  $request->description,
             'role_type'     => $request->role_type
         ]);
+
+        if ($request->dashboard_add){
+            $permissions = Permission::where('name','=','dashboard.create')
+                ->orwhere('name','=','dashboard.store')
+                ->get();
+            foreach ($permissions as $permission){
+                $permission_id = $permission->id;
+                $study_add = RolePermission::create([
+                    'role_id'   => $role->id,
+                    'permission_id'   => $permission->id,
+                ]);
+            }
+        }
+        if ($request->dashboard_edit){
+            $permissions = Permission::where('name','=','dashboard.edit')
+                ->orwhere('name','=','dashboard.update')
+                ->get();
+
+            foreach ($permissions as $permission){
+                $permission_id = $permission->id;
+                $study_edit = RolePermission::create([
+                    'role_id'   => $role->id,
+                    'permission_id'   => $permission->id,
+                ]);
+            }
+        }
+        if ($request->dashboard_view){
+            $permissions = Permission::where('name','=','dashboard.index')
+                ->get();
+            foreach ($permissions as $permission){
+                $permission_id = $permission->id;
+                $study_view = RolePermission::create([
+                    'role_id'   => $role->id,
+                    'permission_id'   => $permission->id,
+                ]);
+            }
+        }
+        if ($request->dashboard_delete){
+            $permissions = Permission::where('name','=','dashboard.destroy')
+                ->get();
+
+            foreach ($permissions as $permission){
+                $permission_id = $permission->id;
+                $study_delete = RolePermission::create([
+                    'role_id'   => $role->id,
+                    'permission_id'   => $permission->id,
+                ]);
+            }
+        }
         /*-- Studies Permissions */
         if ($request->study_add){
             $permissions = Permission::where('name','=','studies.create')
@@ -1012,6 +1115,11 @@ class RoleController extends Controller
         if ($request->study_tools ) {
             $permissions = Permission::where('name', '=', 'studytools.index')
                 ->orwhere('name', '=', 'studyusers.index')
+                ->orwhere('name', '=', 'users.index')
+                ->orwhere('name', '=', 'users.create')
+                ->orwhere('name', '=', 'users.store')
+                ->orwhere('name', '=', 'users.edit')
+                ->orwhere('name', '=', 'users.update')
                 ->orwhere('name', '=', 'studyRoles.index')
                 ->orwhere('name', '=', 'studySite.index')
                 ->orwhere('name', '=', 'studySite.create')

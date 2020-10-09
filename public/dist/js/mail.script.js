@@ -24,7 +24,7 @@
         return false;
     });
 
-    $('.mail-menu li a').on('click', function () {
+    $(document).on("click", ".mail-menu li a", function(){
         $('.mail-menu li a').removeClass('active');
         $(this).addClass('active');
         $('.mail-app .mail-item').hide();

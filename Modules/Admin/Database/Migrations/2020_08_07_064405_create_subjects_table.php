@@ -16,7 +16,7 @@ class CreateSubjectsTable extends Migration
         Schema::create('subjects', function (Blueprint $table) {
             $table->uuid('id')->unique()->primary();
             $table->uuid('study_id')->nullable();
-            $table->string('subject_id')->unique()->nullable();
+            $table->string('subject_id')->nullable();
             $table->foreign('study_id')->references('id')->on('studies')->onDelete('cascade')->onUpdate('cascade');
             $table->date('enrollment_date')->nullable();
             $table->uuid('site_id');

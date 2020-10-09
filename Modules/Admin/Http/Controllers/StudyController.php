@@ -16,9 +16,11 @@ use Modules\Admin\Entities\StudySite;
 use Modules\Admin\Entities\StudyUser;
 use Modules\Admin\Entities\Subject;
 use Modules\UserRoles\Entities\Permission;
+use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\RolePermission;
 use Modules\UserRoles\Entities\UserRole;
-use Psy\Util\Str;
+use Modules\UserRoles\Http\Controllers\RoleController;
+use Illuminate\Support\Str;
 
 
 class StudyController extends Controller
@@ -30,8 +32,10 @@ class StudyController extends Controller
     public function index()
     {
         $user = User::with('studies', 'user_roles')->find(Auth::id());
-        if (hasPermission(\auth()->user(), 'users.create')) {
-            $studies  =   Study::with('users')->orderBy('study_short_name')->get();
+//        $users_for_queries  =   User::where('id','!=',\auth()->user()->id)->get();
+//        $roles_for_queries  =  Role::where('role_type','=','study_role')->orderBY('name','asc')->get();
+        if (hasPermission(\auth()->user(), 'systemtools.index')) {
+            $studies  =   Study::with('users')->where('id','!=', Null)->orderBy('study_short_name')->get();
             $permissionsIdsArray = Permission::where(function ($query) {
                 $query->where('permissions.name', '=', 'studytools.index')
                     ->orwhere('permissions.name', '=', 'studytools.store')
@@ -43,21 +47,53 @@ class StudyController extends Controller
             $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
             $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->orderBy('name','asc')->get();
             $sites = Site::all();
+            $study = '';
         }
         else{
             $user=\auth()->user()->id;
-        $studies  =   StudyUser::select('study_user.*','users.*','studies.*')
-            ->join('users','users.id','=','study_user.user_id')
-            ->join('studies','studies.id','=','study_user.study_id')
-            ->where('users.id','=',\auth()->user()->id)
-            ->orderBy('study_short_name')->get();
+            if (hasPermission(\auth()->user(),'grading.index')){
+                $studies  =   UserRole::select('user_roles.*','users.*','studies.*')
+                    ->join('users','users.id','=','user_roles.user_id')
+                    ->join('studies','studies.id','=','user_roles.study_id')
+                    ->where('users.id','=',\auth()->user()->id)
+                    ->where('studies.study_status','=','Live')
+                    ->orderBy('study_short_name')->get();
+                $study = '';
+            }
+            if (hasPermission(\auth()->user(),'adjudication.index')){
+                $studies  =   UserRole::select('user_roles.*','users.*','studies.*')
+                    ->join('users','users.id','=','user_roles.user_id')
+                    ->join('studies','studies.id','=','user_roles.study_id')
+                    ->where('users.id','=',\auth()->user()->id)
+                    ->where('studies.study_status','=','Live')
+                    ->orderBy('study_short_name')->get();
+                $study = '';
+            }
+            if (hasPermission(\auth()->user(),'qualitycontrol.index')){
+                $studies  =   UserRole::select('user_roles.*','users.*','studies.*')
+                    ->join('users','users.id','=','user_roles.user_id')
+                    ->join('studies','studies.id','=','user_roles.study_id')
+                    ->where('users.id','=',\auth()->user()->id)
+                    ->where('studies.study_status','=','Live')
+                    ->orderBy('study_short_name')->get();
+                $study = '';
+            }
+            if (hasPermission(\auth()->user(),'studytools.index')) {
+                $studies = StudyUser::select('study_user.*', 'users.*', 'studies.*')
+                    ->join('users', 'users.id', '=', 'study_user.user_id')
+                    ->join('studies', 'studies.id', '=', 'study_user.study_id')
+                    ->where('users.id', '=', \auth()->user()->id)
+                    ->orderBy('study_short_name')->get();
+                $study = '';
+            }
         //dd($studies);
 
         $users = User::all();
         $sites = Site::all();
+            $study = '';
         }
 
-        return view('admin::studies.index', compact('studies', 'sites', 'users'));
+        return view('admin::studies.index', compact('studies', 'sites', 'users','study'));
     }
 
     /**
@@ -66,20 +102,13 @@ class StudyController extends Controller
      */
     public function studyStatus(Request $request)
     {
-
-        $study_id = $request->study_id;
+        $study_id = $request->study_ID;
 
         $study = Study::find($study_id);
+        $study = Study::where('id', $study_id)->update(['study_status'=> $request->status]);
 
-        $studyStatus = Study::where('id', '=', $study_id)->update(array(
-            'study_status' => !empty($request->study_status) ? $request->study_status : 'Development'
-        ));
-
-        $data = [
-            'success' => true
-        ];
-        return \response()->json($data);
-        //        return view('admin::studies.index',compact('studies'))->json_encode($data);
+        //return \response()->json($data);
+                return redirect()->route('studies.index');
     }
 
     public function create()
@@ -96,76 +125,54 @@ class StudyController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function store(Request $request)
-    {
-        if ($request->ajax()) {
-
-            $studyID = $request->study_id;
-            $oldStudy = !empty($studyID) ? Study::find($studyID) : [];
-            $study   =   Study::updateOrCreate(
-                [
-                    'id' => $studyID
-                ],
-                [
-                    'id'    => !empty($studyID) ? $studyID : \Illuminate\Support\Str::uuid(),
-                    'study_short_name'  =>  $request->study_short_name,
-                    'study_title' => $request->study_title,
-                    'study_status'  => 'Development',
-                    'study_code' => $request->study_code,
-                    'protocol_number' => $request->protocol_number,
-                    'study_phase' => $request->study_phase,
-                    'trial_registry_id' => $request->trial_registry_id,
-                    'study_sponsor' => $request->study_sponsor,
-                    'start_date' => $request->start_date,
-                    'end_date' => $request->end_date,
-                    'description'   =>  $request->description,
-                    'user_id'       => $request->user()->id
-                ]
-            );
-
-            //check if its add or update event
-            if (empty($studyID)) {
-                // log data
-                $logEventDetails = eventDetails($study->id, 'Study', 'Add', $request->ip(), $oldStudy);
-
-            } else {
-                // log data
-                $logEventDetails = eventDetails($studyID, 'Study', 'Update', $request->ip(), $oldStudy);
+    public function store(Request $request){
+        $id    = Str::uuid();
+        $study = Study::create([
+                'id'    => $id,
+                'study_short_name'  =>  $request->study_short_name,
+                'study_title' => $request->study_title,
+                'study_status'  => 'Development',
+                'study_code' => $request->study_code,
+                'protocol_number' => $request->protocol_number,
+                'study_phase' => $request->study_phase,
+                'trial_registry_id' => $request->trial_registry_id,
+                'study_sponsor' => $request->study_sponsor,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'description'   =>  $request->description,
+                'user_id'       => $request->user()->id
+            ]);
+        $last_id = Study::select('id')->latest()->first();
+        // Disease cohort insertion here
+        $id    = Str::uuid();
+        $disease = [];
+        if (isset($request->disease_cohort_name) && count($request->disease_cohort_name) > 0) {
+            for ($i = 0; $i < count($request->disease_cohort_name); $i++) {
+                $disease = [
+                    'id' => Str::uuid(),
+                    'study_id' =>$last_id->id,
+                    'name' => $request->disease_cohort_name[$i],
+                ];
+                DiseaseCohort::insert($disease);
             }
-
-            if (!empty($request->users) && $request->users != Null) {
-                foreach ($request->users as $user) {
-                    $studyuser = StudyUser::find($user);
-                    if (empty($studyuser)) {
-                        StudyUser::updateOrCreate([
-                            'id' => \Illuminate\Support\Str::uuid(),
-                            'user_id' => $user,
-                            'study_id' => $study->id
-                        ]);
-                    }
-                }
-            }
-            if (!empty($request->disease_cohort) && $request->disease_cohort != '') {
-                foreach ($request->disease_cohort as $disease_cohort) {
-                    if (!empty($disease_cohort)) {
-                        dd('here');
-                        $checkDiseaseCohort = DiseaseCohort::find($disease_cohort);
-                        if (empty($checkDiseaseCohort)) {
-                            $diseaseCohort = DiseaseCohort::updateOrCreate([
-                                'id' => \Illuminate\Support\Str::uuid(),
-                                'study_id' => $study->id,
-                                'name' => $disease_cohort
-                            ]);
-                        }
-                    }
-                }
-            }
-            else {
-                dd('else');
-                return \response()->json($study);
-            }
-            return \response()->json($study);
         }
+        // insert multi users here
+        $id    = Str::uuid();
+        $users = [];
+        if (isset($request->users) && count($request->users) > 0) {
+            for ($i = 0; $i < count($request->users); $i++) {
+                $users = [
+                    'id' => Str::uuid(),
+                    'study_id' =>$last_id->id,
+                    'user_id' => $request->users[$i],
+                ];
+                StudyUser::insert($users);
+            }
+        }
+        return redirect()->route('studies.index')->with('message', 'Record Added Successfully!');
+    }
+    public function add_studies(Request $request)
+    {
 
     }
 
@@ -185,6 +192,7 @@ class StudyController extends Controller
             ->orderBy('study_short_name')->get();
         $study_role= StudyUser::where('study_id','=',$id)->get();
         $currentStudy = Study::find($id);
+        $study = Study::find($id);
 
         $subjects = Subject::select(['subjects.*', 'sites.site_name', 'sites.site_address', 'sites.site_city', 'sites.site_state', 'sites.site_code', 'sites.site_country', 'sites.site_phone'])
             ->where('subjects.study_id', '=', $id)
@@ -223,27 +231,53 @@ class StudyController extends Controller
      * @param int $id
      * @return Response
      */
-    public function update(Request $request, Study $study)
-    {
-        $study = Study::with('diseaseCohort', 'users')->find($study->id);
-        dd($study);
-        dd($request->all());
-        $validatedData = $request->validate([
-            'study_short_name' => 'required|max:25',
-            'protocol_number' => 'required|max:25',
-            'study_phase' => 'required',
-            'study_title' => 'required|max:255',
-            'study_code' => 'required|max:255',
-            'description' => 'required|max:255',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date',
-            'trial_registry_id' => 'required',
-            'study_sponsor' => 'required'
-        ]);
-        $study->update($request->all());
+    public function update(Request $request){
 
-        return redirect()->route('studies.index')->with('success', 'Study updated successfully');
     }
+    public function update_studies(Request $request)
+    {
+        $study = Study::where('id', $request->study_id)->first();
+        $study->study_short_name  =  $request->study_short_name;
+        $study->study_title = $request->study_title;
+        $study->study_status  = 'Development';
+        $study->study_code = $request->study_code;
+        $study->protocol_number = $request->protocol_number;
+        $study->study_phase = $request->study_phase;
+        $study->trial_registry_id = $request->trial_registry_id;
+        $study->study_sponsor = $request->study_sponsor;
+        $study->start_date = $request->start_date;
+        $study->end_date = $request->end_date;
+        $study->description   =  $request->description;
+        $study->save();
+        $studycohorts = DiseaseCohort::where('study_id',$request->study_id)->delete();
+        // Update Disease cohort
+        $disease = [];
+        if (isset($request->disease_cohort_name) && count($request->disease_cohort_name) > 0) {
+            for ($i = 0; $i < count($request->disease_cohort_name); $i++) {
+                $disease = [
+                    'id' => Str::uuid(),
+                    'study_id' =>$request->study_id,
+                    'name' => $request->disease_cohort_name[$i],
+                ];
+                DiseaseCohort::insert($disease);
+            }
+        }
+        // update multi users here
+        $study_users = StudyUser::where('study_id',$request->study_id)->delete();
+        $users = [];
+        if (isset($request->users) && count($request->users) > 0) {
+            for ($i = 0; $i < count($request->users); $i++) {
+                $users = [
+                    'id' => Str::uuid(),
+                    'study_id' =>$request->study_id,
+                    'user_id' => $request->users[$i],
+                ];
+                StudyUser::insert($users);
+            }
+        }
+        return redirect()->route('studies.index')->with('message', 'Study updated successfully');
+    }
+
 
     /** get clone of the study */
     public function cloneStudy(Request $request)

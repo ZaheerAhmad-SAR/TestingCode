@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
 use Modules\Admin\Entities\RoleStudyUser;
@@ -19,6 +20,7 @@ use Modules\UserRoles\Http\Requests\UserRequest;
 use Illuminate\Support\Str;
 
 
+
 class StudyusersController extends Controller
 {
     /**
@@ -27,9 +29,10 @@ class StudyusersController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->can('users.create')) {
+       // DB::enableQueryLog();
             $roles  =   Role::where('role_type','=','study_role')->get();
-        }
+            $currentStudy = session('current_study');
+
 
         if (hasPermission(auth()->user(),'studytools.index')){
             $permissionsIdsArray = Permission::where(function($query){
@@ -40,15 +43,29 @@ class StudyusersController extends Controller
             })->distinct('id')->pluck('id')->toArray();
 
             $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
-            $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
-            $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->get();
+            $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)
+                ->where('study_id',$currentStudy)
+                ->distinct()->pluck('user_id')->toArray();
+            $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->where('id','!=',\auth()->user()->id)->get();
+            $studyusers = UserRole::select('users.*','user_roles.study_id','roles.role_type')
+                ->join('users','users.id','=','user_roles.user_id')
+                ->join('roles','roles.id','=','user_roles.role_id')
+                ->where('roles.role_type','!=','system_role')
+                ->where('user_roles.study_id','!=',session('current_study'))->distinct()
+                ->get();
         }
         else{
             $users = User::where('deleted_at','=',Null)
                 ->where('user_type','=','study_user')
                 ->get();
         }
-        return view('userroles::users.index',compact('users','roles'));
+        $selectStudyUsers =  $selectStudyUsers = UserRole::select('users.*','user_roles.study_id')
+            ->join('users','users.id','=','user_roles.user_id')
+            ->where('user_roles.study_id','!=',session('current_study'))->distinct()
+            ->get();
+
+
+        return view('userroles::users.index',compact('users','roles','studyusers'));
 
     }
 

@@ -68,6 +68,7 @@
                                         </a>
                                     </li>
                                 @endif
+                                
                             </ul>
                         </li>
                 </ul>
@@ -124,6 +125,13 @@
                                                     </a>
                                                 </li>
                                             @endif
+                                            @if(hasPermission(auth()->user(),'annotation.index'))
+                                                <li class="@if(is_active('annotation.index')) {{ ' active' }} @endif">
+                                                    <a  href="{!! route('annotation.index') !!}">
+                                                        Annotations
+                                                    </a>
+                                                </li>
+                                            @endif
                                         </ul>
                                     </li>
                                 @endif
@@ -132,13 +140,7 @@
                                         Preferences
                                     </a>
                                 </li>
-                                @if(hasPermission(auth()->user(),'annotation.index'))
-                                    <li class="@if(is_active('annotation.index')) {{ ' active' }} @endif">
-                                        <a  href="{!! route('annotation.index') !!}">
-                                            Annotations
-                                        </a>
-                                    </li>
-                                @endif
+                               
                             </ul>
                         </li>
                 </ul>
@@ -163,17 +165,17 @@
                     <ul>
                         <li>
                             <a href="#">
+                                <i class="fas fa-file-import"></i> Transmissions
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
                                 <i class="fas fa-list"></i> Qc List
                             </a>
                         </li>
                         <li>
                             <a href="#">
                                 <i class="fas fa-chart-line"></i> Qc Status
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-file-import"></i> Import XML
                             </a>
                         </li>
                     </ul>
@@ -216,6 +218,20 @@
                     </ul>
                 </li>
             @endif
+            <li class=""><a href="#"><i class="fas fa-database"></i> Certification Data</a>
+                <ul>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-list"></i> Photographers List
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fas fa-list"></i> Devices List
+                        </a>
+                    </li>
+                </ul>
+            </li>
             @if(hasPermission(auth()->user(),'data_management.index'))
                 <li class="dropdown">
                     <ul>

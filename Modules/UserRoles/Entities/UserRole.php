@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserRole extends Model
 {
-    protected $fillable = ['id','user_id','role_id'];
+    protected $fillable = ['id','user_id','role_id','study_id'];
     public $incrementing = false;
     public $keyType = 'string';
 
