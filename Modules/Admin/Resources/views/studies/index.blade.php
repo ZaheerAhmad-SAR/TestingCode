@@ -3,10 +3,6 @@
     <title> Studies | {{ config('app.name', 'Laravel') }}</title>
 @stop
 @section('styles')
-    <!-- Queries Model style sheet start -->
-    <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2.min.css") }}"/>
-    <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
-    <!-- Queries Model style sheet end -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
     <link rel="stylesheet" href="{{ asset("dist/vendors/tablesaw/tablesaw.css") }}">
     @stop
@@ -133,7 +129,7 @@
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                     <span class="dropdown-item">
-                                                        <a href="javascript:void(0)" id="change-status" data-id="{{$study->id}}" data-toggle="modal" data-target="#change_status-{{$study->id}}">
+                                                        <a href="javascript:void(0)" id="change-status" data-target-id="{{$study->id}}" data-toggle="modal" data-target="#change_status">
                                                             <i class="icon-action-redo"></i> Change Status
                                                         </a>
                                                     </span>
@@ -217,12 +213,6 @@
                         {{-- Basic Info Tab --}}
                         <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
                             @csrf
-                            <span class="for_add" style="display: none;">
-                                @method('POST')
-                            </span>
-                            <span class="for_update" style="display: none;">
-                                @method('PATCH')
-                            </span>
                             <div class="form-group row" style="margin-top: 10px;">
                                 <label for="study_title" class="col-md-2">Title</label>
                                 <div class="{!! ($errors->has('study_title')) ?'form-group col-md-10 has-error':'form-group col-md-10' !!}">
@@ -371,16 +361,29 @@
         </div>
     </div>
 
-    <div class="modal fade" id="change_status" aria-hidden="true">
+   <div class="modal fade" id="change_status" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="studyCrudModal">Change Status</h4>
                 </div>
                 <div class="modal-body">
-                    <form action="{{route('studies.cloneStudy')}}" name="changestatus" class="">
+                    <form action="{{route('studies.studyStatus')}}" name="changestatus" class="" method="post">
                     @csrf
-                        <input type="hidden" class="" value="{{$study->id}}">
+                        @if(!empty($study))
+                        <input type="hidden" value="{{$study->id}}" id="study_ID" name="study_ID">
+                        @endif
+                        <div class="form-group row">
+                            <div class="col-md-3">Status</div>
+                            <div class="col-md-6">
+                                <select class="form-control dropdown" name="status" id="status">
+                                    <option value="">Select Status</option>
+                                    <option value="Archived">Archive</option>
+                                    <option value="Development">Development</option>
+                                    <option value="Live">Live</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                             <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
@@ -398,17 +401,13 @@
 @section('script')
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
-    <!-- Queries Model scripts start -->
-  <script src="{{ asset("dist/vendors/select2/js/select2.full.min.js") }}"></script>
-    <script src="{{ asset("dist/js/select2.script.js") }}"></script>
 
-    <!-- Queries Model scripts end -->
 <script type="text/javascript">
  $(document).ready(function(){
-        var tId;
-        tId=setTimeout(function(){
-           $(".success-alert").slideUp('slow');
-        }, 4000);
+       $('#change_status').on('show.bs.modal',function (e) {
+        var id = $(e.relatedTarget).data('target-id');
+        $('#study_ID').val(id);
+       })
     })
 </script>
     <script type="text/javascript">
@@ -444,8 +443,6 @@
         });
 
         $('#create-new-study').click(function () {
-            $('.for_add').css('display','block');
-            $('.for_update').css('display','none');
             $('#btn-save').val("create-study");
             $('#studyForm').trigger("reset");
             $('#studyCrudModal').html("Add Study");
@@ -455,9 +452,7 @@
 
 
         $('body').on('click', '#edit-study', function () {
-            $('.for_add').css('display','none');
-            $('.for_update').css('display','block');
-            $('#studyForm').attr('action', "{{route('studies.updateStudy')}}");
+            $('#studyForm').attr('action', "{{route('studies.update_studies')}}");
             var study_id = $(this).data('id');
            var edit_study = $.get('studies/'+study_id+'/edit', function (data) {
                 $('#studyCrudModal').html("Edit study");
@@ -549,6 +544,7 @@
         });
 
     });
-    </script>
+
+</script>
 
 @endsection

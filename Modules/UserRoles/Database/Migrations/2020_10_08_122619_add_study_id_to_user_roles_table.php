@@ -14,7 +14,7 @@ class AddStudyIdToUserRolesTable extends Migration
     public function up()
     {
         Schema::table('user_roles', function (Blueprint $table) {
-
+            $table->uuid('study_id')->after('role_id');
         });
     }
 
@@ -26,7 +26,7 @@ class AddStudyIdToUserRolesTable extends Migration
     public function down()
     {
         Schema::table('user_roles', function (Blueprint $table) {
-
+            $table->dropColumn('study_id');
         });
     }
 }

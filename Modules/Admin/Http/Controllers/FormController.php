@@ -27,7 +27,7 @@ class FormController extends Controller
      */
     public function index()
     {
-        $phases = StudyStructure::all();
+        $phases = StudyStructure::select('*')->where('study_id', session('current_study'))->get();
         $option_groups = OptionsGroup::all();
         $fields = FormFieldType::all();
         $annotations = Annotation::all();
@@ -41,7 +41,7 @@ class FormController extends Controller
     }
     public function get_phases($id)
     {
-        $phases = StudyStructure::all();
+        $phases = StudyStructure::select('*')->where('study_id', session('current_study'))->get();
         $data['data'] = $phases;
         echo json_encode($data);
     }

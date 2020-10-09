@@ -27,9 +27,7 @@ class StudyusersController extends Controller
      */
     public function index()
     {
-        if (Auth::user()->can('users.create')) {
             $roles  =   Role::where('role_type','=','study_role')->get();
-        }
 
         if (hasPermission(auth()->user(),'studytools.index')){
             $permissionsIdsArray = Permission::where(function($query){
@@ -41,7 +39,7 @@ class StudyusersController extends Controller
 
             $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
             $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
-            $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->get();
+            $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->where('id','!=',\auth()->user()->id)->get();
         }
         else{
             $users = User::where('deleted_at','=',Null)
