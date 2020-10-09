@@ -41,6 +41,16 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('forms/get_allQuestions/{id}', 'FormController@get_allQuestions')->name('forms.get_allQuestions');
     Route::get('forms/changeSort/{id}', 'FormController@updateQustionsort')->name('forms.changeSort');
     Route::DELETE('forms/delete/{id}', 'FormController@deleteQuestion')->name('forms.delete');
+        //routes for options groups
+    Route::resource('optionsGroup', 'OptionsGroupController');
+    Route::post('optionsGroup/update', 'OptionsGroupController@update')->name('optionsGroup.update');
+    Route::DELETE('optionsGroup/destroy/{options_id}', 'OptionsGroupController@destroy')->name('optionsGroup.destroy');
+    Route::post('getall_options', 'FormController@getall_options')->name('getall_options');
+    // routes for annotation
+    Route::resource('annotation', 'AnnotationController');
+    Route::post('annotation/updateAnnotation', 'AnnotationController@update_annotation')->name('annotation.updateAnnotation');
+    Route::DELETE('annotation/delete/{id}', 'AnnotationController@deleteAnnotation')->name('annotation.delete');
+    Route::get('annotation/get_allAnnotations/{id}', 'AnnotationController@get_allAnnotations')->name('annotation.get_allAnnotations');
 });
 Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], function () {
 
@@ -68,21 +78,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     Route::post('others/update', 'OtherController@update')->name('others.update');
 
-    //routes for options groups
 
-
-    Route::resource('optionsGroup', 'OptionsGroupController');
-
-    Route::post('optionsGroup/update', 'OptionsGroupController@update')->name('optionsGroup.update');
-
-    Route::DELETE('optionsGroup/destroy/{options_id}', 'OptionsGroupController@destroy')->name('optionsGroup.destroy');
-    Route::post('getall_options', 'FormController@getall_options')->name('getall_options');
-
-    // routes for annotation
-    Route::resource('annotation', 'AnnotationController');
-    Route::post('annotation/updateAnnotation', 'AnnotationController@update_annotation')->name('annotation.updateAnnotation');
-    Route::DELETE('annotation/delete/{id}', 'AnnotationController@deleteAnnotation')->name('annotation.delete');
-    Route::get('annotation/get_allAnnotations/{id}', 'AnnotationController@get_allAnnotations')->name('annotation.get_allAnnotations');
     // routes for form managment
     
     //end
