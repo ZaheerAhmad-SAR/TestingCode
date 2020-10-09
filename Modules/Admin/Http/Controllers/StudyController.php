@@ -34,8 +34,8 @@ class StudyController extends Controller
         $user = User::with('studies', 'user_roles')->find(Auth::id());
 //        $users_for_queries  =   User::where('id','!=',\auth()->user()->id)->get();
 //        $roles_for_queries  =  Role::where('role_type','=','study_role')->orderBY('name','asc')->get();
-        if (hasPermission(\auth()->user(), 'users.create')) {
-            $studies  =   Study::with('users')->orderBy('study_short_name')->get();
+        if (hasPermission(\auth()->user(), 'systemtools.index')) {
+            $studies  =   Study::with('users')->where('id','!=', Null)->orderBy('study_short_name')->get();
             $permissionsIdsArray = Permission::where(function ($query) {
                 $query->where('permissions.name', '=', 'studytools.index')
                     ->orwhere('permissions.name', '=', 'studytools.store')
@@ -47,21 +47,53 @@ class StudyController extends Controller
             $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
             $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->orderBy('name','asc')->get();
             $sites = Site::all();
+            $study = '';
         }
         else{
             $user=\auth()->user()->id;
-        $studies  =   StudyUser::select('study_user.*','users.*','studies.*')
-            ->join('users','users.id','=','study_user.user_id')
-            ->join('studies','studies.id','=','study_user.study_id')
-            ->where('users.id','=',\auth()->user()->id)
-            ->orderBy('study_short_name')->get();
+            if (hasPermission(\auth()->user(),'grading.index')){
+                $studies  =   UserRole::select('user_roles.*','users.*','studies.*')
+                    ->join('users','users.id','=','user_roles.user_id')
+                    ->join('studies','studies.id','=','user_roles.study_id')
+                    ->where('users.id','=',\auth()->user()->id)
+                    ->where('studies.study_status','=','Live')
+                    ->orderBy('study_short_name')->get();
+                $study = '';
+            }
+            if (hasPermission(\auth()->user(),'adjudication.index')){
+                $studies  =   UserRole::select('user_roles.*','users.*','studies.*')
+                    ->join('users','users.id','=','user_roles.user_id')
+                    ->join('studies','studies.id','=','user_roles.study_id')
+                    ->where('users.id','=',\auth()->user()->id)
+                    ->where('studies.study_status','=','Live')
+                    ->orderBy('study_short_name')->get();
+                $study = '';
+            }
+            if (hasPermission(\auth()->user(),'qualitycontrol.index')){
+                $studies  =   UserRole::select('user_roles.*','users.*','studies.*')
+                    ->join('users','users.id','=','user_roles.user_id')
+                    ->join('studies','studies.id','=','user_roles.study_id')
+                    ->where('users.id','=',\auth()->user()->id)
+                    ->where('studies.study_status','=','Live')
+                    ->orderBy('study_short_name')->get();
+                $study = '';
+            }
+            if (hasPermission(\auth()->user(),'studytools.index')) {
+                $studies = StudyUser::select('study_user.*', 'users.*', 'studies.*')
+                    ->join('users', 'users.id', '=', 'study_user.user_id')
+                    ->join('studies', 'studies.id', '=', 'study_user.study_id')
+                    ->where('users.id', '=', \auth()->user()->id)
+                    ->orderBy('study_short_name')->get();
+                $study = '';
+            }
         //dd($studies);
 
         $users = User::all();
         $sites = Site::all();
+            $study = '';
         }
 
-        return view('admin::studies.index', compact('studies', 'sites', 'users'));
+        return view('admin::studies.index', compact('studies', 'sites', 'users','study'));
     }
 
     /**
@@ -70,20 +102,13 @@ class StudyController extends Controller
      */
     public function studyStatus(Request $request)
     {
-
-        $study_id = $request->study_id;
+        $study_id = $request->study_ID;
 
         $study = Study::find($study_id);
+        $study = Study::where('id', $study_id)->update(['study_status'=> $request->status]);
 
-        $studyStatus = Study::where('id', '=', $study_id)->update(array(
-            'study_status' => !empty($request->study_status) ? $request->study_status : 'Development'
-        ));
-
-        $data = [
-            'success' => true
-        ];
-        return \response()->json($data);
-        //        return view('admin::studies.index',compact('studies'))->json_encode($data);
+        //return \response()->json($data);
+                return redirect()->route('studies.index');
     }
 
     public function create()

@@ -129,7 +129,7 @@
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                     <span class="dropdown-item">
-                                                        <a href="javascript:void(0)" id="change-status" data-id="{{$study->id}}" data-toggle="modal" data-target="#change_status-{{$study->id}}">
+                                                        <a href="javascript:void(0)" id="change-status" data-target-id="{{$study->id}}" data-toggle="modal" data-target="#change_status">
                                                             <i class="icon-action-redo"></i> Change Status
                                                         </a>
                                                     </span>
@@ -361,16 +361,29 @@
         </div>
     </div>
 
-   {{-- <div class="modal fade" id="change_status" aria-hidden="true">
+   <div class="modal fade" id="change_status" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title" id="studyCrudModal">Change Status</h4>
                 </div>
                 <div class="modal-body">
-                    <form action="{{route('studies.cloneStudy')}}" name="changestatus" class="">
+                    <form action="{{route('studies.studyStatus')}}" name="changestatus" class="" method="post">
                     @csrf
-                        <input type="hidden" class="" value="{{$study->id}}">
+                        @if(!empty($study))
+                        <input type="hidden" value="{{$study->id}}" id="study_ID" name="study_ID">
+                        @endif
+                        <div class="form-group row">
+                            <div class="col-md-3">Status</div>
+                            <div class="col-md-6">
+                                <select class="form-control dropdown" name="status" id="status">
+                                    <option value="">Select Status</option>
+                                    <option value="Archived">Archive</option>
+                                    <option value="Development">Development</option>
+                                    <option value="Live">Live</option>
+                                </select>
+                            </div>
+                        </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                             <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
@@ -379,7 +392,7 @@
                 </div>
             </div>
         </div>
-    </div>--}}
+    </div>
     @include('queries::queries.query_popup')
 @endsection
 @section('styles')
@@ -391,10 +404,10 @@
 
 <script type="text/javascript">
  $(document).ready(function(){
-        var tId;
-        tId=setTimeout(function(){
-           $(".success-alert").slideUp('slow');
-        }, 4000);
+       $('#change_status').on('show.bs.modal',function (e) {
+        var id = $(e.relatedTarget).data('target-id');
+        $('#study_ID').val(id);
+       })
     })
 </script>
     <script type="text/javascript">

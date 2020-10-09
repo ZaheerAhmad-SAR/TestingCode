@@ -144,6 +144,24 @@
                             <div class="tab-pane fade" id="nav-StudyActivities" role="tabpanel" aria-labelledby="nav-Validation-tab">
                                 <div class="form-group row" style="margin-top: 15px;">
                                     <div class="col-md-3">
+                                        <label for="Name" style="padding-left: 11px">Dashboard </label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="dashboard_add" id="dashboard_add" checked> Add
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="dashboard_edit" id="dashboard_edit" checked> Edit
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="dashboard_view" id="dashboard_view" checked> View
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row" style="margin-top: 15px;">
+                                    <div class="col-md-3">
                                         <label for="Name" style="padding-left: 11px">Adjudication </label>
                                     </div>
                                     <div class="col-md-9">
