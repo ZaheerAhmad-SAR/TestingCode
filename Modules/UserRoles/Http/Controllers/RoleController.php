@@ -145,6 +145,7 @@ class RoleController extends Controller
                 }
             }
             if ($request->study_view){
+                //dd('log store');
                 $permissions = Permission::where('name','=','studies.index')
                     ->get();
                 foreach ($permissions as $permission){
@@ -757,6 +758,7 @@ class RoleController extends Controller
             }
         }
         if ($request->study_view){
+            //dd('log');
             $permissions = Permission::where('name','=','studies.index')
                 ->get();
             foreach ($permissions as $permission){
