@@ -26,8 +26,8 @@
                                 </div>
                             </div>
                             <div class="form-group row usersInput" style="display: none;">
-                                <label for="Name" class="col-sm-4 col-form-label">Users:</label>
-                                <div class="col-sm-8">
+                                <label for="Name" class="col-sm-2 col-form-label">Users:</label>
+                                <div class="col-sm-10">
                                     <select class="form-control multieSelectDropDown" multiple data-allow-clear="1" name="users" id="users">
                                         @foreach($users_for_queries as $user)
                                             <option value="{{$user->id}}">{{$user->name}}</option>
@@ -36,8 +36,8 @@
                                 </div>
                             </div>
                             <div class="form-group row rolesInput" style="display: none;">
-                                <label for="Name" class="col-sm-4 col-form-label">Roles:</label>
-                                <div class="col-sm-8">
+                                <label for="Name" class="col-sm-2 col-form-label">Roles:</label>
+                                <div class="col-sm-10">
                                     @foreach($roles_for_queries as $role)
                                         <label class="checked-inline  col-form-label"><input type="checkbox" class="ads_Checkbox" id="roles" name="roles" value="{{$role->id}}"> {{$role->name}} </label>
                                     @endforeach
@@ -56,9 +56,9 @@
                             {{--                                    </div>--}}
                             {{--                                </div>--}}
                             <div class="form-group row remarksInput" style="display:none;">
-                                <label for="Name" class="col-sm-4 col-form-label">Remarks</label>
-                                <div class="col-sm-8">
-                                    <textarea class="form-control" name="remarks" rows="2" id="remarks"></textarea>
+                                <label for="Name" class="col-sm-2 col-form-label">Remarks</label>
+                                <div class="col-sm-10">
+                                    <textarea class="summernote" name="remarks" cols="2" rows="1" id="remarks"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -76,12 +76,15 @@
 <!-- Queries Model style sheet start -->
 <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2.min.css") }}"/>
 <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
+<link rel="stylesheet" href="{{ asset("dist/vendors/summernote/summernote-bs4.css") }}">
 <!-- Queries Model style sheet end -->
 @endpush
 @push('script')
 <!-- Queries Model scripts start -->
 <script src="{{ asset("dist/vendors/select2/js/select2.full.min.js") }}"></script>
 <script src="{{ asset("dist/js/select2.script.js") }}"></script>
+<script src="{{ asset("dist/vendors/summernote/summernote-bs4.js") }}"></script>
+<script src="{{ asset("dist/js/summernote.script.js") }}"></script>
 
 <!-- Queries Model scripts end -->
 
