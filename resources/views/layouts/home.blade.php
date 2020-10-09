@@ -21,6 +21,7 @@
                 <div class="navbar-right ml-auto h-100">
                     <ul class="ml-auto p-0 m-0 list-unstyled d-flex top-icon h-100">
                         <li style="margin-top: 5px;">
+                            <span>Logged User: {!! auth()->user()->name !!}</span>
                         <span>
                             @if(!empty(session('current_study')))
                             <strong>Current Study:</strong> {{session('study_short_name')}}
