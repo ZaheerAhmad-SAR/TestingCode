@@ -27,7 +27,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/studies';
 
     /**
      * Create a new controller instance.
@@ -40,12 +40,9 @@ class LoginController extends Controller
     }
 
     protected function authenticated() {
-        if(hasPermission(\auth()->user(),'studytools.index')){
             $roleId =  \auth()->user()->role_id;
 
             return redirect()->route('studies.index');
-        }
-
     }
 
     /*protected function authenticated(Request $request, $user)
