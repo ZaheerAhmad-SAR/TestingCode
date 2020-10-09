@@ -143,7 +143,7 @@
                                                             <a class="badge p-1 badge-light m-1  {{ $stepClsStr }}"
                                                                 href="javascript:void(0);"
                                                                 onclick="showSections('step_sections_{{ $stepIdStr }}');">
-                                                                {{ $step->step_name }}
+                                                                {{ $step->formType->form_type . ' ' . $step->step_name }}
 
                                                                  @foreach($step->sections as $section)
                                                                  @php
