@@ -496,10 +496,16 @@ $('body').on('click','.fetch_annotation',function(){
     var anno_class = row.find('select.terminology_value');
     get_all_annotations(study_id,anno_class);
 })
+$('#section_id').on('change',function(){
+    $('.field_dependent').trigger('change');
+})
 $('.field_dependent').on('change',function(){
     var value = $(this).val();
+    var sec_id = $('#section_id').val();
+    var ques_class = $('.select_ques_for_dep');
     if(value =='yes'){
         $('.append_if_yes').css('display','block');
+        get_question_section_id(sec_id,ques_class);
     }else{
         $('.append_if_yes').css('display','none');
     }
