@@ -68,13 +68,7 @@
                                         </a>
                                     </li>
                                 @endif
-                                @if(hasPermission(auth()->user(),'annotation.index'))
-                                    <li class="@if(is_active('annotation.index')) {{ ' active' }} @endif">
-                                        <a  href="{!! route('annotation.index') !!}">
-                                            Annotations
-                                        </a>
-                                    </li>
-                                @endif
+                                
                             </ul>
                         </li>
                 </ul>
@@ -128,6 +122,13 @@
                                                 <li class="@if(is_active('optionsGroup.index')) {{ ' active' }} @endif">
                                                     <a href="{!! route('optionsGroup.index') !!}">
                                                         Option Groups
+                                                    </a>
+                                                </li>
+                                            @endif
+                                            @if(hasPermission(auth()->user(),'annotation.index'))
+                                                <li class="@if(is_active('annotation.index')) {{ ' active' }} @endif">
+                                                    <a  href="{!! route('annotation.index') !!}">
+                                                        Annotations
                                                     </a>
                                                 </li>
                                             @endif
