@@ -31,7 +31,7 @@ Route::group(['middleware' => ['auth','web','roles']],function(){
     Route::resource('studytools','StudyToolsController');
     Route::resource('systemtools','SystemToolsController');
     Route::resource('studydesign','StudyDesignController');
-    Route::resource('activitylog','ActivityLogController');
+    // Route::resource('activitylog','ActivityLogController');
     Route::resource('certification','CertificationController');
     Route::resource('data_management','DataManagementController');
     Route::resource('finance','FinanceController');

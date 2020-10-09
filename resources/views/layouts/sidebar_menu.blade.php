@@ -277,17 +277,33 @@
 
 
             @if(hasPermission(auth()->user(),'activitylog.index'))
+                @if(hasPermission(auth()->user(),'systemtools.index'))
                 <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
                     <ul >
 
                         <li>
-                            <a href="{{route('trail.log')}}">
+                            <a href="{{route('activitylog.index')}}">
                                 <i class="fas fa-history"></i>
                                 Audit Trail
                             </a>
                         </li>
                     </ul>
                 </li>
+                @else
+                    @if(Session::has('current_study'))
+                    <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
+                        <ul >
+
+                            <li>
+                                <a href="{{route('activitylog.index')}}">
+                                    <i class="fas fa-history"></i>
+                                    Audit Trail
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    @endif
+                @endif
             @endif
         </ul>
         <!-- END: Menu-->

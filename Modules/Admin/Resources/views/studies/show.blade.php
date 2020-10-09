@@ -290,7 +290,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "{{route('subjects.check-suject')}}",
+                url: "{{route('subjects.check-subject')}}",
                 data: {
                     edit_id : editID,
                     subject_id: subjectID,
@@ -322,7 +322,7 @@
 
             $.ajax({
                 type: "GET",
-                url: "{{route('subjects.check-suject')}}",
+                url: "{{route('subjects.check-subject')}}",
                 data: {
                     edit_id : editID,
                     subject_id: subjectID,
