@@ -3,7 +3,8 @@
         @if ((bool) $subjectId && ($formStatus === 'complete' || $formStatus === 'resumable'))
             <button class="btn btn-warning" name="edit_form_button_{{ $stepIdStr }}"
                 id="edit_form_button_{{ $stepIdStr }}"
-                onclick="openFormForEditing('{{ $stepIdStr }}', '{{ $stepClsStr }}', '{{ $sectionIdStr }}');">
+                onclick="openFormForEditing('{{ $stepIdStr }}', '{{ $stepClsStr }}', '{{ $sectionIdStr }}');"
+                style="display: {{ ($formStatus == 'resumable')? 'none':'block' }};">
                 Edit Form
             </button>
         @endif
