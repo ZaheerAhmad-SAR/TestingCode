@@ -138,49 +138,22 @@
                                                             @php
                                                             $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                                                             $stepIdStr = buildSafeStr($step->step_id, '');
-                                                            $imgSpanStepClsStr = buildSafeStr($step->step_id, 'img_section_status_');
                                                             @endphp
                                                             <a class="badge p-1 badge-light m-1  {{ $stepClsStr }}"
                                                                 href="javascript:void(0);"
                                                                 onclick="showSections('step_sections_{{ $stepIdStr }}');">
                                                                 {{ $step->formType->form_type . ' ' . $step->step_name }}
-
-                                                                 @foreach($step->sections as $section)
-                                                                 @php
-                                                                 $getFormStatusArray = [
+                                                                @php
+                                                                $getFormStatusArray = [
                                                                     'form_filled_by_user_id' => $form_filled_by_user_id,
                                                                     'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
                                                                     'subject_id' => $subjectId,
                                                                     'study_id' => $studyId,
                                                                     'study_structures_id' => $phase->id,
-                                                                    'phase_steps_id' => $step->step_id,
-                                                                    'section_id' => $section->id,
-                                                                    ];
-                                                                    $formStatusObj =
-                                                                    \Modules\Admin\Entities\FormStatus::getFormStatusObj($getFormStatusArray);
-                                                                 $imgSpanSectionIdStr = buildSafeStr($section->id, 'img_section_status_');
-                                                                 @endphp
-                                                                    <span class="{{ $imgSpanStepClsStr }}" id="{{ $imgSpanSectionIdStr }}">
-                                                                    @if($formStatusObj->form_status == 'complete')
-                                                                        <img src="{{ url('images/complete.png') }}"/>
-                                                                     @endif
-                                                                     @if($formStatusObj->form_status == 'incomplete')
-                                                                        <img src="{{ url('images/incomplete.png') }}"/>
-                                                                     @endif
-                                                                     @if($formStatusObj->form_status == 'resumable')
-                                                                        <img src="{{ url('images/resumable.png') }}"/>
-                                                                     @endif
-                                                                     @if($formStatusObj->form_status == 'no_status')
-                                                                        <img src="{{ url('images/no_status.png') }}"/>
-                                                                     @endif
-                                                                     @if($formStatusObj->form_status == 'adjudication')
-                                                                        <img src="{{ url('images/adjudication.png') }}"/>
-                                                                     @endif
-                                                                     @if($formStatusObj->form_status == 'notrequired')
-                                                                        <img src="{{ url('images/not_required.png') }}"/>
-                                                                     @endif
-                                                                    </span>
-                                                                @endforeach
+                                                                ];
+                                                                //echo \Modules\Admin\Entities\FormStatus::getStepFormsStatusSpans($step, $getFormStatusArray);
+                                                                echo \Modules\Admin\Entities\FormStatus::getStepFormStatus($step, $getFormStatusArray, true);
+                                                                @endphp
                                                             </a>
                                                             <br>
                                                             @php
@@ -332,7 +305,8 @@
                     type: 'POST',
                     data: frmData,
                     success: function(response) {
-                        $('#img_section_status_' + sectionIdStr).html('<img src="{{url('/')}}/images/'+response+'.png"/>');
+                        $('#form_hid_status_' + sectionIdStr).val(response);
+                        $('.img_section_status_' + sectionIdStr).html('<img src="{{url('/')}}/images/'+response+'.png"/>');
                     }
                 });
             }
@@ -430,7 +404,6 @@
             }
 
             function isFormInEditMode(sectionIdStr) {
-                var formStatus = $('#form_master_' + sectionIdStr + ' #form_status').val();
                 var formEditStatus = $('#form_master_' + sectionIdStr + ' #form_editing_status').val();
                 var returnVal = false;
                 if (formEditStatus == 'yes') {
@@ -523,7 +496,7 @@
                 disableByClass(stepClsStr);
                 $('.form_hid_editing_status_' + stepIdStr).val('no');
                 $('.form_hid_status_' + stepIdStr).val('complete');
-                $('.img_section_status_' + stepIdStr).html('<img src="{{url('images/complete.png')}}"/>');
+                //$('.img_section_status_' + stepIdStr).html('<img src="{{url('images/complete.png')}}"/>');
                 $('.nav-link').removeClass('active');
                 $('.first_navlink_' + stepIdStr).addClass('active');
                 $('.tab-pane_' + stepIdStr).removeClass('active show');

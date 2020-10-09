@@ -33,6 +33,16 @@
                                                 <h6 class="mb-0 text-uppercase font-weight-bold">{{ $section->name }}
                                                 </h6>
                                                 {{ $section->description }}
+                                                @php
+                                                    $getFormStatusArray = [
+                                                        'form_filled_by_user_id' => $form_filled_by_user_id,
+                                                        'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
+                                                        'subject_id' => $subjectId,
+                                                        'study_id' => $studyId,
+                                                        'study_structures_id' => $phase->id,
+                                                    ];
+                                                echo \Modules\Admin\Entities\FormStatus::getSectionFormStatusSpan($step, $section, $getFormStatusArray);
+                                                @endphp
                                             </div>
                                         </div>
                                     </a>
@@ -63,7 +73,8 @@
                                 ];
                                 $formStatusObj =
                                 \Modules\Admin\Entities\FormStatus::getFormStatusObj($getFormStatusArray);
-                                $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'NoStatus';
+                                $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'no_status';
+                                $stepFormStatus = \Modules\Admin\Entities\FormStatus::getStepFormStatus($step, $getFormStatusArray);
 
                                 $sharedData = [
                                 'studyId' => $studyId, 'studyClsStr' => $studyClsStr, 'subjectId' => $subjectId, 'phase'
@@ -71,7 +82,7 @@
                                 'step' => $step, 'section' => $section, 'formStatusObj' => $formStatusObj,
                                 'formStatus' => $formStatus, 'sectionIdStr' => $sectionIdStr,
                                 'sectionClsStr' => $sectionClsStr, 'stepClsStr'=> $stepClsStr,
-                                'key' => $key, 'first' => 0, 'last' => $last
+                                'key' => $key, 'first' => 0, 'last' => $last, 'stepFormStatus' => $stepFormStatus,
                                 ];
 
                                 @endphp

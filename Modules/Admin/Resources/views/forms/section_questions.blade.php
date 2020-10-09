@@ -9,7 +9,7 @@
             <input type="hidden" name="formTypeId" value="{{ $step->form_type_id }}" />
             <input type="hidden" name="sectionId" value="{{ $section->id }}" />
             <input type="hidden" class="form_hid_editing_status_{{ $stepIdStr }}" name="form_editing_status" id="form_editing_status" value="{{ ($formStatus == 'resumable')? 'yes':'no' }}" />
-            <input type="hidden" class="form_hid_status_{{ $stepIdStr }}" name="form_status" id="form_status" value="{{ $formStatus }}" />
+            <input type="hidden" class="form_hid_status_{{ $stepIdStr }}" name="form_status" id="form_hid_status_{{ $sectionIdStr }}" value="{{ $formStatus }}" />
 
         </form>
         <form class="card-body" method="POST" name="form_{{ $sectionIdStr }}" id="form_{{ $sectionIdStr }}">
@@ -59,11 +59,13 @@
     @push('script_last')
         <script>
         $( document ).ready(function() {
-            if($('#form_master_{{ $sectionIdStr }} #form_status').val() != 'complete'){
-                globalDisableByClass('{{ $studyClsStr }}', '{{ $stepClsStr }}');
+            @php
+            if($stepFormStatus != 'complete'){
+                echo "globalDisableByClass('$studyClsStr', '$stepClsStr');";
             }else{
-                hideReasonField('{{ $stepIdStr }}', '{{ $stepClsStr }}');
+                echo "hideReasonField('$stepIdStr', '$stepClsStr');";
             }
+            @endphp
         });
         </script>
     @endpush
