@@ -56,9 +56,9 @@
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
 
-                    <form action="{{route('activitylog.index')}}" method="get" class="filter-form">
+                    <form action="{{route('trail_logs.list')}}" method="get" class="filter-form">
                         <div class="form-row" style="padding: 10px;">
-                            
+
                             @if(hasPermission(auth()->user(),'systemtools.index'))
                             <div class="form-group col-md-3">
                                 <label for="inputEmail4">Name</label>
@@ -70,7 +70,7 @@
                                 </select>
                             </div>
                             @endif
-
+                            @if(!empty($eventSection))
                             <div class="form-group col-md-2">
                                 <label for="inputState">Event Section</label>
                                 <select id="event_section" name="event_section" class="form-control filter-form-data">
@@ -80,6 +80,7 @@
                                     @endforeach
                                 </select>
                             </div>
+                                @endif
 
                             <div class="form-group col-md-2">
                                 <label for="inputState">Event Type</label>
@@ -119,7 +120,8 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if(!$getLogs->isEmpty())
+                                    @if(!empty($getLogs))
+                                        {!! dd($getLogs) !!}
                                     @foreach($getLogs as $log)
                                     <tr>
                                         <td style="text-align: center;">

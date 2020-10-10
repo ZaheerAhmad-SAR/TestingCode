@@ -165,7 +165,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::post('studySite/deleteSiteCoordinator', 'StudySiteController@deleteSiteCoordinator')->name('studySite.deleteSiteCoordinator');
 
     // CHM-Amir
-    Route::get('trails-log', 'TrailLogController@index')->name('activitylog.index');
+    Route::get('trail_logs', 'TrailLogController@index')->name('trail_logs.list');
 });
 
 

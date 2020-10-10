@@ -332,7 +332,7 @@
                                             <input type="checkbox" name="management" id="management"> Allow Permission
                                         </div>
                                         <div class="col-md-3">
-                                            <label for="Name">Activity Log</label>
+                                            <label for="Name">Audit Trails</label>
                                         </div>
                                         <div class="col-md-3">
                                             <input type="checkbox" name="activity_log" id="activity_log"> Allow Permission
