@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class FormStatus extends Model
 {
     protected $table = 'form_submit_status';
-    protected $fillable = ['id', 'form_filled_by_user_id', 'form_filled_by_user_role_id', 'subject_id', 'study_id', 'study_structures_id', 'phase_steps_id', 'section_id', 'form_type_id', 'form_status'];
+    protected $fillable = ['id', 'form_filled_by_user_id', 'form_filled_by_user_role_id', 'subject_id', 'study_id', 'study_structures_id', 'phase_steps_id', 'form_type_id', 'form_status'];
     protected $keyType = 'string';
 
     protected $attributes = [
@@ -24,91 +24,26 @@ class FormStatus extends Model
         return $formStatusObject;
     }
 
-    public static function getFormStatusStepLevelObj($getFormStatusArray)
-    {
-        $step_id = $getFormStatusArray['phase_steps_id'];
-        $step = PhaseSteps::find($step_id);
-        $sectionArray = [];
-        foreach ($step->sections as $section) {
-            $getFormStatusArray['section_id'] = $section->id;
-            $formStatusObject = FormStatus::where(function ($q) use ($getFormStatusArray) {
-                foreach ($getFormStatusArray as $key => $value) {
-                    $q->where($key, '=', $value);
-                }
-            })->firstOrNew();
-            $sectionArray[] = $formStatusObject;
-        }
-        return ['step_id' => $step_id, 'sections' => $sectionArray];
-    }
-
     public function editReasons()
     {
         return $this->hasMany(FormRevisionHistory::class, 'form_submit_status_id', 'id');
     }
 
-    public static function getStepFormStatus($step, $getFormStatusArray, $wrap = false)
+    public static function getFormStatus($step, $getFormStatusArray, $wrap = false)
     {
-        $formStatusArray = [];
-        foreach ($step->sections as $section) {
-            $getFormStatusArray = [
-                'phase_steps_id' => $step->step_id,
-                'section_id' => $section->id,
-            ];
-            $formStatusObj = self::getFormStatusObj($getFormStatusArray);
-
-            $formStatusArray[] = $formStatusObj->form_status;
-        }
-        $totalStatuses = count($formStatusArray);
-        $statusCount = array_count_values($formStatusArray);
-        if ($statusCount['complete'] == $totalStatuses) {
-            $formStatus = 'complete';
-        } else {
-            unset($statusCount['complete']);
-            $formStatusArray = array_flip($statusCount);
-            arsort($formStatusArray);
-            $formStatus = array_pop($formStatusArray);
-        }
-        if ($wrap) {
-            return self::makeFormStatusSpan($step, $section, $formStatus);
-        } else {
-            return $formStatus;
-        }
-    }
-
-    public static function getStepFormsStatusSpans($step, $getFormStatusArray)
-    {
-        $spanStr = '';
-        foreach ($step->sections as $section) {
-            $spanStr .= self::getSectionFormStatusSpan($step, $section, $getFormStatusArray);
-        }
-        return $spanStr;
-    }
-
-    public static function getSectionFormStatusSpan($step, $section, $getFormStatusArray)
-    {
-        $getFormStatusArray = [
-            'phase_steps_id' => $step->step_id,
-            'section_id' => $section->id,
-        ];
         $formStatusObj = self::getFormStatusObj($getFormStatusArray);
-        return self::makeFormStatusSpan($step, $section, $formStatusObj->form_status, 'section');
+        if ($wrap) {
+            return self::makeFormStatusSpan($step, $formStatusObj->form_status);
+        } else {
+            return $formStatusObj->form_status;
+        }
     }
 
-    public static function makeFormStatusSpan($step, $section, $form_status, $cssClass = 'both')
+    public static function makeFormStatusSpan($step, $form_status)
     {
 
-        $imgSpanSectionClsStr = buildSafeStr($section->id, 'img_section_status_');
-
-        $imgSpanStepClsStr = buildSafeStr($step->step_id, 'img_section_status_');
-
-        $class = $imgSpanStepClsStr . ' ' . $imgSpanSectionClsStr;
-        if ($cssClass === 'step') {
-            $class = $imgSpanStepClsStr;
-        } elseif ($cssClass === 'section') {
-            $class = $imgSpanSectionClsStr;
-        }
-
-        $spanStr = '<span class="' . $class . '">';
+        $imgSpanStepClsStr = buildSafeStr($step->step_id, 'img_step_status_');
+        $spanStr = '<span class="' . $imgSpanStepClsStr . '">';
 
         if ($form_status == 'complete') {
             $spanStr .= '<img src="' . url('images/complete.png') . '"/>';

@@ -91,9 +91,6 @@
                                 <img src="{{url('images/resumable.png')}}"/>&nbsp;&nbsp;Editing
                             </div>
                             <div class="col-md-2">
-                                <img src="{{url('images/adjudication.png')}}"/>&nbsp;&nbsp;Adjudication
-                            </div>
-                            <div class="col-md-2">
                                 <img src="{{url('images/complete.png')}}"/>&nbsp;&nbsp;Complete
                             </div>
                             <div class="col-md-2">
@@ -150,9 +147,9 @@
                                                                     'subject_id' => $subjectId,
                                                                     'study_id' => $studyId,
                                                                     'study_structures_id' => $phase->id,
+                                                                    'phase_steps_id' => $step->step_id,
                                                                 ];
-                                                                //echo \Modules\Admin\Entities\FormStatus::getStepFormsStatusSpans($step, $getFormStatusArray);
-                                                                echo \Modules\Admin\Entities\FormStatus::getStepFormStatus($step, $getFormStatusArray, true);
+                                                                echo \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
                                                                 @endphp
                                                             </a>
                                                             <br>
@@ -282,7 +279,7 @@
                 $("." + cls).prop('disabled', false);
             }
 
-            function submitForm(sectionIdStr, sectionClsStr, stepIdStr) {
+            function submitForm(stepIdStr) {
                 var submitFormFlag = true;
                 if (isFormInEditMode(sectionIdStr)) {
                     if (checkReason(stepIdStr) === false) {
@@ -292,36 +289,49 @@
                 if (submitFormFlag) {
                     var term_cond = $('#terms_cond_' + stepIdStr).val();
                     var reason = $('#edit_reason_text_' + stepIdStr).val();
-                    var frmData = $("#form_master_" + sectionIdStr).serialize() + '&' + $("#form_" + sectionIdStr)
+                    var frmData = $("#form_master_" + stepIdStr).serialize() + '&' + $("#form_" + stepIdStr)
                         .serialize() +
                         '&terms_cond_' + stepIdStr + '=' + term_cond + '&' + 'edit_reason_text=' + reason;
-                        submitRequest(frmData, sectionIdStr);
+                        submitRequest(frmData, stepIdStr);
                 }
             }
 
-            function submitRequest(frmData, sectionIdStr) {
+            function submitRequest(frmData, stepIdStr) {
                 $.ajax({
-                    url: "{{ route('subjectFormLoader.submitStudyPhaseStepQuestionForm') }}",
+                    url: "{{ route('SubjectFormSubmission.submitStudyPhaseStepQuestionForm') }}",
                     type: 'POST',
                     data: frmData,
                     success: function(response) {
-                        $('#form_hid_status_' + sectionIdStr).val(response);
-                        $('.img_section_status_' + sectionIdStr).html('<img src="{{url('/')}}/images/'+response+'.png"/>');
+                        $('#form_hid_status_' + stepIdStr).val(response);
+                        $('.img_step_status_' + stepIdStr).html('<img src="{{url('/')}}/images/'+response+'.png"/>');
                     }
                 });
             }
 
-            function validateFormField(sectionIdStr, questionId, field_name, fieldId) {
+            function submitFieldRequest(frmData, stepIdStr) {
+                $.ajax({
+                    url: "{{ route('SubjectFormSubmission.submitStudyPhaseStepQuestion') }}",
+                    type: 'POST',
+                    data: frmData,
+                    success: function(response) {
+                        console.log(response);
+                        $('#form_hid_status_' + stepIdStr).val(response);
+                        $('.img_step_status_' + stepIdStr).html('<img src="{{url('/')}}/images/'+response+'.png"/>');
+                    }
+                });
+            }
+
+            function validateFormField(stepIdStr, questionId, field_name, fieldId) {
                     var field_val;
-                    field_val = getFormFieldValue(sectionIdStr, field_name, fieldId);
-                    var frmData = $("#form_master_" + sectionIdStr).serialize()  + '&questionId=' + questionId + '&' + field_name + '=' + field_val;
+                    field_val = getFormFieldValue(stepIdStr, field_name, fieldId);
+                    var frmData = $("#form_master_" + stepIdStr).serialize()  + '&questionId=' + questionId + '&' + field_name + '=' + field_val;
                     return validateSingleQuestion(frmData);
 
             }
 
-            function validateForm(sectionIdStr) {
+            function validateForm(stepIdStr) {
                 return new Promise(function (resolve, reject) {
-                    var frmData = $("#form_master_" + sectionIdStr).serialize() + '&' + $("#form_" + sectionIdStr).serialize();
+                    var frmData = $("#form_master_" + stepIdStr).serialize() + '&' + $("#form_" + stepIdStr).serialize();
                     $.ajax({
                         url: "{{ route('subjectFormSubmission.validateSectionQuestionsForm') }}",
                         type: 'POST',
@@ -355,12 +365,12 @@
                 });
                 })
             }
-            function validateAndSubmitForm(sectionIdStr, sectionClsStr, stepIdStr){
-                const promise = validateForm(sectionIdStr);
+            function validateAndSubmitForm(stepIdStr){
+                const promise = validateForm(stepIdStr);
                 promise
                 .then((data) => {
                     console.log(data);
-                    submitForm(sectionIdStr, sectionClsStr, stepIdStr);
+                    submitForm(stepIdStr);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -369,11 +379,11 @@
             }
             function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, field_name, fieldId){
                 checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
-                const validationPromise = validateFormField(sectionIdStr, questionId, field_name, fieldId);
+                const validationPromise = validateFormField(stepIdStr, questionId, field_name, fieldId);
                 validationPromise
                 .then((data) => {
                     console.log(data)
-                    submitFormField(stepIdStr, sectionIdStr, field_name, fieldId);
+                    submitFormField(stepIdStr, questionId, field_name, fieldId);
                 })
                 .then((data) => {
                     console.log(data)
@@ -403,13 +413,12 @@
                 }
             }
 
-            function isFormInEditMode(sectionIdStr) {
-                var formEditStatus = $('#form_master_' + sectionIdStr + ' #form_editing_status').val();
+            function isFormInEditMode(stepIdStr) {
+                var formEditStatus = $('#form_editing_status_' + stepIdStr).val();
                 var returnVal = false;
                 if (formEditStatus == 'yes') {
                     returnVal = true;
                 }
-
                 return returnVal;
             }
 
@@ -424,53 +433,44 @@
                 return returnVal;
             }
 
-            function submitFormField(stepIdStr, sectionIdStr, field_name, fieldId) {
+            function submitFormField(stepIdStr, questionId, field_name, fieldId) {
                 var submitFormFlag = true;
-                /*
-                if (isFormInEditMode(sectionIdStr)) {
-                    if (checkReason(stepIdStr) === false) {
-                        submitFormFlag = false;
-                    }
-                }
-                */
                 if (submitFormFlag) {
-                    var frmData = $("#form_master_" + sectionIdStr).serialize();
+                    var frmData = $("#form_master_" + stepIdStr).serialize();
                     var field_val;
-                    field_val = getFormFieldValue(sectionIdStr, field_name, fieldId);
-                    var reason = $('#edit_reason_text_' + stepIdStr).val();
-
-                    frmData = frmData + '&' + field_name + '=' + field_val + '&' + 'edit_reason_text=' + reason;
-                    submitRequest(frmData, sectionIdStr);
+                    field_val = getFormFieldValue(stepIdStr, field_name, fieldId);
+                    frmData = frmData + '&' + field_name + '=' + field_val + '&' + 'questionId=' + questionId;
+                    submitFieldRequest(frmData, stepIdStr);
                 }
             }
 
-            function getFormFieldValue(sectionIdStr, field_name, fieldId){
+            function getFormFieldValue(stepIdStr, field_name, fieldId){
                 var field_val;
                 var checkedCheckBoxes = [];
                 if ($('#' + fieldId).is("textarea")) {
                         field_val = $('#' + fieldId).val();
                     } else if ($('#' + fieldId).is("select")) {
                         field_val = $('#' + fieldId).find(":selected").val();
-                    } else if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
-                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').val();
-                    } else if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'checkbox') {
+                    } else if ($('#form_' + stepIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
+                        field_val = $('#form_' + stepIdStr + ' input[name="' + field_name + '"]:checked').val();
+                    } else if ($('#form_' + stepIdStr + ' input[name="' + field_name + '"]').attr('type') == 'checkbox') {
 
-                        $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').each(function(){
+                        $('#form_' + stepIdStr + ' input[name="' + field_name + '"]:checked').each(function(){
                             checkedCheckBoxes.push($(this).val());
                         });
                         field_val = checkedCheckBoxes.join(",");
 
                     } else {
-                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').val();
+                        field_val = $('#form_' + stepIdStr + ' input[name="' + field_name + '"]').val();
                     }
                     return field_val;
             }
 
-            function openFormForEditing(stepIdStr, stepClsStr, sectionIdStr) {
-                var frmData = $("#form_master_" + sectionIdStr).serialize();
+            function openFormForEditing(stepIdStr, stepClsStr) {
+                var frmData = $("#form_master_" + stepIdStr).serialize();
                 frmData = frmData + '&' + 'open_form_to_edit=1';
                 $.ajax({
-                    url: "{{ route('subjectFormLoader.openSubjectFormToEdit') }}",
+                    url: "{{ route('SubjectFormSubmission.openSubjectFormToEdit') }}",
                     type: 'POST',
                     data: frmData,
                     success: function(response) {
@@ -486,7 +486,7 @@
                 enableByClass(stepClsStr);
                 $('.form_hid_editing_status_' + stepIdStr).val('yes');
                 $('.form_hid_status_' + stepIdStr).val('resumable');
-                $('.img_section_status_' + stepIdStr).html('<img src="{{url('images/resumable.png')}}"/>');
+                $('.img_step_status_' + stepIdStr).html('<img src="{{url('images/resumable.png')}}"/>');
             }
 
             function hideReasonField(stepIdStr, stepClsStr) {
@@ -496,7 +496,7 @@
                 disableByClass(stepClsStr);
                 $('.form_hid_editing_status_' + stepIdStr).val('no');
                 $('.form_hid_status_' + stepIdStr).val('complete');
-                //$('.img_section_status_' + stepIdStr).html('<img src="{{url('images/complete.png')}}"/>');
+                $('.img_step_status_' + stepIdStr).html('<img src="{{url('images/complete.png')}}"/>');
                 $('.nav-link').removeClass('active');
                 $('.first_navlink_' + stepIdStr).addClass('active');
                 $('.tab-pane_' + stepIdStr).removeClass('active show');

@@ -41,7 +41,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('forms/get_allQuestions/{id}', 'FormController@get_allQuestions')->name('forms.get_allQuestions');
     Route::get('forms/changeSort/{id}', 'FormController@updateQustionsort')->name('forms.changeSort');
     Route::DELETE('forms/delete/{id}', 'FormController@deleteQuestion')->name('forms.delete');
-        //routes for options groups
+    //routes for options groups
     Route::resource('optionsGroup', 'OptionsGroupController');
     Route::post('optionsGroup/update', 'OptionsGroupController@update')->name('optionsGroup.update');
     Route::DELETE('optionsGroup/destroy/{options_id}', 'OptionsGroupController@destroy')->name('optionsGroup.destroy');
@@ -80,12 +80,12 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
 
     // routes for form managment
-    
+
     //end
     // routes for study managment
     Route::resource('study', 'StudyStructureController');
-   
-    
+
+
     Route::post('studies/studyStatus', 'StudyController@studyStatus')->name('studies.studyStatus');
     Route::post('studies/cloneStudy', 'StudyController@cloneStudy')->name('studies.cloneStudy');
 
@@ -163,7 +163,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::post('studySite/insertCoordinators', 'StudySiteController@insertCoordinators')->name('studySite.insertCoordinators');
 
     Route::post('studySite/deleteSiteCoordinator', 'StudySiteController@deleteSiteCoordinator')->name('studySite.deleteSiteCoordinator');
-    
+
     // CHM-Amir
     Route::get('trails-log', 'TrailLogController@index')->name('activitylog.index');
 });
@@ -177,8 +177,10 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('forms/show/{phase_id}/{step_id}', 'FormController@show')->name('forms.show');
     //SubjectFormLoader
     Route::get('subjectFormLoader/{study_id}/{subject_id}', 'SubjectFormLoaderController@showSubjectForm')->name('subjectFormLoader.showSubjectForm');
-    Route::post('subjectFormLoader/submitStudyPhaseStepQuestionForm', 'SubjectFormSubmissionController@submitForm')->name('subjectFormLoader.submitStudyPhaseStepQuestionForm');
-    Route::post('subjectFormLoader/openSubjectFormToEdit', 'SubjectFormSubmissionController@openSubjectFormToEdit')->name('subjectFormLoader.openSubjectFormToEdit');
+    //SubjectFormSubmission
+    Route::post('SubjectFormSubmission/submitStudyPhaseStepQuestion', 'SubjectFormSubmissionController@submitQuestion')->name('SubjectFormSubmission.submitStudyPhaseStepQuestion');
+    Route::post('SubjectFormSubmission/submitStudyPhaseStepQuestionForm', 'SubjectFormSubmissionController@submitForm')->name('SubjectFormSubmission.submitStudyPhaseStepQuestionForm');
+    Route::post('SubjectFormSubmission/openSubjectFormToEdit', 'SubjectFormSubmissionController@openSubjectFormToEdit')->name('SubjectFormSubmission.openSubjectFormToEdit');
     //Assign Roles ToPhase and Step
     Route::post('assignRolesPhaseStep/getAssignRolesToPhaseForm', 'AssignRolesPhaseStepController@getAssignRolesToPhaseForm')->name('assignRolesPhaseStep.getAssignRolesToPhaseForm');
     Route::post('assignRolesPhaseStep/getAssignRolesToPhaseStepForm', 'AssignRolesPhaseStepController@getAssignRolesToPhaseStepForm')->name('assignRolesPhaseStep.getAssignRolesToPhaseStepForm');

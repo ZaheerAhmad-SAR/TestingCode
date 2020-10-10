@@ -59,4 +59,9 @@ class Question extends Model
     {
         return $this->belongsToMany(ValidationRule::class, 'question_validations', 'question_id', 'validation_rule_id');
     }
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class, 'section_id', 'id');
+    }
 }
