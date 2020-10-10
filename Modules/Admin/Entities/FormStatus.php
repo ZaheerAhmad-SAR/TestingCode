@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 class FormStatus extends Model
 {
     protected $table = 'form_submit_status';
-    protected $fillable = ['id', 'form_filled_by_user_id', 'form_filled_by_user_role_id', 'subject_id', 'study_id', 'study_structures_id', 'phase_steps_id', 'form_type_id', 'form_status'];
+    protected $fillable = ['id', 'form_filled_by_user_id', 'form_filled_by_user_role_id', 'subject_id', 'study_id', 'study_structures_id', 'phase_steps_id', 'section_id', 'form_type_id', 'form_status'];
     protected $keyType = 'string';
 
     protected $attributes = [
@@ -63,6 +63,21 @@ class FormStatus extends Model
         return $spanStr;
     }
 
+    public static function putFormStatus_bkkkkk($request)
+    {
+        $sectionIds = $request->input('sectionId', []);
+        if (count($sectionIds) != 0) {
+            foreach ($sectionIds as $sectionId) {
+                $formStatusObj = self::putSingleSectionFormStatus($request, $sectionId);
+            }
+        } else {
+            $question = Question::find($request->questionId);
+            $sectionId = $question->section->id;
+            $formStatusObj = self::putSingleSectionFormStatus($request, $sectionId);
+        }
+        return ['id' => $formStatusObj->id, 'formStatus' => $formStatusObj->form_status];
+    }
+
     public static function putFormStatus($request)
     {
         $form_filled_by_user_id = auth()->user()->id;
@@ -81,12 +96,10 @@ class FormStatus extends Model
         if ($formStatusObj->form_status == 'no_status') {
             $formStatusObj = self::insertFormStatus($request, $getFormStatusArray);
         } elseif ($request->has(buildSafeStr($request->stepId, 'terms_cond_'))) {
-            $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
             $formStatusObj->edit_reason_text = $request->edit_reason_text;
             $formStatusObj->form_status = 'complete';
             $formStatusObj->update();
         }
-
         return ['id' => $formStatusObj->id, 'formStatus' => $formStatusObj->form_status];
     }
 

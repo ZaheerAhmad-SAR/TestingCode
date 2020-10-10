@@ -1,5 +1,5 @@
 @if (count($section->questions))
-<fieldset id="fieldset_{{ $stepIdStr }}" class="{{ $studyClsStr }} {{ $stepClsStr }}">
+<fieldset id="fieldset_{{ $stepIdStr }}" class="{{ $studyClsStr }} {{ $stepClsStr }} {{ $sectionClsStr }}">
     <div class="card p-2 mb-1">
         <input type="hidden" name="sectionId[]" value="{{ $section->id }}" />
             @foreach ($section->questions as $question)
@@ -15,6 +15,7 @@
                 $questionIdStr = buildSafeStr($question->id, '');
                 $fieldId = $field_name . '_' . $questionIdStr;
                 @endphp
+
                 @if ($question->form_field_type->field_type === 'Radio')
                     @include('admin::forms.form_fields.radio_field', ['question'=> $question, 'field_name'=> $field_name, 'questionIdStr'=> $questionIdStr, 'fieldId'=> $fieldId, 'answer'=> $answer,
                     'sectionClsStr'=>$sectionClsStr, 'sectionIdStr'=>$sectionIdStr])
@@ -41,7 +42,6 @@
                     'sectionClsStr'=>$sectionClsStr, 'sectionIdStr'=>$sectionIdStr])
                 @endif
             @endforeach
-
     </div>
 </fieldset>
 @endif

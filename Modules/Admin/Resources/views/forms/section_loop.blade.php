@@ -79,15 +79,22 @@ $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'no_status'
                                     $sectionClsStr = buildSafeStr($section->id, 'sec_cls_');
                                     $sectionIdStr = buildSafeStr($section->id, '');
                                     $sharedData = [
-                                    'studyId' => $studyId, 'studyClsStr' => $studyClsStr, 'subjectId' => $subjectId,
-                                    'phase'
-                                    => $phase,
-                                    'step' => $step, 'section' => $section, 'formStatusObj' => $formStatusObj,
-                                    'formStatus' => $formStatus, 'sectionIdStr' => $sectionIdStr,
-                                    'sectionClsStr' => $sectionClsStr, 'stepClsStr'=> $stepClsStr,
-                                    'key' => $key, 'first' => 0, 'last' => $last
+                                    'studyId' => $studyId,
+                                    'studyClsStr' => $studyClsStr,
+                                    'subjectId' => $subjectId,
+                                    'phase' => $phase,
+                                    'step' => $step,
+                                    'section' => $section,
+                                    'formStatusObj' => $formStatusObj,
+                                    'formStatus' => $formStatus,
+                                    'sectionIdStr' => $sectionIdStr,
+                                    'sectionClsStr' => $sectionClsStr,
+                                    'stepClsStr'=> $stepClsStr,
+                                    'key' => $key,
+                                    'first' => 0,
+                                    'last' => $last,
+                                    'getFormStatusArray'=>$getFormStatusArray
                                     ];
-
                                     @endphp
                                     <div class="tab-pane tab-pane_{{ $stepIdStr }} fade {{ $firstSection ? 'first_tab_' . $stepIdStr : '' }} {{ $firstSection ? 'active show' : '' }}"
                                         id="tab{{ $section->id }}">
@@ -116,13 +123,12 @@ $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'no_status'
                     }
                 }
                 validateAndSubmitForm(stepIdStr);
-            reloadPage();
+            //reloadPage();
             //hideReasonField(stepIdStr, stepClsStr);
         }
     }
 </script>
 @endpush
-
 @push('script_last')
     <script>
         $(document).ready(function() {

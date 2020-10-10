@@ -267,11 +267,11 @@
                 $("." + cls).prop('disabled', true);
             }
 
-            function globalDisableByClass(studyClsStr, sectionClsStr) {
+            function globalDisableByClass(studyClsStr, stepClsStr) {
                 if ($('#already_global_disabled').val() == 'no') {
                     $("." + studyClsStr).prop('disabled', true);
                     $('#already_global_disabled').val('yes')
-                    enableByClass(sectionClsStr);
+                    enableByClass(stepClsStr);
                 }
             }
 
