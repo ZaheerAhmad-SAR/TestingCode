@@ -35,11 +35,7 @@ class Question extends Model
 
     public function getAnswer($getAnswerArray)
     {
-        $answer = Answer::where(function ($q) use ($getAnswerArray) {
-            foreach ($getAnswerArray as $key => $value) {
-                $q->where($key, '=', $value);
-            }
-        })->first();
+        $answer = Answer::getAnswer($getAnswerArray);
         if (null === $answer) {
             $answer = new Answer();
         }

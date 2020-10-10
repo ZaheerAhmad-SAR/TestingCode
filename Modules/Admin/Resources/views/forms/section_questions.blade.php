@@ -1,6 +1,7 @@
 @if (count($section->questions))
+<fieldset id="fieldset_{{ $stepIdStr }}" class="{{ $studyClsStr }} {{ $stepClsStr }}">
     <div class="card p-2 mb-1">
-        <input type="hidden" name="sectionId" value="{{ $section->id }}" />
+        <input type="hidden" name="sectionId[]" value="{{ $section->id }}" />
             @foreach ($section->questions as $question)
                 @php
                 $getAnswerArray = [
@@ -42,4 +43,5 @@
             @endforeach
 
     </div>
+</fieldset>
 @endif

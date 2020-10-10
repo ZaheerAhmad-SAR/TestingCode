@@ -23,12 +23,10 @@ $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'no_status'
                     <input type="hidden" name="formTypeId" value="{{ $step->form_type_id }}" />
                     <input type="hidden" class="form_hid_editing_status_{{ $stepIdStr }}" name="form_editing_status_{{ $stepIdStr }}"
                         id="form_editing_status_{{ $stepIdStr }}" value="{{ $formStatus == 'resumable' ? 'yes' : 'no' }}" />
-                    <input type="hidden" class="form_hid_status_{{ $stepIdStr }}" name="form_status"
-                        id="form_hid_status_{{ $stepIdStr }}" value="{{ $formStatus }}" />
+
 
                 </form>
                 <form class="" method="POST" name="form_{{ $stepIdStr }}" id="form_{{ $stepIdStr }}">
-                    <fieldset id="fieldset_{{ $stepIdStr }}" class="{{ $studyClsStr }} {{ $stepClsStr }}">
                         <div class="wizard wizard-white mb-4">
                             <ul class="nav nav-tabs d-block d-sm-flex">
                                 @php
@@ -102,7 +100,6 @@ $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'no_status'
                                 @endforeach
                             </div>
                         </div>
-                    </fieldset>
                 </form>
             </div>
         </div>
@@ -111,7 +108,7 @@ $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'no_status'
 @include('queries::queries.query_popup')
 @push('script')
 <script>
-    function submitStepForms{{ $stepIdStr }}(stepIdStr, stepClsStr) {
+    function submitStepForm{{ $stepIdStr }}(stepIdStr, stepClsStr) {
         if (checkTermCond(stepIdStr)) {
                 if (isFormInEditMode(stepIdStr)) {
                     if (checkReason(stepIdStr) === false) {
@@ -119,7 +116,7 @@ $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'no_status'
                     }
                 }
                 validateAndSubmitForm(stepIdStr);
-            reloadPage();
+            //reloadPage();
             //hideReasonField(stepIdStr, stepClsStr);
         }
     }

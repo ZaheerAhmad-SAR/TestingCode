@@ -14,7 +14,15 @@ class Answer extends Model
 
     public function question()
     {
-        return $this->belongsTo(Question::class, 'question_id','id');
+        return $this->belongsTo(Question::class, 'question_id', 'id');
     }
 
+    public static function getAnswer($answerArray)
+    {
+        return Answer::where(function ($q) use ($answerArray) {
+            foreach ($answerArray as $key => $value) {
+                $q->where($key, 'like', $value);
+            }
+        })->first();
+    }
 }

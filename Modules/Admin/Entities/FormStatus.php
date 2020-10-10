@@ -3,6 +3,7 @@
 namespace Modules\Admin\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class FormStatus extends Model
 {
@@ -60,5 +61,45 @@ class FormStatus extends Model
         }
         $spanStr .= '</span>';
         return $spanStr;
+    }
+
+    public static function putFormStatus($request)
+    {
+        $form_filled_by_user_id = auth()->user()->id;
+        $form_filled_by_user_role_id = auth()->user()->id;
+        $getFormStatusArray = [
+            'form_filled_by_user_id' => $form_filled_by_user_id,
+            'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
+            'subject_id' => $request->subjectId,
+            'study_id' => $request->studyId,
+            'study_structures_id' => $request->phaseId,
+            'phase_steps_id' => $request->stepId,
+        ];
+
+        $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
+
+        if ($formStatusObj->form_status == 'no_status') {
+            $formStatusObj = self::insertFormStatus($request, $getFormStatusArray);
+        } elseif ($request->has(buildSafeStr($request->stepId, 'terms_cond_'))) {
+            $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
+            $formStatusObj->edit_reason_text = $request->edit_reason_text;
+            $formStatusObj->form_status = 'complete';
+            $formStatusObj->update();
+        }
+
+        return ['id' => $formStatusObj->id, 'formStatus' => $formStatusObj->form_status];
+    }
+
+    public static function insertFormStatus($request, $formStatusArray)
+    {
+        $id = Str::uuid();
+        $formStatusData = [
+            'id' => $id,
+            'form_type_id' => $request->formTypeId,
+            'edit_reason_text' => $request->edit_reason_text,
+            'form_status' => 'incomplete',
+        ] + $formStatusArray;
+        FormStatus::create($formStatusData);
+        return FormStatus::find($id);
     }
 }

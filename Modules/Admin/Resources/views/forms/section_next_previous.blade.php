@@ -1,9 +1,9 @@
 @if ($key === $first)
     <div class="d-flex">
         @if ((bool) $subjectId && ($formStatusObj->form_status === 'complete' || $formStatusObj->form_status === 'resumable'))
-            <button class="btn btn-warning" name="edit_form_button_{{ $stepIdStr }}"
+            <button type="button" class="btn btn-warning" name="edit_form_button_{{ $stepIdStr }}"
                 id="edit_form_button_{{ $stepIdStr }}"
-                onclick="openFormForEditing('{{ $stepIdStr }}', '{{ $stepClsStr }}', '{{ $sectionIdStr }}');"
+                onclick="openFormForEditing('{{ $stepIdStr }}', '{{ $stepClsStr }}');"
                 style="display: {{ $formStatusObj->form_status == 'resumable' ? 'none' : 'block' }};">
                 Edit Form
             </button>
@@ -42,7 +42,7 @@
             </div>
             <div class="col-md-1">
                 <button type="button" class="btn btn-success float-right"
-                    onclick="submitStepForms{{ $stepIdStr }}('{{ $stepIdStr }}', '{{ $stepClsStr }}');"
+                    onclick="submitStepForm{{ $stepIdStr }}('{{ $stepIdStr }}', '{{ $stepClsStr }}');"
                     id="submit_{{ $stepIdStr }}">Submit</button>
             </div>
         </div>

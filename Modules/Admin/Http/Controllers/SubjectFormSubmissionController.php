@@ -19,51 +19,34 @@ class SubjectFormSubmissionController extends Controller
 {
     public function submitForm(Request $request)
     {
-
-        $sectionId = $request->sectionId;
-        $section = Section::find($sectionId);
-        $questions = $section->questions;
-
-        foreach ($questions as $question) {
-            $this->putAnswerAndRevisionHistory($request, $question);
+        $formRevisionDataArray = ['edit_reason_text' => $request->input('edit_reason_text', '')];
+        $sectionIds = $request->sectionId;
+        foreach ($sectionIds as $sectionId) {
+            $section = Section::find($sectionId);
+            $questions = $section->questions;
+            foreach ($questions as $question) {
+                $formRevisionDataArray['form_data'][] = $this->putAnswer($request, $question);
+            }
         }
 
-        echo $this->putFormStatus($request);
+        $formStatusArray = FormStatus::putFormStatus($request);
+        FormRevisionHistory::putFormRevisionHistory($formRevisionDataArray, $formStatusArray['id']);
+
+        echo $formStatusArray['formStatus'];
     }
 
     public function submitQuestion(Request $request)
     {
+        $formRevisionDataArray = ['edit_reason_text' => ''];
         $question = Question::find($request->questionId);
-        $this->putAnswerAndRevisionHistory($request, $question);
-        echo $this->putFormStatus($request);
+        $formRevisionDataArray['form_data'][] = $this->putAnswer($request, $question);
+        $formStatusArray = FormStatus::putFormStatus($request);
+        FormRevisionHistory::putFormRevisionHistory($formRevisionDataArray, $formStatusArray['id']);
+        echo $formStatusArray['formStatus'];
     }
 
-    private function putFormStatus($request)
-    {
-        $form_filled_by_user_id = auth()->user()->id;
-        $form_filled_by_user_role_id = auth()->user()->id;
-        $getFormStatusArray = [
-            'form_filled_by_user_id' => $form_filled_by_user_id,
-            'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
-            'subject_id' => $request->subjectId,
-            'study_id' => $request->studyId,
-            'study_structures_id' => $request->phaseId,
-            'phase_steps_id' => $request->stepId,
-        ];
 
-        $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
-
-        if ($formStatusObj->form_status == 'no_status') {
-            $formStatusObj = $this->insertFormStatus($request, $getFormStatusArray);
-        } elseif ($request->has(buildSafeStr($request->stepId, 'terms_cond_'))) {
-            $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
-            $formStatusObj->edit_reason_text = $request->edit_reason_text;
-            $formStatusObj->form_status = 'complete';
-            $formStatusObj->update();
-        }
-        return $formStatusObj->form_status;
-    }
-    private function putAnswerAndRevisionHistory($request, $question)
+    private function putAnswer($request, $question)
     {
         $answerFixedArray = [];
         $answerFixedArray['study_id'] = $request->studyId;
@@ -72,7 +55,6 @@ class SubjectFormSubmissionController extends Controller
         $answerFixedArray['phase_steps_id'] = $request->stepId;
         $answerFixedArray['section_id'] = $question->section->id;
 
-        $formRevisionDataArray = ['edit_reason_text' => $request->input('edit_reason_text', '')];
         $form_field_name = $question->formFields->variable_name;
         $form_field_id = $question->formFields->id;
         if ($request->has($form_field_name)) {
@@ -86,11 +68,7 @@ class SubjectFormSubmissionController extends Controller
             $answerArray['question_id'] = $question->id;
             $answerArray['field_id'] = $form_field_id;
             /************************** */
-            $answerObj = Answer::where(function ($q) use ($answerArray) {
-                foreach ($answerArray as $key => $value) {
-                    $q->where($key, 'like', $value);
-                }
-            })->first();
+            $answerObj = Answer::getAnswer($answerArray);
             /************************** */
             if ($answerObj) {
                 $answerArray['answer'] = $answer;
@@ -101,57 +79,35 @@ class SubjectFormSubmissionController extends Controller
                 $answerObj = Answer::create($answerArray);
             }
             unset($answerArray);
-
-            $formRevisionDataArray['form_data'][] = $formDataArray;
         }
-        $this->putFormRevisionHistory($formRevisionDataArray);
+        return $formDataArray;
     }
 
-    private function putFormRevisionHistory($formRevisionDataArray, $formStatusId = 0)
-    {
-        $formRevisionHistory = new FormRevisionHistory();
-        $formRevisionHistory->id = Str::uuid();
-        $formRevisionHistory->form_submit_status_id = $formStatusId;
-        $formRevisionHistory->edit_reason_text = $formRevisionDataArray['edit_reason_text'];
-        $formRevisionHistory->form_data = json_encode($formRevisionDataArray['form_data']);
-        $formRevisionHistory->save();
-    }
+
 
     public function openSubjectFormToEdit(Request $request)
     {
         $form_filled_by_user_id = auth()->user()->id;
         $form_filled_by_user_role_id = auth()->user()->id;
 
-        $step = PhaseSteps::find($request->stepId);
-        foreach ($step->sections as $section) {
-            $getFormStatusArray = [
-                'form_filled_by_user_id' => $form_filled_by_user_id,
-                'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
-                'subject_id' => $request->subjectId,
-                'study_id' => $request->studyId,
-                'study_structures_id' => $request->phaseId,
-                'phase_steps_id' => $request->stepId,
-                'section_id' => $section->id,
-            ];
-            $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
-            if (null !== $formStatusObj) {
-                $formStatusObj->form_status = 'resumable';
-                $formStatusObj->update();
-            }
+        $getFormStatusArray = [
+            'form_filled_by_user_id' => $form_filled_by_user_id,
+            'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
+            'subject_id' => $request->subjectId,
+            'study_id' => $request->studyId,
+            'study_structures_id' => $request->phaseId,
+            'phase_steps_id' => $request->stepId,
+        ];
+        $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
+        if (null !== $formStatusObj) {
+            $formStatusObj->form_status = 'resumable';
+            $formStatusObj->update();
         }
+
         echo $formStatusObj->form_status;
     }
 
-    private function insertFormStatus($request, $getFormStatusArray)
-    {
-        $formStatusData = [
-            'id' => Str::uuid(),
-            'form_type_id' => $request->formTypeId,
-            'edit_reason_text' => $request->edit_reason_text,
-            'form_status' => 'incomplete',
-        ] + $getFormStatusArray;
-        return FormStatus::create($formStatusData);
-    }
+
 
     public function validateSectionQuestionsForm(Request $request)
     {
@@ -159,16 +115,19 @@ class SubjectFormSubmissionController extends Controller
         $returnArray['success'] = 'yes';
         $returnArray['error'] = '';
 
-        $sectionId = $request->sectionId;
-        $section = Section::find($sectionId);
-        $questions = $section->questions;
+        $sectionIds = $request->sectionId;
+        foreach ($sectionIds as $sectionId) {
+            $section = Section::find($sectionId);
+            $questions = $section->questions;
 
-        foreach ($questions as $question) {
-            $returnArray = $this->validateField($request, $question);
-            if ($returnArray['success'] == 'no') {
-                break;
+            foreach ($questions as $question) {
+                $returnArray = $this->validateField($request, $question);
+                if ($returnArray['success'] == 'no') {
+                    break;
+                }
             }
         }
+
         echo json_encode($returnArray);
     }
 

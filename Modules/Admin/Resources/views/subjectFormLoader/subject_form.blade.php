@@ -281,7 +281,7 @@
 
             function submitForm(stepIdStr) {
                 var submitFormFlag = true;
-                if (isFormInEditMode(sectionIdStr)) {
+                if (isFormInEditMode(stepIdStr)) {
                     if (checkReason(stepIdStr) === false) {
                         submitFormFlag = false;
                     }
@@ -302,7 +302,6 @@
                     type: 'POST',
                     data: frmData,
                     success: function(response) {
-                        $('#form_hid_status_' + stepIdStr).val(response);
                         $('.img_step_status_' + stepIdStr).html('<img src="{{url('/')}}/images/'+response+'.png"/>');
                     }
                 });
@@ -315,7 +314,6 @@
                     data: frmData,
                     success: function(response) {
                         console.log(response);
-                        $('#form_hid_status_' + stepIdStr).val(response);
                         $('.img_step_status_' + stepIdStr).html('<img src="{{url('/')}}/images/'+response+'.png"/>');
                     }
                 });
@@ -485,7 +483,6 @@
                 $('#edit_reason_text_' + stepIdStr).prop('required', true);
                 enableByClass(stepClsStr);
                 $('.form_hid_editing_status_' + stepIdStr).val('yes');
-                $('.form_hid_status_' + stepIdStr).val('resumable');
                 $('.img_step_status_' + stepIdStr).html('<img src="{{url('images/resumable.png')}}"/>');
             }
 
@@ -495,7 +492,6 @@
                 $('#edit_reason_text_' + stepIdStr).val('');
                 disableByClass(stepClsStr);
                 $('.form_hid_editing_status_' + stepIdStr).val('no');
-                $('.form_hid_status_' + stepIdStr).val('complete');
                 $('.img_step_status_' + stepIdStr).html('<img src="{{url('images/complete.png')}}"/>');
                 $('.nav-link').removeClass('active');
                 $('.first_navlink_' + stepIdStr).addClass('active');
