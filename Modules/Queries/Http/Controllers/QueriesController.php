@@ -24,8 +24,8 @@ class QueriesController extends Controller
     {
 
         $users  =   User::where('id','!=',\auth()->user()->id)->get();
-        //dd($users);
-        return view('queries::queries.index',compact('users'));
+        $queries = Query::all();
+        return view('queries::queries.chat',compact('users','queries'));
 
     }
 
@@ -45,32 +45,50 @@ class QueriesController extends Controller
      */
     public function store(Request $request)
     {
-
-     $remarks         = $request->post('assignedRemarks');
-     $queryAssignedTo = $request->post('queryAssignedTo');
-     $roles           = $request->post('assignedRoles');
-     $users           = $request->post('assignedUsers');
-     $id              = Str::uuid();
-
-            if ($queryAssignedTo == 'users')
+        $roles           = $request->post('assignedRoles');
+        $users           = $request->post('assignedUsers');
+        $remarks         = $request->post('assignedRemarks');
+        $module_id       = $request->post('module_id');
+        $queryAssignedTo = $request->post('queryAssignedTo');
+        $id              = Str::uuid();
+        if ($queryAssignedTo == 'users')
+        {
+            $query = Query::create([
+                'id'=>$id,
+                'queried_remarked_by_id'=>\auth()->user()->id,
+                'parent_query_id'=> 0,
+                'messages'=>$remarks,
+                'module_id'=>$module_id
+            ]);
+            foreach ($users as $user)
             {
-                $query           = Query::create([ 'id'=>$id, 'parent_query_id'=> 0,'messages'=>$remarks]);
-                foreach ($users as $user)
-                {
-                    $roles = (array)null;
-                    QueryUser::create(['id' => Str::uuid(), 'user_id' => $user, 'query_id' => $id]);
-                }
+                $roles = (array)null;
+                QueryUser::create([
+                    'id' => Str::uuid(),
+                    'user_id' => $user,
+                    'query_id' => $id
+                ]);
             }
-
-            if ($queryAssignedTo == 'roles')
+        }
+        if ($queryAssignedTo == 'roles')
+        {
+            $query  = Query::create([
+                'id'=>$id,
+                'queried_remarked_by_id'=>\auth()->user()->id,
+                'parent_query_id'=> 0,
+                'messages'=>$remarks,
+                'module_id'=>$module_id
+            ]);
+            foreach ($roles as $role)
             {
-                $query           = Query::create([ 'id'=>$id, 'parent_query_id'=> 0,'messages'=>$remarks]);
-                foreach ($roles as $role) {
-                    $users = (array)null;
-                    RoleQuery::create(['id' => Str::uuid(), 'roles_id' => $role, 'query_id' => $id]);
-                }
+                $users = (array)null;
+                RoleQuery::create([
+                    'id' => Str::uuid(),
+                    'roles_id' => $role,
+                    'query_id' => $id
+                ]);
             }
-
+        }
         return response()->json([$query,'success'=>'Queries is generate successfully!!!!']);
 
     }
@@ -82,6 +100,7 @@ class QueriesController extends Controller
      */
     public function show($id)
     {
+        dd('hitting');
         return view('queries::show');
     }
 
@@ -114,5 +133,10 @@ class QueriesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function queriesList()
+    {
+        return view('queries::queries.index');
     }
 }
