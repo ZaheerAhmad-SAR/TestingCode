@@ -116,7 +116,7 @@ $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'no_status'
                     }
                 }
                 validateAndSubmitForm(stepIdStr);
-            //reloadPage();
+            reloadPage();
             //hideReasonField(stepIdStr, stepClsStr);
         }
     }
