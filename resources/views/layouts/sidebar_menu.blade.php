@@ -68,7 +68,7 @@
                                         </a>
                                     </li>
                                 @endif
-                                
+
                             </ul>
                         </li>
                 </ul>
@@ -140,7 +140,7 @@
                                         Preferences
                                     </a>
                                 </li>
-                               
+
                             </ul>
                         </li>
                 </ul>
@@ -275,34 +275,31 @@
             </li>
             @endif
 
-
-            @if(hasPermission(auth()->user(),'activitylog.index'))
-                @if(hasPermission(auth()->user(),'systemtools.index'))
+                @if(hasPermission(auth()->user(),'systemtools.index') && empty(session('current_study')))
                 <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
                     <ul >
 
                         <li>
-                            <a href="{{route('activitylog.index')}}">
+                            <a href="{{route('trail_logs.list')}}">
                                 <i class="fas fa-history"></i>
                                 Audit Trail
                             </a>
                         </li>
                     </ul>
                 </li>
-                @else
+                @elseif(hasPermission(auth()->user(),'trail_logs.list'))
                     @if(Session::has('current_study'))
                     <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
                         <ul >
 
                             <li>
-                                <a href="{{route('activitylog.index')}}">
+                                <a href="{{route('trail_logs.list')}}">
                                     <i class="fas fa-history"></i>
                                     Audit Trail
                                 </a>
                             </li>
                         </ul>
                     </li>
-                    @endif
                 @endif
             @endif
         </ul>

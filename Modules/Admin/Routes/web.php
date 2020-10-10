@@ -80,12 +80,12 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
 
     // routes for form managment
-    
+
     //end
     // routes for study managment
     Route::resource('study', 'StudyStructureController');
-   
-    
+
+
     Route::post('studies/studyStatus', 'StudyController@studyStatus')->name('studies.studyStatus');
     Route::post('studies/cloneStudy', 'StudyController@cloneStudy')->name('studies.cloneStudy');
 
@@ -163,9 +163,9 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::post('studySite/insertCoordinators', 'StudySiteController@insertCoordinators')->name('studySite.insertCoordinators');
 
     Route::post('studySite/deleteSiteCoordinator', 'StudySiteController@deleteSiteCoordinator')->name('studySite.deleteSiteCoordinator');
-    
+
     // CHM-Amir
-    Route::get('trails-log', 'TrailLogController@index')->name('activitylog.index');
+    Route::get('trail_logs', 'TrailLogController@index')->name('trail_logs.list');
 });
 
 
