@@ -344,12 +344,12 @@
                                                 > Permission Allowed
                                             </div>
                                             <div class="col-md-3">
-                                                <label for="Name">Activity Log</label>
+                                                <label for="Name">Audit Trails</label>
                                             </div>
                                             <div class="col-md-3">
                                                 <?php foreach($permissions as $permission) { ?>
                                                 <input type="checkbox" name="activity_log" id="activity_log"
-                                                       <?php if($permission->name == 'activitylog.index') {?> checked <?php } } ?>
+                                                       <?php if($permission->name == 'trail_logs.list') {?> checked <?php } } ?>
                                                 > Permission Allowed
                                             </div>
                                         </div>

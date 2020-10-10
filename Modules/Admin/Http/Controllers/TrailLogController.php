@@ -14,14 +14,13 @@ class TrailLogController extends Controller
 {
     //
     public function index(Request $request) {
-
         // initialize arrays
-        $getLogs = [];
-        $eventSection = [];
-        $getUsers = [];
-        
+        $getLogs = '';
+        $eventSection = '';
+        $getUsers = '';
+
     	// check for system user Admin
-    	if(hasPermission(auth()->user(),'systemtools.index')) {
+    	if(hasPermission(auth()->user(),'systemtools.index') && empty(session('current_study'))) {
     		// get logs
             $getLogs = TrailLog::query();
             $getLogs = $getLogs->select('trail_logs.*', 'users.name')
@@ -82,11 +81,11 @@ class TrailLogController extends Controller
                                 ->get();
 
 
-    	} else if(hasPermission(auth()->user(),'activitylog.index')) {
+    	}
 
             // check if session for study is set
-            if (Session::has('current_study')) {
-    			
+        if (hasPermission(auth()->user(),'trail_logs.list') && !empty(session('current_study'))) {
+
                 //get logs for current study and user
                 $getLogs = TrailLog::query();
                 $getLogs = $getLogs->select('trail_logs.*', 'users.name')
@@ -125,8 +124,7 @@ class TrailLogController extends Controller
                                 ->toArray();
 
             } // study session ends
-
-    	} // user role echeck ends
+        // user role echeck ends
 
     	return view('admin::trail_log', compact('getLogs', 'eventSection','getUsers'));
     }
