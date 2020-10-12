@@ -127,6 +127,16 @@
                                         <td>
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                                @php
+                                                    $studyQuery = Modules\Queries\Entities\Query::where('module_id','=',$study->id)->get();
+                                                @endphp
+                                               @foreach($studyQuery as $query)
+                                                <div class="showQueries">
+                                                    <span class="ml-3" style="cursor: pointer;">
+                                                        <i class="fas fa-question-circle" data-id="{{$query->id}}" style="margin-top: 12px;">
+                                                        </i></span>
+                                                </div>
+                                                @endforeach
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                     <span class="dropdown-item">
                                                         <a href="javascript:void(0)" id="change-status" data-target-id="{{$study->id}}" data-toggle="modal" data-target="#change_status">
@@ -161,6 +171,7 @@
                                                         </span>
                                                 </div>
                                             </div>
+
                                         </td>
                                             @else
                                         <td></td>

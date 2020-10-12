@@ -43,24 +43,13 @@
                                     @endforeach
                                 </div>
                             </div>
-                            {{--                                <div class="form-group row statusInput">--}}
-                            {{--                                    <label for="Name" class="col-sm-4 col-form-label">Change status to:</label>--}}
-                            {{--                                    <div class="col-sm-8">--}}
-                            {{--                                        <select class="form-control" name="queries_status" id="queries_status">--}}
-                            {{--                                            <option value="">Open</option>--}}
-                            {{--                                            <option value="">Unconfirmed</option>--}}
-                            {{--                                            <option value="">Confirmed</option>--}}
-                            {{--                                            <option value="">Resolved</option>--}}
-                            {{--                                            <option value="">Closed</option>--}}
-                            {{--                                        </select>--}}
-                            {{--                                    </div>--}}
-                            {{--                                </div>--}}
                             <div class="form-group row remarksInput" style="display:none;">
                                 <label for="Name" class="col-sm-2 col-form-label">Remarks</label>
                                 <div class="col-sm-10">
                                     <textarea class="summernote" name="remarks" cols="2" rows="1" id="remarks"></textarea>
                                 </div>
                             </div>
+                            <input type="hidden" name="module_id" id="module_id" value="">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -92,7 +81,8 @@
 <script type="text/javascript">
 
     $('.create-new-queries').click(function () {
-        // $('#btn-save').val("create-study");
+        var id = $(this).attr('data-id');
+        $('#module_id').val(id);
         $('#queriesForm').trigger("reset");
         $('#queries-modal').modal('show');
         //$('#queries-modal').html("Add Queries");
@@ -107,7 +97,7 @@
                 $(".usersInput").show();
                 $(".remarksInput").show();
                 $(".rolesInput").hide();
-                $('#remarks').val('');
+                $("#remarks").summernote("reset");
 
             }
             if ($(this).attr("value")=="roles")
@@ -115,7 +105,7 @@
                 $('.usersInput').css('display','none');
                 $(".rolesInput").show();
                 $(".remarksInput").show();
-                $('#remarks').val('');
+                $("#remarks").summernote("reset");
                 $(".select2-selection__choice").remove();
             }
         });
@@ -123,6 +113,8 @@
 
     $('#savequeries').click(function (){
         var queryAssignedTo = $("input[name='assignQueries']:checked").val();
+        var module_id = $('#module_id').val();
+        //console.log(module_id);
         if (queryAssignedTo == 'users')
         {
             var assignedUsers = $('#users').val();
@@ -130,10 +122,6 @@
         }
         if(queryAssignedTo =='roles')
         {
-            // var assignedRoles = $("input[name='roles']:checked").map(function() {
-            //     return this.value;
-            // }).get().join(',');
-
             var assignedRoles = $('.ads_Checkbox:checked').map(function () {
                 return this.value;
             }).get();
@@ -146,19 +134,22 @@
             data: {
                 "_token": "{{ csrf_token() }}",
                 "_method": 'POST',
-                'assignedUsers': assignedUsers,
-                'assignedRemarks': assignedRemarks,
+                'module_id'      :module_id,
+                'assignedUsers'  :assignedUsers,
+                'assignedRemarks':assignedRemarks,
                 'queryAssignedTo':queryAssignedTo,
-                'assignedRoles':assignedRoles
+                'assignedRoles'  :assignedRoles,
             },
-            success: function(response){
-                //$("#addqueries-close").click();
-                // $('.success-msg').html('');
-                // $('.success-msg').html('Operation Done!')
-                // $('.success-alert').slideDown('slow');
-                // tId=setTimeout(function(){
-                //     $(".success-alert").slideUp('slow');
-                // }, 3000);
+            success: function(response)
+            {
+                var module_id = response[0].module_id;
+                console.log(module_id);
+                $("#queriesForm")[0].reset();
+                $("#remarks").summernote("reset");
+                $('#OptionsGroupEditForm').modal('hide');
+                window.setTimeout(function () {
+                    window.location.reload();
+                }, 100);
             }
         });
 
