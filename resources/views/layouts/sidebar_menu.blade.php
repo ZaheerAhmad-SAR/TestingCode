@@ -276,7 +276,7 @@
             </li>
             @endif
 
-                @if(hasPermission(auth()->user(),'systemtools.index'))
+                @if(hasPermission(auth()->user(),'systemtools.index') && hasPermission(auth()->user(),'trail_logs.list'))
                 <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
                     <ul >
 

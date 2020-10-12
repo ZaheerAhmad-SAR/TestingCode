@@ -94,7 +94,7 @@
                                 <select id="event_section" name="event_section" class="form-control filter-form-data">
                                     <option value="">All Sections</option>
                                     @foreach($eventSection as $key => $section)
-                                    <option @if(request()->event_section == $key) selected @endif value="{{$key}}">{{$section}}</option>
+                                    <option @if(request()->event_section == $section) selected @endif value="{{$section}}">{{$section}}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -273,6 +273,7 @@
     // selct initialize
     $('.user_name').select2();
     $('select[name="event_section"]').select2();
+    $('select[name="event_study"]').select2();
 
 </script>
 @endsection

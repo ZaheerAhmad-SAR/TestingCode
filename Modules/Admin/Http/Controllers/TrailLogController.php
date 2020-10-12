@@ -23,7 +23,7 @@ class TrailLogController extends Controller
         $getStudies = [];
 
     	// check for system user Admin
-    	if(hasPermission(auth()->user(),'systemtools.index')) {
+    	if(hasPermission(auth()->user(),'systemtools.index') && hasPermission(auth()->user(),'trail_logs.list')) {
     		// get logs
             $getLogs = TrailLog::query();
             $getLogs = $getLogs->select('trail_logs.*', 'users.name')
@@ -130,7 +130,7 @@ class TrailLogController extends Controller
 
                 //get event sections
                 $eventSection = TrailLog::GroupBy('event_section')
-                                ->where('study_id', Session::get('current_study'))
+                                //->where('study_id', Session::get('current_study'))
                                 ->where('user_id', Auth::user()->id)
                                 ->pluck('event_section')
                                 ->toArray();
