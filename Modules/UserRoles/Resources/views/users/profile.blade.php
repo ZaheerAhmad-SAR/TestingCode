@@ -35,19 +35,46 @@
                         @method('GET')
                         <div class="modal-body">
                             <div class="tab-content" id="nav-tabContent">
-                                    <div class="form-group row" style="margin-top: 10px;">
-                                        <label for="Name" class="col-md-3">Name</label>
-                                        <div class="{!! ($errors->has('name')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
+                                <div class="form-group row" style="margin-top: 10px;">
+                                    <div class="col-md-2">
+                                    <label for="Name">Title</label>
+                                    </div>
+                                    <div class="{!! ($errors->has('name')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <select class="form-control dropdown" name="title">
+                                            <option value="">Select Title</option>
+                                            <option value="mr">Mr.</option>
+                                            <option value="mrs">Mrs.</option>
+                                            <option value="miss">Miss</option>
+                                        </select>
+                                        @error('name')
+                                        <span class="text-danger small">{{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="Name">Name</label>
+                                    </div>
+                                        <div class="{!! ($errors->has('name')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
                                             <input type="text" class="form-control" required="required" id="name" name="name" value="{{$user->name}}">
                                             @error('name')
                                             <span class="text-danger small">{{ $message }} </span>
                                             @enderror
                                         </div>
                                     </div>
+                                </div>
                                     <div class="form-group row">
-                                        <label for="Email" class="col-md-3">Email</label>
-                                        <div class="{!! ($errors->has('email')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
-                                            <input type="email" class="form-control" name="email" id="email" required="required" value="{!! $user->email !!}"> @error('email')
+                                        <div class="col-md-2">
+                                        <label for="Email">Email</label>
+                                        </div>
+                                        <div class="{!! ($errors->has('email')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                            <input type="email" class="form-control" name="email" id="email" disabled required="required" value="{!! $user->email !!}"> @error('email')
+                                            <span class="text-danger small"> {{ $message }} </span>
+                                            @enderror
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label for="Phone">Phone</label>
+                                        </div>
+                                        <div class="{!! ($errors->has('phone')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                            <input type="text" class="form-control" name="phone" id="phone" required="required" value="{!! $user->phone !!}"> @error('phone')
                                             <span class="text-danger small"> {{ $message }} </span>
                                             @enderror
                                         </div>
