@@ -96,6 +96,9 @@
                             <div class="col-md-2">
                                 <img src="{{url('images/not_required.png')}}"/>&nbsp;&nbsp;Not Required
                             </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/query.png')}}"/>&nbsp;&nbsp;Query
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -127,9 +130,7 @@
                                                     @if (count($phase->phases))
                                                         @php
                                                         $firstStep = true;
-                                                        $steps =
-                                                        \Modules\Admin\Entities\PhaseSteps::phaseStepsbyRoles($phase->id,
-                                                        $userRoleIds);
+                                                        $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($phase->id);
                                                         @endphp
                                                         @foreach ($steps as $step)
                                                             @php
@@ -180,8 +181,7 @@
                                         @foreach ($visitPhases as $phase)
                                             @php
                                             $phaseIdStr = buildSafeStr($phase->id, 'phase_cls_');
-                                            $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyRoles($phase->id,
-                                            $userRoleIds);
+                                            $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($phase->id);
                                             @endphp
                                             @foreach ($steps as $step)
                                                 @php
@@ -221,283 +221,6 @@
             </div>
             <!-- END: Card DATA-->
         </div>
-    @stop
-
-    @push('styles')
-        @include('admin::forms.form_css')
-    @endpush
-
-    @push('script')
-        <script>
-            function showAlert(message){
-                alert(message);
-                /*
-                var field = $("#previous_alert_message");
-                var previous_alert_message = field.val();
-                if(previous_alert_message != message){
-                    alert(message);
-                    field.val(message);
-                }else{
-                    field.val('');
-                }
-                */
-            }
-            function showSections(step_id_class) {
-                $('.all_step_sections').hide(500);
-                $('.' + step_id_class).show(500);
-            }
-
-            function disableAllFormFields(formId) {
-                $("#" + formId + " input").prop('disabled', true);
-            }
-
-            function enableAllFormFields(formId) {
-                $("#" + formId + " input").prop('disabled', false);
-            }
-
-            function disableField(fieldId) {
-                $("#" + fieldId).prop('disabled', true);
-            }
-
-            function enableField(fieldId) {
-                $("#" + fieldId).prop('disabled', false);
-            }
-
-            function disableByClass(cls) {
-                $("." + cls).prop('disabled', true);
-            }
-
-            function globalDisableByClass(studyClsStr, stepClsStr) {
-                if ($('#already_global_disabled').val() == 'no') {
-                    $("." + studyClsStr).prop('disabled', true);
-                    $('#already_global_disabled').val('yes')
-                    enableByClass(stepClsStr);
-                }
-            }
-
-            function enableByClass(cls) {
-                $("." + cls).prop('disabled', false);
-            }
-
-            function submitForm(stepIdStr) {
-                var submitFormFlag = true;
-                if (isFormInEditMode(stepIdStr)) {
-                    if (checkReason(stepIdStr) === false) {
-                        submitFormFlag = false;
-                    }
-                }
-                if (submitFormFlag) {
-                    var term_cond = $('#terms_cond_' + stepIdStr).val();
-                    var reason = $('#edit_reason_text_' + stepIdStr).val();
-                    var frmData = $("#form_master_" + stepIdStr).serialize() + '&' + $("#form_" + stepIdStr)
-                        .serialize() +
-                        '&terms_cond_' + stepIdStr + '=' + term_cond + '&' + 'edit_reason_text=' + reason;
-                        submitRequest(frmData, stepIdStr);
-                }
-            }
-
-            function submitRequest(frmData, stepIdStr) {
-                $.ajax({
-                    url: "{{ route('SubjectFormSubmission.submitStudyPhaseStepQuestionForm') }}",
-                    type: 'POST',
-                    data: frmData,
-                    success: function(response) {
-                        $('.img_step_status_' + stepIdStr).html('<img src="{{url('/')}}/images/'+response+'.png"/>');
-                    }
-                });
-            }
-
-            function submitFieldRequest(frmData, stepIdStr) {
-                $.ajax({
-                    url: "{{ route('SubjectFormSubmission.submitStudyPhaseStepQuestion') }}",
-                    type: 'POST',
-                    data: frmData,
-                    success: function(response) {
-                        console.log(response);
-                        $('.img_step_status_' + stepIdStr).html('<img src="{{url('/')}}/images/'+response+'.png"/>');
-                    }
-                });
-            }
-
-            function validateFormField(stepIdStr, questionId, field_name, fieldId) {
-                    var field_val;
-                    field_val = getFormFieldValue(stepIdStr, field_name, fieldId);
-                    var frmData = $("#form_master_" + stepIdStr).serialize()  + '&questionId=' + questionId + '&' + field_name + '=' + field_val;
-                    return validateSingleQuestion(frmData);
-
-            }
-
-            function validateForm(stepIdStr) {
-                return new Promise(function (resolve, reject) {
-                    var frmData = $("#form_master_" + stepIdStr).serialize() + '&' + $("#form_" + stepIdStr).serialize();
-                    $.ajax({
-                        url: "{{ route('subjectFormSubmission.validateSectionQuestionsForm') }}",
-                        type: 'POST',
-                        data: frmData,
-                        dataType: 'JSON',
-                        success: function(response) {
-                            if(response.success == 'no'){
-                                reject(response.error);
-                            }else{
-                                resolve(response.success);
-                            }
-                        }
-                    });
-                })
-            }
-
-            function validateSingleQuestion(frmData) {
-                return new Promise(function (resolve, reject) {
-                $.ajax({
-                    url: "{{ route('subjectFormSubmission.validateSingleQuestion') }}",
-                    type: 'POST',
-                    data: frmData,
-                    dataType: 'JSON',
-                    success: function(response) {
-                        if(response.success == 'no'){
-                            reject(response.error);
-                        }else{
-                            resolve(response.success);
-                        }
-                    }
-                });
-                })
-            }
-            function validateAndSubmitForm(stepIdStr){
-                const promise = validateForm(stepIdStr);
-                promise
-                .then((data) => {
-                    console.log(data);
-                    submitForm(stepIdStr);
-                })
-                .catch((error) => {
-                    console.log(error);
-                    handleValidationErrors(error);
-                });
-            }
-            function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, field_name, fieldId){
-                checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
-                const validationPromise = validateFormField(stepIdStr, questionId, field_name, fieldId);
-                validationPromise
-                .then((data) => {
-                    console.log(data)
-                    submitFormField(stepIdStr, questionId, field_name, fieldId);
-                })
-                .then((data) => {
-                    console.log(data)
-                    validateDependentFields(sectionIdStr, questionId, field_name, fieldId);
-                })
-                .catch((error) => {
-                    console.log(error)
-                    handleValidationErrors(error);
-                });
-            }
-            function checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId){}
-            function validateDependentFields(sectionIdStr, questionId, field_name, fieldId){}
-            function handleValidationErrors(error) { alert(error); }
-            function reloadPage(stepClsStr) {
-                setTimeout(function() {
-                    //disableByClass(stepClsStr);
-                    location.reload();
-                }, 1000);
-            }
-
-            function checkTermCond(stepIdStr) {
-                if ($('#terms_cond_' + stepIdStr).prop('checked')) {
-                    return true;
-                } else {
-                    showAlert('Please acknowledge the truthfulness and correctness of information being submitting in this form!');
-                    return false;
-                }
-            }
-
-            function isFormInEditMode(stepIdStr) {
-                var formEditStatus = $('#form_editing_status_' + stepIdStr).val();
-                var returnVal = false;
-                if (formEditStatus == 'yes') {
-                    returnVal = true;
-                }
-                return returnVal;
-            }
-
-
-            function checkReason(stepIdStr) {
-                var returnVal = false;
-                if (($('#edit_reason_text_' + stepIdStr).val() == '')) {
-                    showAlert('Please tell the reason to edit');
-                } else {
-                    returnVal = true;
-                }
-                return returnVal;
-            }
-
-            function submitFormField(stepIdStr, questionId, field_name, fieldId) {
-                var submitFormFlag = true;
-                if (submitFormFlag) {
-                    var frmData = $("#form_master_" + stepIdStr).serialize();
-                    var field_val;
-                    field_val = getFormFieldValue(stepIdStr, field_name, fieldId);
-                    frmData = frmData + '&' + field_name + '=' + field_val + '&' + 'questionId=' + questionId;
-                    submitFieldRequest(frmData, stepIdStr);
-                }
-            }
-
-            function getFormFieldValue(stepIdStr, field_name, fieldId){
-                var field_val;
-                var checkedCheckBoxes = [];
-                if ($('#' + fieldId).is("textarea")) {
-                        field_val = $('#' + fieldId).val();
-                    } else if ($('#' + fieldId).is("select")) {
-                        field_val = $('#' + fieldId).find(":selected").val();
-                    } else if ($('#form_' + stepIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
-                        field_val = $('#form_' + stepIdStr + ' input[name="' + field_name + '"]:checked').val();
-                    } else if ($('#form_' + stepIdStr + ' input[name="' + field_name + '"]').attr('type') == 'checkbox') {
-
-                        $('#form_' + stepIdStr + ' input[name="' + field_name + '"]:checked').each(function(){
-                            checkedCheckBoxes.push($(this).val());
-                        });
-                        field_val = checkedCheckBoxes.join(",");
-
-                    } else {
-                        field_val = $('#form_' + stepIdStr + ' input[name="' + field_name + '"]').val();
-                    }
-                    return field_val;
-            }
-
-            function openFormForEditing(stepIdStr, stepClsStr) {
-                var frmData = $("#form_master_" + stepIdStr).serialize();
-                frmData = frmData + '&' + 'open_form_to_edit=1';
-                $.ajax({
-                    url: "{{ route('SubjectFormSubmission.openSubjectFormToEdit') }}",
-                    type: 'POST',
-                    data: frmData,
-                    success: function(response) {
-                        showReasonField(stepIdStr, stepClsStr);
-                    }
-                });
-            }
-
-            function showReasonField(stepIdStr, stepClsStr) {
-                $("#edit_form_div_" + stepIdStr).show(500);
-                $("#edit_form_button_" + stepIdStr).hide(500);
-                $('#edit_reason_text_' + stepIdStr).prop('required', true);
-                enableByClass(stepClsStr);
-                $('.form_hid_editing_status_' + stepIdStr).val('yes');
-                $('.img_step_status_' + stepIdStr).html('<img src="{{url('images/resumable.png')}}"/>');
-            }
-
-            function hideReasonField(stepIdStr, stepClsStr) {
-                $("#edit_form_div_" + stepIdStr).hide(500);
-                $('#edit_reason_text_' + stepIdStr).prop('required', false);
-                $('#edit_reason_text_' + stepIdStr).val('');
-                disableByClass(stepClsStr);
-                $('.form_hid_editing_status_' + stepIdStr).val('no');
-                $('.img_step_status_' + stepIdStr).html('<img src="{{url('images/complete.png')}}"/>');
-                $('.nav-link').removeClass('active');
-                $('.first_navlink_' + stepIdStr).addClass('active');
-                $('.tab-pane_' + stepIdStr).removeClass('active show');
-                $('.first_tab_' + stepIdStr).addClass('active show');
-            }
-
-        </script>
-    @endpush
+        @include('admin::subjectFormLoader.subject_form_wait_popup')
+        @stop
+  @include('admin::subjectFormLoader.subject_form_css_js')

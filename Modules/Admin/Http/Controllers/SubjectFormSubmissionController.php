@@ -55,7 +55,7 @@ class SubjectFormSubmissionController extends Controller
         $answerFixedArray['phase_steps_id'] = $request->stepId;
         $answerFixedArray['section_id'] = $question->section->id;
 
-        $form_field_name = $question->formFields->variable_name;
+        $form_field_name = buildFormFieldName($question->formFields->variable_name);
         $form_field_id = $question->formFields->id;
         if ($request->has($form_field_name)) {
             $answer = $request->{$form_field_name};
@@ -145,7 +145,7 @@ class SubjectFormSubmissionController extends Controller
         $returnArray['success'] = 'yes';
         $returnArray['error'] = '';
 
-        $form_field_name = $question->formFields->variable_name;
+        $form_field_name = buildFormFieldName($question->formFields->variable_name);
         if ($request->has($form_field_name)) {
 
             /************************************** */

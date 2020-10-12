@@ -11,7 +11,7 @@
                 ];
                 $answer = $question->getAnswer($getAnswerArray);
 
-                $field_name = $question->formfields->variable_name;
+                $field_name = buildFormFieldName($question->formFields->variable_name);
                 $questionIdStr = buildSafeStr($question->id, '');
                 $fieldId = $field_name . '_' . $questionIdStr;
                 @endphp

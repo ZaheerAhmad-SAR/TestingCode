@@ -117,13 +117,13 @@ $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'no_status'
 <script>
     function submitStepForm{{ $stepIdStr }}(stepIdStr, stepClsStr) {
         if (checkTermCond(stepIdStr)) {
-                if (isFormInEditMode(stepIdStr)) {
-                    if (checkReason(stepIdStr) === false) {
-                        stopJsHere();
-                    }
+            if (isFormInEditMode(stepIdStr)) {
+                if (checkReason(stepIdStr) === false) {
+                    stopJsHere();
                 }
-                validateAndSubmitForm(stepIdStr);
-            //reloadPage();
+            }
+            validateAndSubmitForm(stepIdStr);
+            reloadPage();
             //hideReasonField(stepIdStr, stepClsStr);
         }
     }
