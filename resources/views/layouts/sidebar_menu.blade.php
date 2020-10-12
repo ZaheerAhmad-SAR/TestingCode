@@ -258,10 +258,11 @@
                     <li class="dropdown"><a href="#"><i class="fab fa-rocketchat"></i>Queries</a>
                         <ul class="sub-menu">
                             <li>
-                                <a href="#">
+                                <a href="{{route('queries.queriesList')}}">
                                     Overall Data Report
                                 </a>
                             </li>
+
                             @if(hasPermission(auth()->user(),'queries.index'))
                             <li>
                                 <a href="{{route('queries.index')}}">
