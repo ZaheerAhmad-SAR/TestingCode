@@ -39,12 +39,13 @@ Route::group(['middleware' => ['auth','web','roles']],function(){
     Route::resource('eligibility','EligibilityController');
     Route::resource('studyRoles','StudyRolesController');
     Route::get('update_profile', 'UserController@update_profile')->name('users.updateProfile');
-    Route::get('update_user/{id}', 'UserController@update_user')->name('users.updateUser');
     Route::post('users/assignusers', 'UserController@assign_users')->name('users.assignUsers');
+    Route::post('users/resetpassword', 'UserController@resetpassword')->name('users.resetpassword');
 
 
 });
 Route::group(['middleware' => ['auth','web']],function(){
+    Route::get('update_user/{id}', 'UserController@update_user')->name('users.updateUser');
     Route::get('change-role/{role_id}','DashboardController@switch_role')->name('switch_role');
 
 });

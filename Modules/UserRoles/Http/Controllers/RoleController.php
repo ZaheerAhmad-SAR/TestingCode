@@ -498,9 +498,13 @@ class RoleController extends Controller
                     ->orwhere('name', '=', 'studyusers.index')
                     ->orwhere('name', '=', 'users.create')
                     ->orwhere('name', '=', 'users.index')
+                    ->orwhere('name', '=', 'users.assignUsers')
+                    ->orwhere('name', '=', 'users.update_user')
                     ->orwhere('name', '=', 'users.store')
                     ->orwhere('name', '=', 'users.edit')
                     ->orwhere('name', '=', 'users.update')
+                    ->orwhere('name', '=', 'users.destroy')
+                    ->orwhere('name', '=', 'users.show')
                     ->orwhere('name', '=', 'studyRoles.index')
                     ->orwhere('name', '=', 'studySite.index')
                     ->orwhere('name', '=', 'studySite.create')
@@ -617,9 +621,6 @@ class RoleController extends Controller
 
                 }
             }
-
-
-
 
         $oldRole = [];
 
@@ -1120,7 +1121,11 @@ class RoleController extends Controller
                 ->orwhere('name', '=', 'users.index')
                 ->orwhere('name', '=', 'users.create')
                 ->orwhere('name', '=', 'users.store')
+                ->orwhere('name', '=', 'users.assignUsers')
+                ->orwhere('name', '=', 'users.update_user')
                 ->orwhere('name', '=', 'users.edit')
+                ->orwhere('name', '=', 'users.destroy')
+                ->orwhere('name', '=', 'users.show')
                 ->orwhere('name', '=', 'users.update')
                 ->orwhere('name', '=', 'studyRoles.index')
                 ->orwhere('name', '=', 'studySite.index')
@@ -1181,7 +1186,6 @@ class RoleController extends Controller
                     'role_id' => $role->id,
                     'permission_id' => $permission->id,
                 ]);
-
             }
         }
 
