@@ -3,6 +3,7 @@
 namespace Modules\UserRoles\Http\Controllers;
 
 use App\User;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -15,6 +16,7 @@ use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Http\Requests\UserRequest;
 use Illuminate\Support\Str;
+
 
 
 
@@ -72,6 +74,12 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
+       $validate = Validator::make($request->all(), [
+            'name'      =>  'required',
+            'email'      =>  'required|email|unique:users,email,'.$this->user->id,
+            'password' => 'required|string|min:8|nullable|confirmed'
+        ]);
+       dd($validate);
         if(session('current_study')){
             $id = Str::uuid();
             $user = User::create([
@@ -216,10 +224,17 @@ class UserController extends Controller
      * @return Response
      */
     public function update_user(Request $request, $id){
+        $validate = Validator::make($request->all(), [
+            'name'      =>  'required',
+            'email'      =>  'required|email|unique:users,email,',
+            'password' => 'required|string|min:8|nullable|confirmed'
+        ]);
+       // dd($validate);
         $user = User::where('id', $id)->first();
         $user->title  =  $request->title;
         $user->name  =  $request->name;
         $user->phone =  $request->phone;
+        $user->password =   Hash::make($request->password);
         $user->save();
         return redirect()->route('users.updateProfile')->with('message', 'Record Updated Successfully!');
     }
@@ -227,8 +242,14 @@ class UserController extends Controller
     public function resetpassword(Request $request){
         dd('resetpassword');
     }
-    public function update(Request $request, $id)
+    public function update(UserRequest $request, $id)
     {
+        $validate = $this->validate([
+            'name'      =>  'required',
+            'email'      =>  'required|email|unique:users,email,'.$this->user->id,
+            'password' => 'required|string|min:8|nullable|confirmed'
+        ]);
+        dd($validate);
         // get old user data for trail log
         $oldUser = User::where('id', $id)->first();
 

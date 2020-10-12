@@ -52,7 +52,6 @@
                                             @enderror
                                         </div>
                                     </div>
-{{--
                                     <div class="form-group row">
                                         <label for="password" class="col-md-3">Password</label>
                                         <div class="{!! ($errors->has('password')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
@@ -71,7 +70,6 @@
                                             @enderror
                                         </div>
                                     </div>
---}}
                                 </div>
                                 <div class="tab-pane fade" id="nav-Modalities" role="tabpanel" aria-labelledby="nav-Validation-tab">
                                     <div class="form-group row" style="margin-top: 10px;">
