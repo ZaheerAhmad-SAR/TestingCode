@@ -148,6 +148,7 @@ class UserController extends Controller
             'role_id'   => $request->user_role,
             'study_id'  => session('current_study')
         ]);
+
         return redirect()->route('studyusers.index');
     }
 
@@ -159,8 +160,19 @@ class UserController extends Controller
     }
     public function show($id)
     {
-        $user = User::find($id);
-        $user->delete();
+        if (!empty(session('current_study'))){
+           $user = UserRole::where('user_id','=',$id)->where('study_id','=',session('current_study'))->get();
+           foreach ($user as $studyuser){
+              // dd('study admin has got permission',$studyuser);
+              $studyuser->delete();
+           }
+        }
+        else
+        {
+            $user = User::find($id);
+            $user->delete();
+
+        }
         return redirect()->route('users.index')->with('success','User deleted');
     }
     /**
@@ -205,10 +217,15 @@ class UserController extends Controller
      */
     public function update_user(Request $request, $id){
         $user = User::where('id', $id)->first();
+        $user->title  =  $request->title;
         $user->name  =  $request->name;
-        $user->email =  $request->email;
+        $user->phone =  $request->phone;
         $user->save();
         return redirect()->route('users.updateProfile')->with('message', 'Record Updated Successfully!');
+    }
+
+    public function resetpassword(Request $request){
+        dd('resetpassword');
     }
     public function update(Request $request, $id)
     {
@@ -245,6 +262,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
+        dd('delete');
         $user = User::find($id);
     }
 }

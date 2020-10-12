@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddUserIdAsForeignKeyToUserRolesTable extends Migration
+class AddColumnsToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class AddUserIdAsForeignKeyToUserRolesTable extends Migration
      */
     public function up()
     {
-        Schema::table('user_roles', function (Blueprint $table) {
-            $table->foreign('user_id')->references('id')->on('users');
-
+        Schema::table('users', function (Blueprint $table) {
+            $table->enum('title',array('mr','mrs,','miss'))->nullable()->after('id');
+            $table->integer('phone')->nullable()->after('email');
         });
     }
 
@@ -26,8 +26,7 @@ class AddUserIdAsForeignKeyToUserRolesTable extends Migration
      */
     public function down()
     {
-        Schema::table('user_roles', function (Blueprint $table) {
-            $table->dropForeign('user_id');
+        Schema::table('users', function (Blueprint $table) {
 
         });
     }

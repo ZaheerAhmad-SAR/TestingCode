@@ -1,19 +1,7 @@
 @if (count($section->questions))
-    <div class="form card mb-1">
-        <form name="form_master_{{ $sectionIdStr }}" id="form_master_{{ $sectionIdStr }}">
-            @csrf
-            <input type="hidden" name="studyId" value="{{ $studyId }}" />
-            <input type="hidden" name="subjectId" value="{{ $subjectId }}" />
-            <input type="hidden" name="phaseId" value="{{ $phase->id }}" />
-            <input type="hidden" name="stepId" value="{{ $step->step_id }}" />
-            <input type="hidden" name="formTypeId" value="{{ $step->form_type_id }}" />
-            <input type="hidden" name="sectionId" value="{{ $section->id }}" />
-            <input type="hidden" class="form_hid_editing_status_{{ $stepIdStr }}" name="form_editing_status" id="form_editing_status" value="{{ ($formStatus == 'resumable')? 'yes':'no' }}" />
-            <input type="hidden" class="form_hid_status_{{ $stepIdStr }}" name="form_status" id="form_status" value="{{ $formStatus }}" />
-
-        </form>
-        <form class="card-body" method="POST" name="form_{{ $sectionIdStr }}" id="form_{{ $sectionIdStr }}">
-            <fieldset id="fieldset_{{$sectionIdStr}}" class="{{ $studyClsStr }} {{ $stepClsStr }} {{ $sectionClsStr }}">
+<fieldset id="fieldset_{{ $stepIdStr }}" class="{{ $studyClsStr }} {{ $stepClsStr }} {{ $sectionClsStr }}">
+    <div class="card p-2 mb-1">
+        <input type="hidden" name="sectionId[]" value="{{ $section->id }}" />
             @foreach ($section->questions as $question)
                 @php
                 $getAnswerArray = [
@@ -23,10 +11,11 @@
                 ];
                 $answer = $question->getAnswer($getAnswerArray);
 
-                $field_name = $question->formfields->variable_name;
+                $field_name = buildFormFieldName($question->formFields->variable_name);
                 $questionIdStr = buildSafeStr($question->id, '');
                 $fieldId = $field_name . '_' . $questionIdStr;
                 @endphp
+
                 @if ($question->form_field_type->field_type === 'Radio')
                     @include('admin::forms.form_fields.radio_field', ['question'=> $question, 'field_name'=> $field_name, 'questionIdStr'=> $questionIdStr, 'fieldId'=> $fieldId, 'answer'=> $answer,
                     'sectionClsStr'=>$sectionClsStr, 'sectionIdStr'=>$sectionIdStr])
@@ -53,18 +42,6 @@
                     'sectionClsStr'=>$sectionClsStr, 'sectionIdStr'=>$sectionIdStr])
                 @endif
             @endforeach
-        </fieldset>
-        </form>
     </div>
-    @push('script_last')
-        <script>
-        $( document ).ready(function() {
-            if($('#form_master_{{ $sectionIdStr }} #form_status').val() != 'complete'){
-                globalDisableByClass('{{ $studyClsStr }}', '{{ $stepClsStr }}');
-            }else{
-                hideReasonField('{{ $stepIdStr }}', '{{ $stepClsStr }}');
-            }
-        });
-        </script>
-    @endpush
+</fieldset>
 @endif

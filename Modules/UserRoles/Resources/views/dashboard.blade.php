@@ -10,7 +10,7 @@
             <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
                 <div class="w-sm-100 mr-auto">
 
-                    <h4 class="mb-0">{{--{!! ucfirst(auth()->user()->role->name) !!}--}} :Dashboard</h4>
+                    <h4 class="mb-0">{{ ucfirst(auth()->user()->title. '.' .auth()->user()->name) }} Dashboard</h4>
                 </div>
 
                 <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">

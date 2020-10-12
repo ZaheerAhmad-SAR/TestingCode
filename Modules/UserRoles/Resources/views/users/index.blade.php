@@ -37,15 +37,16 @@
                     <div class="card-body">
                         <div class="table-responsive list">
                             <table class="table table-bordered" id="laravel_crud">
-                                <thead>
-                                <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Roles</th>
-                                    <th scope="col">Actions</th>
-                                </tr>
-                                </thead>
-                                <tbody id="users-crud">
+                                @if(hasPermission(auth()->user(),'systemtools.index') && empty(session('current_study')))
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Roles</th>
+                                        <th scope="col">Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="users-crud">
                                 @foreach($users as $user)
                                     <tr>
                                         <td>{{ucfirst($user->name)}}</td>
@@ -65,6 +66,10 @@
                                                     </a>
                                                 </span>
                                                     <span class="dropdown-item">
+                                                    <a href="{{route('users.resetpassword',$user->id)}}" class="reset-password" id="reset-password" data-id="{{ $user->id }}" data-target="#resetpassword">
+                                                        <i class="far fa-edit"></i>&nbsp; Reset Password </a>
+                                                    </span>
+                                                    <span class="dropdown-item">
                                                     <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
                                                         <i class="far fa-edit"></i>&nbsp; Delete </a>
                                                     </span>
@@ -73,7 +78,41 @@
                                         </td>
                                     </tr>
                                 @endforeach
+                                    @endif
+                                    </tbody>
+                                @if(hasPermission(auth()->user(),'studytools.index') && !empty(session('current_study')))
+                                        <thead>
+                                        <tr>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Email</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody id="users-crud">
+                                    @foreach($users as $user)
+                                        <tr>
+                                            <td>{{ucfirst($user->name)}}</td>
+                                            <td>{{$user->email}}</td>
+                                            <td>
+                                                <div class="d-flex mt-3 mt-md-0 ml-auto">
+                                                    <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                                    <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
+                                                <span class="dropdown-item">
+                                                    <a href="{!! route('users.edit',$user->id) !!}">
+                                                        <i class="far fa-edit"></i>&nbsp; Edit
+                                                    </a>
+                                                </span>
+                                                        <span class="dropdown-item">
+                                                    <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
+                                                        <i class="far fa-edit"></i>&nbsp; Delete </a>
+                                                    </span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforeach
                                 </tbody>
+                                    @endif
                             </table>
                         </div>
                     </div>
@@ -186,6 +225,54 @@
                                             <option value="selectuser"> Select User</option>
                                             @foreach($studyusers as $user)
                                             <option value="{{$user->id}}">{{$user->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row" style="margin-top: 10px;">
+                                    <div class="col-md-4">Select Role</div>
+                                    <div class="col-md-8">
+                                        <select class="form-control dropdown" name="user_role">
+                                            <option value="1">Select Role</option>
+                                            @foreach($roles as $role)
+                                                <option value="{{$role->id}}">{{$role->name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                        @if(hasPermission(auth()->user(),'users.store'))
+                            <button type="submit" class="btn btn-outline-primary" id="btn-save" onclick="checkuser()" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                        @endif
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- reset password -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="resetpassword">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header">
+                    <p class="modal-title">Add User</p>
+                </div>
+                <form action="{{route('users.assignUsers')}}" enctype="multipart/form-data" method="POST">
+                    <div class="modal-body">
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
+                                @csrf
+                                <div class="form-group row" style="margin-top: 10px;">
+                                    <div class="col-md-4">Select User</div>
+                                    <div class="col-md-8">
+                                        <select class="form-control dropdown" name="study_user">
+                                            <option value="selectuser"> Select User</option>
+                                            @foreach($studyusers as $user)
+                                                <option value="{{$user->id}}">{{$user->name}}</option>
                                             @endforeach
                                         </select>
                                     </div>

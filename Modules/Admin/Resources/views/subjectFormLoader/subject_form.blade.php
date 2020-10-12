@@ -91,13 +91,13 @@
                                 <img src="{{url('images/resumable.png')}}"/>&nbsp;&nbsp;Editing
                             </div>
                             <div class="col-md-2">
-                                <img src="{{url('images/adjudication.png')}}"/>&nbsp;&nbsp;Adjudication
-                            </div>
-                            <div class="col-md-2">
                                 <img src="{{url('images/complete.png')}}"/>&nbsp;&nbsp;Complete
                             </div>
                             <div class="col-md-2">
                                 <img src="{{url('images/not_required.png')}}"/>&nbsp;&nbsp;Not Required
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/query.png')}}"/>&nbsp;&nbsp;Query
                             </div>
                         </div>
                     </div>
@@ -130,57 +130,28 @@
                                                     @if (count($phase->phases))
                                                         @php
                                                         $firstStep = true;
-                                                        $steps =
-                                                        \Modules\Admin\Entities\PhaseSteps::phaseStepsbyRoles($phase->id,
-                                                        $userRoleIds);
+                                                        $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($phase->id);
                                                         @endphp
                                                         @foreach ($steps as $step)
                                                             @php
                                                             $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                                                             $stepIdStr = buildSafeStr($step->step_id, '');
-                                                            $imgSpanStepClsStr = buildSafeStr($step->step_id, 'img_section_status_');
                                                             @endphp
                                                             <a class="badge p-1 badge-light m-1  {{ $stepClsStr }}"
                                                                 href="javascript:void(0);"
                                                                 onclick="showSections('step_sections_{{ $stepIdStr }}');">
                                                                 {{ $step->formType->form_type . ' ' . $step->step_name }}
-
-                                                                 @foreach($step->sections as $section)
-                                                                 @php
-                                                                 $getFormStatusArray = [
+                                                                @php
+                                                                $getFormStatusArray = [
                                                                     'form_filled_by_user_id' => $form_filled_by_user_id,
                                                                     'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
                                                                     'subject_id' => $subjectId,
                                                                     'study_id' => $studyId,
                                                                     'study_structures_id' => $phase->id,
                                                                     'phase_steps_id' => $step->step_id,
-                                                                    'section_id' => $section->id,
-                                                                    ];
-                                                                    $formStatusObj =
-                                                                    \Modules\Admin\Entities\FormStatus::getFormStatusObj($getFormStatusArray);
-                                                                 $imgSpanSectionIdStr = buildSafeStr($section->id, 'img_section_status_');
-                                                                 @endphp
-                                                                    <span class="{{ $imgSpanStepClsStr }}" id="{{ $imgSpanSectionIdStr }}">
-                                                                    @if($formStatusObj->form_status == 'complete')
-                                                                        <img src="{{ url('images/complete.png') }}"/>
-                                                                     @endif
-                                                                     @if($formStatusObj->form_status == 'incomplete')
-                                                                        <img src="{{ url('images/incomplete.png') }}"/>
-                                                                     @endif
-                                                                     @if($formStatusObj->form_status == 'resumable')
-                                                                        <img src="{{ url('images/resumable.png') }}"/>
-                                                                     @endif
-                                                                     @if($formStatusObj->form_status == 'no_status')
-                                                                        <img src="{{ url('images/no_status.png') }}"/>
-                                                                     @endif
-                                                                     @if($formStatusObj->form_status == 'adjudication')
-                                                                        <img src="{{ url('images/adjudication.png') }}"/>
-                                                                     @endif
-                                                                     @if($formStatusObj->form_status == 'notrequired')
-                                                                        <img src="{{ url('images/not_required.png') }}"/>
-                                                                     @endif
-                                                                    </span>
-                                                                @endforeach
+                                                                ];
+                                                                echo \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
+                                                                @endphp
                                                             </a>
                                                             <br>
                                                             @php
@@ -210,8 +181,7 @@
                                         @foreach ($visitPhases as $phase)
                                             @php
                                             $phaseIdStr = buildSafeStr($phase->id, 'phase_cls_');
-                                            $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyRoles($phase->id,
-                                            $userRoleIds);
+                                            $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($phase->id);
                                             @endphp
                                             @foreach ($steps as $step)
                                                 @php
@@ -251,284 +221,6 @@
             </div>
             <!-- END: Card DATA-->
         </div>
-    @stop
-
-    @push('styles')
-        @include('admin::forms.form_css')
-    @endpush
-
-    @push('script')
-        <script>
-            function showAlert(message){
-                alert(message);
-                /*
-                var field = $("#previous_alert_message");
-                var previous_alert_message = field.val();
-                if(previous_alert_message != message){
-                    alert(message);
-                    field.val(message);
-                }else{
-                    field.val('');
-                }
-                */
-            }
-            function showSections(step_id_class) {
-                $('.all_step_sections').hide(500);
-                $('.' + step_id_class).show(500);
-            }
-
-            function disableAllFormFields(formId) {
-                $("#" + formId + " input").prop('disabled', true);
-            }
-
-            function enableAllFormFields(formId) {
-                $("#" + formId + " input").prop('disabled', false);
-            }
-
-            function disableField(fieldId) {
-                $("#" + fieldId).prop('disabled', true);
-            }
-
-            function enableField(fieldId) {
-                $("#" + fieldId).prop('disabled', false);
-            }
-
-            function disableByClass(cls) {
-                $("." + cls).prop('disabled', true);
-            }
-
-            function globalDisableByClass(studyClsStr, sectionClsStr) {
-                if ($('#already_global_disabled').val() == 'no') {
-                    $("." + studyClsStr).prop('disabled', true);
-                    $('#already_global_disabled').val('yes')
-                    enableByClass(sectionClsStr);
-                }
-            }
-
-            function enableByClass(cls) {
-                $("." + cls).prop('disabled', false);
-            }
-
-            function submitForm(sectionIdStr, sectionClsStr, stepIdStr) {
-                var submitFormFlag = true;
-                if (isFormInEditMode(sectionIdStr)) {
-                    if (checkReason(stepIdStr) === false) {
-                        submitFormFlag = false;
-                    }
-                }
-                if (submitFormFlag) {
-                    var term_cond = $('#terms_cond_' + stepIdStr).val();
-                    var reason = $('#edit_reason_text_' + stepIdStr).val();
-                    var frmData = $("#form_master_" + sectionIdStr).serialize() + '&' + $("#form_" + sectionIdStr)
-                        .serialize() +
-                        '&terms_cond_' + stepIdStr + '=' + term_cond + '&' + 'edit_reason_text=' + reason;
-                        submitRequest(frmData, sectionIdStr);
-                }
-            }
-
-            function submitRequest(frmData, sectionIdStr) {
-                $.ajax({
-                    url: "{{ route('subjectFormLoader.submitStudyPhaseStepQuestionForm') }}",
-                    type: 'POST',
-                    data: frmData,
-                    success: function(response) {
-                        $('#img_section_status_' + sectionIdStr).html('<img src="{{url('/')}}/images/'+response+'.png"/>');
-                    }
-                });
-            }
-
-            function validateFormField(sectionIdStr, questionId, field_name, fieldId) {
-                    var field_val;
-                    field_val = getFormFieldValue(sectionIdStr, field_name, fieldId);
-                    var frmData = $("#form_master_" + sectionIdStr).serialize()  + '&questionId=' + questionId + '&' + field_name + '=' + field_val;
-                    return validateSingleQuestion(frmData);
-
-            }
-
-            function validateForm(sectionIdStr) {
-                return new Promise(function (resolve, reject) {
-                    var frmData = $("#form_master_" + sectionIdStr).serialize() + '&' + $("#form_" + sectionIdStr).serialize();
-                    $.ajax({
-                        url: "{{ route('subjectFormSubmission.validateSectionQuestionsForm') }}",
-                        type: 'POST',
-                        data: frmData,
-                        dataType: 'JSON',
-                        success: function(response) {
-                            if(response.success == 'no'){
-                                reject(response.error);
-                            }else{
-                                resolve(response.success);
-                            }
-                        }
-                    });
-                })
-            }
-
-            function validateSingleQuestion(frmData) {
-                return new Promise(function (resolve, reject) {
-                $.ajax({
-                    url: "{{ route('subjectFormSubmission.validateSingleQuestion') }}",
-                    type: 'POST',
-                    data: frmData,
-                    dataType: 'JSON',
-                    success: function(response) {
-                        if(response.success == 'no'){
-                            reject(response.error);
-                        }else{
-                            resolve(response.success);
-                        }
-                    }
-                });
-                })
-            }
-            function validateAndSubmitForm(sectionIdStr, sectionClsStr, stepIdStr){
-                const promise = validateForm(sectionIdStr);
-                promise
-                .then((data) => {
-                    console.log(data);
-                    submitForm(sectionIdStr, sectionClsStr, stepIdStr);
-                })
-                .catch((error) => {
-                    console.log(error);
-                    handleValidationErrors(error);
-                });
-            }
-            function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, field_name, fieldId){
-                checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
-                const validationPromise = validateFormField(sectionIdStr, questionId, field_name, fieldId);
-                validationPromise
-                .then((data) => {
-                    console.log(data)
-                    submitFormField(stepIdStr, sectionIdStr, field_name, fieldId);
-                })
-                .then((data) => {
-                    console.log(data)
-                    validateDependentFields(sectionIdStr, questionId, field_name, fieldId);
-                })
-                .catch((error) => {
-                    console.log(error)
-                    handleValidationErrors(error);
-                });
-            }
-            function checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId){}
-            function validateDependentFields(sectionIdStr, questionId, field_name, fieldId){}
-            function handleValidationErrors(error) { alert(error); }
-            function reloadPage(stepClsStr) {
-                setTimeout(function() {
-                    //disableByClass(stepClsStr);
-                    location.reload();
-                }, 1000);
-            }
-
-            function checkTermCond(stepIdStr) {
-                if ($('#terms_cond_' + stepIdStr).prop('checked')) {
-                    return true;
-                } else {
-                    showAlert('Please acknowledge the truthfulness and correctness of information being submitting in this form!');
-                    return false;
-                }
-            }
-
-            function isFormInEditMode(sectionIdStr) {
-                var formStatus = $('#form_master_' + sectionIdStr + ' #form_status').val();
-                var formEditStatus = $('#form_master_' + sectionIdStr + ' #form_editing_status').val();
-                var returnVal = false;
-                if (formEditStatus == 'yes') {
-                    returnVal = true;
-                }
-
-                return returnVal;
-            }
-
-
-            function checkReason(stepIdStr) {
-                var returnVal = false;
-                if (($('#edit_reason_text_' + stepIdStr).val() == '')) {
-                    showAlert('Please tell the reason to edit');
-                } else {
-                    returnVal = true;
-                }
-                return returnVal;
-            }
-
-            function submitFormField(stepIdStr, sectionIdStr, field_name, fieldId) {
-                var submitFormFlag = true;
-                /*
-                if (isFormInEditMode(sectionIdStr)) {
-                    if (checkReason(stepIdStr) === false) {
-                        submitFormFlag = false;
-                    }
-                }
-                */
-                if (submitFormFlag) {
-                    var frmData = $("#form_master_" + sectionIdStr).serialize();
-                    var field_val;
-                    field_val = getFormFieldValue(sectionIdStr, field_name, fieldId);
-                    var reason = $('#edit_reason_text_' + stepIdStr).val();
-
-                    frmData = frmData + '&' + field_name + '=' + field_val + '&' + 'edit_reason_text=' + reason;
-                    submitRequest(frmData, sectionIdStr);
-                }
-            }
-
-            function getFormFieldValue(sectionIdStr, field_name, fieldId){
-                var field_val;
-                var checkedCheckBoxes = [];
-                if ($('#' + fieldId).is("textarea")) {
-                        field_val = $('#' + fieldId).val();
-                    } else if ($('#' + fieldId).is("select")) {
-                        field_val = $('#' + fieldId).find(":selected").val();
-                    } else if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
-                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').val();
-                    } else if ($('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').attr('type') == 'checkbox') {
-
-                        $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]:checked').each(function(){
-                            checkedCheckBoxes.push($(this).val());
-                        });
-                        field_val = checkedCheckBoxes.join(",");
-
-                    } else {
-                        field_val = $('#form_' + sectionIdStr + ' input[name="' + field_name + '"]').val();
-                    }
-                    return field_val;
-            }
-
-            function openFormForEditing(stepIdStr, stepClsStr, sectionIdStr) {
-                var frmData = $("#form_master_" + sectionIdStr).serialize();
-                frmData = frmData + '&' + 'open_form_to_edit=1';
-                $.ajax({
-                    url: "{{ route('subjectFormLoader.openSubjectFormToEdit') }}",
-                    type: 'POST',
-                    data: frmData,
-                    success: function(response) {
-                        showReasonField(stepIdStr, stepClsStr);
-                    }
-                });
-            }
-
-            function showReasonField(stepIdStr, stepClsStr) {
-                $("#edit_form_div_" + stepIdStr).show(500);
-                $("#edit_form_button_" + stepIdStr).hide(500);
-                $('#edit_reason_text_' + stepIdStr).prop('required', true);
-                enableByClass(stepClsStr);
-                $('.form_hid_editing_status_' + stepIdStr).val('yes');
-                $('.form_hid_status_' + stepIdStr).val('resumable');
-                $('.img_section_status_' + stepIdStr).html('<img src="{{url('images/resumable.png')}}"/>');
-            }
-
-            function hideReasonField(stepIdStr, stepClsStr) {
-                $("#edit_form_div_" + stepIdStr).hide(500);
-                $('#edit_reason_text_' + stepIdStr).prop('required', false);
-                $('#edit_reason_text_' + stepIdStr).val('');
-                disableByClass(stepClsStr);
-                $('.form_hid_editing_status_' + stepIdStr).val('no');
-                $('.form_hid_status_' + stepIdStr).val('complete');
-                $('.img_section_status_' + stepIdStr).html('<img src="{{url('images/complete.png')}}"/>');
-                $('.nav-link').removeClass('active');
-                $('.first_navlink_' + stepIdStr).addClass('active');
-                $('.tab-pane_' + stepIdStr).removeClass('active show');
-                $('.first_tab_' + stepIdStr).addClass('active show');
-            }
-
-        </script>
-    @endpush
+        @include('admin::subjectFormLoader.subject_form_wait_popup')
+        @stop
+  @include('admin::subjectFormLoader.subject_form_css_js')
