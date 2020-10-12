@@ -60,7 +60,7 @@
                         <div class="form-row" style="padding: 10px;">
 
                             @if(hasPermission(auth()->user(),'systemtools.index'))
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-4">
                                 <label for="inputEmail4">Name</label>
                                 <select class="form-control user_name filter-form-data" name="user_name" id="user_name">
                                     <option value="">All Users</option>
@@ -70,8 +70,26 @@
                                 </select>
                             </div>
                             @endif
-                            @if(!empty($eventSection))
+
+                            @if(hasPermission(auth()->user(),'systemtools.index'))
+                            <div class="form-group col-md-4">
+                            @else
+                            <div class="form-group col-md-3">
+                            @endif
+                                <label for="inputState">Study</label>
+                                <select id="event_study" name="event_study" class="form-control filter-form-data">
+                                    <option value="">All Studies</option>
+                                    @foreach($getStudies as $study)
+                                    <option @if(request()->event_study == $study->id) selected @endif value="{{$study->id}}">{{$study->study_short_name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            @if(hasPermission(auth()->user(),'systemtools.index'))
+                            <div class="form-group col-md-4">
+                            @else
                             <div class="form-group col-md-2">
+                            @endif
                                 <label for="inputState">Event Section</label>
                                 <select id="event_section" name="event_section" class="form-control filter-form-data">
                                     <option value="">All Sections</option>
@@ -80,9 +98,12 @@
                                     @endforeach
                                 </select>
                             </div>
-                                @endif
 
+                            @if(hasPermission(auth()->user(),'systemtools.index'))
+                            <div class="form-group col-md-4">
+                            @else
                             <div class="form-group col-md-2">
+                            @endif
                                 <label for="inputState">Event Type</label>
                                 <select id="event_type" name="event_type" class="form-control filter-form-data">
                                     <option value="">All Types</option>
@@ -91,12 +112,20 @@
                                 </select>
                             </div>
 
+                            @if(hasPermission(auth()->user(),'systemtools.index'))
+                            <div class="form-group col-md-4">
+                            @else
                             <div class="form-group col-md-3">
+                            @endif
                                 <label for="dt">Event Date</label>
                                 <input type="text" name="event_date" id="event_date" class="form-control event_date filter-form-data" value="{{ request()->event_date }}">
                             </div>
 
+                            @if(hasPermission(auth()->user(),'systemtools.index'))
                             <div class="form-group col-md-2 mt-4">
+                            @else
+                            <div class="form-group col-md-2 mt-4">
+                            @endif
                                 <button type="button" class="btn btn-primary reset-filter">Reset</button>
                                 <button type="submit" class="btn btn-primary btn-lng">Filter</button>
                             </div>
@@ -120,8 +149,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if(!empty($getLogs))
-                                        {!! dd($getLogs) !!}
+                                    @if(!$getLogs->isEmpty())
                                     @foreach($getLogs as $log)
                                     <tr>
                                         <td style="text-align: center;">
