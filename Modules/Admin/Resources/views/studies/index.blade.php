@@ -128,15 +128,17 @@
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                 @php
-                                                    $studyQuery = Modules\Queries\Entities\Query::where('module_id','=',$study->id)->get();
+                                                    $studyQuery = Modules\Queries\Entities\Query::where('module_id','=',$study->id)->where('query_status','open')->first();
+
                                                 @endphp
-                                               @foreach($studyQuery as $query)
+                                               @if(null !== $studyQuery )
+
                                                 <div class="showQueries">
                                                     <span class="ml-3" style="cursor: pointer;">
-                                                        <i class="fas fa-question-circle" data-id="{{$query->id}}" style="margin-top: 12px;">
-                                                        </i></span>
+                                                        <a class="fas fa-question-circle" href="{{route('queries.edit',$study->id)}}" style="margin-top: 12px;">
+                                                        </a></span>
                                                 </div>
-                                                @endforeach
+                                                @endif
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                     <span class="dropdown-item">
                                                         <a href="javascript:void(0)" id="change-status" data-target-id="{{$study->id}}" data-toggle="modal" data-target="#change_status">
@@ -190,6 +192,46 @@
             </div>
         </div>
         <!-- END: Card DATA-->
+    </div>
+
+    <!-- show all queries modal -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="showAllQueriesModal" aria-labelledby="exampleModalQueries" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header ">
+                    <p class="modal-title">All Queries</p>
+                </div>
+                <form id="queriesForm" name="queriesForm">
+                    <div class="modal-body">
+                        <div id="exTab1">
+                            <div class="tab-content clearfix">
+                                @csrf
+                                <label class="changeQueryStatus">Current query status: &nbsp;&nbsp;<i style="color: red;" class="fas fa-question-circle"></i> &nbsp;New</label>
+
+                                <div class="form-group row statusInput">
+                                    <label for="Name" class="col-sm-3 col-form-label">Change status to:</label>
+                                    <div class="col-sm-9">
+                                        <select class="form-control" name="queries_status" id="queries_status">
+                                            <option value="">Open</option>
+                                            <option value="">Closed</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row remarksInput">
+
+                                </div>
+                                <input type="hidden" name="module_id" id="module_id" value="">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="button" class="btn btn-outline-primary" id="savequeries"><i class="fa fa-save"></i> Save Changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <!-- START: Modal-->
@@ -414,6 +456,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
 
 <script type="text/javascript">
+
+    {{--$('.studyQueriesById').click(function () {--}}
+    {{--    $('#queriesForm').trigger("reset");--}}
+    {{--    $('#showAllQueriesModal').modal('show');--}}
+    {{--    $('.changeQueryStatus').html('Current query status: &nbsp;&nbsp;<i style="color: red;" class="fas fa-question-circle"></i> &nbsp;Open');--}}
+    {{--    $(this).closest("i")--}}
+    {{--    $.ajaxSetup({--}}
+    {{--        headers: {--}}
+    {{--            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')--}}
+    {{--        }--}}
+    {{--    });--}}
+    {{--    var study_id =($(this).attr("data-id"));--}}
+    {{--    var url = "{{URL('/queries')}}";--}}
+    {{--    var newPath = url+ "/"+ study_id+"/edit/";--}}
+    {{--    $.ajax({--}}
+    {{--        type:"GET",--}}
+    {{--        dataType: 'html',--}}
+    {{--        url:newPath,--}}
+    {{--        success: function(response)--}}
+    {{--        {--}}
+    {{--            $('.remarksInput').html(response);--}}
+    {{--        }--}}
+    {{--    });--}}
+    {{--});--}}
  $(document).ready(function(){
        $('#change_status').on('show.bs.modal',function (e) {
         var id = $(e.relatedTarget).data('target-id');
