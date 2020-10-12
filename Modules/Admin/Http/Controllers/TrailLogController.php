@@ -14,10 +14,14 @@ class TrailLogController extends Controller
 {
     //
     public function index(Request $request) {
-    	// check for system user and common users
-    	if(Auth::user()->role->role_type == 'system_role') {
+        // initialize arrays
+        $getLogs = '';
+        $eventSection = '';
+        $getUsers = '';
+
+    	// check for system user Admin
+    	if(hasPermission(auth()->user(),'systemtools.index') && empty(session('current_study'))) {
     		// get logs
-    		// $getLogs = TrailLog::with('users')->orderBy('id', 'desc')->paginate(15);
             $getLogs = TrailLog::query();
             $getLogs = $getLogs->select('trail_logs.*', 'users.name')
                                ->leftjoin('users', 'users.id', '=', 'trail_logs.user_id');
@@ -53,7 +57,7 @@ class TrailLogController extends Controller
             $eventSection = array(
                 "Option Group" => "Option Group",
                 "Site" => "Site",
-                "PI" => "Primary Investigator",
+                "Primary Investigator" => "Primary Investigator",
                 "Coordinator" => "Coordinator",
                 "Photographer" => "Photographer",
                 "Others" => "Others",
@@ -77,17 +81,50 @@ class TrailLogController extends Controller
                                 ->get();
 
 
-    	} else {
-    		// check if session for subject is set
-    		if (Session::has('current_study')) {
-    			//get logs for current study and user
-    			$getLogs = TrailLog::where('study_id', Session::get('current_study'))
-					    			->where('user_id', Auth::user()->id)
-					    			->with('users')
-					    			->orderBy('id', 'desc')
-					    			->paginate(15);
-    		}
-    	} // user role echeck ends
+    	}
+
+            // check if session for study is set
+        if (hasPermission(auth()->user(),'trail_logs.list') && !empty(session('current_study'))) {
+
+                //get logs for current study and user
+                $getLogs = TrailLog::query();
+                $getLogs = $getLogs->select('trail_logs.*', 'users.name')
+                                    ->leftjoin('users', 'users.id', '=', 'trail_logs.user_id')
+                                    ->where('trail_logs.study_id', Session::get('current_study'))
+                                    ->where('trail_logs.user_id', Auth::user()->id);
+
+                if ($request->event_section != '') {
+                    $getLogs =  $getLogs->where('trail_logs.event_section', $request->event_section);
+                }
+
+                if ($request->event_type != '') {
+                    $getLogs =  $getLogs->where('trail_logs.event_type', $request->event_type);
+                }
+
+                if ($request->event_date != '') {
+                    $eventDate = explode('-', $request->event_date);
+                        $from   = Carbon::parse($eventDate[0])
+                                            ->startOfDay()        // 2018-09-29 00:00:00.000000
+                                            ->toDateTimeString(); // 2018-09-29 00:00:00
+
+                        $to     = Carbon::parse($eventDate[1])
+                                            ->endOfDay()          // 2018-09-29 23:59:59.000000
+                                            ->toDateTimeString(); // 2018-09-29 23:59:59
+
+                    $getLogs =  $getLogs->whereBetween('trail_logs.created_at', [$from, $to]);
+                }
+
+                $getLogs = $getLogs->orderBy('id', 'desc')->paginate(15);
+
+                //get event sections
+                $eventSection = TrailLog::GroupBy('event_section')
+                                ->where('study_id', Session::get('current_study'))
+                                ->where('user_id', Auth::user()->id)
+                                ->pluck('event-section')
+                                ->toArray();
+
+            } // study session ends
+        // user role echeck ends
 
     	return view('admin::trail_log', compact('getLogs', 'eventSection','getUsers'));
     }

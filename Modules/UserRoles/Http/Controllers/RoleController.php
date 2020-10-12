@@ -145,6 +145,7 @@ class RoleController extends Controller
                 }
             }
             if ($request->study_view){
+                //dd('log store');
                 $permissions = Permission::where('name','=','studies.index')
                     ->get();
                 foreach ($permissions as $permission){
@@ -577,7 +578,7 @@ class RoleController extends Controller
 
             /*-- Activity Log Permissions */
             if ($request->activity_log ) {
-                $permissions = Permission::where('name', '=', 'activitylog.index')
+                $permissions = Permission::where('name', '=', 'trail_logs.list')
                     ->get();
                 foreach ($permissions as $permission) {
                     $permission_id = $permission->id;
@@ -757,6 +758,7 @@ class RoleController extends Controller
             }
         }
         if ($request->study_view){
+            //dd('log');
             $permissions = Permission::where('name','=','studies.index')
                 ->get();
             foreach ($permissions as $permission){
@@ -1199,7 +1201,7 @@ class RoleController extends Controller
 
         /*-- Activity Log Permissions */
         if ($request->activity_log ) {
-            $permissions = Permission::where('name', '=', 'activitylog.index')
+            $permissions = Permission::where('name', '=', 'trail_logs.list')
                 ->get();
             foreach ($permissions as $permission) {
                 $permission_id = $permission->id;

@@ -80,12 +80,12 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
 
     // routes for form managment
-    
+
     //end
     // routes for study managment
     Route::resource('study', 'StudyStructureController');
-   
-    
+
+
     Route::post('studies/studyStatus', 'StudyController@studyStatus')->name('studies.studyStatus');
     Route::post('studies/cloneStudy', 'StudyController@cloneStudy')->name('studies.cloneStudy');
 
@@ -163,12 +163,14 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::post('studySite/insertCoordinators', 'StudySiteController@insertCoordinators')->name('studySite.insertCoordinators');
 
     Route::post('studySite/deleteSiteCoordinator', 'StudySiteController@deleteSiteCoordinator')->name('studySite.deleteSiteCoordinator');
+
+    // CHM-Amir
+    Route::get('trail_logs', 'TrailLogController@index')->name('trail_logs.list');
 });
 
-// CHM-Amir--
-Route::get('trail-log', 'TrailLogController@index')->name('trail.log');
+
 // for checking subject ID
-Route::get('check-subject', 'SubjectController@checkSubject')->name('subjects.check-suject');
+Route::get('check-subject', 'SubjectController@checkSubject')->name('subjects.check-subject');
 
 Route::group(['middleware' => ['auth', 'web']], function () {
     // Jawad
