@@ -35,11 +35,7 @@ class Question extends Model
 
     public function getAnswer($getAnswerArray)
     {
-        $answer = Answer::where(function ($q) use ($getAnswerArray) {
-            foreach ($getAnswerArray as $key => $value) {
-                $q->where($key, '=', $value);
-            }
-        })->first();
+        $answer = Answer::getAnswer($getAnswerArray);
         if (null === $answer) {
             $answer = new Answer();
         }
@@ -58,5 +54,10 @@ class Question extends Model
     public function validationRules()
     {
         return $this->belongsToMany(ValidationRule::class, 'question_validations', 'question_id', 'validation_rule_id');
+    }
+
+    public function section()
+    {
+        return $this->belongsTo(Section::class, 'section_id', 'id');
     }
 }
