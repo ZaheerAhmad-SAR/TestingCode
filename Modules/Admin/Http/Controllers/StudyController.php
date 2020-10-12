@@ -172,6 +172,11 @@ class StudyController extends Controller
                 StudyUser::insert($users);
             }
         }
+
+        $oldStudy = [];
+        // log event details
+        $logEventDetails = eventDetails($study->id, 'Study', 'Add', $request->ip(), $oldStudy);
+
         return redirect()->route('studies.index')->with('message', 'Record Added Successfully!');
     }
     public function add_studies(Request $request)
@@ -239,6 +244,9 @@ class StudyController extends Controller
     }
     public function update_studies(Request $request)
     {
+        // get old data for audit section
+        $oldStudy = Study::find($request->study_id);
+
         $study = Study::where('id', $request->study_id)->first();
         $study->study_short_name  =  $request->study_short_name;
         $study->study_title = $request->study_title;
@@ -278,6 +286,10 @@ class StudyController extends Controller
                 StudyUser::insert($users);
             }
         }
+
+        // log event details
+        $logEventDetails = eventDetails($study->id, 'Study', 'Update', $request->ip(), $oldStudy);
+
         return redirect()->route('studies.index')->with('message', 'Study updated successfully');
     }
 
