@@ -18,6 +18,7 @@ use Modules\Admin\Entities\QuestionDependency;
 use Modules\Admin\Entities\QuestionValidation;
 use Modules\Admin\Entities\QuestionAdjudicationStatus;
 use Modules\Admin\Entities\AnnotationDescription;
+use Modules\Admin\Entities\Study;
 
 class FormController extends Controller
 {
@@ -187,7 +188,8 @@ class FormController extends Controller
         echo json_encode($Response);
     }
     public function skip_question_on_click($id){
-        $all_form_data = StudyStructure::with('steps')->where('study_structures.study_id', '=', session('current_study'))->get();
+        $all_form_data = Study::with('studySteps')->get();
+        dd($all_form_data);
         return view('admin::forms.skip_logic',compact('all_form_data'));
     }
     /**
