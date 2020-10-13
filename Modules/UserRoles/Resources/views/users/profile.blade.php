@@ -1,7 +1,7 @@
 @extends('layouts.home')
 @section('title')
     <title> Update User Profile | {{ config('app.name', 'Laravel') }}</title>
-@stop
+@endsection
 @section('content')
 
     <div class="container-fluid site-width">
@@ -35,6 +35,20 @@
                         @method('GET')
                         <div class="modal-body">
                             <div class="tab-content" id="nav-tabContent">
+                                <div class="form-group row" style="margin-top: 10px">
+                                    <div class="col-md-2">
+                                        <label for="avatar" class="">Profile Picture</label>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <input id="profile_image" type="file"  name="profile_image" style="padding-left: 3px">
+
+                                    </div>
+                                {{--<div class="col-md-8">
+                                    @if($user->profile_image)
+                                        <img src="{{ asset(auth()->user()->image) }}" style="width:80px; height:60px; ">
+                                        @endif
+                                </div>--}}
+                                </div>
                                 <div class="form-group row" style="margin-top: 10px;">
                                     <div class="col-md-2">
                                         <label for="Name">Title</label>
@@ -42,9 +56,10 @@
                                     <div class="{!! ($errors->has('name')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
                                         <select class="form-control dropdown" name="title">
                                             <option value="">Select Title</option>
-                                            <option value="mr">Mr.</option>
-                                            <option value="mrs">Mrs.</option>
-                                            <option value="miss">Miss</option>
+                                            <option value="doctor" @if($user->title == 'doctor') selected @endif>Doctor</option>
+                                            <option value="mr" @if($user->title == 'mr') selected @endif>Mr.</option>
+                                            <option value="mrs" @if($user->title == 'mrs') selected @endif>Mrs.</option>
+                                            <option value="miss" @if($user->title == 'miss') selected @endif>Miss</option>
                                         </select>
                                         @error('name')
                                         <span class="text-danger small">{{ $message }} </span>
@@ -84,7 +99,8 @@
                                     <label for="password">Password</label>
                                 </div>
                                 <div class="{!! ($errors->has('password')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                    <input type="password" class="form-control" required="required" id="password" name="password" value="{{old('password')}}">
+                                    {{--<input type="password" class="form-control" required="required" id="password" name="password" value="{{old('password')}}">--}}
+                                    <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" required autocomplete="new-password">
                                     @error('password')
                                     <span class="text-danger small"> {{ $message }} </span>
                                     @enderror
@@ -93,7 +109,8 @@
                                     <label for="C-Password">Confirm Password</label>
                                 </div>
                                 <div class="{!! ($errors->has('password_confirmation')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                    <input type="password" class="form-control" required="required" id="password_confirmation" name="password_confirmation" value="{{old('password_confirmation')}}">
+                                   {{-- <input type="password" class="form-control" required="required" id="password_confirmation" name="password_confirmation" value="{{old('password_confirmation')}}">--}}
+                                    <input type="password" class="form-control" id="password-confirm" name="password_confirmation" required autocomplete="new-password">
                                     @error('password_confirmation')
                                     <span class="text-danger small">{{ $message }} </span>
                                     @enderror

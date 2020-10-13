@@ -16,12 +16,14 @@ use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Http\Requests\UserRequest;
 use Illuminate\Support\Str;
+use App\Traits\UploadTrait;
 
 
 
 
 class UserController extends Controller
 {
+    use UploadTrait;
     /**
      * Display a listing of the resource.
      * @return Response
@@ -235,8 +237,17 @@ class UserController extends Controller
         $user->name  =  $request->name;
         $user->phone =  $request->phone;
         $user->password =   Hash::make($request->password);
+        if ($request->has('profile_image')) {
+            $image = $request->file('profile_image');
+            $name = Str::slug($request->input('name')).'_'.time();
+            $folder = '/images/';
+            $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
+            $this->uploadOne($image, $folder, 'public', $name);
+            $user->profile_image = $filePath;
+        }
+        //dd($user);
         $user->save();
-        return redirect()->route('users.updateProfile')->with('message', 'Record Updated Successfully!');
+        return redirect()->route('users.index')->with('message', 'Record Updated Successfully!');
     }
 
     public function resetpassword(Request $request){
@@ -257,6 +268,7 @@ class UserController extends Controller
         $user->name  =  $request->name;
         $user->email =  $request->email;
         $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
+        $user->password =   Hash::make($request->password);
         $user->save();
         $userroles  = UserRole::where('user_id',$user->id)->get();
         foreach ($userroles as $role_id){
