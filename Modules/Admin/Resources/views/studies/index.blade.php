@@ -406,61 +406,32 @@
         </div>
     </div>
 
-{{--    <div class="modal fade" tabindex="-1" role="dialog" id="all-queries-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">--}}
-{{--        <div class="modal-dialog modal-dialog-centered" role="document">--}}
-{{--            <div class="modal-content">--}}
-{{--                <div class="alert alert-danger" style="display:none"></div>--}}
-{{--                <div class="modal-header ">--}}
-{{--                    <p class="modal-title">Add a Queries</p>--}}
-{{--                </div>--}}
-{{--                <form id="allqueriesForm" name="allqueriesForm">--}}
-{{--                    <div class="modal-body">--}}
-{{--                        <div id="exTab1">--}}
-{{--                            <div class="tab-content clearfix">--}}
-{{--                                @csrf--}}
-{{--                                <label>Current query status: &nbsp; &nbsp;<i style="color: red;" class="fas fa-question-circle"></i> &nbsp;New</label>--}}
-{{--                                <div class="form-group row">--}}
-{{--                                    <label for="Name" class="col-sm-4 col-form-label">Queries Assigned to:</label>--}}
-{{--                                    <div class="col-sm-8">--}}
-{{--                                        <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="users"> Users</label> &nbsp;--}}
-{{--                                        <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="roles" > Roles</label>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                                <div class="form-group row usersInput" style="display: none;">--}}
-{{--                                    <label for="Name" class="col-sm-2 col-form-label">Users:</label>--}}
-{{--                                    <div class="col-sm-10">--}}
-
-{{--                                        <select class="form-control multieSelectDropDown" multiple data-allow-clear="1" name="users" id="users">--}}
-
-{{--                                        </select>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                                <div class="form-group row rolesInput" style="display: none;">--}}
-{{--                                    <label for="Name" class="col-sm-2 col-form-label">Roles:</label>--}}
-{{--                                    <div class="col-sm-10">--}}
-{{--                                        @foreach($roles_for_queries as $role)--}}
-{{--                                            <label class="checked-inline  col-form-label"><input type="checkbox" class="ads_Checkbox" id="roles" name="roles" value="{{$role->id}}"> {{$role->name}} </label>--}}
-{{--                                        @endforeach--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                                <div class="form-group row remarksInput" style="display:none;">--}}
-{{--                                    <label for="Name" class="col-sm-2 col-form-label">Remarks</label>--}}
-{{--                                    <div class="col-sm-10">--}}
-{{--                                        <textarea class="summernote" name="remarks" cols="2" rows="1" id="remarks"></textarea>--}}
-{{--                                    </div>--}}
-{{--                                </div>--}}
-{{--                                <input type="hidden" name="module_id" id="module_id" value="">--}}
-{{--                            </div>--}}
-{{--                        </div>--}}
-{{--                        <div class="modal-footer">--}}
-{{--                            <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>--}}
-{{--                            <button type="button" class="btn btn-outline-primary" id="savequeries"><i class="fa fa-save"></i> Save Changes</button>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                </form>--}}
-{{--            </div>--}}
-{{--        </div>--}}
-{{--    </div>--}}
+    <div class="modal fade" tabindex="-1" role="dialog" id="all-queries-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header ">
+                    <p class="modal-title">All Queries</p>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table id="example" class="display table dataTable table-striped table-bordered" >
+                            <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>Remarks</th>
+                                <th>Created By</th>
+                                <th>Creation Date</th>
+                                <th>Status</th>
+                            </tr>
+                            </thead>
+                            <tbody class="queriesList"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     @include('queries::queries.query_popup')
 @endsection
 @section('styles')
@@ -614,12 +585,42 @@
 
     });
 
-    // $('.showAllStudyQueries').click(function () {
-    //     var id = $(this).attr('data-id');
-    //     console.log(id);
-    //     // var moduleId = $('#module_id').val(id);
-    //     // $('#queries-modal').modal('show');
-    // });
+    $('.showAllStudyQueries').click(function () {
+        var study_id = $(this).attr('data-id');
+        console.log(study_id);
+        // var moduleId = $('#module_id').val(id);
+        $('#all-queries-modal').modal('show');
+        loadAllStudyQueries(study_id);
+    });
+
+    function loadAllStudyQueries(study_id)
+    {
+        $.ajax({
+            url:"{{route('queries.loadAllQueriesByStudyId')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'POST',
+                'study_id'      :study_id,
+            },
+            success: function(response)
+            {
+                // $('.queriesList tbody').html('');
+                var html    =   '';
+                $.each(response, function(index,row)
+                {
+                    // console.log(row.id);
+                    // console.log(row.messages);
+                    html += '<tr id=' + row.id + '>\n' +
+                        '<td>' + row.messages + '</td>\n' +
+                        '<td>' + row.created_at + '</td>\n' +
+                        '<td>+ row.updated_at+</td>\n' +
+                        '</tr>';
+                });
+                $('.queriesList').append(html);
+            }
+        });
+    }
 
 </script>
 
