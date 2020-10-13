@@ -53,7 +53,7 @@ class PhaseSteps extends Model
     }
     public function formType()
     {
-        return $this->belongsTo(FormType::class, 'form_type_id', 'id');
+        return $this->belongsTo(FormType::class, 'form_type_id', 'id')->withDefault();
     }
 
     static function phaseStepsbyPermissions($phaseId)
