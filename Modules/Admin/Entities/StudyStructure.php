@@ -40,7 +40,11 @@ class StudyStructure extends Model
         ->get();
     }
     public function study(){
-        return $this->hasMany(study::class,'id','study_id');
+        return $this->belongsTo(study::class,'study_id','id');
     }
-    
+    public function steps()
+    {
+        return $this->hasMany(PhaseSteps::class,'phase_id','id');
+    }
+
 }
