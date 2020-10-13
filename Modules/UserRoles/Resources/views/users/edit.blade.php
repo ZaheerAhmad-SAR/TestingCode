@@ -52,11 +52,10 @@
                                             @enderror
                                         </div>
                                     </div>
-{{--
-                                    <div class="form-group row">
+                                <div class="form-group row">
                                         <label for="password" class="col-md-3">Password</label>
                                         <div class="{!! ($errors->has('password')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
-                                            <input type="password" class="form-control" required="required" id="password" name="password" value="{{($user->password)}}">
+                                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
                                             @error('password')
                                             <span class="text-danger small"> {{ $message }} </span>
                                             @enderror
@@ -65,17 +64,15 @@
                                     <div class="form-group row">
                                         <label for="C-Password" class="col-md-3">Confirm Password</label>
                                         <div class="{!! ($errors->has('password_confirmation')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
-                                            <input type="password" class="form-control" required="required" id="password_confirmation" name="password_confirmation" value="{{decrypt($user->password)}}">
+                                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
                                             @error('password_confirmation')
                                             <span class="text-danger small">{{ $message }} </span>
                                             @enderror
                                         </div>
                                     </div>
---}}
                                 </div>
                                 <div class="tab-pane fade" id="nav-Modalities" role="tabpanel" aria-labelledby="nav-Validation-tab">
                                     <div class="form-group row" style="margin-top: 10px;">
-                                        <div class="col-md-3"></div>
                                         <div class="{!! ($errors->has('roles')) ?'col-sm-9 has-error':'col-sm-9' !!}">
                                             <select class="searchable" id="select-roles" multiple="multiple" name="roles[]">
                                                 @foreach($currentRoles as $role)
@@ -103,10 +100,10 @@
                                         @enderror
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         <div class="modal-footer">
+                            <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                             @if(hasPermission(auth()->user(),'users.store'))
                                 <button type="submit" class="btn btn-outline-primary" id="btn-save" value="create"><i class="fa fa-save"></i> Save Changes</button>
                             @endif

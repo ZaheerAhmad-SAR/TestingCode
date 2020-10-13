@@ -36,6 +36,15 @@
                             <button class="btn btn-primary" type="submit" style="float: right;"> Log In </button>
                         </div>
                     </div>
+                    <div class="form-group mb-3">
+                        <div class="custom-control">
+                            @if (Route::has('password.request'))
+                                <a class="btn btn-link" href="{{ route('password.request') }}">
+                                    {{ __('Forgot Your Password?') }}
+                                </a>
+                            @endif
+                        </div>
+                    </div>
 
                     <div class="mt-2" style="padding-top: 90px;">OIRRC CAPTURE System</div>
                 </div>
