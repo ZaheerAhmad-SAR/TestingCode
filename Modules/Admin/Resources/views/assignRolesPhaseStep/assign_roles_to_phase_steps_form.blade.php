@@ -1,3 +1,23 @@
+<span class="dropdown-item assign_phase_steps_roles" data-step-id="{{$step_value->step_id}}"><i class="far fa-user"></i>&nbsp; Assign Roles</span>
+
+
+<!-- assign role to step modle -->
+<div class="modal fade" tabindex="-1" role="dialog" id="assign_phase_steps_roles" aria-labelledby="exampleModalLongTitle1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="alert alert-danger" style="display:none"></div>
+            <div class="modal-header ">
+                <p class="modal-title">Assign Roles</p>
+            </div>
+            <div class="modal-body" id="assignRolesToPhaseStepMainDiv">
+
+            </div>
+        </div>
+    </div>
+</div>
+<!--  -->
+
+
 <form id="assign_phase_steps_roles_form" onsubmit="return submitAssignRolesToPhaseStepsForm(event);">
     <div id="exTab1">
         <div class="tab-content clearfix">
@@ -23,3 +43,35 @@
         </button>
     </div>
 </form>
+
+@push('script')
+<script>
+function loadAssignRolesToPhaseStepForm(step_id){
+    $.ajax({
+         url: "{{route('assignRolesPhaseStep.getAssignRolesToPhaseStepForm')}}",
+         type: 'POST',
+         data: {
+            "_token": "{{ csrf_token() }}",
+            'step_id': step_id
+        },
+        success: function(response){
+            $('#assignRolesToPhaseStepMainDiv').empty();
+            $("#assignRolesToPhaseStepMainDiv").html(response);
+        }
+    });
+}
+function submitAssignRolesToPhaseStepsForm(e){
+    e.preventDefault();
+    $.ajax({
+         url: "{{route('assignRolesPhaseStep.submitAssignRolesToPhaseStepForm')}}",
+         type: 'POST',
+         data: $( "#assign_phase_steps_roles_form" ).serialize(),
+        success: function(response){
+            $('#assignRolesToPhaseStepMainDiv').empty();
+            $("#assignRolesToPhaseStepMainDiv").html(response);
+        }
+    });
+
+}
+</script>
+@endpush
