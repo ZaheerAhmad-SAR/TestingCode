@@ -50,6 +50,7 @@ class StudyController extends Controller
             $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->orderBy('name','asc')->get();
             $sites = Site::all();
             $study = '';
+
         }
         else{
             $user=\auth()->user()->id;

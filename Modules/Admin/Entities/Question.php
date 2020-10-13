@@ -26,7 +26,7 @@ class Question extends Model
 
     public function formFields()
     {
-        return $this->hasOne(FormFields::class, 'question_id', 'id');
+        return $this->hasOne(FormFields::class, 'question_id', 'id')->withDefault();
     }
     public function optionsGroup()
     {

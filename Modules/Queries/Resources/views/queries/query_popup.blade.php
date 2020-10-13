@@ -1,7 +1,7 @@
 @php
 
-    $users_for_queries =  \App\User::where('id','!=',\auth()->user()->id)->get();
-    $roles_for_queries =  \Modules\UserRoles\Entities\Role::where('role_type','=','study_role')->orderBY('name','asc')->get();
+
+   $roles_for_queries =  \Modules\UserRoles\Entities\Role::where('role_type','=','study_role')->orderBY('name','asc')->get();
  @endphp
 
 <!-- queries modal -->
@@ -27,13 +27,7 @@
                             </div>
                             <div class="form-group row usersInput" style="display: none;">
                                 <label for="Name" class="col-sm-2 col-form-label">Users:</label>
-                                <div class="col-sm-10">
-                                    <select class="form-control multieSelectDropDown" multiple data-allow-clear="1" name="users" id="users">
-                                        @foreach($users_for_queries as $user)
-                                            <option value="{{$user->id}}">{{$user->name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
+                                <div class="col-sm-10" id="usersDropDown"></div>
                             </div>
                             <div class="form-group row rolesInput" style="display: none;">
                                 <label for="Name" class="col-sm-2 col-form-label">Roles:</label>
@@ -80,15 +74,31 @@
 
 <script type="text/javascript">
 
-    $('.create-new-queries').click(function () {
-        var id = $(this).attr('data-id');
-        $('#module_id').val(id);
-        $('#queriesForm').trigger("reset");
-        $('#queries-modal').modal('show');
-        //$('#queries-modal').html("Add Queries");
 
+    $('.create-new-queries').click(function () {
+        var study_id = $(this).attr('data-id');
+        var moduleId = $('#module_id').val(study_id);
+        $('#queries-modal').modal('show');
+        loadQueryPopUpHtml(study_id);
     });
 
+    function loadQueryPopUpHtml(study_id)
+    {
+        $.ajax({
+            url:"{{route('queries.loadHtml')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'POST',
+                'study_id'      :study_id,
+            },
+            success: function(response)
+            {
+                console.log(response);
+                $('#usersDropDown').html(response);
+            }
+        });
+    }
     $(document).ready(function (){
         $('input[type="radio"]').click(function (){
             if ($(this).attr("value")=="users")
@@ -102,9 +112,10 @@
             }
             if ($(this).attr("value")=="roles")
             {
+
                 $('.usersInput').css('display','none');
-                $(".rolesInput").show();
-                $(".remarksInput").show();
+                $(".rolesInput").css('display','');
+                $(".remarksInput").css('display','');
                 $("#remarks").summernote("reset");
                 $(".select2-selection__choice").remove();
             }
@@ -112,21 +123,20 @@
     });
 
     $('#savequeries').click(function (){
-        alert('ddddd');
+
         var queryAssignedTo = $("input[name='assignQueries']:checked").val();
-        var module_id = $('#module_id').val();
-        //console.log(module_id);
+        var module_id =       $('#module_id').val();
+        console.log(module_id);
+        var assignedRemarks = $('#remarks').val();
         if (queryAssignedTo == 'users')
         {
             var assignedUsers = $('#users').val();
-            var assignedRemarks = $('#remarks').val();
         }
         if(queryAssignedTo =='roles')
         {
             var assignedRoles = $('.ads_Checkbox:checked').map(function () {
                 return this.value;
             }).get();
-            var assignedRemarks = $('#remarks').val();
 
         }
         $.ajax({
@@ -143,8 +153,6 @@
             },
             success: function(response)
             {
-                var module_id = response[0].module_id;
-                console.log(module_id);
                 $("#queriesForm")[0].reset();
                 $("#remarks").summernote("reset");
                 $('#OptionsGroupEditForm').modal('hide');
@@ -153,7 +161,6 @@
                 }, 100);
             }
         });
-
 
     });
 

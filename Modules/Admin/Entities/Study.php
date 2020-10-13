@@ -51,6 +51,11 @@ class Study extends Model
 
     }
     public function phase(){
-        return $this->belongsTo(StudyStructure::class,'study_id','id');
+        return $this->hasMany(StudyStructure::class,'study_id','id');
     }
+    public function studySteps(){
+       return $this->hasManyThrough(PhaseSteps::class,StudyStructure::class,'study_id','phase_id','id','step_id');
+    }
+
+
 }
