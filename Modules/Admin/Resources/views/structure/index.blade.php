@@ -77,6 +77,7 @@
                             <input type="hidden" class="step_id" value="{{$step_value->step_id}}">
                             <input type="hidden" class="step_phase_id" value="{{$step_value->phase_id}}">
                             <input type="hidden" class="form_type_id" value="{{$step_value->form_type_id}}">
+                            <input type="hidden" class="modility_id" value="{{$step_value->modility_id}}">
                             <input type="hidden" class="step_name" value="{{$step_value->step_name}}">
                             <input type="hidden" class="step_position" value="{{$step_value->step_position}}">
                             <input type="hidden" class="step_description" value="{{$step_value->step_description}}">
@@ -198,6 +199,17 @@
                                         <option value="">---Select Form Type---</option>
                                         @foreach($formTypes as $formType)
                                             <option value="{{$formType->id}}">{{$formType->form_type}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="Name" class="col-sm-3 col-form-label">Modality</label>
+                                <div class="col-md-9">
+                                    <select name="modility_id" id="modility_id" class="form-control" required>
+                                        <option value="">---Select Modality---</option>
+                                        @foreach($modalities as $modality)
+                                            <option value="{{$modality->id}}">{{$modality->modility_name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -441,12 +453,14 @@ $(document).ready(function(){
         var phase_id = $('select#step_phase_id').val();
         var step_position = $('input#step_position').val();
         var form_type_id = $('select#form_type_id').val();
+        var modility_id = $('select#modility_id').val();
         var step_name = $('input#step_name').val();
         var step_description = $('input#step_description').val();
         var graders_number = $('select#graders_number').val();
         var q_c = $("input[name='q_c']:checked").val();
         var eligibility = $("input[name='eligibility']:checked").val();
         var post_to = (step_id == '') ? 'steps/store_steps' : 'steps/updateSteps';
+        
         if(phase_id =='' || step_name =='' || step_description ==''){
             alert('Please fill all the required fields');
         }else{
@@ -460,6 +474,7 @@ $(document).ready(function(){
                     'phase_id': phase_id,
                     'step_position':step_position,
                     'form_type_id': form_type_id,
+                    'modility_id': modility_id,
                     'step_name': step_name,
                     'step_description': step_description,
                     'graders_number': graders_number,
