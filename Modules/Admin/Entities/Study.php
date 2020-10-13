@@ -53,4 +53,6 @@ class Study extends Model
     public function phase(){
         return $this->belongsTo(StudyStructure::class,'study_id','id');
     }
+
+
 }
