@@ -24,12 +24,23 @@ class User extends Authenticatable
      *
      * @var array
      */
+    protected  $dates = [
+        'updated_at',
+        'created_at',
+        'deleted_at',
+        'token_2fa_expiry'
+    ];
     protected $fillable = [
         'id',
+        'title',
+        'phone',
+        'profile_image',
         'name',
         'email',
         'role_id',
         'password',
+        'two_factor_code',
+        'two_factor_expires_at',
         'created_by',
         'deleted_at'
     ];
@@ -163,6 +174,18 @@ class User extends Authenticatable
         //return $this->hasOne(User::class, 'user_id', 'id');
         //return $this->hasOne(User::class);
         return $this->hasMany(TrailLog::class);
+    }
+    public function getImageAttribute()
+    {
+        return $this->profile_image;
+    }
+
+    public function generateTwoFactorCode()
+    {
+        $this->timestamps = false;
+        $this->two_factor_code = rand(100000, 999999);
+        $this->two_factor_expires_at = now()->addMinutes(10);
+        $this->save();
     }
 
 }

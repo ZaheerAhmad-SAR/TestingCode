@@ -14,7 +14,6 @@
             </div>
         </div>
         <!-- END: Breadcrumbs-->
-
         <!-- START: Card Data-->
         <div class="row">
             <div class="col-12 col-sm-12 mt-3">
@@ -66,10 +65,6 @@
                                                     </a>
                                                 </span>
                                                     <span class="dropdown-item">
-                                                    <a href="{{route('users.resetpassword',$user->id)}}" class="reset-password" id="reset-password" data-id="{{ $user->id }}" data-target="#resetpassword">
-                                                        <i class="far fa-edit"></i>&nbsp; Reset Password </a>
-                                                    </span>
-                                                    <span class="dropdown-item">
                                                     <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
                                                         <i class="far fa-edit"></i>&nbsp; Delete </a>
                                                     </span>
@@ -85,6 +80,7 @@
                                         <tr>
                                             <th scope="col">Name</th>
                                             <th scope="col">Email</th>
+                                            <th scope="col">Role</th>
                                             <th scope="col">Actions</th>
                                         </tr>
                                         </thead>
@@ -93,6 +89,7 @@
                                         <tr>
                                             <td>{{ucfirst($user->name)}}</td>
                                             <td>{{$user->email}}</td>
+                                            <td>{{$user->role_name}}</td>
                                             <td>
                                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                     <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
