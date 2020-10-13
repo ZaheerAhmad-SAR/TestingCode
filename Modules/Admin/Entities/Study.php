@@ -62,4 +62,6 @@ class Study extends Model
     {
         return $this->hasManyThrough(PhaseSteps::class, StudyStructure::class, 'study_id', 'phase_id', 'id', 'id');
     }
+
+
 }
