@@ -5,6 +5,9 @@ namespace Modules\UserRoles\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Admin\Entities\Subject;
+use Modules\Admin\Entities\StudyStructure;
+use DB;
 
 class GradingController extends Controller
 {
@@ -14,7 +17,15 @@ class GradingController extends Controller
      */
     public function index()
     {
-        return view('userroles::users.grading-list');
+        $subjects = DB::table('subjects')
+                        ->select('subjects.*', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'sites.site_name')
+                        ->leftJoin('sites', 'sites.id', '=', 'subjects.site_id')
+                        ->crossJoin('study_structures')
+                        ->orderBy('subjects.subject_id')
+                        ->orderBy('study_structures.position')
+                        ->get();
+
+        return view('userroles::users.grading-list', compact('subjects'));
     }
 
     /**
