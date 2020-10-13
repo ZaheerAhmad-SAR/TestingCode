@@ -761,6 +761,7 @@ $(document).ready(function() {
         $('#adj_custom_value').val(adj_custom_value);
         $('#addField').modal('show');
     })
+   
 })
 function display_sections(step_id) {
     var html = '';
@@ -780,8 +781,13 @@ function display_sections(step_id) {
         }
     });
 }
+
+function applychecks(){
+    var route = <?php echo '"'.url('forms/skip_logic').'";';?>;
+    window.open(route + '/' + id);
+}
 function showFormPreview() {
-    var route = <?php echo '"'.url('forms/show').'";';?>
+    var route = <?php echo '"'.url('forms/show').'";';?>;
     var phase_id = $('#phases').val();
     var step_id = $('#steps').val();
     window.open(route + '/' + phase_id + '/' + step_id);

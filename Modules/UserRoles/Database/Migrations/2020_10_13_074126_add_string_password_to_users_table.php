@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddForeignKeyToPrimaryInvestigatorsTable extends Migration
+class AddStringPasswordToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class AddForeignKeyToPrimaryInvestigatorsTable extends Migration
      */
     public function up()
     {
-        Schema::table('primary_investigators', function (Blueprint $table) {
-            $table->foreign('site_id')->references('id')
-                ->on('sites')->onDelete('cascade')->onUpdate('cascade');
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('password')->change();
         });
     }
 
@@ -26,7 +25,7 @@ class AddForeignKeyToPrimaryInvestigatorsTable extends Migration
      */
     public function down()
     {
-        Schema::table('primary_investigators', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
 
         });
     }

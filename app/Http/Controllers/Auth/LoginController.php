@@ -44,9 +44,19 @@ class LoginController extends Controller
 
             return redirect()->route('studies.index');
     }
+   /* public function authenticated()
+    {
+        $user = Auth::user();
+        $user->token_2fa_expiry = \Carbon\Carbon::now();
+        $user->save();
+        return redirect('/admin');
+    }*/
 
     /*protected function authenticated(Request $request, $user)
     {
+            $user->generateTwoFactorCode();
+        $user->notify(new TwoFactorCode());
+
 
         if ($user->role_id ==1 || $user->role_id==2){
             return redirect()->intended(route('admin.index'));
