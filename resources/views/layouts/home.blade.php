@@ -57,8 +57,6 @@
         </div>
     </div>
     <!-- END: Header-->
-
-
     <!-- START: Main Menu-->
     @include('layouts/sidebar_menu')
     <!-- END: Main Menu-->
