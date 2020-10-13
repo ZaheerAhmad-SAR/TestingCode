@@ -133,15 +133,16 @@
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                 @php
-                                                    $studyQuery = Modules\Queries\Entities\Query::where('module_id','=',$study->id)->get();
+                                                    $studyQuery = Modules\Queries\Entities\Query::where('module_id','=',$study->id)->where('query_status','open')->first();
+
                                                 @endphp
-                                               @foreach($studyQuery as $query)
+                                               @if(null !== $studyQuery )
+
                                                 <div class="showQueries">
                                                     <span class="ml-3" style="cursor: pointer;">
-                                                        <i class="fas fa-question-circle" data-id="{{$query->id}}" style="margin-top: 12px;">
-                                                        </i></span>
+                                                        <i class="fas fa-question-circle showAllStudyQueries" data-id="{{$study->id}}"  style="margin-top: 12px;"></i></span>
                                                 </div>
-                                                @endforeach
+                                                @endif
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                     <span class="dropdown-item">
                                                         <a href="javascript:void(0)" id="change-status" data-target-id="{{$study->id}}" data-toggle="modal" data-target="#change_status">
@@ -409,6 +410,62 @@
             </div>
         </div>
     </div>
+
+{{--    <div class="modal fade" tabindex="-1" role="dialog" id="all-queries-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">--}}
+{{--        <div class="modal-dialog modal-dialog-centered" role="document">--}}
+{{--            <div class="modal-content">--}}
+{{--                <div class="alert alert-danger" style="display:none"></div>--}}
+{{--                <div class="modal-header ">--}}
+{{--                    <p class="modal-title">Add a Queries</p>--}}
+{{--                </div>--}}
+{{--                <form id="allqueriesForm" name="allqueriesForm">--}}
+{{--                    <div class="modal-body">--}}
+{{--                        <div id="exTab1">--}}
+{{--                            <div class="tab-content clearfix">--}}
+{{--                                @csrf--}}
+{{--                                <label>Current query status: &nbsp; &nbsp;<i style="color: red;" class="fas fa-question-circle"></i> &nbsp;New</label>--}}
+{{--                                <div class="form-group row">--}}
+{{--                                    <label for="Name" class="col-sm-4 col-form-label">Queries Assigned to:</label>--}}
+{{--                                    <div class="col-sm-8">--}}
+{{--                                        <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="users"> Users</label> &nbsp;--}}
+{{--                                        <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="roles" > Roles</label>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                                <div class="form-group row usersInput" style="display: none;">--}}
+{{--                                    <label for="Name" class="col-sm-2 col-form-label">Users:</label>--}}
+{{--                                    <div class="col-sm-10">--}}
+
+{{--                                        <select class="form-control multieSelectDropDown" multiple data-allow-clear="1" name="users" id="users">--}}
+
+{{--                                        </select>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                                <div class="form-group row rolesInput" style="display: none;">--}}
+{{--                                    <label for="Name" class="col-sm-2 col-form-label">Roles:</label>--}}
+{{--                                    <div class="col-sm-10">--}}
+{{--                                        @foreach($roles_for_queries as $role)--}}
+{{--                                            <label class="checked-inline  col-form-label"><input type="checkbox" class="ads_Checkbox" id="roles" name="roles" value="{{$role->id}}"> {{$role->name}} </label>--}}
+{{--                                        @endforeach--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                                <div class="form-group row remarksInput" style="display:none;">--}}
+{{--                                    <label for="Name" class="col-sm-2 col-form-label">Remarks</label>--}}
+{{--                                    <div class="col-sm-10">--}}
+{{--                                        <textarea class="summernote" name="remarks" cols="2" rows="1" id="remarks"></textarea>--}}
+{{--                                    </div>--}}
+{{--                                </div>--}}
+{{--                                <input type="hidden" name="module_id" id="module_id" value="">--}}
+{{--                            </div>--}}
+{{--                        </div>--}}
+{{--                        <div class="modal-footer">--}}
+{{--                            <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>--}}
+{{--                            <button type="button" class="btn btn-outline-primary" id="savequeries"><i class="fa fa-save"></i> Save Changes</button>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                </form>--}}
+{{--            </div>--}}
+{{--        </div>--}}
+{{--    </div>--}}
     @include('queries::queries.query_popup')
 @endsection
 @section('styles')
@@ -419,6 +476,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
 
 <script type="text/javascript">
+
  $(document).ready(function(){
        $('#change_status').on('show.bs.modal',function (e) {
         var id = $(e.relatedTarget).data('target-id');
@@ -560,6 +618,13 @@
         });
 
     });
+
+    // $('.showAllStudyQueries').click(function () {
+    //     var id = $(this).attr('data-id');
+    //     console.log(id);
+    //     // var moduleId = $('#module_id').val(id);
+    //     // $('#queries-modal').modal('show');
+    // });
 
 </script>
 

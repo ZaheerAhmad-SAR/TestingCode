@@ -17,5 +17,8 @@
 
 Route::group(['middleware' => ['auth','web','roles']],function(){
     Route::resource('queries','QueriesController');
+    Route::get('queries/chatindex','QueriesController@chatindex')->name('queries.chatindex');
     Route::get('queries/queriesList', 'QueriesController@queriesList')->name('queries.queriesList');
+
+    Route::post('queries/loadHtml', 'QueriesController@loadHtml')->name('queries.loadHtml');
 });

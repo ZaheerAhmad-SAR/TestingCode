@@ -14,7 +14,7 @@ class GradingController extends Controller
      */
     public function index()
     {
-        return view('userroles::index');
+        return view('userroles::users.grading-list');
     }
 
     /**

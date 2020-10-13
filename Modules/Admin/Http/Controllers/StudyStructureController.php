@@ -19,55 +19,54 @@ class StudyStructureController extends Controller
     public function index()
     {
         $query = StudyStructure::select('*');
-        $query->with('phases','study');
-        if ( null !== session('current_study') && !empty(session('current_study'))) {
-        $query->where('study_id', session('current_study'));
+        $query->with('phases', 'study');
+        if (null !== session('current_study') && !empty(session('current_study'))) {
+            $query->where('study_id', session('current_study'));
         }
         $query->orderBy('position', 'asc');
         $phases = $query->get();
         $steps = PhaseSteps::all();
         $formTypes = FormType::all();
-
-        return view('admin::structure.index',compact('phases','steps', 'formTypes'));
+        return view('admin::structure.index', compact('phases', 'steps', 'formTypes'));
     }
-    public function get_steps(){
-       $query = StudyStructure::select('*');
-       $query->with('phases','study');
-       if ( null !== session('current_study') && !empty(session('current_study'))) {
-        $query->where('study_id', session('current_study'));
+    public function get_steps()
+    {
+        $query = StudyStructure::select('*');
+        $query->with('phases', 'study');
+        if (null !== session('current_study') && !empty(session('current_study'))) {
+            $query->where('study_id', session('current_study'));
         }
-       $query->orderBy('position', 'asc');
-       $phases = $query->get();
-       $html = '';
-       foreach ($phases as $keys => $phase) {
-           foreach ($phase->phases as $key => $step_value) {
-            if($keys ===0){
-                $active = 'display:block';
-            }else{
-                $active = '';
-            }
-            $html .= '<li class="py-3 px-2 mail-item tab_'.$step_value->phase_id.'" style="'.$active.'">
-                    <input type="hidden" class="step_id" value="'.$step_value->step_id.'">
-                    <input type="hidden" class="step_phase_id" value="'.$step_value->phase_id.'">
-                    <input type="hidden" class="form_type_id" value="'.$step_value->form_type_id.'">
-                    <input type="hidden" class="step_name" value="'.$step_value->step_name.'">
-                    <input type="hidden" class="step_position" value="'.$step_value->step_position.'">
-                    <input type="hidden" class="step_description" value="'.$step_value->step_description.'">
-                    <input type="hidden" class="graders_number" value="'.$step_value->graders_number.'">
-                    <input type="hidden" class="q_c" value="'.$step_value->q_c.'">
-                    <input type="hidden" class="eligibility" value="'.$step_value->eligibility.'">
+        $query->orderBy('position', 'asc');
+        $phases = $query->get();
+        $html = '';
+        foreach ($phases as $keys => $phase) {
+            foreach ($phase->phases as $key => $step_value) {
+                if ($keys === 0) {
+                    $active = 'display:block';
+                } else {
+                    $active = '';
+                }
+                $html .= '<li class="py-3 px-2 mail-item tab_' . $step_value->phase_id . '" style="' . $active . '">
+                    <input type="hidden" class="step_id" value="' . $step_value->step_id . '">
+                    <input type="hidden" class="step_phase_id" value="' . $step_value->phase_id . '">
+                    <input type="hidden" class="form_type_id" value="' . $step_value->form_type_id . '">
+                    <input type="hidden" class="step_name" value="' . $step_value->step_name . '">
+                    <input type="hidden" class="step_position" value="' . $step_value->step_position . '">
+                    <input type="hidden" class="step_description" value="' . $step_value->step_description . '">
+                    <input type="hidden" class="graders_number" value="' . $step_value->graders_number . '">
+                    <input type="hidden" class="q_c" value="' . $step_value->q_c . '">
+                    <input type="hidden" class="eligibility" value="' . $step_value->eligibility . '">
                     <div class="d-flex align-self-center align-middle">
                         <div class="mail-content d-md-flex w-100">
-                            <span class="mail-user">'.$step_value->step_position.'. '.$step_value->formType->form_type.' - '.$step_value->step_name.'</span>
-                            <p class="mail-subject">'.$step_value->step_description.'.</p>
+                            <span class="mail-user">' . $step_value->step_position . '. ' . $step_value->formType->form_type . ' - ' . $step_value->step_name . '</span>
+                            <p class="mail-subject">' . $step_value->step_description . '.</p>
                             <div class="d-flex mt-3 mt-md-0 ml-auto">
                                 <div class="ml-md-auto mr-3 dot primary"></div>
-                                <p class="ml-auto mail-date mb-0">'.$step_value->created_at.'</p>
+                                <p class="ml-auto mail-date mb-0">' . $step_value->created_at . '</p>
                                 <a href="#" class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog"></i></a>
                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                     <span class="dropdown-item edit_steps"><i class="far fa-edit"></i>&nbsp; Edit</span>
                                     <span class="dropdown-item addsection"><i class="far fa-file-code"></i>&nbsp; Add Section</span>
-                                    <span class="dropdown-item assign_phase_steps_roles" data-step-id="'.$step_value->step_id.'"><i class="far fa-user"></i>&nbsp; Assign Roles</span>
                                     <span class="dropdown-item"><i class="far fa-clone"></i>&nbsp; Clone</span>
                                     <span class="dropdown-item deleteStep"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                 </div>
@@ -75,37 +74,36 @@ class StudyStructureController extends Controller
                         </div>
                     </div>
                 </li>';
-           }
-       }
+            }
+        }
 
-    return Response ($html);
+        return Response($html);
     }
     public function getallphases(Request $request)
     {
         $query = StudyStructure::select('*');
-        $query->with('phases','study');
-        if ( null !== session('current_study') && !empty(session('current_study'))) {
-        $query->where('study_id', session('current_study'));
+        $query->with('phases', 'study');
+        if (null !== session('current_study') && !empty(session('current_study'))) {
+            $query->where('study_id', session('current_study'));
         }
         $query->orderBy('position', 'asc');
         $phases = $query->get();
         $html = '';
         foreach ($phases as $key => $phase) {
-          if($key ==0){
+            if ($key == 0) {
                 $active_phase = ' active';
-            }else{
+            } else {
                 $active_phase = '';
             }
-          $html .= '<li class="nav-item mail-item" style="border-bottom: 1px solid #F6F6F7;"><div class="d-flex align-self-center align-middle"><div class="mail-content d-md-flex w-100"><a href="#" data-mailtype="tab_'.$phase->id.'" class="nav-link'.$active_phase.'"><span class="mail-user"> '.$phase->position.' . '.$phase->name.' </span></a><input type="hidden" class="phase_id" value="'.$phase->id.'">
-                        <input type="hidden" class="phase_study_id" value="'.$phase->study_id.'">
-                        <input type="hidden" class="phase_name" value="'.$phase->name.'">
-                        <input type="hidden" class="phase_position" value="'.$phase->position.'">
-                        <input type="hidden" class="phase_duration" value="'.$phase->duration.'">
+            $html .= '<li class="nav-item mail-item" style="border-bottom: 1px solid #F6F6F7;"><div class="d-flex align-self-center align-middle"><div class="mail-content d-md-flex w-100"><a href="#" data-mailtype="tab_' . $phase->id . '" class="nav-link' . $active_phase . '"><span class="mail-user"> ' . $phase->position . ' . ' . $phase->name . ' </span></a><input type="hidden" class="phase_id" value="' . $phase->id . '">
+                        <input type="hidden" class="phase_study_id" value="' . $phase->study_id . '">
+                        <input type="hidden" class="phase_name" value="' . $phase->name . '">
+                        <input type="hidden" class="phase_position" value="' . $phase->position . '">
+                        <input type="hidden" class="phase_duration" value="' . $phase->duration . '">
                         <div class="d-flex mt-3 mt-md-0 ml-auto">
                             <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                             <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                 <span class="dropdown-item edit_phase"><i class="far fa-edit"></i>&nbsp; Edit</span>
-                                <span class="dropdown-item assign_study_structures_roles" data-phase-id="'.$phase->id.'"><i class="far fa-user"></i>&nbsp; Assign Roles</span>
                                 <span class="dropdown-item"><i class="far fa-clone"></i>&nbsp; Clone</span>
                                 <span class="dropdown-item deletePhase"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                             </div>
@@ -114,7 +112,7 @@ class StudyStructureController extends Controller
                     </div>
                 </li>';
         }
-      return Response ($html);
+        return Response($html);
     }
     /**
      * Show the form for creating a new resource.
@@ -141,9 +139,9 @@ class StudyStructureController extends Controller
             'duration' =>  $request->duration
         ]);
         $data = [
-          'success' => true,
-          'message'=> 'Recode added successfully'
-        ] ;
+            'success' => true,
+            'message' => 'Recode added successfully'
+        ];
 
         return response()->json($data);
     }
@@ -163,11 +161,11 @@ class StudyStructureController extends Controller
             'eligibility' =>  $request->eligibility
         ]);
         $data = [
-          'success' => true,
-          'message'=> 'Recode added successfully'
-        ] ;
+            'success' => true,
+            'message' => 'Recode added successfully'
+        ];
     }
-    public function update_steps(Request $request, $id='')
+    public function update_steps(Request $request, $id = '')
     {
         $phase = PhaseSteps::find($request->step_id);
         $phase->phase_id  =  $request->phase_id;
@@ -180,10 +178,9 @@ class StudyStructureController extends Controller
         $phase->eligibility  =  $request->eligibility;
         $phase->save();
         $data = [
-          'success' => true,
-          'message'=> 'Recode updated successfully'
-        ] ;
-
+            'success' => true,
+            'message' => 'Recode updated successfully'
+        ];
     }
     /**
      * Show the specified resource.
@@ -211,7 +208,7 @@ class StudyStructureController extends Controller
      * @param int $id
      * @return Response
      */
-    public function update(Request $request, $id='')
+    public function update(Request $request, $id = '')
     {
         $phase = StudyStructure::find($request->id);
         $phase->position  =  $request->position;
