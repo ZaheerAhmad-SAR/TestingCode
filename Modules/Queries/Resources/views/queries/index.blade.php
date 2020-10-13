@@ -35,7 +35,6 @@
                                     <th>Remarks</th>
                                     <th>Created By</th>
                                     <th>Creation Date</th>
-{{--                                    <th>User Id</th>--}}
                                     <th>Status</th>
                                 </tr>
                                 </thead>
@@ -47,11 +46,6 @@
                                         <td>{{strip_tags($query->messages)}}</td>
                                         <td>{{ucfirst(auth()->user()->name)}}</td>
                                         <td>{{date_format($query->created_at,'jS F Y h:i:s A')}}</td>
-{{--                                        @php--}}
-{{--                                            $queryUsers = Modules\Queries\Entities\QueryUser::where('query_id','=',$query->id);--}}
-{{--                                            dd($queryUsers);--}}
-{{--                                         @endphp--}}
-{{--                                        <td>{{$query->id}}</td>--}}
                                         <td> <i class="fas fa-question-circle"></i> &nbsp;{{ucfirst($query->query_status)}}</td>
                                     </tr>
                                 @endforeach
