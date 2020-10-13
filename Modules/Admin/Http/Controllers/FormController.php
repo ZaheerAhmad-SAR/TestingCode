@@ -94,7 +94,34 @@ class FormController extends Controller
             ->where('question.section_id', '=', $id)->orderBy('question.question_sort', 'asc')->get();
         $question_contents = '';
         foreach ($questions as $ques_value) {
-            $question_contents .= '<div class="form-group row custom_fields"><input type="hidden" class="question_id" value="' . $ques_value->id . '"><input type="hidden" class="formFields_id" value="' . $ques_value->formFields->id . '"><input type="hidden" class="question_sort" value="' . $ques_value->question_sort . '"><input type="hidden" class="question_type_id" value="' . $ques_value->form_field_type->id . '"><input type="hidden" class="section_id" value="' . $id . '"><input type="hidden" class="option_group_id" value="' . $ques_value->option_group_id . '"><input type="hidden" class="c_disk" value="' . $ques_value->c_disk . '"><input type="hidden" class="question_text" value="' . $ques_value->question_text . '"><input type="hidden" class="variable_name" value="' . $ques_value->formFields->variable_name . '"><input type="hidden" class="text_info" value="' . $ques_value->formFields->text_info . '"><input type="hidden" class="is_required" value="' . $ques_value->formFields->is_required . '"><input type="hidden" class="is_exportable_to_xls" value="' . $ques_value->formFields->is_exportable_to_xls . '"><input type="hidden" class="field_width" value="' . $ques_value->formFields->field_width . '"><input type="hidden" class="measurement_unit" value="' . $ques_value->measurement_unit . '"><input type="hidden" class="lower_limit" value="' . $ques_value->formFields->lower_limit . '"><input type="hidden" class="upper_limit" value="' . $ques_value->formFields->upper_limit . '"><input type="hidden" class="question_type" value="' . $ques_value->form_field_type->field_type . '"><input type="hidden" class="dependency_id" value="' . $ques_value->DependentQuestion->id . '"><input type="hidden" class="dependency_status" value="' . $ques_value->DependentQuestion->q_d_status . '"><input type="hidden" class="dependency_operator" value="' . $ques_value->DependentQuestion->opertaor . '"><input type="hidden" class="dependency_question" value="' . $ques_value->DependentQuestion->dep_on_question_id . '"><input type="hidden" class="dependency_custom_value" value="' . $ques_value->DependentQuestion->custom_value . '"><input type="hidden" class="adj_id" value="' . $ques_value->AdjStatus->id . '"><input type="hidden" class="adj_status" value="' . $ques_value->AdjStatus->adj_status . '"><input type="hidden" class="adj_decision_based" value="' . $ques_value->AdjStatus->decision_based_on . '"><input type="hidden" class="adj_operator" value="' . $ques_value->AdjStatus->opertaor . '"><input type="hidden" class="adj_custom_value" value="' . $ques_value->AdjStatus->custom_value . '">';
+            $question_contents .= '<div class="form-group row custom_fields">';
+            $question_contents .= '<input type="hidden" class="question_id" value="' . $ques_value->id . '">
+            <input type="hidden" class="formFields_id" value="' . $ques_value->formFields->id . '">
+            <input type="hidden" class="question_sort" value="' . $ques_value->question_sort . '">
+            <input type="hidden" class="question_type_id" value="' . $ques_value->form_field_type->id . '">
+            <input type="hidden" class="section_id" value="' . $id . '">';
+            $question_contents .= '<input type="hidden" class="option_group_id" value="' . $ques_value->option_group_id . '">
+            <input type="hidden" class="c_disk" value="' . $ques_value->c_disk . '">
+            <input type="hidden" class="question_text" value="' . $ques_value->question_text . '">
+            <input type="hidden" class="variable_name" value="' . $ques_value->formFields->variable_name . '">
+            <input type="hidden" class="text_info" value="' . $ques_value->formFields->text_info . '">
+            <input type="hidden" class="is_required" value="' . $ques_value->formFields->is_required . '">
+            <input type="hidden" class="is_exportable_to_xls" value="' . $ques_value->formFields->is_exportable_to_xls . '">
+            <input type="hidden" class="field_width" value="' . $ques_value->formFields->field_width . '">
+            <input type="hidden" class="measurement_unit" value="' . $ques_value->measurement_unit . '">
+            <input type="hidden" class="lower_limit" value="' . $ques_value->formFields->lower_limit . '">
+            <input type="hidden" class="upper_limit" value="' . $ques_value->formFields->upper_limit . '">';
+            $question_contents .= '<input type="hidden" class="question_type" value="' . $ques_value->form_field_type->field_type . '">
+            <input type="hidden" class="dependency_id" value="' . $ques_value->DependentQuestion->id . '">
+            <input type="hidden" class="dependency_status" value="' . $ques_value->DependentQuestion->q_d_status . '">
+            <input type="hidden" class="dependency_operator" value="' . $ques_value->DependentQuestion->opertaor . '">
+            <input type="hidden" class="dependency_question" value="' . $ques_value->DependentQuestion->dep_on_question_id . '">
+            <input type="hidden" class="dependency_custom_value" value="' . $ques_value->DependentQuestion->custom_value . '">
+            <input type="hidden" class="adj_id" value="' . $ques_value->AdjStatus->id . '">
+            <input type="hidden" class="adj_status" value="' . $ques_value->AdjStatus->adj_status . '">
+            <input type="hidden" class="adj_decision_based" value="' . $ques_value->AdjStatus->decision_based_on . '">
+            <input type="hidden" class="adj_operator" value="' . $ques_value->AdjStatus->opertaor . '">
+            <input type="hidden" class="adj_custom_value" value="' . $ques_value->AdjStatus->custom_value . '">';
             $question_contents .= '<div class="col-sm-4">' . $ques_value->question_sort . '. ' . $ques_value->question_text . '</div>';
             if ($ques_value->form_field_type->field_type == 'Radio') {
                 if ($ques_value->optionsGroup->option_layout == 'vertical') {
@@ -147,7 +174,7 @@ class FormController extends Controller
                 $question_contents .=  '<div class="col-sm-6"><input type="file" name="question_' . $ques_value->id .
                     '" value="" class="form-control"></div>';
             }
-            $question_contents .= '<div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span></div></div></div></div>';
+            $question_contents .= '<div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span><span class="dropdown-item add_checks"><a href="'.url("forms/skip_logic", $ques_value->id).'" style="cursor:pointer;"><i class="fas fa-crop-alt"></i>&nbsp; Skip Logic </a></span></div></div></div></div>';
         }
         return $question_contents;
     }
@@ -158,6 +185,10 @@ class FormController extends Controller
         $question->save();
         $Response['data'] = 'success';
         echo json_encode($Response);
+    }
+    public function skip_question_on_click($id){
+        $all_form_data = StudyStructure::with('steps')->where('study_structures.study_id', '=', session('current_study'))->get();
+        return view('admin::forms.skip_logic',compact('all_form_data'));
     }
     /**
      * Show the form for creating a new resource.

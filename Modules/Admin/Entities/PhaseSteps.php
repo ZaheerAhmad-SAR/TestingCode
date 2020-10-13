@@ -55,4 +55,8 @@ class PhaseSteps extends Model
     {
         return $this->belongsTo(FormType::class, 'form_type_id', 'id');
     }
+    public function phases()
+    {
+        return $this->belongsTo(StudyStructure::class, 'phase_id', 'id');
+    }
 }

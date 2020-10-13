@@ -42,5 +42,8 @@ class StudyStructure extends Model
     public function study(){
         return $this->hasMany(study::class,'id','study_id');
     }
-    
+    public function steps()
+    {
+        return $this->hasMany(PhaseSteps::class,'phase_id','id');
+    }
 }

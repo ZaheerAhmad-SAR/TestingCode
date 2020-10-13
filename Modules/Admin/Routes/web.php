@@ -23,12 +23,15 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('study_phases', 'StudyStructureController@getallphases')->name('getPhases');
     Route::get('forms/get_phases/{id}', 'FormController@get_phases')->name('forms.get_phases');
     Route::post('study/update', 'StudyStructureController@update')->name('study.updatePhase');
+    // for steps
     Route::DELETE('steps/delete_steps/{step_id}', 'StudyStructureController@destroySteps')->name('steps.deleteSteps');
     Route::post('steps/store_steps', 'StudyStructureController@store_steps')->name('steps.save');
     Route::post('steps/updateSteps', 'StudyStructureController@update_steps')->name('steps.update');
+    // for Section 
     Route::resource('sections', 'SectionController');
     Route::post('section', 'SectionController@getSectionby_id')->name('section.getSections');
     Route::post('section/update', 'SectionController@update')->name('section.updateSections');
+    /// for form management
     Route::get('forms/step_by_phaseId/{id}', 'FormController@get_steps_by_phaseId')->name('forms.stepbyphaseId');
     Route::resource('forms', 'FormController');
     Route::post('forms/add_questions', 'FormController@add_questions')->name('forms.addQuestions');
@@ -41,6 +44,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('forms/get_allQuestions/{id}', 'FormController@get_allQuestions')->name('forms.get_allQuestions');
     Route::get('forms/changeSort/{id}', 'FormController@updateQustionsort')->name('forms.changeSort');
     Route::DELETE('forms/delete/{id}', 'FormController@deleteQuestion')->name('forms.delete');
+    Route::get('forms/skip_logic/{id}', 'FormController@skip_question_on_click')->name('forms.skipLogic');
         //routes for options groups
     Route::resource('optionsGroup', 'OptionsGroupController');
     Route::post('optionsGroup/update', 'OptionsGroupController@update')->name('optionsGroup.update');
