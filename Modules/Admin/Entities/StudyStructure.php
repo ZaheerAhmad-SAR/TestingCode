@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class StudyStructure extends Model
 {
-    protected $fillable = ['id','study_id','name','position','duration'];
+    protected $fillable = ['id', 'study_id', 'name', 'position', 'duration'];
     // protected $keyType = 'string';
     protected $casts = [
         'id' => 'string'
@@ -20,7 +20,7 @@ class StudyStructure extends Model
         parent::boot();
         static::addGlobalScope(new StudyStructureOrderByScope);
     }
-    
+
     public function phases()
     {
         return $this->hasMany(PhaseSteps::class, 'phase_id', 'id');
@@ -30,21 +30,21 @@ class StudyStructure extends Model
     {
         return $this->belongsToMany(Role::class, 'study_structures_roles', 'phase_id', 'role_id');
     }
-    
+
     static function phasesbyRoles($studyId, $userRoleIds)
     {
         return self::whereHas('roles', function ($query) use ($userRoleIds) {
             $query->whereIn('role_id', $userRoleIds);
         })
-        ->where('study_id', $studyId)
-        ->get();
+            ->where('study_id', $studyId)
+            ->get();
     }
-    public function study(){
-        return $this->belongsTo(study::class,'study_id','id');
+    public function study()
+    {
+        return $this->belongsTo(study::class, 'study_id', 'id');
     }
     public function steps()
     {
-        return $this->hasMany(PhaseSteps::class,'phase_id','id');
+        return $this->hasMany(PhaseSteps::class, 'phase_id', 'id');
     }
-
 }
