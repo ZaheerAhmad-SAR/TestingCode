@@ -26,7 +26,33 @@
         <div class="row">
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
-
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="example" class="display table dataTable table-striped table-bordered" >
+                                <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>Remarks</th>
+                                    <th>Created By</th>
+                                    <th>Creation Date</th>
+                                    <th>Status</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @php $count= 1; @endphp
+                                @foreach($queries as $query)
+                                    <tr>
+                                        <td>{{$count++}}</td>
+                                        <td>{{strip_tags($query->messages)}}</td>
+                                        <td>{{ucfirst(auth()->user()->name)}}</td>
+                                        <td>{{date_format($query->created_at,'jS F Y h:i:s A')}}</td>
+                                        <td> <i class="fas fa-question-circle"></i> &nbsp;{{ucfirst($query->query_status)}}</td>
+                                    </tr>
+                                @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
 
             </div>

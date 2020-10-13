@@ -22,10 +22,8 @@ class QueriesController extends Controller
      */
     public function index()
     {
-
-        $users  =   User::where('id','!=',\auth()->user()->id)->get();
         $queries = Query::all();
-        return view('queries::queries.chat',compact('users','queries'));
+        return view('queries::queries.index',compact('queries'));
 
     }
 
@@ -45,21 +43,23 @@ class QueriesController extends Controller
      */
     public function store(Request $request)
     {
+
         $roles           = $request->post('assignedRoles');
         $users           = $request->post('assignedUsers');
         $remarks         = $request->post('assignedRemarks');
         $module_id       = $request->post('module_id');
         $queryAssignedTo = $request->post('queryAssignedTo');
         $id              = Str::uuid();
+        $query           = Query::create([
+            'id'=>$id,
+            'queried_remarked_by_id'=>\auth()->user()->id,
+            'parent_query_id'=> 0,
+            'messages'=>$remarks,
+            'module_id'=>$module_id,
+            'query_status'=> 'open'
+        ]);
         if ($queryAssignedTo == 'users')
         {
-            $query = Query::create([
-                'id'=>$id,
-                'queried_remarked_by_id'=>\auth()->user()->id,
-                'parent_query_id'=> 0,
-                'messages'=>$remarks,
-                'module_id'=>$module_id
-            ]);
             foreach ($users as $user)
             {
                 $roles = (array)null;
@@ -72,13 +72,6 @@ class QueriesController extends Controller
         }
         if ($queryAssignedTo == 'roles')
         {
-            $query  = Query::create([
-                'id'=>$id,
-                'queried_remarked_by_id'=>\auth()->user()->id,
-                'parent_query_id'=> 0,
-                'messages'=>$remarks,
-                'module_id'=>$module_id
-            ]);
             foreach ($roles as $role)
             {
                 $users = (array)null;
@@ -100,8 +93,10 @@ class QueriesController extends Controller
      */
     public function show($id)
     {
-        dd('hitting');
-        return view('queries::show');
+
+        $users  =   User::where('id','!=',\auth()->user()->id)->get();
+        $queries = Query::all();
+        return view('queries::queries.chat',compact('users','queries'));
     }
 
     /**
@@ -111,7 +106,17 @@ class QueriesController extends Controller
      */
     public function edit($id)
     {
-        return view('queries::edit');
+//        if ($request->ajax()) {
+//            $records = Query::where('module_id','=',$id)->get();
+//            $output = '';
+//            foreach ($records as $record)
+//            {
+//                $output .= "<p>$record->messages</p>";
+//            }
+//            return Response($output);
+//        }
+        $queries = Query::where('module_id','=',$id)->get();
+        return view('queries::queries.index',compact('queries'));
     }
 
     /**

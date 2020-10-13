@@ -185,7 +185,7 @@
                 <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Grading</a>
                     <ul>
                         <li>
-                            <a href="#">
+                            <a href="{{route('grading.index')}}">
                                 <i class="fas fa-list"></i> Grading List
                             </a>
                         </li>
@@ -258,14 +258,14 @@
                     <li class="dropdown"><a href="#"><i class="fab fa-rocketchat"></i>Queries</a>
                         <ul class="sub-menu">
                             <li>
-                                <a href="{{route('queries.queriesList')}}">
+                                <a href="{{route('queries.index')}}">
                                     Overall Data Report
                                 </a>
                             </li>
 
                             @if(hasPermission(auth()->user(),'queries.index'))
                             <li>
-                                <a href="{{route('queries.index')}}">
+                                <a href="{{route('queries.chatindex')}}">
                                     Chat App
                                 </a>
                             </li>
@@ -276,7 +276,7 @@
             </li>
             @endif
 
-                @if(hasPermission(auth()->user(),'systemtools.index') && empty(session('current_study')))
+                @if(hasPermission(auth()->user(),'systemtools.index') && hasPermission(auth()->user(),'trail_logs.list'))
                 <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
                     <ul >
 
@@ -289,7 +289,7 @@
                     </ul>
                 </li>
                 @elseif(hasPermission(auth()->user(),'trail_logs.list'))
-                    @if(Session::has('current_study'))
+                   
                     <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
                         <ul >
 
@@ -301,8 +301,8 @@
                             </li>
                         </ul>
                     </li>
+        
                 @endif
-            @endif
         </ul>
         <!-- END: Menu-->
         <ol class="breadcrumb bg-transparent align-self-center m-0 p-0 ml-auto">

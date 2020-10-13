@@ -15,8 +15,6 @@ class AddForeignKeyToPhaseStepsTable extends Migration
     {
         Schema::table('phase_steps', function (Blueprint $table) {
             $table->foreign('phase_id')->references('id')->on('study_structures');
-
-
         });
     }
 

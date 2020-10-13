@@ -1,10 +1,10 @@
 @if ($key === $first)
     <div class="d-flex">
-        @if ((bool) $subjectId && ($formStatus === 'complete' || $formStatus === 'resumable'))
-            <button class="btn btn-warning" name="edit_form_button_{{ $stepIdStr }}"
+        @if ((bool) $subjectId && ($formStatusObj->form_status === 'complete' || $formStatusObj->form_status === 'resumable'))
+            <button type="button" class="btn btn-warning" name="edit_form_button_{{ $stepIdStr }}"
                 id="edit_form_button_{{ $stepIdStr }}"
-                onclick="openFormForEditing('{{ $stepIdStr }}', '{{ $stepClsStr }}', '{{ $sectionIdStr }}');"
-                style="display: {{ $formStatus == 'resumable' ? 'none' : 'block' }};">
+                onclick="openFormForEditing('{{ $stepIdStr }}', '{{ $stepClsStr }}');"
+                style="display: {{ $formStatusObj->form_status == 'resumable' ? 'none' : 'block' }};">
                 Edit Form
             </button>
         @endif
@@ -13,7 +13,7 @@
     </div>
     <div class="row">
         <div class="col-md-12" id="edit_form_div_{{ $stepIdStr }}"
-            style="display: {{ $formStatus == 'resumable' ? 'block' : 'none' }};">
+            style="display: {{ $formStatusObj->form_status == 'resumable' ? 'block' : 'none' }};">
             <div class="form-group">
                 <label class="">Reason to edit form :</label>
                 <input type="text" name="edit_reason_text_{{ $stepIdStr }}" id="edit_reason_text_{{ $stepIdStr }}"
@@ -42,7 +42,7 @@
             </div>
             <div class="col-md-1">
                 <button type="button" class="btn btn-success float-right"
-                    onclick="submitStepForms{{ $stepIdStr }}('{{ $stepIdStr }}', '{{ $stepClsStr }}');"
+                    onclick="submitStepForm{{ $stepIdStr }}('{{ $stepIdStr }}', '{{ $stepClsStr }}');"
                     id="submit_{{ $stepIdStr }}">Submit</button>
             </div>
         </div>

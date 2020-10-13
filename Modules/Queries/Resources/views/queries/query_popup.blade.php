@@ -112,6 +112,7 @@
     });
 
     $('#savequeries').click(function (){
+        alert('ddddd');
         var queryAssignedTo = $("input[name='assignQueries']:checked").val();
         var module_id = $('#module_id').val();
         //console.log(module_id);
