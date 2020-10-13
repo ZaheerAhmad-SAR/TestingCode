@@ -33,7 +33,6 @@ class StudyController extends Controller
     public function index()
     {
 
-
         $user = User::with('studies', 'user_roles')->find(Auth::id());
         session(['current_study'=>'']);
         $user = User::with('studies', 'user_roles')->find(Auth::id());
