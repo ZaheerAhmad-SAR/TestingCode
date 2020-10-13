@@ -74,7 +74,6 @@ class PhaseSteps extends Model
         } else {
             $formTypeArray[] = 4;
         }
-        //dd($formTypeArray);
         return self::where('phase_id', $phaseId)->whereIn('form_type_id', $formTypeArray)->get();
     }
     public function phase()

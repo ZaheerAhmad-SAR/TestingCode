@@ -123,7 +123,7 @@ $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'no_status'
                     stopJsHere();
                 }
             }
-            validateAndSubmitForm(stepIdStr);
+            validateAndSubmitForm(stepIdStr, '{{ $formStatusObj->form_type_id }}', '{{ buildGradingStatusIdClsStr($formStatusObj->id) }}');
             reloadPage();
             //hideReasonField(stepIdStr, stepClsStr);
         }
@@ -137,7 +137,7 @@ $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'no_status'
             if ($formStatusObj->form_status != 'complete') {
                 echo "globalDisableByClass('$studyClsStr', '$stepClsStr');";
             } else {
-                echo "hideReasonField('$stepIdStr', '$stepClsStr');";
+                echo "hideReasonField('$stepIdStr', '$stepClsStr', '$formStatusObj->form_type_id', '".buildGradingStatusIdClsStr($formStatusObj->id)."');";
             }
             @endphp
         });

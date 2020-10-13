@@ -149,14 +149,14 @@
                                                                     'phase_steps_id' => $step->step_id,
                                                                     'form_type_id' => $step->form_type_id,
                                                                 ];
-                                                                if (canQualityControl() && $step->form_type_id == 1) {
+                                                                if ($step->form_type_id == 1) {
                                                                     $getFormStatusArray = [
                                                                     'form_filled_by_user_id' => $form_filled_by_user_id,
                                                                     'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
                                                                 ];
                                                                 echo \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
                                                                 }
-                                                                if (canGrading() && $step->form_type_id == 2) {
+                                                                if ($step->form_type_id == 2) {
                                                                     echo \Modules\Admin\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray);
                                                                 }
                                                                 @endphp
