@@ -6,6 +6,7 @@ $getFormStatusArray = [
     'study_id' => $studyId,
     'study_structures_id' => $phase->id,
     'phase_steps_id' => $step->step_id,
+    'form_type_id' => $step->form_type_id,
 ];
 $formStatusObj = \Modules\Admin\Entities\FormStatus::getFormStatusObj($getFormStatusArray);
 $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'no_status';

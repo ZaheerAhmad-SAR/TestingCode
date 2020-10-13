@@ -143,14 +143,22 @@
                                                                 {{ $step->formType->form_type . ' ' . $step->step_name }}
                                                                 @php
                                                                 $getFormStatusArray = [
-                                                                    'form_filled_by_user_id' => $form_filled_by_user_id,
-                                                                    'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
-                                                                    'subject_id' => $subjectId,
+                                                                  'subject_id' => $subjectId,
                                                                     'study_id' => $studyId,
                                                                     'study_structures_id' => $phase->id,
                                                                     'phase_steps_id' => $step->step_id,
+                                                                    'form_type_id' => $step->form_type_id,
+                                                                ];
+                                                                if (canQualityControl() && $step->form_type_id == 1) {
+                                                                    $getFormStatusArray = [
+                                                                    'form_filled_by_user_id' => $form_filled_by_user_id,
+                                                                    'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
                                                                 ];
                                                                 echo \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
+                                                                }
+                                                                if (canGrading() && $step->form_type_id == 2) {
+                                                                    echo \Modules\Admin\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray);
+                                                                }
                                                                 @endphp
                                                             </a>
                                                             <br>

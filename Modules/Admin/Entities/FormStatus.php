@@ -15,19 +15,42 @@ class FormStatus extends Model
         'form_status' => 'no_status',
     ];
 
-    public static function getFormStatusObj($getFormStatusArray)
+    public static function getFormStatusObjQuery($getFormStatusArray)
     {
-        $formStatusObject = FormStatus::where(function ($q) use ($getFormStatusArray) {
+        $formStatusObjectQuery = Self::where(function ($q) use ($getFormStatusArray) {
             foreach ($getFormStatusArray as $key => $value) {
                 $q->where($key, '=', $value);
             }
-        })->firstOrNew();
-        return $formStatusObject;
+        });
+        return $formStatusObjectQuery;
     }
+
+    public static function getFormStatusObj($getFormStatusArray)
+    {
+        return self::getFormStatusObjQuery($getFormStatusArray)->firstOrNew();
+    }
+
+    public static function getFormStatusObjArray($getFormStatusArray)
+    {
+        return self::getFormStatusObjQuery($getFormStatusArray)->get();
+    }
+
 
     public function editReasons()
     {
         return $this->hasMany(FormRevisionHistory::class, 'form_submit_status_id', 'id');
+    }
+
+    public static function getGradersFormsStatusesSpan($step, $getFormStatusArray)
+    {
+        $retStr = '';
+        $numberOfGraders = $step->graders_number;
+        $statusObjects = self::getFormStatusObjArray($getFormStatusArray);
+        for ($counter = 0; $counter < $numberOfGraders; $counter++) {
+            $formStatusObj = self::getFormStatusObj($getFormStatusArray);
+            $retStr .= self::makeFormStatusSpan($step, $formStatusObj->form_status);
+        }
+        return $retStr;
     }
 
     public static function getFormStatus($step, $getFormStatusArray, $wrap = false)
