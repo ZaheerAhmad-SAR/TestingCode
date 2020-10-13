@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 use Modules\Queries\Entities\Query;
 use Modules\Queries\Entities\QueryUser;
 use Modules\Queries\Entities\RoleQuery;
+use Modules\UserRoles\Entities\UserRole;
 use phpDocumentor\Reflection\Types\Null_;
 
 class QueriesController extends Controller
@@ -25,6 +26,16 @@ class QueriesController extends Controller
         $queries = Query::all();
         return view('queries::queries.index',compact('queries'));
 
+    }
+    public function loadHtml(Request $request)
+    {
+        $studyusers =  UserRole::select('users.*','user_roles.study_id','roles.role_type', 'roles.name as role_name')
+            ->join('users','users.id','=','user_roles.user_id')
+            ->join('roles','roles.id','=','user_roles.role_id')
+            ->where('roles.role_type','!=','system_role')
+            ->where('user_roles.study_id','=',$request->study_id)
+            ->get();
+        echo  view('queries::queries.usersdropdown',compact('studyusers'));
     }
 
     /**

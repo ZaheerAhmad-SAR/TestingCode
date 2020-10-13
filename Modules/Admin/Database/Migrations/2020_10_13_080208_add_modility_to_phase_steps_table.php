@@ -15,11 +15,8 @@ class AddModilityToPhaseStepsTable extends Migration
     {
         Schema::table('phase_steps', function (Blueprint $table) {
             //
-            $table->integer('modility_id')->unsigned()->nullable();
-            $table->foreign('modility_id')
-                  ->references('id')
-                  ->on('modilities')
-                  ->onDelete('cascade');  
+            $table->integer('modility_id')->unsigned()->nullable()->after('phase_id');
+        
         });              
     }
 
@@ -32,7 +29,7 @@ class AddModilityToPhaseStepsTable extends Migration
     {
         Schema::table('phase_steps', function (Blueprint $table) {
             //
-            $table->dropForeign('modility_id');
+            $table->dropColumn('modility_id');
         });
     }
 }
