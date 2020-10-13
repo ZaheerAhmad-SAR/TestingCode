@@ -52,7 +52,6 @@
                                     <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                         <span class="dropdown-item edit_phase"><i class="far fa-edit"></i>&nbsp; Edit</span>
-                                        <span class="dropdown-item assign_study_structures_roles" data-phase-id="{{$phase->id}}"><i class="far fa-user"></i>&nbsp; Assign Roles</span>
                                         <span class="dropdown-item"><i class="far fa-clone"></i>&nbsp; Clone</span>
                                         <span class="dropdown-item deletePhase"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                     </div>
@@ -95,7 +94,6 @@
                                         <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                             <span class="dropdown-item edit_steps"><i class="far fa-edit"></i>&nbsp; Edit</span>
                                             <span class="dropdown-item addsection"><i class="far fa-file-code"></i>&nbsp; Add Section</span>
-                                            <span class="dropdown-item assign_phase_steps_roles" data-step-id="{{$step_value->step_id}}"><i class="far fa-user"></i>&nbsp; Assign Roles</span>
                                             <span class="dropdown-item"><i class="far fa-clone"></i>&nbsp; Clone</span>
                                             <span class="dropdown-item deleteStep"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                         </div>
@@ -347,7 +345,8 @@
                 <p class="modal-title">Assign Roles</p>
             </div>
             <div class="modal-body" id="assignRolesToPhaseStepMainDiv">
-
+                <span class="dropdown-item assign_study_structures_roles" data-phase-id="{{$phase->id}}"><i class="far fa-user"></i>&nbsp; Assign Roles</span>
+                <span class="dropdown-item assign_phase_steps_roles" data-step-id="{{$step_value->step_id}}"><i class="far fa-user"></i>&nbsp; Assign Roles</span>
             </div>
         </div>
     </div>
@@ -676,7 +675,7 @@ $(document).ready(function(){
             success:function(res){
                 $('.allphases').html(res);
                 load_steps();
-                
+
             }
         })
     }
@@ -709,7 +708,7 @@ function get_all_phases(id,phase_class){
                 options += '<option value="'+v.id+'" >'+v.name+'</option>';
             });
             phase_class.append(options);
-        } 
+        }
     });
 }
     function Sections(id){

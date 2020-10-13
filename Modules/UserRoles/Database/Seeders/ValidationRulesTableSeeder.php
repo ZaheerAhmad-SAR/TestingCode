@@ -14,6 +14,9 @@ class ValidationRulesTableSeeder extends Seeder
      */
     public function run()
     {
+    }
+    public function run123()
+    {
 
 
         \DB::table('validation_rules')->delete();

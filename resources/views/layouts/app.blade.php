@@ -70,6 +70,7 @@
         <!-- START: Page JS-->
         @yield('script')
         @stack('script')
+        @stack('script_mid')
         @stack('script_last')
         <!-- END: Page JS-->
     </body>
