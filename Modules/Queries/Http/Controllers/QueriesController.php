@@ -38,6 +38,31 @@ class QueriesController extends Controller
         echo  view('queries::queries.usersdropdown',compact('studyusers'));
     }
 
+    public function loadAllQueriesByStudyId(Request $request)
+    {
+    if ($request->ajax())
+    {
+        $study_id = $request->study_id;
+
+        $records = Query::where('module_id','=',$study_id)->get();
+
+//        foreach ($records as $query)
+//        {
+//            $output = '';
+//            $output .= "<tr><td>1++</td>
+//                <td>$query->messages</td>
+//               <td>ucfirst(auth()->user()->name)</td>
+//                <td>date_format($query->created_at,'jS F Y h:i:s A')</td>
+//                 <td> <i class='fas fa-question-circle'></i> &nbsp;$query->query_status</td>
+//                </tr>";
+//
+//
+//        }
+        return Response($records);
+    }
+
+    }
+
     /**
      * Show the form for creating a new resource.
      * @return Renderable

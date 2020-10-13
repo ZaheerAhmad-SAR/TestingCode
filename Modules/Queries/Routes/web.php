@@ -21,4 +21,6 @@ Route::group(['middleware' => ['auth','web','roles']],function(){
     Route::get('queries/queriesList', 'QueriesController@queriesList')->name('queries.queriesList');
 
     Route::post('queries/loadHtml', 'QueriesController@loadHtml')->name('queries.loadHtml');
+
+    Route::post('queries/loadAllQueriesByStudyId', 'QueriesController@loadAllQueriesByStudyId')->name('queries.loadAllQueriesByStudyId');
 });
