@@ -185,7 +185,7 @@
                 <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Grading</a>
                     <ul>
                         <li>
-                            <a href="#">
+                            <a href="{{route('grading.index')}}">
                                 <i class="fas fa-list"></i> Grading List
                             </a>
                         </li>

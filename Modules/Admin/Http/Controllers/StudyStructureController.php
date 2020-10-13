@@ -27,7 +27,6 @@ class StudyStructureController extends Controller
         $phases = $query->get();
         $steps = PhaseSteps::all();
         $formTypes = FormType::all();
-
         return view('admin::structure.index', compact('phases', 'steps', 'formTypes'));
     }
     public function get_steps()

@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class AddForeignKeyToPhaseStepsTable extends Migration
+class AddModilityToPhaseStepsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,8 +14,10 @@ class AddForeignKeyToPhaseStepsTable extends Migration
     public function up()
     {
         Schema::table('phase_steps', function (Blueprint $table) {
-            $table->foreign('phase_id')->references('id')->on('study_structures');
-        });
+            //
+            $table->integer('modility_id')->unsigned()->nullable()->after('phase_id');
+        
+        });              
     }
 
     /**
@@ -26,7 +28,8 @@ class AddForeignKeyToPhaseStepsTable extends Migration
     public function down()
     {
         Schema::table('phase_steps', function (Blueprint $table) {
-            $table->dropForeign('phase_id');
+            //
+            $table->dropColumn('modility_id');
         });
     }
 }

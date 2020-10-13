@@ -1,7 +1,7 @@
 @extends ('layouts.home')
 
 @section('title')
-    <title> Sites | {{ config('app.name', 'Laravel') }}</title>
+    <title> Audit Trail | {{ config('app.name', 'Laravel') }}</title>
 @stop
 
 @section('styles')

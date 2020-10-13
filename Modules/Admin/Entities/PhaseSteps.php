@@ -6,6 +6,7 @@ use Modules\Admin\Scopes\PhaseStepOrderByScope;
 use Modules\UserRoles\Entities\Role;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Admin\Entities\StudyStructure;
+use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\PhaseSteps;
 
 class PhaseSteps extends Model
@@ -53,7 +54,7 @@ class PhaseSteps extends Model
     }
     public function formType()
     {
-        return $this->belongsTo(FormType::class, 'form_type_id', 'id');
+        return $this->belongsTo(FormType::class, 'form_type_id', 'id')->withDefault();
     }
 
     static function phaseStepsbyPermissions($phaseId)
@@ -76,4 +77,10 @@ class PhaseSteps extends Model
         //dd($formTypeArray);
         return self::where('phase_id', $phaseId)->whereIn('form_type_id', $formTypeArray)->get();
     }
+    public function phase()
+    {
+        return $this->belongsTo(StudyStructure::class, 'phase_id', 'id');
+    }
+
+    
 }
