@@ -60,7 +60,7 @@ class Study extends Model
     }
 
     public function studySteps(){
-       return $this->hasManyThrough(PhaseSteps::class,StudyStructure::class,'study_id','phase_id','step_id','id');
+       return $this->hasManyThrough(PhaseSteps::class,StudyStructure::class,'study_id','phase_id','id','id');
     }
 
 

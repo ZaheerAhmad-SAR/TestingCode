@@ -505,6 +505,7 @@ $(document).ready(function(){
         var phase_id = row.find('input.step_phase_id').val();
         var step_position = $('input.step_position').val();
         var form_type_id = row.find('input.form_type_id').val();
+        var modility_id = row.find('input.modility_id').val();
         var name = row.find('input.step_name').val();
         var position = row.find('input.step_position').val();
         var description = row.find('input.step_description').val();
@@ -516,6 +517,7 @@ $(document).ready(function(){
         $('#step_phase_id').val(phase_id);
         $('#step_position').val(step_position);
         $('#form_type_id').val(form_type_id);
+        $('#modility_id').val(modility_id);
         $('#step_name').val(name);
         $('#step_position').val(position);
         $('#step_description').val(description);
