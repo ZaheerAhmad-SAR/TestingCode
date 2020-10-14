@@ -12,14 +12,22 @@ class SubjectsPhases extends Model
     protected $casts = [
         'id' => 'string'
     ];
+    protected $dates = [
+        'visit_date',
+    ];
 
-    public function subjects()
+    public function subject()
     {
         return $this->belongsTo(Subject::class, 'subject_id', 'id');
     }
 
-    public function phases()
+    public function phase()
     {
         return $this->belongsTo(StudyStructure::class, 'phase_id', 'id');
+    }
+
+    public static function getSubjectPhase($subjectId, $phaseId)
+    {
+        return self::where('subject_id', $subjectId)->where('phase_id', $phaseId)->first();
     }
 }
