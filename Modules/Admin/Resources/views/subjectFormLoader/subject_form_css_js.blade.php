@@ -198,9 +198,9 @@
                 alert(error);
             }
 
-            function reloadPage(stepClsStr) {
+            function reloadPage(waitSeconds) {
                 startWait();
-                var seconds = 3 * 1000;
+                var seconds = waitSeconds * 1000;
                 setTimeout(function() {
                    location.reload();
                }, seconds);
@@ -318,6 +318,40 @@
             function endWait(){
                 start_wait = 'no';
                 console.log('endWait');
+            }
+
+            function openAssignPhasesToSubjectPopup(studyId, subjectId){
+                $("#assignPhasesToSubjectPopup").modal('show');
+                loadAssignPhaseToSubjectForm(studyId, subjectId)
+            }
+            function loadAssignPhaseToSubjectForm(studyId, subjectId){
+                $.ajax({
+                    url: "{{route('assignPhaseToSubject.loadAssignPhaseToSubjectForm')}}",
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        'subjectId': subjectId,
+                        'studyId': studyId
+                    },
+                    success: function(response){
+                        $('#assignPhaseToSubjectMainDiv').empty();
+                        $("#assignPhaseToSubjectMainDiv").html(response);
+                    }
+                });
+            }
+            function submitAssignPhaseToSubjectForm(e){
+                e.preventDefault();
+                $.ajax({
+                    url: "{{route('assignPhaseToSubject.submitAssignPhaseToSubjectForm')}}",
+                    type: 'POST',
+                    data: $( "#assignPhaseToSubjectForm" ).serialize(),
+                    success: function(response){
+                        $("#assignPhasesToSubjectPopup").modal('hide');
+                        $('#assignPhaseToSubjectMainDiv').empty();
+                        reloadPage(0);
+                    }
+                });
+
             }
 
         </script>
