@@ -5,9 +5,14 @@
             @foreach ($section->questions as $question)
                 @php
                 $getAnswerArray = [
-                'study_id'=>$studyId, 'subject_id'=>$subjectId,
-                'study_structures_id'=>$phase->id, 'phase_steps_id'=>$step->step_id,
-                'section_id'=>$section->id, 'question_id'=>$question->id, 'field_id'=>$question->formfields->id,
+                'study_id'=>$studyId,
+                'subject_id'=>$subjectId,
+                'study_structures_id'=>$phase->id,
+                'phase_steps_id'=>$step->step_id,
+                'section_id'=>$section->id,
+                'question_id'=>$question->id,
+                'field_id'=>$question->formfields->id,
+                'form_filled_by_user_id'=>auth()->user()->id,
                 ];
                 $answer = $question->getAnswer($getAnswerArray);
 

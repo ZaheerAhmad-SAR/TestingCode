@@ -12,22 +12,53 @@ class FormStatus extends Model
     protected $keyType = 'string';
 
     protected $attributes = [
+        'id' => 'no-id-123',
         'form_status' => 'no_status',
+        'form_type_id' => 0,
+        'form_filled_by_user_id' => 'no-user-id',
     ];
 
-    public static function getFormStatusObj($getFormStatusArray)
+    public static function getFormStatusObjQuery($getFormStatusArray)
     {
-        $formStatusObject = FormStatus::where(function ($q) use ($getFormStatusArray) {
+        $formStatusObjectQuery = Self::where(function ($q) use ($getFormStatusArray) {
             foreach ($getFormStatusArray as $key => $value) {
                 $q->where($key, '=', $value);
             }
-        })->firstOrNew();
-        return $formStatusObject;
+        });
+        return $formStatusObjectQuery;
     }
+
+    public static function getFormStatusObj($getFormStatusArray)
+    {
+        return self::getFormStatusObjQuery($getFormStatusArray)->firstOrNew();
+    }
+
+    public static function getFormStatusObjArray($getFormStatusArray)
+    {
+        return self::getFormStatusObjQuery($getFormStatusArray)->orderBy('created_at')->get();
+    }
+
 
     public function editReasons()
     {
         return $this->hasMany(FormRevisionHistory::class, 'form_submit_status_id', 'id');
+    }
+
+    public static function getGradersFormsStatusesSpan($step, $getFormStatusArray)
+    {
+        $retStr = '';
+        $numberOfGraders = $step->graders_number;
+        $formStatusObjects = self::getFormStatusObjArray($getFormStatusArray);
+        $extraNeededObjects = $numberOfGraders - count($formStatusObjects);
+        for ($counter = 0; $counter < $extraNeededObjects; $counter++) {
+            $formStatusObjects[] = new FormStatus();
+        }
+
+        foreach ($formStatusObjects as $formStatusObj) {
+
+            $retStr .= self::makeGraderFormStatusSpan($step, $formStatusObj);
+        }
+        return $retStr;
     }
 
     public static function getFormStatus($step, $getFormStatusArray, $wrap = false)
@@ -42,25 +73,46 @@ class FormStatus extends Model
 
     public static function makeFormStatusSpan($step, $form_status)
     {
-
         $imgSpanStepClsStr = buildSafeStr($step->step_id, 'img_step_status_');
         $spanStr = '<span class="' . $imgSpanStepClsStr . '">';
+        $spanStr .= self::makeFormStatusSpanImage($form_status) . '</span>';
+        return $spanStr;
+    }
+
+    public static function makeGraderFormStatusSpan($step, $formStatusObj)
+    {
+        $formStatus = $formStatusObj->form_status;
+        if ($formStatus != 'no_status') {
+            $imgSpanClsStr = buildGradingStatusIdClsStr($formStatusObj->id);
+        } else {
+            $imgSpanClsStr = buildSafeStr($step->step_id, 'img_step_status_');
+        }
+
+
+        $spanStr = '<span class="' . $imgSpanClsStr . '">';
+        $spanStr .= self::makeFormStatusSpanImage($formStatusObj->form_status) . '</span>';
+        return $spanStr;
+    }
+
+    public static function makeFormStatusSpanImage($form_status)
+    {
+
+        $imageStr = '';
 
         if ($form_status == 'complete') {
-            $spanStr .= '<img src="' . url('images/complete.png') . '"/>';
+            $imageStr .= '<img src="' . url('images/complete.png') . '"/>';
         } elseif ($form_status == 'incomplete') {
-            $spanStr .= '<img src="' . url('images/incomplete.png') . '"/>';
+            $imageStr .= '<img src="' . url('images/incomplete.png') . '"/>';
         } elseif ($form_status == 'resumable') {
-            $spanStr .= '<img src="' . url('images/resumable.png') . '"/>';
+            $imageStr .= '<img src="' . url('images/resumable.png') . '"/>';
         } elseif ($form_status == 'no_status') {
-            $spanStr .= '<img src="' . url('images/no_status.png') . '"/>';
+            $imageStr .= '<img src="' . url('images/no_status.png') . '"/>';
         } elseif ($form_status == 'adjudication') {
-            $spanStr .= '<img src="' . url('images/adjudication.png') . '"/>';
+            $imageStr .= '<img src="' . url('images/adjudication.png') . '"/>';
         } elseif ($form_status == 'notrequired') {
-            $spanStr .= '<img src="' . url('images/not_required.png') . '"/>';
+            $imageStr .= '<img src="' . url('images/not_required.png') . '"/>';
         }
-        $spanStr .= '</span>';
-        return $spanStr;
+        return $imageStr;
     }
 
     public static function putFormStatus_bkkkkk($request)
@@ -100,7 +152,7 @@ class FormStatus extends Model
             $formStatusObj->form_status = 'complete';
             $formStatusObj->update();
         }
-        return ['id' => $formStatusObj->id, 'formStatus' => $formStatusObj->form_status];
+        return ['id' => $formStatusObj->id, 'formTypeId' => $formStatusObj->form_type_id, 'formStatus' => $formStatusObj->form_status, 'formStatusIdStr' => buildGradingStatusIdClsStr($formStatusObj->id)];
     }
 
     public static function insertFormStatus($request, $formStatusArray)

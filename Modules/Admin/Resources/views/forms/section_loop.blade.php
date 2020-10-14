@@ -6,6 +6,7 @@ $getFormStatusArray = [
     'study_id' => $studyId,
     'study_structures_id' => $phase->id,
     'phase_steps_id' => $step->step_id,
+    'form_type_id' => $step->form_type_id,
 ];
 $formStatusObj = \Modules\Admin\Entities\FormStatus::getFormStatusObj($getFormStatusArray);
 $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'no_status';
@@ -122,7 +123,7 @@ $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'no_status'
                     stopJsHere();
                 }
             }
-            validateAndSubmitForm(stepIdStr);
+            validateAndSubmitForm(stepIdStr, '{{ $formStatusObj->form_type_id }}', '{{ buildGradingStatusIdClsStr($formStatusObj->id) }}');
             reloadPage();
             //hideReasonField(stepIdStr, stepClsStr);
         }
@@ -136,7 +137,7 @@ $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'no_status'
             if ($formStatusObj->form_status != 'complete') {
                 echo "globalDisableByClass('$studyClsStr', '$stepClsStr');";
             } else {
-                echo "hideReasonField('$stepIdStr', '$stepClsStr');";
+                echo "hideReasonField('$stepIdStr', '$stepClsStr', '$formStatusObj->form_type_id', '".buildGradingStatusIdClsStr($formStatusObj->id)."');";
             }
             @endphp
         });
