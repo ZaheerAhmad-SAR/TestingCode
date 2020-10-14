@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\FormType;
+use Modules\Admin\Entities\Modility;
 
 class StudyStructureController extends Controller
 {
@@ -27,7 +28,8 @@ class StudyStructureController extends Controller
         $phases = $query->get();
         $steps = PhaseSteps::all();
         $formTypes = FormType::all();
-        return view('admin::structure.index', compact('phases', 'steps', 'formTypes'));
+        $modalities = Modility::all();
+        return view('admin::structure.index', compact('phases', 'steps', 'formTypes','modalities'));
     }
     public function get_steps()
     {
@@ -50,6 +52,7 @@ class StudyStructureController extends Controller
                     <input type="hidden" class="step_id" value="' . $step_value->step_id . '">
                     <input type="hidden" class="step_phase_id" value="' . $step_value->phase_id . '">
                     <input type="hidden" class="form_type_id" value="' . $step_value->form_type_id . '">
+                    <input type="hidden" class="modility_id" value="' . $step_value->modility_id . '">
                     <input type="hidden" class="step_name" value="' . $step_value->step_name . '">
                     <input type="hidden" class="step_position" value="' . $step_value->step_position . '">
                     <input type="hidden" class="step_description" value="' . $step_value->step_description . '">
@@ -154,6 +157,7 @@ class StudyStructureController extends Controller
             'phase_id'    => $request->phase_id,
             'step_position'  =>  $request->step_position,
             'form_type_id' =>  $request->form_type_id,
+            'modility_id' =>  $request->modility_id,
             'step_name' =>  $request->step_name,
             'step_description' =>  $request->step_description,
             'graders_number' =>  $request->graders_number,
@@ -171,6 +175,7 @@ class StudyStructureController extends Controller
         $phase->phase_id  =  $request->phase_id;
         $phase->step_position  =  $request->step_position;
         $phase->form_type_id  =  $request->form_type_id;
+        $phase->modility_id  =  $request->modility_id;
         $phase->step_name  =  $request->step_name;
         $phase->step_description  =  $request->step_description;
         $phase->graders_number  =  $request->graders_number;

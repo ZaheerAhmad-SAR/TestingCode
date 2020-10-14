@@ -188,8 +188,7 @@ class FormController extends Controller
         echo json_encode($Response);
     }
     public function skip_question_on_click($id){
-        $all_form_data = Study::with('studySteps')->get();
-        dd($all_form_data);
+        $all_form_data = Study::where('id', session('current_study'))->with('studySteps')->get();
         return view('admin::forms.skip_logic',compact('all_form_data'));
     }
     /**

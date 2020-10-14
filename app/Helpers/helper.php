@@ -626,12 +626,21 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
 
 function buildSafeStr($id, $str = '')
 {
-    return $str . str_replace('-', '_', $id);
+    $safeStr = '';
+    if (!empty($id)) {
+        $safeStr = $str . str_replace('-', '_', $id);
+    }
+    return $safeStr;
 }
 
 function buildFormFieldName($str = '')
 {
     return str_replace(' ', '', $str);
+}
+
+function buildGradingStatusIdClsStr($id)
+{
+    return buildSafeStr($id, 'img_grading_form_status_');
 }
 
 function canQualityControl()

@@ -73,13 +73,6 @@
                         <h4 class="card-title">Grading legend</h4>
                     </div>
                     <div class="card-body">
-                        <!--
-                        <span class="badge p-2 badge-light mb-1">Not Graded</span>&nbsp;&nbsp;
-                        <span class="badge p-2 badge-warning mb-1">Graded by 1st grader</span>&nbsp;&nbsp;
-                        <span class="badge p-2 badge-success mb-1">Graded by 2nd grader</span>&nbsp;&nbsp;
-                        <span class="badge p-2 badge-danger mb-1">Required Adjudication</span>&nbsp;&nbsp;
-                        <div class="row">&nbsp;</div>
-                        -->
                         <div class="row">
                             <div class="col-md-2">
                                 <img src="{{url('images/no_status.png')}}"/>&nbsp;&nbsp;Not Initiated
@@ -103,8 +96,23 @@
                     </div>
                 </div>
             </div>
+            <div class="col-12 col-sm-12 mt-3">
+                <div class="card">
+                    <div class="card-header  justify-content-between align-items-center">
+                        <h4 class="card-title">Activate Visits</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <button type="button" class="btn btn-success" onclick="openAssignPhasesToSubjectPopup('{{ $studyId }}', '{{ $subjectId }}');" >Activate Visits</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-12 col-sm-12">
                 <div class="row row-eq-height">
+
                     <div class="col-12 col-lg-2 mt-3 todo-menu-bar flip-menu pr-lg-0">
                         <a href="#" class="d-inline-block d-lg-none mt-1 flip-menu-close"><i class="icon-close"></i></a>
                         <div class="card border h-100 contact-menu-section">
@@ -143,14 +151,22 @@
                                                                 {{ $step->formType->form_type . ' ' . $step->step_name }}
                                                                 @php
                                                                 $getFormStatusArray = [
-                                                                    'form_filled_by_user_id' => $form_filled_by_user_id,
-                                                                    'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
-                                                                    'subject_id' => $subjectId,
+                                                                  'subject_id' => $subjectId,
                                                                     'study_id' => $studyId,
                                                                     'study_structures_id' => $phase->id,
                                                                     'phase_steps_id' => $step->step_id,
+                                                                    'form_type_id' => $step->form_type_id,
+                                                                ];
+                                                                if ($step->form_type_id == 1) {
+                                                                    $getFormStatusArray = [
+                                                                    'form_filled_by_user_id' => $form_filled_by_user_id,
+                                                                    'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
                                                                 ];
                                                                 echo \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
+                                                                }
+                                                                if ($step->form_type_id == 2) {
+                                                                    echo \Modules\Admin\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray);
+                                                                }
                                                                 @endphp
                                                             </a>
                                                             <br>
@@ -222,5 +238,6 @@
             <!-- END: Card DATA-->
         </div>
         @include('admin::subjectFormLoader.subject_form_wait_popup')
+        @include('admin::subjectFormLoader.assignPhasesToSubjectPopup')
         @stop
   @include('admin::subjectFormLoader.subject_form_css_js')

@@ -63,7 +63,7 @@
                             <table class="table table-bordered" id="laravel_crud">
                                 <thead>
                                     <tr>
-                                        <th>Study ID</th>
+                                        <th>Subject ID</th>
                                         <th>Phase</th>
                                         <th>Enrollement Date</th>
                                         <th>Site Name</th>
@@ -71,12 +71,21 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                   
+                                    @if(!$subjects->isEmpty())
+                                        @foreach($subjects as $subject)
+                                        <tr>
+                                            <td>{{$subject->subject_id}}</td>
+                                            <td>{{$subject->phase_name}}</td>
+                                            <td>{{$subject->enrollment_date}}</td>
+                                            <td>{{$subject->site_name}}</td>
+                                        </tr>
+                                        @endforeach
+                                    @else
                                     <tr>
                                    
                                         <td colspan="4" style="text-align: center;"> No record found.</td>
                                     </tr>
-                                    
+                                    @endif
                                 </tbody>
                             </table>
 

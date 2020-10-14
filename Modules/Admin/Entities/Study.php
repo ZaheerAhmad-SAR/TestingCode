@@ -22,12 +22,13 @@ class Study extends Model
         'protocol_number',
         'trial_registry_id',
         'study_sponsor',
-        'description','start_date','end_date'];
+        'description', 'start_date', 'end_date'
+    ];
     public $incrementing = false;
 
     public function users()
     {
-        return $this->belongsToMany(User::class,'study_user');
+        return $this->belongsToMany(User::class, 'study_user');
     }
 
     public function sites()
@@ -35,26 +36,31 @@ class Study extends Model
         return $this->belongsToMany(Site::class)->withPivot('study_id', 'site_id');
     }
 
-    public function subjects(){
+    public function subjects()
+    {
         return $this->hasOne(Subject::class);
     }
 
-    public function diseaseCohort(){
+    public function diseaseCohort()
+    {
         return $this->hasMany(DiseaseCohort::class);
     }
 
-    public function roles(){
+    public function roles()
+    {
         return $this->hasMany(RoleStudy::class);
     }
-    public function studySites(){
+    public function studySites()
+    {
         return $this->belongsToMany(StudySite::class, 'site_study', 'study_id', 'site_id');
+    }
+    public function phase()
+    {
+        return $this->hasMany(StudyStructure::class, 'study_id', 'id');
+    }
 
-    }
-    public function phase(){
-        return $this->hasMany(StudyStructure::class,'study_id','id');
-    }
     public function studySteps(){
-       return $this->hasManyThrough(PhaseSteps::class,StudyStructure::class,'study_id','phase_id','id','step_id');
+       return $this->hasManyThrough(PhaseSteps::class,StudyStructure::class,'study_id','phase_id','id','id');
     }
 
 
