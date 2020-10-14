@@ -27,7 +27,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::DELETE('steps/delete_steps/{step_id}', 'StudyStructureController@destroySteps')->name('steps.deleteSteps');
     Route::post('steps/store_steps', 'StudyStructureController@store_steps')->name('steps.save');
     Route::post('steps/updateSteps', 'StudyStructureController@update_steps')->name('steps.update');
-    // for Section 
+    // for Section
     Route::resource('sections', 'SectionController');
     Route::post('section', 'SectionController@getSectionby_id')->name('section.getSections');
     Route::post('section/update', 'SectionController@update')->name('section.updateSections');
@@ -46,7 +46,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::DELETE('forms/delete/{id}', 'FormController@deleteQuestion')->name('forms.delete');
 
     Route::get('forms/skip_logic/{id}', 'FormController@skip_question_on_click')->name('forms.skipLogic');
-        //routes for options groups
+    //routes for options groups
     //routes for options groups
     Route::resource('optionsGroup', 'OptionsGroupController');
     Route::post('optionsGroup/update', 'OptionsGroupController@update')->name('optionsGroup.update');
@@ -198,4 +198,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     // Form Validation
     Route::post('subjectFormSubmission/validateSingleQuestion', 'SubjectFormSubmissionController@validateSingleQuestion')->name('subjectFormSubmission.validateSingleQuestion');
     Route::post('subjectFormSubmission/validateSectionQuestionsForm', 'SubjectFormSubmissionController@validateSectionQuestionsForm')->name('subjectFormSubmission.validateSectionQuestionsForm');
+    //Assign Phase To Subject
+    Route::post('assignPhaseToSubject/loadAssignPhaseToSubjectForm', 'AssignPhaseToSubjectController@loadAssignPhaseToSubjectForm')->name('assignPhaseToSubject.loadAssignPhaseToSubjectForm');
+    Route::post('assignPhaseToSubject/submitAssignPhaseToSubjectForm', 'AssignPhaseToSubjectController@submitAssignPhaseToSubjectForm')->name('assignPhaseToSubject.submitAssignPhaseToSubjectForm');
 });

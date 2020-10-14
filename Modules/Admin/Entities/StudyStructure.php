@@ -47,4 +47,19 @@ class StudyStructure extends Model
     {
         return $this->hasMany(PhaseSteps::class, 'phase_id', 'id');
     }
+
+    public function subjects()
+    {
+        return $this->belongsToMany(Subject::class, 'subjects_phases', 'phase_id', 'subject_id');
+    }
+
+    public function phaseSubjects()
+    {
+        return $this->hasMany(SubjectsPhases::class, 'phase_id', 'id');
+    }
+
+    public function phaseSubjectsArray()
+    {
+        return $this->phaseSubjects()->distinct()->pluck('subject_id')->toArray();
+    }
 }
