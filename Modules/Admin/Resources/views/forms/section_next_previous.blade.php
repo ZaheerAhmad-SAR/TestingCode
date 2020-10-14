@@ -3,7 +3,7 @@
         @if ((bool) $subjectId && ($formStatusObj->form_status === 'complete' || $formStatusObj->form_status === 'resumable'))
             <button type="button" class="btn btn-warning" name="edit_form_button_{{ $stepIdStr }}"
                 id="edit_form_button_{{ $stepIdStr }}"
-                onclick="openFormForEditing('{{ $stepIdStr }}', '{{ $stepClsStr }}');"
+                onclick="openFormForEditing('{{ $stepIdStr }}', '{{ $stepClsStr }}', '{{ $formStatusObj->form_type_id }}', '{{ buildGradingStatusIdClsStr($formStatusObj->id) }}');"
                 style="display: {{ $formStatusObj->form_status == 'resumable' ? 'none' : 'block' }};">
                 Edit Form
             </button>

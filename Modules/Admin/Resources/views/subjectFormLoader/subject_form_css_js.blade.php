@@ -55,7 +55,7 @@
                 $("." + cls).prop('disabled', false);
             }
 
-            function submitForm(stepIdStr) {
+            function submitForm(stepIdStr, formTypeId, formStatusIdStr) {
                 var submitFormFlag = true;
                 if (isFormInEditMode(stepIdStr)) {
                     if (checkReason(stepIdStr) === false) {
@@ -68,21 +68,34 @@
                     var frmData = $("#form_master_" + stepIdStr).serialize() + '&' + $("#form_" + stepIdStr)
                         .serialize() +
                         '&terms_cond_' + stepIdStr + '=' + term_cond + '&' + 'edit_reason_text=' + reason;
-                    submitRequest(frmData, stepIdStr);
+                    submitRequest(frmData, stepIdStr, formTypeId, formStatusIdStr);
                 }
             }
 
-            function putResponseImage(stepIdStr, responseImage){
-                $('.img_step_status_' + stepIdStr).html('<img src="{{ url('/').'/images/' }}' + responseImage + '.png"/>');
+            function putResponseImage(stepIdStr, responseImage, formTypeId, formStatusIdStr){
+                if(formTypeId == 2){
+                    if($('.' + formStatusIdStr).length != 0){
+                        $('.' + formStatusIdStr).html('<img src="{{ url('/').'/images/' }}' + responseImage + '.png"/>');
+                    }else{
+                        putImageOnStepLevel(stepIdStr, responseImage);
+                    }
+                }else{
+                    putImageOnStepLevel(stepIdStr, responseImage);
+                }
             }
 
-            function submitRequest(frmData, stepIdStr) {
+            function putImageOnStepLevel(stepIdStr, responseImage){
+                $('.img_step_status_' + stepIdStr+':first').html('<img src="{{ url('/').'/images/' }}' + responseImage + '.png"/>');
+            }
+
+            function submitRequest(frmData, stepIdStr, formTypeId, formStatusIdStr) {
                 $.ajax({
                     url: "{{ route('SubjectFormSubmission.submitStudyPhaseStepQuestionForm') }}",
                     type: 'POST',
                     data: frmData,
-                    success: function(responseImage) {
-                        putResponseImage(stepIdStr, responseImage);
+                    dataType: 'JSON',
+                    success: function(response) {
+                        putResponseImage(stepIdStr, response.formStatus, response.formTypeId, response.formStatusIdStr);
                     }
                 });
             }
@@ -92,8 +105,9 @@
                     url: "{{ route('SubjectFormSubmission.submitStudyPhaseStepQuestion') }}",
                     type: 'POST',
                     data: frmData,
-                    success: function(responseImage) {
-                        putResponseImage(stepIdStr, responseImage);
+                    dataType: 'JSON',
+                    success: function(response) {
+                        putResponseImage(stepIdStr, response.formStatus, response.formTypeId, response.formStatusIdStr);
                     }
                 });
             }
@@ -145,12 +159,12 @@
                 })
             }
 
-            function validateAndSubmitForm(stepIdStr) {
+            function validateAndSubmitForm(stepIdStr, formTypeId, formStatusIdStr) {
                 const promise = validateForm(stepIdStr);
                 promise
                     .then((data) => {
                         console.log(data);
-                        submitForm(stepIdStr);
+                        submitForm(stepIdStr, formTypeId, formStatusIdStr);
                     })
                     .catch((error) => {
                         console.log(error);
@@ -230,7 +244,7 @@
                     var field_val;
                     field_val = getFormFieldValue(stepIdStr, field_name, fieldId);
                     frmData = frmData + '&' + field_name + '=' + field_val + '&' + 'questionId=' + questionId;
-                    submitFieldRequest(frmData, stepIdStr);
+                    submitFieldRequest(frmData, stepIdStr, '', '');
                 }
             }
 
@@ -256,7 +270,7 @@
                 return field_val;
             }
 
-            function openFormForEditing(stepIdStr, stepClsStr) {
+            function openFormForEditing(stepIdStr, stepClsStr, formTypeId, formStatusIdStr) {
                 var frmData = $("#form_master_" + stepIdStr).serialize();
                 frmData = frmData + '&' + 'open_form_to_edit=1';
                 $.ajax({
@@ -264,31 +278,31 @@
                     type: 'POST',
                     data: frmData,
                     success: function(response) {
-                        showReasonField(stepIdStr, stepClsStr);
+                        showReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr);
                     }
                 });
             }
 
-            function showReasonField(stepIdStr, stepClsStr) {
+            function showReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr) {
                 $("#edit_form_div_" + stepIdStr).show(500);
                 $("#edit_form_button_" + stepIdStr).hide(500);
                 $('#edit_reason_text_' + stepIdStr).prop('required', true);
                 enableByClass(stepClsStr);
                 $('.form_hid_editing_status_' + stepIdStr).val('yes');
-                $('.img_step_status_' + stepIdStr).html('<img src="{{ url('images/resumable.png') }}"/>');
+                putResponseImage(stepIdStr, 'resumable', formTypeId, formStatusIdStr);
             }
 
-            function hideReasonField(stepIdStr, stepClsStr) {
+            function hideReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr) {
                 $("#edit_form_div_" + stepIdStr).hide(500);
                 $('#edit_reason_text_' + stepIdStr).prop('required', false);
                 $('#edit_reason_text_' + stepIdStr).val('');
                 disableByClass(stepClsStr);
                 $('.form_hid_editing_status_' + stepIdStr).val('no');
-                $('.img_step_status_' + stepIdStr).html('<img src="{{ url('images/complete.png') }}"/>');
                 $('.nav-link').removeClass('active');
                 $('.first_navlink_' + stepIdStr).addClass('active');
                 $('.tab-pane_' + stepIdStr).removeClass('active show');
                 $('.first_tab_' + stepIdStr).addClass('active show');
+                putResponseImage(stepIdStr, 'complete', formTypeId, formStatusIdStr);
             }
 
             function startWait(){
