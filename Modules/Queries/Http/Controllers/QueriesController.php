@@ -43,24 +43,9 @@ class QueriesController extends Controller
     if ($request->ajax())
     {
         $study_id = $request->study_id;
-
         $records = Query::where('module_id','=',$study_id)->get();
-
-//        foreach ($records as $query)
-//        {
-//            $output = '';
-//            $output .= "<tr><td>1++</td>
-//                <td>$query->messages</td>
-//               <td>ucfirst(auth()->user()->name)</td>
-//                <td>date_format($query->created_at,'jS F Y h:i:s A')</td>
-//                 <td> <i class='fas fa-question-circle'></i> &nbsp;$query->query_status</td>
-//                </tr>";
-//
-//
-//        }
-        return Response($records);
+        echo  view('queries::queries.queries_table_view',compact('records'));
     }
-
     }
 
     /**
@@ -83,7 +68,9 @@ class QueriesController extends Controller
         $roles           = $request->post('assignedRoles');
         $users           = $request->post('assignedUsers');
         $remarks         = $request->post('assignedRemarks');
+        $query_subject   = $request->post('query_subject');
         $module_id       = $request->post('module_id');
+        $query_url       = $request->post('query_url');
         $queryAssignedTo = $request->post('queryAssignedTo');
         $id              = Str::uuid();
         $query           = Query::create([
@@ -92,9 +79,13 @@ class QueriesController extends Controller
             'parent_query_id'=> 0,
             'messages'=>$remarks,
             'module_id'=>$module_id,
-            'query_status'=> 'open'
+            'query_status'=> 'open',
+            'query_type' =>$queryAssignedTo,
+            'query_url'=>$query_url,
+            'query_subject'=>$query_subject
         ]);
-        if ($queryAssignedTo == 'users')
+
+        if ($queryAssignedTo == 'user')
         {
             foreach ($users as $user)
             {
@@ -106,7 +97,7 @@ class QueriesController extends Controller
                 ]);
             }
         }
-        if ($queryAssignedTo == 'roles')
+        if ($queryAssignedTo == 'role')
         {
             foreach ($roles as $role)
             {
