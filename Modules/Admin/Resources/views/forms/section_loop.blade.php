@@ -124,7 +124,7 @@ $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'no_status'
                 }
             }
             validateAndSubmitForm(stepIdStr, '{{ $formStatusObj->form_type_id }}', '{{ buildGradingStatusIdClsStr($formStatusObj->id) }}');
-            reloadPage();
+            reloadPage(3);
             //hideReasonField(stepIdStr, stepClsStr);
         }
     }
