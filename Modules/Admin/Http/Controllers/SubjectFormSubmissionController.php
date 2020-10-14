@@ -32,7 +32,7 @@ class SubjectFormSubmissionController extends Controller
         $formStatusArray = FormStatus::putFormStatus($request);
         FormRevisionHistory::putFormRevisionHistory($formRevisionDataArray, $formStatusArray['id']);
 
-        echo $formStatusArray['formStatus'];
+        echo json_encode($formStatusArray);
     }
 
     public function submitQuestion(Request $request)
@@ -42,7 +42,7 @@ class SubjectFormSubmissionController extends Controller
         $formRevisionDataArray['form_data'][] = $this->putAnswer($request, $question);
         $formStatusArray = FormStatus::putFormStatus($request);
         FormRevisionHistory::putFormRevisionHistory($formRevisionDataArray, $formStatusArray['id']);
-        echo $formStatusArray['formStatus'];
+        echo json_encode($formStatusArray);
     }
 
 
@@ -54,6 +54,8 @@ class SubjectFormSubmissionController extends Controller
         $answerFixedArray['study_structures_id'] = $request->phaseId;
         $answerFixedArray['phase_steps_id'] = $request->stepId;
         $answerFixedArray['section_id'] = $question->section->id;
+
+        $answerFixedArray['form_filled_by_user_id'] = auth()->user()->id;
 
         $form_field_name = buildFormFieldName($question->formFields->variable_name);
         $form_field_id = $question->formFields->id;
