@@ -16,7 +16,6 @@ class InvitationController extends Controller
 
     public function invite()
     {
-        dd('invite');
         return view('userroles::invitation.index');
     }
 
