@@ -17,7 +17,7 @@ Route::post('transmissions/transmissionData', 'TransmissionController@transmissi
 Route::prefix('admin')->group(function () {
     Route::get('/', 'AdminController@index');
 });
-
+Route::resource('studies', 'StudyController');
 Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('get_steps', 'StudyStructureController@get_steps')->name('study.getSteps');
     Route::get('study_phases', 'StudyStructureController@getallphases')->name('getPhases');
@@ -64,7 +64,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::post('sites/update', 'SiteController@update')->name('sites.updateSites');
     Route::DELETE('sites/destroy/{sites_id}', 'SiteController@destroy')->name('sites.destroy');
 
-    Route::resource('studies', 'StudyController');
+
     Route::post('studies/update_studies', 'StudyController@update_studies')->name('studies.update_studies');
     Route::resource('devices', 'DeviceController');
     Route::resource('modalities', 'ModilityController');
