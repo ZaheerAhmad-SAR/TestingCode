@@ -73,13 +73,6 @@
                         <h4 class="card-title">Grading legend</h4>
                     </div>
                     <div class="card-body">
-                        <!--
-                        <span class="badge p-2 badge-light mb-1">Not Graded</span>&nbsp;&nbsp;
-                        <span class="badge p-2 badge-warning mb-1">Graded by 1st grader</span>&nbsp;&nbsp;
-                        <span class="badge p-2 badge-success mb-1">Graded by 2nd grader</span>&nbsp;&nbsp;
-                        <span class="badge p-2 badge-danger mb-1">Required Adjudication</span>&nbsp;&nbsp;
-                        <div class="row">&nbsp;</div>
-                        -->
                         <div class="row">
                             <div class="col-md-2">
                                 <img src="{{url('images/no_status.png')}}"/>&nbsp;&nbsp;Not Initiated
@@ -103,6 +96,20 @@
                     </div>
                 </div>
             </div>
+            <div class="col-12 col-sm-12 mt-3">
+                <div class="card">
+                    <div class="card-header  justify-content-between align-items-center">
+                        <h4 class="card-title">Activate Visits</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <button type="button" class="btn btn-success" onclick="openAssignPhasesToSubjectPopup('{{ $studyId }}', '{{ $subjectId }}');" >Activate Visits</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="col-12 col-sm-12">
                 <div class="row row-eq-height">
                     <div class="col-12 col-lg-2 mt-3 todo-menu-bar flip-menu pr-lg-0">
@@ -116,13 +123,14 @@
                                     @foreach ($visitPhases as $phase)
                                         @php
                                         $phaseIdStr = buildSafeStr($phase->id, 'phase_cls_');
+                                        $subjectPhaseDetail = \Modules\Admin\Entities\SubjectsPhases::getSubjectPhase($subjectId, $phase->id);
                                         @endphp
                                         <div class="card text-white bg-primary m-1">
                                             <div id="heading{{ $phase->id }}" class="card-header {{ $phaseIdStr }}"
                                                 data-toggle="collapse" data-target="#collapse{{ $phase->id }}"
                                                 aria-expanded="{{ $firstPhase ? 'true' : 'false' }}"
                                                 aria-controls="collapse{{ $phase->id }}">
-                                                {{ $phase->name }}</div>
+                                                {{ $phase->name }} ({{$subjectPhaseDetail->visit_date->format('m-d-Y')}})</div>
                                             <div id="collapse{{ $phase->id }}"
                                                 class="card-body collapse-body-bg collapse {{ $firstPhase ? 'show' : '' }}"
                                                 aria-labelledby="heading{{ $phase->id }}" data-parent="#accordion" style="">
@@ -230,5 +238,6 @@
             <!-- END: Card DATA-->
         </div>
         @include('admin::subjectFormLoader.subject_form_wait_popup')
+        @include('admin::subjectFormLoader.assignPhasesToSubjectPopup')
         @stop
   @include('admin::subjectFormLoader.subject_form_css_js')

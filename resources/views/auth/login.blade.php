@@ -1,14 +1,16 @@
 @extends ('layouts.app')
 @section('body')
-<div class="container">
+<div class="container" id ="container">
     <div class="row vh-100 justify-content-between align-items-center">
         <div class="col-12">
-            <form  action="{{ route('login') }}" method="POST" class="row row-eq-height lockscreen  mt-5 mb-5">
+       {{-- <form  action="{{ route('login') }}" method="POST" class="row row-eq-height lockscreen  mt-5 mb-5">--}}
+              <form  action="{{ url('/2fa') }}" method="POST" class="row row-eq-height lockscreen  mt-5 mb-5">
                 @csrf
                 <div class="lock-image col-12 col-sm-5" style="min-height: 400px;">
                     <img src="{{asset('public/dist/images/Logo.gif')}}" alt="" style="width: 230px;margin-top: 120px;">
                 </div>
                 <div class="login-form col-12 col-sm-7">
+                    <input type="hidden" id="userAgent" value="">
                     <div class="form-group mb-3" style="margin-top: 60px;">
                         <label for="emailaddress">Email address</label>
                         <input class="form-control  @error('email') is-invalid @enderror" type="email" name="email" id="emailaddress" required="" placeholder="Enter your email">
@@ -19,7 +21,7 @@
                         @enderror
                     </div>
 
-                    <div class="form-group mb-3">
+                   <div class="form-group mb-3">
                         <label for="password">Password</label>
                         <input class="form-control @error('password') is-invalid @enderror" type="password"  name="password" required id="password" placeholder="Enter your password" required>
                         @error('password')
@@ -33,7 +35,7 @@
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="checkbox-signin" checked="">
                             <label class="custom-control-label" for="checkbox-signin">Remember me</label>
-                            <button class="btn btn-primary" type="submit" style="float: right;"> Log In </button>
+                            <button class="btn btn-primary" type="submit" onclick="browserName()" style="float: right;"> Sign In </button>
                         </div>
                     </div>
                     <div class="form-group mb-3">
@@ -57,4 +59,12 @@
 
 @section('styles')
 <link rel="stylesheet" href="{{ asset('dist/vendors/social-button/bootstrap-social.css') }}"/>
+@stop
+@section('script')
+    <script type="text/javascript">
+        $( document ).on('load',function () {
+            var uAgent = $('#userAgent').val(navigator.userAgent); //passes userAgent to hidden field #userAgent
+            console.log(uAgent);
+        });
+    </script>
 @stop

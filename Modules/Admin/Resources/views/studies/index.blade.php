@@ -412,7 +412,7 @@
     </div>
 
     <div class="modal fade" tabindex="-1" role="dialog" id="all-queries-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog  modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header ">
@@ -424,16 +424,53 @@
                             <thead>
                             <tr>
                                 <th>id</th>
-                                <th>Remarks</th>
-                                <th>Created By</th>
-                                <th>Creation Date</th>
+                                <th>Query Subject</th>
+                                <th>Submited By</th>
+                                <th>Assigned To</th>
+                                <th>Created Date</th>
                                 <th>Status</th>
+                                <th>Action</th>
                             </tr>
                             </thead>
                             <tbody class="queriesList"></tbody>
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="reply-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header ">
+                    <p class="modal-title">Query Reply</p>
+                </div>
+                <form id="replyForm" name="replyForm">
+                    <div class="modal-body">
+                        <div id="exTab1">
+                            <div class="tab-content clearfix">
+                                @csrf
+                                <div class="form-group row lastConversationInput">
+                                    <label for="Name" class="col-sm-2 col-form-label">Comments</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" name="lastChat" id="lastChat" value="">
+                                    </div>
+                                </div>
+                                <div class="form-group row replyInput">
+                                    <label for="Name" class="col-sm-2 col-form-label">Reply</label>
+                                    <div class="col-sm-10">
+                                        <textarea class="summernote" name="reply" cols="2" rows="1" id="reply"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="button" class="btn btn-outline-primary" id="replyqueries"><i class="fa fa-save"></i> Send</button>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -564,6 +601,13 @@
             });
         });
 
+        $('body').on('click', '.replyModal', function () {
+            var id = $(this).attr('data-id');
+            $('#reply-modal').modal('show');
+            $('#all-queries-modal').modal('hide');
+        });
+
+
         $('body').on('click', '.clone-study', function () {
             $.ajaxSetup({
                 headers: {
@@ -592,11 +636,11 @@
 
     $('.showAllStudyQueries').click(function () {
         var study_id = $(this).attr('data-id');
-        console.log(study_id);
         // var moduleId = $('#module_id').val(id);
         $('#all-queries-modal').modal('show');
         loadAllStudyQueries(study_id);
     });
+
 
     function loadAllStudyQueries(study_id)
     {
@@ -610,19 +654,8 @@
             },
             success: function(response)
             {
-                // $('.queriesList tbody').html('');
-                var html    =   '';
-                $.each(response, function(index,row)
-                {
-                    // console.log(row.id);
-                    // console.log(row.messages);
-                    html += '<tr id=' + row.id + '>\n' +
-                        '<td>' + row.messages + '</td>\n' +
-                        '<td>' + row.created_at + '</td>\n' +
-                        '<td>+ row.updated_at+</td>\n' +
-                        '</tr>';
-                });
-                $('.queriesList').append(html);
+                $('.queriesList').html('');
+                $('.queriesList').html(response);
             }
         });
     }
