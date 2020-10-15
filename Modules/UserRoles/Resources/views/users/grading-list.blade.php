@@ -68,9 +68,15 @@
                                         <th>Visit Date</th>
                                         <th>Site Name</th>
 
+                                        @php
+                                            $count = 4;
+                                        @endphp
+
                                         @if ($modalitySteps != null)
                                             @foreach($modalitySteps as $key => $steps)
-                                            
+                                            @php
+                                                $count = $count + count($steps);
+                                            @endphp
                                             <th colspan="{{count($steps)}}">
                                                     {{$key}}
                                             </th>
@@ -131,8 +137,7 @@
                                         @endforeach
                                     @else
                                     <tr>
-                                   
-                                        <td colspan="4" style="text-align: center;"> No record found.</td>
+                                        <td colspan="{{$count}}" style="text-align: center;"> No record found.</td>
                                     </tr>
                                     @endif
                                 </tbody>
