@@ -22,7 +22,7 @@ class FormStatus extends Model
     {
         $formStatusObjectQuery = Self::where(function ($q) use ($getFormStatusArray) {
             foreach ($getFormStatusArray as $key => $value) {
-                $q->where($key, '=', $value);
+                $q->where($key, 'like', $value);
             }
         });
         return $formStatusObjectQuery;
