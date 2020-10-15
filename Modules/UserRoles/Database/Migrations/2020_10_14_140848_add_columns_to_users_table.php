@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddProfilePicColumnToUsersTable extends Migration
+class AddColumnsToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,9 +14,9 @@ class AddProfilePicColumnToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('profile_image')->nullable()->after('phone');
-            $table->string('token_2fa')->nullable()->after('password');
-            $table->datetime('token_2fa_expiry')->nullable()->after('token_2fa');
+            $table->dropColumn('token_2fa','token_2fa_expiry');
+            $table->string('two_factor_token')->nullable();
+            $table->datetime('two_factor_expiry')->nullable();
         });
     }
 
@@ -28,8 +28,8 @@ class AddProfilePicColumnToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('profile_image','token_2fa','token_2fa_expiry');
-
+            $table->dropColumn('two_factor_expiry');
+            $table->dropColumn('two_factor_token');
         });
     }
 }

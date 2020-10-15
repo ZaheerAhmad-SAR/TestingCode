@@ -13,8 +13,15 @@
 
 Route::get('/', function () {
     return view('auth.login');
-    Auth::routes();
 });
+
+    Route::get('/2fa', 'TwoFactorController@show2faForm');
+    Route::post('/2fa', 'TwoFactorController@sendToken');
+    Route::post('/2fa_verify', 'TwoFactorController@verfiyToken');
+    Route::get('/2f_login/{token}',function ()
+    {
+        return view('2f_login');
+    });
 
 Auth::routes();
 
