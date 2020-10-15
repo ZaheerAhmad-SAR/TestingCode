@@ -5,18 +5,23 @@ namespace Modules\Admin\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Str;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\SubjectsPhases;
 use Modules\Admin\Entities\Subject;
+use Modules\Admin\Traits\ReplicatePhaseStructure;
 
 class AssignPhaseToSubjectController extends Controller
 {
+    use ReplicatePhaseStructure;
+
     public function loadAssignPhaseToSubjectForm(Request $request)
     {
         $subject = Subject::find($request->subjectId);
-        $subjectPhasesIdsArray = $subject->subjectPhasesArray();
-        $visitPhases = StudyStructure::where('study_id', $request->studyId)->whereNotIn('id', $subjectPhasesIdsArray)->get();
+        $subjectAssignedPhasesIdsArray = $subject->subjectPhasesArray();
+        $repeatablePhasesIdsArray = StudyStructure::where('is_repeatable', 1)->pluck('id')->toArray();
+        $notToShowPhasesIdsArray = array_diff($subjectAssignedPhasesIdsArray, $repeatablePhasesIdsArray);
+
+        $visitPhases = StudyStructure::where('study_id', $request->studyId)->whereNotIn('id', $notToShowPhasesIdsArray)->get();
 
         echo view('admin::subjectFormLoader.assignPhasesToSubjectPopupForm')
             ->with('visitPhases', $visitPhases)
@@ -25,14 +30,12 @@ class AssignPhaseToSubjectController extends Controller
 
     public function submitAssignPhaseToSubjectForm(Request $request)
     {
-        $data = [
-            'id' => Str::uuid(),
-            'subject_id' => $request->subject_id,
-            'phase_id' => $request->phase_id,
-            'visit_date' => $request->visit_date,
-            'is_out_of_window' => $request->is_out_of_window,
-        ];
-        SubjectsPhases::create($data);
+        $subjectPhase = SubjectsPhases::where('subject_id', $request->subject_id)->where('phase_id', $request->phase_id)->first();
+        if (null !== $subjectPhase) {
+            $this->replicatePhaseStructure($request->phase_id);
+        } else {
+            SubjectsPhases::createSubjectPhase($request);
+        }
         echo 'success';
     }
 }

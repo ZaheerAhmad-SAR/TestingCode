@@ -18,11 +18,12 @@ class FormTypeTableSeeder extends Seeder
     {
         Model::unguard();
         $type_forms = FormType::all();
-        if (count($type_forms) <= 0){
+        if (count($type_forms) <= 0) {
             $id = 1;
             $form_type_qc = FormType::create([
                 'id' => $id,
                 'form_type'    => 'QC',
+                'sort_order'    => 2,
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now()
             ]);
@@ -30,6 +31,7 @@ class FormTypeTableSeeder extends Seeder
             $form_type_grading = FormType::create([
                 'id' => $id,
                 'form_type'    => 'Grading',
+                'sort_order'    => 3,
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now()
             ]);
@@ -37,6 +39,7 @@ class FormTypeTableSeeder extends Seeder
             $form_type_eligibility = FormType::create([
                 'id' => $id,
                 'form_type'    => 'Eligibility',
+                'sort_order'    => 1,
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now()
             ]);
@@ -44,6 +47,7 @@ class FormTypeTableSeeder extends Seeder
             $form_type_others = FormType::create([
                 'id' => $id,
                 'form_type'    => 'Others',
+                'sort_order'    => 4,
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now()
             ]);
