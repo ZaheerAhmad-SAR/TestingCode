@@ -17,7 +17,7 @@ class Subject extends Model
     public function sites()
     {
         // dd($this->belongsTo(Site::class,'site_id','id'));
-        return $this->belongsTo(Site::class);
+        return $this->belongsTo(Site::class, 'site_id', 'id');
     }
 
     public function disease_cohort()
