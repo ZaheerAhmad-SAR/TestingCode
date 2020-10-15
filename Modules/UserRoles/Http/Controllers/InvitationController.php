@@ -35,14 +35,16 @@ class InvitationController extends Controller
             'email' => $request->get('email'),
             'token' => $token
         ]);
-
-        // send the email
-        Mail::to($request->get('email'))->send(new InvitationMail($invite));
-
+        $user = User::where('email','=',$invite->email)->first();
+        if(empty($user)) {
+            // send the email
+            Mail::to($request->get('email'))->send(new InvitationMail($invite));
+            return redirect()
+                ->back();
+        }
         // redirect back where we came from
+        return redirect()->route('users.idex')->with('message','Invitation already sent to the given email');
 
-        return redirect()
-            ->back();
     }
 
     public function accept($token)
