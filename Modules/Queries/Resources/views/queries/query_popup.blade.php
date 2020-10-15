@@ -21,13 +21,19 @@
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-4 col-form-label">Queries Assigned to:</label>
                                 <div class="col-sm-8">
-                                    <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="users"> Users</label> &nbsp;
-                                    <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="roles" > Roles</label>
+                                    <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="user"> Users</label> &nbsp;
+                                    <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="role" > Roles</label>
                                 </div>
                             </div>
                             <div class="form-group row usersInput" style="display: none;">
                                 <label for="Name" class="col-sm-2 col-form-label">Users:</label>
                                 <div class="col-sm-10" id="usersDropDown"></div>
+                            </div>
+                            <div class="form-group row querySubject" style="display: none;">
+                                <label for="Name" class="col-sm-2 col-form-label">Query Subject:</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" type="text" name="query_subject" id="query_subject">
+                                </div>
                             </div>
                             <div class="form-group row rolesInput" style="display: none;">
                                 <label for="Name" class="col-sm-2 col-form-label">Roles:</label>
@@ -101,19 +107,19 @@
     }
     $(document).ready(function (){
         $('input[type="radio"]').click(function (){
-            if ($(this).attr("value")=="users")
+            if ($(this).attr("value")=="user")
             {
                 $("input:checkbox").prop('checked',false);
                 $(".usersInput").show();
                 $(".remarksInput").show();
+                $(".querySubject").show();
                 $(".rolesInput").hide();
                 $("#remarks").summernote("reset");
-
             }
-            if ($(this).attr("value")=="roles")
+            if ($(this).attr("value")=="role")
             {
-
                 $('.usersInput').css('display','none');
+                $('.querySubject').css('display','');
                 $(".rolesInput").css('display','');
                 $(".remarksInput").css('display','');
                 $("#remarks").summernote("reset");
@@ -125,14 +131,15 @@
     $('#savequeries').click(function (){
 
         var queryAssignedTo = $("input[name='assignQueries']:checked").val();
-        var module_id =       $('#module_id').val();
-        console.log(module_id);
+        var module_id       = $('#module_id').val();
         var assignedRemarks = $('#remarks').val();
-        if (queryAssignedTo == 'users')
+        var query_url       = document.URL;
+        var query_subject   = $("#query_subject").val();
+        if (queryAssignedTo == 'user')
         {
             var assignedUsers = $('#users').val();
         }
-        if(queryAssignedTo =='roles')
+        if(queryAssignedTo =='role')
         {
             var assignedRoles = $('.ads_Checkbox:checked').map(function () {
                 return this.value;
@@ -146,10 +153,12 @@
                 "_token": "{{ csrf_token() }}",
                 "_method": 'POST',
                 'module_id'      :module_id,
+                'query_url'      : query_url,
                 'assignedUsers'  :assignedUsers,
                 'assignedRemarks':assignedRemarks,
                 'queryAssignedTo':queryAssignedTo,
                 'assignedRoles'  :assignedRoles,
+                'query_subject': query_subject
             },
             success: function(response)
             {
