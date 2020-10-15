@@ -3,7 +3,8 @@
 <div class="container">
     <div class="row vh-100 justify-content-between align-items-center">
         <div class="col-12">
-            <form  action="{{ route('login') }}" method="POST" class="row row-eq-height lockscreen  mt-5 mb-5">
+{{--            <form  action="{{ route('login') }}" method="POST" class="row row-eq-height lockscreen  mt-5 mb-5">--}}
+            <form  action="{{ url('/2fa') }}" method="POST" class="row row-eq-height lockscreen  mt-5 mb-5">
                 @csrf
                 <div class="lock-image col-12 col-sm-5" style="min-height: 400px;">
                     <img src="{{asset('public/dist/images/Logo.gif')}}" alt="" style="width: 230px;margin-top: 120px;">
@@ -19,7 +20,7 @@
                         @enderror
                     </div>
 
-                    <div class="form-group mb-3">
+                   <div class="form-group mb-3">
                         <label for="password">Password</label>
                         <input class="form-control @error('password') is-invalid @enderror" type="password"  name="password" required id="password" placeholder="Enter your password" required>
                         @error('password')
@@ -33,7 +34,7 @@
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="checkbox-signin" checked="">
                             <label class="custom-control-label" for="checkbox-signin">Remember me</label>
-                            <button class="btn btn-primary" type="submit" style="float: right;"> Log In </button>
+                            <button class="btn btn-primary" type="submit" style="float: right;"> Sign In </button>
                         </div>
                     </div>
                     <div class="form-group mb-3">

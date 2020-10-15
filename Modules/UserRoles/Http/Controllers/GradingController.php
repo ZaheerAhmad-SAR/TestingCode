@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Admin\Entities\Subject;
 use Modules\Admin\Entities\StudyStructure;
+use Modules\Admin\Entities\Modility;
+use Modules\Admin\Entities\PhaseSteps;
 use DB;
 
 class GradingController extends Controller
@@ -23,7 +25,25 @@ class GradingController extends Controller
                         ->crossJoin('study_structures')
                         ->orderBy('subjects.subject_id')
                         ->orderBy('study_structures.position')
-                        ->get();
+                        ->paginate(15);
+
+        // get modalities
+        $getModalities = PhaseSteps::select('phase_steps.step_id', 'phase_steps.step_name','modilities.id as modility_id', 'modilities.modility_name')
+        ->leftJoin('modilities', 'modilities.id', '=', 'phase_steps.modility_id')
+        ->groupBy('phase_steps.modility_id')
+        ->orderBy('modilities.modility_name')
+        ->get();
+
+        // modility/steps array
+        $modalitySteps = [];
+
+        // get steps for modality
+        foreach($getModalities as $key => $modality) {
+            $getSteps = PhaseSteps::where('modility_id', $modality->modility_id)->get()->toArray();
+            dd($getSteps);
+        }
+
+        dd($getModalities);
 
         return view('userroles::users.grading-list', compact('subjects'));
     }

@@ -24,6 +24,12 @@
                                     <i class="fa fa-plus"></i> Add User
                                 </button>
                             @endif
+
+                                @if(hasPermission(auth()->user(),'invitation.invite'))
+                                    <a href="{!! route('invitation.invite') !!}" class="btn btn-outline-primary">
+                                        <i class="far fa-edit"></i>&nbsp; Invite User
+                                    </a>
+                                @endif
                         &nbsp;
                             @if(hasPermission(auth()->user(),'users.create'))
                                 @if(session('current_study'))

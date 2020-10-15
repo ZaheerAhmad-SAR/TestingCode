@@ -39,31 +39,17 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    protected function authenticated() {
+   /* protected function authenticated() {
             $roleId =  \auth()->user()->role_id;
 
             return redirect()->route('studies.index');
-    }
-   /* public function authenticated()
+    }*/
+  public function authenticated()
     {
         $user = Auth::user();
         $user->token_2fa_expiry = \Carbon\Carbon::now();
         $user->save();
         return redirect('/admin');
-    }*/
+    }
 
-    /*protected function authenticated(Request $request, $user)
-    {
-            $user->generateTwoFactorCode();
-        $user->notify(new TwoFactorCode());
-
-
-        if ($user->role_id ==1 || $user->role_id==2){
-            return redirect()->intended(route('admin.index'));
-        }elseif ($user->role_id==4){
-            return redirect()->intended(route('user.index'));
-        }elseif($user->role_id==3){
-            return redirect()->intended(route('company.dashboard'));
-        }
-    }*/
 }
