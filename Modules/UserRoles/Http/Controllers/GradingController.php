@@ -64,7 +64,6 @@ class GradingController extends Controller
         //get form status
         if ($modalitySteps != null) {
             foreach($subjects as $subject) {
-                //dd($subject);
                 //get status
                 $formStatus = [];
 
@@ -73,7 +72,7 @@ class GradingController extends Controller
 
                     // step loop
                     foreach($steps as $value) {
-                        //dd($value);
+                        
                         $getFormStatus = FormStatus::select('form_submit_status.form_status')
                                         ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id')
                                         ->where('form_submit_status.subject_id', $subject->id)
