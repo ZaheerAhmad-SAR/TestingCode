@@ -2,7 +2,6 @@
 @section('body')
     <div class="container">
         <div class="row vh-100 justify-content-between align-items-center">
-            <h3>{{ __('Reset Password') }}</h3>
             @if (session('status'))
                 <div class="alert alert-success" role="alert">
                     {{ session('status') }}
@@ -15,6 +14,7 @@
                         <img src="{{asset('public/dist/images/Logo.gif')}}" alt="" style="width: 230px;margin-top: 120px;">
                     </div>
                     <div class="login-form col-12 col-sm-7">
+                        <div class="" style="min-height: 17%"></div>
                             <div class="form-group mb-3" style="margin-top: 60px;">
                                 <label for="email">{{ __('E-Mail Address') }}</label>
                                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
@@ -26,8 +26,8 @@
                             </div>
                         <div class="form-group">
                             <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Send Password Reset Link') }}
+                                <button type="submit" class="btn btn-primary" style="float: right">
+                                    {{ __('Send Link') }}
                                 </button>
                             </div>
                         </div>
