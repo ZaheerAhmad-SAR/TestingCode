@@ -7,6 +7,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Session;
 
 class TwoFactorController extends Controller
 {
@@ -24,6 +25,11 @@ class TwoFactorController extends Controller
 // post token to the backend for check
     public function sendToken(Request $request)
     {
+        $clientIP = request()->ip();
+        dd($clientIP);
+        $browser = get_browser(null, true);
+        dd($browser);
+
         //$this->validate(['token' => 'required']);
 
         // $user = auth()->user();
@@ -39,11 +45,9 @@ class TwoFactorController extends Controller
     {
         $user = User::where('two_factor_token', '=', $request->two_factor_token)->first();
         if ($user) {
-            $credentials = $user->only(['email', 'two_factor_token']);
-
-            if (Auth::login($user)) {
-                dd('here');
-                return redirect()->route('studies');
+            if (null !== Auth::loginUsingId($user->id)) {
+               // dd(\auth()->user()->id);
+                return redirect(route('studies.index'));
             } else {
                 dd('else');
             }
