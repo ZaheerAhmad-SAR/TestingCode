@@ -12,7 +12,8 @@
                         <div class="form-group" style="min-height: 35%">
                         </div>
                         <div class="form-group"></div>
-                        <div class="form-group"></div>
+                        <div class="form-group mb3">
+                            <label for="password">Enter Code</label>
                     <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
                         <input id="2fa" type="text" class="form-control" name="two_factor_token" placeholder="Enter the code you received here." required autofocus>
                         @if ($errors->has('2fa'))
@@ -21,6 +22,8 @@
                             </span>
                         @endif
                     </div>
+                        </div>
+
                     <div class="form-group">
                         <button class="btn btn-primary" style="float: right" type="submit">Verify Code</button>
                     </div>

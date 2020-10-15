@@ -65,19 +65,68 @@
                                     <tr>
                                         <th>Subject ID</th>
                                         <th>Phase</th>
-                                        <th>Enrollement Date</th>
+                                        <th>Visit Date</th>
                                         <th>Site Name</th>
-                                        
+
+                                        @if ($modalitySteps != null)
+                                            @foreach($modalitySteps as $key => $steps)
+                                            
+                                            <th colspan="{{count($steps)}}">
+                                                    {{$key}}
+                                            </th>
+                                            @endforeach
+                                        @endif
+
                                     </tr>
+
+                                    @if ($modalitySteps != null)
+                                    <tr>
+                                        <th colspan="4">
+                                        </th>
+                                        @foreach($modalitySteps as $steps)
+                                        
+                                            @foreach($steps as $value)
+                                            <th>
+                                                  {{$value['form_type']}}
+                                            </th>
+                                            @endforeach
+                                        @endforeach
+                                    </tr>
+                                    @endif
+
                                 </thead>
                                 <tbody>
                                     @if(!$subjects->isEmpty())
-                                        @foreach($subjects as $subject)
+                                        @foreach($subjects as $key => $subject)
                                         <tr>
                                             <td>{{$subject->subject_id}}</td>
                                             <td>{{$subject->phase_name}}</td>
-                                            <td>{{$subject->enrollment_date}}</td>
+                                            <td>{{$subject->visit_date}}</td>
                                             <td>{{$subject->site_name}}</td>
+                                            
+                                            @if($subject->form_status != null)
+                                                @foreach($subject->form_status as $status)
+                                                    @php
+                                                        $imageStr = '';
+
+                                                        if ($status == 'complete') {
+                                                            $imageStr .= '<img src="' . url('images/complete.png') . '" title="complete" />';
+                                                        } elseif ($status == 'incomplete') {
+                                                            $imageStr .= '<img src="' . url('images/incomplete.png') . '" title="incomplete"/>';
+                                                        } elseif ($status == 'resumable') {
+                                                            $imageStr .= '<img src="' . url('images/resumable.png') . '" title="resumable"/>';
+                                                        } elseif ($status == 'no_status') {
+                                                            $imageStr .= '<img src="' . url('images/no_status.png') . '" title="no_status"/>';
+                                                        } elseif ($status == 'adjudication') {
+                                                            $imageStr .= '<img src="' . url('images/adjudication.png') . '" title="adjudication"/>';
+                                                        } elseif ($status == 'notrequired') {
+                                                            $imageStr .= '<img src="' . url('images/not_required.png') . '" title="notrequired"/>';
+                                                        }
+                                                    @endphp
+                                                    <td><?php echo $imageStr ?></td>
+
+                                                @endforeach
+                                            @endif
                                         </tr>
                                         @endforeach
                                     @else
@@ -88,6 +137,8 @@
                                     @endif
                                 </tbody>
                             </table>
+
+                            {{$subjects->links()}}
 
                         </div>
                     </div>
