@@ -112,7 +112,6 @@
             </div>
             <div class="col-12 col-sm-12">
                 <div class="row row-eq-height">
-
                     <div class="col-12 col-lg-2 mt-3 todo-menu-bar flip-menu pr-lg-0">
                         <a href="#" class="d-inline-block d-lg-none mt-1 flip-menu-close"><i class="icon-close"></i></a>
                         <div class="card border h-100 contact-menu-section">
@@ -124,13 +123,14 @@
                                     @foreach ($visitPhases as $phase)
                                         @php
                                         $phaseIdStr = buildSafeStr($phase->id, 'phase_cls_');
+                                        $subjectPhaseDetail = \Modules\Admin\Entities\SubjectsPhases::getSubjectPhase($subjectId, $phase->id);
                                         @endphp
                                         <div class="card text-white bg-primary m-1">
                                             <div id="heading{{ $phase->id }}" class="card-header {{ $phaseIdStr }}"
                                                 data-toggle="collapse" data-target="#collapse{{ $phase->id }}"
                                                 aria-expanded="{{ $firstPhase ? 'true' : 'false' }}"
                                                 aria-controls="collapse{{ $phase->id }}">
-                                                {{ $phase->name }}</div>
+                                                {{ $phase->name }} ({{$subjectPhaseDetail->visit_date->format('m-d-Y')}})</div>
                                             <div id="collapse{{ $phase->id }}"
                                                 class="card-body collapse-body-bg collapse {{ $firstPhase ? 'show' : '' }}"
                                                 aria-labelledby="heading{{ $phase->id }}" data-parent="#accordion" style="">
