@@ -35,7 +35,7 @@ class Site extends Model
     }
 
     public function subjects(){
-        return $this->hasMany(Subject::class);
+        return $this->hasMany(Subject::class, 'site_id', 'id');
     }
 
     public function primaryInvestigator(){

@@ -9,6 +9,8 @@ use Modules\Admin\Entities\Subject;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\PhaseSteps;
+use Modules\Admin\Entities\SubjectsPhases;
+use Modules\Admin\Entities\FormStatus;
 use DB;
 
 class GradingController extends Controller
@@ -19,16 +21,26 @@ class GradingController extends Controller
      */
     public function index()
     {
-        $subjects = DB::table('subjects')
-                        ->select('subjects.*', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'sites.site_name')
-                        ->leftJoin('sites', 'sites.id', '=', 'subjects.site_id')
-                        ->crossJoin('study_structures')
-                        ->orderBy('subjects.subject_id')
-                        ->orderBy('study_structures.position')
-                        ->paginate(15);
+        // $subjects = DB::table('subjects')
+        //                 ->select('subjects.*', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'sites.site_name')
+        //                 ->leftJoin('sites', 'sites.id', '=', 'subjects.site_id')
+        //                 ->crossJoin('study_structures')
+        //                 ->orderBy('subjects.subject_id')
+        //                 ->orderBy('study_structures.position')
+        //                 ->paginate(15);
+
+        //$subject = SubjectsPhases::get();
+
+        $subjects = Subject::select('subjects.*', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'subjects_phases.visit_date', 'sites.site_name')
+        ->rightJoin('subjects_phases', 'subjects_phases.subject_id', '=', 'subjects.id')
+        ->leftJoin('study_structures', 'study_structures.id', '=', 'subjects_phases.phase_id')
+        ->leftJoin('sites', 'sites.id', 'subjects.site_id')
+        ->orderBy('subjects.subject_id')
+        ->orderBy('study_structures.position')
+        ->paginate(15);
 
         // get modalities
-        $getModalities = PhaseSteps::select('phase_steps.step_id', 'phase_steps.step_name','modilities.id as modility_id', 'modilities.modility_name')
+        $getModilities = PhaseSteps::select('phase_steps.step_id', 'phase_steps.step_name','modilities.id as modility_id', 'modilities.modility_name')
         ->leftJoin('modilities', 'modilities.id', '=', 'phase_steps.modility_id')
         ->groupBy('phase_steps.modility_id')
         ->orderBy('modilities.modility_name')
@@ -38,14 +50,69 @@ class GradingController extends Controller
         $modalitySteps = [];
 
         // get steps for modality
-        foreach($getModalities as $key => $modality) {
-            $getSteps = PhaseSteps::where('modility_id', $modality->modility_id)->get()->toArray();
-            dd($getSteps);
+        foreach($getModilities as $key => $modility) {
+            
+            $getSteps = PhaseSteps::select('phase_steps.step_id', 'phase_steps.step_name', 'phase_steps.modility_id', 'form_types.id as form_type_id', 'form_types.form_type')
+                                    ->leftJoin('form_types', 'form_types.id', '=', 'phase_steps.form_type_id')
+                                    ->where('modility_id', $modility->modility_id)
+                                    ->groupBy('phase_steps.form_type_id')
+                                    ->get()->toArray();
+            
+            $modalitySteps[$modility->modility_name] = $getSteps;
         }
 
-        dd($getModalities);
+        //get form status
+        if ($modalitySteps != null) {
+            foreach($subjects as $subject) {
+                //dd($subject);
+                //get status
+                $formStatus = [];
 
-        return view('userroles::users.grading-list', compact('subjects'));
+                // modality loop
+                foreach($modalitySteps as $key => $steps) {
+
+                    // step loop
+                    foreach($steps as $value) {
+                        //dd($value);
+                        $getFormStatus = FormStatus::select('form_submit_status.form_status')
+                                        ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id')
+                                        ->where('form_submit_status.subject_id', $subject->id)
+                                        ->where('form_submit_status.study_structures_id', $subject->phase_id)
+                                        ->where('form_submit_status.form_type_id', $value['form_type_id'])
+                                        ->where('phase_steps.modility_id', $value['modility_id'])
+                                        ->first();
+
+                        // $step = PhaseSteps::where('step_id', $value['step_id'])->first();
+
+                        //     $getFormStatusArray = [
+                        //         'subject_id' => $subject->id,
+                        //         //'study_id' => $subject->study_id,
+                        //         'study_structures_id' => $subject->phase_id,
+                        //         //'phase_steps_id' => $value['step_id'],
+                        //         'form_type_id' => $value['form_type_id'],
+                        //         'modility_id', $value['modility_id']
+
+                        //     ];
+
+                        //     if ($step->form_type_id == 1) {
+                           
+                        //         $formStatus[$key.'_'.$value['form_type']] =  \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
+                        //     }
+                        //     if ($step->form_type_id == 2) {
+
+                        //         $formStatus[$key.'_'.$value['form_type']] =  \Modules\Admin\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray);
+                        //     }
+
+                        $formStatus[$key.'_'.$value['form_type']] = $getFormStatus == null ? 'no_status' : $getFormStatus->form_status;
+                    
+                    } // step lopp ends
+
+                } // modality loop ends
+                $subject->form_status = $formStatus;
+            }
+        }
+
+        return view('userroles::users.grading-list', compact('subjects', 'modalitySteps'));
     }
 
     /**
