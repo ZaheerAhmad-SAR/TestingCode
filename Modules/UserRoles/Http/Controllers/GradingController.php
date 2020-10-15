@@ -28,7 +28,7 @@ class GradingController extends Controller
                         ->paginate(15);
 
         // get modalities
-        $getModalities = PhaseSteps::select('phase_steps.step_id', 'phase_steps.step_name','modilities.id as modility_id', 'modilities.modility_name')
+        $getModilities = PhaseSteps::select('phase_steps.step_id', 'phase_steps.step_name','modilities.id as modility_id', 'modilities.modility_name')
         ->leftJoin('modilities', 'modilities.id', '=', 'phase_steps.modility_id')
         ->groupBy('phase_steps.modility_id')
         ->orderBy('modilities.modility_name')
@@ -38,14 +38,18 @@ class GradingController extends Controller
         $modalitySteps = [];
 
         // get steps for modality
-        foreach($getModalities as $key => $modality) {
-            $getSteps = PhaseSteps::where('modility_id', $modality->modility_id)->get()->toArray();
-            dd($getSteps);
+        foreach($getModilities as $key => $modility) {
+            //dd($modility);
+            $getSteps = PhaseSteps::select('step_id', 'step_name')
+            ->where('modility_id', $modility->modility_id)
+            ->get()->toArray();
+            
+            $modalitySteps[$modility->modility_name] = $getSteps;
         }
 
-        dd($getModalities);
+        //dd($modalitySteps);
 
-        return view('userroles::users.grading-list', compact('subjects'));
+        return view('userroles::users.grading-list', compact('subjects', 'modalitySteps'));
     }
 
     /**

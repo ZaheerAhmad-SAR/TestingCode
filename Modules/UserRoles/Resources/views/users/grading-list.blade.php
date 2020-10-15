@@ -67,7 +67,25 @@
                                         <th>Phase</th>
                                         <th>Enrollement Date</th>
                                         <th>Site Name</th>
+                                        @foreach($modalitySteps as $key => $steps)
                                         
+                                        <th colspan="{{count($steps)}}">
+                                                {{$key}}
+                                        </th>
+                                        @endforeach
+                                        
+                                    </tr>
+                                    <tr>
+                                        <th colspan="4">
+                                        </th>
+                                        @foreach($modalitySteps as $steps)
+                                        
+                                            @foreach($steps as $value)
+                                            <th>
+                                                  {{$value['step_name']}}
+                                            </th>
+                                            @endforeach
+                                        @endforeach
                                     </tr>
                                 </thead>
                                 <tbody>
