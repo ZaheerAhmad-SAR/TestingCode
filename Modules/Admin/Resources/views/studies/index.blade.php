@@ -440,27 +440,32 @@
         </div>
     </div>
     <div class="modal fade" tabindex="-1" role="dialog" id="reply-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header ">
-                    <p class="modal-title">Query Reply</p>
+                    <p class="modal-title">Reply Model</p>
                 </div>
                 <form id="replyForm" name="replyForm">
                     <div class="modal-body">
                         <div id="exTab1">
                             <div class="tab-content clearfix">
                                 @csrf
-                                <div class="form-group row lastConversationInput">
-                                    <label for="Name" class="col-sm-2 col-form-label">Comments</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" name="lastChat" id="lastChat" value="">
+                                <div class="replyInput">
+
+                                </div>
+                                <div class="col-sm-1 row">
+                                    <div class="replyClick">
+                                        <span style="cursor: pointer;">
+                                            <i class="fa fa-reply"></i>reply
+                                            </span>
                                     </div>
                                 </div>
-                                <div class="form-group row replyInput">
-                                    <label for="Name" class="col-sm-2 col-form-label">Reply</label>
+
+                                <div class="form-group row commentsInput" style="display: none;">
+                                    <label for="Name" class="col-sm-2 col-form-label">Enter your Comments</label>
                                     <div class="col-sm-10">
-                                        <textarea class="summernote" name="reply" cols="2" rows="1" id="reply"></textarea>
+                                        <textarea class="summernote form-control" name="reply" cols="2" rows="1" id="reply"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -484,6 +489,11 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
 
 <script type="text/javascript">
+  $(document).ready(function () {
+      $('body').on('click', '.replyClick', function () {
+       $('.commentsInput').css('display','');
+      });
+  });
 
  $(document).ready(function(){
        $('#change_status').on('show.bs.modal',function (e) {
@@ -601,13 +611,6 @@
             });
         });
 
-        $('body').on('click', '.replyModal', function () {
-            var id = $(this).attr('data-id');
-            $('#reply-modal').modal('show');
-            $('#all-queries-modal').modal('hide');
-        });
-
-
         $('body').on('click', '.clone-study', function () {
             $.ajaxSetup({
                 headers: {
@@ -634,13 +637,37 @@
 
     });
 
+    $('body').on('click', '.replyModal', function () {
+        var query_id = $(this).attr('data-id');
+        $('#reply-modal').modal('show');
+        showComments(query_id);
+        $('#all-queries-modal').modal('hide');
+    });
+
+    function showComments(query_id)
+    {
+        $.ajax({
+            url:"{{route('queries.showCommentsById')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'POST',
+                'query_id'      :query_id,
+            },
+            success: function(response)
+            {
+                $('.replyInput').html('');
+                $('.replyInput').html(response);
+            }
+        });
+    }
+
     $('.showAllStudyQueries').click(function () {
         var study_id = $(this).attr('data-id');
         // var moduleId = $('#module_id').val(id);
         $('#all-queries-modal').modal('show');
         loadAllStudyQueries(study_id);
     });
-
 
     function loadAllStudyQueries(study_id)
     {

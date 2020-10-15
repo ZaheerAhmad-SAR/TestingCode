@@ -48,6 +48,14 @@ class QueriesController extends Controller
     }
     }
 
+    public function showCommentsById(Request $request)
+    {
+    $query_id = $request->query_id;
+    $records = Query::where('id','=',$query_id)->get();
+    echo  view('queries::queries.queries_reply_view',compact('records'));
+
+    }
+
     /**
      * Show the form for creating a new resource.
      * @return Renderable
