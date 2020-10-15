@@ -48,6 +48,30 @@ class QueriesController extends Controller
     }
     }
 
+    public function queryReply(Request $request)
+    {
+        $query_status  = $request->post('query_status');
+        $query_id      = $request->post('query_id');
+        $reply         = $request->post('reply');
+        $query_subject = $request->post('query_subject');
+        $module_id     = $request->post('module_id');
+        $query_url     = $request->post('query_url');
+        $query_type    = $request->post('query_type');
+        $id            = Str::uuid();
+        $query         = Query::create([
+            'id'=>$id,
+            'queried_remarked_by_id'=>\auth()->user()->id,
+            'parent_query_id'=> $query_id,
+            'messages'=>$reply,
+            'module_id'=>$module_id,
+            'query_status'=> $query_status,
+            'query_type' =>$query_type,
+            'query_url'=>$query_url,
+            'query_subject'=>$query_subject
+        ]);
+        return response()->json([$query,'success'=>'Queries response is successfully save!!!!']);
+    }
+
     public function showCommentsById(Request $request)
     {
     $query_id = $request->query_id;

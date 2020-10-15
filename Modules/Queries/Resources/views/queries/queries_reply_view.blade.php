@@ -14,17 +14,23 @@
                                 </span>
                             </div>
                         </div>
-
             </div>
 
     <div class="form-group row ">
         <label for="Name" class="col-sm-2 col-form-label">Status</label>
         <div class="col-sm-10">
-            <select class="form-control" id="sel1">
+            <select class="form-control" id="query_status" name="query_status">
                 <option value="open" {{$record->query_status=='open'? 'selected="selected"': ''}}>open</option>
                 <option value="close" {{$record->query_status=='close'? 'selected="selected"': ''}}>close</option>
             </select>
         </div>
+    </div>
+    <div class="malwareData">
+        <input type="hidden" name="module_id" id="module_id" value="{{$record->module_id}}">
+        <input type="hidden" name="query_type" id="query_type" value="{{$record->query_type}}">
+        <input type="hidden" name="query_id" id="query_id" value="{{$record->id}}">
+        <input type="hidden" name="query_url" id="query_url" value="{{$record->query_url}}">
+        <input type="hidden" name="query_subject" id="query_subject" value="{{$record->query_subject}}">
     </div>
 @endforeach
 

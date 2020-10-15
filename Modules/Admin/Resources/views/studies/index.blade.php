@@ -489,11 +489,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
 
 <script type="text/javascript">
-  $(document).ready(function () {
-      $('body').on('click', '.replyClick', function () {
-       $('.commentsInput').css('display','');
-      });
-  });
 
  $(document).ready(function(){
        $('#change_status').on('show.bs.modal',function (e) {
@@ -686,6 +681,36 @@
             }
         });
     }
+
+
+        $('body').on('click', '.replyClick', function () {
+            $('.commentsInput').css('display','');
+        });
+
+
+
+    $('#replyqueries').click(function (e) {
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        e.preventDefault();
+        $.ajax({
+            data: $('#replyForm').serialize(),
+            url:"{{route('queries.queryReply')}}",
+            type: "POST",
+            dataType: 'json',
+            success: function (results) {
+                console.log(results);
+            },
+            error: function (results) {
+                console.log('Error:', results);
+                //$('#saveChild').html('Save Changes');
+            }
+        });
+    });
 
 </script>
 
