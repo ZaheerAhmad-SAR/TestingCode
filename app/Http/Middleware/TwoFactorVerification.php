@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Mail\TwoFactorAuthMail;
+use Illuminate\Support\Facades\Mail;
 use Closure;
 
 class TwoFactorVerification
@@ -21,7 +23,7 @@ class TwoFactorVerification
         }
         $user->two_factor_token = str_random(10);
         $user->save();
-        \Mail::to($user)->send(new TwoFactorAuthMail($user->two_factor_token));
+        Mail::to($user)->send(new TwoFactorAuthMail($user->two_factor_token));
         return redirect('/2fa');
     }
 }

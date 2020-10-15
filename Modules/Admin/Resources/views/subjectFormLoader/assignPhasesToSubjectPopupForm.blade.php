@@ -14,7 +14,7 @@
 
             <div class="form-group">
                 <label class="">Visit date</label>
-                <input type="text" name="visit_date" id="visit_date" value="" class="form-control-ocap bg-transparent"></div>
+                <input type="date" name="visit_date" id="visit_date" value="" class="form-control-ocap bg-transparent"></div>
             <div class="form-group">
                 <label class="">Is out of window?</label>
                 <div class="custom-control custom-radio custom-control-inline">
