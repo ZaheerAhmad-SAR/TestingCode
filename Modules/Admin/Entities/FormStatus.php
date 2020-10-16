@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 class FormStatus extends Model
 {
     protected $table = 'form_submit_status';
-    protected $fillable = ['id', 'form_filled_by_user_id', 'form_filled_by_user_role_id', 'subject_id', 'study_id', 'study_structures_id', 'phase_steps_id', 'section_id', 'form_type_id', 'form_status'];
+    protected $fillable = ['id', 'form_filled_by_user_id', 'form_filled_by_user_role_id', 'subject_id', 'study_id', 'study_structures_id', 'phase_steps_id', 'section_id', 'form_type_id', 'modility_id', 'form_status'];
     protected $keyType = 'string';
 
     protected $attributes = [
@@ -22,7 +22,7 @@ class FormStatus extends Model
     {
         $formStatusObjectQuery = Self::where(function ($q) use ($getFormStatusArray) {
             foreach ($getFormStatusArray as $key => $value) {
-                $q->where($key, '=', $value);
+                $q->where($key, 'like', (string)$value);
             }
         });
         return $formStatusObjectQuery;
@@ -161,6 +161,7 @@ class FormStatus extends Model
         $formStatusData = [
             'id' => $id,
             'form_type_id' => $request->formTypeId,
+            'modility_id' => $request->modilityId,
             'edit_reason_text' => $request->edit_reason_text,
             'form_status' => 'incomplete',
         ] + $formStatusArray;

@@ -1,7 +1,7 @@
 @php
 $option_names = [];
 $option_values = [];
-$optionGroup = $question->optionsGroup;
+$optionGroup = $question->optionGroup;
 if(!empty($optionGroup->option_value)){
     $option_values = explode(',', $optionGroup->option_value);
     $option_names = explode(',', $optionGroup->option_name);
