@@ -83,7 +83,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
 
@@ -192,24 +192,11 @@
                                             
                                             @if($subject->form_status != null)
                                                 @foreach($subject->form_status as $status)
-                                                    @php
-                                                        $imageStr = '';
-
-                                                        if ($status == 'complete') {
-                                                            $imageStr .= '<img src="' . url('images/complete.png') . '" title="complete" />';
-                                                        } elseif ($status == 'incomplete') {
-                                                            $imageStr .= '<img src="' . url('images/incomplete.png') . '" title="incomplete"/>';
-                                                        } elseif ($status == 'resumable') {
-                                                            $imageStr .= '<img src="' . url('images/resumable.png') . '" title="resumable"/>';
-                                                        } elseif ($status == 'no_status') {
-                                                            $imageStr .= '<img src="' . url('images/no_status.png') . '" title="no_status"/>';
-                                                        } elseif ($status == 'adjudication') {
-                                                            $imageStr .= '<img src="' . url('images/adjudication.png') . '" title="adjudication"/>';
-                                                        } elseif ($status == 'notrequired') {
-                                                            $imageStr .= '<img src="' . url('images/not_required.png') . '" title="notrequired"/>';
-                                                        }
-                                                    @endphp
-                                                    <td style="text-align: center;"><?php echo $imageStr ?></td>
+                                                   
+                                                    <td style="text-align: center;">
+                                                        <?php echo $status; ?>
+                                                            
+                                                        </td>
 
                                                 @endforeach
                                             @endif
