@@ -705,3 +705,8 @@ function canEligibility()
     }
     return $retVal;
 }
+function printSqlQuery($builder)
+{
+    $query = vsprintf(str_replace(array('?'), array('\'%s\''), $builder->toSql()), $builder->getBindings());
+    echo $query;
+}

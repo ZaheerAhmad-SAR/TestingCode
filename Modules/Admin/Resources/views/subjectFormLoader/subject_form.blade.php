@@ -141,6 +141,7 @@
                                                         @php
                                                         $firstStep = true;
                                                         $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($phase->id);
+                                                        $previousStepId = '';
                                                         @endphp
                                                         @foreach ($steps as $step)
                                                             @php
@@ -149,13 +150,14 @@
                                                                   'subject_id' => $subjectId,
                                                                     'study_id' => $studyId,
                                                                     'study_structures_id' => $phase->id,
-                                                                    'phase_steps_id' => $step->step_id,
+                                                                    'phase_steps_id' => $previousStepId,
                                                                     'form_type_id' => '1',
                                                                     'modility_id' => $step->modility_id,
                                                                     'form_filled_by_user_id' => $form_filled_by_user_id,
                                                                     'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
                                                                 ];
-                                                                if(\Modules\Admin\Entities\FormStatus::getFormStatus($step, $getQcFormStatusArray) !== 'complete'){
+                                                                $qcFormStatus = \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getQcFormStatusArray);
+                                                                if($qcFormStatus !== 'complete'){
                                                                     continue;
                                                                 }
                                                             }
@@ -190,6 +192,7 @@
                                                             <br>
                                                             @php
                                                             $firstStep = false;
+                                                            $previousStepId = $step->step_id;
                                                             @endphp
                                                         @endforeach
                                                     @endif

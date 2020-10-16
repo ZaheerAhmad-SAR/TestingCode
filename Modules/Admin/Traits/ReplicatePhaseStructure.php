@@ -25,6 +25,7 @@ trait ReplicatePhaseStructure
         $newPhase->is_repeatable = 0;
         $newPhase->parent_id = $phaseId;
         $newPhase->count = $count;
+        $newPhase->position = $count + 1;
         $newPhase->save();
         /********************************** */
 
