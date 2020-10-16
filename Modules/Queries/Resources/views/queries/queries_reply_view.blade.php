@@ -6,7 +6,7 @@
                         <div class="col-sm-10">
                             <div class="media">
                                 <span>
-                                    <img style="width: 100px; height: 100px; border-radius: 50%;"  src="{{url($querySubmitedBy->profile_image)}}"/>
+                                    <img style="width: 70px; height: 70px; border-radius: 50%;"  src="{{url($querySubmitedBy->profile_image)}}"/>
                                 </span>
                                 <span style="padding: 30px;">
                                     {{$querySubmitedBy->name}} <i class="fas fa-circle"></i> <br>
@@ -16,7 +16,7 @@
                         </div>
             </div>
 
-    <div class="form-group row ">
+    <div class="form-group row">
         <label for="Name" class="col-sm-2 col-form-label">Status</label>
         <div class="col-sm-10">
             <select class="form-control" id="query_status" name="query_status">

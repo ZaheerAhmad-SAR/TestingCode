@@ -4,10 +4,12 @@
     <div class="row vh-100 justify-content-between align-items-center">
         <div class="col-12">
 
+
            <form  action="{{ route('login') }}" method="POST" class="row row-eq-height lockscreen  mt-5 mb-5">
-        {{--         
+        {{--
             <form  action="{{ url('/2fa') }}" method="POST" class="row row-eq-height lockscreen  mt-5 mb-5">
         --}}
+
                 @csrf
                 <div class="lock-image col-12 col-sm-5" style="min-height: 400px;">
                     <img src="{{asset('public/dist/images/Logo.gif')}}" alt="" style="width: 230px;margin-top: 120px;">
