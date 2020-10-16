@@ -52,7 +52,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-         'remember_token',
+        'remember_token',
     ];
 
     /**
@@ -67,7 +67,7 @@ class User extends Authenticatable
 
     public function allroles()
     {
-        return $this->hasManyThrough(Role::class,UserRole::class,'role_id','id','id','id');
+        return $this->hasManyThrough(Role::class, UserRole::class, 'role_id', 'id', 'id', 'id');
     }
     public function user_roles()
     {
@@ -80,7 +80,7 @@ class User extends Authenticatable
 
     public function studies()
     {
-        return $this->belongsToMany(Study::class,'study_user');
+        return $this->belongsToMany(Study::class, 'study_user');
     }
 
     public function hasRole($roles)
@@ -88,17 +88,17 @@ class User extends Authenticatable
         $this->have_role = $this->getUserRole();
 
 
-        if($this->have_role->name == 'Root') {
+        if ($this->have_role->name == 'Root') {
             return true;
         }
 
-        if(is_array($roles)){
-            foreach($roles as $need_role){
-                if($this->checkIfUserHasRole($need_role)) {
+        if (is_array($roles)) {
+            foreach ($roles as $need_role) {
+                if ($this->checkIfUserHasRole($need_role)) {
                     return true;
                 }
             }
-        } else{
+        } else {
             return $this->checkIfUserHasRole($roles);
         }
         return false;
@@ -109,20 +109,20 @@ class User extends Authenticatable
     }
     private function checkIfUserHasRole($need_role)
     {
-        return (strtolower($need_role)==strtolower($this->have_role->name)) ? true : false;
+        return (strtolower($need_role) == strtolower($this->have_role->name)) ? true : false;
     }
     public function hasAnyRole($roles)
     {
         $this->have_roles = $this->getUserRoles();
 
 
-        if(is_array($roles)){
-            foreach($roles as $need_role){
-                if($this->checkIfUserHasAnyRole($need_role)) {
+        if (is_array($roles)) {
+            foreach ($roles as $need_role) {
+                if ($this->checkIfUserHasAnyRole($need_role)) {
                     return true;
                 }
             }
-        } else{
+        } else {
             return $this->checkIfUserHasAnyRole($roles);
         }
         return false;
@@ -135,22 +135,21 @@ class User extends Authenticatable
 
     private function checkIfUserHasAnyRole($need_role)
     {
-        foreach ($this->have_roles as $have_role){
+        foreach ($this->have_roles as $have_role) {
 
-            return (strtolower($need_role)==strtolower($have_role->name)) ? true : false;
+            return (strtolower($need_role) == strtolower($have_role->name)) ? true : false;
         }
-
     }
 
-    public function hasPermission($roles,$routeName)
+    public function hasPermission($roles, $routeName)
     {
         $this->have_role = $this->getUserRole();
 
-        if($this->have_role->name == 'Root') {
+        if ($this->have_role->name == 'Root') {
             return true;
         }
-        foreach ($this->have_role->permissions as $permission_key=>$permission){
-            if ($permission->name ==$routeName){
+        foreach ($this->have_role->permissions as $permission_key => $permission) {
+            if ($permission->name == $routeName) {
                 return [
                     'success'       =>  true,
                     'role'          =>  $this->have_role,
@@ -159,7 +158,7 @@ class User extends Authenticatable
                 ];
             }
         }
-        $permission =   Permission::where('name','=',$routeName)->first();
+        $permission =   Permission::where('name', '=', $routeName)->first();
         return [
             'success'       =>  false,
             'role'          =>  $this->have_role,
@@ -188,4 +187,10 @@ class User extends Authenticatable
         $this->save();
     }
 
+    public function getProfileImage()
+    {
+        if (!empty($this->profile_image)) {
+            return '<img src="' . url('images/' . $this->profile_image) . '"/>';
+        }
+    }
 }
