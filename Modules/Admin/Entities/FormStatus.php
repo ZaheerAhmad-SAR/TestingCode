@@ -2,6 +2,7 @@
 
 namespace Modules\Admin\Entities;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
@@ -17,6 +18,21 @@ class FormStatus extends Model
         'form_type_id' => 0,
         'form_filled_by_user_id' => 'no-user-id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'form_filled_by_user_id', 'id');
+    }
+
+    public function getUser($field)
+    {
+        $user = $this->user;
+        $value = '';
+        if (null !== $user) {
+            $value = $user->{$field};
+        }
+        return $value;
+    }
 
     public static function getFormStatusObjQuery($getFormStatusArray)
     {
@@ -65,31 +81,39 @@ class FormStatus extends Model
     {
         $formStatusObj = self::getFormStatusObj($getFormStatusArray);
         if ($wrap) {
-            return self::makeFormStatusSpan($step, $formStatusObj->form_status);
+            return self::makeFormStatusSpan($step, $formStatusObj);
         } else {
             return $formStatusObj->form_status;
         }
     }
 
-    public static function makeFormStatusSpan($step, $form_status)
+    public static function makeFormStatusSpan($step, $formStatusObj)
     {
+        $info = '';
+        $formStatus = $formStatusObj->form_status;
+        if ($formStatus != 'no_status') {
+            $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="' . $formStatusObj->user->name . '"';
+        }
+
         $imgSpanStepClsStr = buildSafeStr($step->step_id, 'img_step_status_');
-        $spanStr = '<span class="' . $imgSpanStepClsStr . '">';
-        $spanStr .= self::makeFormStatusSpanImage($form_status) . '</span>';
+        $spanStr = '<span class="' . $imgSpanStepClsStr . '" ' . $info . '>';
+        $spanStr .= self::makeFormStatusSpanImage($formStatus) . '</span>';
         return $spanStr;
     }
 
     public static function makeGraderFormStatusSpan($step, $formStatusObj)
     {
+        $info = '';
         $formStatus = $formStatusObj->form_status;
         if ($formStatus != 'no_status') {
             $imgSpanClsStr = buildGradingStatusIdClsStr($formStatusObj->id);
+            $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="' . $formStatusObj->user->name . '"';
         } else {
             $imgSpanClsStr = buildSafeStr($step->step_id, 'img_step_status_');
         }
 
 
-        $spanStr = '<span class="' . $imgSpanClsStr . '">';
+        $spanStr = '<span class="' . $imgSpanClsStr . '" ' . $info . '>';
         $spanStr .= self::makeFormStatusSpanImage($formStatusObj->form_status) . '</span>';
         return $spanStr;
     }
