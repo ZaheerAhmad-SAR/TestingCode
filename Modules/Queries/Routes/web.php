@@ -15,7 +15,7 @@
     Route::get('/', 'QueriesController@index');
 });*/
 
-Route::group(['middleware' => ['auth','web','roles']],function(){
+Route::group(['middleware' => ['auth','web']],function(){
     Route::resource('queries','QueriesController');
     Route::get('queries/chatindex','QueriesController@chatindex')->name('queries.chatindex');
     Route::get('queries/queriesList', 'QueriesController@queriesList')->name('queries.queriesList');

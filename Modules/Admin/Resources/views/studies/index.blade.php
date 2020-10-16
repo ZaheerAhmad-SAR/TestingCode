@@ -137,11 +137,12 @@
 
                                                 @endphp
                                                @if(null !== $studyQuery )
-
+                                                @if(\Modules\Queries\Entities\Query::checkUserhaveQuery($study->id))
                                                 <div class="showQueries">
                                                     <span class="ml-3" style="cursor: pointer;">
                                                         <i class="fas fa-question-circle showAllStudyQueries" data-id="{{$study->id}}"  style="margin-top: 12px;"></i></span>
                                                 </div>
+                                                @endif
                                                 @endif
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                     <span class="dropdown-item">
