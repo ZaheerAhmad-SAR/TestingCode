@@ -22,18 +22,19 @@ class Query extends Model
         $queryCheck   = false;
         $queryByLogin = self::where('queried_remarked_by_id','like',auth()->user()->id)
             ->where('parent_query_id','like',0)
-            ->where('module_id','like',$module_id)
-            ->get();
-        if (null != $queryByLogin)
+            ->where('module_id','like',$module_id)->first();
+
+        if (null !== $queryByLogin)
         {
-            dd(auth()->user()->id);
+            //dd('ddddd');
             $queryCheck = true;
         }
-        $queryForUser = QueryUser::where('user_id',auth()->user()->id)->get();
+        $queryForUser = QueryUser::where('user_id',auth()->user()->id)->first();
 
-        if (null != $queryForUser)
+        if (null !== $queryForUser)
         {
-           $queryCheck = true;
+
+            $queryCheck = true;
         }
         return $queryCheck;
     }
