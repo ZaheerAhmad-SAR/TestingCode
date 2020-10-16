@@ -46,68 +46,70 @@ class GradingController extends Controller
         ->orderBy('modilities.modility_name')
         ->get();
 
-        // modility/steps array
+        // modility/form type array
         $modalitySteps = [];
 
-        // get steps for modality
+        // get form types for modality
         foreach($getModilities as $key => $modility) {
             
             $getSteps = PhaseSteps::select('phase_steps.step_id', 'phase_steps.step_name', 'phase_steps.modility_id', 'form_types.id as form_type_id', 'form_types.form_type')
                                     ->leftJoin('form_types', 'form_types.id', '=', 'phase_steps.form_type_id')
                                     ->where('modility_id', $modility->modility_id)
+                                    ->orderBy('form_types.sort_order')
                                     ->groupBy('phase_steps.form_type_id')
                                     ->get()->toArray();
             
             $modalitySteps[$modility->modility_name] = $getSteps;
         }
 
-        //get form status
+        //get form status depending upon subject, phase and modality
         if ($modalitySteps != null) {
             foreach($subjects as $subject) {
                 //get status
                 $formStatus = [];
 
                 // modality loop
-                foreach($modalitySteps as $key => $steps) {
+                foreach($modalitySteps as $key => $formType) {
 
-                    // step loop
-                    foreach($steps as $value) {
+                    // form type loop
+                    foreach($formType as $type) {
                         
-                        $getFormStatus = FormStatus::select('form_submit_status.form_status')
-                                        ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id')
-                                        ->where('form_submit_status.subject_id', $subject->id)
-                                        ->where('form_submit_status.study_structures_id', $subject->phase_id)
-                                        ->where('form_submit_status.form_type_id', $value['form_type_id'])
-                                        ->where('phase_steps.modility_id', $value['modility_id'])
-                                        ->first();
+                        // $getFormStatus = FormStatus::select('form_submit_status.form_status')
+                        //                 ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id')
+                        //                 ->where('form_submit_status.subject_id', $subject->id)
+                        //                 ->where('form_submit_status.study_structures_id', $subject->phase_id)
+                        //                 ->where('form_submit_status.form_type_id', $type['form_type_id'])
+                        //                 ->where('phase_steps.modility_id', $type['modility_id'])
+                        //                 ->first();
 
-                        // $step = PhaseSteps::where('step_id', $value['step_id'])->first();
+                        // $formStatus[$key.'_'.$type['form_type']] = $getFormStatus == null ? 'no_status' : $getFormStatus->form_status;
 
-                        //     $getFormStatusArray = [
-                        //         'subject_id' => $subject->id,
-                        //         //'study_id' => $subject->study_id,
-                        //         'study_structures_id' => $subject->phase_id,
-                        //         //'phase_steps_id' => $value['step_id'],
-                        //         'form_type_id' => $value['form_type_id'],
-                        //         'modility_id', $value['modility_id']
+                        $step = PhaseSteps::where('step_id', $type['step_id'])->first();
 
-                        //     ];
+                            $getFormStatusArray = [
+                                'subject_id' => $subject->id,
+                                'study_structures_id' => $subject->phase_id,
+                                'modility_id'=> $type['modility_id'],
+                                'form_type_id' => $type['form_type_id']
+                            ];
 
-                        //     if ($step->form_type_id == 1) {
-                           
-                        //         $formStatus[$key.'_'.$value['form_type']] =  \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
-                        //     }
-                        //     if ($step->form_type_id == 2) {
+                            
+                            if ($step->form_type_id == 2) {
 
-                        //         $formStatus[$key.'_'.$value['form_type']] =  \Modules\Admin\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray);
-                        //     }
+                                $formStatus[$key.'_'.$type['form_type']] =  \Modules\Admin\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray);
+                            } else {
 
-                        $formStatus[$key.'_'.$value['form_type']] = $getFormStatus == null ? 'no_status' : $getFormStatus->form_status;
-                    
+                                $formStatus[$key.'_'.$type['form_type']] =  \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
+                            }
+                        
                     } // step lopp ends
 
                 } // modality loop ends
+                // dd($formStatus);
                 $subject->form_status = $formStatus;
+                // echo '<pre>';
+                // print_r($subject->form_status);
+
             }
         }
 

@@ -53,21 +53,99 @@
 
         <!-- START: Card Data-->
         <div class="row">
+            <!-- Grading legends -->
+            <div class="col-12 col-sm-12 mt-3">
+                <div class="card">
+                    <div class="card-header  justify-content-between align-items-center">
+                        <h4 class="card-title">Grading legend</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img src="{{url('images/no_status.png')}}"/>&nbsp;&nbsp;Not Initiated
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/incomplete.png')}}"/>&nbsp;&nbsp;Initiated
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/resumable.png')}}"/>&nbsp;&nbsp;Editing
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/complete.png')}}"/>&nbsp;&nbsp;Complete
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/not_required.png')}}"/>&nbsp;&nbsp;Not Required
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/query.png')}}"/>&nbsp;&nbsp;Query
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
 
                   
                     <div class="card-body">
+
                         <div class="table-responsive">
 
                             <table class="table table-bordered" id="laravel_crud">
                                 <thead>
-                                    <tr>
+                                    <tr class="table-secondary">
                                         <th>Subject ID</th>
                                         <th>Phase</th>
                                         <th>Visit Date</th>
                                         <th>Site Name</th>
 
+                                        @php
+                                            $count = 4;
+                                        @endphp
+
+                                        @if ($modalitySteps != null)
+                                            @foreach($modalitySteps as $key => $steps)
+                                            @php
+                                                $count = $count + count($steps);
+                                            @endphp
+                                            <th colspan="{{count($steps)}}" class="border-bottom-0" style="text-align: center;">
+                                                    {{$key}}
+                                            </th>
+                                            @endforeach
+                                        @endif
+                                    </tr>
+
+                                    @if ($modalitySteps != null)
+                                    <tr class="table-secondary">
+                                        <th scope="col" colspan="4" class="border-top-0"> </th>
+                                        </th>
+                                        @foreach($modalitySteps as $steps)
+                                        
+                                            @foreach($steps as $value)
+                                            <th scope="col" class="border-top-0" style="text-align: center;">
+                                                  {{$value['form_type']}}
+                                            </th>
+                                            @endforeach
+                                        @endforeach
+                                    </tr>
+                                    @endif
+
+                                </thead>
+
+                               <!--  <thead>
+                                    <tr>
+                                        <th>Subject ID</th>
+                                        <th>Phase</th>
+                                        <th>Visit Date</th>
+                                        <th>Site Name</th>
+                                        <th>
+                                            
+                                               <td colspan="2">Tr</td> 
+                                           
+                                            
+                                        </th>
+                                        {{--
                                         @php
                                             $count = 4;
                                         @endphp
@@ -99,37 +177,31 @@
                                         @endforeach
                                     </tr>
                                     @endif
-
-                                </thead>
+                                    --}}
+                                </thead> -->
                                 <tbody>
                                     @if(!$subjects->isEmpty())
                                         @foreach($subjects as $key => $subject)
                                         <tr>
-                                            <td>{{$subject->subject_id}}</td>
+                                            <td>
+                                               <a href="{{route('subjectFormLoader.showSubjectForm',['study_id' => $subject->study_id, 'subject_id' => $subject->id])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
+                                            </td>
                                             <td>{{$subject->phase_name}}</td>
-                                            <td>{{$subject->visit_date}}</td>
+                                            <td>{{date('Y-m-d', strtotime($subject->visit_date))}}</td>
                                             <td>{{$subject->site_name}}</td>
                                             
                                             @if($subject->form_status != null)
                                                 @foreach($subject->form_status as $status)
-                                                    @php
-                                                        $imageStr = '';
+                                                   
+                                                    <td style="text-align: center;">
 
-                                                        if ($status == 'complete') {
-                                                            $imageStr .= '<img src="' . url('images/complete.png') . '" title="complete" />';
-                                                        } elseif ($status == 'incomplete') {
-                                                            $imageStr .= '<img src="' . url('images/incomplete.png') . '" title="incomplete"/>';
-                                                        } elseif ($status == 'resumable') {
-                                                            $imageStr .= '<img src="' . url('images/resumable.png') . '" title="resumable"/>';
-                                                        } elseif ($status == 'no_status') {
-                                                            $imageStr .= '<img src="' . url('images/no_status.png') . '" title="no_status"/>';
-                                                        } elseif ($status == 'adjudication') {
-                                                            $imageStr .= '<img src="' . url('images/adjudication.png') . '" title="adjudication"/>';
-                                                        } elseif ($status == 'notrequired') {
-                                                            $imageStr .= '<img src="' . url('images/not_required.png') . '" title="notrequired"/>';
-                                                        }
-                                                    @endphp
-                                                    <td><?php echo $imageStr ?></td>
+                                                        <a href="{{route('subjectFormLoader.showSubjectForm',['study_id' => $subject->study_id, 'subject_id' => $subject->id])}}" class="text-primary font-weight-bold">
+                                                            
+                                                            <?php echo $status; ?>
+                                                        
+                                                        </a>
+                                                         
+                                                    </td>
 
                                                 @endforeach
                                             @endif
