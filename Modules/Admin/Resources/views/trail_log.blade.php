@@ -138,7 +138,7 @@
                         <div class="table-responsive">
 
                             <table class="table table-bordered" id="laravel_crud">
-                                <thead>
+                                <thead class="table-secondary">
                                     <tr>
                                         <th>Action</th>
                                         <th>Name</th>

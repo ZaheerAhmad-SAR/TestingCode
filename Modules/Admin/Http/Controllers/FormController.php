@@ -89,6 +89,44 @@ class FormController extends Controller
         $section_contents .= '</div>';
         return Response($section_contents);
     }
+    public function sections_skip_logic($id){
+        $section = Section::select('*')->where('phase_steps_id', $id)->orderBy('sort_number', 'asc')->get();
+        $section_contents = '';
+        foreach ($section as $key => $value) {
+            $section_contents .= '<div class="card-body" style="padding: 0;">
+                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;"> 
+                                    <tbody>';
+             $section_contents .= '<tr class=""><td class="sec_id" style="display: none;">'.$value->id.'</td><td style="text-align: center;width:15%;">
+                                      <div class="btn-group btn-group-sm" role="group">
+                                        <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon get_ques" title="Log Details" data-toggle="collapse" data-target=".row-'.$value->id.'-ac" style="font-size: 20px; color: #1e3d73;"></i>
+                                      </div>
+                                    </td><td  colspan="5"> <input type="checkbox" name="sections[]"> '.$value->name.'</td>';
+            $section_contents .= '</tr>';
+            $section_contents .= '</tbody>
+                                </table>
+                                 </div>
+                            </div>  
+                                    <div class="card-body collapse row-'.$value->id.'-ac " style="padding: 0;">
+                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;"> 
+                                    <tbody class="questions_list_'.$value->id.'">
+                                         
+                                    </tbody>
+                                </table>  </div></div>';
+        }
+        return Response($section_contents);
+    }
+    public function questions_skip_logic($id){
+        $questions = Question::select('*')->where('section_id', $id)->orderBy('question_sort', 'asc')->get();
+        $question_contents = '';
+        foreach ($questions as $key => $value) {
+             $question_contents .= '<tr><td class="sec_id" style="display: none;">'.$value->id.'</td>
+                                        <td style="text-align: center;width:15%;">
+                                        <input type="checkbox" name="questions[]">
+                                    </td><td  colspan="5"> '.$value->question_text.'</td>';
+            $question_contents .= '</tr>';
+        }
+        return Response($question_contents);
+    }
     public function get_allQuestions($id = '')
     {
         $questions = Question::with('formFields', 'form_field_type', 'optionsGroup', 'DependentQuestion', 'AdjStatus')
@@ -188,8 +226,9 @@ class FormController extends Controller
         echo json_encode($Response);
     }
     public function skip_question_on_click($id){
-        $all_form_data = Study::where('id', session('current_study'))->with('studySteps')->get();
-        return view('admin::forms.skip_logic',compact('all_form_data'));
+        $options = Question::where('id',$id)->with('optionsGroup')->first();
+        $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->first();
+        return view('admin::forms.skip_logic',compact('all_study_steps','options'));
     }
     /**
      * Show the form for creating a new resource.

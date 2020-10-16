@@ -3,6 +3,7 @@
 namespace Modules\Admin\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class SubjectsPhases extends Model
 {
@@ -29,5 +30,17 @@ class SubjectsPhases extends Model
     public static function getSubjectPhase($subjectId, $phaseId)
     {
         return self::where('subject_id', $subjectId)->where('phase_id', $phaseId)->first();
+    }
+
+    public static function createSubjectPhase($request)
+    {
+        $data = [
+            'id' => Str::uuid(),
+            'subject_id' => $request->subject_id,
+            'phase_id' => $request->phase_id,
+            'visit_date' => $request->visit_date,
+            'is_out_of_window' => $request->is_out_of_window,
+        ];
+        self::create($data);
     }
 }

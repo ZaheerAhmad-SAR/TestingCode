@@ -130,7 +130,9 @@
                                                 data-toggle="collapse" data-target="#collapse{{ $phase->id }}"
                                                 aria-expanded="{{ $firstPhase ? 'true' : 'false' }}"
                                                 aria-controls="collapse{{ $phase->id }}">
-                                                {{ $phase->name }} ({{$subjectPhaseDetail->visit_date->format('m-d-Y')}})</div>
+                                                {{ $phase->name }}
+                                                {{ ($phase->count > 0)? ' - Repeated: '.$phase->count:'' }}<br>
+                                                {{$subjectPhaseDetail->visit_date->format('m-d-Y')}}</div>
                                             <div id="collapse{{ $phase->id }}"
                                                 class="card-body collapse-body-bg collapse {{ $firstPhase ? 'show' : '' }}"
                                                 aria-labelledby="heading{{ $phase->id }}" data-parent="#accordion" style="">
@@ -139,9 +141,27 @@
                                                         @php
                                                         $firstStep = true;
                                                         $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($phase->id);
+                                                        $previousStepId = '';
                                                         @endphp
                                                         @foreach ($steps as $step)
                                                             @php
+                                                            if ($step->form_type_id == 2) {
+                                                                $getQcFormStatusArray = [
+                                                                  'subject_id' => $subjectId,
+                                                                    'study_id' => $studyId,
+                                                                    'study_structures_id' => $phase->id,
+                                                                    'phase_steps_id' => $previousStepId,
+                                                                    'form_type_id' => '1',
+                                                                    'modility_id' => $step->modility_id,
+                                                                    'form_filled_by_user_id' => $form_filled_by_user_id,
+                                                                    'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
+                                                                ];
+                                                                $qcFormStatus = \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getQcFormStatusArray);
+                                                                if($qcFormStatus !== 'complete'){
+                                                                    continue;
+                                                                }
+                                                            }
+
                                                             $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                                                             $stepIdStr = buildSafeStr($step->step_id, '');
                                                             @endphp
@@ -157,21 +177,21 @@
                                                                     'phase_steps_id' => $step->step_id,
                                                                     'form_type_id' => $step->form_type_id,
                                                                 ];
-                                                                if ($step->form_type_id == 1) {
-                                                                    $getFormStatusArray = [
+                                                                if ($step->form_type_id == 2) {
+                                                                    echo \Modules\Admin\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray);
+                                                                }else{
+                                                                    $getFormStatusArray2 = [
                                                                     'form_filled_by_user_id' => $form_filled_by_user_id,
                                                                     'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
                                                                 ];
-                                                                echo \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
-                                                                }
-                                                                if ($step->form_type_id == 2) {
-                                                                    echo \Modules\Admin\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray);
+                                                                echo \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray+$getFormStatusArray2, true);
                                                                 }
                                                                 @endphp
                                                             </a>
                                                             <br>
                                                             @php
                                                             $firstStep = false;
+                                                            $previousStepId = $step->step_id;
                                                             @endphp
                                                         @endforeach
                                                     @endif
