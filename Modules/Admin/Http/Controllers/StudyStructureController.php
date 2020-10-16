@@ -29,7 +29,7 @@ class StudyStructureController extends Controller
         $steps = PhaseSteps::all();
         $formTypes = FormType::all();
         $modalities = Modility::all();
-        return view('admin::structure.index', compact('phases', 'steps', 'formTypes','modalities'));
+        return view('admin::structure.index', compact('phases', 'steps', 'formTypes', 'modalities'));
     }
     public function get_steps()
     {
@@ -139,7 +139,8 @@ class StudyStructureController extends Controller
             'study_id'    => session('current_study'),
             'position'  =>  $request->position,
             'name' =>  $request->name,
-            'duration' =>  $request->duration
+            'duration' =>  $request->duration,
+            'is_repeatable' =>  $request->is_repeatable,
         ]);
         $data = [
             'success' => true,
@@ -219,6 +220,7 @@ class StudyStructureController extends Controller
         $phase->position  =  $request->position;
         $phase->name  =  $request->name;
         $phase->duration  =  $request->duration;
+        $phase->is_repeatable  =  $request->is_repeatable;
         $phase->save();
     }
 
