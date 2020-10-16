@@ -194,9 +194,14 @@
                                                 @foreach($subject->form_status as $status)
                                                    
                                                     <td style="text-align: center;">
-                                                        <?php echo $status; ?>
+
+                                                        <a href="{{route('subjectFormLoader.showSubjectForm',['study_id' => $subject->study_id, 'subject_id' => $subject->id])}}" class="text-primary font-weight-bold">
                                                             
-                                                        </td>
+                                                            <?php echo $status; ?>
+                                                        
+                                                        </a>
+                                                         
+                                                    </td>
 
                                                 @endforeach
                                             @endif
