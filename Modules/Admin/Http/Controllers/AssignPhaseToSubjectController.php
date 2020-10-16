@@ -32,10 +32,9 @@ class AssignPhaseToSubjectController extends Controller
     {
         $subjectPhase = SubjectsPhases::where('subject_id', $request->subject_id)->where('phase_id', $request->phase_id)->first();
         if (null !== $subjectPhase) {
-            $this->replicatePhaseStructure($request->phase_id);
-        } else {
-            SubjectsPhases::createSubjectPhase($request);
+            $request->phase_id = $this->replicatePhaseStructure($request->phase_id);
         }
+        SubjectsPhases::createSubjectPhase($request);
         echo 'success';
     }
 }

@@ -130,7 +130,9 @@
                                                 data-toggle="collapse" data-target="#collapse{{ $phase->id }}"
                                                 aria-expanded="{{ $firstPhase ? 'true' : 'false' }}"
                                                 aria-controls="collapse{{ $phase->id }}">
-                                                {{ $phase->name }} ({{$subjectPhaseDetail->visit_date->format('m-d-Y')}})</div>
+                                                {{ $phase->name }}
+                                                {{ ($phase->count > 0)? ' - Repeated: '.$phase->count:'' }}<br>
+                                                {{$subjectPhaseDetail->visit_date->format('m-d-Y')}}</div>
                                             <div id="collapse{{ $phase->id }}"
                                                 class="card-body collapse-body-bg collapse {{ $firstPhase ? 'show' : '' }}"
                                                 aria-labelledby="heading{{ $phase->id }}" data-parent="#accordion" style="">
@@ -142,6 +144,22 @@
                                                         @endphp
                                                         @foreach ($steps as $step)
                                                             @php
+                                                            if ($step->form_type_id == 2) {
+                                                                $getQcFormStatusArray = [
+                                                                  'subject_id' => $subjectId,
+                                                                    'study_id' => $studyId,
+                                                                    'study_structures_id' => $phase->id,
+                                                                    'phase_steps_id' => $step->step_id,
+                                                                    'form_type_id' => '1',
+                                                                    'modility_id' => $step->modility_id,
+                                                                    'form_filled_by_user_id' => $form_filled_by_user_id,
+                                                                    'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
+                                                                ];
+                                                                if(\Modules\Admin\Entities\FormStatus::getFormStatus($step, $getQcFormStatusArray) !== 'complete'){
+                                                                    continue;
+                                                                }
+                                                            }
+
                                                             $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                                                             $stepIdStr = buildSafeStr($step->step_id, '');
                                                             @endphp

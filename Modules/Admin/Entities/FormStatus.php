@@ -22,7 +22,7 @@ class FormStatus extends Model
     {
         $formStatusObjectQuery = Self::where(function ($q) use ($getFormStatusArray) {
             foreach ($getFormStatusArray as $key => $value) {
-                $q->where($key, 'like', $value);
+                $q->where($key, 'like', (string)$value);
             }
         });
         return $formStatusObjectQuery;
@@ -161,6 +161,7 @@ class FormStatus extends Model
         $formStatusData = [
             'id' => $id,
             'form_type_id' => $request->formTypeId,
+            'modility_id' => $request->modilityId,
             'edit_reason_text' => $request->edit_reason_text,
             'form_status' => 'incomplete',
         ] + $formStatusArray;

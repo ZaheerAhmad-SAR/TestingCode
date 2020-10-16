@@ -10,17 +10,23 @@ trait ReplicatePhaseStructure
     public function replicatePhaseStructure($phaseId)
     {
         $phase = StudyStructure::find($phaseId);
+        $lastChildPhase = StudyStructure::where('parent_id', $phaseId)->orderBy('created_at', 'desc')->first();
+        $count = 1;
+        if (null !== $lastChildPhase) {
+            $count = $lastChildPhase->count + 1;
+        }
 
         /******************************* */
         /*********  New Phase ********** */
         /******************************* */
-
         $newPhaseId = Str::uuid();
         $newPhase = $phase->replicate();
         $newPhase->id = $newPhaseId;
         $newPhase->is_repeatable = 0;
         $newPhase->parent_id = $phaseId;
+        $newPhase->count = $count;
         $newPhase->save();
+        /********************************** */
 
         /******************************* */
         /***  Replicate Phase Steps **** */
@@ -41,7 +47,7 @@ trait ReplicatePhaseStructure
                 $newSectionId = Str::uuid();
                 $newSection = $section->replicate();
                 $newSection->id = $newSectionId;
-                $newSection->step_id = $newStepId;
+                $newSection->phase_steps_id = $newStepId;
                 $newSection->save();
 
                 /******************************* */
@@ -58,7 +64,7 @@ trait ReplicatePhaseStructure
                     /******************************* */
                     /* Replicate Question Form Field */
                     /******************************* */
-                    $formField = $question->formFields();
+                    $formField = $question->formFields()->first();
                     $newFormFieldId = Str::uuid();
                     $newFormField = $formField->replicate();
                     $newFormField->id = $newFormFieldId;
@@ -67,5 +73,6 @@ trait ReplicatePhaseStructure
                 }
             }
         }
+        return $newPhaseId;
     }
 }
