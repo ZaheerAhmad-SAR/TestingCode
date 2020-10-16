@@ -37,6 +37,8 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('forms/add_questions', 'FormController@add_questions')->name('forms.addQuestions');
     Route::post('forms/updateQuestion', 'FormController@update_questions')->name('forms.updateQuestion');
     Route::get('forms/sections_against_step/{id}', 'FormController@get_sections_against_step')->name('forms.sections_against_step');
+    Route::get('forms/sections_for_skip_logic/{id}', 'FormController@sections_skip_logic')->name('forms.sectionsSkip');
+    Route::get('forms/questions_for_skip_logic/{id}', 'FormController@questions_skip_logic')->name('forms.questionsSkip');
     Route::get('forms/sections_by_stepId/{id}', 'FormController@get_section_by_stepId')->name('forms.sectionsbystepId');
     Route::post('studyStatus', 'StudyController@studyStatus')->name('study.studyStatus');
     Route::post('changeStatus/{id}', 'StudyController@changeStatus')->name('studies.changeStatus');

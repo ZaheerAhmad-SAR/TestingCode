@@ -20,9 +20,9 @@ $queryUsersString = implode(',',$queryUsersNames);
 </tr>
 @endforeach
 
-@section('script')
-    <script type="text/javascript">
-
-    </script>
-@endsection
+{{--@section('script')--}}
+{{--    <script type="text/javascript">--}}
+{{--    --}}
+{{--    </script>--}}
+{{--@endsection--}}
 
