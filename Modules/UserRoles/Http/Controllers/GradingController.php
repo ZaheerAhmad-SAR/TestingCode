@@ -82,31 +82,34 @@ class GradingController extends Controller
                         //                 ->where('phase_steps.modility_id', $type['modility_id'])
                         //                 ->first();
 
+                        // $formStatus[$key.'_'.$type['form_type']] = $getFormStatus == null ? 'no_status' : $getFormStatus->form_status;
+
                         $step = PhaseSteps::where('step_id', $type['step_id'])->first();
 
                             $getFormStatusArray = [
                                 'subject_id' => $subject->id,
                                 'study_structures_id' => $subject->phase_id,
-                                'form_type_id' => $type['form_type_id'],
-                                'modility_id'=> $type['modility_id']
-
+                                'modility_id'=> $type['modility_id'],
+                                'form_type_id' => $type['form_type_id']
                             ];
 
-                            if ($step->form_type_id == 1) {
-                           
-                                $formStatus[$key.'_'.$type['form_type']] =  \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
-                            }
+                            
                             if ($step->form_type_id == 2) {
 
                                 $formStatus[$key.'_'.$type['form_type']] =  \Modules\Admin\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray);
-                            }
+                            } else {
 
-                        // $formStatus[$key.'_'.$type['form_type']] = $getFormStatus == null ? 'no_status' : $getFormStatus->form_status;
-                    
+                                $formStatus[$key.'_'.$type['form_type']] =  \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
+                            }
+                        
                     } // step lopp ends
 
                 } // modality loop ends
+                // dd($formStatus);
                 $subject->form_status = $formStatus;
+                // echo '<pre>';
+                // print_r($subject->form_status);
+
             }
         }
 
