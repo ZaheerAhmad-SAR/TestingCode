@@ -177,15 +177,14 @@
                                                                     'phase_steps_id' => $step->step_id,
                                                                     'form_type_id' => $step->form_type_id,
                                                                 ];
-                                                                if ($step->form_type_id == 1) {
+                                                                if ($step->form_type_id == 2) {
+                                                                    echo \Modules\Admin\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray);
+                                                                }else{
                                                                     $getFormStatusArray2 = [
                                                                     'form_filled_by_user_id' => $form_filled_by_user_id,
                                                                     'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
                                                                 ];
                                                                 echo \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray+$getFormStatusArray2, true);
-                                                                }
-                                                                if ($step->form_type_id == 2) {
-                                                                    echo \Modules\Admin\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray);
                                                                 }
                                                                 @endphp
                                                             </a>
