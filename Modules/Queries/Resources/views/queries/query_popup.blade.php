@@ -32,7 +32,7 @@
                             <div class="form-group row querySubject" style="display: none;">
                                 <label for="Name" class="col-sm-2 col-form-label">Query Subject:</label>
                                 <div class="col-sm-10">
-                                    <input class="form-control" type="text" name="query_subject" id="query_subject">
+                                    <input class="form-control" type="text" name="query_subject" minlength="6" maxlength="50" id="query_subject">
                                 </div>
                             </div>
                             <div class="form-group row rolesInput" style="display: none;">
