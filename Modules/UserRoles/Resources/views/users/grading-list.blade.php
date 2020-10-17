@@ -87,7 +87,56 @@
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
 
-                  
+                  <form action="{{route('grading.index')}}" method="get" class="filter-form">
+                        <div class="form-row" style="padding: 10px;">
+
+                            <div class="form-group col-md-4">
+                                <label for="inputState">Sujects</label>
+                                <select id="subject" name="subject" class="form-control filter-form-data">
+                                    <option value="">All Suject</option>
+                                    @foreach($getFilterSubjects as $filterSubject)
+                                    <option @if(request()->subject == $filterSubject->id) selected @endif value="{{ $filterSubject->id }}">{{ $filterSubject->subject_id }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label for="inputState">Phases</label>
+                                <select id="phase" name="phase" class="form-control filter-form-data">
+                                    <option value="">All Phase</option>
+                                    @foreach($getFilterPhases as $filterPhase)
+                                    <option  @if(request()->phase == $filterPhase->id) selected @endif value="{{ $filterPhase->id }}">{{ $filterPhase->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            
+                            <div class="form-group col-md-4">
+                            
+                                <label for="inputState">Sites</label>
+                                <select id="site" name="site" class="form-control filter-form-data">
+                                    <option value="">All Sites</option>
+                                     @foreach($getFilterSites as $filterSite)
+                                     <option @if(request()->site == $filterSite->id) selected @endif value="{{ $filterSite->id }}">{{ $filterSite->site_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                           
+                            <div class="form-group col-md-4">
+                                <label for="dt">Visit Date</label>
+                                <input type="text" name="visit_date" id="visit_date" class="form-control visit_date filter-form-data" value="{{ request()->visit_date }}">
+                            </div>
+
+                           
+                            <div class="form-group col-md-2 mt-4">        
+                                <button type="button" class="btn btn-primary reset-filter">Reset</button>
+                                <button type="submit" class="btn btn-primary btn-lng">Filter</button>
+                            </div>
+
+                        </div>
+                        <!-- row ends -->
+                    </form>
                     <div class="card-body">
 
                         <div class="table-responsive">
@@ -215,7 +264,7 @@
                                 </tbody>
                             </table>
 
-                            {{$subjects->links()}}
+                             {{$subjects->appends(['subject' => \Request::get('subject'), 'phase' => \Request::get('phase'), 'site' => \Request::get('site'), 'visit_date' => \Request::get('visit_date')])->links()}}
 
                         </div>
                     </div>
@@ -239,6 +288,34 @@
 
 <script type="text/javascript">
 
+    // initialize date range picker
+    $('input[name="visit_date"]').daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            cancelLabel: 'Clear'
+        }
+    });
+
+    $('input[name="visit_date"]').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+    });
+
+    $('input[name="visit_date"]').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
+
+    $('select[name="subject"]').select2();
+    $('select[name="phase"]').select2();
+    $('select[name="site"]').select2();
+
+    // reset filter form
+    $('.reset-filter').click(function(){
+        // reset values
+        $('.filter-form').trigger("reset");
+        $('.filter-form-data').val("").trigger("change")
+        // submit the filter form
+        $('.filter-form').submit();
+    });
 
 </script>
 @endsection

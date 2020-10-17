@@ -8,10 +8,12 @@ use Illuminate\Routing\Controller;
 use Modules\Admin\Entities\Subject;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\Modility;
+use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\SubjectsPhases;
 use Modules\Admin\Entities\FormStatus;
 use DB;
+use Carbon\Carbon;
 
 class GradingController extends Controller
 {
@@ -19,7 +21,7 @@ class GradingController extends Controller
      * Display a listing of the resource.
      * @return Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
         // $subjects = DB::table('subjects')
         //                 ->select('subjects.*', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'sites.site_name')
@@ -31,11 +33,38 @@ class GradingController extends Controller
 
         //$subject = SubjectsPhases::get();
 
-        $subjects = Subject::select('subjects.*', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'subjects_phases.visit_date', 'sites.site_name')
+        $subjects = Subject::query();
+        $subjects = $subjects->select('subjects.*', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'subjects_phases.visit_date', 'sites.site_name')
         ->rightJoin('subjects_phases', 'subjects_phases.subject_id', '=', 'subjects.id')
         ->leftJoin('study_structures', 'study_structures.id', '=', 'subjects_phases.phase_id')
-        ->leftJoin('sites', 'sites.id', 'subjects.site_id')
-        ->orderBy('subjects.subject_id')
+        ->leftJoin('sites', 'sites.id', 'subjects.site_id');
+
+        if ($request->subject != '') {
+            $subjects = $subjects->where('subjects.id', $request->subject);
+        }
+
+        if ($request->phase != '') {
+            $subjects = $subjects->where('study_structures.id', $request->phase);
+        }
+
+        if ($request->site != '') {
+            $subjects = $subjects->where('sites.id', $request->site);
+        }
+
+        if ($request->visit_date != '') {
+                $visitDate = explode('-', $request->visit_date);
+                    $from   = Carbon::parse($visitDate[0])
+                                        ->startOfDay()        // 2018-09-29 00:00:00.000000
+                                        ->toDateTimeString(); // 2018-09-29 00:00:00
+
+                    $to     = Carbon::parse($visitDate[1])
+                                        ->endOfDay()          // 2018-09-29 23:59:59.000000
+                                        ->toDateTimeString(); // 2018-09-29 23:59:59
+
+                $subjects =  $subjects->whereBetween('subjects_phases.visit_date', [$from, $to]);
+            }
+
+        $subjects = $subjects->orderBy('subjects.subject_id')
         ->orderBy('study_structures.position')
         ->paginate(15);
 
@@ -105,15 +134,26 @@ class GradingController extends Controller
                     } // step lopp ends
 
                 } // modality loop ends
-                // dd($formStatus);
+                // assign the array to the key
                 $subject->form_status = $formStatus;
-                // echo '<pre>';
-                // print_r($subject->form_status);
+            }// subject loop ends
+        } // modality step null check
 
-            }
-        }
+        /////////////////////////////// get filters ///////////////////////////////////////
 
-        return view('userroles::users.grading-list', compact('subjects', 'modalitySteps'));
+        // get subjects
+        $getFilterSubjects = Subject::select('id', 'subject_id')
+                                      ->get();
+        //get phases
+        $getFilterPhases = StudyStructure::select('id', 'name')
+                                           ->orderBy('position')
+                                           ->get();
+        // get sites
+        $getFilterSites = Site::select('id', 'site_name')
+                                ->get();
+
+
+        return view('userroles::users.grading-list', compact('subjects', 'modalitySteps', 'getFilterSubjects', 'getFilterPhases', 'getFilterSites'));
     }
 
     /**
