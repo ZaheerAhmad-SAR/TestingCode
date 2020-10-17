@@ -110,9 +110,9 @@
             if ($(this).attr("value")=="user")
             {
                 $("input:checkbox").prop('checked',false);
-                $(".usersInput").show();
-                $(".remarksInput").show();
-                $(".querySubject").show();
+                $(".usersInput").show('fast');
+                $(".remarksInput").show('fast');
+                $(".querySubject").show('fast');
                 $(".rolesInput").hide();
                 $("#remarks").summernote("reset");
             }
