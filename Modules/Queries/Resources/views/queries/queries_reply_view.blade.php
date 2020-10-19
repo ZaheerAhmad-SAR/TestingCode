@@ -1,36 +1,18 @@
 @php $querySubmitedBy = App\User::find($query->queried_remarked_by_id);@endphp
 
 <div class="m-2">
-    <div class="row text-left">
-        <div class="col-md-1">
-            <img class="mr-3" style="width: 25px; height: 25px; border-radius: 50%;"
-                src="{{ url($querySubmitedBy->profile_image) }}" />
-        </div>
-        <div class="col-md-11">
-            <b class="mt-0">{{ ucfirst($querySubmitedBy->name) }} <i class="fas fa-circle"
-                    style="color: lightgreen; font-size:8px;"></i> <br></b>
-            {{ strip_tags($query->messages) }} <br>
-            <p style="padding: 10px">{{ date_format($query->created_at, 'jS-Y-h:i A') }}</p>
-        </div>
-    </div>
+    {!! Modules\Queries\Entities\Query::buildHtmlForQuerySubmitter($querySubmitedBy, $query) !!}
 
     @foreach ($answers as $answer)
         @php
         $answerSubmitedBy = App\User::find($answer->queried_remarked_by_id);
-        $text_right_left = ($query->queried_remarked_by_id == $answer->queried_remarked_by_id) ? 'text-left' : 'text-right';
         @endphp
-        <div class="row {{ $text_right_left }}">
-            <div class="col-md-11">
-                <b class="mt-0">{{ ucfirst($answerSubmitedBy->name) }} <i class="fas fa-circle"
-                        style="color: lightgreen; font-size:8px;"></i> <br></b>
-                {{ strip_tags($answer->messages) }} <br>
-                <p style="padding: 10px">{{ date_format($answer->created_at, 'jS-Y-h:i A') }}</p>
-            </div>
-            <div class="col-md-1">
-                <img class="mr-3" style="width: 25px; height: 25px; border-radius: 50%;"
-                    src="{{ url((string)$answerSubmitedBy->profile_image) }}" />
-            </div>
-        </div>
+        @if($query->queried_remarked_by_id == $answer->queried_remarked_by_id)
+            {!! Modules\Queries\Entities\Query::buildHtmlForQuerySubmitter($querySubmitedBy, $answer) !!}
+        @else
+            {!! Modules\Queries\Entities\Query::buildHtmlForQueryAnswer($querySubmitedBy, $answer) !!}
+        @endif
+
     @endforeach
 
 </div>
