@@ -23,7 +23,7 @@ class QueriesController extends Controller
      */
     public function index()
     {
-        $queries = Query::all();
+        $queries = Query::where('parent_query_id','like',0)->get();
         return view('queries::queries.index',compact('queries'));
 
     }
@@ -79,9 +79,8 @@ class QueriesController extends Controller
     public function showCommentsById(Request $request)
     {
     $query_id = $request->query_id;
-    $answers  = Query::where('parent_query_id',$query_id)->get();
     $query    = Query::where('id',$query_id)->first();
-
+    $answers  = Query::where('parent_query_id',$query_id)->get();
     echo  view('queries::queries.queries_reply_view',compact('answers','query'));
 
     }
