@@ -441,14 +441,15 @@
         </div>
     </div>
     <div class="modal fade" tabindex="-1" role="dialog" id="reply-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-md modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header ">
                     <p class="modal-title">Reply Model</p>
                 </div>
-                <form id="replyForm" name="replyForm">
+
                     <div class="modal-body">
+                        <form id="replyForm" name="replyForm">
                             <div class="tab-content clearfix">
                                 @csrf
                                 <div class="replyInput"></div>
@@ -473,8 +474,9 @@
                             <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                             <button type="button" class="btn btn-outline-primary" id="replyqueries"><i class="fa fa-save"></i> Send</button>
                         </div>
-                    </div>
                 </form>
+                    </div>
+
             </div>
         </div>
     </div>

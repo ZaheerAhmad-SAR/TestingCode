@@ -1,29 +1,47 @@
-<link rel="stylesheet" href="{{ asset("dist/vendors/summernote/summernote-bs4.css") }}">
+@push('styles')
+    <link rel="stylesheet" href="{{ asset("dist/vendors/summernote/summernote-bs4.css") }}">
+    <style>
+        @php
+             $queryByCls = buildSafeStr($query->queried_remarked_by_id, 'queryByCls_');
+            @endphp
+        .{{$queryByCls}}
+        {
+          float: left;
+          text-align: left;
+        }
+
+    </style>
+@endpush
+
 
 
     @php $querySubmitedBy = App\User::find($query->queried_remarked_by_id);@endphp
-        <div class="media">
-           <div class="media-left">
-               <img class="mr-3" style="width: 25px; height: 25px; border-radius: 50%;"  src="{{url($querySubmitedBy->profile_image)}}"/>
-           </div>
-            <div class="media-body">
-                <b class="mt-0">{{ucfirst($querySubmitedBy->name)}} <i class="fas fa-circle" style="color: lightgreen; font-size:8px;"></i> <br></b>
-                {{strip_tags($query->messages)}} <br>
-                <p style="padding: 10px">{{date_format($query->created_at,'jS-Y-h:i A')}}</p>
-                @foreach($answers as $answer)
-                    @php $querySubmitedBy = App\User::find($answer->queried_remarked_by_id);@endphp
-                    <div class="media mt-3">
-                        <img class="mr-3" style="width: 25px; height: 25px; border-radius: 50%;"  src="{{url($querySubmitedBy->profile_image)}}"/>
+       <div class="{{$queryByCls}}" >
+           <div class="media">
+               <div class="media-left">
+                   <img class="mr-3" style="width: 25px; height: 25px; border-radius: 50%;"  src="{{url($querySubmitedBy->profile_image)}}"/>
+               </div>
+               <div class="media-body">
+                   <b class="mt-0">{{ucfirst($querySubmitedBy->name)}} <i class="fas fa-circle" style="color: lightgreen; font-size:8px;"></i> <br></b>
+                   {{strip_tags($query->messages)}} <br>
+                   <p style="padding: 10px">{{date_format($query->created_at,'jS-Y-h:i A')}}</p>
+                   @foreach($answers as $answer)
+                       @php $querySubmitedBy = App\User::find($answer->queried_remarked_by_id); @endphp
+                       <div class="media mt-3">
+                           <img class="mr-3" style="width: 25px; height: 25px; border-radius: 50%;"  src="{{url($querySubmitedBy->profile_image)}}"/>
 
-                    <div class="media-body">
-                        <b class="mt-0">{{ucfirst($querySubmitedBy->name)}} <i class="fas fa-circle" style="color: lightgreen; font-size:8px;"></i> <br></b>
-                        {{strip_tags($answer->messages)}}
-                        <p style="padding: 10px;">{{date_format($answer->created_at,'jS-F-Y h:i A')}}</p>
-                    </div>
-                </div>
-                @endforeach
-            </div>
-        </div>
+                           <div class="media-body">
+                               <b class="mt-0">{{ucfirst($querySubmitedBy->name)}} <i class="fas fa-circle" style="color: lightgreen; font-size:8px;"></i> <br></b>
+                               {{strip_tags($answer->messages)}}
+                               <p style="padding: 10px;">{{date_format($answer->created_at,'jS-F-Y h:i A')}}</p>
+                           </div>
+                       </div>
+                   @endforeach
+               </div>
+           </div>
+       </div>
+
+
 
 
 
