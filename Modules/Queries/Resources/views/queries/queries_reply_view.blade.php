@@ -8,9 +8,9 @@
         $answerSubmitedBy = App\User::find($answer->queried_remarked_by_id);
         @endphp
         @if($query->queried_remarked_by_id == $answer->queried_remarked_by_id)
-            {!! Modules\Queries\Entities\Query::buildHtmlForQuerySubmitter($querySubmitedBy, $answer) !!}
+            {!! Modules\Queries\Entities\Query::buildHtmlForQuerySubmitter($answerSubmitedBy, $answer) !!}
         @else
-            {!! Modules\Queries\Entities\Query::buildHtmlForQueryAnswer($querySubmitedBy, $answer) !!}
+            {!! Modules\Queries\Entities\Query::buildHtmlForQueryAnswer($answerSubmitedBy, $answer) !!}
         @endif
 
     @endforeach
