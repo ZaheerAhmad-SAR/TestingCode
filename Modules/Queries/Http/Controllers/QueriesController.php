@@ -23,7 +23,7 @@ class QueriesController extends Controller
      */
     public function index()
     {
-        $queries = Query::all();
+        $queries = Query::where('parent_query_id','like',0)->get();
         return view('queries::queries.index',compact('queries'));
 
     }

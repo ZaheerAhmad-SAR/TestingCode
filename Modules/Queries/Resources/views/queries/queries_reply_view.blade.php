@@ -2,28 +2,29 @@
 
 
     @php $querySubmitedBy = App\User::find($query->queried_remarked_by_id);@endphp
-    <div class="form-group row">
-        <div class="col-sm-10">
         <div class="media">
-            <span> <img class="mr-3" style="width: 70px; height: 70px; border-radius: 50%;"  src="{{url($querySubmitedBy->profile_image)}}"/></span>
+           <div class="media-left">
+               <img class="mr-3" style="width: 25px; height: 25px; border-radius: 50%;"  src="{{url($querySubmitedBy->profile_image)}}"/>
+           </div>
             <div class="media-body">
-                <h5 class="mt-0">{{ucfirst($querySubmitedBy->name)}}  <i class="fas fa-circle" style="color: lightgreen; font-size:10px;"></i></h5>
-                <q>{{strip_tags($query->messages)}}</q>
+                <b class="mt-0">{{ucfirst($querySubmitedBy->name)}} <i class="fas fa-circle" style="color: lightgreen; font-size:8px;"></i> <br></b>
+                {{strip_tags($query->messages)}} <br>
+                <p style="padding: 10px">{{date_format($query->created_at,'jS-Y-h:i A')}}</p>
                 @foreach($answers as $answer)
                     @php $querySubmitedBy = App\User::find($answer->queried_remarked_by_id);@endphp
                     <div class="media mt-3">
-                        <span> <img class="mr-3" style="width: 70px; height: 70px; border-radius: 50%;"  src="{{url($querySubmitedBy->profile_image)}}"/></span>
+                        <img class="mr-3" style="width: 25px; height: 25px; border-radius: 50%;"  src="{{url($querySubmitedBy->profile_image)}}"/>
 
                     <div class="media-body">
-                        <h5 class="mt-0">{{ucfirst($querySubmitedBy->name)}}  <i class="fas fa-circle" style="color: lightgreen; font-size:10px;"></i></h5>
-                        <q>{{strip_tags($answer->messages)}}</q>
+                        <b class="mt-0">{{ucfirst($querySubmitedBy->name)}} <i class="fas fa-circle" style="color: lightgreen; font-size:8px;"></i> <br></b>
+                        {{strip_tags($answer->messages)}}
+                        <p style="padding: 10px;">{{date_format($answer->created_at,'jS-F-Y h:i A')}}</p>
                     </div>
                 </div>
                 @endforeach
             </div>
         </div>
-        </div>
-        </div>
+
 
 
 {{--    <div class="form-group row">--}}
