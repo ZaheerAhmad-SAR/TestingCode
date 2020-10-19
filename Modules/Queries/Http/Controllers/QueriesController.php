@@ -43,13 +43,15 @@ class QueriesController extends Controller
     if ($request->ajax())
     {
         $study_id = $request->study_id;
-        $records = Query::where('module_id','=',$study_id)->get();
+        $records = Query::where('module_id','like',$study_id)->where('parent_query_id','like',0)->get();
+        //dd($records);
         echo  view('queries::queries.queries_table_view',compact('records'));
     }
     }
 
     public function queryReply(Request $request)
     {
+
         $query_status  = $request->post('query_status');
         $query_id      = $request->post('query_id');
         $reply         = $request->post('reply');
@@ -69,13 +71,21 @@ class QueriesController extends Controller
             'query_url'=>$query_url,
             'query_subject'=>$query_subject
         ]);
+        if ($query_type == 'user'){
+            QueryUser::create([
+                'id' => Str::uuid(),
+                'user_id' => \auth()->user()->id,
+                'query_id' => $query_id
+            ]);
+        }
         return response()->json([$query,'success'=>'Queries response is successfully save!!!!']);
+
     }
 
     public function showCommentsById(Request $request)
     {
     $query_id = $request->query_id;
-    $records = Query::where('id','=',$query_id)->get();
+    $records = Query::where('id',$query_id)->orWhere('parent_query_id',$query_id)->get();
     echo  view('queries::queries.queries_reply_view',compact('records'));
 
     }

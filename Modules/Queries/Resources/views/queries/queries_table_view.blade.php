@@ -1,12 +1,11 @@
 @php $count = 1; @endphp
 @foreach($records as $record)
+
 @php
-
-$queryUsersIds = Modules\Queries\Entities\QueryUser::where('query_id',$record->id)->pluck('user_id')->toArray();
-
-$queryUsersNames = App\User::whereIn('id',$queryUsersIds)->pluck('name')->toArray();
-$querySubmitedBy = App\User::find($record->queried_remarked_by_id);
-$queryUsersString = implode(',',$queryUsersNames);
+    $queryUsersIds = Modules\Queries\Entities\QueryUser::where('query_id',$record->id)->pluck('user_id')->toArray();
+    $queryUsersNames = App\User::whereIn('id',$queryUsersIds)->pluck('name')->toArray();
+    $querySubmitedBy = App\User::find($record->queried_remarked_by_id);
+    $queryUsersString = implode(',',$queryUsersNames);
 
  @endphp
 <tr>
@@ -20,9 +19,4 @@ $queryUsersString = implode(',',$queryUsersNames);
 </tr>
 @endforeach
 
-{{--@section('script')--}}
-{{--    <script type="text/javascript">--}}
-{{--    --}}
-{{--    </script>--}}
-{{--@endsection--}}
 
