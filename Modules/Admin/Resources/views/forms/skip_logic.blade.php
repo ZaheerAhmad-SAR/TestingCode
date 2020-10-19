@@ -29,108 +29,111 @@
         </div>
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
-        <form action="" enctype="multipart/form-data" method="POST">
-        <div class="row">
-        @php
-            $options_value = explode(',', $options->optionsGroup->option_value);
-            $options_name = explode(',', $options->optionsGroup->option_name);
-        @endphp
-       
-        @foreach($options_name as $key => $value)
-           <div class="col-12 col-sm-12 mt-3">
-               <div class="card">
-                   <div class="card-body">
-                        <input type="radio" name="options" value="{{$options_value[$key]}}"> &nbsp; {{$value}} &nbsp;
+        <form action="{{route('forms.apply_skip_logic')}}" enctype="multipart/form-data" method="POST">
+            @csrf
+            <div class="row">
+            @php
+                $options_value = explode(',', $options->optionsGroup->option_value);
+                $options_name = explode(',', $options->optionsGroup->option_name);
+            @endphp
+           
+            @foreach($options_name as $key => $value)
+               <div class="col-12 col-sm-12 mt-3">
+                   <div class="card">
+                       <div class="card-body">
+                            <input type="hidden" name="option_title[]" value="{{$value}}">
+                            <input type="checkbox" name="option_value[]" value="{{$options_value[$key]}}"> &nbsp; {{$value}} 
+                            (Perform Action Click)
+                       </div>
                    </div>
                </div>
-           </div>
-           <div class="col-12 col-sm-6 mt-3">
-                <div class="card">
-                    <div class="card-body" style="padding: 0;">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 15%">Expand</th>
-                                        <th colspan="5">Activate Modality,Sections,Question</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-                    </div> 
-                </div> 
-                @foreach($all_study_steps->studySteps as $value)
-                        <div class="card">
-                            <div class="card-body" style="padding: 0;">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;"> 
-                                    <tbody>
+               <div class="col-12 col-sm-6 mt-3">
+                    <div class="card">
+                        <div class="card-body" style="padding: 0;">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;">
+                                    <thead>
                                         <tr>
-                                            <td class="step_id" style="display: none;">{{$value->step_id}}</td>
-                                            <td style="text-align: center;width: 15%">
-                                              <div class="btn-group btn-group-sm" role="group">
-                                                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon get_sec" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-ac" style="font-size: 20px; color: #1e3d73;"></i>
-                                              </div>
-                                            </td>
-                                            <td colspan="5"> <input type="checkbox" name="steps[]"> &nbsp;&nbsp; {{ $value->step_name }}</td>
+                                            <th style="width: 15%">Expand</th>
+                                            <th colspan="5">Activate Modality,Sections,Question</th>
                                         </tr>
-                                    </tbody>
-                                </table> 
+                                    </thead>
+                                </table>
+                            </div>
+                        </div> 
+                    </div> 
+                    @foreach($all_study_steps->studySteps as $value)
+                            <div class="card">
+                                <div class="card-body" style="padding: 0;">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;"> 
+                                        <tbody>
+                                            <tr>
+                                                <td class="step_id" style="display: none;">{{$value->step_id}}</td>
+                                                <td style="text-align: center;width: 15%">
+                                                  <div class="btn-group btn-group-sm" role="group">
+                                                    <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon get_sec_ac" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-ac" style="font-size: 20px; color: #1e3d73;"></i>
+                                                  </div>
+                                                </td>
+                                                <td colspan="5"> <input type="checkbox" name="activate_forms[{{$key}}][]" value="{{$value->step_id}}"> &nbsp;&nbsp; {{ $value->step_name }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table> 
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card collapse row-{{$value->step_id}}-ac sections_list_{{$value->step_id}}">
-                      
-                                
-                    </div>
-                    @endforeach    
-            </div>
-            <div class="col-12 col-sm-6 mt-3">
-                <div class="card">
-                    <div class="card-body" style="padding: 0;">
-                        <div class="table-responsive">
-                            <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 15%">Expand</th>
-                                        <th colspan="5">Deactivate Modality,Sections,Question</th>
-                                    </tr>
-                                </thead>
-                            </table>
+                        <div class="card collapse row-{{$value->step_id}}-ac sections_list_{{$value->step_id}}">
+                          
+                                    
                         </div>
-                    </div> 
-                </div>       
-                @foreach($all_study_steps->studySteps as $value)
-                        <div class="card">
-                            <div class="card-body" style="padding: 0;">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;"> 
-                                    <tbody>
+                        @endforeach    
+                </div>
+                <div class="col-12 col-sm-6 mt-3">
+                    <div class="card">
+                        <div class="card-body" style="padding: 0;">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;">
+                                    <thead>
                                         <tr>
-                                            <td class="step_id" style="display: none;">{{$value->step_id}}</td>
-                                            <td style="text-align: center;width: 15%">
-                                              <div class="btn-group btn-group-sm" role="group">
-                                                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon get_sec" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-de" style="font-size: 20px; color: #1e3d73;"></i>
-                                              </div>
-                                            </td>
-                                            <td colspan="5"> <input type="checkbox" name="steps[]"> &nbsp;&nbsp; {{ $value->step_name }}</td>
+                                            <th style="width: 15%">Expand</th>
+                                            <th colspan="5">Deactivate Modality,Sections,Question</th>
                                         </tr>
-                                    </tbody>
-                                </table> 
+                                    </thead>
+                                </table>
+                            </div>
+                        </div> 
+                    </div>       
+                    @foreach($all_study_steps->studySteps as $value)
+                            <div class="card">
+                                <div class="card-body" style="padding: 0;">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;"> 
+                                        <tbody>
+                                            <tr>
+                                                <td class="step_id" style="display: none;">{{$value->step_id}}</td>
+                                                <td style="text-align: center;width: 15%">
+                                                  <div class="btn-group btn-group-sm" role="group">
+                                                    <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" onclick="get_section_to_deactivate('{{$value->step_id}}', '.de_sections_list_{{$value->step_id}}')" data-toggle="collapse" data-target=".row-{{$value->step_id}}-de" style="font-size: 20px; color: #1e3d73;"></i>
+                                                  </div>
+                                                </td>
+                                                <td colspan="5"><input type="checkbox" name="deactivate_forms[{{$key}}][]" value="{{$value->step_id}}"> &nbsp;&nbsp; {{ $value->step_name }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table> 
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="card collapse row-{{$value->step_id}}-de sections_list_{{$value->step_id}}">
-                        
-                    </div>              
+                        <div class="card collapse row-{{$value->step_id}}-de de_sections_list_{{$value->step_id}}">
+                            
+                        </div>             
+                    @endforeach
+                </div>
+                   
                 @endforeach
+                   
             </div>
-               
-            @endforeach
-               
-        </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
+                <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
             </div>
         </form> 
         <!-- END: Card DATA-->
@@ -192,7 +195,7 @@
     </script>
     <script type="text/javascript">
         $(document).ready(function(){
-            $('body').on('click','.get_sec',function(){
+            $('body').on('click','.get_sec_ac',function(){
                 var row = $(this).closest('tr');
                     step_id = row.find('td.step_id').text()
                     append_class = '.sections_list_'+step_id
@@ -212,10 +215,10 @@
                     }
                 });    
             })
-            $('body').on('click','.get_ques',function(){
+            $('body').on('click','.get_ques_ac',function(){
                 var row = $(this).closest('tr');
                     sec_id = row.find('td.sec_id').text()
-                    append_class = '.questions_list_'+sec_id
+                    append_class = '.ac_questions_list_'+sec_id
                     url = "{{ url('forms/questions_for_skip_logic') }}"
                     url = url+'/'+sec_id
                 $.ajax({
@@ -231,7 +234,45 @@
                         $(append_class).html(response);
                     }
                 })
-            })    
+            })
+            // for deactivate question getting 
+            $('body').on('click','.get_ques_de',function(){
+                var row = $(this).closest('tr');
+                    sec_id = row.find('td.sec_id').text()
+                    append_class = '.de_questions_list_'+sec_id
+                    url = "{{ url('forms/questions_for_skip_logic_deactivate') }}"
+                    url = url+'/'+sec_id
+                $.ajax({
+                    url: url,
+                    type: 'post',
+                    dataType: 'html',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "_method": 'GET',
+                        'sec_id': sec_id
+                    },
+                    success: function(response) {
+                        $(append_class).html(response);
+                    }
+                })
+            })
         })
+        function get_section_to_deactivate(id,append_class){
+            var url = "{{ url('forms/sections_for_skip_logic_deactivate') }}"
+                url = url+'/'+id;
+            $.ajax({
+                url: url,
+                type: 'post',
+                dataType: 'html',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'GET',
+                    'step_id': id
+                },
+                success: function(response) {
+                    $(append_class).html(response);
+                }
+            }); 
+        }
     </script>
 @endsection

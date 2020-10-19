@@ -19,6 +19,7 @@ use Modules\Admin\Entities\QuestionValidation;
 use Modules\Admin\Entities\QuestionAdjudicationStatus;
 use Modules\Admin\Entities\AnnotationDescription;
 use Modules\Admin\Entities\Study;
+use Modules\Admin\Entities\skipLogic;
 
 class FormController extends Controller
 {
@@ -98,9 +99,9 @@ class FormController extends Controller
                                     <tbody>';
              $section_contents .= '<tr class=""><td class="sec_id" style="display: none;">'.$value->id.'</td><td style="text-align: center;width:15%;">
                                       <div class="btn-group btn-group-sm" role="group">
-                                        <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon get_ques" title="Log Details" data-toggle="collapse" data-target=".row-'.$value->id.'-ac" style="font-size: 20px; color: #1e3d73;"></i>
+                                        <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon get_ques_ac" title="Log Details" data-toggle="collapse" data-target=".row-'.$value->id.'-ac" style="font-size: 20px; color: #1e3d73;"></i>
                                       </div>
-                                    </td><td  colspan="5"> <input type="checkbox" name="sections[]"> '.$value->name.'</td>';
+                                    </td><td  colspan="5"> <input type="checkbox" name="activate_sections['.$key.'][]" value="'.$value->id.'"> '.$value->name.'</td>';
             $section_contents .= '</tr>';
             $section_contents .= '</tbody>
                                 </table>
@@ -108,7 +109,34 @@ class FormController extends Controller
                             </div>  
                                     <div class="card-body collapse row-'.$value->id.'-ac " style="padding: 0;">
                             <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;"> 
-                                    <tbody class="questions_list_'.$value->id.'">
+                                    <tbody class="ac_questions_list_'.$value->id.'">
+                                         
+                                    </tbody>
+                                </table>  </div></div>';
+        }
+        return Response($section_contents);
+    }
+    public function sections_skip_logic_deactivate($id)
+    {
+        $section = Section::select('*')->where('phase_steps_id', $id)->orderBy('sort_number', 'asc')->get();
+        $section_contents = '';
+        foreach ($section as $key => $value) {
+            $section_contents .= '<div class="card-body" style="padding: 0;">
+                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;"> 
+                                    <tbody>';
+             $section_contents .= '<tr class=""><td class="sec_id" style="display: none;">'.$value->id.'</td><td style="text-align: center;width:15%;">
+                                      <div class="btn-group btn-group-sm" role="group">
+                                        <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon get_ques_de" title="Log Details" data-toggle="collapse" data-target=".row-'.$value->id.'-de" style="font-size: 20px; color: #1e3d73;"></i>
+                                      </div>
+                                    </td><td  colspan="5"> <input type="checkbox" name="deactivate_sections['.$key.'][]" value="'.$value->id.'"> '.$value->name.'</td>';
+            $section_contents .= '</tr>';
+            $section_contents .= '</tbody>
+                                </table>
+                                 </div>
+                            </div>  
+                                    <div class="card-body collapse row-'.$value->id.'-de " style="padding: 0;">
+                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;"> 
+                                    <tbody class="de_questions_list_'.$value->id.'">
                                          
                                     </tbody>
                                 </table>  </div></div>';
@@ -121,12 +149,48 @@ class FormController extends Controller
         foreach ($questions as $key => $value) {
              $question_contents .= '<tr><td class="sec_id" style="display: none;">'.$value->id.'</td>
                                         <td style="text-align: center;width:15%;">
-                                        <input type="checkbox" name="questions[]">
+                                        <input type="checkbox" name="activate_questions['.$key.'][]" value="'.$value->id.'">
                                     </td><td  colspan="5"> '.$value->question_text.'</td>';
             $question_contents .= '</tr>';
         }
         return Response($question_contents);
     }
+    public function questions_skip_logic_deactivate($id){
+        $questions = Question::select('*')->where('section_id', $id)->orderBy('question_sort', 'asc')->get();
+        $question_contents = '';
+        foreach ($questions as $key => $value) {
+             $question_contents .= '<tr><td class="sec_id" style="display: none;">'.$value->id.'</td>
+                                        <td style="text-align: center;width:15%;">
+                                        <input type="checkbox" name="deactivate_questions['.$key.'][]" value="'.$value->id.'">
+                                    </td><td  colspan="5"> '.$value->question_text.'</td>';
+            $question_contents .= '</tr>';
+        }
+        return Response($question_contents);
+    }
+    // add question check start
+    // Question activate and deactivate 
+    public function add_skipLogic(Request $request){
+        $skip_ques = [];
+        if (isset($request->option_title) && count($request->option_title) > 0) {
+            for ($i = 0; $i < count($request->option_title); $i++) {
+                $skip_ques = [
+                    'id' => Str::uuid(),
+                    'question_id' => '634196f7-7efe-44f9-a4c9-fa02bb2bab3d',
+                    'option_title' => $request->option_title[$i],
+                    'option_value' => $request->option_value[$i],
+                    'activate_forms' => implode(',',(array)$request->activate_forms[$i]),
+                    'activate_sections' => implode(',',(array)$request->activate_sections[$i]),
+                    'activate_questions' => implode(',',(array)$request->activate_questions[$i]),
+                    'deactivate_forms' => implode(',',(array)$request->deactivate_forms[$i]),
+                    'deactivate_sections' => implode(',',(array)$request->deactivate_sections[$i]),
+                    'deactivate_questions' => implode(',',(array)$request->deactivate_questions[$i])
+                ];
+                skipLogic::insert($skip_ques);
+            }
+        }
+        return redirect()->route('forms.skipLogic','634196f7-7efe-44f9-a4c9-fa02bb2bab3d')->with('message', 'Checks Applied Successfully!');
+    }
+    // add question check end
     public function get_allQuestions($id = '')
     {
         $questions = Question::with('formFields', 'form_field_type', 'optionsGroup', 'DependentQuestion', 'AdjStatus')
