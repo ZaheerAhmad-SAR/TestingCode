@@ -48,6 +48,7 @@
                                 <input type="hidden" class="phase_name" value="{{$phase->name}}">
                                 <input type="hidden" class="phase_position" value="{{$phase->position}}">
                                 <input type="hidden" class="phase_duration" value="{{$phase->duration}}">
+                                <input type="hidden" class="is_repeatable" value="{{$phase->is_repeatable}}">
                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
                                     <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
@@ -142,13 +143,20 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="Name" class="col-sm-3 col-form-label">Duration in months</label>
+                                <label for="Name" class="col-sm-3 col-form-label">Duration in days</label>
                                 <div class="col-sm-9">
-                                    <input type="number" class="form-control" name="duration" id="phase_duration" value=""  placeholder="Duration in months">
+                                    <input type="number" class="form-control" name="duration" id="phase_duration" value=""  placeholder="Duration in days">
 
                                 </div>
                             </div>
-
+                            <div class="form-group row">
+                                <label for="is_repeatable" class="col-sm-3 col-form-label">Is Repeatable?</label>
+                                <div class="col-sm-9">
+                                    <input type="radio" name="is_repeatable" id="is_repeatable_0" value="0" checked> No
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="is_repeatable" id="is_repeatable_1" value="1"> Yes
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -372,6 +380,7 @@ $(document).ready(function(){
         var name = $('input#phase_name').val();
         var position = $('input#phase_position').val();
         var duration = $('input#phase_duration').val();
+        var is_repeatable = $('input[name="is_repeatable"]:checked').val();
 
         if(name =='' || position =='' || duration ==''){
             alert('Please fill all the required fields');
@@ -384,7 +393,8 @@ $(document).ready(function(){
                     'id': id,
                     'name': name,
                     'position': position,
-                    'duration': duration
+                    'duration': duration,
+                    'is_repeatable': is_repeatable
                     },
                 success: function(response){
                     $("#addphase-close").click();
@@ -410,10 +420,18 @@ $(document).ready(function(){
         var name = row.find('input.phase_name').val();
         var position = row.find('input.phase_position').val();
         var duration = row.find('input.phase_duration').val();
+        var is_repeatable = row.find('input.is_repeatable').val();
+
         $('#phase_id').val(id);
         $('#phase_position').val(position);
         $('#phase_name').val(name);
         $('#phase_duration').val(duration);
+        if(is_repeatable == 1){
+            $('#is_repeatable_1').prop('checked', true);
+        }else{
+            $('#is_repeatable_0').prop('checked', true);
+        }
+
     })
     // delete Phase
     $('body').on('click','.deletePhase',function(){
@@ -460,7 +478,7 @@ $(document).ready(function(){
         var q_c = $("input[name='q_c']:checked").val();
         var eligibility = $("input[name='eligibility']:checked").val();
         var post_to = (step_id == '') ? 'steps/store_steps' : 'steps/updateSteps';
-        
+
         if(phase_id =='' || step_name =='' || step_description ==''){
             alert('Please fill all the required fields');
         }else{

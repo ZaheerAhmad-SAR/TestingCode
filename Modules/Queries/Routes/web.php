@@ -15,7 +15,7 @@
     Route::get('/', 'QueriesController@index');
 });*/
 
-Route::group(['middleware' => ['auth','web','roles']],function(){
+Route::group(['middleware' => ['auth','web']],function(){
     Route::resource('queries','QueriesController');
     Route::get('queries/chatindex','QueriesController@chatindex')->name('queries.chatindex');
     Route::get('queries/queriesList', 'QueriesController@queriesList')->name('queries.queriesList');
@@ -23,4 +23,6 @@ Route::group(['middleware' => ['auth','web','roles']],function(){
     Route::post('queries/loadHtml', 'QueriesController@loadHtml')->name('queries.loadHtml');
 
     Route::post('queries/loadAllQueriesByStudyId', 'QueriesController@loadAllQueriesByStudyId')->name('queries.loadAllQueriesByStudyId');
+    Route::post('queries/showCommentsById', 'QueriesController@showCommentsById')->name('queries.showCommentsById');
+    Route::post('queries/queryReply', 'QueriesController@queryReply')->name('queries.queryReply');
 });

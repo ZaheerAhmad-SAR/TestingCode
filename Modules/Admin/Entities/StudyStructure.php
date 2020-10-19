@@ -5,6 +5,7 @@ namespace Modules\Admin\Entities;
 use Modules\UserRoles\Entities\Role;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Scopes\StudyStructureOrderByScope;
+use Modules\Admin\Scopes\StudyStructureWithoutRepeatedScope;
 use Illuminate\Database\Eloquent\Model;
 
 class StudyStructure extends Model
@@ -19,6 +20,7 @@ class StudyStructure extends Model
     {
         parent::boot();
         static::addGlobalScope(new StudyStructureOrderByScope);
+        static::addGlobalScope(new StudyStructureWithoutRepeatedScope);
     }
 
     public function phases()

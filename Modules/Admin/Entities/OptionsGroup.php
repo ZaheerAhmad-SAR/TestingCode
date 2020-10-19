@@ -15,9 +15,14 @@ class OptionsGroup extends Model
         'option_name',
         'option_value',
     ];
+
+    protected $attributes = [
+        'option_layout' => 'horizontal',
+        'option_value' => '',
+    ];
+
     public function questions()
     {
-        return $this->hasMany(Question::class,'option_group_id','id');
+        return $this->hasMany(Question::class, 'option_group_id', 'id');
     }
-
 }

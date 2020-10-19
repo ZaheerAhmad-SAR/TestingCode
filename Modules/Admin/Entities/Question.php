@@ -33,6 +33,11 @@ class Question extends Model
         return $this->hasOne(OptionsGroup::class, 'id', 'option_group_id')->withDefault();
     }
 
+    public function optionGroup()
+    {
+        return $this->belongsTo(OptionsGroup::class, 'option_group_id', 'id')->withDefault();
+    }
+
     public function getAnswer($getAnswerArray)
     {
         $answer = Answer::getAnswer($getAnswerArray);

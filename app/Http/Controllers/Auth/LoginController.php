@@ -44,12 +44,11 @@ class LoginController extends Controller
 
             return redirect()->route('studies.index');
     }
-  // public function authenticated()
-  //   {
-  //       $user = Auth::user();
-  //       $user->token_2fa_expiry = \Carbon\Carbon::now();
-  //       $user->save();
-  //       return redirect('/admin');
-  //   }
-
+ /* public function authenticated()
+    {
+        $user = Auth::user();
+        $user->token_2fa_expiry = \Carbon\Carbon::now();
+        $user->save();
+        return redirect('/admin');
+    }*/
 }
