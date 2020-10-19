@@ -4,6 +4,7 @@
 @php
     $queryUsersIds = Modules\Queries\Entities\QueryUser::where('query_id',$record->id)->pluck('user_id')->toArray();
     $queryUsersNames = App\User::whereIn('id',$queryUsersIds)->pluck('name')->toArray();
+    //dd($queryUsersNames);
     $querySubmitedBy = App\User::find($record->queried_remarked_by_id);
     $queryUsersString = implode(',',$queryUsersNames);
 
