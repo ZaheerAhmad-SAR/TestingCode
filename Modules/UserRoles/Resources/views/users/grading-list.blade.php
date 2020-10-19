@@ -90,8 +90,8 @@
                   <form action="{{route('grading.index')}}" method="get" class="filter-form">
                         <div class="form-row" style="padding: 10px;">
 
-                            <div class="form-group col-md-4">
-                                <label for="inputState">Sujects</label>
+                            <div class="form-group col-md-3">
+                                <label for="inputState">Suject</label>
                                 <select id="subject" name="subject" class="form-control filter-form-data">
                                     <option value="">All Suject</option>
                                     @foreach($getFilterSubjects as $filterSubject)
@@ -100,8 +100,8 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-4">
-                                <label for="inputState">Phases</label>
+                            <div class="form-group col-md-3">
+                                <label for="inputState">Phase</label>
                                 <select id="phase" name="phase" class="form-control filter-form-data">
                                     <option value="">All Phase</option>
                                     @foreach($getFilterPhases as $filterPhase)
@@ -111,11 +111,11 @@
                             </div>
 
                             
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                             
-                                <label for="inputState">Sites</label>
+                                <label for="inputState">Site</label>
                                 <select id="site" name="site" class="form-control filter-form-data">
-                                    <option value="">All Sites</option>
+                                    <option value="">All Site</option>
                                      @foreach($getFilterSites as $filterSite)
                                      <option @if(request()->site == $filterSite->id) selected @endif value="{{ $filterSite->id }}">{{ $filterSite->site_name }}</option>
                                     @endforeach
@@ -123,9 +123,42 @@
                             </div>
 
                            
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
                                 <label for="dt">Visit Date</label>
                                 <input type="text" name="visit_date" id="visit_date" class="form-control visit_date filter-form-data" value="{{ request()->visit_date }}">
+                            </div>
+
+                            <div class="form-group col-md-3">
+                            
+                                <label for="inputState">Modality</label>
+                                <select id="modility" name="modility" class="form-control filter-form-data">
+                                    <option value="">All Modality</option>
+                                     @foreach($getFilterModilities as $filterModality)
+                                     <option @if(request()->modility == $filterModality->id) selected @endif value="{{ $filterModality->id }}">{{ $filterModality->modility_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                            
+                                <label for="inputState">Form Type</label>
+                                <select id="form_type" name="form_type" class="form-control filter-form-data">
+                                    <option value="">All Form Type</option>
+                                     @foreach($getFilterFormType as $filterForm)
+                                     <option @if(request()->form_type == $filterForm->id) selected @endif value="{{ $filterForm->id }}">{{ $filterForm->form_type }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                            
+                                <label for="inputState">Status</label>
+                                <select id="form_status" name="form_status" class="form-control filter-form-data">
+                                    <option value="">All Status</option>
+                                     @foreach($getFilterFormStatus as $filter => $filterStatus)
+                                     <option @if(request()->form_status == $filter) selected @endif value="{{ $filter }}">{{ $filterStatus }}</option>
+                                    @endforeach
+                                </select>
                             </div>
 
                            

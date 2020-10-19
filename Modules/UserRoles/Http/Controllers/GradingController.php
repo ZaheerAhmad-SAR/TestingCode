@@ -12,6 +12,7 @@ use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\SubjectsPhases;
 use Modules\Admin\Entities\FormStatus;
+use Modules\Admin\Entities\FormType;
 use DB;
 use Carbon\Carbon;
 
@@ -37,7 +38,8 @@ class GradingController extends Controller
         $subjects = $subjects->select('subjects.*', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'subjects_phases.visit_date', 'sites.site_name')
         ->rightJoin('subjects_phases', 'subjects_phases.subject_id', '=', 'subjects.id')
         ->leftJoin('study_structures', 'study_structures.id', '=', 'subjects_phases.phase_id')
-        ->leftJoin('sites', 'sites.id', 'subjects.site_id');
+        ->leftJoin('sites', 'sites.id', 'subjects.site_id')
+        ->leftJoin('form_submit_status', 'form_submit_status.subject_id', 'subjects.id');
 
         if ($request->subject != '') {
             $subjects = $subjects->where('subjects.id', $request->subject);
@@ -68,12 +70,16 @@ class GradingController extends Controller
         ->orderBy('study_structures.position')
         ->paginate(15);
 
+        //dd($subjects);
+
         // get modalities
         $getModilities = PhaseSteps::select('phase_steps.step_id', 'phase_steps.step_name','modilities.id as modility_id', 'modilities.modility_name')
         ->leftJoin('modilities', 'modilities.id', '=', 'phase_steps.modility_id')
         ->groupBy('phase_steps.modility_id')
         ->orderBy('modilities.modility_name')
         ->get();
+
+        //dd($getModilities);
 
         // modility/form type array
         $modalitySteps = [];
@@ -87,6 +93,8 @@ class GradingController extends Controller
                                     ->orderBy('form_types.sort_order')
                                     ->groupBy('phase_steps.form_type_id')
                                     ->get()->toArray();
+
+                //dd($getSteps);
             
             $modalitySteps[$modility->modility_name] = $getSteps;
         }
@@ -151,9 +159,20 @@ class GradingController extends Controller
         // get sites
         $getFilterSites = Site::select('id', 'site_name')
                                 ->get();
+        // get modilities
+        $getFilterModilities = Modility::select('id', 'modility_name')
+                                        ->get();
+        // get form types
+        $getFilterFormType = FormType::select('id', 'form_type')
+                                ->get();
+        // get form status
+        $getFilterFormStatus = array(
+            'incomplete' => 'Incomplete',
+            'complete' => 'Complete',
+            'resumable' => 'Resumable'
+        );
 
-
-        return view('userroles::users.grading-list', compact('subjects', 'modalitySteps', 'getFilterSubjects', 'getFilterPhases', 'getFilterSites'));
+        return view('userroles::users.grading-list', compact('subjects', 'modalitySteps', 'getFilterSubjects', 'getFilterPhases', 'getFilterSites', 'getFilterModilities', 'getFilterFormType', 'getFilterFormStatus'));
     }
 
     /**
