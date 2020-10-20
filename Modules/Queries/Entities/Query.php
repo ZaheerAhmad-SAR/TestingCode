@@ -44,7 +44,7 @@ class Query extends Model
     {
         return '<div class="row text-left">
                     <div class="col-md-1">
-                        <img class="mr-3" style="width: 25px; height: 25px; border-radius: 50%;"
+                        <img class="mr-3" style="width: 30px; height: 30px; border-radius: 50%;"
                             src="' . url((string)$querySubmitedBy->profile_image) . '" />
                     </div>
                     <div class="col-md-11">
@@ -66,7 +66,7 @@ class Query extends Model
                         <p style="padding: 10px">' . date_format($query->created_at, 'jS-Y-h:i A') . '</p>
                     </div>
                     <div class="col-md-1">
-                        <img class="mr-3" style="width: 25px; height: 25px; border-radius: 50%;"
+                        <img class="mr-3" style="width: 30px; height: 30px; border-radius: 50%;"
                             src="' . url((string)$querySubmitedBy->profile_image) . '" />
                     </div>
                 </div>';
