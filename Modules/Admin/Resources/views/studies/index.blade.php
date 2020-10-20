@@ -441,17 +441,20 @@
         </div>
     </div>
     <div class="modal fade" tabindex="-1" role="dialog" id="reply-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
-        <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header ">
                     <p class="modal-title">Reply Model</p>
                 </div>
-                <form id="replyForm" name="replyForm">
+
                     <div class="modal-body">
+                        <form id="replyForm" name="replyForm">
                             <div class="tab-content clearfix">
                                 @csrf
+
                                 <div class="replyInput"></div>
+
                                 <div class="col-sm-6 form-group row">
                                     <div class="replyClick">
                                     <span style="cursor: pointer;">
@@ -459,11 +462,11 @@
                                         </span>
                                     </div>
                                 </div>
-                                <div class="col-sm-10 currentQueryResponse"></div>
+
                                 <div class="form-group row commentsInput" style="display: none;">
-                                    <label for="Name" class="col-sm-2 col-form-label">Enter your Comment</label>
-                                    <div class="col-sm-6">
-                                        <textarea class="form-control" name="reply" cols="2" rows="1" id="reply"></textarea>
+                                    <label for="Name" class="col-sm-3 col-form-label">Enter your Comment</label>
+                                    <div class="col-sm-9">
+                                        <textarea class="summernote" name="reply" id="reply"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -472,8 +475,9 @@
                             <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                             <button type="button" class="btn btn-outline-primary" id="replyqueries"><i class="fa fa-save"></i> Send</button>
                         </div>
-                    </div>
                 </form>
+                    </div>
+
             </div>
         </div>
     </div>
@@ -637,8 +641,7 @@
         $('#all-queries-modal').modal('hide');
     });
 
-    function showComments(query_id)
-    {
+    function showComments(query_id) {
         $.ajax({
             url:"{{route('queries.showCommentsById')}}",
             type: 'POST',
@@ -662,8 +665,7 @@
         loadAllStudyQueries(study_id);
     });
 
-    function loadAllStudyQueries(study_id)
-    {
+    function loadAllStudyQueries(study_id) {
         $.ajax({
             url:"{{route('queries.loadAllQueriesByStudyId')}}",
             type: 'POST',
@@ -689,8 +691,7 @@
 
 
     $('#replyqueries').click(function (e) {
-        var reply = $('#reply').val();
-        var currentUser = 'Admin';
+
         $.ajaxSetup({ headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
         e.preventDefault();
         $.ajax({
@@ -699,14 +700,13 @@
             type: "POST",
             dataType: 'json',
             success: function (results) {
-                console.log(results);
-                // var html = '';
-                // html += '<q>+reply+</q>';
-                // $('.currentQueryResponse').prepend(html);
-
-                window.setTimeout(function () {
-                    window.location.reload();
-                }, 100);
+                $('.commentsInput').css('display','none');
+                $('.replyClick').css('display','');
+                var query_id = results[0].parent_query_id;
+                showComments(query_id);
+                //$(".replyInput").load(location.href + ".replyInput");
+                // $("#replyForm")[0].reset();
+                $("#reply").summernote("reset");
             },
             error: function (results) {
                 console.log('Error:', results);
