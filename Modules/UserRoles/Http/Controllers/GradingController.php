@@ -278,9 +278,9 @@ class GradingController extends Controller
                                 ->get();
         // get form status
         $getFilterFormStatus = array(
-            'incomplete' => 'Incomplete',
+            'incomplete' => 'Initiated',
             'complete' => 'Complete',
-            'resumable' => 'Resumable'
+            'resumable' => 'Editing'
         );
 
         return view('userroles::users.grading-list', compact('subjects', 'modalitySteps', 'getFilterSubjects', 'getFilterPhases', 'getFilterSites', 'getFilterModilities', 'getFilterFormType', 'getFilterFormStatus'));
