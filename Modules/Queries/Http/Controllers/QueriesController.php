@@ -72,17 +72,16 @@ class QueriesController extends Controller
             'query_subject'=>$query_subject
         ]);
 
-        return response()->json([$query,'success'=>'Queries response is successfully save!!!!']);
+        return response()->json([$query,'success'=>'Queries response is successfully save!!!!','reply_id'=>$id]);
 
     }
 
     public function showCommentsById(Request $request)
     {
     $query_id = $request->query_id;
-    $query    = Query::where('id',$query_id)->first();
-    $answers  = Query::where('parent_query_id',$query_id)->get();
+    $query    = Query::where('id',$query_id)->orderBy('created_at','asc')->first();
+    $answers  = Query::where('parent_query_id',$query_id)->orderBy('created_at','asc')->get();
     echo  view('queries::queries.queries_reply_view',compact('answers','query'));
-
     }
 
     /**
