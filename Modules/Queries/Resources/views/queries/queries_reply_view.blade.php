@@ -17,21 +17,21 @@
 
 </div>
 
-
-
-
-
-{{-- <div class="form-group row">--}}
-    {{-- <label for="Name"
-        class="col-sm-2 col-form-label">Status</label>--}}
-    {{-- <div class="col-sm-10">--}}
-        {{-- <select class="form-control" id="query_status"
-            name="query_status">--}}
-            {{-- <option value="open">open</option>--}}
-            {{-- <option value="close">close</option>--}}
-            {{-- </select>--}}
-        {{-- </div>--}}
-    {{-- </div>--}}
+<div class="currentQueryResponse"></div>
+ <div class="form-group row">
+     <label for="Name"
+        class="col-sm-2 col-form-label">Status</label>
+     <div class="col-sm-10">
+         <select class="form-control" id="query_status"
+            name="query_status">
+             <option value="open">open</option>
+             <option value="Unconfirmed">Unconfirmed</option>
+             <option value="Confirmed">Confirmed</option>
+             <option value="Resolved">Resolved</option>
+             <option value="close">close</option>
+             </select>
+         </div>
+     </div>
 <div class="malwareData">
     <input type="hidden" name="module_id" id="module_id" value="{{ $query->module_id }}">
     <input type="hidden" name="query_type" id="query_type" value="{{ $query->query_type }}">
