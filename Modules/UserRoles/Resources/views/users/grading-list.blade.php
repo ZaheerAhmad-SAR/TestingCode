@@ -87,8 +87,63 @@
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
 
-                  <form action="{{route('grading.index')}}" method="get" class="filter-form">
+                    <form action="{{route('grading.index')}}" method="get" class="form-1 filter-form">
                         <div class="form-row" style="padding: 10px;">
+
+                            <input type="hidden" name="form_1" value="1" class="form-control">
+
+                            <div class="form-group col-md-3">
+                                <label for="inputState">Suject</label>
+                                <select id="subject" name="subject" class="form-control filter-form-data">
+                                    <option value="">All Suject</option>
+                                    @foreach($getFilterSubjects as $filterSubject)
+                                    <option @if(request()->subject == $filterSubject->id) selected @endif value="{{ $filterSubject->id }}">{{ $filterSubject->subject_id }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label for="inputState">Phase</label>
+                                <select id="phase" name="phase" class="form-control filter-form-data">
+                                    <option value="">All Phase</option>
+                                    @foreach($getFilterPhases as $filterPhase)
+                                    <option  @if(request()->phase == $filterPhase->id) selected @endif value="{{ $filterPhase->id }}">{{ $filterPhase->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            
+                            <div class="form-group col-md-2">
+                            
+                                <label for="inputState">Site</label>
+                                <select id="site" name="site" class="form-control filter-form-data">
+                                    <option value="">All Site</option>
+                                     @foreach($getFilterSites as $filterSite)
+                                     <option @if(request()->site == $filterSite->id) selected @endif value="{{ $filterSite->id }}">{{ $filterSite->site_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                           
+                            <div class="form-group col-md-3">
+                                <label for="dt">Visit Date</label>
+                                <input type="text" name="visit_date" id="visit_date" class="form-control visit_date filter-form-data" value="{{ request()->visit_date }}">
+                            </div>
+
+                            <div class="form-group col-md-2 mt-4">        
+                                <button type="button" class="btn btn-primary reset-filter-1">Reset</button>
+                                <button type="submit" class="btn btn-primary btn-lng">Filter</button>
+                            </div>
+
+                        </div>
+                        <!-- row ends -->
+                    </form>
+
+                    <!-- ----------------------------- Form Two Starts ------------------------ -->
+                    <form action="{{route('grading.index')}}" method="get" class="form-2 filter-form">
+                        <div class="form-row" style="padding: 10px;">
+                            
+                            <input type="hidden" name="form_2" value="2" class="form-control">
 
                             <div class="form-group col-md-3">
                                 <label for="inputState">Suject</label>
@@ -109,27 +164,8 @@
                                     @endforeach
                                 </select>
                             </div>
-
                             
                             <div class="form-group col-md-3">
-                            
-                                <label for="inputState">Site</label>
-                                <select id="site" name="site" class="form-control filter-form-data">
-                                    <option value="">All Site</option>
-                                     @foreach($getFilterSites as $filterSite)
-                                     <option @if(request()->site == $filterSite->id) selected @endif value="{{ $filterSite->id }}">{{ $filterSite->site_name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                           
-                            <div class="form-group col-md-3">
-                                <label for="dt">Visit Date</label>
-                                <input type="text" name="visit_date" id="visit_date" class="form-control visit_date filter-form-data" value="{{ request()->visit_date }}">
-                            </div>
-
-                            <div class="form-group col-md-3">
-                            
                                 <label for="inputState">Modality</label>
                                 <select id="modility" name="modility" class="form-control filter-form-data">
                                     <option value="">All Modality</option>
@@ -150,6 +186,7 @@
                                 </select>
                             </div>
 
+                            
                             <div class="form-group col-md-3">
                             
                                 <label for="inputState">Status</label>
@@ -161,9 +198,19 @@
                                 </select>
                             </div>
 
-                           
+                            <div class="form-group col-md-3">
+                                <label for="inputState">Graders</label>
+                                <select name="graders_number" id="graders_number" class="form-control filter-form-data">
+                                    <option value="">Select Numbers of Graders</option>
+                                    <option @if(request()->graders_number == "0") selected @endif value="0">Null (0)</option>
+                                    <option @if(request()->graders_number == "1") selected @endif  value="1">One (1)</option>
+                                    <option @if(request()->graders_number == "2") selected @endif  value="2">Two (2)</option>
+                                    <option @if(request()->graders_number == "3") selected @endif  value="3">Three (3)</option>
+                                </select>
+                            </div>
+                   
                             <div class="form-group col-md-2 mt-4">        
-                                <button type="button" class="btn btn-primary reset-filter">Reset</button>
+                                <button type="button" class="btn btn-primary reset-filter-2">Reset</button>
                                 <button type="submit" class="btn btn-primary btn-lng">Filter</button>
                             </div>
 
@@ -262,7 +309,8 @@
                                     --}}
                                 </thead> -->
                                 <tbody>
-                                    @if(!$subjects->isEmpty())
+                                    @if(!$subjects->isEmpty() && request()->has('form_1'))
+
                                         @foreach($subjects as $key => $subject)
                                         <tr>
                                             <td>
@@ -289,6 +337,35 @@
                                             @endif
                                         </tr>
                                         @endforeach
+
+                                    @elseif (!$subjects->isEmpty() && request()->has('form_2'))
+
+                                        @foreach($subjects as $key => $subject)
+                                        <tr>
+                                            <td>
+                                               <a href="{{route('subjectFormLoader.showSubjectForm',['study_id' => $subject->study_id, 'subject_id' => $subject->subj_id])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
+                                            </td>
+                                            <td>{{$subject->phase_name}}</td>
+                                            <td>{{date('Y-m-d', strtotime($subject->visit_date))}}</td>
+                                            <td>{{$subject->site_name}}</td>
+                                            
+                                            @if($subject->form_status != null)
+                                                @foreach($subject->form_status as $status)
+                                                   
+                                                    <td style="text-align: center;">
+
+                                                        <a href="{{route('subjectFormLoader.showSubjectForm',['study_id' => $subject->study_id, 'subject_id' => $subject->subj_id])}}" class="text-primary font-weight-bold">
+                                                            
+                                                            <?php echo $status; ?>
+                                                        
+                                                        </a>
+                                                         
+                                                    </td>
+
+                                                @endforeach
+                                            @endif
+                                        </tr>
+                                        @endforeach
                                     @else
                                     <tr>
                                         <td colspan="{{$count}}" style="text-align: center;"> No record found.</td>
@@ -296,9 +373,9 @@
                                     @endif
                                 </tbody>
                             </table>
-
+                            @if(!$subjects->isEmpty())
                              {{$subjects->appends(['subject' => \Request::get('subject'), 'phase' => \Request::get('phase'), 'site' => \Request::get('site'), 'visit_date' => \Request::get('visit_date')])->links()}}
-
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -342,12 +419,21 @@
     $('select[name="site"]').select2();
 
     // reset filter form
-    $('.reset-filter').click(function(){
+    $('.reset-filter-1').click(function(){
         // reset values
         $('.filter-form').trigger("reset");
         $('.filter-form-data').val("").trigger("change")
         // submit the filter form
-        $('.filter-form').submit();
+        $('.form-1').submit();
+    });
+
+    // reset filter form
+    $('.reset-filter-2').click(function() {
+        // reset values
+        $('.filter-form').trigger("reset");
+        $('.filter-form-data').val("").trigger("change")
+        // submit the filter form
+        $('.form-2').submit();
     });
 
 </script>
