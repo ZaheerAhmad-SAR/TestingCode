@@ -25,7 +25,35 @@
             border-radius: .25rem;
             transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
         }
+
+        legend {
+          /*background-color: gray;
+          color: white;*/
+          padding: 5px 10px;
+        }
     </style>
+    
+    <!-- hide form on the basis of request -->
+    @if (request()->has('form_1'))
+        <style>
+            .form-2{
+                display: none;
+            }
+        </style>
+    @elseif (request()->has('form_2'))
+        <style>
+            .form-1{
+                display: none;
+            }
+        </style>
+    @else
+        <style>
+            .form-2{
+                display: none;
+            }
+        </style>
+    @endif
+
     <!-- date range picker -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
@@ -87,6 +115,13 @@
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
 
+                    <div class="form-group col-md-4 mt-3">        
+                        <button type="button" class="btn btn-primary other-filters">Other Filters</button>
+                        <button type="button" class="btn btn-primary reset-filter">Reset</button>
+                    </div>
+                    <hr>
+                    <!-- Other Filters ends -->
+
                     <form action="{{route('grading.index')}}" method="get" class="form-1 filter-form">
                         <div class="form-row" style="padding: 10px;">
 
@@ -131,8 +166,8 @@
                             </div>
 
                             <div class="form-group col-md-2 mt-4">        
-                                <button type="button" class="btn btn-primary reset-filter-1">Reset</button>
-                                <button type="submit" class="btn btn-primary btn-lng">Filter</button>
+                               <!--  <button type="button" class="btn btn-primary reset-filter-1">Reset</button> -->
+                                <button type="submit" class="btn btn-primary btn-lng">Filter Records</button>
                             </div>
 
                         </div>
@@ -210,13 +245,14 @@
                             </div>
                    
                             <div class="form-group col-md-2 mt-4">        
-                                <button type="button" class="btn btn-primary reset-filter-2">Reset</button>
-                                <button type="submit" class="btn btn-primary btn-lng">Filter</button>
+                                <!-- <button type="button" class="btn btn-primary reset-filter-2">Reset</button> -->
+                                <button type="submit" class="btn btn-primary btn-lng">Filter Records</button>
                             </div>
 
                         </div>
                         <!-- row ends -->
                     </form>
+
                     <div class="card-body">
 
                         <div class="table-responsive">
@@ -373,8 +409,14 @@
                                     @endif
                                 </tbody>
                             </table>
-                            @if(!$subjects->isEmpty())
-                             {{$subjects->appends(['subject' => \Request::get('subject'), 'phase' => \Request::get('phase'), 'site' => \Request::get('site'), 'visit_date' => \Request::get('visit_date')])->links()}}
+                            @if(!$subjects->isEmpty() && request()->has('form_1'))
+
+                                {{$subjects->appends(['form_1' => \Request::get('form_1'), 'subject' => \Request::get('subject'), 'phase' => \Request::get('phase'), 'site' => \Request::get('site'), 'visit_date' => \Request::get('visit_date')])->links()}}
+                            
+                            @elseif(!$subjects->isEmpty() && request()->has('form_2'))
+
+                             {{$subjects->appends(['form_2' => \Request::get('form_2'), 'subject' => \Request::get('subject'), 'phase' => \Request::get('phase'), 'modility' => \Request::get('modility'), 'form_type' => \Request::get('form_type'), 'form_status' => \Request::get('form_status'), 'graders_number' => \Request::get('graders_number')])->links()}}
+
                             @endif
                         </div>
                     </div>
@@ -418,22 +460,35 @@
     $('select[name="phase"]').select2();
     $('select[name="site"]').select2();
 
-    // reset filter form
-    $('.reset-filter-1').click(function(){
+    $('.reset-filter').click(function(){
         // reset values
         $('.filter-form').trigger("reset");
         $('.filter-form-data').val("").trigger("change")
         // submit the filter form
-        $('.form-1').submit();
+        window.location.reload();
     });
 
     // reset filter form
-    $('.reset-filter-2').click(function() {
-        // reset values
-        $('.filter-form').trigger("reset");
-        $('.filter-form-data').val("").trigger("change")
-        // submit the filter form
-        $('.form-2').submit();
+    // $('.reset-filter-1').click(function(){
+    //     // reset values
+    //     $('.filter-form').trigger("reset");
+    //     $('.filter-form-data').val("").trigger("change")
+    //     // submit the filter form
+    //     $('.form-1').submit();
+    // });
+
+    // // reset filter form
+    // $('.reset-filter-2').click(function() {
+    //     // reset values
+    //     $('.filter-form').trigger("reset");
+    //     $('.filter-form-data').val("").trigger("change")
+    //     // submit the filter form
+    //     $('.form-2').submit();
+    // });
+
+    // toggle form filters
+    $('.other-filters').on('click', function(){
+        $('.form-1, .form-2').toggle();
     });
 
 </script>
