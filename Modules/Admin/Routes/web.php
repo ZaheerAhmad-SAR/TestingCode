@@ -13,7 +13,10 @@
 
 //dd(App::environment());
 
-Route::post('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
+// Route::post('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
+
+Route::get('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
+
 Route::prefix('admin')->group(function () {
     Route::get('/', 'AdminController@index');
 });
@@ -141,8 +144,6 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     Route::get('modalities/{id}/showChild', 'ModilityController@showChild')->name('modalities.showChild');
 
-
-
     Route::get('modalities/{id}/editChild', 'ModilityController@editChild')->name('modalities.editChild');
 
 
@@ -179,9 +180,11 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::post('studySite/deleteSiteCoordinator', 'StudySiteController@deleteSiteCoordinator')->name('studySite.deleteSiteCoordinator');
 
     // CHM-Amir
+
     Route::get('trail_logs', 'TrailLogController@index')->name('trail_logs.list');
 });
 
+    Route::resource('transmissions', 'TransmissionController');
 
 // for checking subject ID
 Route::get('check-subject', 'SubjectController@checkSubject')->name('subjects.check-subject');
