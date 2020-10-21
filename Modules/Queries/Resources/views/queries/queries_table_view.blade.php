@@ -14,7 +14,7 @@
     <td>{{$record->query_subject}}</td>
     <td>{{$querySubmitedBy->name}}</td>
     <td>{{$queryUsersString}}</td>
-    <td>{{date_format($record->created_at,'jS F Y h:i:s A')}}</td>
+    <td>{{date_format($record->created_at,'M-d-Y')}}</td>
     <td>{{$record->query_status}}</td>
     <td class="replyModal" data-id="{{$record->id}}"><span style="cursor: pointer;"><i class="fab fa-rocketchat"></i></span></td>
 </tr>
