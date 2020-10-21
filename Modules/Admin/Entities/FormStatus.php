@@ -176,10 +176,33 @@ class FormStatus extends Model
             $formStatusObj->edit_reason_text = $request->edit_reason_text;
             $formStatusObj->form_status = 'complete';
             $formStatusObj->update();
+
+            if ($formStatusObj->form_type_id == 2) {
+                $step = PhaseSteps::find($request->stepId);
+                $getGradingFormStatusArray = [
+                    'subject_id' => $request->subjectId,
+                    'study_id' => $request->studyId,
+                    'study_structures_id' => $request->phaseId,
+                    'phase_steps_id' => $request->stepId,
+                    'modility_id' => $request->modilityId,
+                ];
+                if (self::isAllGradersGradedThatForm($step, $getGradingFormStatusArray)) {
+                    self::runAdjudicationCheckForThisStep($step, $getGradingFormStatusArray);
+                }
+            }
         }
         return ['id' => $formStatusObj->id, 'formTypeId' => $formStatusObj->form_type_id, 'formStatus' => $formStatusObj->form_status, 'formStatusIdStr' => buildGradingStatusIdClsStr($formStatusObj->id)];
     }
 
+    public static function runAdjudicationCheckForThisStep($step)
+    {
+        /**
+         *
+         * Get Sections and questions then form fields then form field type
+         *
+         */
+        dd('runAdjudicationCheckForThisStep');
+    }
     public static function insertFormStatus($request, $formStatusArray)
     {
         $id = Str::uuid();
