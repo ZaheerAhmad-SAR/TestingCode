@@ -28,8 +28,9 @@ class GradingController extends Controller
         // modility/form type array
         $modalitySteps = [];
 
+        // if it is form 1
         if ($request->has('form_1')) {
-            dd('form_1');
+
             $subjects = Subject::query();
             $subjects = $subjects->select('subjects.*', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'subjects_phases.visit_date', 'sites.site_name')
             ->rightJoin('subjects_phases', 'subjects_phases.subject_id', '=', 'subjects.id')
@@ -82,8 +83,6 @@ class GradingController extends Controller
                                         ->orderBy('form_types.sort_order')
                                         ->groupBy('phase_steps.form_type_id')
                                         ->get()->toArray();
-
-                    //dd($getSteps);
                 
                 $modalitySteps[$modility->modility_name] = $getSteps;
             }
@@ -129,14 +128,16 @@ class GradingController extends Controller
         }
         // form One ends
 
+        // if it is form 2
         if ($request->has('form_2')) {
-            dd('form_2');
+
             // get subjects
             $subjects = FormStatus::query();
-            $subjects = $subjects->select('form_submit_status.subject_id as subj_id', 'form_submit_status.study_id', 'form_submit_status.study_structures_id', 'form_submit_status.phase_steps_id', 'form_submit_status.form_type_id', 'form_submit_status.form_status', 'form_submit_status.modility_id','subjects.subject_id', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'subjects_phases.visit_date', 'sites.site_name')
+            $subjects = $subjects->select('form_submit_status.subject_id as subj_id', 'form_submit_status.study_id', 'form_submit_status.study_structures_id', 'form_submit_status.phase_steps_id', 'form_submit_status.form_type_id', 'form_submit_status.form_status', 'form_submit_status.modility_id','subjects.subject_id', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'phase_steps.graders_number', 'subjects_phases.visit_date', 'sites.site_name')
                 ->leftJoin('subjects', 'subjects.id', '=', 'form_submit_status.subject_id')
                 ->leftJoin('study_structures', 'study_structures.id', '=', 'form_submit_status.study_structures_id')
-                ->leftJoin('sites', 'sites.id', 'subjects.site_id')
+                ->leftJoin('sites', 'sites.id', '=', 'subjects.site_id')
+                ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id')
                 ->leftJoin('subjects_phases', 'subjects_phases.phase_id', 'form_submit_status.study_structures_id');
 
                 if ($request->subject != '') {
@@ -162,9 +163,16 @@ class GradingController extends Controller
                     $subjects = $subjects->where('form_submit_status.form_status', $request->form_status);
                 }
 
+                if ($request->graders_number != '') {
+
+                    $subjects = $subjects->where('phase_steps.graders_number', $request->graders_number);
+                }
+
                 $subjects = $subjects->groupBy(['form_submit_status.subject_id', 'form_submit_status.study_structures_id', 'form_submit_status.phase_steps_id'])
                 ->paginate(15);
 
+
+            if (!$subjects->isEmpty()) {
             // get modalities
             $getModilities = FormStatus::query();
             $getModilities = $getModilities->select('form_submit_status.modility_id', 'phase_steps.step_id', 'phase_steps.step_name', 'modilities.modility_name')
@@ -201,8 +209,9 @@ class GradingController extends Controller
                     ->get()->toArray();
 
                 $modalitySteps[$modility->modility_name] = $getSteps;
-            }
+            } // loop ends modility
 
+            }// subject empty check
 
             //get form status depending upon subject, phase and modality
             if ($modalitySteps != null) {
@@ -225,10 +234,13 @@ class GradingController extends Controller
                                     'form_type_id' => $type['form_type_id']
                                 ];
 
-                                
+                                // check for graders
+                                $gradersNumbers = ($request->graders_number != '') ? $request->graders_number : 0; 
+
                                 if ($step->form_type_id == 2) {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\Admin\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray);
+                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\Admin\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $gradersNumbers);
+                                
                                 } else {
 
                                     $formStatus[$key.'_'.$type['form_type']] =  \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
@@ -241,8 +253,10 @@ class GradingController extends Controller
                     
                     $subject->form_status = $formStatus;
                 }// subject loop ends
+
             } // modality step null check
-        }
+
+        } // form 2 if ends
 
         /////////////////////////////// get filters ///////////////////////////////////////
 
@@ -264,9 +278,9 @@ class GradingController extends Controller
                                 ->get();
         // get form status
         $getFilterFormStatus = array(
-            'incomplete' => 'Incomplete',
+            'incomplete' => 'Initiated',
             'complete' => 'Complete',
-            'resumable' => 'Resumable'
+            'resumable' => 'Editing'
         );
 
         return view('userroles::users.grading-list', compact('subjects', 'modalitySteps', 'getFilterSubjects', 'getFilterPhases', 'getFilterSites', 'getFilterModilities', 'getFilterFormType', 'getFilterFormStatus'));
