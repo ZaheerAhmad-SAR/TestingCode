@@ -23,6 +23,11 @@
                 $('.' + step_id_class).show(500);
             }
 
+            function showAdjudication(step_id_class) {
+                $('.all_step_sections').hide(500);
+                $('.' + step_id_class).show(500);
+            }
+
             function disableAllFormFields(formId) {
                 $("#" + formId + " input").prop('disabled', true);
             }

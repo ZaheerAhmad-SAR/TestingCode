@@ -63,7 +63,7 @@ class FormStatus extends Model
     public static function getGradersFormsStatusesSpan($step, $getFormStatusArray, $numGraders = 0)
     {
         $retStr = '';
-        $numberOfGraders = ($numGraders !== 0) ? $numGraders : $step->graders_number;
+        $numberOfGraders = ($numGraders != 0) ? $numGraders : $step->graders_number;
         $formStatusObjects = self::getFormStatusObjArray($getFormStatusArray);
         $extraNeededObjects = $numberOfGraders - count($formStatusObjects);
         for ($counter = 0; $counter < $extraNeededObjects; $counter++) {
@@ -75,6 +75,22 @@ class FormStatus extends Model
             $retStr .= self::makeGraderFormStatusSpan($step, $formStatusObj);
         }
         return $retStr;
+    }
+
+    public static function isAllGradersGradedThatForm($step, $getFormStatusArray)
+    {
+        $ret = false;
+        $formStatusObjects = self::getFormStatusObjArray($getFormStatusArray);
+        if (count($formStatusObjects) == $step->graders_number) {
+            $ret = true;
+        }
+        return $ret;
+    }
+
+    public static function getAllGraderIds($getFormStatusArray)
+    {
+        $query = self::getFormStatusObjQuery($getFormStatusArray);
+        return $query->pluck('form_filled_by_user_id')->toArray();
     }
 
     public static function getFormStatus($step, $getFormStatusArray, $wrap = false)
@@ -137,21 +153,6 @@ class FormStatus extends Model
             $imageStr .= '<img src="' . url('images/not_required.png') . '"/>';
         }
         return $imageStr;
-    }
-
-    public static function putFormStatus_bkkkkk($request)
-    {
-        $sectionIds = $request->input('sectionId', []);
-        if (count($sectionIds) != 0) {
-            foreach ($sectionIds as $sectionId) {
-                $formStatusObj = self::putSingleSectionFormStatus($request, $sectionId);
-            }
-        } else {
-            $question = Question::find($request->questionId);
-            $sectionId = $question->section->id;
-            $formStatusObj = self::putSingleSectionFormStatus($request, $sectionId);
-        }
-        return ['id' => $formStatusObj->id, 'formStatus' => $formStatusObj->form_status];
     }
 
     public static function putFormStatus($request)
