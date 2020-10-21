@@ -43,32 +43,30 @@ class Query extends Model
     public static function buildHtmlForQuerySubmitter($querySubmitedBy, $query)
     {
         return '<div class="row text-left">
-                    <div class="col-md-1">
+                    <input type="hidden" value='.$query->parent_query_id.' name="parent_query_id" id="parent_query_id">
+                    <div class="col-md-12">
+                        <i class="fas fa-circle" style="color: lightgreen; font-size:8px;position: absolute;float: right;top: 15px;left: 43px;"></i>
                         <img class="mr-3" style="width: 30px; height: 30px; border-radius: 50%;"
                             src="' . url((string)$querySubmitedBy->profile_image) . '" />
+
+                        <strong>' . ucfirst((string)$querySubmitedBy->name) . ':</strong>
+                        '.date_format($query->created_at, 'jS-Y-h:i A').'<br>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        ' . strip_tags((string)$query->messages) . '
+
                     </div>
-                    <div class="col-md-11">
-                        <b class="mt-0">' . ucfirst((string)$querySubmitedBy->name) . '<i class="fas fa-circle"
-                                style="color: lightgreen; font-size:8px;"></i> <br></b>
-                        ' . strip_tags((string)$query->messages) . ' <br>
-                        <p style="padding: 10px">' . date_format($query->created_at, 'jS-Y-h:i A') . '</p>
-                    </div>
-                </div>';
+                </div><hr>';
     }
 
     public static function buildHtmlForQueryAnswer($querySubmitedBy, $query)
     {
         return '<div class="row text-right">
-                    <div class="col-md-11">
-                        <b class="mt-0">' . ucfirst((string)$querySubmitedBy->name) . '<i class="fas fa-circle"
-                                style="color: lightgreen; font-size:8px;"></i> <br></b>
-                        ' . strip_tags((string)$query->messages) . ' <br>
-                        <p style="padding: 10px">' . date_format($query->created_at, 'jS-Y-h:i A') . '</p>
+                    <div class="col-md-12">
+                    <i class="fas fa-circle" style="color: lightgreen; font-size:8px;position: absolute;float: right;top: 11px; right: 187px;"></i>
+                    <img class="mr-3" style="width: 30px; height: 30px; border-radius: 50%;" src="' . url((string)$querySubmitedBy->profile_image) . '" />
+                        <strong>' . ucfirst((string)$querySubmitedBy->name) .':</strong>
+                        '.date_format($query->created_at, 'jS-Y-h:i A').'<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        '.strip_tags((string)$query->messages).'
                     </div>
-                    <div class="col-md-1">
-                        <img class="mr-3" style="width: 30px; height: 30px; border-radius: 50%;"
-                            src="' . url((string)$querySubmitedBy->profile_image) . '" />
-                    </div>
-                </div>';
+                </div><hr>';
     }
 }

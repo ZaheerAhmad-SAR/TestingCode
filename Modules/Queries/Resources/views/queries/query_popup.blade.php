@@ -6,7 +6,7 @@
 
 <!-- queries modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="queries-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="alert alert-danger" style="display:none"></div>
             <div class="modal-header ">
