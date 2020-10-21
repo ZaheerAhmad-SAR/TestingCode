@@ -447,37 +447,31 @@
                 <div class="modal-header ">
                     <p class="modal-title">Reply Model</p>
                 </div>
-
                     <div class="modal-body">
                         <form id="replyForm" name="replyForm">
                             <div class="tab-content clearfix">
                                 @csrf
-
                                 <div class="replyInput"></div>
-
                                 <div class="col-sm-6 form-group row">
                                     <div class="replyClick">
                                     <span style="cursor: pointer;">
-                                        <i class="fa fa-reply"></i>reply
+                                        <i class="fa fa-reply"></i> &nbsp; reply
                                         </span>
                                     </div>
                                 </div>
-
                                 <div class="form-group row commentsInput" style="display: none;">
-                                    <label for="Name" class="col-sm-3 col-form-label">Enter your Comment</label>
-                                    <div class="col-sm-9">
+                                    <label for="Name" class="col-sm-2 col-form-label">Enter your Query</label>
+                                    <div class="col-sm-10">
                                         <textarea class="summernote" name="reply" id="reply"></textarea>
                                     </div>
                                 </div>
                             </div>
-
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                             <button type="button" class="btn btn-outline-primary" id="replyqueries"><i class="fa fa-save"></i> Send</button>
                         </div>
                 </form>
                     </div>
-
             </div>
         </div>
     </div>
@@ -681,17 +675,12 @@
             }
         });
     }
-
-
         $('body').on('click', '.replyClick', function () {
             $('.commentsInput').css('display','');
             $('.replyClick').css('display','none');
         });
 
-
-
-    $('#replyqueries').click(function (e) {
-
+    $('#replyqueries').click(function (e){
         $.ajaxSetup({ headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
         e.preventDefault();
         $.ajax({
@@ -699,22 +688,20 @@
             url:"{{route('queries.queryReply')}}",
             type: "POST",
             dataType: 'json',
-            success: function (results) {
-                $('.commentsInput').css('display','none');
-                $('.replyClick').css('display','');
+            success: function (results)
+            {
+                // $('.commentsInput').css('display','none');
+                // $('.replyClick').css('display','');
                 var query_id = results[0].parent_query_id;
                 showComments(query_id);
-                //$(".replyInput").load(location.href + ".replyInput");
-                // $("#replyForm")[0].reset();
+                $("#replyForm")[0].reset();
                 $("#reply").summernote("reset");
             },
             error: function (results) {
-                console.log('Error:', results);
-                //$('#saveChild').html('Save Changes');
+                console.error('Error:', results);
             }
         });
     });
-
 </script>
 
 @endsection
