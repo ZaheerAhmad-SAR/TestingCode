@@ -51,6 +51,7 @@ class QueriesController extends Controller
 
     public function queryReply(Request $request)
     {
+
         //dd($find->id,$query_status);
         $parentQueryId    = $request->post('parent_query_id');
         $find             = Query::find($parentQueryId);
