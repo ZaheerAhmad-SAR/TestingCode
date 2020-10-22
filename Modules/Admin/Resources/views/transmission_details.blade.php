@@ -115,12 +115,12 @@
                                         <th>Visit</th>
                                         <th>Date</th>
                                         <th>QC Status</th>
-                                        <th>Transmission Status</th>
+                                        <th>Status</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if($getTransmissions->isEmpty())
+                                    @if(!$getTransmissions->isEmpty())
                                     @foreach($getTransmissions as $transmission)
                                         <tr>
                                             <td>{{$transmission->Transmission_Number}}</td>
@@ -129,8 +129,29 @@
                                             <td>{{$transmission->visit_name}}</td>
                                             <td>{{$transmission->visit_date}}</td>
                                             <td></td>
-                                            <td>{{$transmission->status}}</td>
-                                            <td></td>
+                                            <td>
+                                                @if($transmission->status == 'accepted')
+
+                                                    <span class="badge badge-success">{{$transmission->status}}
+                                                    </span>
+
+                                                @elseif ($transmission->status == 'onhold' || $transmission->status == 'pending')
+
+                                                    <span class="badge badge-warning">{{$transmission->status}}
+                                                    </span>
+                                                @else
+
+                                                @endif
+                                            </td>
+                                            <td>
+                                                <a href="javascript:void(0)" id="edit-subject" class="" data-id="" data-url="" title="Edit Details">
+                                                    <i class="fa fa-pen"></i>
+                                                </a>
+                                                &nbsp;|&nbsp;
+                                                 <a href="{{route('transmissions.show', encrypt($transmission->id))}}" id="view-transmission" class="" data-id="" title="View details" data-url="">
+                                                    <i class="far fa-eye"></i>
+                                                </a>
+                                            </td>
                                         </tr>
                                     @endforeach
                                     @else
@@ -140,7 +161,7 @@
                                     @endif
                                 </tbody>
                             </table>
-                             {{-- $getTransmissions->links() --}}
+                             {{ $getTransmissions->links() }}
                          
                         </div>
                     </div>

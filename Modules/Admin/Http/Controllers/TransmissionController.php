@@ -16,7 +16,11 @@ class TransmissionController extends Controller
      */
     public function index(Request $request)
     {
-        $getTransmissions = DB::table('transmissions')->paginate(15);
+        $getTransmissions = DB::table('transmissions');
+
+        // if ($request->)
+
+        $getTransmissions = $getTransmissions->orderBy('id', 'desc')->paginate(50);
 
         return view('admin::transmission_details', compact('getTransmissions'));
     }
@@ -32,7 +36,7 @@ class TransmissionController extends Controller
         //     'data' => $request,
         // ]);
 
-        $getCFtPTrans = CrushFtpTransmission::first();
+        $getCFtPTrans = CrushFtpTransmission::where('id', 20)->first();
         //dd($getCFtPTrans->data);
         // remove the upper section
         $explodeGetCFtPTrans = explode('<?xml', $getCFtPTrans->data);
@@ -140,8 +144,10 @@ class TransmissionController extends Controller
      */
     public function show($id = '')
     {
-        dd($id);
-        return view('admin::show');
+        // find the transmission
+        $findTransmission = DB::table('transmissions')->where('id', decrypt($id))->get();
+
+        return view('admin::view_transmission_details', compact('findTransmission'));
     }
 
     /**
