@@ -39,15 +39,19 @@
                                     <div class="col-md-2">
                                         <label for="avatar" class="">Profile Picture</label>
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-4">
                                         <input id="profile_image" type="file"  name="profile_image" style="padding-left: 3px">
-
                                     </div>
-                                {{--<div class="col-md-8">
-                                    @if($user->profile_image)
-                                        <img src="{{ asset(auth()->user()->image) }}" style="width:80px; height:60px; ">
+                                    <div class="col-md-2">
+                                        2 Factor Auth
+                                    </div>
+                                    <div class="col-md-3">
+                                        @if (\Illuminate\Support\Facades\Auth::user()->google2fa_secret)
+                                            <a href="{{ url('2fa/disable') }}" class="btn btn-warning">Disable 2FA</a>
+                                        @else
+                                            <a href="{{ url('2fa/enable') }}" class="btn btn-outline-primary">Enable 2FA</a>
                                         @endif
-                                </div>--}}
+                                    </div>
                                 </div>
                                 <div class="form-group row" style="margin-top: 10px;">
                                     <div class="col-md-2">

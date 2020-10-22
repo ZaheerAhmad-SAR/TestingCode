@@ -26,6 +26,7 @@
                             @endif
 
                                 @if(hasPermission(auth()->user(),'invitation.invite'))
+                                    &nbsp;
                                     <a href="{!! route('invitation.invite') !!}" class="btn btn-outline-primary">
                                         <i class="far fa-edit"></i>&nbsp; Invite User
                                     </a>
@@ -41,13 +42,14 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive list">
-                            <table class="table table-bordered" id="laravel_crud">
+                            <table class="table table-bordered editable-table" id="laravel_crud">
                                 @if(hasPermission(auth()->user(),'systemtools.index') && empty(session('current_study')))
                                     <thead>
                                     <tr>
                                         <th scope="col">Name</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Roles</th>
+                                        <th scope="col">2 Factor Auth</th>
                                         <th scope="col">Actions</th>
                                     </tr>
                                     </thead>
@@ -61,6 +63,7 @@
                                                 {{ucfirst($role->role->name)}},
                                             @endforeach
                                         </td>
+                                        <td>{{!empty($user->google2fa_secret)?'Enabled':'Disabled'}}</td>
                                         <td>
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
@@ -70,9 +73,14 @@
                                                         <i class="far fa-edit"></i>&nbsp; Edit
                                                     </a>
                                                 </span>
+                                                <span class="dropdown-item">
+                                                    <a href="{!! route('users.enable_2fa',$user->id) !!}">
+                                                        <i class="fa fa-alarm-clock"></i>&nbsp; 2 Factor
+                                                    </a>
+                                                </span>
                                                     <span class="dropdown-item">
                                                     <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
-                                                        <i class="far fa-edit"></i>&nbsp; Delete </a>
+                                                        <i class="fa fa-trash"></i>&nbsp; Delete </a>
                                                     </span>
                                                 </div>
                                             </div>
@@ -304,6 +312,39 @@
             </div>
         </div>
     </div>
+    <!-- 2fa modal -->
+    <div class="modal fade" id="2fa" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="studyCrudModal">Change Status</h4>
+                </div>
+                <div class="modal-body">
+                    <form action="{{route('studies.studyStatus')}}" name="changestatus" class="" method="post">
+                        @csrf
+                        @if(!empty($study))
+                            <input type="hidden" value="{{$study->id}}" id="study_ID" name="study_ID">
+                        @endif
+                        <div class="form-group row">
+                            <div class="col-md-3">Status</div>
+                            <div class="col-md-6">
+                                <select class="form-control dropdown" name="status" id="status">
+                                    <option value="">Select Status</option>
+                                    <option value="Archived">Archive</option>
+                                    <option value="Development">Development</option>
+                                    <option value="Live">Live</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
 @stop
 @section('styles')
@@ -318,6 +359,16 @@
 @stop
 @section('script')
     <script src="{{ asset('public/dist/js/jquery.validate.min.js') }}"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+            $('#2fa').on('show.bs.modal',function (e) {
+                var id = $(e.relatedTarget).data('target-id');
+                $('#user_id').val(id);
+            })
+        })
+    </script>
+
     <script type="text/javascript">
         function checkuser() {
             var user = document.getElementByName("users")[0].value;
