@@ -220,13 +220,13 @@
             @endif
             <li class=""><a href="#"><i class="fas fa-database"></i> Certification Data</a>
                 <ul>
-                    <li>
-                        <a href="#">
+                    <li  class="@if(is_active('photographers.index')) {{ ' active' }} @endif">
+                        <a href="{{route('photographers.index')}}">
                             <i class="fas fa-list"></i> Photographers List
                         </a>
                     </li>
-                    <li>
-                        <a href="#">
+                    <li class="@if(is_active('devices_certify.index')) {{ ' active' }} @endif">
+                        <a href="{{route('devices_certify.index')}}">
                             <i class="fas fa-list"></i> Devices List
                         </a>
                     </li>
