@@ -37,6 +37,14 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('forms/add_questions', 'FormController@add_questions')->name('forms.addQuestions');
     Route::post('forms/updateQuestion', 'FormController@update_questions')->name('forms.updateQuestion');
     Route::get('forms/sections_against_step/{id}', 'FormController@get_sections_against_step')->name('forms.sections_against_step');
+    // skip logic
+    Route::get('forms/sections_for_skip_logic/{id}', 'FormController@sections_skip_logic')->name('forms.sectionsSkip');
+    Route::get('forms/sections_for_skip_logic_deactivate/{id}', 'FormController@sections_skip_logic_deactivate')->name('forms.sectionsSkipdeactivate');
+    Route::get('forms/questions_for_skip_logic/{id}', 'FormController@questions_skip_logic')->name('forms.questionsSkip');
+    Route::get('forms/questions_for_skip_logic_deactivate/{id}', 'FormController@questions_skip_logic_deactivate')->name('forms.questionsSkipdeactivate');
+    Route::post('forms/add_skip_logic', 'FormController@add_skipLogic')->name('forms.apply_skip_logic');
+     Route::get('forms/skip_logic/{id}', 'FormController@skip_question_on_click')->name('forms.skipLogic');
+    // skip logic
     Route::get('forms/sections_by_stepId/{id}', 'FormController@get_section_by_stepId')->name('forms.sectionsbystepId');
     Route::post('studyStatus', 'StudyController@studyStatus')->name('study.studyStatus');
     Route::post('changeStatus/{id}', 'StudyController@changeStatus')->name('studies.changeStatus');
@@ -45,7 +53,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('forms/changeSort/{id}', 'FormController@updateQustionsort')->name('forms.changeSort');
     Route::DELETE('forms/delete/{id}', 'FormController@deleteQuestion')->name('forms.delete');
 
-    Route::get('forms/skip_logic/{id}', 'FormController@skip_question_on_click')->name('forms.skipLogic');
+   
     //routes for options groups
     //routes for options groups
     Route::resource('optionsGroup', 'OptionsGroupController');

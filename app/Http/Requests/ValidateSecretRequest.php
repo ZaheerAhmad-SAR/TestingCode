@@ -5,7 +5,8 @@ namespace App\Http\Requests;
 use Illuminate\Cache;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Crypt;
-use Google2FA;
+use PragmaRX\Google2FA\Google2FA;
+
 use App\User;
 use App\Http\Requests\Request;
 use Illuminate\Validation\Factory as ValidatonFactory;
@@ -30,8 +31,10 @@ class ValidateSecretRequest extends Request
             'valid_token',
             function ($attribute, $value, $parameters, $validator) {
                $secret = Crypt::decrypt($this->user->google2fa_secret);
-
-                return Google2FA::verifyKey($secret, $value);
+             $google_2fa = new Google2FA();
+            /*  $otp = $google_2fa->verifyKey($secret,$value);
+              dd($google_2fa->verifyKey($secret,$value));*/
+                return $google_2fa->verifyKey($secret, $value);
             },
             'Not a valid token'
         );
@@ -41,7 +44,7 @@ class ValidateSecretRequest extends Request
             function ($attribute, $value, $parameters, $validator) {
                 $key = $this->user->id . ':' . $value;
 
-                return !Cache::has($key);
+                return !\Illuminate\Support\Facades\Cache::has($key);
             },
             'Cannot reuse token'
         );

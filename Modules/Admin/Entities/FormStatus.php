@@ -2,13 +2,14 @@
 
 namespace Modules\Admin\Entities;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
 class FormStatus extends Model
 {
     protected $table = 'form_submit_status';
-    protected $fillable = ['id', 'form_filled_by_user_id', 'form_filled_by_user_role_id', 'subject_id', 'study_id', 'study_structures_id', 'phase_steps_id', 'section_id', 'form_type_id', 'form_status'];
+    protected $fillable = ['id', 'form_filled_by_user_id', 'form_filled_by_user_role_id', 'subject_id', 'study_id', 'study_structures_id', 'phase_steps_id', 'section_id', 'form_type_id', 'modility_id', 'form_status'];
     protected $keyType = 'string';
 
     protected $attributes = [
@@ -18,11 +19,26 @@ class FormStatus extends Model
         'form_filled_by_user_id' => 'no-user-id',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'form_filled_by_user_id', 'id');
+    }
+
+    public function getUser($field)
+    {
+        $user = $this->user;
+        $value = '';
+        if (null !== $user) {
+            $value = $user->{$field};
+        }
+        return $value;
+    }
+
     public static function getFormStatusObjQuery($getFormStatusArray)
     {
         $formStatusObjectQuery = Self::where(function ($q) use ($getFormStatusArray) {
             foreach ($getFormStatusArray as $key => $value) {
-                $q->where($key, '=', $value);
+                $q->where($key, 'like', (string)$value);
             }
         });
         return $formStatusObjectQuery;
@@ -44,10 +60,10 @@ class FormStatus extends Model
         return $this->hasMany(FormRevisionHistory::class, 'form_submit_status_id', 'id');
     }
 
-    public static function getGradersFormsStatusesSpan($step, $getFormStatusArray)
+    public static function getGradersFormsStatusesSpan($step, $getFormStatusArray, $numGraders = 0)
     {
         $retStr = '';
-        $numberOfGraders = $step->graders_number;
+        $numberOfGraders = ($numGraders !== 0) ? $numGraders : $step->graders_number;
         $formStatusObjects = self::getFormStatusObjArray($getFormStatusArray);
         $extraNeededObjects = $numberOfGraders - count($formStatusObjects);
         for ($counter = 0; $counter < $extraNeededObjects; $counter++) {
@@ -65,31 +81,39 @@ class FormStatus extends Model
     {
         $formStatusObj = self::getFormStatusObj($getFormStatusArray);
         if ($wrap) {
-            return self::makeFormStatusSpan($step, $formStatusObj->form_status);
+            return self::makeFormStatusSpan($step, $formStatusObj);
         } else {
             return $formStatusObj->form_status;
         }
     }
 
-    public static function makeFormStatusSpan($step, $form_status)
+    public static function makeFormStatusSpan($step, $formStatusObj)
     {
+        $info = '';
+        $formStatus = $formStatusObj->form_status;
+        if ($formStatus != 'no_status') {
+            $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="' . $formStatusObj->user->name . '"';
+        }
+
         $imgSpanStepClsStr = buildSafeStr($step->step_id, 'img_step_status_');
-        $spanStr = '<span class="' . $imgSpanStepClsStr . '">';
-        $spanStr .= self::makeFormStatusSpanImage($form_status) . '</span>';
+        $spanStr = '<span class="' . $imgSpanStepClsStr . '" ' . $info . '>';
+        $spanStr .= self::makeFormStatusSpanImage($formStatus) . '</span>';
         return $spanStr;
     }
 
     public static function makeGraderFormStatusSpan($step, $formStatusObj)
     {
+        $info = '';
         $formStatus = $formStatusObj->form_status;
         if ($formStatus != 'no_status') {
             $imgSpanClsStr = buildGradingStatusIdClsStr($formStatusObj->id);
+            $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="' . $formStatusObj->user->name . '"';
         } else {
             $imgSpanClsStr = buildSafeStr($step->step_id, 'img_step_status_');
         }
 
 
-        $spanStr = '<span class="' . $imgSpanClsStr . '">';
+        $spanStr = '<span class="' . $imgSpanClsStr . '" ' . $info . '>';
         $spanStr .= self::makeFormStatusSpanImage($formStatusObj->form_status) . '</span>';
         return $spanStr;
     }
@@ -161,6 +185,7 @@ class FormStatus extends Model
         $formStatusData = [
             'id' => $id,
             'form_type_id' => $request->formTypeId,
+            'modility_id' => $request->modilityId,
             'edit_reason_text' => $request->edit_reason_text,
             'form_status' => 'incomplete',
         ] + $formStatusArray;

@@ -6,7 +6,7 @@
 
 <!-- queries modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="queries-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="alert alert-danger" style="display:none"></div>
             <div class="modal-header ">
@@ -32,7 +32,7 @@
                             <div class="form-group row querySubject" style="display: none;">
                                 <label for="Name" class="col-sm-2 col-form-label">Query Subject:</label>
                                 <div class="col-sm-10">
-                                    <input class="form-control" type="text" name="query_subject" id="query_subject">
+                                    <input class="form-control" type="text" name="query_subject" minlength="6" maxlength="50" id="query_subject">
                                 </div>
                             </div>
                             <div class="form-group row rolesInput" style="display: none;">
@@ -110,9 +110,9 @@
             if ($(this).attr("value")=="user")
             {
                 $("input:checkbox").prop('checked',false);
-                $(".usersInput").show();
-                $(".remarksInput").show();
-                $(".querySubject").show();
+                $(".usersInput").show('fast');
+                $(".remarksInput").show('fast');
+                $(".querySubject").show('fast');
                 $(".rolesInput").hide();
                 $("#remarks").summernote("reset");
             }

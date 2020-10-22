@@ -11,6 +11,7 @@ use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\Subject;
 use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\StudySite;
+use Modules\Admin\Scopes\StudyStructureWithoutRepeatedScope;
 
 class SubjectFormLoaderController extends Controller
 {
@@ -31,7 +32,10 @@ class SubjectFormLoaderController extends Controller
         $form_filled_by_user_role_id = auth()->user()->id;
 
         $subjectPhasesIdsArray = $subject->subjectPhasesArray();
-        $visitPhases = StudyStructure::where('study_id', $studyId)->whereIn('id', $subjectPhasesIdsArray)->get();
+        $visitPhases = StudyStructure::where('study_id', $studyId)
+            ->whereIn('id', $subjectPhasesIdsArray)
+            ->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)
+            ->get();
         /*****************/
         return view('admin::subjectFormLoader.subject_form')
             ->with('subjectId', $subjectId)

@@ -137,11 +137,12 @@
 
                                                 @endphp
                                                @if(null !== $studyQuery )
-
+                                                @if(\Modules\Queries\Entities\Query::checkUserhaveQuery($study->id))
                                                 <div class="showQueries">
                                                     <span class="ml-3" style="cursor: pointer;">
                                                         <i class="fas fa-question-circle showAllStudyQueries" data-id="{{$study->id}}"  style="margin-top: 12px;"></i></span>
                                                 </div>
+                                                @endif
                                                 @endif
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                     <span class="dropdown-item">
@@ -440,37 +441,37 @@
         </div>
     </div>
     <div class="modal fade" tabindex="-1" role="dialog" id="reply-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" style="max-width: 1000px;" role="document">
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header ">
-                    <p class="modal-title">Query Reply</p>
+                    <p class="modal-title">Query Details</p>
                 </div>
-                <form id="replyForm" name="replyForm">
                     <div class="modal-body">
-                        <div id="exTab1">
+                        <form id="replyForm" name="replyForm">
                             <div class="tab-content clearfix">
                                 @csrf
-                                <div class="form-group row lastConversationInput">
-                                    <label for="Name" class="col-sm-2 col-form-label">Comments</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" name="lastChat" id="lastChat" value="">
+                                <div class="replyInput"></div>
+                                <div class="col-sm-6 form-group row">
+                                    <div class="replyClick">
+                                    <span style="cursor: pointer;">
+                                        <i class="fa fa-reply"></i> &nbsp; reply
+                                        </span>
                                     </div>
                                 </div>
-                                <div class="form-group row replyInput">
-                                    <label for="Name" class="col-sm-2 col-form-label">Reply</label>
+                                <div class="form-group row commentsInput" style="display: none;">
+                                    <label for="Name" class="col-sm-2 col-form-label">Enter your Query</label>
                                     <div class="col-sm-10">
-                                        <textarea class="summernote" name="reply" cols="2" rows="1" id="reply"></textarea>
+                                        <textarea class="summernote" name="reply" id="reply"></textarea>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                             <button type="button" class="btn btn-outline-primary" id="replyqueries"><i class="fa fa-save"></i> Send</button>
                         </div>
-                    </div>
                 </form>
+                    </div>
             </div>
         </div>
     </div>
@@ -601,13 +602,6 @@
             });
         });
 
-        $('body').on('click', '.replyModal', function () {
-            var id = $(this).attr('data-id');
-            $('#reply-modal').modal('show');
-            $('#all-queries-modal').modal('hide');
-        });
-
-
         $('body').on('click', '.clone-study', function () {
             $.ajaxSetup({
                 headers: {
@@ -634,6 +628,31 @@
 
     });
 
+    $('body').on('click', '.replyModal', function () {
+        var query_id = $(this).attr('data-id');
+        $('#reply-modal').modal('show');
+        showComments(query_id);
+        $('#all-queries-modal').modal('hide');
+    });
+
+
+    function showComments(query_id) {
+        $.ajax({
+            url:"{{route('queries.showCommentsById')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'POST',
+                'query_id'      :query_id,
+            },
+            success: function(response)
+            {
+                $('.replyInput').html('');
+                $('.replyInput').html(response);
+            }
+        });
+    }
+
     $('.showAllStudyQueries').click(function () {
         var study_id = $(this).attr('data-id');
         // var moduleId = $('#module_id').val(id);
@@ -641,9 +660,7 @@
         loadAllStudyQueries(study_id);
     });
 
-
-    function loadAllStudyQueries(study_id)
-    {
+    function loadAllStudyQueries(study_id) {
         $.ajax({
             url:"{{route('queries.loadAllQueriesByStudyId')}}",
             type: 'POST',
@@ -659,7 +676,33 @@
             }
         });
     }
+        $('body').on('click', '.replyClick', function () {
+            $('.commentsInput').css('display','');
+            $('.replyClick').css('display','none');
+        });
 
+    $('#replyqueries').click(function (e){
+        $.ajaxSetup({ headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
+        e.preventDefault();
+        $.ajax({
+            data: $('#replyForm').serialize(),
+            url:"{{route('queries.queryReply')}}",
+            type: "POST",
+            dataType: 'json',
+            success: function (results)
+            {
+                // $('.commentsInput').css('display','none');
+                // $('.replyClick').css('display','');
+                var query_id = results[0].parent_query_id;
+                showComments(query_id);
+                $("#replyForm")[0].reset();
+                $("#reply").summernote("reset");
+            },
+            error: function (results) {
+                console.error('Error:', results);
+            }
+        });
+    });
 </script>
 
 @endsection
