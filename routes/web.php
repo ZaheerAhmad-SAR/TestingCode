@@ -15,13 +15,10 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-    Route::get('/2fa', 'TwoFactorController@show2faForm');
-    Route::post('/2fa', 'TwoFactorController@sendToken');
-    Route::post('/2fa_verify', 'TwoFactorController@verfiyToken');
-    Route::get('/2f_login/{token}',function ()
-    {
-        return view('2f_login');
-    });
+Route::get('/2fa/enable', 'Google2FAController@enableTwoFactor');
+Route::get('/2fa/disable', 'Google2FAController@disableTwoFactor');
+Route::get('/2fa/validate', 'Auth\LoginController@getValidateToken');
+Route::post('/2fa/validate', ['middleware' => 'throttle:5', 'uses' => 'Auth\LoginController@postValidateToken']);
 
 Auth::routes();
 

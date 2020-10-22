@@ -1,5 +1,6 @@
 {
     "UserRoles": true,
     "Admin": true,
-    "Queries": true
+    "Queries": true,
+    "Certification": true
 }

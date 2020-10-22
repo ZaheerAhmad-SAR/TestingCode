@@ -71,15 +71,16 @@ return [
         ],
 
 // for certify me application
-        'mysql_certify' => [
-            'driver' => 'mysql_certify_me',
-            'url' => env('DATABASE_URL_certify_me'),
-            'host' => env('DB_HOST_certify_me', '127.0.0.1'),
-            'port' => env('DB_PORT_certify_me', '3306'),
-            'database' => env('DB_DATABASE_certify_me', 'forge'),
-            'username' => env('DB_USERNAME_certify_me', 'forge'),
-            'password' => env('DB_PASSWORD_certify_me', ''),
-            'unix_socket' => env('DB_SOCKET_certify_me', ''),
+
+       'mysql2' => [
+            'driver' => 'mysql',
+            'url' => env('DATABASE_URL'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE_2', 'forge'),
+            'username' => env('DB_USERNAME_2', 'forge'),
+            'password' => env('DB_PASSWORD_2', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
@@ -89,8 +90,10 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
+
         ],
 
+// new end
         'pgsql' => [
             'driver' => 'pgsql',
             'url' => env('DATABASE_URL'),
