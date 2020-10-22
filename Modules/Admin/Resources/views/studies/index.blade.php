@@ -441,42 +441,37 @@
         </div>
     </div>
     <div class="modal fade" tabindex="-1" role="dialog" id="reply-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" style="max-width: 1000px;" role="document">
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header ">
-                    <p class="modal-title">Reply Model</p>
+                    <p class="modal-title">Query Details</p>
                 </div>
-                <form id="replyForm" name="replyForm">
                     <div class="modal-body">
-                        <div id="exTab1">
+                        <form id="replyForm" name="replyForm">
                             <div class="tab-content clearfix">
                                 @csrf
-                                <div class="replyInput">
-
-                                </div>
-                                <div class="col-sm-1 row">
+                                <div class="replyInput"></div>
+                                <div class="col-sm-6 form-group row">
                                     <div class="replyClick">
-                                        <span style="cursor: pointer;">
-                                            <i class="fa fa-reply"></i>reply
-                                            </span>
+                                    <span style="cursor: pointer;">
+                                        <i class="fa fa-reply"></i> &nbsp; reply
+                                        </span>
                                     </div>
                                 </div>
-
                                 <div class="form-group row commentsInput" style="display: none;">
-                                    <label for="Name" class="col-sm-2 col-form-label">Enter your Comments</label>
+                                    <label for="Name" class="col-sm-2 col-form-label">Enter your Query</label>
                                     <div class="col-sm-10">
-                                        <textarea class="summernote form-control" name="reply" cols="2" rows="1" id="reply"></textarea>
+                                        <textarea class="summernote" name="reply" id="reply"></textarea>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                             <button type="button" class="btn btn-outline-primary" id="replyqueries"><i class="fa fa-save"></i> Send</button>
                         </div>
-                    </div>
                 </form>
+                    </div>
             </div>
         </div>
     </div>
@@ -640,8 +635,8 @@
         $('#all-queries-modal').modal('hide');
     });
 
-    function showComments(query_id)
-    {
+
+    function showComments(query_id) {
         $.ajax({
             url:"{{route('queries.showCommentsById')}}",
             type: 'POST',
@@ -665,8 +660,7 @@
         loadAllStudyQueries(study_id);
     });
 
-    function loadAllStudyQueries(study_id)
-    {
+    function loadAllStudyQueries(study_id) {
         $.ajax({
             url:"{{route('queries.loadAllQueriesByStudyId')}}",
             type: 'POST',
@@ -682,37 +676,33 @@
             }
         });
     }
-
-
         $('body').on('click', '.replyClick', function () {
             $('.commentsInput').css('display','');
+            $('.replyClick').css('display','none');
         });
 
-
-
-    $('#replyqueries').click(function (e) {
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+    $('#replyqueries').click(function (e){
+        $.ajaxSetup({ headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
         e.preventDefault();
         $.ajax({
             data: $('#replyForm').serialize(),
             url:"{{route('queries.queryReply')}}",
             type: "POST",
             dataType: 'json',
-            success: function (results) {
-                console.log(results);
+            success: function (results)
+            {
+                // $('.commentsInput').css('display','none');
+                // $('.replyClick').css('display','');
+                var query_id = results[0].parent_query_id;
+                showComments(query_id);
+                $("#replyForm")[0].reset();
+                $("#reply").summernote("reset");
             },
             error: function (results) {
-                console.log('Error:', results);
-                //$('#saveChild').html('Save Changes');
+                console.error('Error:', results);
             }
         });
     });
-
 </script>
 
 @endsection

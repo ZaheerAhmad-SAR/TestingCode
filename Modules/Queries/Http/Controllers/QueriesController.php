@@ -23,7 +23,7 @@ class QueriesController extends Controller
      */
     public function index()
     {
-        $queries = Query::all();
+        $queries = Query::where('parent_query_id','like',0)->get();
         return view('queries::queries.index',compact('queries'));
 
     }
@@ -52,42 +52,40 @@ class QueriesController extends Controller
     public function queryReply(Request $request)
     {
 
-        $query_status  = $request->post('query_status');
-        $query_id      = $request->post('query_id');
-        $reply         = $request->post('reply');
-        $query_subject = $request->post('query_subject');
-        $module_id     = $request->post('module_id');
-        $query_url     = $request->post('query_url');
-        $query_type    = $request->post('query_type');
-        $id            = Str::uuid();
-        $query         = Query::create([
+        //dd($find->id,$query_status);
+        $parentQueryId    = $request->post('parent_query_id');
+        $find             = Query::find($parentQueryId);
+        $query_status     = $request->post('query_status');
+        $queryStatusArray = array('query_status'=>$query_status);
+        $query_id         = $request->post('query_id');
+        $reply            = $request->post('reply');
+        $query_subject    = $request->post('query_subject');
+        $module_id        = $request->post('module_id');
+        $query_url        = $request->post('query_url');
+        $query_type       = $request->post('query_type');
+        $id               = Str::uuid();
+        $query            = Query::create([
             'id'=>$id,
             'queried_remarked_by_id'=>\auth()->user()->id,
             'parent_query_id'=> $query_id,
             'messages'=>$reply,
             'module_id'=>$module_id,
-            'query_status'=> $query_status,
+            'query_status'=> 'unconfirmed',
             'query_type' =>$query_type,
             'query_url'=>$query_url,
             'query_subject'=>$query_subject
         ]);
-        if ($query_type == 'user'){
-            QueryUser::create([
-                'id' => Str::uuid(),
-                'user_id' => \auth()->user()->id,
-                'query_id' => $query_id
-            ]);
-        }
-        return response()->json([$query,'success'=>'Queries response is successfully save!!!!']);
+        Query::where('id',$find->id)->update($queryStatusArray);
+        return response()->json([$query,'success'=>'Queries response is successfully save!!!!','reply_id'=>$id]);
 
     }
 
     public function showCommentsById(Request $request)
     {
     $query_id = $request->query_id;
-    $records = Query::where('id',$query_id)->orWhere('parent_query_id',$query_id)->get();
-    echo  view('queries::queries.queries_reply_view',compact('records'));
-
+    $query    = Query::where('id',$query_id)->orderBy('created_at','asc')->first();
+    $answers  = Query::where('parent_query_id',$query_id)->orderBy('created_at','asc')->get();
+    echo  view('queries::queries.queries_reply_view',compact('answers','query'));
     }
 
     /**
@@ -209,8 +207,4 @@ class QueriesController extends Controller
         //
     }
 
-    public function queriesList()
-    {
-        return view('queries::queries.index');
-    }
 }

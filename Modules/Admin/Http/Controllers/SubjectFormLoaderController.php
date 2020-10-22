@@ -32,7 +32,10 @@ class SubjectFormLoaderController extends Controller
         $form_filled_by_user_role_id = auth()->user()->id;
 
         $subjectPhasesIdsArray = $subject->subjectPhasesArray();
-        $visitPhases = StudyStructure::where('study_id', $studyId)->whereIn('id', $subjectPhasesIdsArray)->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)->get();
+        $visitPhases = StudyStructure::where('study_id', $studyId)
+            ->whereIn('id', $subjectPhasesIdsArray)
+            ->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)
+            ->get();
         /*****************/
         return view('admin::subjectFormLoader.subject_form')
             ->with('subjectId', $subjectId)
