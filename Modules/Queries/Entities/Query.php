@@ -50,8 +50,8 @@ class Query extends Model
                             src="' . url((string)$querySubmitedBy->profile_image) . '" />
 
                         <strong>' . ucfirst((string)$querySubmitedBy->name) . ':</strong>
-                        '.date_format($query->created_at, 'jS-Y-h:i A').'<br>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        ' . strip_tags((string)$query->messages) . '
+                        '.date_format($query->created_at, 'M-d-Y H:i A').'<br>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        ' . $query->messages . '
 
                     </div>
                 </div><hr>';
@@ -61,11 +61,11 @@ class Query extends Model
     {
         return '<div class="row text-right">
                     <div class="col-md-12">
-                    <i class="fas fa-circle" style="color: lightgreen; font-size:8px;position: absolute;float: right;top: 11px; right: 187px;"></i>
+                    <i class="fas fa-circle" style="color: lightgreen; font-size:8px;position: absolute;float: right;top: 11px;  right: 220px !important;"></i>
                     <img class="mr-3" style="width: 30px; height: 30px; border-radius: 50%;" src="' . url((string)$querySubmitedBy->profile_image) . '" />
                         <strong>' . ucfirst((string)$querySubmitedBy->name) .':</strong>
-                        '.date_format($query->created_at, 'jS-Y-h:i A').'<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        '.strip_tags((string)$query->messages).'
+                        '.date_format($query->created_at, 'M-d-Y H:i A').'<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        '.$query->messages.'
                     </div>
                 </div><hr>';
     }

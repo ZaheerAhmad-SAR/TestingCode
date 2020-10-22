@@ -45,6 +45,7 @@ function search_auth($arr, $auth)
 
 function hasPermission($user, $routeName)
 {
+
     $roles = $user->user_roles;
     foreach ($roles as $role) {
         $role = $role;

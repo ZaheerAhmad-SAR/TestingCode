@@ -441,11 +441,11 @@
         </div>
     </div>
     <div class="modal fade" tabindex="-1" role="dialog" id="reply-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" style="max-width: 1000px;" role="document">
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header ">
-                    <p class="modal-title">Reply Model</p>
+                    <p class="modal-title">Query Details</p>
                 </div>
                     <div class="modal-body">
                         <form id="replyForm" name="replyForm">
@@ -634,6 +634,7 @@
         showComments(query_id);
         $('#all-queries-modal').modal('hide');
     });
+
 
     function showComments(query_id) {
         $.ajax({

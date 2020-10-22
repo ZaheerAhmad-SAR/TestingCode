@@ -3,6 +3,8 @@
 namespace Modules\UserRoles\Http\Controllers;
 
 use App\User;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -17,6 +19,8 @@ use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Http\Requests\UserRequest;
 use Illuminate\Support\Str;
+use ParagonIE\ConstantTime\Base32;
+use PragmaRX\Google2FAQRCode\Google2FA;
 use App\Traits\UploadTrait;
 
 
@@ -29,6 +33,13 @@ class UserController extends Controller
      * Display a listing of the resource.
      * @return Response
      */
+
+    private function generateSecret()
+    {
+        $randomBytes = random_bytes(10);
+
+        return Base32::encodeUpper($randomBytes);
+    }
     public function index()
     {
         if (Auth::user()->can('users.create')) {
@@ -225,7 +236,6 @@ class UserController extends Controller
             'name'      =>  'required',
             'email'      =>  'required|email|unique:users,email,',
         ]);
-       // dd($validate);
         $user = User::where('id', $id)->first();
         if (!empty($request->password)){
             $user->title  =  $request->title;
@@ -260,47 +270,123 @@ class UserController extends Controller
 
         }
 
-        return redirect()->route('users.index')->with('message', 'Record Updated Successfully!');
+        return redirect()->route('dashboard.index')->with('message', 'Record Updated Successfully!');
     }
 
-    public function resetpassword(Request $request){
-        dd('resetpassword');
-    }
-    public function update(UserRequest $request, $id)
+
+    public function update(Request $request, $id)
     {
-        dd($request->all());
-
         // get old user data for trail log
         $oldUser = User::where('id', $id)->first();
-        dd($oldUser);
         $data = array('name'=>$oldUser->name);
-        Mail::send('mail', $data, function($message) {
-            $message->to($request->email, 'Tutorials Point')->subject
-            ('Laravel HTML Testing Mail');
-            $message->body('your updated password: ', $request->password);
-            $message->from('xyz@gmail.com', 'Virat Gandhi');
-        });
-
         $user   =   User::find($id);
-        $user = User::update([
-            'id' => $request->id,
-        ]);
+        if ($request->fa == 'enabled' && !empty($request->password)){
+            //dd('fa enabled and not empty password');
         $user->name  =  $request->name;
         $user->email =  $request->email;
         $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
         $user->password =   Hash::make($request->password);
         $user->save();
-        $userroles  = UserRole::where('user_id',$user->id)->get();
-        foreach ($userroles as $role_id){
-            $role_id->delete();
+        if ($request->roles){
+            $userroles  = UserRole::where('user_id',$user->id)->get();
+            foreach ($userroles as $role_id){
+                $role_id->delete();
+            }
+            foreach ($request->roles as $role){
+                $new = UserRole::create([
+                    'id'    => Str::uuid(),
+                    'user_id'    =>  $user->id,
+                    'role_id'    =>  $role,
+                ]);
+            }
         }
-        foreach ($request->roles as $role){
-            $new = UserRole::create([
-                'id'    => Str::uuid(),
-                'user_id'    =>  $user->id,
-                'role_id'    =>  $role,
-            ]);
+            $secret = $this->generateSecret();
+            $user->google2fa_secret = Crypt::encrypt($secret);
+            $google2fa = new Google2FA();
+
+            $inlineUrl = $google2fa->getQRCodeInline(
+                'OIRRC',
+                'info@oirrc.net',
+                $secret
+            );
+            $user->google_auth = $inlineUrl;
+            $user->save();
         }
+        elseif($request->fa == 'enabled' && empty($request->password))
+        {
+            //dd('fa enabled and empty password');
+            $user->name  =  $request->name;
+            $user->email =  $request->email;
+            $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
+            $user->save();
+            if ($request->roles){
+                $userroles  = UserRole::where('user_id',$user->id)->get();
+                foreach ($userroles as $role_id){
+                    $role_id->delete();
+                }
+                foreach ($request->roles as $role){
+                    $new = UserRole::create([
+                        'id'    => Str::uuid(),
+                        'user_id'    =>  $user->id,
+                        'role_id'    =>  $role,
+                    ]);
+                }
+            }
+            $secret = $this->generateSecret();
+            $user->google2fa_secret = Crypt::encrypt($secret);
+            $google2fa = new Google2FA();
+
+            $inlineUrl = $google2fa->getQRCodeInline(
+                'OIRRC',
+                'info@oirrc.net',
+                $secret
+            );
+            $user->google_auth = $inlineUrl;
+            $user->save();
+        }
+        elseif($request->fa == 'disabled' && !empty($request->password)){
+            //dd('fa disabled and not empty password');
+            $user->name  =  $request->name;
+            $user->email =  $request->email;
+            $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
+            $user->password =   Hash::make($request->password);
+            $user->save();
+            if ($request->roles){
+                $userroles  = UserRole::where('user_id',$user->id)->get();
+                foreach ($userroles as $role_id){
+                    $role_id->delete();
+                }
+                foreach ($request->roles as $role){
+                    $new = UserRole::create([
+                        'id'    => Str::uuid(),
+                        'user_id'    =>  $user->id,
+                        'role_id'    =>  $role,
+                    ]);
+                }
+            }
+        }
+        elseif ($request->fa == 'disabled' && empty($request->password)){
+            //dd('fa disabled and empty password');
+            $user->name  =  $request->name;
+            $user->email =  $request->email;
+            $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
+            $user->save();
+            if ($request->roles){
+                $userroles  = UserRole::where('user_id',$user->id)->get();
+                foreach ($userroles as $role_id){
+                    $role_id->delete();
+                }
+                foreach ($request->roles as $role){
+                    $new = UserRole::create([
+                        'id'    => Str::uuid(),
+                        'user_id'    =>  $user->id,
+                        'role_id'    =>  $role,
+                    ]);
+                }
+            }
+        }
+
+
      // log event details
         $logEventDetails = eventDetails($user->id, 'User', 'Update', $request->ip(), $oldUser);
 
