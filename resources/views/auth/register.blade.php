@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('content')
+@section('body')
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -75,3 +75,7 @@
     </div>
 </div>
 @endsection
+
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('dist/vendors/social-button/bootstrap-social.css') }}"/>
+@stop

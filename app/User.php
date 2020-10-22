@@ -13,6 +13,7 @@ use Modules\Admin\Entities\TrailLog;
 use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\UserRole;
+use Modules\UserRoles\Entities\UserSystemInfo;
 
 class User extends Authenticatable
 {
@@ -28,7 +29,6 @@ class User extends Authenticatable
         'updated_at',
         'created_at',
         'deleted_at',
-        'token_2fa_expiry'
     ];
     protected $fillable = [
         'id',
@@ -39,6 +39,8 @@ class User extends Authenticatable
         'email',
         'role_id',
         'password',
+        'google_auth',
+        'browser_name',
         'two_factor_code',
         'two_factor_expires_at',
         'created_by',
@@ -52,7 +54,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-         'remember_token',
+         'remember_token','google2fa_secret',
     ];
 
     /**
@@ -186,6 +188,10 @@ class User extends Authenticatable
         $this->two_factor_code = rand(100000, 999999);
         $this->two_factor_expires_at = now()->addMinutes(10);
         $this->save();
+    }
+
+    public function systemInfo(){
+        return $this->hasMany(UserSystemInfo::class);
     }
 
 }

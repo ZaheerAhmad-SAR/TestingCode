@@ -16,7 +16,7 @@
                     <div class="login-form col-12 col-sm-7">
                         <div class="" style="min-height: 17%"></div>
                             <div class="form-group mb-3" style="margin-top: 60px;">
-                                <label for="email">{{ __('E-Mail Address') }}</label>
+                                <label for="email">{{ __('E-Mail Addresssss') }}</label>
                                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
                                 @error('email')
                                 <span class="invalid-feedback" role="alert">
@@ -25,10 +25,13 @@
                                 @enderror
                             </div>
                         <div class="form-group">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary" style="float: right">
-                                    {{ __('Send Link') }}
-                                </button>
+
+                            <div class="form-group row mb-0">
+                                <div class="col-md-6 offset-md-4">
+                                    <button type="submit" class="btn btn-primary right">
+                                        {{ __('Send Link') }}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                         <div class="form-group">

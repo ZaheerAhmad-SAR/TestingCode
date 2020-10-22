@@ -54,7 +54,7 @@
     <!-- END: Back to top-->
 
     <!-- START: Template JS-->
-        <script src="{{ asset('public/dist/vendors/jquery/jquery-3.3.1.min.js') }}"></script>
+    <script src="http://code.jquery.com/jquery-migrate-1.3.0.js" integrity="sha256-/Gj+NlY1u/J2UGzM/B2QrWR01trK8ZZqrD5BdqQUsac=" crossorigin="anonymous"></script>        <script src="{{ asset('public/dist/vendors/jquery/jquery-3.3.1.min.js') }}"></script>
         <script src="{{ asset('public/dist/vendors/jquery-ui/jquery-ui.min.js') }}"></script>
         <script src="{{ asset('public/dist/vendors/moment/moment.js') }}"></script>
         <script src="{{ asset('public/dist/vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -65,6 +65,21 @@
         <script src="{{ asset('public/dist/js/app.js') }}"></script>
         <script src="{{ asset('public/dist/js/jquery.multi-select.js') }}"></script>
         <script src="{{ asset('public/js/fstdropdown.min.js') }}"></script>
+        <script>
+            $(document).ready(function(){
+                agent = {browser:{name:null,version:null,v:null,userAgent:null,app:null,os:null},mobile:false,pointlock:false};
+
+                var nVer = navigator.appVersion;
+                var nAgt = navigator.userAgent;
+                var browserName  = navigator.appName;
+                var fullVersion  = ''+parseFloat(navigator.appVersion);
+                var majorVersion = parseInt(navigator.appVersion,10);
+                var nameOffset,verOffset,ix;
+                agent.pointlock = 'pointerLockElement' in document ||
+                    'mozPointerLockElement' in document ||
+                    'webkitPointerLockElement' in document;
+            });
+        </script>
         <!-- END: APP JS-->
 
         <!-- START: Page JS-->
