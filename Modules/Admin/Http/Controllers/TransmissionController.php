@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Admin\Entities\CrushFtpTransmission;
 use DB;
+use Carbon\Carbon;
 
 class TransmissionController extends Controller
 {
@@ -16,9 +17,43 @@ class TransmissionController extends Controller
      */
     public function index(Request $request)
     {
-        $getTransmissions = DB::table('transmissions');
+        $getTransmissions = CrushFtpTransmission::query();
 
-        // if ($request->)
+        if ($request->trans_id != '') {
+
+           $getTransmissions = $getTransmissions->where('Transmission_Number', 'like', '%' . $request->trans_id . '%');
+        }
+
+        if ($request->subject_id != '') {
+
+           $getTransmissions = $getTransmissions->where('Subject_ID', 'like', '%' . $request->subject_id . '%');
+        }
+
+        if ($request->visit_name != '') {
+
+           $getTransmissions = $getTransmissions->where('visit_name', 'like', '%' . $request->visit_name . '%');
+        }
+
+        if ($request->visit_date != '') {
+
+            $visitDate = explode('-', $request->visit_date);
+                    $from   = Carbon::parse($visitDate[0]); // 2018-09-29 00:00:00
+
+                    $to     = Carbon::parse($visitDate[1]); // 2018-09-29 23:59:59
+
+                $getTransmissions =  $getTransmissions->whereDate('visit_date', '>=', $from)
+                    ->whereDate('visit_date', '<=', $to);
+        }
+
+        if ($request->imagine_modality != '') {
+
+           $getTransmissions = $getTransmissions->where('ImageModality', $request->imagine_modality);
+        }
+
+        if ($request->status != '') {
+
+           $getTransmissions = $getTransmissions->where('status', $request->status);
+        }
 
         $getTransmissions = $getTransmissions->orderBy('id', 'desc')->paginate(50);
 
@@ -36,10 +71,11 @@ class TransmissionController extends Controller
         //     'data' => $request,
         // ]);
 
-        $getCFtPTrans = CrushFtpTransmission::where('id', 20)->first();
-        //dd($getCFtPTrans->data);
+        $getCFtPTrans = DB::table('transmissions')->where('id', 9447)->first();
+        
+        if ($getCFtPTrans != null) {
         // remove the upper section
-        $explodeGetCFtPTrans = explode('<?xml', $getCFtPTrans->data);
+        $explodeGetCFtPTrans = explode('<?xml', $getCFtPTrans->Data);
         //dd($explodeGetCFtPTrans[1]);
         // concatinate xml with the remaining  xml
         $xml = '<?xml'.$explodeGetCFtPTrans[1];
@@ -47,12 +83,12 @@ class TransmissionController extends Controller
         $xml    = simplexml_load_string($xml);
 
         // check for trimission number
-        $checkTransmissionNumber = DB::table('transmissions')->where('Transmission_Number', $xml->Transmission_Number)->first();
+        $checkTransmissionNumber = DB::table('crush_ftp_transmissions')->where('Transmission_Number', $xml->Transmission_Number)->first();
 
         if ($checkTransmissionNumber == null) {
 
-            $saveData = DB::table('transmissions')->insert([
-                'data'                      => $getCFtPTrans->data,
+            $saveData = DB::table('crush_ftp_transmissions')->insert([
+                'data'                      => $getCFtPTrans->Data,
                 'Transmission_Number'       => $xml->Transmission_Number,
                 'Study_Name'                => $xml->Study_Name,
                 'StudyI_ID'                 => $xml->StudyI_ID,
@@ -112,7 +148,11 @@ class TransmissionController extends Controller
         } else {
 
             echo 'Transmission Number already exists.';
-        }   
+        }
+
+        } else {
+            echo "Nothing to Insert.";
+        } 
     }
 
     /**
@@ -145,7 +185,7 @@ class TransmissionController extends Controller
     public function show($id = '')
     {
         // find the transmission
-        $findTransmission = DB::table('transmissions')->where('id', decrypt($id))->get();
+        $findTransmission = CrushFtpTransmission::where('id', decrypt($id))->get();
 
         return view('admin::view_transmission_details', compact('findTransmission'));
     }

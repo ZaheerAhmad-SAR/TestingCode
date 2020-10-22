@@ -66,7 +66,7 @@
 
                             <div class="form-group col-md-3">
                                 <label for="suject_id">Subject ID</label>
-                                <input type="text" name="suject_id" id="suject_id" class="form-control filter-form-data" value="{{ request()->suject_id }}" placeholder="Subject ID">
+                                <input type="text" name="subject_id" id="subject_id" class="form-control filter-form-data" value="{{ request()->subject_id }}" placeholder="Subject ID">
                             </div>
 
                             <div class="form-group col-md-3">
