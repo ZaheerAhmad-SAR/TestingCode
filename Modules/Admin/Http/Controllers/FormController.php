@@ -409,18 +409,8 @@ class FormController extends Controller
             AnnotationDescription::insert($annotation);
         }
         // Question Adjudication
-        if (isset($request->adj_status) && $request->adj_status == 'yes') {
-            $id    = Str::uuid();
-            $adjStatus = QuestionAdjudicationStatus::create([
-                'id' => $id,
-                'question_id' => $last_id->id,
-                'adj_status' => $request->adj_status,
-                'decision_based_on' => $request->decision_based_on,
-                'opertaor' => $request->opertaor,
-                'custom_value' => $request->custom_value
+        $this->createQuestionAdjudicationStatus($request);
 
-            ]);
-        }
         return redirect()->route('forms.index')->with('message', 'Record Added Successfully!');
     }
     public function update_questions(Request $request)
@@ -469,20 +459,25 @@ class FormController extends Controller
             $adjStatus->custom_value = $request->custom_value;
             $adjStatus->save();
         } else {
-            if (isset($request->adj_status) && $request->adj_status == 'yes') {
-                $id    = Str::uuid();
-                $adjStatus = QuestionAdjudicationStatus::create([
-                    'id' => $id,
-                    'question_id' => $request->id,
-                    'adj_status' => $request->adj_status,
-                    'decision_based_on' => $request->decision_based_on,
-                    'opertaor' => $request->opertaor,
-                    'custom_value' => $request->custom_value
-
-                ]);
-            }
+            $this->createQuestionAdjudicationStatus($request);
         }
         return redirect()->route('forms.index')->with('message', 'Record Updated Successfully!');
+    }
+
+    private function createQuestionAdjudicationStatus($request)
+    {
+        if (isset($request->adj_status) && $request->adj_status == 'yes') {
+            $id    = Str::uuid();
+            $adjStatus = QuestionAdjudicationStatus::create([
+                'id' => $id,
+                'question_id' => $request->id,
+                'adj_status' => $request->adj_status,
+                'decision_based_on' => $request->decision_based_on,
+                'opertaor' => $request->opertaor,
+                'custom_value' => $request->custom_value
+
+            ]);
+        }
     }
     /**
      * Show the specified resource.
