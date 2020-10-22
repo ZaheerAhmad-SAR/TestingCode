@@ -101,14 +101,16 @@ trait AdjudicationTrait
         if ($numberOfAnswers == 2) {
             $difference = $answersArray[0] - $answersArray[1];
             $isAdjudicationRequired_1 = self::checkDifference($operator, $difference, $customValue);
-        } elseif ($numberOfAnswers == 3) {
+        }
+        if ($numberOfAnswers == 3) {
 
             $difference = $answersArray[0] - $answersArray[2];
             $isAdjudicationRequired_2 = self::checkDifference($operator, $difference, $customValue);
 
             $difference = $answersArray[1] - $answersArray[2];
             $isAdjudicationRequired_3 = self::checkDifference($operator, $difference, $customValue);
-        } elseif ($numberOfAnswers == 4) {
+        }
+        if ($numberOfAnswers == 4) {
 
             $difference = $answersArray[0] - $answersArray[3];
             $isAdjudicationRequired_4 = self::checkDifference($operator, $difference, $customValue);
@@ -149,7 +151,8 @@ trait AdjudicationTrait
             $difference = $answersArray[0] - $answersArray[1];
             $percentage = ($difference / $answersArray[0]) * 100;
             $isAdjudicationRequired_1 = self::checkDifference($operator, $percentage, $customValue);
-        } elseif ($numberOfAnswers == 3) {
+        }
+        if ($numberOfAnswers == 3) {
 
             $difference = $answersArray[0] - $answersArray[2];
             $percentage = ($difference / $answersArray[0]) * 100;
@@ -158,7 +161,8 @@ trait AdjudicationTrait
             $difference = $answersArray[1] - $answersArray[2];
             $percentage = ($difference / $answersArray[1]) * 100;
             $isAdjudicationRequired_3 = self::checkDifference($operator, $percentage, $customValue);
-        } elseif ($numberOfAnswers == 4) {
+        }
+        if ($numberOfAnswers == 4) {
 
             $difference = $answersArray[0] - $answersArray[3];
             $percentage = ($difference / $answersArray[0]) * 100;
