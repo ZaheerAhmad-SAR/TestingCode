@@ -53,10 +53,11 @@ class QueriesController extends Controller
     {
 
         //dd($find->id,$query_status);
-        $parentQueryId    = $request->post('parent_query_id');
-        $find             = Query::find($parentQueryId);
         $query_status     = $request->post('query_status');
         $queryStatusArray = array('query_status'=>$query_status);
+        $parentQueryId    = $request->post('parent_query_id');
+        $find             = Query::find($parentQueryId);
+        Query::where('id',$find->id)->update($queryStatusArray);
         $query_id         = $request->post('query_id');
         $reply            = $request->post('reply');
         $query_subject    = $request->post('query_subject');
@@ -75,7 +76,6 @@ class QueriesController extends Controller
             'query_url'=>$query_url,
             'query_subject'=>$query_subject
         ]);
-        Query::where('id',$find->id)->update($queryStatusArray);
         return response()->json([$query,'success'=>'Queries response is successfully save!!!!','reply_id'=>$id]);
 
     }
@@ -124,7 +124,6 @@ class QueriesController extends Controller
             'query_url'=>$query_url,
             'query_subject'=>$query_subject
         ]);
-
         if ($queryAssignedTo == 'user')
         {
             foreach ($users as $user)
