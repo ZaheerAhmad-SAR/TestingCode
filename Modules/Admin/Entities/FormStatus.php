@@ -194,15 +194,170 @@ class FormStatus extends Model
         return ['id' => $formStatusObj->id, 'formTypeId' => $formStatusObj->form_type_id, 'formStatus' => $formStatusObj->form_status, 'formStatusIdStr' => buildGradingStatusIdClsStr($formStatusObj->id)];
     }
 
-    public static function runAdjudicationCheckForThisStep($step)
+    public static function runAdjudicationCheckForThisStep($step, $getGradingFormStatusArray)
     {
-        /**
-         *
-         * Get Sections and questions then form fields then form field type
-         *
-         */
-        dd('runAdjudicationCheckForThisStep');
+        $sections = $step->sections;
+        foreach ($sections as $section) {
+            $questions = $section->questions;
+            foreach ($questions as $question) {
+                $fieldType = $question->form_field_type->field_type;
+                if (
+                    $fieldType === 'Upload' ||
+                    $fieldType === 'Date & Time'
+                ) {
+                    continue;
+                }
+                /********************************** */
+                $answersArray = [];
+                $getAnswerArray = [
+                    'study_id' => $getGradingFormStatusArray['study_id'],
+                    'subject_id' => $getGradingFormStatusArray['subject_id'],
+                    'study_structures_id' => $getGradingFormStatusArray['study_structures_id'],
+                    'phase_steps_id' => $getGradingFormStatusArray['phase_steps_id'],
+                    'section_id' => $section->id,
+                    'question_id' => $question->id,
+                    'field_id' => $question->formfields->id
+                ];
+                $answersArray = Answer::getAnswersArray($getAnswerArray);
+                $numberOfAnswers = count($answersArray);
+                $finalAnswer = '';
+                $isAdjudicationRequired = false;
+                $returnData = [];
+                $questionAdjudicationStatusObj = $question->AdjStatus;
+                if ($questionAdjudicationStatusObj->adj_status == 'yes') {
+                    if ($fieldType === 'Radio') {
+                        $returnData = self::checkAdjudicationForRadio($numberOfAnswers, $answersArray);
+                    } elseif ($fieldType === 'Checkbox') {
+                        $returnData = self::checkAdjudicationForRadio($numberOfAnswers, $answersArray);
+                    } elseif ($fieldType === 'Dropdown') {
+                        $returnData = self::checkAdjudicationForRadio($numberOfAnswers, $answersArray);
+                    } elseif ($fieldType === 'Number') {
+                        $returnData = self::checkAdjudicationForNumber($numberOfAnswers, $answersArray);
+                    } elseif ($fieldType === 'Text') {
+                        $returnData = self::checkAdjudicationForText($numberOfAnswers, $answersArray);
+                    } elseif ($fieldType === 'Textarea') {
+                        $returnData = self::checkAdjudicationForText($numberOfAnswers, $answersArray);
+                    }
+                }
+
+                $isAdjudicationRequired = $returnData['isAdjudicationRequired'];
+                $finalAnswer = $returnData['finalAnswer'];
+            }
+        }
     }
+
+    public static function checkAdjudicationForNumber($numberOfAnswers, $answersArray)
+    {
+        $isAdjudicationRequired = false;
+        $finalAnswer = 0;
+        if ($numberOfAnswers == 2) {
+            if ($answersArray[0] != $answersArray[1]) {
+                $isAdjudicationRequired = true;
+            }
+        } elseif ($numberOfAnswers == 3) {
+            if (
+                ($answersArray[0] != $answersArray[1]) ||
+                ($answersArray[0] != $answersArray[2]) ||
+                ($answersArray[1] != $answersArray[2])
+            ) {
+                $isAdjudicationRequired = true;
+            }
+        } elseif ($numberOfAnswers == 4) {
+            if (
+                ($answersArray[0] != $answersArray[1]) ||
+                ($answersArray[0] != $answersArray[2]) ||
+                ($answersArray[0] != $answersArray[3]) ||
+                ($answersArray[1] != $answersArray[2]) ||
+                ($answersArray[1] != $answersArray[3]) ||
+                ($answersArray[2] != $answersArray[3])
+            ) {
+                $isAdjudicationRequired = true;
+            }
+        }
+        if ($isAdjudicationRequired === false) {
+            $finalAnswer = $answersArray[0];
+        }
+        return ['isAdjudicationRequired' => $isAdjudicationRequired, 'finalAnswer' => $finalAnswer];
+    }
+
+    public static function checkAdjudicationForText($numberOfAnswers, $answersArray)
+    {
+        $isAdjudicationRequired = false;
+        $finalAnswer = 0;
+        if ($numberOfAnswers == 2) {
+            if ($answersArray[0] != $answersArray[1]) {
+                $isAdjudicationRequired = true;
+            }
+        } elseif ($numberOfAnswers == 3) {
+            if (
+                ($answersArray[0] != $answersArray[1]) ||
+                ($answersArray[0] != $answersArray[2]) ||
+                ($answersArray[1] != $answersArray[2])
+            ) {
+                $isAdjudicationRequired = true;
+            }
+        } elseif ($numberOfAnswers == 4) {
+            if (
+                ($answersArray[0] != $answersArray[1]) ||
+                ($answersArray[0] != $answersArray[2]) ||
+                ($answersArray[0] != $answersArray[3]) ||
+                ($answersArray[1] != $answersArray[2]) ||
+                ($answersArray[1] != $answersArray[3]) ||
+                ($answersArray[2] != $answersArray[3])
+            ) {
+                $isAdjudicationRequired = true;
+            }
+        }
+        if ($isAdjudicationRequired === false) {
+            $finalAnswer = $answersArray[0];
+        }
+        return ['isAdjudicationRequired' => $isAdjudicationRequired, 'finalAnswer' => $finalAnswer];
+    }
+
+    public static function checkAdjudicationForRadio($numberOfAnswers, $answersArray)
+    {
+        $isAdjudicationRequired = false;
+        $finalAnswer = 0;
+        if ($numberOfAnswers == 2) {
+            if ($answersArray[0] != $answersArray[1]) {
+                $isAdjudicationRequired = true;
+            }
+        } elseif (
+            ($numberOfAnswers == 3) ||
+            ($numberOfAnswers == 4)
+        ) {
+            $countedArray = array_count_values($answersArray);
+            if (count($countedArray) == count($answersArray)) {
+                $isAdjudicationRequired = true;
+            } else {
+                arsort($countedArray);
+                $finalAnswer = array_keys($countedArray)[0];
+            }
+        }
+
+        return ['isAdjudicationRequired' => $isAdjudicationRequired, 'finalAnswer' => $finalAnswer];
+    }
+
+    public static function checkAdjudicationForCheckBox($numberOfAnswers, $answersArray)
+    {
+        $isAdjudicationRequired = false;
+        $finalAnswer = 0;
+        if ($numberOfAnswers == 2) {
+            if ($answersArray[0] != $answersArray[1]) {
+                $isAdjudicationRequired = true;
+            }
+        } elseif (
+            ($numberOfAnswers == 3) ||
+            ($numberOfAnswers == 4)
+        ) {
+            $countedArray = array_count_values($answersArray);
+            arsort($countedArray);
+            $finalAnswer = array_keys($countedArray)[0];
+        }
+
+        return ['isAdjudicationRequired' => $isAdjudicationRequired, 'finalAnswer' => $finalAnswer];
+    }
+
     public static function insertFormStatus($request, $formStatusArray)
     {
         $id = Str::uuid();

@@ -60,7 +60,11 @@ class SubjectFormSubmissionController extends Controller
         $form_field_name = buildFormFieldName($question->formFields->variable_name);
         $form_field_id = $question->formFields->id;
         if ($request->has($form_field_name)) {
+
             $answer = $request->{$form_field_name};
+            if (is_array($answer)) {
+                $answer = implode(',', $answer);
+            }
 
             $formDataArray = ['question_id' => $question->id, 'variable_name' => $form_field_name, 'field_id' => $form_field_id, 'answer' => $answer];
 

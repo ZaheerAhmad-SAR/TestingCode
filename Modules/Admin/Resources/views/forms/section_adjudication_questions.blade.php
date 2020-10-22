@@ -39,8 +39,7 @@ $graderIdsArray = \Modules\Admin\Entities\FormStatus::getAllGraderIds($getGrader
                     'phase_steps_id'=>$step->step_id,
                     'section_id'=>$section->id,
                     'question_id'=>$question->id,
-                    'field_id'=>$question->formfields->id,
-                    'form_filled_by_user_id'=>auth()->user()->id,
+                    'field_id'=>$question->formfields->id
                 ];
                 $answer = $question->getAnswer($getAnswerArray);
                 $questionIdStr = buildSafeStr($question->id, '');

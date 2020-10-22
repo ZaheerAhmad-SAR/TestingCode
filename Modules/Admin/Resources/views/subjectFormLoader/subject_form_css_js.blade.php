@@ -262,9 +262,9 @@
                     field_val = $('#' + fieldId).find(":selected").val();
                 } else if ($('#form_' + stepIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
                     field_val = $('#form_' + stepIdStr + ' input[name="' + field_name + '"]:checked').val();
-                } else if ($('#form_' + stepIdStr + ' input[name="' + field_name + '"]').attr('type') == 'checkbox') {
+                } else if ($('#form_' + stepIdStr + ' input[name="' + field_name + '[]"]').attr('type') == 'checkbox') {
 
-                    $('#form_' + stepIdStr + ' input[name="' + field_name + '"]:checked').each(function() {
+                    $('#form_' + stepIdStr + ' input[name="' + field_name + '[]"]:checked').each(function() {
                         checkedCheckBoxes.push($(this).val());
                     });
                     field_val = checkedCheckBoxes.join(",");
