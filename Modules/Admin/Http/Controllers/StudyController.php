@@ -32,11 +32,10 @@ class StudyController extends Controller
      */
     public function index()
     {
-
-        $user = User::with('studies', 'user_roles')->find(Auth::id());
-        session(['current_study'=>'']);
-        $user = User::with('studies', 'user_roles')->find(Auth::id());
         if (hasPermission(\auth()->user(), 'systemtools.index')) {
+            $user = User::with('studies', 'user_roles')->find(Auth::id());
+            session(['current_study'=>'']);
+            $user = User::with('studies', 'user_roles')->find(Auth::id());
             $studies  =   Study::with('users')->where('id','!=', Null)->orderBy('study_short_name')->get();
             $permissionsIdsArray = Permission::where(function ($query) {
                 $query->where('permissions.name', '=', 'studytools.index')

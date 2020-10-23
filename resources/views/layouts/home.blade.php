@@ -15,8 +15,15 @@
                     </a>
                 </div>
                 <div class="navbar-header h4 mb-0 text-center h-100 collapse-menu-bar">
+
                     <a href="#" class="sidebarCollapse" id="collapse"><i class="icon-menu"></i></a>
                 </div>
+                @if(empty(auth()->user()->google2fa_secret))
+                    <div class="alert alert-warning alert-dismissible" @if(empty(auth()->user()->google2fa_secret))?style="display:none;":style="margin-top:20px" @endif>
+                        <a type="submit" class="btn btn-sm" href="{{route('users.updateProfile')}}" >Enable now</a>
+                        <strong>Warning!</strong> Indicates a warning that might need attention.
+                    </div>
+            @endif
                 <!-- title here  -->
                 <!--  -->
                 <div class="navbar-right ml-auto h-100">

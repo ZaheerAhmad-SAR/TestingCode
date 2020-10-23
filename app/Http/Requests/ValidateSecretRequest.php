@@ -32,8 +32,7 @@ class ValidateSecretRequest extends Request
             function ($attribute, $value, $parameters, $validator) {
                $secret = Crypt::decrypt($this->user->google2fa_secret);
              $google_2fa = new Google2FA();
-            /*  $otp = $google_2fa->verifyKey($secret,$value);
-              dd($google_2fa->verifyKey($secret,$value));*/
+
                 return $google_2fa->verifyKey($secret, $value);
             },
             'Not a valid token'
