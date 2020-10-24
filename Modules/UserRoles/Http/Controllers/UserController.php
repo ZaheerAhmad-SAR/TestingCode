@@ -2,10 +2,14 @@
 
 namespace Modules\UserRoles\Http\Controllers;
 
+use App\backupCode;
+use App\Notifications\InviteNotification;
 use App\User;
+use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -15,6 +19,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
 use Modules\Admin\Entities\RoleStudyUser;
 use Modules\Admin\Entities\StudyUser;
+use Modules\UserRoles\Entities\Invitation;
 use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Http\Requests\UserRequest;
@@ -34,6 +39,10 @@ class UserController extends Controller
      * @return Response
      */
 
+    public function __construct()
+    {
+        $this->middleware('auth')->except('registration_view');
+    }
     private function generateSecret()
     {
         $randomBytes = random_bytes(10);
@@ -273,6 +282,10 @@ class UserController extends Controller
         return redirect()->route('dashboard.index')->with('message', 'Record Updated Successfully!');
     }
 
+    public function getcodes(){
+        $codes = backupCode::where('user_id','=',\auth()->user()->id)->get();
+        dd($codes);
+    }
 
     public function update(Request $request, $id)
     {
@@ -403,5 +416,48 @@ class UserController extends Controller
     {
         dd('delete');
         $user = User::find($id);
+    }
+
+    public function invite_view()
+    {
+        return view('userroles::users.invite');
+    }
+
+    public function process_invites(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|email|unique:users,email'
+        ]);
+        $validator->after(function ($validator) use ($request) {
+            if (Invitation::where('email', $request->input('email'))->exists()) {
+                $validator->errors()->add('email', 'There exists an invite with this email!');
+            }
+        });
+        if ($validator->fails()) {
+            return redirect(route('invite_view'))
+                ->withErrors($validator)
+                ->withInput();
+        }
+        do {
+            $token = Str::random(20);
+        } while (Invitation::where('token', $token)->first());
+        Invitation::create([
+            'token' => $token,
+            'email' => $request->input('email')
+        ]);
+        $url = URL::temporarySignedRoute(
+
+            'registration', now()->addMinutes(300), ['token' => $token]
+        );
+
+        Notification::route('mail', $request->input('email'))->notify(new InviteNotification($url));
+
+        return redirect('/users')->with('success', 'The Invite has been sent successfully');
+    }
+
+    public function registration_view($token)
+    {
+        $invite = Invite::where('token', $token)->first();
+        return view('auth.register',['invite' => $invite]);
     }
 }

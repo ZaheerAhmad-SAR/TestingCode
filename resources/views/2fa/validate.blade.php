@@ -37,6 +37,12 @@
                                     </button>
                                 </div>
                             </div>
+                                <div class="form-group mb-3">
+                                    <h6>Protect Your Account.</h6>
+                                    <p>Improve your portal security with Two Factor Authentication.
+                                    We encourage you to take advantage of our two-factor authentication if you haven’t already.
+                                    </p>
+                                </div>
                             </div>
                         </form>
                     </div>

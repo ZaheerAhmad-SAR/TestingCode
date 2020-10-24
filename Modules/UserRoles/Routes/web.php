@@ -22,10 +22,10 @@ Route::group(['middleware' => ['auth','web']],function (){
 Route::group(['middleware' => ['auth','web','roles']],function(){
 
     //Invitation_Routes
-    Route::get('invite', 'InvitationController@invite')->name('invitation.invite');
-    Route::post('invite', 'InvitationController@process')->name('invitation.process');
-// {token} is a required parameter that will be exposed to us in the controller method
-    Route::get('accept/{token}', 'InvitationController@accept')->name('invitation.accept');
+    Route::get('/users/invite', 'UsersController@invite_view')->name('invite_view');
+    Route::post('/users/invite', 'UsersController@process_invites')->name('process_invite');
+    Route::get('/registration/{token}', 'UsersController@registration_view')->name('registration');
+    Route::POST('/registration', 'Auth\RegisterController@register')->name('accept');
 
     Route::resource('roles','RoleController');
     // Permissions

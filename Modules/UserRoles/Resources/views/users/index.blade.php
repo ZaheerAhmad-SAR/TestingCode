@@ -27,7 +27,7 @@
 
                                 @if(hasPermission(auth()->user(),'invitation.invite'))
                                     &nbsp;
-                                    <a href="{!! route('invitation.invite') !!}" class="btn btn-outline-primary">
+                                    <a href="{{route('invite_view')}}" class="btn btn-outline-primary">
                                         <i class="far fa-edit"></i>&nbsp; Invite User
                                     </a>
                                 @endif

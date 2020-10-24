@@ -21,7 +21,8 @@
                 @if(empty(auth()->user()->google2fa_secret))
                     <div class="alert alert-warning alert-dismissible" @if(empty(auth()->user()->google2fa_secret))?style="display:none;":style="margin-top:20px" @endif>
                         <a type="submit" class="btn btn-sm" href="{{route('users.updateProfile')}}" >Enable now</a>
-                        <strong>Warning!</strong> Indicates a warning that might need attention.
+                        <strong>Warning!</strong> Google 2-Factor Auth is off, turn it on.
+                        <button class="close" data-dismiss="alert">&times;</button>
                     </div>
             @endif
                 <!-- title here  -->

@@ -67,6 +67,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/pragmarx/google2fa" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/pragmarx/google2fa-laravel" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/pragmarx/google2fa-qrcode" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/pragmarx/random" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/pragmarx/recovery" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/propa/laravel-browscap" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/container" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/event-dispatcher" />
