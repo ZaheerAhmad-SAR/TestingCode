@@ -7,4 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class CrushFtpTransmission extends Model
 {
     protected $fillable = ['data'];
+    
+    public $timestamps = true;
 }
