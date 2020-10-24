@@ -6,10 +6,17 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Admin\Entities\CrushFtpTransmission;
+use Modules\Admin\Entities\Study;
+use Modules\Admin\Entities\StudySite;
 use Modules\Admin\Entities\Subject;
+use Modules\Admin\Entities\SubjectsPhases;
+use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\Modility;
+use Modules\Admin\Entities\PrimaryInvestigator;
+use Modules\Admin\Entities\Photographer;
 use DB;
+use Illuminate\Support\Str;
 use Carbon\Carbon;
 
 class TransmissionController extends Controller
@@ -270,6 +277,163 @@ class TransmissionController extends Controller
         $findTransmission->qc_officerId = \Auth::user()->id;
         $findTransmission->qc_officerName = \Auth::user()->name;
         $findTransmission->save();
+
+        // if status is accepted, then insert
+        if ($findTransmission->status == 'accepted') {
+
+            ////////////////////////////////// Save Study ///////////////////////////////////
+            //get study
+            $getStudy = Study::where('study_code', $findTransmission->StudyI_ID)->first();
+
+            if ($getStudy == null) {
+                // insert study
+                $getStudy = new Study;
+                $getStudy->id = Str::uuid();
+                $getStudy->study_code = $findTransmission->StudyI_ID;
+                $getStudy->study_title = $findTransmission->Study_Name;
+                $getStudy->study_sponsor = $findTransmission->sponsor;
+                $getStudy->save();
+            } // study check is end
+
+            ////////////////////// Save site ////////////////////////////////////////////
+
+            // get site
+            $getSite = Site::where('site_code', $findTransmission->Site_ID)->first();
+
+            if ($getSite == null) {
+                // insert site
+                $getSite = new Site;
+                $getSite->id = Str::uuid();
+                $getSite->site_code = $findTransmission->Site_ID;
+                $getSite->site_name = $findTransmission->Site_Name;
+                $getSite->site_address = $findTransmission->Site_st_address;
+                $getSite->site_city = $findTransmission->Site_city;
+                $getSite->site_state = $findTransmission->Site_state;
+                $getSite->site_country = $findTransmission->Site_country;
+                $getSite->save();
+            } // site check is end
+      
+            // check site study relation
+            $getSiteStudy = StudySite::where('study_id', $getStudy->id)
+                                        ->where('site_id', $getSite->id)
+                                        ->first();
+
+            if ($getSiteStudy == null) {
+                // insert study site
+                $getSiteStudy = new StudySite;
+                $getSiteStudy->study_id = $getStudy->id;
+                $getSiteStudy->site_id = $getSite->id;
+                $getSiteStudy->save();
+
+            } // site study check is end
+
+            //////////////////////// Primary Investigator /////////////////////////////
+
+            // get Primary Investigator
+            $getPrimaryInvestigator = PrimaryInvestigator::where('site_id', $getSite->id)
+                                                          ->where('email', $findTransmission->PI_email)
+                                                          ->first();
+
+            if ($getPrimaryInvestigator == null) {
+                // insert primary investigator
+                $getPrimaryInvestigator = new PrimaryInvestigator;
+                $getPrimaryInvestigator->id = Str::uuid();
+                $getPrimaryInvestigator->site_id = $getSite->id;
+                $getPrimaryInvestigator->first_name = $findTransmission->PI_FirstName;
+                $getPrimaryInvestigator->last_name = $findTransmission->PI_LastName;
+                $getPrimaryInvestigator->email = $findTransmission->PI_email;
+                $getPrimaryInvestigator->save();
+            } // primary investigator check ends
+
+            ////////////////// Photographer ///////////////////////////////////////////
+
+            // get Photographer
+            $getPhotographer = Photographer::where('site_id', $getSite->id)
+                                            ->where('email', $findTransmission->photographer_email)
+                                            ->first();
+
+            if ($getPhotographer == null) {
+                // insert photographer
+                $getPhotographer = new Photographer;
+                $getPhotographer->id = Str::uuid();
+                $getPhotographer->site_id = $getSite->id;
+                $getPhotographer->first_name = $findTransmission->photographer_full_name;
+                $getPhotographer->email = $findTransmission->photographer_email;
+                $getPhotographer->save();
+            } // photographer check is end
+
+            //////////////////// Modality /////////////////////////////////////////////
+
+            // get Modality
+            $getModality = Modility::where('modility_name', $findTransmission->ImageModality)
+                                    ->first();
+
+            if ($getModality == null) {
+                // insert modility
+                $getModality = new Modility;
+                $getModality->id = Str::uuid();
+                $getModality->modility_name = $findTransmission->ImageModality;
+                $getModality->save();
+            } // modility check is end
+
+            ///////////////////// Subject ////////////////////////////////////////////
+            
+            // get subject
+            $getSubject = Subject::where('study_id', $getStudy->id)
+                                  ->where('subject_id', $findTransmission->Subject_ID)
+                                  ->first();
+
+            if ($getSubject == null) {
+                // insert subject
+                $getSubject = new Subject;
+                $subjectID = Str::uuid();
+                $getSubject->id = $subjectID;
+                $getSubject->study_id = $getStudy->id;
+                $getSubject->subject_id = $findTransmission->Subject_ID;
+                $getSubject->site_id = $getSite->id;
+                $getSubject->study_eye = $findTransmission->StudyEye;
+                $getSubject->save();
+
+            } // subject check is end
+
+            /////////////////// Phase /////////////////////////////////////////////////
+
+            // get phase
+            $getPhase = StudyStructure::where('study_id', $getStudy->id)
+                                        ->where('name', $findTransmission->visit_name)
+                                        ->first();
+
+            if ($getPhase == null) {
+                // insert phase
+                $getPhase = new StudyStructure;
+                $phaseID = Str::uuid();
+                $getPhase->id = $phaseID;
+                $getPhase->study_id = $getStudy->id;
+                $getPhase->name = $findTransmission->visit_name;
+                $getPhase->save();
+
+            } // phase check is end
+
+            // check for visit date
+            $getSubjectPhase = SubjectsPhases::where('subject_id', $subjectID)
+                                              ->where('phase_id', $phaseID)
+                                              ->first();
+
+
+            if ($getSubjectPhase == null) {
+                // insert into subject phases
+                $getSubjectPhase = new SubjectsPhases;
+                $getSubjectPhase->id = Str::uuid();
+                $getSubjectPhase->subject_id = $subjectID;
+                $getSubjectPhase->phase_id = $phaseID;
+                $getSubjectPhase->visit_date = $findTransmission->visit_date;
+                $getSubjectPhase->save();
+            } // subject phases check is end
+
+
+            dd('StudyID:  '.$getStudy->id.'???????  SiteID:   '.$getSite->id.'???????  Primary INV:    '.$getPrimaryInvestigator->id.'???????   Photographer:     '.$getPhotographer->id.'???????   Modality:    '.$getModality->id.'???????   Subject ID:    '.$getSubject->id.'???????   PhaseID:    '.$getPhase->id.'???????   SubjectPhaseID:      '.$getSubjectPhase->id);
+
+        } // status check ends
 
         \Session::flash('success', 'Transmission information updated successfully.');
 
