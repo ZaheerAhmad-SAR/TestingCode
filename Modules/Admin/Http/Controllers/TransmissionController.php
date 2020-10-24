@@ -6,6 +6,9 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\Admin\Entities\CrushFtpTransmission;
+use Modules\Admin\Entities\Subject;
+use Modules\Admin\Entities\StudyStructure;
+use Modules\Admin\Entities\Modility;
 use DB;
 use Carbon\Carbon;
 
@@ -71,7 +74,7 @@ class TransmissionController extends Controller
         //     'data' => $request,
         // ]);
 
-        $getCFtPTrans = DB::table('transmissions')->where('id', 9447)->first();
+        $getCFtPTrans = DB::table('transmissions')->where('id', 9446)->first();
         
         if ($getCFtPTrans != null) {
         // remove the upper section
@@ -197,8 +200,18 @@ class TransmissionController extends Controller
      */
     public function edit($id)
     {
-        dd('edit');
-        return view('admin::edit');
+        // find the transmission
+        $findTransmission = CrushFtpTransmission::where('id', decrypt($id))->first();
+        $findTransmission->is_read = 'yes';
+        $findTransmission->save();
+        // get all subjects
+        $getSubjects = Subject::get();
+        // get all phases
+        $getPhases = StudyStructure::get();
+        // get modality
+        $getModalities = Modility::get();
+
+        return view('admin::view_transmission_details', compact('findTransmission', 'getSubjects', 'getPhases', 'getModalities'));
     }
 
     /**
@@ -209,7 +222,59 @@ class TransmissionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd('update');
+        // find record
+        $findTransmission = CrushFtpTransmission::where('id', decrypt($id))->first();
+        $findTransmission->Submitter_email = $request->d_submitter_email;
+        $findTransmission->Submitter_phone = $request->d_submitter_phone;
+        $findTransmission->Site_Name = $request->d_site_name;
+        $findTransmission->PI_FirstName = $request->d_pi_first_name;
+        $findTransmission->PI_LastName = $request->d_pi_last_name;
+        $findTransmission->PI_email = $request->d_pi_email;
+        $findTransmission->Site_state = $request->d_site_state;
+        $findTransmission->Site_Zip = $request->d_site_zip;
+        $findTransmission->Site_country = $request->d_site_country;
+        // get subject Id
+        $subjectID = explode('/', $request->d_subject_Id);
+        $findTransmission->subj_id = $subjectID[0];
+        $findTransmission->Subject_ID = $subjectID[1];
+        $findTransmission->StudyEye = $request->d_study_eye;
+        // get visit name and visit_id
+        $visitName = explode('/', $request->d_visit_name);
+        $findTransmission->phase_id = $visitName[0];
+        $findTransmission->visit_name = $visitName[1];
+
+        $findTransmission->visit_date = $request->d_visit_date;
+        // get modality name and madality_id
+        $modilityName = explode('/', $request->d_image_modality);
+        $findTransmission->modility_id = $modilityName[0];
+        $findTransmission->ImageModality = $modilityName[1];
+
+        $findTransmission->device_model = $request->d_device_model;
+        $findTransmission->device_oirrcID = $request->d_device_oirrc_id;
+        $findTransmission->Submitted_By = $request->d_submitted_by;
+        $findTransmission->photographer_full_name = $request->d_photographer_full_name;
+        $findTransmission->photographer_email = $request->d_photographer_email;
+        $findTransmission->save();
+
+        \Session::flash('success', 'Transmission information updated successfully.');
+
+        return redirect(route('transmissions.edit',  $id));
+    }
+
+    public function transmissionStatus(Request $request) {
+
+        $findTransmission = CrushFtpTransmission::where('id', decrypt($request->hidden_transmission_id))->first();
+
+        $findTransmission->status = $request->status;
+        $findTransmission->comment = $request->comment;
+        $findTransmission->qc_officerId = \Auth::user()->id;
+        $findTransmission->qc_officerName = \Auth::user()->name;
+        $findTransmission->save();
+
+        \Session::flash('success', 'Transmission information updated successfully.');
+
+        return redirect(route('transmissions.index'));
+
     }
 
     /**

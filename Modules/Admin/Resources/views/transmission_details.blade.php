@@ -128,7 +128,17 @@
                                             <td>{{$transmission->Subject_ID}}</td>
                                             <td>{{$transmission->visit_name}}</td>
                                             <td>{{$transmission->visit_date}}</td>
-                                            <td></td>
+                                            <td>
+                                                @if($transmission->is_read == 'yes')
+
+                                                    <span class="badge badge-info">
+                                                        {{$transmission->ImageModality}}
+                                                    </span>
+                                                    <span class="badge badge-danger">
+                                                        processed
+                                                    </span>
+                                                @endif
+                                            </td>
                                             <td>
                                                 @if($transmission->status == 'accepted')
 
@@ -137,18 +147,17 @@
 
                                                 @elseif ($transmission->status == 'onhold' || $transmission->status == 'pending')
 
-                                                    <span class="badge badge-warning">{{$transmission->status}}
+                                                    <span class="badge badge-warning" onclick="transmissionStatus('{{encrypt($transmission->id)}}', '{{$transmission->status}}')">{{$transmission->status}}
                                                     </span>
                                                 @else
 
                                                 @endif
                                             </td>
                                             <td>
-                                                <a href="javascript:void(0)" id="edit-subject" class="" data-id="" data-url="" title="Edit Details">
-                                                    <i class="fa fa-pen"></i>
-                                                </a>
-                                                &nbsp;|&nbsp;
-                                                 <a href="{{route('transmissions.show', encrypt($transmission->id))}}" id="view-transmission" class="" data-id="" title="View details" data-url="">
+                                                
+                                                &nbsp; &nbsp;
+                                                &nbsp; &nbsp;
+                                                 <a href="{{route('transmissions.edit', encrypt($transmission->id))}}" id="view-transmission" class="" data-id="" title="Edit Transmission Details" data-url="">
                                                     <i class="far fa-eye"></i>
                                                 </a>
                                             </td>
@@ -170,6 +179,47 @@
             </div>
         </div>
         <!-- END: Card DATA-->
+    </div>
+
+    <!-- transmission status modal  -->
+    <!-- Modal -->
+    <div class="modal fade" id="transmission-status-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-color: #1e3d73;">
+          <div class="modal-header bg-primary" style="color: #fff">
+            <h5 class="modal-title" id="exampleModalLabel">Change Transmission Status</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"  style="color: #fff">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+            <form action="{{ route('transmissions-status') }}" method="POST" class="transmission-status-form">
+                @csrf
+              <div class="modal-body">
+                    <input type="hidden" name="hidden_transmission_id" value="">
+                    <div class="form-group col-md-12">
+                        <label>Change Status</label>
+                        <select name="status" id="status" class="form-control" required="required">
+                            <option value="">Select Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="accepted">Accepted</option>
+                            <option value="rejected">Reject</option>
+                            <option value="onhold">On-Hold</option>
+                            <option value="query_opened">Open Query</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <label>Comments / Query Text for site coordinator</label>
+                        <textarea class="form-control" name="comment" value="" rows="4" required=""></textarea>
+                    </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Change Status</button>
+              </div>
+            </form>
+        </div>
+      </div>
     </div>
 
 @endsection
@@ -208,6 +258,16 @@
         // submit the filter form
         $('.filter-form').submit();
     });
+
+    function transmissionStatus(transmissionId, transmissionStatus) {
+
+        // assign transmission id
+        $('.transmission-status-form').find($('input[name="hidden_transmission_id"]')).val(transmissionId);
+        // assign status
+        $('.transmission-status-form').find($('select[name="status"]')).val(transmissionStatus);
+        $('.transmission-status-form').find($('textarea[name="comment"]')).val('');
+        $('#transmission-status-modal').modal('show');
+    }
 
 </script>
 
