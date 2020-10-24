@@ -6,7 +6,6 @@
         <option value="{{$user->id}}">{{$user->name}}</option>
     @endforeach
 </select>
-
 <script src="{{ asset("dist/vendors/select2/js/select2.full.min.js") }}"></script>
 <script src="{{ asset("dist/js/select2.script.js") }}"></script>
 

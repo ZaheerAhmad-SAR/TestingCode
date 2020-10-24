@@ -462,7 +462,7 @@
                                 <div class="form-group row commentsInput" style="display: none;">
                                     <label for="Name" class="col-sm-2 col-form-label">Enter your Query</label>
                                     <div class="col-sm-10">
-                                        <textarea class="summernote" name="reply" id="reply"></textarea>
+                                        <textarea class="summernote-inline" name="reply" id="reply"></textarea>
                                     </div>
                                 </div>
                             </div>
