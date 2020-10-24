@@ -394,6 +394,9 @@ class TransmissionController extends Controller
                 $getSubject->study_eye = $findTransmission->StudyEye;
                 $getSubject->save();
 
+                // assign ID to pointer
+                $getSubject->id = $subjectID;
+
             } // subject check is end
 
             /////////////////// Phase /////////////////////////////////////////////////
@@ -412,11 +415,14 @@ class TransmissionController extends Controller
                 $getPhase->name = $findTransmission->visit_name;
                 $getPhase->save();
 
+                // assign ID to pointer
+                $getPhase->id = $phaseID;
+                
             } // phase check is end
 
             // check for visit date
-            $getSubjectPhase = SubjectsPhases::where('subject_id', $subjectID)
-                                              ->where('phase_id', $phaseID)
+            $getSubjectPhase = SubjectsPhases::where('subject_id', $getSubject->id)
+                                              ->where('phase_id', $getPhase->id)
                                               ->first();
 
 
@@ -424,14 +430,14 @@ class TransmissionController extends Controller
                 // insert into subject phases
                 $getSubjectPhase = new SubjectsPhases;
                 $getSubjectPhase->id = Str::uuid();
-                $getSubjectPhase->subject_id = $subjectID;
-                $getSubjectPhase->phase_id = $phaseID;
+                $getSubjectPhase->subject_id = $getSubject->id;
+                $getSubjectPhase->phase_id = $getPhase->id;
                 $getSubjectPhase->visit_date = $findTransmission->visit_date;
                 $getSubjectPhase->save();
             } // subject phases check is end
 
 
-            dd('StudyID:  '.$getStudy->id.'???????  SiteID:   '.$getSite->id.'???????  Primary INV:    '.$getPrimaryInvestigator->id.'???????   Photographer:     '.$getPhotographer->id.'???????   Modality:    '.$getModality->id.'???????   Subject ID:    '.$getSubject->id.'???????   PhaseID:    '.$getPhase->id.'???????   SubjectPhaseID:      '.$getSubjectPhase->id);
+            // dd('StudyID:  '.$getStudy->id.'???????  SiteID:   '.$getSite->id.'???????  Primary INV:    '.$getPrimaryInvestigator->id.'???????   Photographer:     '.$getPhotographer->id.'???????   Modality:    '.$getModality->id.'???????   Subject ID:    '.$getSubject->id.'???????   PhaseID:    '.$getPhase->id.'???????   SubjectPhaseID:      '.$getSubjectPhase->id);
 
         } // status check ends
 

@@ -55,7 +55,7 @@ class LoginController extends Controller
             return redirect('2fa/validate');
         }
 
-        return redirect()->intended($this->redirectTo);
+        return redirect(route('studies.index'));
     }
 
 /*    private function authenticated(Request $request, Authenticatable $user)
@@ -115,6 +115,6 @@ class LoginController extends Controller
         //login and redirect user
         Auth::loginUsingId($userId);
 
-        return redirect()->intended($this->redirectTo);
+        return redirect(route('studies.index'));
     }
 }

@@ -1920,6 +1920,7 @@
         },
         {
             "name": "nesbot/carbon",
+
             "version": "2.41.5",
             "source": {
                 "type": "git",
@@ -2005,7 +2006,9 @@
                     "type": "tidelift"
                 }
             ],
+
             "time": "2020-10-23T06:02:30+00:00"
+
         },
         {
             "name": "nikic/php-parser",
@@ -4224,7 +4227,9 @@
                     "type": "tidelift"
                 }
             ],
+
             "time": "2020-10-23T09:01:57+00:00"
+
         },
         {
             "name": "symfony/polyfill-iconv",
@@ -4301,7 +4306,9 @@
                     "type": "tidelift"
                 }
             ],
+
             "time": "2020-10-23T09:01:57+00:00"
+
         },
         {
             "name": "symfony/polyfill-intl-grapheme",
@@ -4464,7 +4471,9 @@
                     "type": "tidelift"
                 }
             ],
+
             "time": "2020-10-21T09:57:48+00:00"
+
         },
         {
             "name": "symfony/polyfill-intl-normalizer",
@@ -4545,7 +4554,9 @@
                     "type": "tidelift"
                 }
             ],
+
             "time": "2020-10-23T09:01:57+00:00"
+
         },
         {
             "name": "symfony/polyfill-mbstring",
@@ -4622,7 +4633,9 @@
                     "type": "tidelift"
                 }
             ],
+
             "time": "2020-10-23T09:01:57+00:00"
+
         },
         {
             "name": "symfony/polyfill-php70",
@@ -4699,7 +4712,9 @@
                     "type": "tidelift"
                 }
             ],
+
             "time": "2020-10-23T09:01:57+00:00"
+
         },
         {
             "name": "symfony/polyfill-php72",
@@ -4772,7 +4787,9 @@
                     "type": "tidelift"
                 }
             ],
+
             "time": "2020-10-23T09:01:57+00:00"
+
         },
         {
             "name": "symfony/polyfill-php73",
@@ -4848,7 +4865,9 @@
                     "type": "tidelift"
                 }
             ],
+
             "time": "2020-10-23T09:01:57+00:00"
+
         },
         {
             "name": "symfony/polyfill-php80",
@@ -4928,7 +4947,9 @@
                     "type": "tidelift"
                 }
             ],
+
             "time": "2020-10-23T09:01:57+00:00"
+
         },
         {
             "name": "symfony/process",
