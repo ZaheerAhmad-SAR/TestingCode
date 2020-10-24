@@ -19,7 +19,7 @@ class Answer extends Model
 
     public static function getAnswerQuery($answerArray)
     {
-        return Answer::where(function ($q) use ($answerArray) {
+        return self::where(function ($q) use ($answerArray) {
             foreach ($answerArray as $key => $value) {
                 $q->where($key, 'like', $value);
             }

@@ -2,7 +2,11 @@
 
 namespace Modules\Admin\Traits;
 
+use Illuminate\Support\Str;
 use Modules\Admin\Entities\Answer;
+use Modules\Admin\Entities\FinalAnswer;
+use Modules\Admin\Entities\AdjudicationFormStatus;
+use Modules\Admin\Entities\QuestionAdjudicationRequired;
 
 trait AdjudicationTrait
 {
@@ -20,7 +24,13 @@ trait AdjudicationTrait
                     continue;
                 }
                 /********************************** */
+                $isAdjudicationRequired = false;
+                $finalAnswer = '';
+                $valDifference = 0;
+                $isPercentage = 'no';
                 $answersArray = [];
+                $returnData = [];
+                /********************************** */
                 $getAnswerArray = [
                     'study_id' => $getGradingFormStatusArray['study_id'],
                     'subject_id' => $getGradingFormStatusArray['subject_id'],
@@ -32,7 +42,6 @@ trait AdjudicationTrait
                 ];
                 $answersArray = Answer::getAnswersArray($getAnswerArray);
                 $numberOfAnswers = count($answersArray);
-                $returnData = [];
                 $questionAdjudicationStatusObj = $question->AdjStatus;
 
                 if ($fieldType === 'Radio') {
@@ -50,8 +59,28 @@ trait AdjudicationTrait
                 }
 
 
-                $isAdjudicationRequired = $returnData['isAdjudicationRequired'];
-                $finalAnswer = $returnData['finalAnswer'];
+                $isAdjudicationRequired = (bool)$returnData['isAdjudicationRequired'];
+                $finalAnswer = (string)$returnData['finalAnswer'];
+                $valDifference = (string)$returnData['valDifference'];
+                $isPercentage = (string)$returnData['isPercentage'];
+
+                if ($isAdjudicationRequired) {
+                    $questionAdjudicationRequiredArray_1 = [
+                        'id' => Str::uuid(),
+                        'val_difference' => $valDifference,
+                        'is_percentage' => $isPercentage,
+                        'question_id' => $question->id,
+                    ];
+                    QuestionAdjudicationRequired::create($questionAdjudicationRequiredArray + $questionAdjudicationRequiredArray_1);
+                } else {
+                    $finalAnswerArray_1 = [
+                        'id' => Str::uuid(),
+                        'answer' => $finalAnswer,
+                        'question_id' => $question->id,
+                        'field_id' => $question->formfields->id,
+                    ];
+                    FinalAnswer::create($finalAnswerArray + $finalAnswerArray_1);
+                }
             }
         }
     }
@@ -60,6 +89,10 @@ trait AdjudicationTrait
     {
         $isAdjudicationRequired = false;
         $finalAnswer = 0;
+        $valDifference = 0;
+        $isPercentage = 'no';
+        $retArray = [];
+
         $sumOfAnswers = array_sum($answersArray);
         $averageOfSumOfAnswers = $sumOfAnswers / count($answersArray);
 
@@ -70,30 +103,51 @@ trait AdjudicationTrait
             $customValue = $questionAdjudicationStatusObj->custom_value;
 
             if ($decisionBasedOn == 'custom') {
-                $isAdjudicationRequired = self::customAdjudication($numberOfAnswers, $answersArray, $operator, $customValue);
+                $retArray = self::customAdjudication($numberOfAnswers, $answersArray, $operator, $customValue);
+                $isAdjudicationRequired = $retArray['isAdjudicationRequired'];
+                $valDifference = $retArray['valDifference'];
             } elseif ($decisionBasedOn == 'percentage') {
-                $isAdjudicationRequired = self::percentageAdjudication($numberOfAnswers, $answersArray, $operator, $customValue);
+                $retArray = self::percentageAdjudication($numberOfAnswers, $answersArray, $operator, $customValue);
+                $isAdjudicationRequired = $retArray['isAdjudicationRequired'];
+                $valDifference = $retArray['valDifference'];
+                $isPercentage = 'yes';
             } else {
-                $isAdjudicationRequired = self::anyChangeAdjudication($numberOfAnswers, $answersArray);
+                $retArray = self::anyChangeAdjudication($numberOfAnswers, $answersArray);
+                $isAdjudicationRequired = $retArray['isAdjudicationRequired'];
+                $valDifference = $retArray['valDifference'];
             }
         }
         if ($isAdjudicationRequired === false) {
             $finalAnswer = $averageOfSumOfAnswers;
         }
-        return ['isAdjudicationRequired' => $isAdjudicationRequired, 'finalAnswer' => $finalAnswer];
+
+        return [
+            'isAdjudicationRequired' => $isAdjudicationRequired,
+            'finalAnswer' => $finalAnswer,
+            'valDifference' => $valDifference,
+            'isPercentage' => $isPercentage,
+        ];
     }
 
     public static function checkAdjudicationForText($questionAdjudicationStatusObj, $numberOfAnswers, $answersArray)
     {
         $isAdjudicationRequired = false;
         $finalAnswer = 0;
+        $valDifference = 0;
         if ($questionAdjudicationStatusObj->adj_status == 'yes') {
-            $isAdjudicationRequired = self::anyChangeAdjudication($numberOfAnswers, $answersArray);
+            $retArray = self::anyChangeAdjudication($numberOfAnswers, $answersArray);
+            $isAdjudicationRequired = $retArray['isAdjudicationRequired'];
+            $valDifference = $retArray['valDifference'];
         }
         if ($isAdjudicationRequired === false) {
-            $finalAnswer = $answersArray[0];
+            $finalAnswer = (string)trim($answersArray[0]);
         }
-        return ['isAdjudicationRequired' => $isAdjudicationRequired, 'finalAnswer' => $finalAnswer];
+        return [
+            'isAdjudicationRequired' => $isAdjudicationRequired,
+            'finalAnswer' => $finalAnswer,
+            'valDifference' => $valDifference,
+            'isPercentage' => 'no',
+        ];
     }
 
     public static function checkAdjudicationForRadio($questionAdjudicationStatusObj, $answersArray)
@@ -114,7 +168,12 @@ trait AdjudicationTrait
             arsort($countedArray);
             $finalAnswer = array_keys($countedArray)[0];
         }
-        return ['isAdjudicationRequired' => $isAdjudicationRequired, 'finalAnswer' => $finalAnswer];
+        return [
+            'isAdjudicationRequired' => $isAdjudicationRequired,
+            'finalAnswer' => $finalAnswer,
+            'valDifference' => 0,
+            'isPercentage' => 'no',
+        ];
     }
 
     public static function checkAdjudicationForCheckBox($questionAdjudicationStatusObj, $answersArray)
@@ -135,159 +194,152 @@ trait AdjudicationTrait
             arsort($countedArray);
             $finalAnswer = array_keys($countedArray)[0];
         }
-
-        return ['isAdjudicationRequired' => $isAdjudicationRequired, 'finalAnswer' => $finalAnswer];
+        return [
+            'isAdjudicationRequired' => $isAdjudicationRequired,
+            'finalAnswer' => $finalAnswer,
+            'valDifference' => 0,
+            'isPercentage' => 'no',
+        ];
     }
 
     public static function anyChangeAdjudication($numberOfAnswers, $answersArray)
     {
+
         $isAdjudicationRequired = false;
         if ($numberOfAnswers >= 2) {
-            if ($answersArray[0] != $answersArray[1]) {
+            if ((string)trim($answersArray[0]) != (string)trim($answersArray[1])) {
                 $isAdjudicationRequired = true;
             }
         }
-        if ($numberOfAnswers >= 3) {
+        if ($numberOfAnswers >= 3 && ($isAdjudicationRequired === false)) {
             if (
-                ($answersArray[0] != $answersArray[2]) ||
-                ($answersArray[1] != $answersArray[2])
+                ((string)trim($answersArray[0]) != (string)trim($answersArray[2])) ||
+                ((string)trim($answersArray[1]) != (string)trim($answersArray[2]))
             ) {
                 $isAdjudicationRequired = true;
             }
         }
-        if ($numberOfAnswers >= 4) {
+        if ($numberOfAnswers >= 4 && ($isAdjudicationRequired === false)) {
             if (
-                ($answersArray[0] != $answersArray[3]) ||
-                ($answersArray[1] != $answersArray[3]) ||
-                ($answersArray[2] != $answersArray[3])
+                ((string)trim($answersArray[0]) != (string)trim($answersArray[3])) ||
+                ((string)trim($answersArray[1]) != (string)trim($answersArray[3])) ||
+                ((string)trim($answersArray[2]) != (string)trim($answersArray[3]))
             ) {
                 $isAdjudicationRequired = true;
             }
         }
-        return $isAdjudicationRequired;
+
+        return [
+            'isAdjudicationRequired' => $isAdjudicationRequired,
+            'valDifference' => 0,
+        ];
     }
 
     public static function customAdjudication($numberOfAnswers, $answersArray, $operator, $customValue)
     {
         $isAdjudicationRequired = false;
-        $isAdjudicationRequired_1 = false;
-        $isAdjudicationRequired_2 = false;
-        $isAdjudicationRequired_3 = false;
-        $isAdjudicationRequired_4 = false;
-        $isAdjudicationRequired_5 = false;
-        $isAdjudicationRequired_6 = false;
+        $valDifference = 0;
 
         if ($numberOfAnswers >= 2) {
-            $difference = $answersArray[0] - $answersArray[1];
-            $isAdjudicationRequired_1 = self::checkDifference($operator, $difference, $customValue);
+            $valDifference = (float)trim($answersArray[0]) - (float)trim($answersArray[1]);
+            $isAdjudicationRequired = self::checkDifference($operator, $valDifference, $customValue);
         }
-        if ($numberOfAnswers >= 3) {
-
-            $difference = $answersArray[0] - $answersArray[2];
-            $isAdjudicationRequired_2 = self::checkDifference($operator, $difference, $customValue);
-
-            $difference = $answersArray[1] - $answersArray[2];
-            $isAdjudicationRequired_3 = self::checkDifference($operator, $difference, $customValue);
+        if ($numberOfAnswers >= 3 && ($isAdjudicationRequired === false)) {
+            if ($isAdjudicationRequired === false) {
+                $valDifference = (float)trim($answersArray[0]) - (float)trim($answersArray[2]);
+                $isAdjudicationRequired = self::checkDifference($operator, $valDifference, $customValue);
+            }
+            if ($isAdjudicationRequired === false) {
+                $valDifference = (float)trim($answersArray[1]) - (float)trim($answersArray[2]);
+                $isAdjudicationRequired = self::checkDifference($operator, $valDifference, $customValue);
+            }
         }
-        if ($numberOfAnswers >= 4) {
-
-            $difference = $answersArray[0] - $answersArray[3];
-            $isAdjudicationRequired_4 = self::checkDifference($operator, $difference, $customValue);
-
-            $difference = $answersArray[1] - $answersArray[3];
-            $isAdjudicationRequired_5 = self::checkDifference($operator, $difference, $customValue);
-
-            $difference = $answersArray[2] - $answersArray[3];
-            $isAdjudicationRequired_6 = self::checkDifference($operator, $difference, $customValue);
-        }
-
-        if (
-            $isAdjudicationRequired_1 == true ||
-            $isAdjudicationRequired_2 == true ||
-            $isAdjudicationRequired_3 == true ||
-            $isAdjudicationRequired_4 == true ||
-            $isAdjudicationRequired_5 == true ||
-            $isAdjudicationRequired_6 == true
-        ) {
-            $isAdjudicationRequired = true;
+        if ($numberOfAnswers >= 4 && ($isAdjudicationRequired === false)) {
+            if ($isAdjudicationRequired === false) {
+                $valDifference = (float)trim($answersArray[0]) - (float)trim($answersArray[3]);
+                $isAdjudicationRequired = self::checkDifference($operator, $valDifference, $customValue);
+            }
+            if ($isAdjudicationRequired === false) {
+                $valDifference = (float)trim($answersArray[1]) - (float)trim($answersArray[3]);
+                $isAdjudicationRequired = self::checkDifference($operator, $valDifference, $customValue);
+            }
+            if ($isAdjudicationRequired === false) {
+                $valDifference = (float)trim($answersArray[2]) - (float)trim($answersArray[3]);
+                $isAdjudicationRequired = self::checkDifference($operator, $valDifference, $customValue);
+            }
         }
 
-        return $isAdjudicationRequired;
+        return [
+            'isAdjudicationRequired' => $isAdjudicationRequired,
+            'valDifference' => $valDifference,
+        ];
     }
 
     public static function percentageAdjudication($numberOfAnswers, $answersArray, $operator, $customValue)
     {
         sort($answersArray);
         $isAdjudicationRequired = false;
-        $isAdjudicationRequired_1 = false;
-        $isAdjudicationRequired_2 = false;
-        $isAdjudicationRequired_3 = false;
-        $isAdjudicationRequired_4 = false;
-        $isAdjudicationRequired_5 = false;
-        $isAdjudicationRequired_6 = false;
+        $valDifference = 0;
 
         if ($numberOfAnswers >= 2) {
-            $difference = $answersArray[0] - $answersArray[1];
-            $percentage = ($difference / $answersArray[0]) * 100;
-            $isAdjudicationRequired_1 = self::checkDifference($operator, $percentage, $customValue);
+            $valDifference = (float)trim($answersArray[0]) - (float)trim($answersArray[1]);
+            $percentage = ($valDifference / (float)trim($answersArray[0])) * 100;
+            $isAdjudicationRequired = self::checkDifference($operator, $percentage, $customValue);
         }
-        if ($numberOfAnswers >= 3) {
-
-            $difference = $answersArray[0] - $answersArray[2];
-            $percentage = ($difference / $answersArray[0]) * 100;
-            $isAdjudicationRequired_2 = self::checkDifference($operator, $percentage, $customValue);
-
-            $difference = $answersArray[1] - $answersArray[2];
-            $percentage = ($difference / $answersArray[1]) * 100;
-            $isAdjudicationRequired_3 = self::checkDifference($operator, $percentage, $customValue);
+        if ($numberOfAnswers >= 3 && ($isAdjudicationRequired === false)) {
+            if ($isAdjudicationRequired === false) {
+                $valDifference = (float)trim($answersArray[0]) - (float)trim($answersArray[2]);
+                $percentage = ($valDifference / (float)trim($answersArray[0])) * 100;
+                $isAdjudicationRequired = self::checkDifference($operator, $percentage, $customValue);
+            }
+            if ($isAdjudicationRequired === false) {
+                $valDifference = (float)trim($answersArray[1]) - (float)trim($answersArray[2]);
+                $percentage = ($valDifference / (float)trim($answersArray[1])) * 100;
+                $isAdjudicationRequired = self::checkDifference($operator, $percentage, $customValue);
+            }
         }
-        if ($numberOfAnswers >= 4) {
-
-            $difference = $answersArray[0] - $answersArray[3];
-            $percentage = ($difference / $answersArray[0]) * 100;
-            $isAdjudicationRequired_4 = self::checkDifference($operator, $percentage, $customValue);
-
-            $difference = $answersArray[1] - $answersArray[3];
-            $percentage = ($difference / $answersArray[1]) * 100;
-            $isAdjudicationRequired_5 = self::checkDifference($operator, $percentage, $customValue);
-
-            $difference = $answersArray[2] - $answersArray[3];
-            $percentage = ($difference / $answersArray[2]) * 100;
-            $isAdjudicationRequired_6 = self::checkDifference($operator, $percentage, $customValue);
-        }
-
-        if (
-            $isAdjudicationRequired_1 == true ||
-            $isAdjudicationRequired_2 == true ||
-            $isAdjudicationRequired_3 == true ||
-            $isAdjudicationRequired_4 == true ||
-            $isAdjudicationRequired_5 == true ||
-            $isAdjudicationRequired_6 == true
-        ) {
-            $isAdjudicationRequired = true;
+        if ($numberOfAnswers >= 4 && ($isAdjudicationRequired === false)) {
+            if ($isAdjudicationRequired === false) {
+                $valDifference = (float)trim($answersArray[0]) - (float)trim($answersArray[3]);
+                $percentage = ($valDifference / (float)trim($answersArray[0])) * 100;
+                $isAdjudicationRequired = self::checkDifference($operator, $percentage, $customValue);
+            }
+            if ($isAdjudicationRequired === false) {
+                $valDifference = (float)trim($answersArray[1]) - (float)trim($answersArray[3]);
+                $percentage = ($valDifference / (float)trim($answersArray[1])) * 100;
+                $isAdjudicationRequired = self::checkDifference($operator, $percentage, $customValue);
+            }
+            if ($isAdjudicationRequired === false) {
+                $valDifference = (float)trim($answersArray[2]) - (float)trim($answersArray[3]);
+                $percentage = ($valDifference / (float)trim($answersArray[2])) * 100;
+                $isAdjudicationRequired = self::checkDifference($operator, $percentage, $customValue);
+            }
         }
 
-        return $isAdjudicationRequired;
+        return [
+            'isAdjudicationRequired' => $isAdjudicationRequired,
+            'valDifference' => $valDifference,
+        ];
     }
 
-    public static function checkDifference($operator, $difference, $customValue)
+    public static function checkDifference($operator, $valDifference, $customValue)
     {
-        $difference = abs($difference);
+        $valDifference = abs($valDifference);
         $isAdjudicationRequired = false;
         if ($operator == '>=') {
-            if ($difference >= $customValue) {
+            if ($valDifference >= $customValue) {
                 $isAdjudicationRequired = true;
             }
         } elseif ($operator == '>') {
-            if ($difference > $customValue) {
+            if ($valDifference > $customValue) {
                 $isAdjudicationRequired = true;
             }
         } elseif ($operator == '<=') {
-            if ($difference <= $customValue) {
+            if ($valDifference <= $customValue) {
                 $isAdjudicationRequired = true;
             }
         } elseif ($operator == '<') {
-            if ($difference < $customValue) {
+            if ($valDifference < $customValue) {
                 $isAdjudicationRequired = true;
             }
         }

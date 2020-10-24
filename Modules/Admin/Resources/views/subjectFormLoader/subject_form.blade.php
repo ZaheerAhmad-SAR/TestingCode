@@ -237,14 +237,13 @@
                                                 'sections'=> $sections,
                                                 'phaseIdStr'=>$phaseIdStr,
                                                 'form_filled_by_user_id' => $form_filled_by_user_id,
-                                                'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
                                                 'firstStep' => $firstStep,
                                                 'stepClsStr' => $stepClsStr,
                                                 'stepIdStr' => $stepIdStr,
                                                 ];
                                                 @endphp
-                                                    @include('admin::forms.section_loop', $dataArray)
-                                                    @include('admin::forms.adjudication_form', $dataArray)
+                                                @include('admin::forms.section_loop', $dataArray)
+                                                @include('admin::forms.adjudication_form', $dataArray)
                                                 @php
                                                 }
                                                 $firstStep = false;
@@ -265,3 +264,4 @@
         @include('admin::subjectFormLoader.assignPhasesToSubjectPopup')
     @stop
     @include('admin::subjectFormLoader.subject_form_css_js')
+    @include('admin::subjectFormLoader.subject_adjudication_form_css_js')

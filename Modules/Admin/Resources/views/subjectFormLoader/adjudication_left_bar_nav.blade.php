@@ -7,7 +7,7 @@ $getGradingFormStatusArray = [
 'form_type_id' => $step->form_type_id,
 ];
 
-$getFormAdjudicationStatusArray = [
+$getAdjudicationFormStatusArray = [
 'form_adjudicated_by_id' => $form_filled_by_user_id,
 'subject_id' => $subjectId,
 'study_id' => $studyId,
@@ -23,8 +23,8 @@ $getFormAdjudicationStatusArray = [
             Adjudication
             @php
             echo
-            \Modules\Admin\Entities\FormAdjudicationStatus::getFormAdjudicationStatus($step,
-            $getFormAdjudicationStatusArray, true);
+            \Modules\Admin\Entities\AdjudicationFormStatus::getAdjudicationFormStatus($step,
+            $getAdjudicationFormStatusArray, true);
             @endphp
         </a>
         <br>

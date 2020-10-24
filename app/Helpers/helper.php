@@ -644,6 +644,11 @@ function buildGradingStatusIdClsStr($id)
     return buildSafeStr($id, 'img_grading_form_status_');
 }
 
+function buildAdjudicationStatusIdClsStr($id)
+{
+    return buildSafeStr($id, 'img_adjudication_form_status_');
+}
+
 function canQualityControl()
 {
     $retVal = false;

@@ -7,7 +7,7 @@ $getGradingFormStatusArray = [
     'form_type_id' => $step->form_type_id,
 ];
 
-$getFormAdjudicationStatusArray = [
+$getAdjudicationFormStatusArray = [
     'subject_id' => $subjectId,
     'study_id' => $studyId,
     'study_structures_id' => $phase->id,
@@ -24,7 +24,6 @@ $dataArray = [
     'sections'=> $sections,
     'phaseIdStr'=>$phaseIdStr,
     'form_filled_by_user_id' => $form_filled_by_user_id,
-    'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
     'firstStep' => $firstStep,
     'stepClsStr' => $stepClsStr,
     'stepIdStr' => $stepIdStr,

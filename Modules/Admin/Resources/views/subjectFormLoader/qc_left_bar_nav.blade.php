@@ -6,7 +6,6 @@ $getFormQCStatusArray = [
 'phase_steps_id' => $step->step_id,
 'form_type_id' => $step->form_type_id,
 'form_filled_by_user_id' => $form_filled_by_user_id,
-'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
 ];
 @endphp
 @if (canQualityControl())

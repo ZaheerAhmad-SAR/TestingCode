@@ -6,6 +6,7 @@ use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Modules\Admin\Traits\AdjudicationTrait;
+use Modules\Admin\Scopes\FormStatusOrderByScope;
 use Modules\Admin\Entities\PhaseSteps;
 
 class FormStatus extends Model
@@ -22,6 +23,12 @@ class FormStatus extends Model
         'form_type_id' => 0,
         'form_filled_by_user_id' => 'no-user-id',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new FormStatusOrderByScope);
+    }
 
     public function user()
     {
@@ -40,7 +47,7 @@ class FormStatus extends Model
 
     public static function getFormStatusObjQuery($getFormStatusArray)
     {
-        $formStatusObjectQuery = Self::where(function ($q) use ($getFormStatusArray) {
+        $formStatusObjectQuery = self::where(function ($q) use ($getFormStatusArray) {
             foreach ($getFormStatusArray as $key => $value) {
                 $q->where($key, 'like', (string)$value);
             }
@@ -162,10 +169,8 @@ class FormStatus extends Model
     public static function putFormStatus($request)
     {
         $form_filled_by_user_id = auth()->user()->id;
-        $form_filled_by_user_role_id = auth()->user()->id;
         $getFormStatusArray = [
             'form_filled_by_user_id' => $form_filled_by_user_id,
-            'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
             'subject_id' => $request->subjectId,
             'study_id' => $request->studyId,
             'study_structures_id' => $request->phaseId,
@@ -181,6 +186,7 @@ class FormStatus extends Model
             $formStatusObj->form_status = 'complete';
             $formStatusObj->update();
 
+
             if ($formStatusObj->form_type_id == 2) {
                 $step = PhaseSteps::find($request->stepId);
                 $getGradingFormStatusArray = [
@@ -190,6 +196,7 @@ class FormStatus extends Model
                     'phase_steps_id' => $request->stepId,
                     'modility_id' => $request->modilityId,
                 ];
+
                 if (self::isAllGradersGradedThatForm($step, $getGradingFormStatusArray)) {
                     self::runAdjudicationCheckForThisStep($step, $getGradingFormStatusArray);
                 }

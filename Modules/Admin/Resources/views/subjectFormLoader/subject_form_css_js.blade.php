@@ -203,14 +203,6 @@
                 alert(error);
             }
 
-            function reloadPage(waitSeconds) {
-                startWait();
-                var seconds = waitSeconds * 1000;
-                setTimeout(function() {
-                   location.reload();
-               }, seconds);
-            }
-
             function checkTermCond(stepIdStr) {
                 if ($('#terms_cond_' + stepIdStr).prop('checked')) {
                     return true;
@@ -357,6 +349,14 @@
                     }
                 });
 
+            }
+
+            function reloadPage(waitSeconds) {
+                startWait();
+                var seconds = waitSeconds * 1000;
+                setTimeout(function() {
+                   location.reload();
+               }, seconds);
             }
         </script>
     @endpush

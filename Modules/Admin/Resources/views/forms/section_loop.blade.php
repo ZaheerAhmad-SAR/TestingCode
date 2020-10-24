@@ -1,8 +1,8 @@
+@if (canQualityControl() || canGrading())
 <div class="all_step_sections step_sections_{{ $stepIdStr }}" style="display: {{ $firstStep ? 'block' : 'none' }};">
 @php
 $getFormStatusArray = [
     'form_filled_by_user_id' => $form_filled_by_user_id,
-    'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
     'subject_id' => $subjectId,
     'study_id' => $studyId,
     'study_structures_id' => $phase->id,
@@ -34,7 +34,6 @@ $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'no_status'
                             <ul class="nav nav-tabs d-block d-sm-flex">
                                 @php
                                 $form_filled_by_user_id = ($form_filled_by_user_id ?? '');
-                                $form_filled_by_user_role_id = ($form_filled_by_user_role_id ?? '');
                                 $subjectId = ($subjectId ?? '');
                                 $studyId = ($studyId ?? '');
                                 $studyClsStr = ($studyClsStr ?? '');
@@ -147,3 +146,4 @@ $formStatus = (null !== $formStatusObj)? $formStatusObj->form_status:'no_status'
 
     </script>
 @endpush
+@endif

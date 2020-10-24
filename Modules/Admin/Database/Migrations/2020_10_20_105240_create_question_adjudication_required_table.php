@@ -22,7 +22,7 @@ class CreateQuestionAdjudicationRequiredTable extends Migration
             $table->uuid('section_id')->nullable();
             $table->uuid('question_id')->nullable();
             $table->string('val_difference', 10)->nullable();
-            $table->tinyInteger('is_percentage')->default(0)->nullable();
+            $table->string('is_percentage')->default('no')->nullable();
             $table->timestamps();
         });
     }

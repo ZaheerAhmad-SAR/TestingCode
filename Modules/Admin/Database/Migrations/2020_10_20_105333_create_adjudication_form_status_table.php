@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFormAdjudicationStatusTable extends Migration
+class CreateAdjudicationFormStatusTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateFormAdjudicationStatusTable extends Migration
      */
     public function up()
     {
-        Schema::create('form_adjudication_status', function (Blueprint $table) {
+        Schema::create('adjudication_form_status', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
             $table->uuid('form_adjudicated_by_id')->nullable();
             $table->uuid('subject_id')->nullable();
@@ -34,6 +34,6 @@ class CreateFormAdjudicationStatusTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('form_adjudication_status');
+        Schema::dropIfExists('adjudication_form_status');
     }
 }
