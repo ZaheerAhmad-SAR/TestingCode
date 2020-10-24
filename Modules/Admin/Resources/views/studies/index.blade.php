@@ -695,7 +695,8 @@
                 // $('.replyClick').css('display','');
                 var query_id = results[0].parent_query_id;
                 showComments(query_id);
-                $("#replyForm")[0].reset();
+                //$("#replyForm")[0].reset();
+                $('#summernote').summernote('disable');
                 $("#reply").summernote("reset");
             },
             error: function (results) {

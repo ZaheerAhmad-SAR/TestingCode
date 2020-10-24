@@ -2,8 +2,12 @@
 
 @section('title')
     <title> Sites | {{ config('app.name', 'Laravel') }}</title>
+    {{--Transmission style --}}
+    <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2.min.css") }}"/>
+    <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
+    <link rel="stylesheet" href="{{ asset("dist/vendors/summernote/summernote-bs4.css") }}">
+    {{--Transmission style --}}
 @stop
-
 
 @section('content')
 
@@ -26,6 +30,7 @@
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                         <li class="breadcrumb-item">Dashboard</li>
                         <li class="breadcrumb-item">Sites</li>
+                        <li class="breadcrumb-item creatNewTransmissions">Transmissions</li>
                     </ol>
                 </div>
             </div>
@@ -700,13 +705,109 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="transmissonModal" aria-labelledby="exampleModalQueries" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header ">
+                    <p class="modal-title">Transmisson Query</p>
+                </div>
+                <form id="queriesForm" name="queriesForm">
+                    <div class="modal-body">
+                        <div id="exTab1">
+                            <div class="tab-content clearfix">
+                                @csrf
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-2 col-form-label"> Sites :</label>
+                                    <div class="col-sm-5">
+                                            <select class="form-control sitesChange" name="site_name" id="site_name">
+                                                <option value="">--Select Sites--</option>
+                                                @foreach($siteForTransmissions as $transmission)
+                                                <option value="{{$transmission->id}}">{{$transmission->site_name}}</option>
+                                                @endforeach
+                                            </select>
+                                    </div>
+                                    <div class="col-sm-5">
+                                            <select name="users" id="users" class="form-control">
+                                                <option value="">--Select User--</option>
+                                                <option value="volvo">Volvo</option>
+                                            </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-2 col-form-label">CC:</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="text" name="query_subject" minlength="6" maxlength="50" id="query_subject">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-2 col-form-label">Query Subject:</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="text" name="query_subject" minlength="6" maxlength="50" id="query_subject">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row ">
+                                    <label for="Name" class="col-sm-2 col-form-label">Email Body</label>
+                                    <div class="col-sm-10">
+                                        <textarea class="summernote-inline" name="remarks" cols="2" rows="1" id="remarks"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="button" class="btn btn-outline-primary" id="savequeries"><i class="fa fa-save"></i> Send Email</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('script')
 {{--    <script src="{{asset('public/dist/js/sites.js')}}"></script>--}}
+
+<!-- Queries Model scripts start -->
+<script src="{{ asset("dist/vendors/select2/js/select2.full.min.js") }}"></script>
+<script src="{{ asset("dist/js/select2.script.js") }}"></script>
+<script src="{{ asset("dist/vendors/summernote/summernote-bs4.js") }}"></script>
+<script src="{{ asset("dist/js/summernote.script.js") }}"></script>
+
+<!-- Queries Model scripts end -->
 <script type="text/javascript">
 
-    var placeSearch, autocomplete;
+    // Transmission Work start
+    $('.creatNewTransmissions').click(function () {
+        $('#transmissonModal').modal('show');
+    });
 
+    $(".sitesChange").change(function () {
+        var selectedText = $(this).find("option:selected").text();
+        var selectedValue = $(this).val();
+        alert("Selected Text: " + selectedText + " Value: " + selectedValue);
+        getSitesUsers(selectedValue);
+    });
+
+    function getSitesUsers(selectedValue) {
+        $.ajax({
+            url:"{{route('queries.loadAllQueriesByStudyId')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'POST',
+                'study_id'      :study_id,
+            },
+            success: function(response)
+            {
+                $('.queriesList').html('');
+                $('.queriesList').html(response);
+            }
+        });
+    }
+    // Transmission Work start
+
+    var placeSearch, autocomplete;
     var componentForm = {
         street_number: 'short_name',
         route: 'long_name',
@@ -1167,8 +1268,7 @@
     addCoordinator();
     // End of Coordinator
 
-    function showOthers()
-    {
+    function showOthers() {
         $('body').on('click', '.editOthers', function (e) {
             $.ajaxSetup({
                 headers: {
@@ -1204,8 +1304,7 @@
     showOthers();
 
     // Add New Others
-    function addOthers()
-    {
+    function addOthers() {
         $("#othersForm").submit(function(e) {
             var others_first_name = $('#others_first_name').val();
             var others_mid_name   = $('#others_mid_name').val();
