@@ -6,7 +6,7 @@
 
 <!-- queries modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="queries-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="alert alert-danger" style="display:none"></div>
             <div class="modal-header ">
@@ -17,10 +17,10 @@
                     <div id="exTab1">
                         <div class="tab-content clearfix">
                             @csrf
-                            <label>Current query status: &nbsp; &nbsp;<i style="color: red;" class="fas fa-question-circle"></i> &nbsp;New</label>
+                            <label class="col-form-label">Queries status: <i style="color: red; margin-left: 35px;" class="fas fa-question-circle"></i> New</label>
                             <div class="form-group row">
-                                <label for="Name" class="col-sm-4 col-form-label">Queries Assigned to:</label>
-                                <div class="col-sm-8">
+                                <label for="Name" class="col-sm-2 col-form-label">Queries Assigned to:</label>
+                                <div class="col-sm-10">
                                     <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="user"> Users</label> &nbsp;
                                     <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="role" > Roles</label>
                                 </div>
