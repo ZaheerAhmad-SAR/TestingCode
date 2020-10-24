@@ -442,8 +442,8 @@
                                     <div class="col-sm-4">
                                         <select class="form-control" name="opertaor" id="adj_operator">
                                             <option value="">---Select---</option>
-                                            <option value=">=">Greater OR Equal(percent)</option>
-                                            <option value="<=">Less OR Equal(percent)</option>
+                                            <option value=">=">Greater OR Equal</option>
+                                            <option value="<=">Less OR Equal</option>
                                             <option value=">">Greater Then</option>
                                             <option value="<">Less Then</option>
                                         </select>

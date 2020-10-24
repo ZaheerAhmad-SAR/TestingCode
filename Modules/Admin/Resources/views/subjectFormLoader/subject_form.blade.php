@@ -11,9 +11,10 @@
                         <h4 class="mb-0">Subject Phases</h4>
                     </div>
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
-                    <li class="breadcrumb-item"><a href="{{ url('dashboard') }}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ url('dashboard') }}">Home</a></li>
                         <li class="breadcrumb-item"><a href="{{ url('studies') }}">Studies</a></li>
-                        <li class="breadcrumb-item active"><a href="{{ url('studies/'.$studyId) }}">Study Subjects</a></li>
+                        <li class="breadcrumb-item active"><a href="{{ url('studies/' . $studyId) }}">Study Subjects</a>
+                        </li>
                         <li class="breadcrumb-item active"><a href="javascript:void();">Form</a></li>
                     </ol>
                 </div>
@@ -75,22 +76,22 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-2">
-                                <img src="{{url('images/no_status.png')}}"/>&nbsp;&nbsp;Not Initiated
+                                <img src="{{ url('images/no_status.png') }}" />&nbsp;&nbsp;Not Initiated
                             </div>
                             <div class="col-md-2">
-                                <img src="{{url('images/incomplete.png')}}"/>&nbsp;&nbsp;Initiated
+                                <img src="{{ url('images/incomplete.png') }}" />&nbsp;&nbsp;Initiated
                             </div>
                             <div class="col-md-2">
-                                <img src="{{url('images/resumable.png')}}"/>&nbsp;&nbsp;Editing
+                                <img src="{{ url('images/resumable.png') }}" />&nbsp;&nbsp;Editing
                             </div>
                             <div class="col-md-2">
-                                <img src="{{url('images/complete.png')}}"/>&nbsp;&nbsp;Complete
+                                <img src="{{ url('images/complete.png') }}" />&nbsp;&nbsp;Complete
                             </div>
                             <div class="col-md-2">
-                                <img src="{{url('images/not_required.png')}}"/>&nbsp;&nbsp;Not Required
+                                <img src="{{ url('images/not_required.png') }}" />&nbsp;&nbsp;Not Required
                             </div>
                             <div class="col-md-2">
-                                <img src="{{url('images/query.png')}}"/>&nbsp;&nbsp;Query
+                                <img src="{{ url('images/query.png') }}" />&nbsp;&nbsp;Query
                             </div>
                         </div>
                     </div>
@@ -104,7 +105,9 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-12">
-                                <button type="button" class="btn btn-success" onclick="openAssignPhasesToSubjectPopup('{{ $studyId }}', '{{ $subjectId }}');" >Activate Visits</button>
+                                <button type="button" class="btn btn-success"
+                                    onclick="openAssignPhasesToSubjectPopup('{{ $studyId }}', '{{ $subjectId }}');">Activate
+                                    Visits</button>
                             </div>
                         </div>
                     </div>
@@ -123,7 +126,8 @@
                                     @foreach ($visitPhases as $phase)
                                         @php
                                         $phaseIdStr = buildSafeStr($phase->id, 'phase_cls_');
-                                        $subjectPhaseDetail = \Modules\Admin\Entities\SubjectsPhases::getSubjectPhase($subjectId, $phase->id);
+                                        $subjectPhaseDetail =
+                                        \Modules\Admin\Entities\SubjectsPhases::getSubjectPhase($subjectId, $phase->id);
                                         @endphp
                                         <div class="card text-white bg-primary m-1">
                                             <div id="heading{{ $phase->id }}" class="card-header {{ $phaseIdStr }}"
@@ -131,8 +135,9 @@
                                                 aria-expanded="{{ $firstPhase ? 'true' : 'false' }}"
                                                 aria-controls="collapse{{ $phase->id }}">
                                                 {{ $phase->name }}
-                                                {{ ($phase->count > 0)? ' - Repeated: '.$phase->count:'' }}<br>
-                                                {{$subjectPhaseDetail->visit_date->format('m-d-Y')}}</div>
+                                                {{ $phase->count > 0 ? ' - Repeated: ' . $phase->count : '' }}<br>
+                                                {{ $subjectPhaseDetail->visit_date->format('m-d-Y') }}
+                                            </div>
                                             <div id="collapse{{ $phase->id }}"
                                                 class="card-body collapse-body-bg collapse {{ $firstPhase ? 'show' : '' }}"
                                                 aria-labelledby="heading{{ $phase->id }}" data-parent="#accordion" style="">
@@ -140,55 +145,35 @@
                                                     @if (count($phase->phases))
                                                         @php
                                                         $firstStep = true;
-                                                        $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($phase->id);
+                                                        $steps =
+                                                        \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($phase->id);
                                                         $previousStepId = '';
                                                         @endphp
                                                         @foreach ($steps as $step)
                                                             @php
-                                                            if ($step->form_type_id == 2) {
+                                                            if ($step->form_type_id == 2 && $previousStepId != '') {
                                                                 $getQcFormStatusArray = [
-                                                                  'subject_id' => $subjectId,
+                                                                    'subject_id' => $subjectId,
                                                                     'study_id' => $studyId,
                                                                     'study_structures_id' => $phase->id,
                                                                     'phase_steps_id' => $previousStepId,
                                                                     'form_type_id' => '1',
                                                                     'modility_id' => $step->modility_id,
-                                                                    'form_filled_by_user_id' => $form_filled_by_user_id,
-                                                                    'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
                                                                 ];
-                                                                $qcFormStatus = \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getQcFormStatusArray);
+                                                                $qcFormStatus =
+                                                                \Modules\Admin\Entities\FormStatus::getFormStatus($step,
+                                                                $getQcFormStatusArray);
                                                                 if($qcFormStatus !== 'complete'){
                                                                     continue;
                                                                 }
                                                             }
-
                                                             $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                                                             $stepIdStr = buildSafeStr($step->step_id, '');
                                                             @endphp
-                                                            <a class="badge p-1 badge-light m-1  {{ $stepClsStr }}"
-                                                                href="javascript:void(0);"
-                                                                onclick="showSections('step_sections_{{ $stepIdStr }}');">
-                                                                {{ $step->formType->form_type . ' ' . $step->step_name }}
-                                                                @php
-                                                                $getFormStatusArray = [
-                                                                  'subject_id' => $subjectId,
-                                                                    'study_id' => $studyId,
-                                                                    'study_structures_id' => $phase->id,
-                                                                    'phase_steps_id' => $step->step_id,
-                                                                    'form_type_id' => $step->form_type_id,
-                                                                ];
-                                                                if ($step->form_type_id == 2) {
-                                                                    echo \Modules\Admin\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray);
-                                                                }else{
-                                                                    $getFormStatusArray2 = [
-                                                                    'form_filled_by_user_id' => $form_filled_by_user_id,
-                                                                    'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
-                                                                ];
-                                                                echo \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray+$getFormStatusArray2, true);
-                                                                }
-                                                                @endphp
-                                                            </a>
-                                                            <br>
+
+                                                            @include('admin::subjectFormLoader.qc_left_bar_nav')
+                                                            @include('admin::subjectFormLoader.grader_left_bar_nav', ['step'=>$step])
+                                                            @include('admin::subjectFormLoader.adjudication_left_bar_nav')
                                                             @php
                                                             $firstStep = false;
                                                             $previousStepId = $step->step_id;
@@ -217,10 +202,27 @@
                                         @foreach ($visitPhases as $phase)
                                             @php
                                             $phaseIdStr = buildSafeStr($phase->id, 'phase_cls_');
-                                            $steps = \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($phase->id);
+                                            $steps =
+                                            \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($phase->id);
+                                            $previousStepId = '';
                                             @endphp
                                             @foreach ($steps as $step)
                                                 @php
+                                                if ($step->form_type_id == 2 && $previousStepId != '') {
+                                                    $getQcFormStatusArray = [
+                                                        'subject_id' => $subjectId,
+                                                        'study_id' => $studyId,
+                                                        'study_structures_id' => $phase->id,
+                                                        'phase_steps_id' => $previousStepId,
+                                                        'form_type_id' => '1',
+                                                        'modility_id' => $step->modility_id,
+                                                    ];
+                                                    $qcFormStatus = \Modules\Admin\Entities\FormStatus::getFormStatus($step,
+                                                    $getQcFormStatusArray);
+                                                    if($qcFormStatus !== 'complete'){
+                                                        continue;
+                                                    }
+                                                }
                                                 $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                                                 $stepIdStr = buildSafeStr($step->step_id, '');
 
@@ -235,16 +237,17 @@
                                                 'sections'=> $sections,
                                                 'phaseIdStr'=>$phaseIdStr,
                                                 'form_filled_by_user_id' => $form_filled_by_user_id,
-                                                'form_filled_by_user_role_id' => $form_filled_by_user_role_id
+                                                'firstStep' => $firstStep,
+                                                'stepClsStr' => $stepClsStr,
+                                                'stepIdStr' => $stepIdStr,
                                                 ];
                                                 @endphp
-                                                <div class="all_step_sections step_sections_{{ $stepIdStr }}"
-                                                    style="display: {{ $firstStep ? 'block' : 'none' }};">
-                                                    @include('admin::forms.section_loop', $dataArray)
-                                                </div>
+                                                @include('admin::forms.section_loop', $dataArray)
+                                                @include('admin::forms.adjudication_form', $dataArray)
                                                 @php
                                                 }
                                                 $firstStep = false;
+                                                $previousStepId = $step->step_id;
                                                 @endphp
                                             @endforeach
                                         @endforeach
@@ -259,5 +262,6 @@
         </div>
         @include('admin::subjectFormLoader.subject_form_wait_popup')
         @include('admin::subjectFormLoader.assignPhasesToSubjectPopup')
-        @stop
-  @include('admin::subjectFormLoader.subject_form_css_js')
+    @stop
+    @include('admin::subjectFormLoader.subject_form_css_js')
+    @include('admin::subjectFormLoader.subject_adjudication_form_css_js')

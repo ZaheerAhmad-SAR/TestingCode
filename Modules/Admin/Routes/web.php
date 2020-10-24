@@ -48,7 +48,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('forms/questions_for_skip_logic/{id}', 'FormController@questions_skip_logic')->name('forms.questionsSkip');
     Route::get('forms/questions_for_skip_logic_deactivate/{id}', 'FormController@questions_skip_logic_deactivate')->name('forms.questionsSkipdeactivate');
     Route::post('forms/add_skip_logic', 'FormController@add_skipLogic')->name('forms.apply_skip_logic');
-     Route::get('forms/skip_logic/{id}', 'FormController@skip_question_on_click')->name('forms.skipLogic');
+    Route::get('forms/skip_logic/{id}', 'FormController@skip_question_on_click')->name('forms.skipLogic');
     // skip logic
     Route::get('forms/sections_by_stepId/{id}', 'FormController@get_section_by_stepId')->name('forms.sectionsbystepId');
     Route::post('studyStatus', 'StudyController@studyStatus')->name('study.studyStatus');
@@ -58,7 +58,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('forms/changeSort/{id}', 'FormController@updateQustionsort')->name('forms.changeSort');
     Route::DELETE('forms/delete/{id}', 'FormController@deleteQuestion')->name('forms.delete');
 
-   
+
     //routes for options groups
     //routes for options groups
     Route::resource('optionsGroup', 'OptionsGroupController');
@@ -198,6 +198,10 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('SubjectFormSubmission/submitStudyPhaseStepQuestion', 'SubjectFormSubmissionController@submitQuestion')->name('SubjectFormSubmission.submitStudyPhaseStepQuestion');
     Route::post('SubjectFormSubmission/submitStudyPhaseStepQuestionForm', 'SubjectFormSubmissionController@submitForm')->name('SubjectFormSubmission.submitStudyPhaseStepQuestionForm');
     Route::post('SubjectFormSubmission/openSubjectFormToEdit', 'SubjectFormSubmissionController@openSubjectFormToEdit')->name('SubjectFormSubmission.openSubjectFormToEdit');
+
+    Route::post('SubjectAdjudicationFormSubmission/submitAdjudicationFormStudyPhaseStepQuestion', 'SubjectAdjudicationFormSubmissionController@submitAdjudicationFormQuestion')->name('SubjectAdjudicationFormSubmission.submitAdjudicationFormStudyPhaseStepQuestion');
+    Route::post('SubjectAdjudicationFormSubmission/submitStudyPhaseStepQuestionAdjudicationForm', 'SubjectAdjudicationFormSubmissionController@submitAdjudicationForm')->name('SubjectAdjudicationFormSubmission.submitStudyPhaseStepQuestionAdjudicationForm');
+    Route::post('SubjectAdjudicationFormSubmission/openSubjectAdjudicationFormToEdit', 'SubjectAdjudicationFormSubmissionController@openSubjectAdjudicationFormToEdit')->name('SubjectAdjudicationFormSubmission.openSubjectAdjudicationFormToEdit');
     //Assign Roles ToPhase and Step
     Route::post('assignRolesPhaseStep/getAssignRolesToPhaseForm', 'AssignRolesPhaseStepController@getAssignRolesToPhaseForm')->name('assignRolesPhaseStep.getAssignRolesToPhaseForm');
     Route::post('assignRolesPhaseStep/getAssignRolesToPhaseStepForm', 'AssignRolesPhaseStepController@getAssignRolesToPhaseStepForm')->name('assignRolesPhaseStep.getAssignRolesToPhaseStepForm');
@@ -209,6 +213,9 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     // Form Validation
     Route::post('subjectFormSubmission/validateSingleQuestion', 'SubjectFormSubmissionController@validateSingleQuestion')->name('subjectFormSubmission.validateSingleQuestion');
     Route::post('subjectFormSubmission/validateSectionQuestionsForm', 'SubjectFormSubmissionController@validateSectionQuestionsForm')->name('subjectFormSubmission.validateSectionQuestionsForm');
+
+    Route::post('subjectAdjudicationFormSubmission/validateSingleQuestion', 'SubjectAdjudicationFormSubmissionController@validateSingleQuestion')->name('subjectAdjudicationFormSubmission.validateSingleQuestion');
+    Route::post('subjectAdjudicationFormSubmission/validateSectionQuestionsForm', 'SubjectAdjudicationFormSubmissionController@validateSectionQuestionsForm')->name('subjectAdjudicationFormSubmission.validateSectionQuestionsForm');
     //Assign Phase To Subject
     Route::post('assignPhaseToSubject/loadAssignPhaseToSubjectForm', 'AssignPhaseToSubjectController@loadAssignPhaseToSubjectForm')->name('assignPhaseToSubject.loadAssignPhaseToSubjectForm');
     Route::post('assignPhaseToSubject/submitAssignPhaseToSubjectForm', 'AssignPhaseToSubjectController@submitAssignPhaseToSubjectForm')->name('assignPhaseToSubject.submitAssignPhaseToSubjectForm');
