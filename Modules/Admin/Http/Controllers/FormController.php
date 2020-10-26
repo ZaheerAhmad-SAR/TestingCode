@@ -20,7 +20,7 @@ use Modules\Admin\Entities\QuestionAdjudicationStatus;
 use Modules\Admin\Entities\AnnotationDescription;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\skipLogic;
-
+use Illuminate\Support\Facades\DB;
 class FormController extends Controller
 {
     /**
@@ -276,8 +276,33 @@ class FormController extends Controller
             } elseif ($ques_value->form_field_type->field_type == 'Upload') {
                 $question_contents .=  '<div class="col-sm-6"><input type="file" name="question_' . $ques_value->id .
                     '" value="" class="form-control"></div>';
+            } elseif($ques_value->form_field_type->field_type == 'Certification'){
+                  
+                $question_contents .= '<div class="col-sm-6"><select name="question_list" class="form-control">';
+
+                if($ques_value->certification_type =='devices'){
+                    $list = DB::connection('mysql2')->table('certify_device')->select('certify_device.*', DB::Raw('GROUP_CONCAT(trans_no SEPARATOR ",") as transmissions'), DB::Raw('GROUP_CONCAT(c_id SEPARATOR ",") as IDs'),DB::Raw('GROUP_CONCAT(status SEPARATOR ",") as statuses'),DB::Raw('GROUP_CONCAT(certification_officerName SEPARATOR ",") as certification_officerNames'))->groupBy('certify_device.device_categ')->get();
+                        foreach ($list as $key => $item) {
+                            $question_contents .= '<option value="">'.$item->device_sn.' && '. $item->device_model .' && '.$item->device_categ.'</option>';
+                        }
+                }else{
+                    $list = DB::connection('mysql2')->table('photographer_data')->select('photographer_data.*', DB::Raw('CONCAT(first_name, " ", last_name) as photographer_name'), DB::Raw('GROUP_CONCAT(transmission_number SEPARATOR ",") as transmissions'),DB::Raw('GROUP_CONCAT(id SEPARATOR ",") as IDs'), DB::Raw('GROUP_CONCAT(status SEPARATOR ",") as statuses'),DB::Raw('GROUP_CONCAT(certification_officerName SEPARATOR ",") as certification_officerNames'))->groupBy('photographer_name')->get();
+                        foreach ($list as $key => $item) {
+                                $name = $item->first_name.' '.$item->last_name; 
+                            $question_contents .= '<option value="">'.$name.' && '.$item->imaging_modality_req.'</option>';
+                        }
+                }  
+                $question_contents .= '</select></div>';
             }
-            $question_contents .= '<div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right"><span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span><span class="dropdown-item add_checks"><a href="'.url("forms/skip_logic", $ques_value->id).'" style="cursor:pointer;"><i class="fas fa-crop-alt"></i>&nbsp; Skip Logic </a></span></div></div></div></div>';
+            $question_contents .= '<div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right">';
+            if($ques_value->form_field_type->field_type == 'Certification'){}else{
+             $question_contents .= '<span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
+            }
+             $question_contents .= '<span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span>';
+            if($ques_value->form_field_type->field_type == 'Radio'){ 
+             $question_contents .='<span class="dropdown-item add_checks"><a href="'.url("forms/skip_logic", $ques_value->id).'" style="cursor:pointer;"><i class="fas fa-crop-alt"></i>&nbsp; Skip Logic </a></span>';
+            }else{} 
+            $question_contents .= '</div></div></div></div>';
         }
         return $question_contents;
     }
@@ -326,7 +351,8 @@ class FormController extends Controller
             'measurement_unit' => $request->measurement_unit,
             'is_dependent' => $request->field_dependent,
             'dependent_on' => $request->dependent_on,
-            'annotations' => $request->dependent_on
+            'annotations' => $request->dependent_on,
+            'certification_type' => $request->certification_type
         ]);
         $last_id = Question::select('id')->latest()->first();
         $id    = Str::uuid();
