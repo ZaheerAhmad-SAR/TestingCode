@@ -71,8 +71,9 @@ class Google2FAController extends Controller
             $bacup_code->expiry_duration = Carbon::now()->addDays(60);
             $bacup_code->save();
         }
+        $codes = backupCode::where('user_id','=',\auth()->user()->id)->get();
 
-        return view('2fa/enableTwoFactor',compact('inlineUrl','secret'));
+        return view('2fa/enableTwoFactor',compact('inlineUrl','secret','codes'));
     }
 
     /**
@@ -111,5 +112,10 @@ class Google2FAController extends Controller
         $randomBytes = random_bytes(10);
 
         return Base32::encodeUpper($randomBytes);
+    }
+
+    public function getcodes(){
+        $codes = backupCode::where('user_id','=',\auth()->user()->id)->get();
+        dd($codes);
     }
 }

@@ -19,7 +19,8 @@ Route::get('/2fa/enable', 'Google2FAController@enableTwoFactor');
 Route::get('/2fa/disable', 'Google2FAController@disableTwoFactor');
 Route::get('/2fa/validate', 'Auth\LoginController@getValidateToken');
 Route::post('/2fa/validate', ['middleware' => 'throttle:5', 'uses' => 'Auth\LoginController@postValidateToken']);
-Route::get('backup-codes','UserController@getcodes')->name('users.codes');
+Route::POST('/registration', 'Auth\RegisterController@register')->name('accept');
+
 
 Auth::routes(['register' => false]);
 

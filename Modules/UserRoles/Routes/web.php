@@ -22,10 +22,10 @@ Route::group(['middleware' => ['auth','web']],function (){
 Route::group(['middleware' => ['auth','web','roles']],function(){
 
     //Invitation_Routes
-    Route::get('/users/invite', 'UsersController@invite_view')->name('invite_view');
-    Route::post('/users/invite', 'UsersController@process_invites')->name('process_invite');
-    Route::get('/registration/{token}', 'UsersController@registration_view')->name('registration');
-    Route::POST('/registration', 'Auth\RegisterController@register')->name('accept');
+    Route::get('/users/invite', 'UserController@invite_view')->name('invite_view');
+    Route::post('/users/invite', 'UserController@process_invites')->name('process_invite');
+    Route::get('/registration/{token}', 'UserController@registration_view')->name('registration');
+
 
     Route::resource('roles','RoleController');
     // Permissions

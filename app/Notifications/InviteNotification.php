@@ -39,10 +39,13 @@ class InviteNotification extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
+            ->subject('Invitation from OCAP, OIRRC')
             ->greeting('Greetings!')
-            ->line('This is to invite you to join our OIRRC ' . config('OCAP'))
-            ->action('Notification Action',$this->notification_url)
-            ->line('Thank you for using our application!');
+            ->from('infor@oirrc.net')
+            ->replyTo('infor@oirrc.net')
+            ->line('This is to invite you to join OCAP, OIRRC Team ' . config('OCAP'))
+            ->action('Join Team',$this->notification_url)
+            ->line('Thank you for using our data capturing system!');
     }
     /**
      * Get the array representation of the notification.

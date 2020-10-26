@@ -5,10 +5,8 @@ namespace Modules\UserRoles\Http\Controllers;
 use App\backupCode;
 use App\Notifications\InviteNotification;
 use App\User;
-use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
@@ -17,7 +15,6 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
-use Modules\Admin\Entities\RoleStudyUser;
 use Modules\Admin\Entities\StudyUser;
 use Modules\UserRoles\Entities\Invitation;
 use Modules\UserRoles\Entities\Role;
@@ -442,12 +439,13 @@ class UserController extends Controller
             $token = Str::random(20);
         } while (Invitation::where('token', $token)->first());
         Invitation::create([
+            'id'    => Str::uuid(),
             'token' => $token,
             'email' => $request->input('email')
         ]);
         $url = URL::temporarySignedRoute(
 
-            'registration', now()->addMinutes(300), ['token' => $token]
+            'registration', now()->addDays(3), ['token' => $token]
         );
 
         Notification::route('mail', $request->input('email'))->notify(new InviteNotification($url));
@@ -457,7 +455,7 @@ class UserController extends Controller
 
     public function registration_view($token)
     {
-        $invite = Invite::where('token', $token)->first();
+        $invite = Invitation::where('token', $token)->first();
         return view('auth.register',['invite' => $invite]);
     }
 }

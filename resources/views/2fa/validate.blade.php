@@ -10,8 +10,7 @@
                                 <img src="{{asset('public/dist/images/Logo.gif')}}" alt="" style="width: 230px;margin-top: 120px;">
                             </div>
                             <div class="login-form col-12 col-sm-7">
-                                <div class="" style="min-height: 10%"></div>
-                            <div class="form-group row{{ $errors->has('totp') ? ' has-error' : '' }}">
+                            <div style="margin-top: 15px" class="form-group row{{ $errors->has('totp') ? ' has-error' : '' }}">
                                 <div class="col-md-2">
                                     <label>OTP</label></div>
 

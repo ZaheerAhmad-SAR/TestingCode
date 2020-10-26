@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\backupCode;
 use Illuminate\Cache;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Crypt;
@@ -30,10 +31,17 @@ class ValidateSecretRequest extends Request
         $factory->extend(
             'valid_token',
             function ($attribute, $value, $parameters, $validator) {
-               $secret = Crypt::decrypt($this->user->google2fa_secret);
-             $google_2fa = new Google2FA();
+                $code_verify = backupCode::where('backup_code','=',$value)->first();
+                if($code_verify){
+                    $code_verify->delete();
+                    return true;
+                }
+                else{
+                    $secret = Crypt::decrypt($this->user->google2fa_secret);
+                    $google_2fa = new Google2FA();
 
-                return $google_2fa->verifyKey($secret, $value);
+                    return $google_2fa->verifyKey($secret, $value);
+                }
             },
             'Not a valid token'
         );
@@ -47,6 +55,8 @@ class ValidateSecretRequest extends Request
             },
             'Cannot reuse token'
         );
+
+
     }
 
     /**

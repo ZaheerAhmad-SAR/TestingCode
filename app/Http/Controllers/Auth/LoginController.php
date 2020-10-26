@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\backupCode;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -84,20 +85,20 @@ class LoginController extends Controller
                 }
             }
             else
-                {
-                   // dd('count is zero');
+            {
+                // dd('count is zero');
                 Auth::logout();
-                    $system_info = new UserSystemInfo();
-                    $system_info->user_id = $user->id;
-                    $system_info->browser_name = $getbrowser;
-                    $user->qr_flag = '1';
-                    $system_info->save();
-                    $user->save();
+                $system_info = new UserSystemInfo();
+                $system_info->user_id = $user->id;
+                $system_info->browser_name = $getbrowser;
+                $user->qr_flag = '1';
+                $system_info->save();
+                $user->save();
                 $request->session()->put('2fa:user:id', $user->id);
                 return view('2fa/validate', compact('user', 'secret'));
             }
         }
-            return redirect(route('studies.index'));
+        return redirect(route('studies.index'));
     }
 
 
@@ -117,7 +118,6 @@ class LoginController extends Controller
         //get user id and create cache key
         $userId = $request->session()->pull('2fa:user:id');
         $key    = $userId . ':' . $request->totp;
-
         if($request->remember_browser == 'on'){
             $getbrowser = UserSystemInfoHelper::get_browsers();
             $system_info = UserSystemInfo::where('browser_name','=',$getbrowser)->where('user_id','=',$userId)->first();
@@ -130,7 +130,6 @@ class LoginController extends Controller
             $system_info->remember_flag = '0';
             $system_info->save();
         }
-
         //use cache to store token to blacklist
         Cache::add($key, true, 4);
 
@@ -139,4 +138,5 @@ class LoginController extends Controller
 
         return redirect(route('studies.index'));/*->intended($this->redirectTo);*/
     }
+
 }
