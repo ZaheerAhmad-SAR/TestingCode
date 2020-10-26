@@ -1,4 +1,14 @@
 <style>
+    .adjudication-border{
+        border: #C30 1px dashed;
+        border-radius: 5px;
+        padding: 5px;
+    }
+
+    .hr-line{
+        border-top: #808B96 1px dashed;
+    }
+
     .wizard-dark .wizard .nav-tabs .nav-link.active {
         border-bottom: 1px solid #1e3d73 !important;
     }
