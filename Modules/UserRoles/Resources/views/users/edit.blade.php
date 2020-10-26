@@ -30,6 +30,7 @@
                                 <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
                                     <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-Basic" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
                                     <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-Modalities" role="tab" aria-controls="nav-profile" aria-selected="false">Roles</a>
+                                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-2fa" role="tab" aria-controls="nav-2fa" aria-selected="false">2 Factor Auth</a>
                                 </div>
                             </nav>
                             <div class="tab-content" id="nav-tabContent">
@@ -55,7 +56,7 @@
                                 <div class="form-group row">
                                         <label for="password" class="col-md-3">Password</label>
                                         <div class="{!! ($errors->has('password')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
-                                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
+                                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password"  autocomplete="new-password">
                                             @error('password')
                                             <span class="text-danger small"> {{ $message }} </span>
                                             @enderror
@@ -64,7 +65,7 @@
                                     <div class="form-group row">
                                         <label for="C-Password" class="col-md-3">Confirm Password</label>
                                         <div class="{!! ($errors->has('password_confirmation')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
-                                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
+                                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation"  autocomplete="new-password">
                                             @error('password_confirmation')
                                             <span class="text-danger small">{{ $message }} </span>
                                             @enderror
@@ -84,14 +85,30 @@
                                                      @endforeach
                                                 @endif
                                             </select>
-
-                                            {{--@foreach($currentRole as $current)--}}
-                                            {{--@foreach($roles as $role)
-                                                <input type="checkbox" name="roles[]" multiple="multiple" class="" value="{{$role->id}}"
-                                                --}}{{--@if($current->role_id == $role->id) checked @endif--}}{{-->
-                                                    {{$role->name}}
-                                                @endforeach--}}
-                                                {{--@endforeach--}}
+                                        </div>
+                                        @error('roles')
+                                        <span class="text-danger small">
+                                    {{ $message }}
+                                    </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="nav-2fa" role="tabpanel" aria-labelledby="nav-Validation-tab">
+                                    <div class="form-group row" style="margin-top: 10px;">
+                                        <div class="{!! ($errors->has('roles')) ?'col-sm-9 has-error':'col-sm-9' !!}">
+                                            <div class="form-group row" style="margin-top: 10px;">
+                                                <label for="2fa" class="col-md-3">2 Factor Auth</label>
+                                                <div class="{!! ($errors->has('2fa')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
+                                                    <select class="form-control dropdown" name="fa" id="2fa">
+                                                        <option value="">Select 2 Factor Status</option>
+                                                        <option value="enabled" @if(!empty($user->browser_name))selected @endif>Enabled</option>
+                                                        <option value="disabled" @if(empty($user->browser_name))selected @endif>Disabled</option>
+                                                    </select>
+                                                    @error('name')
+                                                    <span class="text-danger small">{{ $message }} </span>
+                                                    @enderror
+                                                </div>
+                                            </div>
                                         </div>
                                         @error('roles')
                                         <span class="text-danger small">

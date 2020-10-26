@@ -90,27 +90,28 @@ class FormController extends Controller
         $section_contents .= '</div>';
         return Response($section_contents);
     }
-    public function sections_skip_logic($id){
+    public function sections_skip_logic($id)
+    {
         $section = Section::select('*')->where('phase_steps_id', $id)->orderBy('sort_number', 'asc')->get();
         $section_contents = '';
         foreach ($section as $key => $value) {
             $section_contents .= '<div class="card-body" style="padding: 0;">
-                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;"> 
+                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;">
                                     <tbody>';
-             $section_contents .= '<tr class=""><td class="sec_id" style="display: none;">'.$value->id.'</td><td style="text-align: center;width:15%;">
+            $section_contents .= '<tr class=""><td class="sec_id" style="display: none;">' . $value->id . '</td><td style="text-align: center;width:15%;">
                                       <div class="btn-group btn-group-sm" role="group">
-                                        <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon get_ques_ac" title="Log Details" data-toggle="collapse" data-target=".row-'.$value->id.'-ac" style="font-size: 20px; color: #1e3d73;"></i>
+                                        <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon get_ques_ac" title="Log Details" data-toggle="collapse" data-target=".row-' . $value->id . '-ac" style="font-size: 20px; color: #1e3d73;"></i>
                                       </div>
-                                    </td><td  colspan="5"> <input type="checkbox" name="activate_sections['.$key.'][]" value="'.$value->id.'"> '.$value->name.'</td>';
+                                    </td><td  colspan="5"> <input type="checkbox" name="activate_sections[' . $key . '][]" value="' . $value->id . '"> ' . $value->name . '</td>';
             $section_contents .= '</tr>';
             $section_contents .= '</tbody>
                                 </table>
                                  </div>
-                            </div>  
-                                    <div class="card-body collapse row-'.$value->id.'-ac " style="padding: 0;">
-                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;"> 
-                                    <tbody class="ac_questions_list_'.$value->id.'">
-                                         
+                            </div>
+                                    <div class="card-body collapse row-' . $value->id . '-ac " style="padding: 0;">
+                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;">
+                                    <tbody class="ac_questions_list_' . $value->id . '">
+
                                     </tbody>
                                 </table>  </div></div>';
         }
@@ -122,54 +123,57 @@ class FormController extends Controller
         $section_contents = '';
         foreach ($section as $key => $value) {
             $section_contents .= '<div class="card-body" style="padding: 0;">
-                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;"> 
+                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;">
                                     <tbody>';
-             $section_contents .= '<tr class=""><td class="sec_id" style="display: none;">'.$value->id.'</td><td style="text-align: center;width:15%;">
+            $section_contents .= '<tr class=""><td class="sec_id" style="display: none;">' . $value->id . '</td><td style="text-align: center;width:15%;">
                                       <div class="btn-group btn-group-sm" role="group">
-                                        <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon get_ques_de" title="Log Details" data-toggle="collapse" data-target=".row-'.$value->id.'-de" style="font-size: 20px; color: #1e3d73;"></i>
+                                        <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon get_ques_de" title="Log Details" data-toggle="collapse" data-target=".row-' . $value->id . '-de" style="font-size: 20px; color: #1e3d73;"></i>
                                       </div>
-                                    </td><td  colspan="5"> <input type="checkbox" name="deactivate_sections['.$key.'][]" value="'.$value->id.'"> '.$value->name.'</td>';
+                                    </td><td  colspan="5"> <input type="checkbox" name="deactivate_sections[' . $key . '][]" value="' . $value->id . '"> ' . $value->name . '</td>';
             $section_contents .= '</tr>';
             $section_contents .= '</tbody>
                                 </table>
                                  </div>
-                            </div>  
-                                    <div class="card-body collapse row-'.$value->id.'-de " style="padding: 0;">
-                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;"> 
-                                    <tbody class="de_questions_list_'.$value->id.'">
-                                         
+                            </div>
+                                    <div class="card-body collapse row-' . $value->id . '-de " style="padding: 0;">
+                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;">
+                                    <tbody class="de_questions_list_' . $value->id . '">
+
                                     </tbody>
                                 </table>  </div></div>';
         }
         return Response($section_contents);
     }
-    public function questions_skip_logic($id){
+    public function questions_skip_logic($id)
+    {
         $questions = Question::select('*')->where('section_id', $id)->orderBy('question_sort', 'asc')->get();
         $question_contents = '';
         foreach ($questions as $key => $value) {
-             $question_contents .= '<tr><td class="sec_id" style="display: none;">'.$value->id.'</td>
+            $question_contents .= '<tr><td class="sec_id" style="display: none;">' . $value->id . '</td>
                                         <td style="text-align: center;width:15%;">
-                                        <input type="checkbox" name="activate_questions['.$key.'][]" value="'.$value->id.'">
-                                    </td><td  colspan="5"> '.$value->question_text.'</td>';
+                                        <input type="checkbox" name="activate_questions[' . $key . '][]" value="' . $value->id . '">
+                                    </td><td  colspan="5"> ' . $value->question_text . '</td>';
             $question_contents .= '</tr>';
         }
         return Response($question_contents);
     }
-    public function questions_skip_logic_deactivate($id){
+    public function questions_skip_logic_deactivate($id)
+    {
         $questions = Question::select('*')->where('section_id', $id)->orderBy('question_sort', 'asc')->get();
         $question_contents = '';
         foreach ($questions as $key => $value) {
-             $question_contents .= '<tr><td class="sec_id" style="display: none;">'.$value->id.'</td>
+            $question_contents .= '<tr><td class="sec_id" style="display: none;">' . $value->id . '</td>
                                         <td style="text-align: center;width:15%;">
-                                        <input type="checkbox" name="deactivate_questions['.$key.'][]" value="'.$value->id.'">
-                                    </td><td  colspan="5"> '.$value->question_text.'</td>';
+                                        <input type="checkbox" name="deactivate_questions[' . $key . '][]" value="' . $value->id . '">
+                                    </td><td  colspan="5"> ' . $value->question_text . '</td>';
             $question_contents .= '</tr>';
         }
         return Response($question_contents);
     }
     // add question check start
-    // Question activate and deactivate 
-    public function add_skipLogic(Request $request){
+    // Question activate and deactivate
+    public function add_skipLogic(Request $request)
+    {
         $skip_ques = [];
         if (isset($request->option_title) && count($request->option_title) > 0) {
             for ($i = 0; $i < count($request->option_title); $i++) {
@@ -178,17 +182,17 @@ class FormController extends Controller
                     'question_id' => '634196f7-7efe-44f9-a4c9-fa02bb2bab3d',
                     'option_title' => $request->option_title[$i],
                     'option_value' => $request->option_value[$i],
-                    'activate_forms' => implode(',',(array)$request->activate_forms[$i]),
-                    'activate_sections' => implode(',',(array)$request->activate_sections[$i]),
-                    'activate_questions' => implode(',',(array)$request->activate_questions[$i]),
-                    'deactivate_forms' => implode(',',(array)$request->deactivate_forms[$i]),
-                    'deactivate_sections' => implode(',',(array)$request->deactivate_sections[$i]),
-                    'deactivate_questions' => implode(',',(array)$request->deactivate_questions[$i])
+                    'activate_forms' => implode(',', (array)$request->activate_forms[$i]),
+                    'activate_sections' => implode(',', (array)$request->activate_sections[$i]),
+                    'activate_questions' => implode(',', (array)$request->activate_questions[$i]),
+                    'deactivate_forms' => implode(',', (array)$request->deactivate_forms[$i]),
+                    'deactivate_sections' => implode(',', (array)$request->deactivate_sections[$i]),
+                    'deactivate_questions' => implode(',', (array)$request->deactivate_questions[$i])
                 ];
                 skipLogic::insert($skip_ques);
             }
         }
-        return redirect()->route('forms.skipLogic','634196f7-7efe-44f9-a4c9-fa02bb2bab3d')->with('message', 'Checks Applied Successfully!');
+        return redirect()->route('forms.skipLogic', '634196f7-7efe-44f9-a4c9-fa02bb2bab3d')->with('message', 'Checks Applied Successfully!');
     }
     // add question check end
     public function get_allQuestions($id = '')
@@ -303,6 +307,7 @@ class FormController extends Controller
              $question_contents .='<span class="dropdown-item add_checks"><a href="'.url("forms/skip_logic", $ques_value->id).'" style="cursor:pointer;"><i class="fas fa-crop-alt"></i>&nbsp; Skip Logic </a></span>';
             }else{} 
             $question_contents .= '</div></div></div></div>';
+
         }
         return $question_contents;
     }
@@ -314,10 +319,11 @@ class FormController extends Controller
         $Response['data'] = 'success';
         echo json_encode($Response);
     }
-    public function skip_question_on_click($id){
-        $options = Question::where('id',$id)->with('optionsGroup')->first();
+    public function skip_question_on_click($id)
+    {
+        $options = Question::where('id', $id)->with('optionsGroup')->first();
         $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->first();
-        return view('admin::forms.skip_logic',compact('all_study_steps','options'));
+        return view('admin::forms.skip_logic', compact('all_study_steps', 'options'));
     }
     /**
      * Show the form for creating a new resource.
@@ -430,18 +436,8 @@ class FormController extends Controller
             AnnotationDescription::insert($annotation);
         }
         // Question Adjudication
-        if (isset($request->adj_status) && $request->adj_status == 'yes') {
-            $id    = Str::uuid();
-            $adjStatus = QuestionAdjudicationStatus::create([
-                'id' => $id,
-                'question_id' => $last_id->id,
-                'adj_status' => $request->adj_status,
-                'decision_based_on' => $request->decision_based_on,
-                'opertaor' => $request->opertaor,
-                'custom_value' => $request->custom_value
+        $this->createQuestionAdjudicationStatus($request);
 
-            ]);
-        }
         return redirect()->route('forms.index')->with('message', 'Record Added Successfully!');
     }
     public function update_questions(Request $request)
@@ -473,7 +469,7 @@ class FormController extends Controller
         $form_field->save();
 
         // Question dependency update
-        if(!empty($request->dependency_id)){
+        if (!empty($request->dependency_id)) {
             $dependencies = QuestionDependency::where('id', $request->dependency_id)->first();
             $dependencies->q_d_status = $request->q_d_status;
             $dependencies->dep_on_question_id = $request->dep_on_question_id;
@@ -482,15 +478,33 @@ class FormController extends Controller
             $dependencies->save();
         }
         // update adjudication
-        if(!empty($request->adj_id)){
+        if (!empty($request->adj_id)) {
             $adjStatus = QuestionAdjudicationStatus::where('id', $request->adj_id)->first();
             $adjStatus->adj_status = $request->adj_status;
             $adjStatus->decision_based_on = $request->decision_based_on;
             $adjStatus->opertaor = $request->opertaor;
             $adjStatus->custom_value = $request->custom_value;
             $adjStatus->save();
+        } else {
+            $this->createQuestionAdjudicationStatus($request);
         }
         return redirect()->route('forms.index')->with('message', 'Record Updated Successfully!');
+    }
+
+    private function createQuestionAdjudicationStatus($request)
+    {
+        if (isset($request->adj_status) && $request->adj_status == 'yes') {
+            $id    = Str::uuid();
+            $adjStatus = QuestionAdjudicationStatus::create([
+                'id' => $id,
+                'question_id' => $request->id,
+                'adj_status' => $request->adj_status,
+                'decision_based_on' => $request->decision_based_on,
+                'opertaor' => $request->opertaor,
+                'custom_value' => $request->custom_value
+
+            ]);
+        }
     }
     /**
      * Show the specified resource.

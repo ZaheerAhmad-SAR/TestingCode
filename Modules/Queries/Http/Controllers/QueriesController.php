@@ -14,9 +14,11 @@ use Modules\Queries\Entities\QueryUser;
 use Modules\Queries\Entities\RoleQuery;
 use Modules\UserRoles\Entities\UserRole;
 use phpDocumentor\Reflection\Types\Null_;
+use App\Traits\UploadTrait;
 
 class QueriesController extends Controller
 {
+    use UploadTrait;
     /**
      * Display a listing of the resource.
      * @return Renderable
@@ -53,10 +55,11 @@ class QueriesController extends Controller
     {
 
         //dd($find->id,$query_status);
-        $parentQueryId    = $request->post('parent_query_id');
-        $find             = Query::find($parentQueryId);
         $query_status     = $request->post('query_status');
         $queryStatusArray = array('query_status'=>$query_status);
+        $parentQueryId    = $request->post('parent_query_id');
+        $find             = Query::find($parentQueryId);
+        Query::where('id',$find->id)->update($queryStatusArray);
         $query_id         = $request->post('query_id');
         $reply            = $request->post('reply');
         $query_subject    = $request->post('query_subject');
@@ -75,7 +78,6 @@ class QueriesController extends Controller
             'query_url'=>$query_url,
             'query_subject'=>$query_subject
         ]);
-        Query::where('id',$find->id)->update($queryStatusArray);
         return response()->json([$query,'success'=>'Queries response is successfully save!!!!','reply_id'=>$id]);
 
     }
@@ -104,14 +106,23 @@ class QueriesController extends Controller
      */
     public function store(Request $request)
     {
-
-        $roles           = $request->post('assignedRoles');
-        $users           = $request->post('assignedUsers');
-        $remarks         = $request->post('assignedRemarks');
-        $query_subject   = $request->post('query_subject');
-        $module_id       = $request->post('module_id');
-        $query_url       = $request->post('query_url');
-        $queryAssignedTo = $request->post('queryAssignedTo');
+        $roles            = $request->post('assignedRoles');
+        $rolesArray       = explode(',',$roles);
+        $users            = $request->post('assignedUsers');
+        $usersArray       = explode(',',$users);
+        $remarks          = $request->post('assignedRemarks');
+        $query_subject    = $request->post('query_subject');
+        $module_id        = $request->post('module_id');
+        $query_url        = $request->post('query_url');
+        $queryAssignedTo  = $request->post('queryAssignedTo');
+        if ($request->has('query_file'))
+        {
+            $image = $request->file('query_file');
+            $name = Str::slug($request->input('name')).'_'.time();
+            $folder = '/query_attachments/';
+            $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
+            $this->uploadOne($image, $folder, 'public', $name);
+        }
         $id              = Str::uuid();
         $query           = Query::create([
             'id'=>$id,
@@ -122,12 +133,12 @@ class QueriesController extends Controller
             'query_status'=> 'open',
             'query_type' =>$queryAssignedTo,
             'query_url'=>$query_url,
-            'query_subject'=>$query_subject
+            'query_subject'=>$query_subject,
+            'query_attachments'=>$filePath
         ]);
-
         if ($queryAssignedTo == 'user')
         {
-            foreach ($users as $user)
+            foreach ($usersArray as $user)
             {
                 $roles = (array)null;
                 QueryUser::create([
@@ -139,9 +150,8 @@ class QueriesController extends Controller
         }
         if ($queryAssignedTo == 'role')
         {
-            foreach ($roles as $role)
+            foreach ($rolesArray as $role)
             {
-                $users = (array)null;
                 RoleQuery::create([
                     'id' => Str::uuid(),
                     'roles_id' => $role,

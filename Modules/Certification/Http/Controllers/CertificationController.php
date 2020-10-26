@@ -14,7 +14,7 @@ class CertificationController extends Controller
      */
     public function index()
     {
-        return view('certification::index');
+        //return view('certification::index');
     }
 
     /**
@@ -23,7 +23,7 @@ class CertificationController extends Controller
      */
     public function create()
     {
-        return view('certification::create');
+        //return view('certification::create');
     }
 
     /**
@@ -43,7 +43,7 @@ class CertificationController extends Controller
      */
     public function show($id)
     {
-        return view('certification::show');
+        //return view('certification::show');
     }
 
     /**
@@ -53,7 +53,7 @@ class CertificationController extends Controller
      */
     public function edit($id)
     {
-        return view('certification::edit');
+        //return view('certification::edit');
     }
 
     /**

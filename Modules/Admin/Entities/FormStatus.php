@@ -5,9 +5,14 @@ namespace Modules\Admin\Entities;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Modules\Admin\Traits\AdjudicationTrait;
+use Modules\Admin\Scopes\FormStatusOrderByScope;
+use Modules\Admin\Entities\PhaseSteps;
 
 class FormStatus extends Model
 {
+    use AdjudicationTrait;
+
     protected $table = 'form_submit_status';
     protected $fillable = ['id', 'form_filled_by_user_id', 'form_filled_by_user_role_id', 'subject_id', 'study_id', 'study_structures_id', 'phase_steps_id', 'section_id', 'form_type_id', 'modility_id', 'form_status'];
     protected $keyType = 'string';
@@ -18,6 +23,12 @@ class FormStatus extends Model
         'form_type_id' => 0,
         'form_filled_by_user_id' => 'no-user-id',
     ];
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::addGlobalScope(new FormStatusOrderByScope);
+    }
 
     public function user()
     {
@@ -36,7 +47,7 @@ class FormStatus extends Model
 
     public static function getFormStatusObjQuery($getFormStatusArray)
     {
-        $formStatusObjectQuery = Self::where(function ($q) use ($getFormStatusArray) {
+        $formStatusObjectQuery = self::where(function ($q) use ($getFormStatusArray) {
             foreach ($getFormStatusArray as $key => $value) {
                 $q->where($key, 'like', (string)$value);
             }
@@ -63,7 +74,7 @@ class FormStatus extends Model
     public static function getGradersFormsStatusesSpan($step, $getFormStatusArray, $numGraders = 0)
     {
         $retStr = '';
-        $numberOfGraders = ($numGraders !== 0) ? $numGraders : $step->graders_number;
+        $numberOfGraders = ($numGraders != 0) ? $numGraders : $step->graders_number;
         $formStatusObjects = self::getFormStatusObjArray($getFormStatusArray);
         $extraNeededObjects = $numberOfGraders - count($formStatusObjects);
         for ($counter = 0; $counter < $extraNeededObjects; $counter++) {
@@ -75,6 +86,22 @@ class FormStatus extends Model
             $retStr .= self::makeGraderFormStatusSpan($step, $formStatusObj);
         }
         return $retStr;
+    }
+
+    public static function isAllGradersGradedThatForm($step, $getFormStatusArray)
+    {
+        $ret = false;
+        $formStatusObjects = self::getFormStatusObjArray($getFormStatusArray);
+        if (count($formStatusObjects) == $step->graders_number) {
+            $ret = true;
+        }
+        return $ret;
+    }
+
+    public static function getAllGraderIds($getFormStatusArray)
+    {
+        $query = self::getFormStatusObjQuery($getFormStatusArray);
+        return $query->pluck('form_filled_by_user_id')->toArray();
     }
 
     public static function getFormStatus($step, $getFormStatusArray, $wrap = false)
@@ -139,28 +166,11 @@ class FormStatus extends Model
         return $imageStr;
     }
 
-    public static function putFormStatus_bkkkkk($request)
-    {
-        $sectionIds = $request->input('sectionId', []);
-        if (count($sectionIds) != 0) {
-            foreach ($sectionIds as $sectionId) {
-                $formStatusObj = self::putSingleSectionFormStatus($request, $sectionId);
-            }
-        } else {
-            $question = Question::find($request->questionId);
-            $sectionId = $question->section->id;
-            $formStatusObj = self::putSingleSectionFormStatus($request, $sectionId);
-        }
-        return ['id' => $formStatusObj->id, 'formStatus' => $formStatusObj->form_status];
-    }
-
     public static function putFormStatus($request)
     {
         $form_filled_by_user_id = auth()->user()->id;
-        $form_filled_by_user_role_id = auth()->user()->id;
         $getFormStatusArray = [
             'form_filled_by_user_id' => $form_filled_by_user_id,
-            'form_filled_by_user_role_id' => $form_filled_by_user_role_id,
             'subject_id' => $request->subjectId,
             'study_id' => $request->studyId,
             'study_structures_id' => $request->phaseId,
@@ -175,6 +185,22 @@ class FormStatus extends Model
             $formStatusObj->edit_reason_text = $request->edit_reason_text;
             $formStatusObj->form_status = 'complete';
             $formStatusObj->update();
+
+
+            if ($formStatusObj->form_type_id == 2) {
+                $step = PhaseSteps::find($request->stepId);
+                $getGradingFormStatusArray = [
+                    'subject_id' => $request->subjectId,
+                    'study_id' => $request->studyId,
+                    'study_structures_id' => $request->phaseId,
+                    'phase_steps_id' => $request->stepId,
+                    'modility_id' => $request->modilityId,
+                ];
+
+                if (self::isAllGradersGradedThatForm($step, $getGradingFormStatusArray)) {
+                    self::runAdjudicationCheckForThisStep($step, $getGradingFormStatusArray);
+                }
+            }
         }
         return ['id' => $formStatusObj->id, 'formTypeId' => $formStatusObj->form_type_id, 'formStatus' => $formStatusObj->form_status, 'formStatusIdStr' => buildGradingStatusIdClsStr($formStatusObj->id)];
     }

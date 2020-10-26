@@ -45,6 +45,7 @@ function search_auth($arr, $auth)
 
 function hasPermission($user, $routeName)
 {
+
     $roles = $user->user_roles;
     foreach ($roles as $role) {
         $role = $role;
@@ -641,6 +642,11 @@ function buildFormFieldName($str = '')
 function buildGradingStatusIdClsStr($id)
 {
     return buildSafeStr($id, 'img_grading_form_status_');
+}
+
+function buildAdjudicationStatusIdClsStr($id)
+{
+    return buildSafeStr($id, 'img_adjudication_form_status_');
 }
 
 function canQualityControl()

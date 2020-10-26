@@ -462,7 +462,7 @@
                                 <div class="form-group row commentsInput" style="display: none;">
                                     <label for="Name" class="col-sm-2 col-form-label">Enter your Query</label>
                                     <div class="col-sm-10">
-                                        <textarea class="summernote" name="reply" id="reply"></textarea>
+                                        <textarea class="summernote-inline" name="reply" id="reply"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -695,7 +695,8 @@
                 // $('.replyClick').css('display','');
                 var query_id = results[0].parent_query_id;
                 showComments(query_id);
-                $("#replyForm")[0].reset();
+                //$("#replyForm")[0].reset();
+                $('#summernote').summernote('disable');
                 $("#reply").summernote("reset");
             },
             error: function (results) {

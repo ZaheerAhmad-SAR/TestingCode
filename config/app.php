@@ -161,6 +161,9 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        PragmaRX\Google2FALaravel\ServiceProvider::class,
+
+
 
         /*
          * Package Service Providers...
@@ -226,6 +229,9 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        '2fa' => PragmaRX\Google2FALaravel\Middleware::class,
+        'Google2FA' => PragmaRX\Google2FALaravel\Facade::class,
+
     ],
 
 ];

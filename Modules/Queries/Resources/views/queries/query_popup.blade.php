@@ -6,21 +6,22 @@
 
 <!-- queries modal -->
 <div class="modal fade" tabindex="-1" role="dialog" id="queries-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
-    <div class="modal-dialog modal-md modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="alert alert-danger" style="display:none"></div>
             <div class="modal-header ">
                 <p class="modal-title">Add a Queries</p>
+{{--                enctype="multipart/form-data"--}}
             </div>
-            <form id="queriesForm" name="queriesForm">
+            <form id="queriesForm" name="queriesForm" enctype="multipart/form-data" >
                 <div class="modal-body">
                     <div id="exTab1">
                         <div class="tab-content clearfix">
                             @csrf
-                            <label>Current query status: &nbsp; &nbsp;<i style="color: red;" class="fas fa-question-circle"></i> &nbsp;New</label>
+                            <label class="col-form-label">Queries status: <i style="color: red; margin-left: 35px;" class="fas fa-question-circle"></i> New</label>
                             <div class="form-group row">
-                                <label for="Name" class="col-sm-4 col-form-label">Queries Assigned to:</label>
-                                <div class="col-sm-8">
+                                <label for="Name" class="col-sm-2 col-form-label">Queries Assigned to:</label>
+                                <div class="col-sm-10">
                                     <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="user"> Users</label> &nbsp;
                                     <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="role" > Roles</label>
                                 </div>
@@ -35,6 +36,13 @@
                                     <input class="form-control" type="text" name="query_subject" minlength="6" maxlength="50" id="query_subject">
                                 </div>
                             </div>
+
+                            <div class="form-group row queryAttachment" style="display: none;">
+                                <label for="Name" class="col-sm-2 col-form-label">Query Attachment:</label>
+                                <div class="col-sm-10">
+                                    <input class="form-control" type="file" name="query_file"  id="query_file">
+                                </div>
+                            </div>
                             <div class="form-group row rolesInput" style="display: none;">
                                 <label for="Name" class="col-sm-2 col-form-label">Roles:</label>
                                 <div class="col-sm-10">
@@ -46,7 +54,7 @@
                             <div class="form-group row remarksInput" style="display:none;">
                                 <label for="Name" class="col-sm-2 col-form-label">Remarks</label>
                                 <div class="col-sm-10">
-                                    <textarea class="summernote" name="remarks" cols="2" rows="1" id="remarks"></textarea>
+                                    <textarea class="form-control" name="remarks" id="remarks"></textarea>
                                 </div>
                             </div>
                             <input type="hidden" name="module_id" id="module_id" value="">
@@ -54,7 +62,7 @@
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                        <button type="button" class="btn btn-outline-primary" id="savequeries"><i class="fa fa-save"></i> Save Changes</button>
+                        <button type="submit" name="submit" class="btn btn-outline-primary" id="submit"><i class="fa fa-save"></i> Save Changes</button>
                     </div>
                 </div>
             </form>
@@ -65,15 +73,13 @@
 <!-- Queries Model style sheet start -->
 <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2.min.css") }}"/>
 <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
-<link rel="stylesheet" href="{{ asset("dist/vendors/summernote/summernote-bs4.css") }}">
+
 <!-- Queries Model style sheet end -->
 @endpush
 @push('script')
 <!-- Queries Model scripts start -->
 <script src="{{ asset("dist/vendors/select2/js/select2.full.min.js") }}"></script>
 <script src="{{ asset("dist/js/select2.script.js") }}"></script>
-<script src="{{ asset("dist/vendors/summernote/summernote-bs4.js") }}"></script>
-<script src="{{ asset("dist/js/summernote.script.js") }}"></script>
 
 <!-- Queries Model scripts end -->
 
@@ -113,31 +119,47 @@
                 $(".usersInput").show('fast');
                 $(".remarksInput").show('fast');
                 $(".querySubject").show('fast');
+                $(".queryAttachment").show('fast');
                 $(".rolesInput").hide();
-                $("#remarks").summernote("reset");
+                //$("#remarks").summernote("reset");
             }
             if ($(this).attr("value")=="role")
             {
                 $('.usersInput').css('display','none');
                 $('.querySubject').css('display','');
                 $(".rolesInput").css('display','');
+                $(".queryAttachment").css('display','');
                 $(".remarksInput").css('display','');
-                $("#remarks").summernote("reset");
+                //$("#remarks").summernote("reset");
                 $(".select2-selection__choice").remove();
             }
         });
     });
 
-    $('#savequeries').click(function (){
+    function createFormData(formData, key, data) {
+        if (data === Object(data) || Array.isArray(data)) {
+            for (var i in data) {
+                createFormData(formData, key + '[' + i + ']', data[i]);
+            }
+        } else {
+            formData.append(key, data);
+        }
+    }
 
+    $("#queriesForm").on('submit', function(e){
+        e.preventDefault();
+        $.ajaxSetup({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+        });
         var queryAssignedTo = $("input[name='assignQueries']:checked").val();
         var module_id       = $('#module_id').val();
         var assignedRemarks = $('#remarks').val();
-        var query_url       = document.URL;
+        var query_url       =  document.URL;
         var query_subject   = $("#query_subject").val();
         if (queryAssignedTo == 'user')
         {
             var assignedUsers = $('#users').val();
+            console.log(assignedUsers)
         }
         if(queryAssignedTo =='role')
         {
@@ -146,28 +168,34 @@
             }).get();
 
         }
+        var formData = new FormData();
+        formData.append('module_id', module_id);
+        formData.append('assignedRoles', assignedRoles);
+        formData.append('query_url', query_url);
+        formData.append('assignedUsers', assignedUsers);
+        formData.append('query_subject', query_subject);
+        formData.append('queryAssignedTo', queryAssignedTo);
+        formData.append('assignedRemarks', assignedRemarks);
+        // Attach file
+        formData.append('query_file', $('input[type=file]')[0].files[0]);
+
         $.ajax({
-            url:"{{route('queries.store')}}",
             type: 'POST',
-            data: {
-                "_token": "{{ csrf_token() }}",
-                "_method": 'POST',
-                'module_id'      :module_id,
-                'query_url'      : query_url,
-                'assignedUsers'  :assignedUsers,
-                'assignedRemarks':assignedRemarks,
-                'queryAssignedTo':queryAssignedTo,
-                'assignedRoles'  :assignedRoles,
-                'query_subject': query_subject
-            },
+            url:"{{route('queries.store')}}",
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            cache: false,
+            processData:false,
             success: function(response)
             {
-                $("#queriesForm")[0].reset();
-                $("#remarks").summernote("reset");
-                $('#OptionsGroupEditForm').modal('hide');
-                window.setTimeout(function () {
-                    window.location.reload();
-                }, 100);
+                console.log(response);
+                // $("#queriesForm")[0].reset();
+                // $("#remarks").summernote("reset");
+                // $('#OptionsGroupEditForm').modal('hide');
+                // window.setTimeout(function () {
+                //     window.location.reload();
+                // }, 100);
             }
         });
 

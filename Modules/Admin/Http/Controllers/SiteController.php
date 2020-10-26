@@ -21,11 +21,11 @@ class SiteController extends Controller
     public function index()
     {
         $sites = Site::paginate(20);
-        $site = Site::latest('created_at')->first();
+        $siteForTransmissions = Site::all();
         $photographers = Photographer::all();
         $coordinators = Coordinator::all();
         $pinvestigators = PrimaryInvestigator::all();
-        return view('admin::sites.index',compact('sites','photographers','pinvestigators','coordinators','site'));
+        return view('admin::sites.index',compact('sites','photographers','pinvestigators','coordinators','siteForTransmissions'));
     }
 
     /**

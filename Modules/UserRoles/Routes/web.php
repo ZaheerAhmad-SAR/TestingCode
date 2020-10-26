@@ -16,7 +16,9 @@ Route::prefix('userroles')->group(function() {
 	Route::get('getallUsers','UserRolesController@getallUsers')->name('getallUsers');
 });
 
-
+Route::group(['middleware' => ['auth','web']],function (){
+    Route::get('update_profile', 'UserController@update_profile')->name('users.updateProfile');
+});
 Route::group(['middleware' => ['auth','web','roles']],function(){
 
     //Invitation_Routes
@@ -44,9 +46,8 @@ Route::group(['middleware' => ['auth','web','roles']],function(){
     Route::resource('adjudication','AdjudicationController');
     Route::resource('eligibility','EligibilityController');
     Route::resource('studyRoles','StudyRolesController');
-    Route::get('update_profile', 'UserController@update_profile')->name('users.updateProfile');
     Route::post('users/assignusers', 'UserController@assign_users')->name('users.assignUsers');
-    Route::post('users/resetpassword', 'UserController@resetpassword')->name('users.resetpassword');
+    Route::post('users/enable_2fa', 'UserController@enable_2fa')->name('users.enable_2fa');
 
 
 });
