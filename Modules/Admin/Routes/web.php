@@ -23,8 +23,8 @@ Route::post('transmissions-status', 'TransmissionController@transmissionStatus')
 Route::prefix('admin')->group(function () {
     Route::get('/', 'AdminController@index');
 });
-Route::resource('studies', 'StudyController');
 Route::group(['middleware' => ['auth', 'web']], function () {
+Route::resource('studies', 'StudyController');
     Route::get('get_steps', 'StudyStructureController@get_steps')->name('study.getSteps');
     Route::get('study_phases', 'StudyStructureController@getallphases')->name('getPhases');
     Route::get('forms/get_phases/{id}', 'FormController@get_phases')->name('forms.get_phases');

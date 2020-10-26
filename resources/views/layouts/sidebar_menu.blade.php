@@ -289,7 +289,7 @@
                     </ul>
                 </li>
                 @elseif(hasPermission(auth()->user(),'trail_logs.list'))
-                   
+
                     <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
                         <ul >
 
@@ -301,7 +301,7 @@
                             </li>
                         </ul>
                     </li>
-        
+
                 @endif
         </ul>
         <!-- END: Menu-->

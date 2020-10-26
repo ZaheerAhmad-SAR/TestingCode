@@ -43,7 +43,7 @@ class InvitationController extends Controller
                 ->back();
         }
         // redirect back where we came from
-        return redirect()->route('users.idex')->with('message','Invitation already sent to the given email');
+        return redirect()->route('users.index')->with('message','Invitation already sent to the given email');
 
     }
 
