@@ -16,10 +16,20 @@
     @endforeach
 
 </div>
-
- <div class="form-group row">
-     <label for="Name"
-        class="col-sm-2 col-form-label">Status</label>
+<div class="form-group row commentsInput" style="display: none;">
+    <label for="Name" class="col-sm-2 col-form-label">Enter your Query</label>
+    <div class="col-sm-10">
+        <textarea class="form-control" name="reply" id="reply"></textarea>
+    </div>
+</div>
+<div class="form-group row queryAttachments" style="display: none;" >
+    <label for="Attachment" class="col-sm-2 col-form-label">Attachment:</label>
+    <div class="col-sm-10">
+        <input class="form-control" type="file" name="query_file"  id="query_file">
+    </div>
+</div>
+ <div class="form-group row queryStatus" style="display:none;">
+     <label for="Status" class="col-sm-2 col-form-label">Status</label>
      <div class="col-sm-10">
          <select class="form-control" id="query_status" name="query_status">
              <option value="open" {{$query->query_status== 'open'? 'selected="selected"' : ''}}>open</option>
@@ -28,6 +38,8 @@
              </select>
          </div>
  </div>
+
+
 
 <div class="malwareData">
     <input type="hidden" name="module_id" id="module_id" value="{{ $query->module_id }}">

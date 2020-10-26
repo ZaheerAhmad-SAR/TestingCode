@@ -10,26 +10,20 @@
 
 
   $('.summernote').summernote({
-        height: 50,
+        height: 100,
       toolbar: [
           ['font', ['bold', 'underline', 'clear']],
-          // ['fontname', ['fontname']],
-          // ['color', ['color']],
           ['para', ['ul', 'ol', 'paragraph']],
-          // ['table', ['table']],
-          ['insert', ['link', 'picture', 'video']]
-      ],
-      maximumImageFileSize: 1048576, // bytes, 1048576 bytes = 1mb
-      callbacks:{
-          onImageUploadError: function(msg){
-              console.log(msg + ' (1 MB)');
-          }
-      }
+      ]
+
       });
 $('.summernote-inline').summernote({
         height: 200,
-        airMode:!0
+        airMode:!0,
+    toolbar: [
+        ['font', ['bold', 'underline', 'clear']],
+        ['para', ['ul', 'ol', 'paragraph']],
+    ]
       });
-
 
 })(jQuery);

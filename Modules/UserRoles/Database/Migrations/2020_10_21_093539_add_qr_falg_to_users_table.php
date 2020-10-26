@@ -14,7 +14,7 @@ class AddQrFalgToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-
+            $table->enum('qr_flag',array('0','1'))->after('google_auth')->default('0');
         });
     }
 
@@ -26,7 +26,7 @@ class AddQrFalgToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-
+            $table->dropColumn('qr_flag');
         });
     }
 }

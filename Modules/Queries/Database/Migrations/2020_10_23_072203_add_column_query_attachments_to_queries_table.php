@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddColumnsToUsersTable extends Migration
+class AddColumnQueryAttachmentsToQueriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddColumnsToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('browser_name')->nullable()->after('user_ip');
+        Schema::table('queries', function (Blueprint $table) {
+        $table->text('query_attachments')->after('query_subject')->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ class AddColumnsToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('browser_name');
+        Schema::table('queries', function (Blueprint $table) {
+        $table->dropColumn('query_attachments');
         });
     }
 }
