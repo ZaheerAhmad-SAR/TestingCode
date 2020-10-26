@@ -11,7 +11,7 @@ class Query extends Model
     protected $table = 'queries';
     protected $fillable = [
         'id', 'messages', 'parent_query_id', 'queried_remarked_by_id', 'module_id',
-        'module_name', 'query_status', 'query_subject', 'query_url', 'query_type'
+        'module_name', 'query_status', 'query_subject', 'query_url', 'query_type','query_attachments'
     ];
     protected $keyType = 'string';
 
@@ -68,5 +68,12 @@ class Query extends Model
                         '.$query->messages.'
                     </div>
                 </div><hr>';
+    }
+
+    public function getProfileImage()
+    {
+        if (!empty($this->query_file)) {
+            return '<img src="' . url('query_attachments/' . $this->query_file) . '"/>';
+        }
     }
 }

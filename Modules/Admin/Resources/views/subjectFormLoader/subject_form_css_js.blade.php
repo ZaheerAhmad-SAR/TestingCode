@@ -23,6 +23,11 @@
                 $('.' + step_id_class).show(500);
             }
 
+            function showAdjudication(step_id_class) {
+                $('.all_step_sections').hide(500);
+                $('.' + step_id_class).show(500);
+            }
+
             function disableAllFormFields(formId) {
                 $("#" + formId + " input").prop('disabled', true);
             }
@@ -198,14 +203,6 @@
                 alert(error);
             }
 
-            function reloadPage(waitSeconds) {
-                startWait();
-                var seconds = waitSeconds * 1000;
-                setTimeout(function() {
-                   location.reload();
-               }, seconds);
-            }
-
             function checkTermCond(stepIdStr) {
                 if ($('#terms_cond_' + stepIdStr).prop('checked')) {
                     return true;
@@ -257,9 +254,9 @@
                     field_val = $('#' + fieldId).find(":selected").val();
                 } else if ($('#form_' + stepIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
                     field_val = $('#form_' + stepIdStr + ' input[name="' + field_name + '"]:checked').val();
-                } else if ($('#form_' + stepIdStr + ' input[name="' + field_name + '"]').attr('type') == 'checkbox') {
+                } else if ($('#form_' + stepIdStr + ' input[name="' + field_name + '[]"]').attr('type') == 'checkbox') {
 
-                    $('#form_' + stepIdStr + ' input[name="' + field_name + '"]:checked').each(function() {
+                    $('#form_' + stepIdStr + ' input[name="' + field_name + '[]"]:checked').each(function() {
                         checkedCheckBoxes.push($(this).val());
                     });
                     field_val = checkedCheckBoxes.join(",");
@@ -352,6 +349,14 @@
                     }
                 });
 
+            }
+
+            function reloadPage(waitSeconds) {
+                startWait();
+                var seconds = waitSeconds * 1000;
+                setTimeout(function() {
+                   location.reload();
+               }, seconds);
             }
         </script>
     @endpush

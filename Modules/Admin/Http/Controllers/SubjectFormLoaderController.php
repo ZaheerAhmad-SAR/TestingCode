@@ -29,7 +29,6 @@ class SubjectFormLoaderController extends Controller
         $studySite = StudySite::where('study_id', $study->id)->where('site_id', $site->id)->firstOrNew();
 
         $form_filled_by_user_id = auth()->user()->id;
-        $form_filled_by_user_role_id = auth()->user()->id;
 
         $subjectPhasesIdsArray = $subject->subjectPhasesArray();
         $visitPhases = StudyStructure::where('study_id', $studyId)
@@ -46,8 +45,7 @@ class SubjectFormLoaderController extends Controller
             ->with('subject', $subject)
             ->with('site', $site)
             ->with('studySite', $studySite)
-            ->with('form_filled_by_user_id', $form_filled_by_user_id)
-            ->with('form_filled_by_user_role_id', $form_filled_by_user_role_id);
+            ->with('form_filled_by_user_id', $form_filled_by_user_id);
     }
 
     public function showSubjectForm_bkkkkkkk($studyId, $subjectId)
@@ -69,7 +67,6 @@ class SubjectFormLoaderController extends Controller
         $studySite = StudySite::where('study_id', $study->id)->where('site_id', $site->id)->firstOrNew();
 
         $form_filled_by_user_id = auth()->user()->id;
-        $form_filled_by_user_role_id = auth()->user()->id;
         /*****************/
         return view('admin::subjectFormLoader.subject_form')
             ->with('userRoleIds', $userRoleIds)
@@ -81,7 +78,6 @@ class SubjectFormLoaderController extends Controller
             ->with('subject', $subject)
             ->with('site', $site)
             ->with('studySite', $studySite)
-            ->with('form_filled_by_user_id', $form_filled_by_user_id)
-            ->with('form_filled_by_user_role_id', $form_filled_by_user_role_id);
+            ->with('form_filled_by_user_id', $form_filled_by_user_id);
     }
 }

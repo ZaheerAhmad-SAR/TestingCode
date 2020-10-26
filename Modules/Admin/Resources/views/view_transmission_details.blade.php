@@ -26,13 +26,22 @@
             transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
         }
         .control-label {
-            padding-top: 7px;
+            padding-top: 9px;
             margin-bottom: 0;
         }
 
-        .form-control, .form-control:focus, .form-control:disabled, .form-control[readonly] {
+        .form-control:disabled, .form-control[readonly] {
             background-color: #eee !important;
             opacity: 1 !important;
+        }
+
+        .select2-selection__rendered {
+            background-color: #eee;
+            opacity: 1 !important;
+        }
+
+        .span-text {
+            color: red;
         }
     </style>
     <!-- date range picker -->
@@ -66,15 +75,16 @@
                 <div class="card">
 
                     <div class="card-body">
-                        <form>
+                        <form action="{{ route('transmissions.update', encrypt($findTransmission->id))}}" method="POST">
                             <div class="row">
-                                
+                                @csrf
+                                @method('PUT')
                                 <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Transmission Number</label>
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_transmission_no" readonly="" value="{{ $findTransmission[0]->Transmission_Number }}" id="d_transmission_no" class="form-control" required="required">
+                                    <input type="text" name="d_transmission_no" readonly="" value="{{ $findTransmission->Transmission_Number }}" id="d_transmission_no" class="form-control" required="required">
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -82,7 +92,7 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->Study_Name }}" readonly="" name="d_study_name" id="d_study_name" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->Study_Name }}" readonly="" name="d_study_name" id="d_study_name" class="form-control" required="required">
                                 </div>
 
                               <!--//////////////// row 1 ///////////////////////// -->
@@ -92,7 +102,7 @@
                                 </div>
 
                                 <div class=" form-group col-sm-3">
-                                    <input type="text" name="d_study_id" readonly="" value="{{ $findTransmission[0]->StudyI_ID }}" id="d_study_id" class="form-control" required="required">
+                                    <input type="text" name="d_study_id" readonly="" value="{{ $findTransmission->StudyI_ID }}" id="d_study_id" class="form-control" required="required">
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -100,7 +110,7 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->sponsor }}" readonly="" name="d_sponsor" id="d_sponsor" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->sponsor }}" readonly="" name="d_sponsor" id="d_sponsor" class="form-control" required="required">
                                 </div>
 
                               <!--//////////////// row 2 ///////////////////////// -->
@@ -110,7 +120,7 @@
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_Salute" readonly="" value="{{ $findTransmission[0]->Salute }}" id="d_Salute" class="form-control" required="required">
+                                    <input type="text" name="d_Salute" readonly="" value="{{ $findTransmission->Salute }}" id="d_Salute" class="form-control" required="required">
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -118,7 +128,7 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->Submitter_First_Name }}" readonly="" name="d_submitter_first_name" id="d_submitter_first_name" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->Submitter_First_Name }}" readonly="" name="d_submitter_first_name" id="d_submitter_first_name" class="form-control" required="required">
                                 </div>
 
                               <!--//////////////// row 3 ///////////////////////// -->
@@ -128,7 +138,7 @@
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_submitter_last_name" readonly="" value="{{ $findTransmission[0]->Submitter_Last_Name }}" id="d_submitter_last_name" class="form-control" required="required">
+                                    <input type="text" name="d_submitter_last_name" readonly="" value="{{ $findTransmission->Submitter_Last_Name }}" id="d_submitter_last_name" class="form-control" required="required">
                                 </div>
 
                                 <div class=" form-group col-sm-3">
@@ -136,7 +146,7 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->Submitter_email }}" readonly="" name="d_submitter_email" id="d_submitter_email" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->Submitter_email }}" readonly="" name="d_submitter_email" id="d_submitter_email" class="form-control remove-readonly" required="required">
                                 </div>
 
                                 <!--//////////////// row 4 ///////////////////////// -->
@@ -146,7 +156,7 @@
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_submitter_phone" readonly="" value="{{ $findTransmission[0]->Submitter_phone }}" id="d_submitter_phone" class="form-control" required="required">
+                                    <input type="text" name="d_submitter_phone" readonly="" value="{{ $findTransmission->Submitter_phone }}" id="d_submitter_phone" class="form-control remove-readonly" required="required">
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -154,7 +164,7 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->Submitter_Role }}" readonly="" name="d_submitter_role" id="d_submitter_role" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->Submitter_Role }}" readonly="" name="d_submitter_role" id="d_submitter_role" class="form-control" required="required">
                                 </div>
 
                                 <!--//////////////// row 5 ///////////////////////// -->
@@ -164,7 +174,7 @@
                                 </div>
 
                                 <div class=" form-group col-sm-3">
-                                    <input type="text" name="d_site_initial" readonly="" value="{{ $findTransmission[0]->Site_Initials }}" id="d_site_initial" class="form-control" required="required">
+                                    <input type="text" name="d_site_initial" readonly="" value="{{ $findTransmission->Site_Initials }}" id="d_site_initial" class="form-control" required="required">
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -172,7 +182,7 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->Site_Name }}" readonly="" name="d_site_name" id="d_site_name" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->Site_Name }}" readonly="" name="d_site_name" id="d_site_name" class="form-control remove-readonly" required="required">
                                 </div>
 
                               <!--//////////////// row 6 ///////////////////////// -->
@@ -182,7 +192,7 @@
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_site_id" readonly="" value="{{ $findTransmission[0]->Site_ID }}" id="d_site_id" class="form-control" required="required">
+                                    <input type="text" name="d_site_id" readonly="" value="{{ $findTransmission->Site_ID }}" id="d_site_id" class="form-control" required="required">
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -190,7 +200,7 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->PI_Name }}" readonly="" name="d_pi_name" id="d_pi_name" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->PI_Name }}" readonly="" name="d_pi_name" id="d_pi_name" class="form-control" required="required">
                                 </div>
 
                               <!--//////////////// row 7 ///////////////////////// -->
@@ -200,7 +210,7 @@
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_pi_first_name" readonly="" value="{{ $findTransmission[0]->PI_FirstName }}" id="d_pi_first_name" class="form-control" required="required">
+                                    <input type="text" name="d_pi_first_name" readonly="" value="{{ $findTransmission->PI_FirstName }}" id="d_pi_first_name" class="form-control remove-readonly" required="required">
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -208,7 +218,7 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->PI_LastName }}" readonly="" name="d_pi_last_name" id="d_pi_last_name" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->PI_LastName }}" readonly="" name="d_pi_last_name" id="d_pi_last_name" class="form-control remove-readonly" required="required">
                                 </div>
 
                                 <!--//////////////// row 8 ///////////////////////// -->
@@ -218,7 +228,7 @@
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_pi_email" readonly="" value="{{ $findTransmission[0]->PI_email }}" id="d_pi_email" class="form-control" required="required">
+                                    <input type="text" name="d_pi_email" readonly="" value="{{ $findTransmission->PI_email }}" id="d_pi_email" class="form-control remove-readonly" required="required">
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -226,7 +236,7 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->Site_st_address }}" readonly="" name="d_site_st_address" id="d_site_st_address" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->Site_st_address }}" readonly="" name="d_site_st_address" id="d_site_st_address" class="form-control" required="required">
                                 </div>
 
                                 <!--//////////////// row 9 ///////////////////////// -->
@@ -236,7 +246,7 @@
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_site_city" readonly="" value="{{ $findTransmission[0]->Site_city }}" id="d_site_city" class="form-control" required="required">
+                                    <input type="text" name="d_site_city" readonly="" value="{{ $findTransmission->Site_city }}" id="d_site_city" class="form-control" required="required">
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -244,7 +254,7 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->Site_state }}" readonly="" name="d_site_state" id="d_site_state" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->Site_state }}" readonly="" name="d_site_state" id="d_site_state" class="form-control remove-readonly" required="required">
                                 </div>
 
                                 <!--//////////////// row 10 ///////////////////////// -->
@@ -254,7 +264,7 @@
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_site_zip" readonly="" value="{{ $findTransmission[0]->Site_Zip }}" id="d_site_zip" class="form-control" required="required">
+                                    <input type="text" name="d_site_zip" readonly="" value="{{ $findTransmission->Site_Zip }}" id="d_site_zip" class="form-control remove-readonly" required="required">
                                 </div>
 
                                 <div class=" form-group col-sm-3">
@@ -262,7 +272,7 @@
                                 </div>
                               
                                 <div class=" form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->Site_country }}" readonly="" name="d_site_country" id="d_site_country" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->Site_country }}" readonly="" name="d_site_country" id="d_site_country" class="form-control remove-readonly" required="required">
                                 </div>
 
                                 <!--//////////////// row 11 ///////////////////////// -->
@@ -272,7 +282,13 @@
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_subject_Id" readonly="" value="{{ $findTransmission[0]->Subject_ID }}" id="d_subject_Id" class="form-control" required="required">
+                                    <span class="span-text">{{ $findTransmission->Subject_ID }}</span>
+                                    <select name="d_subject_Id" id="d_subject_Id" class="form-control remove-readonly" disabled="" required="required">
+                                        <option value="">Select Subject</option>
+                                        @foreach($getSubjects as $subject)
+                                        <option @if($subject->subject_id == $findTransmission->Subject_ID) selected @endif value="{{$subject->id.'/'.$subject->subject_id}}">{{$subject->subject_id}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -280,7 +296,7 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->StudyEye }}" readonly="" name="d_study_eye" id="d_study_eye" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->StudyEye }}" readonly="" name="d_study_eye" id="d_study_eye" class="form-control remove-readonly" required="required">
                                 </div>
 
                                 <!--//////////////// row 12 ///////////////////////// -->
@@ -290,7 +306,15 @@
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_visit_name" readonly="" value="{{ $findTransmission[0]->visit_name }}" id="d_visit_name" class="form-control" required="required">
+
+                                    <span class="span-text">{{ $findTransmission->visit_name }}</span>
+                                    <select name="d_visit_name" id="d_visit_name" class="form-control remove-readonly" disabled="" required="required">
+                                        <option value="">Select Visit</option>
+                                        @foreach($getPhases as $phase)
+                                        <option @if($phase->name == $findTransmission->visit_name) selected @endif value="{{$phase->id.'/'.$phase->name}}">{{$phase->name}}</option>
+                                        @endforeach
+                                    </select>
+
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -298,7 +322,8 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->visit_date }}" readonly="" name="d_visit_date" id="d_visit_date" class="form-control" required="required">
+                                    <span class="span-text">{{ date('d-M-Y', strtotime($findTransmission->visit_date)) }}</span>
+                                    <input type="date" value="{{ $findTransmission->visit_date }}" readonly="" name="d_visit_date" id="d_visit_date" class="form-control remove-readonly" required="required">
                                 </div>
 
                                 <!--//////////////// row 13 ///////////////////////// -->
@@ -308,7 +333,14 @@
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_image_modality" readonly="" value="{{ $findTransmission[0]->ImageModality }}" id="d_image_modality" class="form-control" required="required">
+
+                                    <span class="span-text">{{ $findTransmission->ImageModality }}</span>
+                                    <select name="d_image_modality" id="d_image_modality" class="form-control remove-readonly" disabled="" required="required">
+                                        <option value="">Select Modality</option>
+                                        @foreach($getModalities as $modality)
+                                        <option @if($modality->modility_name == $findTransmission->ImageModality) selected @endif value="{{$modality->id.'/'.$modality->modility_name}}">{{$modality->modility_name}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -316,17 +348,17 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->device_model }}" readonly="" name="d_device_model" id="d_device_model" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->device_model }}" readonly="" name="d_device_model" id="d_device_model" class="form-control remove-readonly" required="required">
                                 </div>
 
                                 <!--//////////////// row 14 ///////////////////////// -->
 
                                 <div class="form-group col-sm-3">
-                                    <label for="Name" class="control-label">Device Oirrc ID</label>
+                                    <label for="Name" class="control-label">Device OIRRC ID</label>
                                 </div>
 
                                 <div class=" form-group col-sm-3">
-                                    <input type="text" name="d_device_oirrc_id" readonly="" value="{{ $findTransmission[0]->device_oirrcID }}" id="d_device_oirrc_id" class="form-control" required="required">
+                                    <input type="text" name="d_device_oirrc_id" readonly="" value="{{ $findTransmission->device_oirrcID }}" id="d_device_oirrc_id" class="form-control remove-readonly" required="required">
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -334,7 +366,7 @@
                                 </div>
                               
                                 <div class=" form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->Compliance }}" readonly="" name="d_compliance" id="d_compliance" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->Compliance }}" readonly="" name="d_compliance" id="d_compliance" class="form-control" required="required">
                                 </div>
 
                                 <!--//////////////// row 14 ///////////////////////// -->
@@ -344,7 +376,7 @@
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_compliance_comments" readonly="" value="{{ $findTransmission[0]->Compliance_comments }}" id="d_compliance_comments" class="form-control" required="required">
+                                    <input type="text" name="d_compliance_comments" readonly="" value="{{ $findTransmission->Compliance_comments }}" id="d_compliance_comments" class="form-control" required="required">
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -352,7 +384,7 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->Submitted_By }}" readonly="" name="d_submitted_by" id="d_submitted_by" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->Submitted_By }}" readonly="" name="d_submitted_by" id="d_submitted_by" class="form-control remove-readonly" required="required">
                                 </div>
 
                                 <!--//////////////// row 15 ///////////////////////// -->
@@ -362,7 +394,7 @@
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_photographer_full_name" readonly="" value="{{ $findTransmission[0]->photographer_full_name }}" id="d_photographer_full_name" class="form-control" required="required">
+                                    <input type="text" name="d_photographer_full_name" readonly="" value="{{ $findTransmission->photographer_full_name }}" id="d_photographer_full_name" class="form-control remove-readonly" required="required">
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -370,7 +402,7 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->photographer_email }}" readonly="" name="d_photographer_email" id="d_photographer_email" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->photographer_email }}" readonly="" name="d_photographer_email" id="d_photographer_email" class="form-control remove-readonly" required="required">
                                 </div>
 
                                 <!--//////////////// row 16 ///////////////////////// -->
@@ -380,15 +412,17 @@
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_photographer_id" readonly="" value="{{ $findTransmission[0]->photographer_ID }}" id="d_photographer_id" class="form-control" required="required">
+                                    <input type="text" name="d_photographer_id" readonly="" value="{{ $findTransmission->photographer_ID }}" id="d_photographer_id" class="form-control" required="required">
                                 </div>
+
+                                {{--
 
                                 <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Number Files</label>
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->Number_files }}" readonly="" name="d_number_files" id="d_number_files" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->Number_files }}" readonly="" name="d_number_files" id="d_number_files" class="form-control" required="required">
                                 </div>
 
                                 <!--//////////////// row 17 ///////////////////////// -->
@@ -398,7 +432,7 @@
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_transmitted_files_name" readonly="" value="{{ $findTransmission[0]->transmitted_file_name }}" id="d_transmitted_files_name" class="form-control" required="required">
+                                    <input type="text" name="d_transmitted_files_name" readonly="" value="{{ $findTransmission->transmitted_file_name }}" id="d_transmitted_files_name" class="form-control" required="required">
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -406,35 +440,42 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->transmitted_file_size }}" readonly="" name="d_transmitted_file_size" id="d_transmitted_file_size" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->transmitted_file_size }}" readonly="" name="d_transmitted_file_size" id="d_transmitted_file_size" class="form-control" required="required">
                                 </div>
 
                                 <!--//////////////// row 18 ///////////////////////// -->
+
+                                
 
                                  <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Archive Physical Location</label>
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_archive_physical_location" readonly="" value="{{ $findTransmission[0]->archive_physical_location }}" id="d_archive_physical_location" class="form-control" required="required">
+                                    <input type="text" name="d_archive_physical_location" readonly="" value="{{ $findTransmission->archive_physical_location }}" id="d_archive_physical_location" class="form-control" required="required">
                                 </div>
 
+                                --}}
+
                                 <div class="form-group col-sm-3">
-                                    <label for="Name" class="control-label">Received Month</label>
+                                    <label for="Name" class="control-label">Received Date</label>
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->received_month }}" readonly="" name="d_recieve_month" id="d_recieve_month" class="form-control" required="required">
+                                    <input type="text" value="{{ date('d-M-Y', strtotime($findTransmission->received_year.'-'.$findTransmission->received_month.'-'.$findTransmission->received_day))}}" readonly="" name="d_recieve_month" id="d_recieve_month" class="form-control" required="required">
                                 </div>
 
+
                                 <!--//////////////// row 19 ///////////////////////// -->
+
+                                {{--
 
                                  <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Received Day</label>
                                 </div>
 
                                 <div class=" form-group col-sm-3">
-                                    <input type="text" name="d_recieve_day" readonly="" value="{{ $findTransmission[0]->received_day }}" id="d_recieve_day" class="form-control" required="required">
+                                    <input type="text" name="d_recieve_day" readonly="" value="{{ $findTransmission->received_day }}" id="d_recieve_day" class="form-control" required="required">
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -442,17 +483,18 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->received_year }}" readonly="" name="d_recieve_year" id="d_recieve_year" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->received_year }}" readonly="" name="d_recieve_year" id="d_recieve_year" class="form-control" required="required">
                                 </div>
 
                                 <!--//////////////// row 20 ///////////////////////// -->
+
 
                                 <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Received Hours</label>
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_recieve_hours" readonly="" value="{{ $findTransmission[0]->received_hours }}" id="d_recieve_hours" class="form-control" required="required">
+                                    <input type="text" name="d_recieve_hours" readonly="" value="{{ $findTransmission->received_hours }}" id="d_recieve_hours" class="form-control" required="required">
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -460,7 +502,7 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->received_minutes }}" readonly="" name="d_recieve_minutes" id="d_recieve_minutes" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->received_minutes }}" readonly="" name="d_recieve_minutes" id="d_recieve_minutes" class="form-control" required="required">
                                 </div>
 
                                 <!--//////////////// row 21 ///////////////////////// -->
@@ -470,7 +512,7 @@
                                 </div>
 
                                 <div class=" form-group col-sm-3">
-                                    <input type="text" name="d_study_qco1" readonly="" value="{{ $findTransmission[0]->Study_QCO1 }}" id="d_study_qco1" class="form-control" required="required">
+                                    <input type="text" name="d_study_qco1" readonly="" value="{{ $findTransmission->Study_QCO1 }}" id="d_study_qco1" class="form-control" required="required">
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -478,7 +520,7 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->StudyQCO2 }}" readonly="" name="d_study_qco2" id="d_study_qco2" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->StudyQCO2 }}" readonly="" name="d_study_qco2" id="d_study_qco2" class="form-control" required="required">
                                 </div>
 
                                 <!--//////////////// row 22 ///////////////////////// -->
@@ -488,7 +530,7 @@
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_study_cc1" readonly="" value="{{ $findTransmission[0]->Study_cc1 }}" id="d_study_cc1" class="form-control" required="required">
+                                    <input type="text" name="d_study_cc1" readonly="" value="{{ $findTransmission->Study_cc1 }}" id="d_study_cc1" class="form-control" required="required">
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -496,7 +538,7 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->Study_cc2 }}" readonly="" name="d_study_cc2" id="d_study_cc2" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->Study_cc2 }}" readonly="" name="d_study_cc2" id="d_study_cc2" class="form-control" required="required">
                                 </div>
 
                                 <!--//////////////// row 23 ///////////////////////// -->
@@ -506,7 +548,7 @@
                                 </div>
 
                                 <div class=" form-group col-sm-3">
-                                    <input type="text" name="d_qc_folder" readonly="" value="{{ $findTransmission[0]->QC_folder }}" id="d_qc_folder" class="form-control" required="required">
+                                    <input type="text" name="d_qc_folder" readonly="" value="{{ $findTransmission->QC_folder }}" id="d_qc_folder" class="form-control" required="required">
                                 </div>
 
                                 <div class=" form-group col-sm-3">
@@ -514,8 +556,10 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->Graders_folder }}" readonly="" name="d_grader_folders" id="d_grader_folders" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->Graders_folder }}" readonly="" name="d_grader_folders" id="d_grader_folders" class="form-control" required="required">
                                 </div>
+
+                               
 
                                 <!--//////////////// row 24 ///////////////////////// -->
 
@@ -524,7 +568,7 @@
                                 </div>
 
                                 <div class="form-group col-sm-3">
-                                    <input type="text" name="d_qc_link" readonly="" value="{{ $findTransmission[0]->QClink }}" id="d_qc_link" class="form-control" required="required">
+                                    <input type="text" name="d_qc_link" readonly="" value="{{ $findTransmission->QClink }}" id="d_qc_link" class="form-control" required="required">
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -532,18 +576,50 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission[0]->Glink }}" readonly="" name="d_glink" id="d_glink" class="form-control" required="required">
+                                    <input type="text" value="{{ $findTransmission->Glink }}" readonly="" name="d_glink" id="d_glink" class="form-control" required="required">
                                 </div>
 
                                 <!--//////////////// row 25 ///////////////////////// -->
-                                
-                                <div class="col-md-11">
+
+                                 --}}
+
+                                @if ($findTransmission->status == 'accepted')
+
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Comment</label>
                                 </div>
 
-                                <div class="col-md-1" style="padding-top: 15px;">
-                                    <a href="{{route('transmissions.index')}}" class="btn btn-danger">Close</a>
+                                <div class="form-group col-md-9">
+
+                                    <textarea class="form-control remove-readonly" required="required" readonly="" name="comment" rows="4">{{ $findTransmission->comment }}</textarea>
                                 </div>
-                               
+
+                                @endif
+
+                                @if ($findTransmission->status == 'accepted')
+
+                                    <div class="col-md-11"></div>
+                                    <div class="col-md-1" style="padding-top: 15px;">
+                                        <a href="{{route('transmissions.index')}}" class="btn btn-danger">Close</a>
+                                    </div>
+
+                                @else
+
+                                    <div class="col-md-10"></div>
+                                    <div class="col-md-2 edit-section" style="padding-top: 15px;">
+                                        
+
+                                        <a href="javascript:void(0)" class="btn btn-success edit-transmission">
+                                            Edit
+                                        </a>
+
+                                        <a href="{{route('transmissions.index')}}" class="btn btn-danger">
+                                            Close
+                                        </a>
+                                    </div>
+
+                                @endif
+
                             </div>
                             <!-- row ends -->
                         </form>
@@ -565,6 +641,36 @@
 <!-- select2 -->
 <script src="{{ asset('public/dist/vendors/select2/js/select2.full.min.js') }}"></script>
 <script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
+
+<script type="text/javascript">
+
+    $('.edit-transmission').click(function() {
+
+        $('.remove-readonly').each(function() {
+            // remove attr
+            $(this).removeAttr('readonly');
+            $(this).removeAttr('disabled');
+            // remove classes
+            $(this).removeClass('.form-control:disabled');
+            $(this).removeClass('.form-control[readonly]');
+            
+        });
+        // change background of select2
+        $('.select2-selection__rendered').css('background-color', '#fff !important;');
+
+        // hide edit button
+        $(this).remove();
+        $('.edit-section').prepend(' <button class="btn btn-success update-transmission"\
+                                      type="submit" name="submit">Update\
+                                    </button> ');
+
+    });
+
+    $('select[name="d_subject_Id"]').select2();
+    $('select[name="d_visit_name"]').select2();
+    $('select[name="d_image_modality"]').select2();
+
+</script>
 
 @endsection
 

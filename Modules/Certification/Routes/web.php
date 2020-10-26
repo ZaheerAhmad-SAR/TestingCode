@@ -11,9 +11,9 @@
 |
 */
 Route::group(['middleware' => ['auth', 'web']], function () {
-	Route::get('/', 'CertificationController@index');
-	Route::resource('photographers', 'PhotographersControllers');
-	Route::resource('devices_certify', 'DevicesController');
+    //Route::get('/', 'CertificationController@index');
+    Route::resource('photographers', 'PhotographersControllers');
+    Route::resource('devices_certify', 'DevicesController');
 });
 // Route::prefix('certification')->group(function() {
 //     Route::get('/', 'CertificationController@index');
