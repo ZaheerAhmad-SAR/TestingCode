@@ -18,6 +18,7 @@
 Route::get('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
 
 Route::resource('transmissions', 'TransmissionController');
+Route::post('transmissions-status', 'TransmissionController@transmissionStatus')->name('transmissions-status');
 
 Route::prefix('admin')->group(function () {
     Route::get('/', 'AdminController@index');
