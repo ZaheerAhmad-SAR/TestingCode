@@ -15,6 +15,7 @@ class AddColumnDropGoogle2faSecretToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('google2fa_secret');
+
         });
     }
 
