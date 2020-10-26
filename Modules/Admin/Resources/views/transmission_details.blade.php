@@ -114,7 +114,8 @@
                                         <th>Subject ID</th>
                                         <th>Visit</th>
                                         <th>Date</th>
-                                        <th>QC Status</th>
+                                        <th>Modality</th>
+                                        <th>Processed Status</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
@@ -123,19 +124,28 @@
                                     @if(!$getTransmissions->isEmpty())
                                     @foreach($getTransmissions as $transmission)
                                         <tr>
-                                            <td>{{$transmission->Transmission_Number}}</td>
+                                            <td>
+                                                <a href="{{route('transmissions.edit', encrypt($transmission->id))}}" id="view-transmission" class="" data-id="" title="Edit Transmission Details" data-url="" style="color: #17a2b8 !important">
+                                                    {{$transmission->Transmission_Number}}
+                                                </a>
+                                            </td>
                                             <td>{{$transmission->Site_ID}}</td>
                                             <td>{{$transmission->Subject_ID}}</td>
                                             <td>{{$transmission->visit_name}}</td>
                                             <td>{{$transmission->visit_date}}</td>
                                             <td>
+                                                <span class="badge badge-info">
+                                                    {{$transmission->ImageModality}}
+                                                </span>
+                                            </td>
+                                            <td>
                                                 @if($transmission->is_read == 'yes')
-
-                                                    <span class="badge badge-info">
-                                                        {{$transmission->ImageModality}}
-                                                    </span>
                                                     <span class="badge badge-danger">
-                                                        processed
+                                                        Processed
+                                                    </span>
+                                                @else
+                                                    <span class="badge badge-danger">
+                                                        Not Processed
                                                     </span>
                                                 @endif
                                             </td>
@@ -145,11 +155,10 @@
                                                     <span class="badge badge-success">{{$transmission->status}}
                                                     </span>
 
-                                                @elseif ($transmission->status == 'onhold' || $transmission->status == 'pending')
-
-                                                    <span class="badge badge-warning" onclick="transmissionStatus('{{encrypt($transmission->id)}}', '{{$transmission->status}}')">{{$transmission->status}}
-                                                    </span>
                                                 @else
+
+                                                    <span class="badge badge-warning">{{$transmission->status}}
+                                                    </span>
 
                                                 @endif
                                             </td>
@@ -157,9 +166,19 @@
                                                 
                                                 &nbsp; &nbsp;
                                                 &nbsp; &nbsp;
-                                                 <a href="{{route('transmissions.edit', encrypt($transmission->id))}}" id="view-transmission" class="" data-id="" title="Edit Transmission Details" data-url="">
-                                                    <i class="far fa-eye"></i>
-                                                </a>
+
+                                                <div class="d-flex mt-md-0 ml-auto" style="margin-top: -15px !important;">
+                                                <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog"></i></span>
+                                                                                                                                               <div class="dropdown-menu p-0 m-0 dropdown-menu-right" style="">
+                                                    <span class="dropdown-item">
+                                                        <a href="javascript:void(0)" data-id="6152c130-84d3-474f-b73c-fa7ea81f892d" class="create-new-queries">
+                                                            <i class="fas fa-question-circle" aria-hidden="true">
+                                                            </i> Queries</a>
+                                                    </span>
+                                                    
+                                                </div>
+                                            </div>
+                                                 <!-- gear dropdown -->
                                             </td>
                                         </tr>
                                     @endforeach

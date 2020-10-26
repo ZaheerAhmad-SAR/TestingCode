@@ -10,6 +10,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\TrailLog;
+use Modules\Admin\Entities\TransmissionUpdateDetail;
 use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\UserRole;
@@ -200,5 +201,9 @@ class User extends Authenticatable
         if (!empty($this->profile_image)) {
             return '<img src="' . url('images/' . $this->profile_image) . '"/>';
         }
+    }
+
+    public function transmissionDetails() {
+        return $this->hasMany(TransmissionUpdateDetail::class);
     }
 }
