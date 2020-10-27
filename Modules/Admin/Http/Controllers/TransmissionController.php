@@ -17,6 +17,7 @@ use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\PrimaryInvestigator;
 use Modules\Admin\Entities\Photographer;
+use Modules\Admin\Entities\TransmissionUpdateDetail;
 use DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
@@ -212,7 +213,12 @@ class TransmissionController extends Controller
         // find the transmission
         $findTransmission = CrushFtpTransmission::where('id', decrypt($id))->first();
         $findTransmission->is_read = 'yes';
+        $findTransmission->qc_officerId = \Auth::user()->id;
+        $findTransmission->qc_officerName = \Auth::user()->name;
         $findTransmission->save();
+        
+        // get all sites
+        $getSites =Site::get();
         // get all subjects
         $getSubjects = Subject::get();
         // get all phases
@@ -220,7 +226,10 @@ class TransmissionController extends Controller
         // get modality
         $getModalities = Modility::get();
 
-        return view('admin::view_transmission_details', compact('findTransmission', 'getSubjects', 'getPhases', 'getModalities'));
+        // get all the transmission updates
+        $getTransmissionUpdates = TransmissionUpdateDetail::where('transmission_id', decrypt($id))->get();
+
+        return view('admin::view_transmission_details', compact('findTransmission', 'getSites', 'getSubjects', 'getPhases', 'getModalities', 'getTransmissionUpdates'));
     }
 
     /**
@@ -263,7 +272,16 @@ class TransmissionController extends Controller
         $findTransmission->Submitted_By = $request->d_submitted_by;
         $findTransmission->photographer_full_name = $request->d_photographer_full_name;
         $findTransmission->photographer_email = $request->d_photographer_email;
+        $findTransmission->status = $request->status;
         $findTransmission->save();
+
+        // check for status and also store update details in transmission update table
+        $transmissionUpdateDetails = new TransmissionUpdateDetail;
+        $transmissionUpdateDetails->user_id = \Auth::user()->id;
+        $transmissionUpdateDetails->user_name = \Auth::user()->name;
+        $transmissionUpdateDetails->transmission_id = $findTransmission->id;
+        $transmissionUpdateDetails->comment = $request->comment;
+        $transmissionUpdateDetails->save();
 
         \Session::flash('success', 'Transmission information updated successfully.');
 
@@ -313,6 +331,7 @@ class TransmissionController extends Controller
                 $getSite->site_state = $findTransmission->Site_state;
                 $getSite->site_country = $findTransmission->Site_country;
                 $getSite->save();
+
             } // site check is end
 
             // check site study relation
