@@ -4,7 +4,7 @@
                 disableByClass('make_disable_it');
                 var submitAdjudicationFormFlag = true;
                 if (isAdjudicationFormInEditMode(stepIdStr)) {
-                    if (checkAdjudicationFormReason(stepIdStr) === false) {
+                    if (checkAdjudicationFormReason(stepIdStr) == false) {
                         submitAdjudicationFormFlag = false;
                     }
                 }
@@ -96,42 +96,51 @@
             }
 
             function validateAndSubmitAdjudicationForm(stepIdStr, formTypeId, formStatusIdStr) {
-                const promise = validateAdjudicationForm(stepIdStr);
-                promise
-                    .then((data) => {
-                        console.log(data);
-                        submitAdjudicationForm(stepIdStr, formTypeId, formStatusIdStr);
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                        handleValidationErrors(error);
-                    });
+                if(canSubmitAdjudicationForm()){
+                    const promise = validateAdjudicationForm(stepIdStr);
+                    promise
+                        .then((data) => {
+                            console.log(data);
+                            submitAdjudicationForm(stepIdStr, formTypeId, formStatusIdStr);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            handleValidationErrors(error);
+                        });
+                }else{
+                    showPermissionError();
+                }
             }
 
             function validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, field_name, fieldId) {
-                checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
-                const validationPromise = validateAdjudicationFormField(stepIdStr, questionId, field_name, fieldId);
-                validationPromise
-                    .then((data) => {
-                        console.log(data)
-                        submitAdjudicationFormField(stepIdStr, questionId, field_name, fieldId);
-                    })
-                    .then((data) => {
-                        console.log(data)
-                        validateDependentFields(sectionIdStr, questionId, field_name, fieldId);
-                    })
-                    .catch((error) => {
-                        console.log(error)
-                        handleValidationErrors(error);
-                    });
+                if(canSubmitAdjudicationForm()){
+                    checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
+                    const validationPromise = validateAdjudicationFormField(stepIdStr, questionId, field_name, fieldId);
+                    validationPromise
+                        .then((data) => {
+                            console.log(data)
+                            submitAdjudicationFormField(stepIdStr, questionId, field_name, fieldId);
+                        })
+                        .then((data) => {
+                            console.log(data)
+                            validateDependentFields(sectionIdStr, questionId, field_name, fieldId);
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                            handleValidationErrors(error);
+                        });
+                }else{
+                    showPermissionError();
+                }
             }
 
             function checkAdjudicationFormTermCond(stepIdStr) {
                 if ($('#adjudication_form_terms_cond_' + stepIdStr).prop('checked')) {
                     return true;
                 } else {
-                    showAlert(
-                        'Please acknowledge the truthfulness and correctness of information being submitting in this form!'
+                    showAlert('Alert',
+                        'Please acknowledge the truthfulness and correctness of information being submitting in this form!',
+                        'error'
                     );
                     return false;
                 }
@@ -150,7 +159,7 @@
             function checkAdjudicationFormReason(stepIdStr) {
                 var returnVal = false;
                 if (($('#adjudication_form_edit_reason_text_' + stepIdStr).val() == '')) {
-                    showAlert('Please tell the reason to edit');
+                    showAlert('Alert', 'Please tell the reason to edit', 'error');
                 } else {
                     returnVal = true;
                 }
@@ -193,6 +202,7 @@
             }
 
             function openAdjudicationFormForEditing(stepIdStr, stepClsStr, formTypeId, formStatusIdStr) {
+                if(canSubmitAdjudicationForm()){
                 var frmData = $("#adjudication_form_master_" + stepIdStr).serialize();
                 frmData = frmData + '&' + 'open_adjudication_form_to_edit=1';
                 $.ajax({
@@ -203,6 +213,9 @@
                         showAdjudicationFormReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr);
                     }
                 });
+            }else{
+                    showPermissionError();
+                }
             }
 
             function showAdjudicationFormReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr) {
@@ -236,7 +249,7 @@
                 validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, copyToFieldName, copyToFieldId);
             }
 
-            function calculateAverage(stepIdStr, sectionIdStr, questionId, questionIdStr, copyToFieldId){
+            function calculateAverage(stepIdStr, sectionIdStr, questionId, questionIdStr, copyToFieldId, decimalPoint){
                 var numberValues = [];
                 $('.' + questionIdStr).each(function() {
                     numberValues.push($(this).val());
@@ -245,7 +258,9 @@
                 for(var i = 0; i < numberValues.length; i++) {
                     total += parseFloat(numberValues[i]);
                 }
+                //var avg = (Math.round(total / numberValues.length)).toFixed(decimalPoint);
                 var avg = total / numberValues.length;
+                var avg = avg.toFixed(decimalPoint);
                 $('#' + copyToFieldId).val(avg);
                 var copyToFieldName = $("#" + copyToFieldId).attr("name");
                 validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, copyToFieldName, copyToFieldId);
@@ -258,6 +273,15 @@
             function showOnlyAdjudicationRequiredQuestions(){
                 var route = "{{ route('subjectFormLoader.showSubjectForm', ['study_id'=>$studyId, 'subject_id'=>$subjectId, 'showAllQuestions'=>'no' ])}}";
                 location.href = route;
+            }
+
+            function canSubmitAdjudicationForm(){
+                var canAdjudication = {{ (canAdjudication(['create', 'store', 'edit', 'update']))? 'true':'false' }};
+                var canSubmit = false;
+                if((canAdjudication == true)){
+                    canSubmit = true;
+                }
+                return canSubmit;
             }
 
         </script>

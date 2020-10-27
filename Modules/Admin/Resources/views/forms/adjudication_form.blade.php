@@ -1,3 +1,4 @@
+@if (canAdjudication(['index']))
 @php
 $getGradingFormStatusArray = [
     'subject_id' => $subjectId,
@@ -30,7 +31,6 @@ $dataArray = [
 ];
 
 @endphp
-@if (canAdjudication())
     @if ($step->form_type_id == 2 && \Modules\Admin\Entities\FormStatus::isAllGradersGradedThatForm($step, $getGradingFormStatusArray))
         @include('admin::forms.adjudication_section_loop', $dataArray)
     @endif

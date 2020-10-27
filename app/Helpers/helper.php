@@ -649,67 +649,41 @@ function buildAdjudicationStatusIdClsStr($id)
     return buildSafeStr($id, 'img_adjudication_form_status_');
 }
 
-function canQualityControl()
+function checkPermission($permissionText, $permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
 {
-    $retVal = false;
+    $retVal = true;
     $user = auth()->user();
-    if (
-        hasPermission($user, 'qualitycontrol.index') &&
-        hasPermission($user, 'qualitycontrol.create') &&
-        hasPermission($user, 'qualitycontrol.store') &&
-        hasPermission($user, 'qualitycontrol.edit') &&
-        hasPermission($user, 'qualitycontrol.update')
-    ) {
-        $retVal = true;
+    foreach ($permissionsArray as $permission) {
+        $permissionCheck = $permissionText . $permission;
+        if (!hasPermission($user, $permissionCheck)) {
+            $retVal = false;
+            break;
+        }
     }
+
     return $retVal;
+}
+function canQualityControl($permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
+{
+    $permissionText = 'qualitycontrol.';
+    return checkPermission($permissionText, $permissionsArray);
 }
 
-function canGrading()
+function canGrading($permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
 {
-    $retVal = false;
-    $user = auth()->user();
-    if (
-        hasPermission($user, 'grading.index') &&
-        hasPermission($user, 'grading.create') &&
-        hasPermission($user, 'grading.store') &&
-        hasPermission($user, 'grading.edit') &&
-        hasPermission($user, 'grading.update')
-    ) {
-        $retVal = true;
-    }
-    return $retVal;
+    $permissionText = 'grading.';
+    return checkPermission($permissionText, $permissionsArray);
 }
 
-function canAdjudication()
+function canAdjudication($permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
 {
-    $retVal = false;
-    $user = auth()->user();
-    if (
-        hasPermission($user, 'adjudication.index') &&
-        hasPermission($user, 'adjudication.create') &&
-        hasPermission($user, 'adjudication.store') &&
-        hasPermission($user, 'adjudication.edit') &&
-        hasPermission($user, 'adjudication.update')
-    ) {
-        $retVal = true;
-    }
-    return $retVal;
+    $permissionText = 'adjudication.';
+    return checkPermission($permissionText, $permissionsArray);
 }
-function canEligibility()
+function canEligibility($permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
 {
-    $retVal = false;
-    $user = auth()->user();
-    if (
-        hasPermission($user, 'eligibility.index') &&
-        hasPermission($user, 'eligibility.create') &&
-        hasPermission($user, 'eligibility.store') &&
-        hasPermission($user, 'eligibility.edit') &&
-        hasPermission($user, 'eligibility.update')
-    ) {
-        $retVal = true;
-    }
-    return $retVal;
+    $permissionText = 'eligibility.';
+    return checkPermission($permissionText, $permissionsArray);
 }
 function printSqlQuery($builder)
 {

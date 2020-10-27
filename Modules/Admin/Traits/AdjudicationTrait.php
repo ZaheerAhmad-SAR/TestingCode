@@ -18,8 +18,8 @@ trait AdjudicationTrait
             foreach ($questions as $question) {
                 $fieldType = $question->form_field_type->field_type;
                 if (
-                    $fieldType === 'Upload' ||
-                    $fieldType === 'Date & Time'
+                    $fieldType == 'Upload' ||
+                    $fieldType == 'Date & Time'
                 ) {
                     continue;
                 }
@@ -44,17 +44,17 @@ trait AdjudicationTrait
                 $numberOfAnswers = count($answersArray);
                 $questionAdjudicationStatusObj = $question->AdjStatus;
 
-                if ($fieldType === 'Radio') {
+                if ($fieldType == 'Radio') {
                     $returnData =  self::selectMajorityAnswer($questionAdjudicationStatusObj, $answersArray);
-                } elseif ($fieldType === 'Checkbox') {
+                } elseif ($fieldType == 'Checkbox') {
                     $returnData =  self::selectMajorityAnswer($questionAdjudicationStatusObj, $answersArray);
-                } elseif ($fieldType === 'Dropdown') {
+                } elseif ($fieldType == 'Dropdown') {
                     $returnData =  self::selectMajorityAnswer($questionAdjudicationStatusObj, $answersArray);
-                } elseif ($fieldType === 'Number') {
-                    $returnData = self::checkAdjudicationForNumber($questionAdjudicationStatusObj, $numberOfAnswers, $answersArray);
-                } elseif ($fieldType === 'Text') {
+                } elseif ($fieldType == 'Number') {
+                    $returnData = self::checkAdjudicationForNumber($questionAdjudicationStatusObj, $numberOfAnswers, $answersArray, $question->form_field_type->decimal_point);
+                } elseif ($fieldType == 'Text') {
                     $returnData =  self::selectMajorityAnswer($questionAdjudicationStatusObj, $answersArray);
-                } elseif ($fieldType === 'Textarea') {
+                } elseif ($fieldType == 'Textarea') {
                     $returnData = self::checkAdjudicationForText($questionAdjudicationStatusObj, $numberOfAnswers, $answersArray);
                 }
 
@@ -106,7 +106,7 @@ trait AdjudicationTrait
         }
     }
 
-    public static function checkAdjudicationForNumber($questionAdjudicationStatusObj, $numberOfAnswers, $answersArray)
+    public static function checkAdjudicationForNumber($questionAdjudicationStatusObj, $numberOfAnswers, $answersArray, $decimalPoint)
     {
         $isQuestionAdjudicationRequired = false;
         $finalAnswer = 0;
@@ -138,8 +138,9 @@ trait AdjudicationTrait
                 $valDifference = $retArray['valDifference'];
             }
         }
-        if ($isQuestionAdjudicationRequired === false) {
-            $finalAnswer = $averageOfSumOfAnswers;
+        if ($isQuestionAdjudicationRequired == false) {
+            //$finalAnswer = $averageOfSumOfAnswers;
+            $finalAnswer = number_format((float)$averageOfSumOfAnswers, $decimalPoint);
         }
 
         return [
@@ -181,7 +182,7 @@ trait AdjudicationTrait
                 $isQuestionAdjudicationRequired = true;
             }
         }
-        if ($isQuestionAdjudicationRequired === false) {
+        if ($isQuestionAdjudicationRequired == false) {
             arsort($countedArray);
             $finalAnswer = array_keys($countedArray)[0];
         }
@@ -202,7 +203,7 @@ trait AdjudicationTrait
                 $isQuestionAdjudicationRequired = true;
             }
         }
-        if ($numberOfAnswers >= 3 && ($isQuestionAdjudicationRequired === false)) {
+        if ($numberOfAnswers >= 3 && ($isQuestionAdjudicationRequired == false)) {
             if (
                 ((string)trim($answersArray[0]) != (string)trim($answersArray[2])) ||
                 ((string)trim($answersArray[1]) != (string)trim($answersArray[2]))
@@ -210,7 +211,7 @@ trait AdjudicationTrait
                 $isQuestionAdjudicationRequired = true;
             }
         }
-        if ($numberOfAnswers >= 4 && ($isQuestionAdjudicationRequired === false)) {
+        if ($numberOfAnswers >= 4 && ($isQuestionAdjudicationRequired == false)) {
             if (
                 ((string)trim($answersArray[0]) != (string)trim($answersArray[3])) ||
                 ((string)trim($answersArray[1]) != (string)trim($answersArray[3])) ||
@@ -235,26 +236,26 @@ trait AdjudicationTrait
             $valDifference = (float)trim($answersArray[0]) - (float)trim($answersArray[1]);
             $isQuestionAdjudicationRequired = self::checkDifference($operator, $valDifference, $customValue);
         }
-        if ($numberOfAnswers >= 3 && ($isQuestionAdjudicationRequired === false)) {
-            if ($isQuestionAdjudicationRequired === false) {
+        if ($numberOfAnswers >= 3 && ($isQuestionAdjudicationRequired == false)) {
+            if ($isQuestionAdjudicationRequired == false) {
                 $valDifference = (float)trim($answersArray[0]) - (float)trim($answersArray[2]);
                 $isQuestionAdjudicationRequired = self::checkDifference($operator, $valDifference, $customValue);
             }
-            if ($isQuestionAdjudicationRequired === false) {
+            if ($isQuestionAdjudicationRequired == false) {
                 $valDifference = (float)trim($answersArray[1]) - (float)trim($answersArray[2]);
                 $isQuestionAdjudicationRequired = self::checkDifference($operator, $valDifference, $customValue);
             }
         }
-        if ($numberOfAnswers >= 4 && ($isQuestionAdjudicationRequired === false)) {
-            if ($isQuestionAdjudicationRequired === false) {
+        if ($numberOfAnswers >= 4 && ($isQuestionAdjudicationRequired == false)) {
+            if ($isQuestionAdjudicationRequired == false) {
                 $valDifference = (float)trim($answersArray[0]) - (float)trim($answersArray[3]);
                 $isQuestionAdjudicationRequired = self::checkDifference($operator, $valDifference, $customValue);
             }
-            if ($isQuestionAdjudicationRequired === false) {
+            if ($isQuestionAdjudicationRequired == false) {
                 $valDifference = (float)trim($answersArray[1]) - (float)trim($answersArray[3]);
                 $isQuestionAdjudicationRequired = self::checkDifference($operator, $valDifference, $customValue);
             }
-            if ($isQuestionAdjudicationRequired === false) {
+            if ($isQuestionAdjudicationRequired == false) {
                 $valDifference = (float)trim($answersArray[2]) - (float)trim($answersArray[3]);
                 $isQuestionAdjudicationRequired = self::checkDifference($operator, $valDifference, $customValue);
             }
@@ -277,30 +278,30 @@ trait AdjudicationTrait
             $percentage = ($valDifference / (float)trim($answersArray[0])) * 100;
             $isQuestionAdjudicationRequired = self::checkDifference($operator, $percentage, $customValue);
         }
-        if ($numberOfAnswers >= 3 && ($isQuestionAdjudicationRequired === false)) {
-            if ($isQuestionAdjudicationRequired === false) {
+        if ($numberOfAnswers >= 3 && ($isQuestionAdjudicationRequired == false)) {
+            if ($isQuestionAdjudicationRequired == false) {
                 $valDifference = (float)trim($answersArray[0]) - (float)trim($answersArray[2]);
                 $percentage = ($valDifference / (float)trim($answersArray[0])) * 100;
                 $isQuestionAdjudicationRequired = self::checkDifference($operator, $percentage, $customValue);
             }
-            if ($isQuestionAdjudicationRequired === false) {
+            if ($isQuestionAdjudicationRequired == false) {
                 $valDifference = (float)trim($answersArray[1]) - (float)trim($answersArray[2]);
                 $percentage = ($valDifference / (float)trim($answersArray[1])) * 100;
                 $isQuestionAdjudicationRequired = self::checkDifference($operator, $percentage, $customValue);
             }
         }
-        if ($numberOfAnswers >= 4 && ($isQuestionAdjudicationRequired === false)) {
-            if ($isQuestionAdjudicationRequired === false) {
+        if ($numberOfAnswers >= 4 && ($isQuestionAdjudicationRequired == false)) {
+            if ($isQuestionAdjudicationRequired == false) {
                 $valDifference = (float)trim($answersArray[0]) - (float)trim($answersArray[3]);
                 $percentage = ($valDifference / (float)trim($answersArray[0])) * 100;
                 $isQuestionAdjudicationRequired = self::checkDifference($operator, $percentage, $customValue);
             }
-            if ($isQuestionAdjudicationRequired === false) {
+            if ($isQuestionAdjudicationRequired == false) {
                 $valDifference = (float)trim($answersArray[1]) - (float)trim($answersArray[3]);
                 $percentage = ($valDifference / (float)trim($answersArray[1])) * 100;
                 $isQuestionAdjudicationRequired = self::checkDifference($operator, $percentage, $customValue);
             }
-            if ($isQuestionAdjudicationRequired === false) {
+            if ($isQuestionAdjudicationRequired == false) {
                 $valDifference = (float)trim($answersArray[2]) - (float)trim($answersArray[3]);
                 $percentage = ($valDifference / (float)trim($answersArray[2])) * 100;
                 $isQuestionAdjudicationRequired = self::checkDifference($operator, $percentage, $customValue);
