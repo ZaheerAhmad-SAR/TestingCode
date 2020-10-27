@@ -53,7 +53,6 @@ class Query extends Model
         }
         return '<div class="row text-left">
                     <input type="hidden" value='.$query->parent_query_id.' name="parent_query_id" id="parent_query_id">
-                    <div class="col-md-12"><strong>Current Status :</strong> <span>'.$query->query_status.'</span></div>
                     <div class="col-md-12">
                         <i class="fas fa-circle" style="color: lightgreen; font-size:8px;position: absolute;float: right;top: 15px;left: 43px;"></i>
                         <img class="mr-3" style="width: 30px; height: 30px; border-radius: 50%;"

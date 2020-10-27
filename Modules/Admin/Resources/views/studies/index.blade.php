@@ -444,8 +444,9 @@
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" style="max-width: 1000px;" role="document">
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
-                <div class="modal-header ">
+                <div class="modal-header">
                     <p class="modal-title">Query Details</p>
+                    <span class="queryCurrentStatus text-center"></span>
                 </div>
                     <div class="modal-body">
                         <form id="replyForm" name="replyForm">
@@ -579,7 +580,6 @@
                $('#study-crud-modal').modal('show');
            })
         });
-
         $('body').on('click', '#delete-study', function () {
             var study_id = $(this).data("id");
             confirm("Are You sure want to delete !");
@@ -599,7 +599,6 @@
                 }
             });
         });
-
         $('body').on('click', '.clone-study', function () {
             $.ajaxSetup({
                 headers: {
@@ -627,7 +626,7 @@
     });
 
     $('body').on('click', '.replyModal', function () {
-        var query_id = $(this).attr('data-id');
+        var query_id     = $(this).attr('data-id');
         $('#reply-modal').modal('show');
         showComments(query_id);
         $('#all-queries-modal').modal('hide');
@@ -647,6 +646,8 @@
             {
                 $('.replyInput').html('');
                 $('.replyInput').html(response);
+                var query_status = $( "#query_status option:selected" ).text();
+                $('.queryCurrentStatus').text('Status: '+query_status);
                 $('.replyClick').css('display','');
             }
         });
@@ -703,7 +704,6 @@
         formData.append('query_status', query_status);
         // Attach file
         formData.append('query_file', $('input[type=file]')[0].files[0]);
-
         $.ajax({
             url:"{{route('queries.queryReply')}}",
             type: "POST",
