@@ -36,7 +36,7 @@
         }
 
         .select2-selection__rendered {
-            background-color: #eee;
+            background-color: @if ($findTransmission->status == 'accepted') #eee; @else #fff; @endif
             opacity: 1 !important;
         }
 
@@ -292,6 +292,7 @@
                                     <span class="span-text">{{ $findTransmission->Subject_ID }}</span>
                                     <select name="d_subject_Id" id="d_subject_Id" class="form-control remove-readonly" disabled="" required="required">
                                         <option value="">Select Subject</option>
+                                        <option @if ($findTransmission->new_subject == 1) selected @endif value="1">New Subject</option>
                                         @foreach($getSubjects as $subject)
                                         <option @if($subject->subject_id == $findTransmission->Subject_ID) selected @endif value="{{$subject->id.'/'.$subject->subject_id}}">{{$subject->subject_id}}</option>
                                         @endforeach
@@ -613,7 +614,7 @@
 
                                 <div class="form-group col-md-9">
 
-                                    <textarea class="form-control remove-readonly" required="required" readonly="" name="comment" rows="4" disabled></textarea>
+                                    <textarea class="form-control" required="required"  @if ($findTransmission->status == 'accepted') disabled @endif name="comment" rows="4"></textarea>
                                 </div>
 
                             <!-- ///////////////////////////// row 27 ///////////////////// -->
@@ -733,8 +734,8 @@
 
     // });
 
+    $('document').ready(function () {
     // check status and apply changes as per need
-
         if ($('select[name="status"]').val() != 'accepted') {
 
                 $('.remove-readonly').each(function() {
@@ -747,32 +748,43 @@
                 $(this).removeClass('.form-control[readonly]');
                 
                 }); //each ends
-                // change background of select2
-                $('.select2-selection__rendered').css('background-color', '#fff !important;');
+            
         } // if ends
 
-    // initialize select 2
-    $('select[name="d_subject_Id"]').select2();
-    $('select[name="d_visit_name"]').select2();
-    $('select[name="d_image_modality"]').select2();
-    $('select[name="d_site_id"]').select2();
+        // initialize select 2
+        $('select[name="d_subject_Id"]').select2();
+        $('select[name="d_visit_name"]').select2();
+        $('select[name="d_image_modality"]').select2();
+        $('select[name="d_site_id"]').select2();
 
-    // show alert on status changed value
-    $('select[name="status"]').change(function() {
+        // show alert on status changed value
+        $('select[name="status"]').change(function() {
 
-        if ($(this).val() == 'accepted') {
+            if ($(this).val() == 'accepted') {
+
+                    // apply requires attribute
+                    $('.remove-readonly').each(function() {
+
+                        $(this).attr('required', true);
+                       
+                    }); //each ends
+                    
+                // show alert message
+                alert('Warning! Please verify data, once it submitted it will not be changed.');
+
+            } else {
 
                 // apply requires attribute
                 $('.remove-readonly').each(function() {
 
-                    $(this).attr('required', true);
+                    $(this).removeAttr('required');
                    
                 }); //each ends
-                
-            // show alert message
-            alert('Warning! Please verify data, once it submitted it will not be changed.');
-        } // if ends
-    });
+
+            } // if ends
+        }); // on change ends
+
+}); // document ready
 
 </script>
 
