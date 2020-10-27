@@ -16,6 +16,7 @@ use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\PrimaryInvestigator;
 use Modules\Admin\Entities\Photographer;
 use Modules\Admin\Entities\TransmissionUpdateDetail;
+use Modules\Admin\Entities\Device;
 use DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
@@ -61,6 +62,16 @@ class TransmissionController extends Controller
            $getTransmissions = $getTransmissions->where('ImageModality', $request->imagine_modality);
         }
 
+        if ($request->modility_id != '') {
+
+           $getTransmissions = $getTransmissions->where('modility_id', $request->modility_id);
+        }
+
+        if ($request->is_read != '') {
+
+           $getTransmissions = $getTransmissions->where('is_read', $request->is_read);
+        }
+
         if ($request->status != '') {
 
            $getTransmissions = $getTransmissions->where('status', $request->status);
@@ -68,7 +79,10 @@ class TransmissionController extends Controller
 
         $getTransmissions = $getTransmissions->orderBy('id', 'desc')->paginate(50);
 
-        return view('admin::transmission_details', compact('getTransmissions'));
+        // get modality
+        $getModalities = Modility::get();
+
+        return view('admin::transmission_details', compact('getTransmissions', 'getModalities'));
     }
 
     /**
@@ -238,6 +252,8 @@ class TransmissionController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // get old transmission data
+        $oldTransmission = CrushFtpTransmission::where('id', decrypt($id))->first();
         // find record
         $findTransmission = CrushFtpTransmission::where('id', decrypt($id))->first();
         $findTransmission->Submitter_email = $request->d_submitter_email;
@@ -270,6 +286,7 @@ class TransmissionController extends Controller
         $findTransmission->Submitted_By = $request->d_submitted_by;
         $findTransmission->photographer_full_name = $request->d_photographer_full_name;
         $findTransmission->photographer_email = $request->d_photographer_email;
+        // status
         $findTransmission->status = $request->status;
         $findTransmission->save();
 
@@ -281,20 +298,23 @@ class TransmissionController extends Controller
         $transmissionUpdateDetails->comment = $request->comment;
         $transmissionUpdateDetails->save();
 
+        // log event details
+        $logEventDetails = eventDetails($findTransmission->id, 'Transmission Data', 'Update', $request->ip(), $oldTransmission);
+
         \Session::flash('success', 'Transmission information updated successfully.');
 
         return redirect(route('transmissions.edit',  $id));
     }
 
-    public function transmissionStatus(Request $request) {
+    public function transmissionStatus(Request $request, $findTransmission) {
 
-        $findTransmission = CrushFtpTransmission::where('id', decrypt($request->hidden_transmission_id))->first();
+        // $findTransmission = CrushFtpTransmission::where('id', decrypt($request->hidden_transmission_id))->first();
 
-        $findTransmission->status = $request->status;
-        $findTransmission->comment = $request->comment;
-        $findTransmission->qc_officerId = \Auth::user()->id;
-        $findTransmission->qc_officerName = \Auth::user()->name;
-        $findTransmission->save();
+        // $findTransmission->status = $request->status;
+        // $findTransmission->comment = $request->comment;
+        // $findTransmission->qc_officerId = \Auth::user()->id;
+        // $findTransmission->qc_officerName = \Auth::user()->name;
+        // $findTransmission->save();
 
         // if status is accepted, then insert
         if ($findTransmission->status == 'accepted') {
@@ -394,6 +414,19 @@ class TransmissionController extends Controller
                 $getModality->modility_name = $findTransmission->ImageModality;
                 $getModality->save();
             } // modility check is end
+
+            /////////////////////// Devices /////////////////////////////////////////
+
+            //get devices
+            $getDevices = Device::where('device_model', $findTransmission->device_model)->first();
+
+            if ($getDevices == null) {
+                // insert modility
+                $getDevices = new Modility;
+                $getDevices->id = Str::uuid();
+                $getDevices->device_model = $findTransmission->device_model;
+                $getDevices->save();
+            } // devices check is end
 
             ///////////////////// Subject ////////////////////////////////////////////
             

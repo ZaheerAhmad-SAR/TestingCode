@@ -599,7 +599,7 @@
                                         <option value="">Select Status</option>
                                         <option @if ($findTransmission->status == 'pending') selected @endif value="pending">Pending</option>
                                         <option  @if ($findTransmission->status == 'accepted') selected @endif value="accepted">Accepted</option>
-                                        <option  @if ($findTransmission->status == 'rejected') selected @endif value="rejected">Reject</option>
+                                        <option  @if ($findTransmission->status == 'rejected') selected @endif value="rejected">Rejected</option>
                                         <option  @if ($findTransmission->status == 'onhold') selected @endif value="onhold">On-Hold</option>
                                         <option  @if ($findTransmission->status == 'query_opened') selected @endif value="query_opened">Open Query</option>
                                     </select>
@@ -631,11 +631,13 @@
 
                                     <div class="col-md-10"></div>
                                     <div class="col-md-2 edit-section" style="padding-top: 15px;">
-                                        
-
-                                        <a href="javascript:void(0)" class="btn btn-success edit-transmission">
+                                        <!-- <a href="javascript:void(0)" class="btn btn-success edit-transmission">
                                             Edit
-                                        </a>
+                                        </a> -->
+
+                                        <button class="btn btn-success update-transmission"\
+                                          type="submit" name="submit">Update
+                                        </button>
 
                                         <a href="{{route('transmissions.index')}}" class="btn btn-danger">
                                             Close
@@ -709,38 +711,67 @@
 
 <script type="text/javascript">
 
-    $('.edit-transmission').click(function() {
+    // $('.edit-transmission').click(function() {
 
-        $('.remove-readonly').each(function() {
-            // remove attr
-            $(this).removeAttr('readonly');
-            $(this).removeAttr('disabled');
-            // remove classes
-            $(this).removeClass('.form-control:disabled');
-            $(this).removeClass('.form-control[readonly]');
+        // $('.remove-readonly').each(function() {
+        //     // remove attr
+        //     $(this).removeAttr('readonly');
+        //     $(this).removeAttr('disabled');
+        //     // remove classes
+        //     $(this).removeClass('.form-control:disabled');
+        //     $(this).removeClass('.form-control[readonly]');
             
-        });
-        // change background of select2
-        $('.select2-selection__rendered').css('background-color', '#fff !important;');
+        // });
+        // // change background of select2
+        // $('.select2-selection__rendered').css('background-color', '#fff !important;');
 
-        // hide edit button
-        $(this).remove();
-        $('.edit-section').prepend(' <button class="btn btn-success update-transmission"\
-                                      type="submit" name="submit">Update\
-                                    </button> ');
+    //     // hide edit button
+    //     $(this).remove();
+    //     $('.edit-section').prepend('<button class="btn btn-success update-transmission"\
+    //                                   type="submit" name="submit">Update\
+    //                                 </button> ');
 
-    });
+    // });
 
+    // check status and apply changes as per need
+
+        if ($('select[name="status"]').val() != 'accepted') {
+
+                $('.remove-readonly').each(function() {
+                // remove attr
+                $(this).removeAttr('readonly');
+                $(this).removeAttr('disabled');
+                $(this).removeAttr('required');
+                // remove classes
+                $(this).removeClass('.form-control:disabled');
+                $(this).removeClass('.form-control[readonly]');
+                
+                }); //each ends
+                // change background of select2
+                $('.select2-selection__rendered').css('background-color', '#fff !important;');
+        } // if ends
+
+    // initialize select 2
     $('select[name="d_subject_Id"]').select2();
     $('select[name="d_visit_name"]').select2();
     $('select[name="d_image_modality"]').select2();
     $('select[name="d_site_id"]').select2();
 
     // show alert on status changed value
-    $('select[name="status"]').change(function(){
+    $('select[name="status"]').change(function() {
+
         if ($(this).val() == 'accepted') {
+
+                // apply requires attribute
+                $('.remove-readonly').each(function() {
+
+                    $(this).attr('required', true);
+                   
+                }); //each ends
+                
+            // show alert message
             alert('Warning! Please verify data, once it submitted it will not be changed.');
-        }
+        } // if ends
     });
 
 </script>
