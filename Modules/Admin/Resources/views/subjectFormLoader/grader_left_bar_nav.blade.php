@@ -11,7 +11,7 @@ $getGradingFormStatusArray = [
     @if ($step->form_type_id == 2)
         <a class="badge p-1 badge-light m-1  {{ $stepClsStr }}" href="javascript:void(0);"
             onclick="showSections('step_sections_{{ $stepIdStr }}');">
-            {{ $step->formType->form_type . ' ' . $step->step_name }}
+            {{ $step->formType->form_type . ' ' . $step->modility->modility_name }}
             @php
             echo \Modules\Admin\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getGradingFormStatusArray);
             @endphp
