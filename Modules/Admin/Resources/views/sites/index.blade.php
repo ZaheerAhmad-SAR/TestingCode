@@ -719,7 +719,7 @@
                                 @csrf
                                 <div class="form-group row">
                                     <label for="Name" class="col-sm-2 col-form-label"> Sites :</label>
-                                    <div class="col-sm-5">
+                                    <div class="col-sm-4">
                                             <select class="form-control sitesChange" name="site_name" id="site_name">
                                                 <option value="">--Select Sites--</option>
                                                 @foreach($siteForTransmissions as $transmission)
@@ -727,12 +727,11 @@
                                                 @endforeach
                                             </select>
                                     </div>
-                                    <div class="col-sm-5">
-                                            <select name="users" id="users" class="form-control">
-                                                <option value="">--Select User--</option>
-                                                <option value="volvo">Volvo</option>
-                                            </select>
+                                    <label for="Name" class="col-sm-2 col-form-label"> Select Users :</label>
+                                    <div class="col-sm-4 primaryList">
+
                                     </div>
+
                                 </div>
                                 <div class="form-group row">
                                     <label for="Name" class="col-sm-2 col-form-label">CC:</label>
@@ -785,23 +784,25 @@
     $(".sitesChange").change(function () {
         var selectedText = $(this).find("option:selected").text();
         var selectedValue = $(this).val();
-        alert("Selected Text: " + selectedText + " Value: " + selectedValue);
+        //console.log(selectedValue);
+        //alert("Selected Text: " + selectedText + " Value: " + selectedValue);
         getSitesUsers(selectedValue);
     });
 
     function getSitesUsers(selectedValue) {
+        var site_id = selectedValue;
         $.ajax({
-            url:"{{route('queries.loadAllQueriesByStudyId')}}",
+            url:"{{route('transmissions.getAllPIBySiteId')}}",
             type: 'POST',
             data: {
                 "_token": "{{ csrf_token() }}",
                 "_method": 'POST',
-                'study_id'      :study_id,
+                'site_id'      :site_id,
             },
             success: function(response)
             {
-                $('.queriesList').html('');
-                $('.queriesList').html(response);
+                $('.primaryList').html('');
+                $('.primaryList').html(response);
             }
         });
     }

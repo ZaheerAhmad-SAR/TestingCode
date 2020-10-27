@@ -46,8 +46,10 @@ class Query extends Model
         if (!empty($query->query_attachments))
         {
             $attachment .= '<div class="row">
-                        <img style="width:200px; height:200px;" class="mr-3" src='.url((string)$query->query_attachments).' alt="">
-                        </div>';
+                        <img  style="width:200px; height:200px;" class="mr-3" src='.url((string)$query->query_attachments).' alt="">
+                        </div>
+                        <div class="row">
+                        <a target="_blank" data-fancybox-group="gallery" href='.url((string)$query->query_attachments).' class="fancybox">View Large</a></div>';
         }
         return '<div class="row text-left">
                     <input type="hidden" value='.$query->parent_query_id.' name="parent_query_id" id="parent_query_id">
@@ -72,7 +74,9 @@ class Query extends Model
         {
             $attachment .= '<div class="row">
                         <img style="width:200px; height:200px;" class="mr-3" src='.url((string)$query->query_attachments).' alt="">
-                        </div>';
+                        </div>
+                        <div class="row">
+                        <a target="_blank" data-fancybox-group="gallery" href='.url((string)$query->query_attachments).' class="fancybox">View Large</a></div>';
         }
         return '<div class="row text-right">
                     <div class="col-md-12">
