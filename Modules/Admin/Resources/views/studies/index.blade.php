@@ -452,8 +452,8 @@
                             <div class="tab-content clearfix">
                                 @csrf
                                 <div class="replyInput"></div>
-                                <div class="col-sm-6 form-group row">
-                                    <div class="replyClick">
+                                <div class="col-sm-12">
+                                    <div class="replyClick" style="text-align: right;">
                                     <span style="cursor: pointer;">
                                         <i class="fa fa-reply"></i> &nbsp; reply
                                         </span>
@@ -473,6 +473,7 @@
 @endsection
 @section('styles')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="{{ asset("dist/vendors/fancybox/jquery.fancybox.min.css") }}">
 @endsection
 @section('script')
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
@@ -496,6 +497,9 @@
         });
 
     </script>
+    <script src="{{ asset("dist/vendors/fancybox/jquery.fancybox.min.js") }}"></script>
+    <script src="{{ asset("dist/js/gallery.script.js") }}"></script>
+
     <script src="{{ asset('dist/js/jquery.validate.min.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.barfiller.js') }}"></script>
@@ -643,6 +647,7 @@
             {
                 $('.replyInput').html('');
                 $('.replyInput').html(response);
+                $('.replyClick').css('display','');
             }
         });
     }

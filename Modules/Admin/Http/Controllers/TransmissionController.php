@@ -5,7 +5,9 @@ namespace Modules\Admin\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Admin\Entities\Coordinator;
 use Modules\Admin\Entities\CrushFtpTransmission;
+use Modules\Admin\Entities\Other;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\StudySite;
 use Modules\Admin\Entities\Subject;
@@ -77,13 +79,13 @@ class TransmissionController extends Controller
      */
     public function transmissionData(Request $request)
     {
-        
+
         // $cFtpTrans = CrushFtpTransmission::create([
         //     'data' => $request,
         // ]);
 
         $getCFtPTrans = DB::table('transmissions')->where('id', 9446)->first();
-        
+
         if ($getCFtPTrans != null) {
         // remove the upper section
         $explodeGetCFtPTrans = explode('<?xml', $getCFtPTrans->Data);
@@ -163,7 +165,7 @@ class TransmissionController extends Controller
 
         } else {
             echo "Nothing to Insert.";
-        } 
+        }
     }
 
     /**
@@ -331,7 +333,7 @@ class TransmissionController extends Controller
                 $getSite->save();
 
             } // site check is end
-      
+
             // check site study relation
             $getSiteStudy = StudySite::where('study_id', $getStudy->id)
                                         ->where('site_id', $getSite->id)
@@ -396,7 +398,7 @@ class TransmissionController extends Controller
             } // modility check is end
 
             ///////////////////// Subject ////////////////////////////////////////////
-            
+
             // get subject
             $getSubject = Subject::where('study_id', $getStudy->id)
                                   ->where('subject_id', $findTransmission->Subject_ID)
@@ -475,4 +477,15 @@ class TransmissionController extends Controller
     {
         //
     }
+
+    public function getAllPIBySiteId(Request $request)
+    {
+        $site_id = $request->site_id;
+        $primaryInvestigator    = PrimaryInvestigator::where('site_id',$site_id)->get();
+        $coordinators           = Coordinator::where('site_id',$site_id)->get();
+        $photographer           = Photographer::where('site_id',$site_id)->get();
+        $others                 = Other::where('site_id',$site_id)->get();
+        echo  view('admin::sites.primary_dropdown',compact('primaryInvestigator','coordinators','photographer','others'));
+    }
 }
+
