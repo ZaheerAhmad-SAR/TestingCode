@@ -46,12 +46,13 @@ class Query extends Model
         if (!empty($query->query_attachments))
         {
             $attachment .= '<div class="row">
-                        <img style="width:200px; height:200px;" class="mr-3" src='.url((string)$query->query_attachments).' alt="">
-                        </div>';
+                        <img  style="width:200px; height:200px;" class="mr-3" src='.url((string)$query->query_attachments).' alt="">
+                        </div>
+                        <div class="row">
+                        <a target="_blank" data-fancybox-group="gallery" href='.url((string)$query->query_attachments).' class="fancybox">View Large</a></div>';
         }
         return '<div class="row text-left">
                     <input type="hidden" value='.$query->parent_query_id.' name="parent_query_id" id="parent_query_id">
-                    <div class="col-md-12"><strong>Current Status :</strong> <span>'.$query->query_status.'</span></div>
                     <div class="col-md-12">
                         <i class="fas fa-circle" style="color: lightgreen; font-size:8px;position: absolute;float: right;top: 15px;left: 43px;"></i>
                         <img class="mr-3" style="width: 30px; height: 30px; border-radius: 50%;"
@@ -72,7 +73,9 @@ class Query extends Model
         {
             $attachment .= '<div class="row">
                         <img style="width:200px; height:200px;" class="mr-3" src='.url((string)$query->query_attachments).' alt="">
-                        </div>';
+                        </div>
+                        <div class="row">
+                        <a target="_blank" data-fancybox-group="gallery" href='.url((string)$query->query_attachments).' class="fancybox">View Large</a></div>';
         }
         return '<div class="row text-right">
                     <div class="col-md-12">
