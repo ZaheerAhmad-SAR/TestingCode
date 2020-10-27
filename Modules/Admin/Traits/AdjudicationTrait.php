@@ -92,15 +92,14 @@ trait AdjudicationTrait
                     'id' => Str::uuid(),
                     'answer' => $finalAnswer,
                 ];
+
+                FinalAnswer::updateOrCreate($finalAnswerArray, $finalAnswerArray_1);
                 /************************************* */
                 /************************************* */
                 /************************************* */
                 if ($isQuestionAdjudicationRequired) {
                     QuestionAdjudicationRequired::deleteAdjudicationRequiredQuestion($questionAdjudicationRequiredArray);
                     QuestionAdjudicationRequired::create($questionAdjudicationRequiredArray + $questionAdjudicationRequiredArray_1);
-                    $isFullFormAdjudicationRequired = true;
-                } else {
-                    FinalAnswer::updateOrCreate($finalAnswerArray, $finalAnswerArray_1);
                 }
             }
         }
