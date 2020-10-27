@@ -191,8 +191,15 @@
                                     <label for="Name" class="control-label">Site ID</label>
                                 </div>
 
-                                <div class="form-group col-sm-3">
-                                    <input type="text" name="d_site_id" readonly="" value="{{ $findTransmission->Site_ID }}" id="d_site_id" class="form-control" required="required">
+
+                                 <div class="form-group col-sm-3">
+                                    <span class="span-text">{{ $findTransmission->Site_ID }}</span>
+                                    <select name="d_site_id" id="d_site_id" class="form-control remove-readonly" disabled="" required="required">
+                                        <option value="">Select Site</option>
+                                        @foreach($getSites as $site)
+                                        <option @if($site->site_code == $findTransmission->Site_ID) selected @endif value="{{$site->id.'/'.$site->site_code}}">{{$site->site_code}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -583,18 +590,35 @@
 
                                  --}}
 
-                                @if ($findTransmission->status == 'accepted')
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Status</label>
+                                </div>
+
+                                <div class="form-group col-md-9">
+                                    <select name="status" id="status" class="form-control remove-readonly" required="required" disabled>
+                                        <option value="">Select Status</option>
+                                        <option @if ($findTransmission->status == 'pending') selected @endif value="pending">Pending</option>
+                                        <option  @if ($findTransmission->status == 'accepted') selected @endif value="accepted">Accepted</option>
+                                        <option  @if ($findTransmission->status == 'rejected') selected @endif value="rejected">Reject</option>
+                                        <option  @if ($findTransmission->status == 'onhold') selected @endif value="onhold">On-Hold</option>
+                                        <option  @if ($findTransmission->status == 'query_opened') selected @endif value="query_opened">Open Query</option>
+                                    </select>
+                                </div>
+
+                                <!-- //////////////////// row 26 //////////////////////// -->
 
                                 <div class="form-group col-sm-3">
-                                    <label for="Name" class="control-label">Comment</label>
+                                    <label for="Name" class="control-label">Reason for change</label>
                                 </div>
 
                                 <div class="form-group col-md-9">
 
-                                    <textarea class="form-control remove-readonly" required="required" readonly="" name="comment" rows="4">{{ $findTransmission->comment }}</textarea>
+                                    <textarea class="form-control remove-readonly" required="required" readonly="" name="comment" rows="4" disabled></textarea>
                                 </div>
 
-                                @endif
+                            <!-- ///////////////////////////// row 27 ///////////////////// -->
+
+                              
 
                                 @if ($findTransmission->status == 'accepted')
 
@@ -623,7 +647,48 @@
                             </div>
                             <!-- row ends -->
                         </form>
+                        <br>
+                        <hr>
+
+                        <!-- Transmission Update Details -->
+                        
+                            <div style="background-color:#00A8B3;">
+                                <h4 style="color: white; text-align: center; padding-top: 5px; padding-bottom: 5px;">
+                                    Changes Log (Transmission Data)
+                                </h4>
+                            </div>
+                        
+                            <div class="table-responsive">
+
+                            <table class="table table-bordered" id="laravel_crud">
+                                <thead class="table-secondary">
+                                    <tr>
+                                        <th>Time of Update</th>
+                                        <th>Change By</th>
+                                        <th>Reason for change</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($getTransmissionUpdates as $transmissionUpdates)
+                                        <tr>
+                                            <td>
+                                                {{ date('d-M-Y', strtotime($transmissionUpdates->created_at)).' '.date('h:m:s', strtotime($transmissionUpdates->created_at)) }}
+                                            </td>
+                                            <td>
+                                                {{ $transmissionUpdates->users->name }}
+                                            </td>
+                                            <td>
+                                                {{ $transmissionUpdates->comment }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                         
+                        </div>
+                        <!-- Transmission Update Details -->
                     </div>
+                   
                 </div>
 
             </div>
@@ -669,6 +734,14 @@
     $('select[name="d_subject_Id"]').select2();
     $('select[name="d_visit_name"]').select2();
     $('select[name="d_image_modality"]').select2();
+    $('select[name="d_site_id"]').select2();
+
+    // show alert on status changed value
+    $('select[name="status"]').change(function(){
+        if ($(this).val() == 'accepted') {
+            alert('Warning! Please verify data, once it submitted it will not be changed.');
+        }
+    });
 
 </script>
 
