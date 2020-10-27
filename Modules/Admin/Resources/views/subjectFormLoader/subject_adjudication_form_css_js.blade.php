@@ -230,10 +230,34 @@
             }
 
             function copyValueToField(stepIdStr, sectionIdStr, questionId, field_name, fieldId, copyToFieldId) {
-                var fieldVal = getAdjudicationFormFieldValue(stepIdStr, field_name, fieldId);
+                var fieldVal = $('#' + fieldId).val();
                 $('#' + copyToFieldId).val(fieldVal);
                 var copyToFieldName = $("#" + copyToFieldId).attr("name");
                 validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, copyToFieldName, copyToFieldId);
+            }
+
+            function calculateAverage(stepIdStr, sectionIdStr, questionId, questionIdStr, copyToFieldId){
+                var numberValues = [];
+                $('.' + questionIdStr).each(function() {
+                    numberValues.push($(this).val());
+                });
+                var total = 0;
+                for(var i = 0; i < numberValues.length; i++) {
+                    total += parseFloat(numberValues[i]);
+                }
+                var avg = total / numberValues.length;
+                $('#' + copyToFieldId).val(avg);
+                var copyToFieldName = $("#" + copyToFieldId).attr("name");
+                validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, copyToFieldName, copyToFieldId);
+            }
+
+            function showAllQuestions(){
+                var route = "{{ route('subjectFormLoader.showSubjectForm', ['study_id'=>$studyId, 'subject_id'=>$subjectId, 'showAllQuestions'=>'yes' ])}}";
+                location.href = route;
+            }
+            function showOnlyAdjudicationRequiredQuestions(){
+                var route = "{{ route('subjectFormLoader.showSubjectForm', ['study_id'=>$studyId, 'subject_id'=>$subjectId, 'showAllQuestions'=>'no' ])}}";
+                location.href = route;
             }
 
         </script>

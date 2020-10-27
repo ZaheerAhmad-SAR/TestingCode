@@ -25,11 +25,10 @@
                                 </button>
                             @endif
 
-                                @if(hasPermission(auth()->user(),'invitation.invite'))
-                                    &nbsp;
-                                    <a href="{!! route('invitation.invite') !!}" class="btn btn-outline-primary">
+                                @if(hasPermission(auth()->user(),'invite_view'))
+                                    &nbsp; <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#inviteuser">
                                         <i class="far fa-edit"></i>&nbsp; Invite User
-                                    </a>
+                                    </button>
                                 @endif
                         &nbsp;
                             @if(hasPermission(auth()->user(),'users.create'))
@@ -71,11 +70,6 @@
                                                 <span class="dropdown-item">
                                                     <a href="{!! route('users.edit',$user->id) !!}">
                                                         <i class="far fa-edit"></i>&nbsp; Edit
-                                                    </a>
-                                                </span>
-                                                <span class="dropdown-item">
-                                                    <a href="{!! route('users.enable_2fa',$user->id) !!}">
-                                                        <i class="fa fa-alarm-clock"></i>&nbsp; 2 Factor
                                                     </a>
                                                 </span>
                                                     <span class="dropdown-item">
@@ -312,36 +306,46 @@
             </div>
         </div>
     </div>
-    <!-- 2fa modal -->
-    <div class="modal fade" id="2fa" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
+    <!--Invite User -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="inviteuser">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header">
-                    <h4 class="modal-title" id="studyCrudModal">Change Status</h4>
+                    <p class="modal-title">Invite User</p>
                 </div>
-                <div class="modal-body">
-                    <form action="{{route('studies.studyStatus')}}" name="changestatus" class="" method="post">
-                        @csrf
-                        @if(!empty($study))
-                            <input type="hidden" value="{{$study->id}}" id="study_ID" name="study_ID">
+                <form action="{{route('process_invite')}}" enctype="multipart/form-data" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
                         @endif
-                        <div class="form-group row">
-                            <div class="col-md-3">Status</div>
-                            <div class="col-md-6">
-                                <select class="form-control dropdown" name="status" id="status">
-                                    <option value="">Select Status</option>
-                                    <option value="Archived">Archive</option>
-                                    <option value="Development">Development</option>
-                                    <option value="Live">Live</option>
-                                </select>
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
+                                @csrf
+                                <div class="form-group row" style="margin-top: 10px;">
+                                    <div class="col-md-4">Email address</div>
+                                    <div class="col-md-8">
+                                        <input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Enter email">
+                                        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                        @if(hasPermission(auth()->user(),'users.store'))
+                            <button type="submit" class="btn btn-success">Send Invitation</button>
+                        @endif
+                    </div>
+                </form>
             </div>
         </div>
     </div>

@@ -80,4 +80,9 @@ class PhaseSteps extends Model
     {
         return $this->belongsTo(StudyStructure::class, 'phase_id', 'step_id');
     }
+
+    public function modility()
+    {
+        return $this->belongsTo(Modility::class, 'modility_id', 'id');
+    }
 }

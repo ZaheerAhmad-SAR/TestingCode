@@ -45,8 +45,7 @@ class QueriesController extends Controller
     if ($request->ajax())
     {
         $study_id = $request->study_id;
-        $records = Query::where('module_id','like',$study_id)->where('parent_query_id','like',0)->get();
-        //dd($records);
+        $records = Query::where('query_status','=','open')->where('module_id','like',$study_id)->where('parent_query_id','like',0)->get();
         echo  view('queries::queries.queries_table_view',compact('records'));
     }
     }
@@ -54,29 +53,42 @@ class QueriesController extends Controller
     public function queryReply(Request $request)
     {
 
+
         //dd($find->id,$query_status);
-        $query_status     = $request->post('query_status');
-        $queryStatusArray = array('query_status'=>$query_status);
-        $parentQueryId    = $request->post('parent_query_id');
-        $find             = Query::find($parentQueryId);
-        Query::where('id',$find->id)->update($queryStatusArray);
+        $parentQueryId    = $request->post('parent_query_id'); // return 0
+        $query_status     = $request->post('query_status'); // return the status value
         $query_id         = $request->post('query_id');
+        $find             = Query::find($query_id);
+        $queryStatusArray = array('query_status'=>$query_status);
+        Query::where('id',$find['id'])->update($queryStatusArray);
         $reply            = $request->post('reply');
         $query_subject    = $request->post('query_subject');
         $module_id        = $request->post('module_id');
         $query_url        = $request->post('query_url');
         $query_type       = $request->post('query_type');
         $id               = Str::uuid();
+        $filePath = '';
+        if ($request->has('query_file'))
+        {
+            if (!empty($request->file('query_file'))) {
+                $image = $request->file('query_file');
+                $name = Str::slug($request->input('name')).'_'.time();
+                $folder = '/query_attachments/';
+                $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
+                $this->uploadOne($image, $folder, 'public', $name);
+            }
+        }
         $query            = Query::create([
             'id'=>$id,
             'queried_remarked_by_id'=>\auth()->user()->id,
             'parent_query_id'=> $query_id,
             'messages'=>$reply,
             'module_id'=>$module_id,
-            'query_status'=> 'unconfirmed',
+            'query_status'=> $query_status,
             'query_type' =>$query_type,
             'query_url'=>$query_url,
-            'query_subject'=>$query_subject
+            'query_subject'=>$query_subject,
+            'query_attachments'=>$filePath
         ]);
         return response()->json([$query,'success'=>'Queries response is successfully save!!!!','reply_id'=>$id]);
 
@@ -115,14 +127,18 @@ class QueriesController extends Controller
         $module_id        = $request->post('module_id');
         $query_url        = $request->post('query_url');
         $queryAssignedTo  = $request->post('queryAssignedTo');
+        $filePath = '';
         if ($request->has('query_file'))
         {
-            $image = $request->file('query_file');
-            $name = Str::slug($request->input('name')).'_'.time();
-            $folder = '/query_attachments/';
-            $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
-            $this->uploadOne($image, $folder, 'public', $name);
+            if (!empty($request->file('query_file'))) {
+                $image = $request->file('query_file');
+                $name = Str::slug($request->input('name')).'_'.time();
+                $folder = '/query_attachments/';
+                $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
+                $this->uploadOne($image, $folder, 'public', $name);
+            }
         }
+
         $id              = Str::uuid();
         $query           = Query::create([
             'id'=>$id,

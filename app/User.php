@@ -41,6 +41,7 @@ class User extends Authenticatable
         'role_id',
         'password',
         'google_auth',
+        'qr_flag',
         'browser_name',
         'two_factor_code',
         'two_factor_expires_at',

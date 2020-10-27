@@ -15,7 +15,7 @@ class AddColumnStatusToQueriesTable extends Migration
     {
         Schema::table('queries', function (Blueprint $table) {
             $table->enum('query_status', ['new','open','confirmed', 'unconfirmed', 'close',])
-                ->default('new')->after('query_type');
+                ->default('new');
         });
     }
 

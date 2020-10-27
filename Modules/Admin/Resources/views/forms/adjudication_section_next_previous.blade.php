@@ -1,3 +1,6 @@
+@php
+$showAllQuestions = request('showAllQuestions', 'no');
+@endphp
 @if ($key === $first)
     <div class="d-flex">
         @if ((bool) $subjectId && ($adjudicationFormStatusObj->adjudication_status === 'complete' || $adjudicationFormStatusObj->adjudication_status === 'resumable'))
@@ -8,6 +11,18 @@
                 Edit Form
             </button>
         @endif
+
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        @if($showAllQuestions === 'no')
+            <button type="button" class="btn btn-primary" onclick="showAllQuestions();">
+                Show all questions
+            </button>
+        @else
+            <button type="button" class="btn btn-primary" onclick="showOnlyAdjudicationRequiredQuestions();">
+                show adjudication required questions
+            </button>
+        @endif
+
         <button type="button"
             class="btn btn-primary nexttab ml-auto {{ $studyClsStr }} {{ $stepClsStr }} {{ $sectionClsStr }}">Next</button>
     </div>

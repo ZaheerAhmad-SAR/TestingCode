@@ -459,12 +459,6 @@
                                         </span>
                                     </div>
                                 </div>
-                                <div class="form-group row commentsInput" style="display: none;">
-                                    <label for="Name" class="col-sm-2 col-form-label">Enter your Query</label>
-                                    <div class="col-sm-10">
-                                        <textarea class="summernote-inline" name="reply" id="reply"></textarea>
-                                    </div>
-                                </div>
                             </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
@@ -678,26 +672,51 @@
     }
         $('body').on('click', '.replyClick', function () {
             $('.commentsInput').css('display','');
+            $('.queryAttachments').css('display','');
+            $('.queryStatus').css('display','');
             $('.replyClick').css('display','none');
         });
 
     $('#replyqueries').click(function (e){
         $.ajaxSetup({ headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
         e.preventDefault();
+        var reply         = $("#reply").val();
+        var query_id      = $("#query_id").val();
+        var query_url     = $("#query_url").val();
+        var query_type    = $("#query_type").val();
+        var module_id     = $("#module_id").val();
+        var query_status  = $("#query_status").val();
+        var query_subject = $("#query_subject").val();
+
+        var formData      = new FormData();
+        formData.append('reply', reply);
+        formData.append('query_id', query_id);
+        formData.append('query_url', query_url);
+        formData.append('query_type', query_type);
+        formData.append('query_subject', query_subject);
+        formData.append('module_id', module_id);
+        formData.append('query_status', query_status);
+        // Attach file
+        formData.append('query_file', $('input[type=file]')[0].files[0]);
+
         $.ajax({
-            data: $('#replyForm').serialize(),
             url:"{{route('queries.queryReply')}}",
             type: "POST",
+            data: formData,
             dataType: 'json',
+            contentType: false,
+            cache: false,
+            processData:false,
             success: function (results)
             {
                 // $('.commentsInput').css('display','none');
-                // $('.replyClick').css('display','');
+                $('.replyClick').css('display','');
                 var query_id = results[0].parent_query_id;
+                console.log(query_id);
                 showComments(query_id);
                 //$("#replyForm")[0].reset();
-                $('#summernote').summernote('disable');
-                $("#reply").summernote("reset");
+                //$('#summernote').summernote('disable');
+                //$("#reply").summernote("reset");
             },
             error: function (results) {
                 console.error('Error:', results);

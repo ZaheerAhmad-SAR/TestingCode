@@ -11,7 +11,6 @@
             <div class="alert alert-danger" style="display:none"></div>
             <div class="modal-header ">
                 <p class="modal-title">Add a Queries</p>
-{{--                enctype="multipart/form-data"--}}
             </div>
             <form id="queriesForm" name="queriesForm" enctype="multipart/form-data" >
                 <div class="modal-body">
@@ -86,7 +85,6 @@
 
 <script type="text/javascript">
 
-
     $('.create-new-queries').click(function () {
         var study_id = $(this).attr('data-id');
         var moduleId = $('#module_id').val(study_id);
@@ -136,15 +134,15 @@
         });
     });
 
-    function createFormData(formData, key, data) {
-        if (data === Object(data) || Array.isArray(data)) {
-            for (var i in data) {
-                createFormData(formData, key + '[' + i + ']', data[i]);
-            }
-        } else {
-            formData.append(key, data);
-        }
-    }
+    // function createFormData(formData, key, data) {
+    //     if (data === Object(data) || Array.isArray(data)) {
+    //         for (var i in data) {
+    //             createFormData(formData, key + '[' + i + ']', data[i]);
+    //         }
+    //     } else {
+    //         formData.append(key, data);
+    //     }
+    // }
 
     $("#queriesForm").on('submit', function(e){
         e.preventDefault();
@@ -190,12 +188,12 @@
             success: function(response)
             {
                 console.log(response);
-                // $("#queriesForm")[0].reset();
-                // $("#remarks").summernote("reset");
-                // $('#OptionsGroupEditForm').modal('hide');
-                // window.setTimeout(function () {
-                //     window.location.reload();
-                // }, 100);
+                $("#queriesForm")[0].reset();
+                //$("#remarks").summernote("reset");
+                $('#queries-modal').modal('hide');
+                window.setTimeout(function () {
+                    window.location.reload();
+                }, 100);
             }
         });
 
