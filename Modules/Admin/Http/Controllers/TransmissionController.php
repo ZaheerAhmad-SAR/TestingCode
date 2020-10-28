@@ -5,6 +5,7 @@ namespace Modules\Admin\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Mail;
 use Modules\Admin\Entities\Coordinator;
 use Modules\Admin\Entities\CrushFtpTransmission;
 use Modules\Admin\Entities\Other;
@@ -231,7 +232,7 @@ class TransmissionController extends Controller
         $findTransmission->qc_officerId = \Auth::user()->id;
         $findTransmission->qc_officerName = \Auth::user()->name;
         $findTransmission->save();
-        
+
         // get all sites
         $getSites =Site::get();
         // get all subjects
@@ -581,6 +582,33 @@ class TransmissionController extends Controller
         $photographer           = Photographer::where('site_id',$site_id)->get();
         $others                 = Other::where('site_id',$site_id)->get();
         echo  view('admin::sites.primary_dropdown',compact('primaryInvestigator','coordinators','photographer','others'));
+    }
+
+    public function queryTransmissionMail()
+    {
+
+        request()->validate(['cc_email'=>'required|email']);
+//        //$ccEmail = $request->post('cc_email');
+//        $remarks = $request->post('remarks');
+
+        /// Mail Raw using plain text
+        Mail::raw(request('remarks'),function ($message){
+                $message->to(request('cc_email'))
+                ->subject(request('query_subject'));
+        });
+        //// Mail Raw end function
+
+
+        return redirect('/sites')->with('message','Query has been send');
+        //$users = $request->post('users');
+//        $data = array
+//        (
+//            'query_subject'=>$request['query_subject'],
+//            'site_name'=> $request['site_name'],
+//            'users'=>$users,
+//            'cc_email'=>$request['cc_email'],
+//            'remarks'=>$request['remarks']
+//        );
     }
 }
 

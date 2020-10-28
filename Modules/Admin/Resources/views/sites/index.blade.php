@@ -712,7 +712,7 @@
                 <div class="modal-header ">
                     <p class="modal-title">Transmisson Query</p>
                 </div>
-                <form id="queriesForm" name="queriesForm">
+                <form id="queriesTransmissionForm" method="post" name="queriesTransmissionForm" action="{{route('transmissions.queryTransmissionMail')}}">
                     <div class="modal-body">
                         <div id="exTab1">
                             <div class="tab-content clearfix">
@@ -736,9 +736,14 @@
                                 <div class="form-group row">
                                     <label for="Name" class="col-sm-2 col-form-label">CC:</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text" name="query_subject" minlength="6" maxlength="50" id="query_subject">
+                                        <input class="form-control" type="text" name="cc_email" id="cc_email">
+                                        @error('cc_email')
+                                        <div class="text-danger text-xl-center">{{$message}}</div>
+                                        @enderror
                                     </div>
+
                                 </div>
+
                                 <div class="form-group row">
                                     <label for="Name" class="col-sm-2 col-form-label">Query Subject:</label>
                                     <div class="col-sm-10">
@@ -749,15 +754,18 @@
                                 <div class="form-group row ">
                                     <label for="Name" class="col-sm-2 col-form-label">Email Body</label>
                                     <div class="col-sm-10">
-                                        <textarea class="summernote-inline" name="remarks" cols="2" rows="1" id="remarks"></textarea>
+                                        <textarea class="form-control"  name="remarks"  id="remarks"></textarea>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="button" class="btn btn-outline-primary" id="savequeries"><i class="fa fa-save"></i> Send Email</button>
+                            <button class="btn btn-outline-danger" data-dismiss="modal" id="sendEmail-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="submit" name="sendEmail" class="btn btn-outline-primary" id="sendEmail"><i class="fa fa-save"></i> Send Email</button>
                         </div>
+                        @if(session('message'))
+                        <div class="alert-success">{{session('message')}}</div>
+                        @endif
                     </div>
                 </form>
             </div>
