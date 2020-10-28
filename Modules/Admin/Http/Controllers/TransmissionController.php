@@ -18,6 +18,8 @@ use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\PrimaryInvestigator;
 use Modules\Admin\Entities\Photographer;
 use Modules\Admin\Entities\TransmissionUpdateDetail;
+use Modules\Admin\Entities\Device;
+use Modules\Admin\Entities\DeviceModility;
 use DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
@@ -63,6 +65,16 @@ class TransmissionController extends Controller
            $getTransmissions = $getTransmissions->where('ImageModality', $request->imagine_modality);
         }
 
+        if ($request->modility_id != '') {
+
+           $getTransmissions = $getTransmissions->where('modility_id', $request->modility_id);
+        }
+
+        if ($request->is_read != '') {
+
+           $getTransmissions = $getTransmissions->where('is_read', $request->is_read);
+        }
+
         if ($request->status != '') {
 
            $getTransmissions = $getTransmissions->where('status', $request->status);
@@ -70,7 +82,10 @@ class TransmissionController extends Controller
 
         $getTransmissions = $getTransmissions->orderBy('id', 'desc')->paginate(50);
 
-        return view('admin::transmission_details', compact('getTransmissions'));
+        // get modality
+        $getModalities = Modility::get();
+
+        return view('admin::transmission_details', compact('getTransmissions', 'getModalities'));
     }
 
     /**
@@ -84,11 +99,11 @@ class TransmissionController extends Controller
         //     'data' => $request,
         // ]);
 
-        $getCFtPTrans = DB::table('transmissions')->where('id', 9446)->first();
+        // $getCFtPTrans = DB::table('transmissions')->where('id', 9446)->first();
 
-        if ($getCFtPTrans != null) {
+        // if ($getCFtPTrans != null) {
         // remove the upper section
-        $explodeGetCFtPTrans = explode('<?xml', $getCFtPTrans->Data);
+        $explodeGetCFtPTrans = explode('<?xml', $request);
         //dd($explodeGetCFtPTrans[1]);
         // concatinate xml with the remaining  xml
         $xml = '<?xml'.$explodeGetCFtPTrans[1];
@@ -101,7 +116,7 @@ class TransmissionController extends Controller
         if ($checkTransmissionNumber == null) {
 
             $saveData = DB::table('crush_ftp_transmissions')->insert([
-                'data'                      => $getCFtPTrans->Data,
+                'data'                      => $request,
                 'Transmission_Number'       => $xml->Transmission_Number,
                 'Study_Name'                => $xml->Study_Name,
                 'StudyI_ID'                 => $xml->StudyI_ID,
@@ -163,9 +178,9 @@ class TransmissionController extends Controller
             echo 'Transmission Number already exists.';
         }
 
-        } else {
-            echo "Nothing to Insert.";
-        }
+        // } else {
+        //     echo "Nothing to Insert.";
+        // }
     }
 
     /**
@@ -240,38 +255,69 @@ class TransmissionController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // get old transmission data
+        $oldTransmission = CrushFtpTransmission::where('id', decrypt($id))->first();
         // find record
         $findTransmission = CrushFtpTransmission::where('id', decrypt($id))->first();
         $findTransmission->Submitter_email = $request->d_submitter_email;
         $findTransmission->Submitter_phone = $request->d_submitter_phone;
+        
+        // get site id
+        if ($request->d_site_id != "") {
+
+            $siteID = explode('/', $request->d_site_id);
+            $findTransmission->sit_id = $siteID[0];
+            $findTransmission->Site_ID = $siteID[1];
+        }
+
         $findTransmission->Site_Name = $request->d_site_name;
-        $findTransmission->PI_FirstName = $request->d_pi_first_name;
-        $findTransmission->PI_LastName = $request->d_pi_last_name;
-        $findTransmission->PI_email = $request->d_pi_email;
         $findTransmission->Site_state = $request->d_site_state;
         $findTransmission->Site_Zip = $request->d_site_zip;
         $findTransmission->Site_country = $request->d_site_country;
+
+        // PI
+        $findTransmission->PI_FirstName = $request->d_pi_first_name;
+        $findTransmission->PI_LastName = $request->d_pi_last_name;
+        $findTransmission->PI_email = $request->d_pi_email;
+        
         // get subject Id
-        $subjectID = explode('/', $request->d_subject_Id);
-        $findTransmission->subj_id = $subjectID[0];
-        $findTransmission->Subject_ID = $subjectID[1];
+        if ($request->d_subject_Id == "1") {
+
+            $findTransmission->new_subject = "1";
+
+        } else if ($request->d_subject_Id != "") {
+
+            $subjectID = explode('/', $request->d_subject_Id);
+            $findTransmission->subj_id = $subjectID[0];
+            $findTransmission->Subject_ID = $subjectID[1]; 
+        }
+        
         $findTransmission->StudyEye = $request->d_study_eye;
+        
         // get visit name and visit_id
-        $visitName = explode('/', $request->d_visit_name);
-        $findTransmission->phase_id = $visitName[0];
-        $findTransmission->visit_name = $visitName[1];
+        if ($request->d_visit_name != "") {
+
+            $visitName = explode('/', $request->d_visit_name);
+            $findTransmission->phase_id = $visitName[0];
+            $findTransmission->visit_name = $visitName[1];
+        }
 
         $findTransmission->visit_date = $request->d_visit_date;
+        
         // get modality name and madality_id
-        $modilityName = explode('/', $request->d_image_modality);
-        $findTransmission->modility_id = $modilityName[0];
-        $findTransmission->ImageModality = $modilityName[1];
+        if ($request->d_image_modality != "") {
+
+            $modilityName = explode('/', $request->d_image_modality);
+            $findTransmission->modility_id = $modilityName[0];
+            $findTransmission->ImageModality = $modilityName[1];
+        }
 
         $findTransmission->device_model = $request->d_device_model;
         $findTransmission->device_oirrcID = $request->d_device_oirrc_id;
         $findTransmission->Submitted_By = $request->d_submitted_by;
         $findTransmission->photographer_full_name = $request->d_photographer_full_name;
         $findTransmission->photographer_email = $request->d_photographer_email;
+        // status
         $findTransmission->status = $request->status;
         $findTransmission->save();
 
@@ -283,25 +329,23 @@ class TransmissionController extends Controller
         $transmissionUpdateDetails->comment = $request->comment;
         $transmissionUpdateDetails->save();
 
+        // log event details
+        $logEventDetails = eventDetails($findTransmission->id, 'Transmission Data', 'Update', $request->ip(), $oldTransmission);
+
+        // if status is accepted, then insert
+        if ($findTransmission->status == 'accepted') {
+
+            $transmissionDataStatus = $this->transmissionStatus($findTransmission);
+        }
+
         \Session::flash('success', 'Transmission information updated successfully.');
 
         return redirect(route('transmissions.edit',  $id));
     }
 
-    public function transmissionStatus(Request $request) {
+    public function transmissionStatus($findTransmission) {
 
-        $findTransmission = CrushFtpTransmission::where('id', decrypt($request->hidden_transmission_id))->first();
-
-        $findTransmission->status = $request->status;
-        $findTransmission->comment = $request->comment;
-        $findTransmission->qc_officerId = \Auth::user()->id;
-        $findTransmission->qc_officerName = \Auth::user()->name;
-        $findTransmission->save();
-
-        // if status is accepted, then insert
-        if ($findTransmission->status == 'accepted') {
-
-            ////////////////////////////////// Save Study ///////////////////////////////////
+    ///////////////////////////// Save Study ///////////////////////////////////
             //get study
             $getStudy = Study::where('study_code', $findTransmission->StudyI_ID)->first();
 
@@ -315,7 +359,7 @@ class TransmissionController extends Controller
                 $getStudy->save();
             } // study check is end
 
-            ////////////////////// Save site ////////////////////////////////////////////
+        ////////////////////// Save site ///////////////////////////////////////
 
             // get site
             $getSite = Site::where('site_code', $findTransmission->Site_ID)->first();
@@ -348,7 +392,7 @@ class TransmissionController extends Controller
 
             } // site study check is end
 
-            //////////////////////// Primary Investigator /////////////////////////////
+        //////////////////// Primary Investigator ///////////////////////////
 
             // get Primary Investigator
             $getPrimaryInvestigator = PrimaryInvestigator::where('site_id', $getSite->id)
@@ -366,7 +410,7 @@ class TransmissionController extends Controller
                 $getPrimaryInvestigator->save();
             } // primary investigator check ends
 
-            ////////////////// Photographer ///////////////////////////////////////////
+        ////////////////// Photographer ///////////////////////////////////////
 
             // get Photographer
             $getPhotographer = Photographer::where('site_id', $getSite->id)
@@ -383,11 +427,11 @@ class TransmissionController extends Controller
                 $getPhotographer->save();
             } // photographer check is end
 
-            //////////////////// Modality /////////////////////////////////////////////
+        //////////////////// Modality //////////////////////////////////////////
 
             // get Modality
             $getModality = Modility::where('modility_name', $findTransmission->ImageModality)
-                                    ->first();
+            ->first();
 
             if ($getModality == null) {
                 // insert modility
@@ -397,14 +441,38 @@ class TransmissionController extends Controller
                 $getModality->save();
             } // modility check is end
 
-            ///////////////////// Subject ////////////////////////////////////////////
+        /////////////////////// Devices ///////////////////////////////////////
 
-            // get subject
-            $getSubject = Subject::where('study_id', $getStudy->id)
-                                  ->where('subject_id', $findTransmission->Subject_ID)
-                                  ->first();
+            //get devices
+            $getDevices = Device::where('device_model', $findTransmission->device_model)->first();
 
-            if ($getSubject == null) {
+            if ($getDevices == null) {
+                // insert modility
+                $getDevices = new Device;
+                $getDevices->id = Str::uuid();
+                $getDevices->device_model = $findTransmission->device_model;
+                $getDevices->save();
+            } // devices check is end
+
+            // make relation for devices and modality
+            $getDeviceModality = DeviceModility::where('device_id', $getDevices->id)
+                                                 ->where('modility_id', $getModality->id)
+                                                 ->first();
+
+            if ($getDeviceModality == null) {
+
+                $getDeviceModality = new DeviceModility;
+                $getDeviceModality->id = Str::uuid();
+                $getDeviceModality->device_id = $getDevices->id;
+                $getDeviceModality->modility_id = $getModality->id;
+                $getDeviceModality->save();
+            }
+
+        ///////////////////// Subject /////////////////////////////////////////
+
+            // if  new_subject status is 1 insert new subject and change ne_subject status to 0
+            if ($findTransmission->new_subject == "1") {
+
                 // insert subject
                 $getSubject = new Subject;
                 $subjectID = Str::uuid();
@@ -413,14 +481,47 @@ class TransmissionController extends Controller
                 $getSubject->subject_id = $findTransmission->Subject_ID;
                 $getSubject->site_id = $getSite->id;
                 $getSubject->study_eye = $findTransmission->StudyEye;
+                $getSubject->transmission_status = "1";
                 $getSubject->save();
 
                 // assign ID to pointer
                 $getSubject->id = $subjectID;
 
-            } // subject check is end
+                // change new_subject status to 0
+                $updateSubjectStatus = CrushFtpTransmission::where('id', $findTransmission->id)
+                ->update(['new_subject' => "0"]); 
 
-            /////////////////// Phase /////////////////////////////////////////////////
+            } else {
+
+                // get subject
+                $getSubject = Subject::where('study_id', $getStudy->id)
+                                  ->where('subject_id', $findTransmission->Subject_ID)
+                                  ->first();
+
+                if ($getSubject == null) {
+                    // insert subject
+                    $getSubject = new Subject;
+                    $subjectID = Str::uuid();
+                    $getSubject->id = $subjectID;
+                    $getSubject->study_id = $getStudy->id;
+                    $getSubject->subject_id = $findTransmission->Subject_ID;
+                    $getSubject->site_id = $getSite->id;
+                    $getSubject->study_eye = $findTransmission->StudyEye;
+                    $getSubject->transmission_status = "1";
+                    $getSubject->save();
+
+                    // assign ID to pointer
+                    $getSubject->id = $subjectID;
+
+                    // change new_subject status to 0
+                    $updateSubjectStatus = CrushFtpTransmission::where('id', $findTransmission->id)
+                    ->update(['new_subject' => 0]);  
+
+                } // subject check is end
+
+            } // else ends
+            
+        /////////////////// Phase /////////////////////////////////////////////
 
             // get phase
             $getPhase = StudyStructure::where('study_id', $getStudy->id)
@@ -446,7 +547,6 @@ class TransmissionController extends Controller
                                               ->where('phase_id', $getPhase->id)
                                               ->first();
 
-
             if ($getSubjectPhase == null) {
                 // insert into subject phases
                 $getSubjectPhase = new SubjectsPhases;
@@ -457,14 +557,9 @@ class TransmissionController extends Controller
                 $getSubjectPhase->save();
             } // subject phases check is end
 
-
             // dd('StudyID:  '.$getStudy->id.'???????  SiteID:   '.$getSite->id.'???????  Primary INV:    '.$getPrimaryInvestigator->id.'???????   Photographer:     '.$getPhotographer->id.'???????   Modality:    '.$getModality->id.'???????   Subject ID:    '.$getSubject->id.'???????   PhaseID:    '.$getPhase->id.'???????   SubjectPhaseID:      '.$getSubjectPhase->id);
 
-        } // status check ends
-
-        \Session::flash('success', 'Transmission information updated successfully.');
-
-        return redirect(route('transmissions.index'));
+        return true;
 
     }
 
