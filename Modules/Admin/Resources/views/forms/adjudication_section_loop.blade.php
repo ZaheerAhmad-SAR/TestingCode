@@ -1,5 +1,5 @@
-@if (canAdjudication())
-    <div class="all_step_sections adjudication_step_sections_{{ $stepIdStr }}"
+@if (canAdjudication(['index']))
+<div class="all_step_sections step_adjudication_sections_{{ $stepIdStr }}"
         style="display: {{ $firstStep ? 'block' : 'none' }};">
         @php
         $form_filled_by_user_id = ($form_filled_by_user_id ?? '');
@@ -124,7 +124,7 @@
             function submitStepAdjudicationForm{{ $stepIdStr }}(stepIdStr, stepClsStr) {
                 if (checkAdjudicationFormTermCond(stepIdStr)) {
                     if (isAdjudicationFormInEditMode(stepIdStr)) {
-                        if (checkAdjudicationFormReason(stepIdStr) === false) {
+                        if (checkAdjudicationFormReason(stepIdStr) == false) {
                             stopJsHere();
                         }
                     }
@@ -141,7 +141,7 @@
             $(document).ready(function() {
                 @php
                 if ($adjudicationFormStatusObj->adjudication_status != 'complete') {
-                    echo "globalDisableByClass('$studyClsStr', '$stepClsStr');";
+                    echo "globalDisableByClass($stepCounter, '$studyClsStr', '$stepClsStr');";
                 } else {
                     echo "hideAdjudicationFormReasonField('$stepIdStr', '$stepClsStr', '$adjudicationFormStatusObj->form_type_id', '" . buildAdjudicationStatusIdClsStr($adjudicationFormStatusObj->id) . "');";
                 }

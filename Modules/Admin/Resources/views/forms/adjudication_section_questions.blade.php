@@ -25,16 +25,16 @@ $adjudicationRequiredQuestionIdsArray = \Modules\Admin\Entities\QuestionAdjudica
             @foreach ($section->questions as $question)
             @php
             $fieldType = $question->form_field_type->field_type;
-            if (($fieldType === 'Upload') || ($fieldType === 'Date & Time')){
+            if (($fieldType == 'Upload') || ($fieldType == 'Date & Time')){
                 continue;
             }
-            if ($showAllQuestions === 'no'){
+            if ($showAllQuestions == 'no'){
                 if ((!in_array($question->id, $adjudicationRequiredQuestionIdsArray))){
                     continue;
                 }
             }
             $showAverageIcon = false;
-            if ($fieldType === 'Number'){
+            if ($fieldType == 'Number'){
                 $showAverageIcon = true;
             }
 

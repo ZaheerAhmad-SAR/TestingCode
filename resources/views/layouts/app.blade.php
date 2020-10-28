@@ -26,7 +26,7 @@
         <link rel="stylesheet" href="{{ asset('public/dist/css/multi-select.css') }}">
         <link rel="stylesheet" href="{{ asset('public/dist/vendors/fontawesome/css/all.min.css') }}"/>
         <link rel="stylesheet" href="{{ asset('public/css/fstdropdown.min.css') }}"/>
-
+        <link href="{{ asset('public/css/sweetalert.css') }}" rel="stylesheet">
         @stack('styles')
         <!-- END: Custom CSS-->
         <style>
@@ -65,6 +65,7 @@
         <script src="{{ asset('public/dist/js/app.js') }}"></script>
         <script src="{{ asset('public/dist/js/jquery.multi-select.js') }}"></script>
         <script src="{{ asset('public/js/fstdropdown.min.js') }}"></script>
+        <script src="{{ asset('public/js/sweetalert.min.js') }}"></script>
         <script>
             $(document).ready(function(){
                 agent = {browser:{name:null,version:null,v:null,userAgent:null,app:null,os:null},mobile:false,pointlock:false};

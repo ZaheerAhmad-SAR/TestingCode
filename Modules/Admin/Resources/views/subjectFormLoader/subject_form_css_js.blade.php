@@ -4,13 +4,18 @@
 
     @push('script')
         <script>
-            function showAlert(message) {
-                alert(message);
+            function showAlert(swalTitle, message, messageType) {
+                swal.fire({
+                    title: swalTitle,
+                    text: message,
+                    icon: messageType,
+                    dangerMode: true,
+                });
                 /*
                 var field = $("#previous_alert_message");
                 var previous_alert_message = field.val();
                 if(previous_alert_message != message){
-                    alert(message);
+                    swal("Alert", message, "error");
                     field.val(message);
                 }else{
                     field.val('');
@@ -48,10 +53,10 @@
                 $("." + cls).prop('disabled', true);
             }
 
-            function globalDisableByClass(studyClsStr, stepClsStr) {
-                if ($('#already_global_disabled').val() == 'no') {
+            function globalDisableByClass(stepCounter, studyClsStr, stepClsStr) {
+                if (stepCounter < $('#already_global_disabled').val()) {
                     $("." + studyClsStr).prop('disabled', true);
-                    $('#already_global_disabled').val('yes')
+                    $('#already_global_disabled').val(stepCounter);
                     enableByClass(stepClsStr);
                 }
             }
@@ -63,7 +68,7 @@
             function submitForm(stepIdStr, formTypeId, formStatusIdStr) {
                 var submitFormFlag = true;
                 if (isFormInEditMode(stepIdStr)) {
-                    if (checkReason(stepIdStr) === false) {
+                    if (checkReason(stepIdStr) == false) {
                         submitFormFlag = false;
                     }
                 }
@@ -165,34 +170,43 @@
             }
 
             function validateAndSubmitForm(stepIdStr, formTypeId, formStatusIdStr) {
-                const promise = validateForm(stepIdStr);
-                promise
-                    .then((data) => {
-                        console.log(data);
-                        submitForm(stepIdStr, formTypeId, formStatusIdStr);
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                        handleValidationErrors(error);
-                    });
+                if(canSubmitForm(formTypeId,stepIdStr)){
+                    const promise = validateForm(stepIdStr);
+                    promise
+                        .then((data) => {
+                            console.log(data);
+                            submitForm(stepIdStr, formTypeId, formStatusIdStr);
+                        })
+                        .catch((error) => {
+                            console.log(error);
+                            handleValidationErrors(error);
+                        });
+                }else{
+                    showPermissionError();
+                }
+
             }
 
-            function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, field_name, fieldId) {
-                checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
-                const validationPromise = validateFormField(stepIdStr, questionId, field_name, fieldId);
-                validationPromise
-                    .then((data) => {
-                        console.log(data)
-                        submitFormField(stepIdStr, questionId, field_name, fieldId);
-                    })
-                    .then((data) => {
-                        console.log(data)
-                        validateDependentFields(sectionIdStr, questionId, field_name, fieldId);
-                    })
-                    .catch((error) => {
-                        console.log(error)
-                        handleValidationErrors(error);
-                    });
+            function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, formTypeId, field_name, fieldId) {
+                if(canSubmitForm(formTypeId,stepIdStr)){
+                    checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
+                    const validationPromise = validateFormField(stepIdStr, questionId, field_name, fieldId);
+                    validationPromise
+                        .then((data) => {
+                            console.log(data)
+                            submitFormField(stepIdStr, questionId, field_name, fieldId);
+                        })
+                        .then((data) => {
+                            console.log(data)
+                            validateDependentFields(sectionIdStr, questionId, field_name, fieldId);
+                        })
+                        .catch((error) => {
+                            console.log(error)
+                            handleValidationErrors(error);
+                        });
+                }else{
+                    showPermissionError();
+                }
             }
 
             function checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId) {}
@@ -200,15 +214,16 @@
             function validateDependentFields(sectionIdStr, questionId, field_name, fieldId) {}
 
             function handleValidationErrors(error) {
-                alert(error);
+                showAlert('Alert', error, 'error');
             }
 
             function checkTermCond(stepIdStr) {
                 if ($('#terms_cond_' + stepIdStr).prop('checked')) {
                     return true;
                 } else {
-                    showAlert(
-                        'Please acknowledge the truthfulness and correctness of information being submitting in this form!'
+                    showAlert('Alert',
+                        'Please acknowledge the truthfulness and correctness of information being submitting in this form!',
+                        'error'
                         );
                     return false;
                 }
@@ -227,7 +242,7 @@
             function checkReason(stepIdStr) {
                 var returnVal = false;
                 if (($('#edit_reason_text_' + stepIdStr).val() == '')) {
-                    showAlert('Please tell the reason to edit');
+                    showAlert('Alert', 'Please tell the reason to edit', 'error');
                 } else {
                     returnVal = true;
                 }
@@ -268,16 +283,20 @@
             }
 
             function openFormForEditing(stepIdStr, stepClsStr, formTypeId, formStatusIdStr) {
-                var frmData = $("#form_master_" + stepIdStr).serialize();
-                frmData = frmData + '&' + 'open_form_to_edit=1';
-                $.ajax({
-                    url: "{{ route('SubjectFormSubmission.openSubjectFormToEdit') }}",
-                    type: 'POST',
-                    data: frmData,
-                    success: function(response) {
-                        showReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr);
-                    }
-                });
+                if(canSubmitForm(formTypeId,stepIdStr)){
+                    var frmData = $("#form_master_" + stepIdStr).serialize();
+                    frmData = frmData + '&' + 'open_form_to_edit=1';
+                    $.ajax({
+                        url: "{{ route('SubjectFormSubmission.openSubjectFormToEdit') }}",
+                        type: 'POST',
+                        data: frmData,
+                        success: function(response) {
+                            showReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr);
+                        }
+                    });
+                }else{
+                    showPermissionError();
+                }
             }
 
             function showReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr) {
@@ -351,6 +370,35 @@
 
             }
 
+            function canSubmitForm(formTypeId, stepIdStr){
+                var canQualityControl = {{ (canQualityControl(['create', 'store', 'edit', 'update']))? 'true':'false' }};
+                var canGrading = {{ (canGrading(['create', 'store', 'edit', 'update']))? 'true':'false' }};
+                var canAdjudication = {{ (canAdjudication(['create', 'store', 'edit', 'update']))? 'true':'false' }};
+                var canSubmit = false;
+                var formStatus = $('#form_master_' + stepIdStr + ' input[name="formStatus"]').val();
+                var formFilledByUserId = $('#form_master_' + stepIdStr + ' input[name="formFilledByUserId"]').val();
+
+                if(
+                    (formTypeId == 1) &&
+                    (canQualityControl == true) &&
+                    (
+                    ((formStatus == 'no_status') && (formFilledByUserId == 'no-user-id')) ||
+                    ((formStatus != 'no_status') && (formFilledByUserId == '{{ auth()->user()->id }}'))
+                    )
+
+                ){
+                    canSubmit = true;
+                }
+                if((formTypeId == 2) && (canGrading == true)){
+                    canSubmit = true;
+                }
+                return canSubmit;
+            }
+
+            function showPermissionError(){
+                showAlert('Alert', 'You do not have permission to submit form', 'error');
+            }
+
             function reloadPage(waitSeconds) {
                 startWait();
                 var seconds = waitSeconds * 1000;
@@ -358,5 +406,6 @@
                    location.reload();
                }, seconds);
             }
+
         </script>
     @endpush

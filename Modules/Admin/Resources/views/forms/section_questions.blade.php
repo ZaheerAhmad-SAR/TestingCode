@@ -12,8 +12,10 @@
                 'section_id'=>$section->id,
                 'question_id'=>$question->id,
                 'field_id'=>$question->formfields->id,
-                'form_filled_by_user_id'=>auth()->user()->id,
                 ];
+                if($step->form_type_id == 2){
+                    $getAnswerArray['form_filled_by_user_id'] = auth()->user()->id;
+                }
                 $answer = $question->getAnswer($getAnswerArray);
 
                 $field_name = buildFormFieldName($question->formFields->variable_name);
