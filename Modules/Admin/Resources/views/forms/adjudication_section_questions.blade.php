@@ -1,5 +1,6 @@
 @if (count($section->questions))
 @php
+$showAllQuestions = request('showAllQuestions', 'no');
 $getGradersIdsArray = [
     'subject_id' => $subjectId,
     'study_id' => $studyId,
@@ -24,12 +25,17 @@ $adjudicationRequiredQuestionIdsArray = \Modules\Admin\Entities\QuestionAdjudica
             @foreach ($section->questions as $question)
             @php
             $fieldType = $question->form_field_type->field_type;
-            if (
-                ($fieldType === 'Upload') ||
-                ($fieldType === 'Date & Time') ||
-                ( !in_array($question->id, $adjudicationRequiredQuestionIdsArray))
-            ){
+            if (($fieldType == 'Upload') || ($fieldType == 'Date & Time')){
                 continue;
+            }
+            if ($showAllQuestions == 'no'){
+                if ((!in_array($question->id, $adjudicationRequiredQuestionIdsArray))){
+                    continue;
+                }
+            }
+            $showAverageIcon = false;
+            if ($fieldType == 'Number'){
+                $showAverageIcon = true;
             }
 
             $field_name = buildFormFieldName($question->formFields->variable_name);
@@ -86,7 +92,9 @@ $adjudicationRequiredQuestionIdsArray = \Modules\Admin\Entities\QuestionAdjudica
                 @endforeach
                 </div>
             </div>
-            <div class="col-1">@include('admin::forms.adjudication_form_fields.info_popup', ['question'=>$question])</div><div class="col-1">@include('admin::forms.adjudication_form_fields.query_popup')</div>
+            <div class="col-1">@include('admin::forms.adjudication_form_fields.info_popup', ['question'=>$question])</div>
+            <div class="col-1">@include('admin::forms.adjudication_form_fields.query_popup', ['showAverageIcon'=>$showAverageIcon, 'fieldType'=>$fieldType, 'field_name'=> $grader_field_name, 'questionIdStr'=>
+                $questionIdStr, 'copyToFieldId'=> $fieldId, 'fieldId'=> $grader_field_id, 'answer'=> $answer])</div>
         </div>
     </div>
             @endforeach

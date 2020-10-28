@@ -36,7 +36,7 @@
         }
 
         .select2-selection__rendered {
-            background-color: #eee;
+            background-color: @if ($findTransmission->status == 'accepted') #eee; @else #fff; @endif
             opacity: 1 !important;
         }
 
@@ -191,8 +191,15 @@
                                     <label for="Name" class="control-label">Site ID</label>
                                 </div>
 
-                                <div class="form-group col-sm-3">
-                                    <input type="text" name="d_site_id" readonly="" value="{{ $findTransmission->Site_ID }}" id="d_site_id" class="form-control" required="required">
+
+                                 <div class="form-group col-sm-3">
+                                    <span class="span-text">{{ $findTransmission->Site_ID }}</span>
+                                    <select name="d_site_id" id="d_site_id" class="form-control remove-readonly" disabled="" required="required">
+                                        <option value="">Select Site</option>
+                                        @foreach($getSites as $site)
+                                        <option @if($site->site_code == $findTransmission->Site_ID) selected @endif value="{{$site->id.'/'.$site->site_code}}">{{$site->site_code}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -285,6 +292,7 @@
                                     <span class="span-text">{{ $findTransmission->Subject_ID }}</span>
                                     <select name="d_subject_Id" id="d_subject_Id" class="form-control remove-readonly" disabled="" required="required">
                                         <option value="">Select Subject</option>
+                                        <option @if ($findTransmission->new_subject == 1) selected @endif value="1">New Subject</option>
                                         @foreach($getSubjects as $subject)
                                         <option @if($subject->subject_id == $findTransmission->Subject_ID) selected @endif value="{{$subject->id.'/'.$subject->subject_id}}">{{$subject->subject_id}}</option>
                                         @endforeach
@@ -583,18 +591,35 @@
 
                                  --}}
 
-                                @if ($findTransmission->status == 'accepted')
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Status</label>
+                                </div>
+
+                                <div class="form-group col-md-9">
+                                    <select name="status" id="status" class="form-control remove-readonly" required="required" disabled>
+                                        <option value="">Select Status</option>
+                                        <option @if ($findTransmission->status == 'pending') selected @endif value="pending">Pending</option>
+                                        <option  @if ($findTransmission->status == 'accepted') selected @endif value="accepted">Accepted</option>
+                                        <option  @if ($findTransmission->status == 'rejected') selected @endif value="rejected">Rejected</option>
+                                        <option  @if ($findTransmission->status == 'onhold') selected @endif value="onhold">On-Hold</option>
+                                        <option  @if ($findTransmission->status == 'query_opened') selected @endif value="query_opened">Open Query</option>
+                                    </select>
+                                </div>
+
+                                <!-- //////////////////// row 26 //////////////////////// -->
 
                                 <div class="form-group col-sm-3">
-                                    <label for="Name" class="control-label">Comment</label>
+                                    <label for="Name" class="control-label">Reason for change</label>
                                 </div>
 
                                 <div class="form-group col-md-9">
 
-                                    <textarea class="form-control remove-readonly" required="required" readonly="" name="comment" rows="4">{{ $findTransmission->comment }}</textarea>
+                                    <textarea class="form-control" required="required"  @if ($findTransmission->status == 'accepted') disabled @endif name="comment" rows="4"></textarea>
                                 </div>
 
-                                @endif
+                            <!-- ///////////////////////////// row 27 ///////////////////// -->
+
+                              
 
                                 @if ($findTransmission->status == 'accepted')
 
@@ -607,11 +632,13 @@
 
                                     <div class="col-md-10"></div>
                                     <div class="col-md-2 edit-section" style="padding-top: 15px;">
-                                        
-
-                                        <a href="javascript:void(0)" class="btn btn-success edit-transmission">
+                                        <!-- <a href="javascript:void(0)" class="btn btn-success edit-transmission">
                                             Edit
-                                        </a>
+                                        </a> -->
+
+                                        <button class="btn btn-success update-transmission"\
+                                          type="submit" name="submit">Update
+                                        </button>
 
                                         <a href="{{route('transmissions.index')}}" class="btn btn-danger">
                                             Close
@@ -623,7 +650,48 @@
                             </div>
                             <!-- row ends -->
                         </form>
+                        <br>
+                        <hr>
+
+                        <!-- Transmission Update Details -->
+                        
+                            <div style="background-color:#00A8B3;">
+                                <h4 style="color: white; text-align: center; padding-top: 5px; padding-bottom: 5px;">
+                                    Changes Log (Transmission Data)
+                                </h4>
+                            </div>
+                        
+                            <div class="table-responsive">
+
+                            <table class="table table-bordered" id="laravel_crud">
+                                <thead class="table-secondary">
+                                    <tr>
+                                        <th>Time of Update</th>
+                                        <th>Change By</th>
+                                        <th>Reason for change</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($getTransmissionUpdates as $transmissionUpdates)
+                                        <tr>
+                                            <td>
+                                                {{ date('d-M-Y', strtotime($transmissionUpdates->created_at)).' '.date('h:m:s', strtotime($transmissionUpdates->created_at)) }}
+                                            </td>
+                                            <td>
+                                                {{ $transmissionUpdates->users->name }}
+                                            </td>
+                                            <td>
+                                                {{ $transmissionUpdates->comment }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                         
+                        </div>
+                        <!-- Transmission Update Details -->
                     </div>
+                   
                 </div>
 
             </div>
@@ -644,31 +712,79 @@
 
 <script type="text/javascript">
 
-    $('.edit-transmission').click(function() {
+    // $('.edit-transmission').click(function() {
 
-        $('.remove-readonly').each(function() {
-            // remove attr
-            $(this).removeAttr('readonly');
-            $(this).removeAttr('disabled');
-            // remove classes
-            $(this).removeClass('.form-control:disabled');
-            $(this).removeClass('.form-control[readonly]');
+        // $('.remove-readonly').each(function() {
+        //     // remove attr
+        //     $(this).removeAttr('readonly');
+        //     $(this).removeAttr('disabled');
+        //     // remove classes
+        //     $(this).removeClass('.form-control:disabled');
+        //     $(this).removeClass('.form-control[readonly]');
             
-        });
-        // change background of select2
-        $('.select2-selection__rendered').css('background-color', '#fff !important;');
+        // });
+        // // change background of select2
+        // $('.select2-selection__rendered').css('background-color', '#fff !important;');
 
-        // hide edit button
-        $(this).remove();
-        $('.edit-section').prepend(' <button class="btn btn-success update-transmission"\
-                                      type="submit" name="submit">Update\
-                                    </button> ');
+    //     // hide edit button
+    //     $(this).remove();
+    //     $('.edit-section').prepend('<button class="btn btn-success update-transmission"\
+    //                                   type="submit" name="submit">Update\
+    //                                 </button> ');
 
-    });
+    // });
 
-    $('select[name="d_subject_Id"]').select2();
-    $('select[name="d_visit_name"]').select2();
-    $('select[name="d_image_modality"]').select2();
+    $('document').ready(function () {
+    // check status and apply changes as per need
+        if ($('select[name="status"]').val() != 'accepted') {
+
+                $('.remove-readonly').each(function() {
+                // remove attr
+                $(this).removeAttr('readonly');
+                $(this).removeAttr('disabled');
+                $(this).removeAttr('required');
+                // remove classes
+                $(this).removeClass('.form-control:disabled');
+                $(this).removeClass('.form-control[readonly]');
+                
+                }); //each ends
+            
+        } // if ends
+
+        // initialize select 2
+        $('select[name="d_subject_Id"]').select2();
+        $('select[name="d_visit_name"]').select2();
+        $('select[name="d_image_modality"]').select2();
+        $('select[name="d_site_id"]').select2();
+
+        // show alert on status changed value
+        $('select[name="status"]').change(function() {
+
+            if ($(this).val() == 'accepted') {
+
+                    // apply requires attribute
+                    $('.remove-readonly').each(function() {
+
+                        $(this).attr('required', true);
+                       
+                    }); //each ends
+                    
+                // show alert message
+                alert('Warning! Please verify data, once it submitted it will not be changed.');
+
+            } else {
+
+                // apply requires attribute
+                $('.remove-readonly').each(function() {
+
+                    $(this).removeAttr('required');
+                   
+                }); //each ends
+
+            } // if ends
+        }); // on change ends
+
+}); // document ready
 
 </script>
 

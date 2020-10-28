@@ -84,6 +84,25 @@
                                 <input type="text" name="imagine_modality" id="imagine_modality" class="form-control filter-form-data" value="{{ request()->imagine_modality }}" placeholder="Imagine Modality">
                             </div>
 
+                             <div class="form-group col-md-2">
+                                <label for="inputState"> Modality </label>
+                                <select id="modility_id" name="modility_id" class="form-control filter-form-data">
+                                    <option value="">All Modality</option>
+                                    @foreach($getModalities as $modality)
+                                    <option @if ($modality->id == request()->modility_id) selected @endif value="{{ $modality->id}}"> {{ $modality->modility_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label for="inputState"> Processed Status</label>
+                                <select id="is_read" name="is_read" class="form-control filter-form-data">
+                                    <option value="">All Processed Status</option>
+                                    <option @if(request()->is_read == 'no') selected @endif value="no">Not Processed</option>
+                                    <option @if(request()->is_read == 'yes') selected @endif  value="yes">Processed</option>
+                                </select>
+                            </div>
+
                             <div class="form-group col-md-3">
                                 <label for="inputState"> Transmission Status</label>
                                 <select id="status" name="status" class="form-control filter-form-data">
@@ -91,10 +110,12 @@
                                     <option @if(request()->status == 'pending') selected @endif value="pending">Pending</option>
                                     <option @if(request()->status == 'accepted') selected @endif  value="accepted">Accepted</option>
                                     <option @if(request()->status == 'rejected') selected @endif  value="rejected">Rejected</option>
+                                    <option  @if (request()->status == 'onhold') selected @endif value="onhold">On-Hold</option>
+                                    <option  @if (request()->status == 'query_opened') selected @endif value="query_opened">Open Query</option>
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-3 mt-4">
+                            <div class="form-group col-md-2 mt-4">
                                 <button type="button" class="btn btn-primary reset-filter">Reset</button>
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Record</button>
                             </div>
@@ -114,7 +135,8 @@
                                         <th>Subject ID</th>
                                         <th>Visit</th>
                                         <th>Date</th>
-                                        <th>QC Status</th>
+                                        <th>Modality</th>
+                                        <th>Processed Status</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                     </tr>
@@ -123,19 +145,28 @@
                                     @if(!$getTransmissions->isEmpty())
                                     @foreach($getTransmissions as $transmission)
                                         <tr>
-                                            <td>{{$transmission->Transmission_Number}}</td>
+                                            <td>
+                                                <a href="{{route('transmissions.edit', encrypt($transmission->id))}}" id="view-transmission" class="" data-id="" title="Edit Transmission Details" data-url="" style="color: #17a2b8 !important">
+                                                    {{$transmission->Transmission_Number}}
+                                                </a>
+                                            </td>
                                             <td>{{$transmission->Site_ID}}</td>
                                             <td>{{$transmission->Subject_ID}}</td>
                                             <td>{{$transmission->visit_name}}</td>
                                             <td>{{$transmission->visit_date}}</td>
                                             <td>
+                                                <span class="badge badge-info">
+                                                    {{$transmission->ImageModality}}
+                                                </span>
+                                            </td>
+                                            <td>
                                                 @if($transmission->is_read == 'yes')
-
-                                                    <span class="badge badge-info">
-                                                        {{$transmission->ImageModality}}
-                                                    </span>
                                                     <span class="badge badge-danger">
-                                                        processed
+                                                        Processed
+                                                    </span>
+                                                @else
+                                                    <span class="badge badge-danger">
+                                                        Not Processed
                                                     </span>
                                                 @endif
                                             </td>
@@ -145,11 +176,10 @@
                                                     <span class="badge badge-success">{{$transmission->status}}
                                                     </span>
 
-                                                @elseif ($transmission->status == 'onhold' || $transmission->status == 'pending')
-
-                                                    <span class="badge badge-warning" onclick="transmissionStatus('{{encrypt($transmission->id)}}', '{{$transmission->status}}')">{{$transmission->status}}
-                                                    </span>
                                                 @else
+
+                                                    <span class="badge badge-warning">{{$transmission->status}}
+                                                    </span>
 
                                                 @endif
                                             </td>
@@ -157,15 +187,25 @@
                                                 
                                                 &nbsp; &nbsp;
                                                 &nbsp; &nbsp;
-                                                 <a href="{{route('transmissions.edit', encrypt($transmission->id))}}" id="view-transmission" class="" data-id="" title="Edit Transmission Details" data-url="">
-                                                    <i class="far fa-eye"></i>
-                                                </a>
+
+                                                <div class="d-flex mt-md-0 ml-auto" style="margin-top: -15px !important;">
+                                                <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog"></i></span>
+                                                                                                                                               <div class="dropdown-menu p-0 m-0 dropdown-menu-right" style="">
+                                                    <span class="dropdown-item">
+                                                        <a href="javascript:void(0)" data-id="6152c130-84d3-474f-b73c-fa7ea81f892d" class="create-new-queries">
+                                                            <i class="fas fa-question-circle" aria-hidden="true">
+                                                            </i> Queries</a>
+                                                    </span>
+                                                    
+                                                </div>
+                                            </div>
+                                                 <!-- gear dropdown -->
                                             </td>
                                         </tr>
                                     @endforeach
                                     @else
                                         <tr>
-                                           <td colspan="8" style="text-align: center">No record found.</td>
+                                           <td colspan="9" style="text-align: center">No record found.</td>
                                         </tr>
                                     @endif
                                 </tbody>

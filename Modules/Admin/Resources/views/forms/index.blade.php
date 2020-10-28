@@ -35,7 +35,7 @@
                 <div class="row">
                     <label for="username" class="col-sm-1 col-form-label">Phases:</label>
                     <div class="col-sm-3">
-                        <select id="phases" class="form-control" style="background: #fff;">
+                        <select id="phases" name="phases" class="form-control" style="background: #fff;">
                             <option value="">---Select Phase---</option>
                             @foreach ($phases as $key => $phase)
                                 <option value="{{ $phase->id }}">{{ $phase->name }}</option>
@@ -68,9 +68,15 @@
                     <div class="card-body p-0">
                         <div class="scrollertodo">
                             @foreach ($fields as $key => $value)
+                                @if($value->field_type =='Certification')
+                                <div class="border-btm add_certify_list color-black" data-field-type="{{ $value->field_type }}"
+                                    data-field-id="{{ $value->id }}" style="font-size: 12px;padding: 5px;cursor: pointer;"><i class="{{ $value->icon }}"
+                                        aria-hidden="true" ></i>&nbsp;&nbsp;{{ $value->field_type }}</div>
+                                @else
                                 <div class="border-btm form-fields color-black" data-field-type="{{ $value->field_type }}"
                                     data-field-id="{{ $value->id }}"><i class="{{ $value->icon }}"
                                         aria-hidden="true"></i>&nbsp;&nbsp;{{ $value->field_type }}</div>
+                                @endif
                             @endforeach
                         </div>
                     </div>
@@ -162,16 +168,21 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="Required" class="col-sm-2 col-form-label view_to_numeric">Upper Limit
+                                    <label for="Required" class="col-sm-2 col-form-label view_to_numeric">Lower Limit
                                         <sup>*</sup></label>
-                                    <div class="col-sm-4 view_to_numeric">
+                                    <div class="col-sm-2 view_to_numeric">
                                         <input type="number" name="lower_limit" id="lower_limit_num" class="form-control"
                                             placeholder="Minimum limits">
                                     </div>
-                                    <label for="Upper Limit" class="col-sm-2 col-form-label view_to_numeric">Lower Limit</label>
-                                    <div class="col-sm-4 view_to_numeric">
+                                    <label for="Upper Limit" class="col-sm-2 col-form-label view_to_numeric">Upper Limit</label>
+                                    <div class="col-sm-2 view_to_numeric">
                                         <input type="number" name="upper_limit" id="upper_limit_num" class="form-control"
                                             placeholder="Maximum limits">
+                                    </div>
+                                    <label for="Upper Limit" class="col-sm-2 col-form-label view_to_numeric">Decimal Point</label>
+                                    <div class="col-sm-2 view_to_numeric">
+                                        <input type="number" name="decimal_point" id="decimal_point_num" class="form-control"
+                                            placeholder="Decimal Point">
                                     </div>
                                 </div>
                                 <div class="view_to_textbox_and_number">
@@ -552,6 +563,85 @@
         </div>
     </div>
     <!-- End -->
+    <!-- Modal To add Option Groups -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="listModal">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="min-width: 1130px;">
+            <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header">
+                    <p class="modal-title"></p>
+                </div>
+                <form action="{{ route('forms.addQuestions') }}" enctype="multipart/form-data" method="POST" id="form_certify">
+                    @csrf
+                    <div class="modal-body">
+                        <div id="exTab1">
+                            <div class="tab-content clearfix">
+                                <div class="form-group row" style="margin-top: 10px;">
+                                    <input type="hidden" name="form_field_type_id" value="10">
+                                    <label for="Sorting" class="col-sm-2 col-form-label">Sort Number / Position</label>
+                                    <div class="col-sm-4">
+                                        <input type="Number" name="question_sort" class="form-control"
+                                            placeholder="Sort Number / Placement Place">
+                                    </div>
+                                    <label for="Sections" class="col-sm-2 col-form-label">Sections</label>
+                                    <div class="col-sm-4">
+                                        <select name="section_id" class="form-control basic_section">
+                                            <option value="">Choose Phase/Visit && Step/Form-Type</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="C-DISC" class="col-sm-2 col-form-label">C-DISC <sup>*</sup></label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" name="c_disk" value="">
+                                    </div>
+                                    <label for="label" class="col-sm-2 col-form-label"> Label <sup>*</sup></label>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" name="question_text" value="">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <lable for='variable' class="col-sm-2 col-form-label">Variable name <sup>*</sup></lable>
+                                    <div class="col-sm-4">
+                                        <input type="text" class="form-control" name="variable_name" value="">
+                                    </div>
+                                    <label for="list" class="col-sm-2 col-form-label"> List type </label>
+                                    <div class="col-sm-4">
+                                        <select class="form-control" name="certification_type">
+                                            <option value="">---Select---</option>
+                                            <option value="photographers">Photographer List</option>
+                                            <option value="devices">Device List</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="Required" class="col-sm-2 col-form-label">Required <sup>*</sup></label>
+                                    <div class="col-sm-4">
+                                        <input type="radio" name="is_required" value="no"> No
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" name="is_required" value="yes" checked> Yes
+                                    </div>
+                                    <div class="col-sm-2">Exports: <sup>*</sup></div>
+                                    <div class="col-sm-4">
+                                        <input type="radio" name="is_exportable_to_xls" value="no"> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" name="is_exportable_to_xls" value="yes" checked> Yes
+                                    </div>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="question-sort-close" class="btn btn-outline-danger" data-dismiss="modal"><i
+                                    class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save
+                                Changes</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End -->
 @endsection
 @section('styles')
 <style>
@@ -568,6 +658,10 @@
 </style>
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
 <link rel="stylesheet" href="{{ asset("public/dist/vendors/summernote/summernote-bs4.css") }}">
+{{-- Select 2 --}}
+<link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2.min.css") }}"/>
+<link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
+
 @endsection
 @section('script')
 <script src="{{ asset("public/dist/vendors/summernote/summernote-bs4.js") }}"></script>
@@ -575,8 +669,13 @@
 <script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script>
 <script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
 <script src="{{ asset('public/js/edit_crf.js') }}"></script>
-
+{{-- Select 2 --}}
+<script src="{{ asset('public/dist/vendors/select2/js/select2.full.min.js') }}"></script>
+<script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
 <script>
+// selct initialize
+// $('select[name="phases"]').select2();
+
 $(document).ready(function(){
     var tId;
     tId=setTimeout(function(){
@@ -587,7 +686,6 @@ $('.addOptions').on('click',function(){
    $('.appendDataOptions').append('<div class="values_row_options"><div class="form-group row"><div class="form-group col-md-6"><input type="text" id="option_name" name="option_name[]" class="form-control" placeholder="Enter option name" style="background:white;"></div><div class="form-group col-md-4"><input type="number" placeholder="Option value" name="option_value[]" id="option_value" class="form-control" style="background:white;"></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove_option" style="margin-top: 3px;"></i></div></div></div>');
    return false;
 });
-
 
 $('body').on('click','.remove',function(){
     var row = $(this).closest('div.values_row');
@@ -633,6 +731,14 @@ $('body').on('click','.form-fields',function(){
     $('#formfields').attr('action', "{{route('forms.addQuestions')}}");
     var id = $(this).attr("data-field-id");
     $('#question_type').val(id);
+})
+$('.add_certify_list').on('click',function(){
+   $('#form_certify').trigger('reset');
+   $('.modal-title').html('Add Certification list');
+   $('#form_certify').attr('action', "{{route('forms.addQuestions')}}");
+   var id = $(this).attr("data-field-id");
+   $('#question_type').val(id);
+   $('#listModal').modal('show');
 })
 $('body').on('click','.fetch_phases',function(){
     var phase_id = '1';
@@ -811,6 +917,7 @@ $(document).ready(function() {
             measurement_unit = row.find('input.measurement_unit').val()
             field_width = row.find('input.field_width').val()
             upper_limit = row.find('input.upper_limit').val()
+            decimal_point = row.find('input.decimal_point').val()
             lower_limit = row.find('input.lower_limit').val()
             dependency_id = row.find('input.dependency_id').val()
             dependency_status = row.find('input.dependency_status').val()
@@ -840,6 +947,7 @@ $(document).ready(function() {
             $('#field_width_text').val(field_width);
             $('#lower_limit_num').val(lower_limit);
             $('#upper_limit_num').val(upper_limit);
+            $('#decimal_point_num').val(decimal_point);
         } else {
             $('#measurement_unit_text').val(measurement_unit);
             $('#field_width_text').val(field_width);
@@ -894,6 +1002,7 @@ function display_sections(step_id) {
         },
         success: function(response) {
             $('.display-sections').html(response);
+            $('select[name="question_list"]').select2();
         }
     });
 }
@@ -1093,11 +1202,7 @@ function get_all_phases(id,phase_class){
         }
     });
 }
-
-
-
 // get Question
-
 function get_question_section_id(id,div_class){
     div_class.html('');
     var options = '<option value="">---Select Question---</option>';
@@ -1118,11 +1223,7 @@ function get_question_section_id(id,div_class){
         }
     });
 }
-
 // get all annotations
-
-
-
 function get_all_annotations(id,div_class){
     div_class.html('');
     var options = '<option value="">---Select Annotation---</option>';

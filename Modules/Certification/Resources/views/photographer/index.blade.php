@@ -33,6 +33,9 @@
                                 <div class="form-group col-md-4">
                                     <select class="form-control" name="modality">
                                         <option>---Modality---</option>
+                                        @foreach($imaging_modality as $key =>$value)
+                                        <option value="{{ $value->id }}">{{ $value->name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
                                 <div class="form-group col-md-4">
@@ -108,11 +111,16 @@
         </div>
     </div>
 @endsection
-
+@section('styles')
+<link rel="stylesheet" href="{{ asset('public/dist/vendors/select2/css/select2.min.css') }}"/>
+<link rel="stylesheet" href="{{ asset('public/dist/vendors/select2/css/select2-bootstrap.min.css') }}"/>
+@endsection
 @section('script')
 <!-- date range picker -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <!-- select2 -->
+<script src="{{ asset('public/dist/vendors/select2/js/select2.full.min.js') }}"></script>
+<script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
 <script src="{{ asset('public/dist/vendors/select2/js/select2.full.min.js') }}"></script>
 <script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
 <script type="text/javascript">
@@ -121,8 +129,9 @@
         // reset values
         $('.filter-form input').val(" ");
         $('.filter-form select').val(" ");
-        // submit the filter form
+        // submit the filter form modality
         $('.submit-filter').click();
     });
+    $('select[name="modality"]').select2();
 </script>
 @endsection

@@ -1,9 +1,23 @@
-@if ($key === $first)
+@php
+$getAdjudicationFormStatusArray = [
+'subject_id' => $subjectId,
+'study_id' => $studyId,
+'study_structures_id' => $phase->id,
+'phase_steps_id' => $step->step_id,
+'modility_id' => $step->modility_id,
+];
+$adjudicationFormStatus = \Modules\Admin\Entities\AdjudicationFormStatus::getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray);
+@endphp
+@if ($key == $first)
     <div class="d-flex">
-        @if ((bool) $subjectId && ($formStatusObj->form_status === 'complete' || $formStatusObj->form_status === 'resumable'))
+        @if (
+            (bool) $subjectId &&
+            ($formStatusObj->form_status == 'complete' || $formStatusObj->form_status == 'resumable') &&
+            ($adjudicationFormStatus !== 'complete')
+        )
             <button type="button" class="btn btn-warning" name="edit_form_button_{{ $stepIdStr }}"
                 id="edit_form_button_{{ $stepIdStr }}"
-                onclick="openFormForEditing('{{ $stepIdStr }}', '{{ $stepClsStr }}', '{{ $formStatusObj->form_type_id }}', '{{ buildGradingStatusIdClsStr($formStatusObj->id) }}');"
+                onclick="openFormForEditing('{{ $stepIdStr }}', '{{ $stepClsStr }}', {{ $formStatusObj->form_type_id }}, '{{ buildGradingStatusIdClsStr($formStatusObj->id) }}');"
                 style="display: {{ $formStatusObj->form_status == 'resumable' ? 'none' : 'block' }};">
                 Edit Form
             </button>
@@ -22,7 +36,7 @@
             </div>
         </div>
     </div>
-@elseif($key === $last)
+@elseif($key == $last)
     <div class="d-flex">
         <button type="button" class="btn btn-primary prevtab">Previous</button>
     </div>

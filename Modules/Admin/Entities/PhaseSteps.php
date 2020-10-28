@@ -60,16 +60,16 @@ class PhaseSteps extends Model
     static function phaseStepsbyPermissions($phaseId)
     {
         $formTypeArray = [];
-        if (canQualityControl()) {
+        if (canQualityControl(['index'])) {
             $formTypeArray[] = 1;
         }
-        if (canGrading()) {
+        if (canGrading(['index'])) {
             $formTypeArray[] = 2;
         }
-        if (canEligibility()) {
+        if (canEligibility(['index'])) {
             $formTypeArray[] = 3;
         }
-        if (canAdjudication()) {
+        if (canAdjudication(['index'])) {
             $formTypeArray[] = 2;
         } else {
             $formTypeArray[] = 4;
@@ -79,5 +79,10 @@ class PhaseSteps extends Model
     public function phase()
     {
         return $this->belongsTo(StudyStructure::class, 'phase_id', 'step_id');
+    }
+
+    public function modility()
+    {
+        return $this->belongsTo(Modility::class, 'modility_id', 'id');
     }
 }

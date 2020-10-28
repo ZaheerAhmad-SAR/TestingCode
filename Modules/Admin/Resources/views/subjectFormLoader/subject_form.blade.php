@@ -1,6 +1,6 @@
 @extends ('layouts.home')
 @section('content')
-    <input type="hidden" name="already_global_disabled" id="already_global_disabled" value="no" />
+    <input type="hidden" name="already_global_disabled" id="already_global_disabled" value="100000" />
     <input type="hidden" name="previous_alert_message" id="previous_alert_message" value="" />
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
@@ -198,6 +198,7 @@
                                     @if (count($visitPhases))
                                         @php
                                         $firstStep = true;
+                                        $stepCounter = 0;
                                         @endphp
                                         @foreach ($visitPhases as $phase)
                                             @php
@@ -208,6 +209,7 @@
                                             @endphp
                                             @foreach ($steps as $step)
                                                 @php
+                                                $stepCounter++;
                                                 if ($step->form_type_id == 2 && $previousStepId != '') {
                                                     $getQcFormStatusArray = [
                                                         'subject_id' => $subjectId,
@@ -240,6 +242,7 @@
                                                 'firstStep' => $firstStep,
                                                 'stepClsStr' => $stepClsStr,
                                                 'stepIdStr' => $stepIdStr,
+                                                'stepCounter' => $stepCounter,
                                                 ];
                                                 @endphp
                                                 @include('admin::forms.section_loop', $dataArray)

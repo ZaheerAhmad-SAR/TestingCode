@@ -41,7 +41,7 @@
                                 <tbody>
                                 @foreach($subjects as $subject)
                                     <tr>
-                                        <td><a href="{{route('subjectFormLoader.showSubjectForm',['study_id'=>$currentStudy->id,'subject_id'=>$subject->id])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
+                                        <td><a href="{{route('subjectFormLoader.showSubjectForm',['study_id'=>$currentStudy->id,'subject_id'=>$subject->id, 'showAllQuestions'=>'no'])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
                                         </td>
                                         <td>{{$subject->enrollment_date}}</td>
                                         <td>{{!empty($subject->site_name)?$subject->site_name:'SiteName'}}</td>

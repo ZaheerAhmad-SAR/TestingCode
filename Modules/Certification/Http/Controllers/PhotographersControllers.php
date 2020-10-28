@@ -16,8 +16,10 @@ class PhotographersControllers extends Controller
     public function index(Request $request)
     {
         // Photographers array
+        $imaging_modality = DB::connection('mysql2')->table('imaging_modality')->get();
         $photographers = [];
         $photographers = DB::connection('mysql2')->table('photographer_data')->select('photographer_data.*', DB::Raw('CONCAT(first_name, " ", last_name) as photographer_name'), DB::Raw('GROUP_CONCAT(transmission_number SEPARATOR ",") as transmissions'),DB::Raw('GROUP_CONCAT(id SEPARATOR ",") as IDs'), DB::Raw('GROUP_CONCAT(status SEPARATOR ",") as statuses'),DB::Raw('GROUP_CONCAT(certification_officerName SEPARATOR ",") as certification_officerNames'));
+        $photographers = $photographers->where('checked_by',0);
         if(isset($request->site) && $request->site !=''){
             $photographers = $photographers->where('photographer_data.site_id', $request->site);
         }
@@ -30,8 +32,8 @@ class PhotographersControllers extends Controller
         if(isset($request->status) && $request->status !=''){
             $photographers = $photographers->where('photographer_data.certificate_status','like', $request->status);
         }
-        $photographers = $photographers->groupBy('photographer_data.id')->paginate(15);
-        return view('certification::photographer.index', ['photographers' => $photographers]);
+        $photographers = $photographers->groupBy('photographer_name')->groupBy('imaging_modality_req')->groupBy('study_name')->paginate(15);
+        return view('certification::photographer.index', ['photographers' => $photographers,'imaging_modality' =>$imaging_modality]);
     }
     /**
      * Show the form for creating a new resource.
