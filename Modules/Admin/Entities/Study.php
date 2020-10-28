@@ -38,7 +38,7 @@ class Study extends Model
 
     public function subjects()
     {
-        return $this->hasOne(Subject::class);
+        return $this->hasMany(Subject::class);
     }
 
     public function diseaseCohort()
@@ -56,7 +56,7 @@ class Study extends Model
     }
     public function phase()
     {
-        return $this->hasMany(StudyStructure::class, 'study_id', 'id');
+        return $this->hasMany(StudyStructure::class, 'id', 'study_id');
     }
 
     public function studySteps(){

@@ -297,8 +297,9 @@ class StudyController extends Controller
     /** get clone of the study */
     public function cloneStudy(Request $request)
     {
-        $mystudy = Study::with('users', 'subjects', 'diseaseCohort', 'sites')
-            ->find($request->id);
+        $study_id = $request->study_ID;
+        $mystudy = Study::with('users', 'diseaseCohort', 'sites','studySteps','phase')
+            ->find($study_id);
         $id = \Illuminate\Support\Str::uuid();
         $study_subjects = Subject::where('study_id', '=', $request->id)->get();
 
