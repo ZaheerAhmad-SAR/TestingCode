@@ -1,9 +1,9 @@
 @php
 $showAllQuestions = request('showAllQuestions', 'no');
 @endphp
-@if ($key === $first)
+@if ($key == $first)
     <div class="d-flex">
-        @if ((bool) $subjectId && ($adjudicationFormStatusObj->adjudication_status === 'complete' || $adjudicationFormStatusObj->adjudication_status === 'resumable'))
+        @if ((bool) $subjectId && ($adjudicationFormStatusObj->adjudication_status == 'complete' || $adjudicationFormStatusObj->adjudication_status == 'resumable'))
             <button type="button" class="btn btn-warning" name="adjudication_form_edit_button_{{ $stepIdStr }}"
                 id="adjudication_form_edit_button_{{ $stepIdStr }}"
                 onclick="openAdjudicationFormForEditing('{{ $stepIdStr }}', '{{ $stepClsStr }}', '{{ $adjudicationFormStatusObj->form_type_id }}', '{{ buildAdjudicationStatusIdClsStr($adjudicationFormStatusObj->id) }}');"
@@ -13,7 +13,7 @@ $showAllQuestions = request('showAllQuestions', 'no');
         @endif
 
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        @if($showAllQuestions === 'no')
+        @if($showAllQuestions == 'no')
             <button type="button" class="btn btn-primary" onclick="showAllQuestions();">
                 Show all questions
             </button>
@@ -37,7 +37,7 @@ $showAllQuestions = request('showAllQuestions', 'no');
             </div>
         </div>
     </div>
-@elseif($key === $last)
+@elseif($key == $last)
     <div class="d-flex">
         <button type="button" class="btn btn-primary prevtab">Previous</button>
     </div>

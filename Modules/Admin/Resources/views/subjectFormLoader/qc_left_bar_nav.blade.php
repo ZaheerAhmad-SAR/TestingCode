@@ -1,3 +1,4 @@
+@if (canQualityControl(['index']))
 @php
 $getFormQCStatusArray = [
 'subject_id' => $subjectId,
@@ -7,7 +8,6 @@ $getFormQCStatusArray = [
 'form_type_id' => $step->form_type_id,
 ];
 @endphp
-@if (canQualityControl())
     @if ($step->form_type_id == 1)
         <a class="badge p-1 badge-light m-1  {{ $stepClsStr }}" href="javascript:void(0);"
             onclick="showSections('step_sections_{{ $stepIdStr }}');">
