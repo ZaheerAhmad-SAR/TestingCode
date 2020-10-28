@@ -4,7 +4,7 @@
         @include('queries::queries.query_popup_span',['study_id'=> (isset($study) && null !== $study)? $study->id:''])
         @if($showAverageIcon)
         <span class="dropdown-item">
-            <a href="javascript:void(0);" onclick="calculateAverage('{{ $stepIdStr }}', '{{ $sectionIdStr }}', '{{ $question->id }}', '{{ $questionIdStr }}', '{{ $copyToFieldId }}');" class="">
+            <a href="javascript:void(0);" onclick="calculateAverage('{{ $stepIdStr }}', '{{ $sectionIdStr }}', '{{ $question->id }}', '{{ $questionIdStr }}', '{{ $copyToFieldId }}', {{ $question->formFields->decimal_point }});" class="">
                 <i class="fas fa-question-circle" aria-hidden="true">
                   </i> Average</a>
         </span>

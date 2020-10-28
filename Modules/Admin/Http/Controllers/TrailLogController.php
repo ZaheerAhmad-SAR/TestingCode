@@ -76,7 +76,8 @@ class TrailLogController extends Controller
                 "Device" => "Device",
                 "Study Site" => "Study Site",
                 "Study" => "Study",
-                "Subject" => "Subject"
+                "Subject" => "Subject",
+                "Transmission Data" => "Transmission Data"
 
             );
 

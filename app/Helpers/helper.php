@@ -20,6 +20,7 @@ use Modules\Admin\Entities\StudySite;
 use Modules\Admin\Entities\Subject;
 use Modules\Admin\Entities\DiseaseCohort;
 use Modules\Admin\Entities\TrailLog;
+use Modules\Admin\Entities\CrushFtpTransmission;
 
 function hasrole($role)
 {
@@ -99,7 +100,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             $auditMessage = \Auth::user()->name . ' updated option group ' . $eventData->option_group_name . '.';
         } // update case ends
 
-        //////////////////////////////// Site ////////////////////////////////////////////////////////
+        //////////////////////////////// Site ////////////////////////////////////////////
     } else if ($eventSection == 'Site') {
         // get event data
         $eventData = Site::find($eventId);
@@ -606,7 +607,87 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         }
 
         //////////////////////////// Subjects Ends /////////////////////////////////////////
-    } // main If else ends
+    } else if ($eventSection == 'Transmission Data') {
+        // get event data
+        $eventData = CrushFtpTransmission::find($eventId);
+        // set message for audit
+        $auditMessage = \Auth::user()->name . ' updated transmission data of ' . $eventData->Transmission_Number.'.';
+        // set audit url
+        $auditUrl = url('transmissions');
+        // store data in event array
+        $newData = array(
+            'transmission_number' => $eventData->Transmission_Number,
+            'study_id' => $eventData->StudyI_ID,
+            'study_name' => $eventData->Study_Name,
+            'sponsor' => $eventData->sponsor,
+            'submitter_name' => $eventData->Submitter_First_Name.' '.$eventData->Submitter_Last_Name,
+            'submitter_email' => $eventData->Submitter_email,
+            'submitter_phone' => $eventData->Submitter_phone,
+            'submitter_role' => $eventData->Submitter_Role,
+            'site_id' => $eventData->Site_ID,
+            'site_name' => $eventData->Site_Name,
+            'site_initials' => $eventData->Site_Initials,
+            'site_st_address' => $eventData->Site_st_address,
+            'site_city' => $eventData->Site_city,
+            'site_state' => $eventData->Site_state,
+            'site_zip' => $eventData->Site_Zip,
+            'site_country' => $eventData->Site_country,
+            'pi_name' => $eventData->PI_Name,
+            'pi_email' => $eventData->PI_email,
+            'subject_id' => $eventData->Subject_ID,
+            'study_eye' => $eventData->StudyEye,
+            'visit_name' => $eventData->visit_name,
+            'visit_date' => $eventData->visit_date,
+            'image_modality' => $eventData->ImageModality,
+            'device_model' => $eventData->device_model,
+            'submitted_by' => $eventData->Submitted_By,
+            'photographer_full_name' => $eventData->photographer_full_name,
+            'photographer_email' => $eventData->photographer_email,
+            'status' => $eventData->status,
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
+        );
+        // check if it is update case
+        if ($eventType == 'Update') {
+            // store data in event array
+            $oldData = array(
+               'transmission_number' => $previousData->Transmission_Number,
+            'study_id' => $previousData->StudyI_ID,
+            'study_name' => $previousData->Study_Name,
+            'sponsor' => $previousData->sponsor,
+            'submitter_name' => $previousData->Submitter_First_Name.' '.$previousData->Submitter_Last_Name,
+            'submitter_email' => $previousData->Submitter_email,
+            'submitter_phone' => $previousData->Submitter_phone,
+            'submitter_role' => $previousData->Submitter_Role,
+            'site_id' => $previousData->Site_ID,
+            'site_name' => $previousData->Site_Name,
+            'site_initials' => $previousData->Site_Initials,
+            'site_st_address' => $previousData->Site_st_address,
+            'site_city' => $previousData->Site_city,
+            'site_state' => $previousData->Site_state,
+            'site_zip' => $previousData->Site_Zip,
+            'site_country' => $previousData->Site_country,
+            'pi_name' => $previousData->PI_Name,
+            'pi_email' => $previousData->PI_email,
+            'subject_id' => $previousData->Subject_ID,
+            'study_eye' => $previousData->StudyEye,
+            'visit_name' => $previousData->visit_name,
+            'visit_date' => $previousData->visit_date,
+            'image_modality' => $previousData->ImageModality,
+            'device_model' => $previousData->device_model,
+            'submitted_by' => $previousData->Submitted_By,
+            'photographer_full_name' => $previousData->photographer_full_name,
+            'photographer_email' => $previousData->photographer_email,
+            'status' => $previousData->status,
+            'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+            );
+
+            $auditMessage = \Auth::user()->name . ' updated transmission data of ' . $eventData->Transmission_Number.'.';
+        } // update case ends
+
+        //////////////////////////////// Transmission Data //////////////////////////////
+    }  // main If else ends
 
     // Log the event
     $trailLog = new TrailLog;
@@ -649,67 +730,41 @@ function buildAdjudicationStatusIdClsStr($id)
     return buildSafeStr($id, 'img_adjudication_form_status_');
 }
 
-function canQualityControl()
+function checkPermission($permissionText, $permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
 {
-    $retVal = false;
+    $retVal = true;
     $user = auth()->user();
-    if (
-        hasPermission($user, 'qualitycontrol.index') &&
-        hasPermission($user, 'qualitycontrol.create') &&
-        hasPermission($user, 'qualitycontrol.store') &&
-        hasPermission($user, 'qualitycontrol.edit') &&
-        hasPermission($user, 'qualitycontrol.update')
-    ) {
-        $retVal = true;
+    foreach ($permissionsArray as $permission) {
+        $permissionCheck = $permissionText . $permission;
+        if (!hasPermission($user, $permissionCheck)) {
+            $retVal = false;
+            break;
+        }
     }
+
     return $retVal;
+}
+function canQualityControl($permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
+{
+    $permissionText = 'qualitycontrol.';
+    return checkPermission($permissionText, $permissionsArray);
 }
 
-function canGrading()
+function canGrading($permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
 {
-    $retVal = false;
-    $user = auth()->user();
-    if (
-        hasPermission($user, 'grading.index') &&
-        hasPermission($user, 'grading.create') &&
-        hasPermission($user, 'grading.store') &&
-        hasPermission($user, 'grading.edit') &&
-        hasPermission($user, 'grading.update')
-    ) {
-        $retVal = true;
-    }
-    return $retVal;
+    $permissionText = 'grading.';
+    return checkPermission($permissionText, $permissionsArray);
 }
 
-function canAdjudication()
+function canAdjudication($permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
 {
-    $retVal = false;
-    $user = auth()->user();
-    if (
-        hasPermission($user, 'adjudication.index') &&
-        hasPermission($user, 'adjudication.create') &&
-        hasPermission($user, 'adjudication.store') &&
-        hasPermission($user, 'adjudication.edit') &&
-        hasPermission($user, 'adjudication.update')
-    ) {
-        $retVal = true;
-    }
-    return $retVal;
+    $permissionText = 'adjudication.';
+    return checkPermission($permissionText, $permissionsArray);
 }
-function canEligibility()
+function canEligibility($permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
 {
-    $retVal = false;
-    $user = auth()->user();
-    if (
-        hasPermission($user, 'eligibility.index') &&
-        hasPermission($user, 'eligibility.create') &&
-        hasPermission($user, 'eligibility.store') &&
-        hasPermission($user, 'eligibility.edit') &&
-        hasPermission($user, 'eligibility.update')
-    ) {
-        $retVal = true;
-    }
-    return $retVal;
+    $permissionText = 'eligibility.';
+    return checkPermission($permissionText, $permissionsArray);
 }
 function printSqlQuery($builder)
 {

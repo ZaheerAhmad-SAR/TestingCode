@@ -84,6 +84,25 @@
                                 <input type="text" name="imagine_modality" id="imagine_modality" class="form-control filter-form-data" value="{{ request()->imagine_modality }}" placeholder="Imagine Modality">
                             </div>
 
+                             <div class="form-group col-md-2">
+                                <label for="inputState"> Modality </label>
+                                <select id="modility_id" name="modility_id" class="form-control filter-form-data">
+                                    <option value="">All Modality</option>
+                                    @foreach($getModalities as $modality)
+                                    <option @if ($modality->id == request()->modility_id) selected @endif value="{{ $modality->id}}"> {{ $modality->modility_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label for="inputState"> Processed Status</label>
+                                <select id="is_read" name="is_read" class="form-control filter-form-data">
+                                    <option value="">All Processed Status</option>
+                                    <option @if(request()->is_read == 'no') selected @endif value="no">Not Processed</option>
+                                    <option @if(request()->is_read == 'yes') selected @endif  value="yes">Processed</option>
+                                </select>
+                            </div>
+
                             <div class="form-group col-md-3">
                                 <label for="inputState"> Transmission Status</label>
                                 <select id="status" name="status" class="form-control filter-form-data">
@@ -91,10 +110,12 @@
                                     <option @if(request()->status == 'pending') selected @endif value="pending">Pending</option>
                                     <option @if(request()->status == 'accepted') selected @endif  value="accepted">Accepted</option>
                                     <option @if(request()->status == 'rejected') selected @endif  value="rejected">Rejected</option>
+                                    <option  @if (request()->status == 'onhold') selected @endif value="onhold">On-Hold</option>
+                                    <option  @if (request()->status == 'query_opened') selected @endif value="query_opened">Open Query</option>
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-3 mt-4">
+                            <div class="form-group col-md-2 mt-4">
                                 <button type="button" class="btn btn-primary reset-filter">Reset</button>
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Record</button>
                             </div>
@@ -184,7 +205,7 @@
                                     @endforeach
                                     @else
                                         <tr>
-                                           <td colspan="8" style="text-align: center">No record found.</td>
+                                           <td colspan="9" style="text-align: center">No record found.</td>
                                         </tr>
                                     @endif
                                 </tbody>

@@ -13,17 +13,23 @@
 
 //dd(App::environment());
 
-// Route::post('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
+Route::get('transmissions/transmissionData', function(){
+    return view('admin::test_transmission_api');
+});
 
-Route::get('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
+Route::post('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
 
 Route::resource('transmissions', 'TransmissionController');
 
 Route::post('transmissions/getAllPIBySiteId', 'TransmissionController@getAllPIBySiteId')->name('transmissions.getAllPIBySiteId');
 
+
 Route::post('transmissions/queryTransmissionMail', 'TransmissionController@queryTransmissionMail')->name('transmissions.queryTransmissionMail');
 
 Route::post('transmissions-status', 'TransmissionController@transmissionStatus')->name('transmissions-status');
+
+//Route::post('transmissions-status', 'TransmissionController@transmissionStatus')->name('transmissions-status');
+
 
 Route::prefix('admin')->group(function () {
     Route::get('/', 'AdminController@index');

@@ -168,16 +168,21 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="Required" class="col-sm-2 col-form-label view_to_numeric">Upper Limit
+                                    <label for="Required" class="col-sm-2 col-form-label view_to_numeric">Lower Limit
                                         <sup>*</sup></label>
-                                    <div class="col-sm-4 view_to_numeric">
+                                    <div class="col-sm-2 view_to_numeric">
                                         <input type="number" name="lower_limit" id="lower_limit_num" class="form-control"
                                             placeholder="Minimum limits">
                                     </div>
-                                    <label for="Upper Limit" class="col-sm-2 col-form-label view_to_numeric">Lower Limit</label>
-                                    <div class="col-sm-4 view_to_numeric">
+                                    <label for="Upper Limit" class="col-sm-2 col-form-label view_to_numeric">Upper Limit</label>
+                                    <div class="col-sm-2 view_to_numeric">
                                         <input type="number" name="upper_limit" id="upper_limit_num" class="form-control"
                                             placeholder="Maximum limits">
+                                    </div>
+                                    <label for="Upper Limit" class="col-sm-2 col-form-label view_to_numeric">Decimal Point</label>
+                                    <div class="col-sm-2 view_to_numeric">
+                                        <input type="number" name="decimal_point" id="decimal_point_num" class="form-control"
+                                            placeholder="Decimal Point">
                                     </div>
                                 </div>
                                 <div class="view_to_textbox_and_number">
@@ -584,7 +589,7 @@
                                             <option value="">Choose Phase/Visit && Step/Form-Type</option>
                                         </select>
                                     </div>
-                                </div>    
+                                </div>
                                 <div class="form-group row">
                                     <label for="C-DISC" class="col-sm-2 col-form-label">C-DISC <sup>*</sup></label>
                                     <div class="col-sm-4">
@@ -912,6 +917,7 @@ $(document).ready(function() {
             measurement_unit = row.find('input.measurement_unit').val()
             field_width = row.find('input.field_width').val()
             upper_limit = row.find('input.upper_limit').val()
+            decimal_point = row.find('input.decimal_point').val()
             lower_limit = row.find('input.lower_limit').val()
             dependency_id = row.find('input.dependency_id').val()
             dependency_status = row.find('input.dependency_status').val()
@@ -941,6 +947,7 @@ $(document).ready(function() {
             $('#field_width_text').val(field_width);
             $('#lower_limit_num').val(lower_limit);
             $('#upper_limit_num').val(upper_limit);
+            $('#decimal_point_num').val(decimal_point);
         } else {
             $('#measurement_unit_text').val(measurement_unit);
             $('#field_width_text').val(field_width);
