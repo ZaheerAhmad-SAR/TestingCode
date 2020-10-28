@@ -177,8 +177,9 @@ class UserController extends Controller
     public function update_profile()
     {
         $user = auth()->user();
+        $codes = backupCode::where('user_id','=',\auth()->user()->id)->get();
 
-        return view('userroles::users.profile',compact('user'));
+        return view('userroles::users.profile',compact('user','codes'));
     }
     public function show($id)
     {
@@ -423,11 +424,13 @@ class UserController extends Controller
     public function process_invites(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email|unique:users,email'
+            'email' => 'required|email|unique:users,email',
+            'roles' => 'required'
         ]);
         $validator->after(function ($validator) use ($request) {
             if (Invitation::where('email', $request->input('email'))->exists()) {
                 $validator->errors()->add('email', 'There exists an invite with this email!');
+                $validator->errors()->add('roles', 'Please select a role to send invite!');
             }
         });
         if ($validator->fails()) {
@@ -441,11 +444,12 @@ class UserController extends Controller
         Invitation::create([
             'id'    => Str::uuid(),
             'token' => $token,
+            'role_id'   => $request->roles,
             'email' => $request->input('email')
         ]);
         $url = URL::temporarySignedRoute(
 
-            'registration', now()->addDays(3), ['token' => $token]
+            'registration', now()->addMinutes(300), ['token' => $token]
         );
 
         Notification::route('mail', $request->input('email'))->notify(new InviteNotification($url));

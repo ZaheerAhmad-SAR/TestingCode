@@ -29,6 +29,7 @@
         <!-- START: Card Data-->
         <div class="row">
             <div class="col-12 col-sm-12 mt-3">
+
                 <div class="card">
                     <form action="{{route('users.updateUser',$user->id)}}" enctype="multipart/form-data" method="POST">
                         @csrf
@@ -47,7 +48,11 @@
                                     </div>
                                     <div class="col-md-3">
                                         @if (\Illuminate\Support\Facades\Auth::user()->google2fa_secret)
-                                            <a href="{{ url('2fa/disable') }}" class="btn btn-warning">Disable 2FA</a>
+                                            <a href="{{ url('2fa/disable') }}" class="btn btn-outline-danger">Disable 2FA</a>
+
+                                            <button data-toggle="modal" data-target="#viewCodes" type="button" onclick="myFunction()" class="btn btn-outline-warning">
+                                                <i class="fa fa-door-open"></i> View Codes
+                                            </button>
                                         @else
                                             <a href="{{ url('2fa/enable') }}" class="btn btn-outline-primary">Enable 2FA</a>
                                         @endif
@@ -127,6 +132,26 @@
                             @endif
                         </div>
                     </form>
+                    <div class="modal fade" tabindex="-1" role="dialog" id="viewCodes">
+                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <p class="modal-title"> Backup Codes are</p>
+                                </div>
+                    <div class="login-form col-12 col-sm-5" id="myDIV" style="display: none">
+                        <div class="form-group mb-3">
+                           <div class="modal-body">
+                            <div class="col-md-6" id="code_div">
+                                @foreach($codes as $code)
+                                    <li id="">{{$code->backup_code}}</li>
+                                @endforeach
+                            </div>
+                           </div>
+                        </div>
+                        </div>
+                    </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -155,4 +180,15 @@
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        function myFunction() {
+            var x = document.getElementById("myDIV");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+
+    </script>
 @endsection
