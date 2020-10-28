@@ -53,3 +53,4 @@
     <link rel="stylesheet" href="{{ asset('dist/vendors/social-button/bootstrap-social.css') }}"/>
 @stop
 
+

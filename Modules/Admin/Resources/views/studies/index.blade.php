@@ -156,7 +156,7 @@
                                                            </a>
                                                     </span>
                                                     <span class="dropdown-item">
-                                                        <a href="javascript:void(0)" id="clone-study" class="clone-study" data-id="{{$study->id}}">
+                                                        <a href="javascript:void(0)" id="clone-study" data-target-id="{{$study->id}}" data-toggle="modal" data-target="#clone-study-modal">
                                                 <i class="fa fa-clone"></i> Clone
                                             </a>
                                                         </span>
@@ -356,22 +356,36 @@
 </div>
     <!-- cloneStudy -->
     <div class="modal fade" id="clone-study-modal" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="dialog">
-            <div class="modal-content" style="width: inherit; top: auto!important;">
-                <div class="alert alert-danger" style="display:none"></div>
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title" id="Clone-Study-Modal"></h4>
+                    <h4 class="modal-title" id="studyCrudModal">Clone Study</h4>
                 </div>
                 <div class="modal-body">
-                    <form id="cloneForm" name="cloneForm" class="form-horizontal">
-                        <input type="hidden" name="clone_id" id="clone_id">
-                        <div class="custom-modal-body">
-                            <div class="modal-footer">
-                                <button class="btn custom-btn blue-color" data-dismiss="modal">
-                                    <i class="fa fa-window-close blue-color" aria-hidden="true"></i> Close</button>
-                                <button type="submit" class="btn custom-btn blue-color">
-                                    <i class="fa fa-save blue-color"></i> Save</button>
+                    <form action="{{route('studies.cloneStudy')}}" name="clonestudy" class="" method="post">
+                        @csrf
+                        @if(!empty($study))
+                            <input type="hidden" value="{{$study->id}}" id="study_ID" name="study_ID">
+                        @endif
+                        <div class="form-group row">
+                            <div class="col-md-3">Clone Study Basic Info</div>
+                            <div class="col-md-3">
+                                <input type="checkbox" checked name="basicInfo">
                             </div>
+                            <div class="col-md-3">Clone Study Subjects</div>
+                            <div class="col-md-3">
+                                <input type="checkbox" checked name="studySubjects">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-3">Clone Study Sites</div>
+                            <div class="col-md-3">
+                                <input type="checkbox" checked name="studySites">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
                         </div>
                     </form>
                 </div>
@@ -488,6 +502,13 @@
         $('#study_ID').val(id);
        })
     })
+
+ $(document).ready(function(){
+     $('#clone-study-modal').on('show.bs.modal',function (e) {
+         var id = $(e.relatedTarget).data('target-id');
+         $('#study_ID').val(id);
+     })
+ })
 </script>
     <script type="text/javascript">
 
