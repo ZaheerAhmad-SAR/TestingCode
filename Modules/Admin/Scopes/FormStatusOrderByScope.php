@@ -17,6 +17,6 @@ class FormStatusOrderByScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        $builder->orderBy('created_at', 'asc');
+        $builder->orderBy('form_submit_status.created_at', 'asc');
     }
 }

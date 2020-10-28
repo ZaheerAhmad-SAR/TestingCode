@@ -163,11 +163,13 @@
             @if(hasPermission(auth()->user(),'qualitycontrol.index'))
                 <li class="dropdown"><a href="#"><i class="fas fa-sitemap"></i> Quality Control</a>
                     <ul>
+
                         <li>
-                            <a href="#">
+                            <a href="{{ route('transmissions.index')}}">
                                 <i class="fas fa-file-import"></i> Transmissions
                             </a>
                         </li>
+
                         <li>
                             <a href="#">
                                 <i class="fas fa-list"></i> Qc List

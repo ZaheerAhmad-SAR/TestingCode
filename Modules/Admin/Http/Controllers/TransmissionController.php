@@ -81,7 +81,23 @@ class TransmissionController extends Controller
            $getTransmissions = $getTransmissions->where('status', $request->status);
         }
 
-        $getTransmissions = $getTransmissions->orderBy('id', 'desc')->paginate(50);
+        // check for system user Admin
+        if(hasPermission(auth()->user(),'systemtools.index') && hasPermission(auth()->user(),'qualitycontrol.index')) {
+
+            $getTransmissions = $getTransmissions->orderBy('id', 'desc')->paginate(50);
+
+        } else if (hasPermission(auth()->user(),'qualitycontrol.index')) {
+
+            // get session id
+            $studyID = Study::where('id', \Session::get('current_study'))
+                            ->pluck('study_code')
+                            ->toArray();
+
+            $getTransmissions = $getTransmissions->where('StudyI_ID', $studyID[0])
+                                                 ->orderBy('id', 'desc')
+                                                 ->paginate(50);
+
+        }
 
         // get modality
         $getModalities = Modility::get();
@@ -96,16 +112,9 @@ class TransmissionController extends Controller
     public function transmissionData(Request $request)
     {
 
-        // $cFtpTrans = CrushFtpTransmission::create([
-        //     'data' => $request,
-        // ]);
-
-        // $getCFtPTrans = DB::table('transmissions')->where('id', 9446)->first();
-
-        // if ($getCFtPTrans != null) {
         // remove the upper section
-        $explodeGetCFtPTrans = explode('<?xml', $request);
-        //dd($explodeGetCFtPTrans[1]);
+        $explodeGetCFtPTrans = explode('<?xml', $request->data);
+      
         // concatinate xml with the remaining  xml
         $xml = '<?xml'.$explodeGetCFtPTrans[1];
         //dd($xml);
@@ -117,7 +126,7 @@ class TransmissionController extends Controller
         if ($checkTransmissionNumber == null) {
 
             $saveData = DB::table('crush_ftp_transmissions')->insert([
-                'data'                      => $request,
+                'data'                      => $request->data,
                 'Transmission_Number'       => $xml->Transmission_Number,
                 'Study_Name'                => $xml->Study_Name,
                 'StudyI_ID'                 => $xml->StudyI_ID,
@@ -144,7 +153,7 @@ class TransmissionController extends Controller
                 'Subject_ID'                => $xml->Subject_ID,
                 'StudyEye'                  => $xml->StudyEye,
                 'visit_name'                => $xml->visit_name,
-                'visit_date'                => date('Y-m-d', strtotime($xml->visit_date)),
+                'visit_date'                => $xml->visit_date,
                 'ImageModality'             => $xml->ImageModality,
                 'device_model'              => $xml->device_model,
                 'device_oirrcID'            => $xml->device_oirrcID,
@@ -179,9 +188,6 @@ class TransmissionController extends Controller
             echo 'Transmission Number already exists.';
         }
 
-        // } else {
-        //     echo "Nothing to Insert.";
-        // }
     }
 
     /**
@@ -445,52 +451,60 @@ class TransmissionController extends Controller
         /////////////////////// Devices ///////////////////////////////////////
 
             //get devices
-            $getDevices = Device::where('device_model', $findTransmission->device_model)->first();
+            // $getDevices = Device::where('device_model', $findTransmission->device_model)->first();
 
-            if ($getDevices == null) {
-                // insert modility
-                $getDevices = new Device;
-                $getDevices->id = Str::uuid();
-                $getDevices->device_model = $findTransmission->device_model;
-                $getDevices->save();
-            } // devices check is end
+            // if ($getDevices == null) {
+            //     // insert modility
+            //     $getDevices = new Device;
+            //     $getDevices->id = Str::uuid();
+            //     $getDevices->device_model = $findTransmission->device_model;
+            //     $getDevices->save();
+            // } // devices check is end
 
-            // make relation for devices and modality
-            $getDeviceModality = DeviceModility::where('device_id', $getDevices->id)
-                                                 ->where('modility_id', $getModality->id)
-                                                 ->first();
+            // // make relation for devices and modality
+            // $getDeviceModality = DeviceModility::where('device_id', $getDevices->id)
+            //                                      ->where('modility_id', $getModality->id)
+            //                                      ->first();
 
-            if ($getDeviceModality == null) {
+            // if ($getDeviceModality == null) {
 
-                $getDeviceModality = new DeviceModility;
-                $getDeviceModality->id = Str::uuid();
-                $getDeviceModality->device_id = $getDevices->id;
-                $getDeviceModality->modility_id = $getModality->id;
-                $getDeviceModality->save();
-            }
+            //     $getDeviceModality = new DeviceModility;
+            //     $getDeviceModality->id = Str::uuid();
+            //     $getDeviceModality->device_id = $getDevices->id;
+            //     $getDeviceModality->modility_id = $getModality->id;
+            //     $getDeviceModality->save();
+            // }
 
         ///////////////////// Subject /////////////////////////////////////////
 
             // if  new_subject status is 1 insert new subject and change ne_subject status to 0
             if ($findTransmission->new_subject == "1") {
 
-                // insert subject
-                $getSubject = new Subject;
-                $subjectID = Str::uuid();
-                $getSubject->id = $subjectID;
-                $getSubject->study_id = $getStudy->id;
-                $getSubject->subject_id = $findTransmission->Subject_ID;
-                $getSubject->site_id = $getSite->id;
-                $getSubject->study_eye = $findTransmission->StudyEye;
-                $getSubject->transmission_status = "1";
-                $getSubject->save();
+                // get subject
+                $getSubject = Subject::where('study_id', $getStudy->id)
+                                  ->where('subject_id', $findTransmission->Subject_ID)
+                                  ->first();
 
-                // assign ID to pointer
-                $getSubject->id = $subjectID;
+                if ($getSubject == null) {
+                    // insert subject
+                    $getSubject = new Subject;
+                    $subjectID = Str::uuid();
+                    $getSubject->id = $subjectID;
+                    $getSubject->study_id = $getStudy->id;
+                    $getSubject->subject_id = $findTransmission->Subject_ID;
+                    $getSubject->site_id = $getSite->id;
+                    $getSubject->study_eye = $findTransmission->StudyEye;
+                    $getSubject->transmission_status = "1";
+                    $getSubject->save();
 
-                // change new_subject status to 0
-                $updateSubjectStatus = CrushFtpTransmission::where('id', $findTransmission->id)
-                ->update(['new_subject' => "0"]); 
+                    // assign ID to pointer
+                    $getSubject->id = $subjectID;
+
+                    // change new_subject status to 0
+                    $updateSubjectStatus = CrushFtpTransmission::where('id', $findTransmission->id)
+                    ->update(['new_subject' => 0]);  
+
+                } // subject check is end
 
             } else {
 
@@ -557,8 +571,6 @@ class TransmissionController extends Controller
                 $getSubjectPhase->visit_date = $findTransmission->visit_date;
                 $getSubjectPhase->save();
             } // subject phases check is end
-
-            // dd('StudyID:  '.$getStudy->id.'???????  SiteID:   '.$getSite->id.'???????  Primary INV:    '.$getPrimaryInvestigator->id.'???????   Photographer:     '.$getPhotographer->id.'???????   Modality:    '.$getModality->id.'???????   Subject ID:    '.$getSubject->id.'???????   PhaseID:    '.$getPhase->id.'???????   SubjectPhaseID:      '.$getSubjectPhase->id);
 
         return true;
 
