@@ -3,7 +3,7 @@
     <div class="container" id ="container">
         <div class="row vh-100 justify-content-between align-items-center">
             <div class="col-12">
-                <form  action="{{route('accept')}}" method="POST" class="row row-eq-height lockscreen  mt-5 mb-5">
+                <form  action="{{route('accept')}}" method="POST" class="row row-eq-height lockscreen mb-5">
                     @csrf
                     <div class="lock-image col-12 col-sm-5" style="min-height: 400px;">
                         <img src="{{asset('public/dist/images/Logo.gif')}}" alt="" style="width: 230px;margin-top: 120px;">
@@ -11,14 +11,17 @@
                     <div class="login-form col-12 col-sm-7">
                         <input type="hidden" id="userAgent" value="">
                         <div class="form-group mb-3" style="margin-top: 60px;">
-                            <label for="name">Name</label>
-                            <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
+                            <div class="form-group mb-3">
+                                <label for="name">Name</label>
+                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
 
-                            @error('name')
-                            <span class="invalid-feedback" role="alert">
+                                @error('name')
+                                <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>
-                            @enderror
+                                @enderror
+
+                            </div>
                         </div>
 
                         <div class="form-group mb-3">
@@ -49,23 +52,10 @@
                         </div>
 
                         <div class="form-group mb-3">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="checkbox-signin" checked="">
-                                <label class="custom-control-label" for="checkbox-signin">Remember me</label>
                                 <button class="btn btn-primary" type="submit"  style="float: right;"> Register </button>
-                            </div>
-                        </div>
-                        <div class="form-group mb-3">
-                            <div class="custom-control">
-                                @if (Route::has('password.request'))
-                                    <a class="btn btn-link" href="{{ route('password.request') }}">
-                                        {{ __('Forgot Your Password?') }}
-                                    </a>
-                                @endif
-                            </div>
                         </div>
 
-                        <div class="mt-2" style="padding-top: 90px;">OIRRC CAPTURE System</div>
+                        <div class="mt-2" style="padding-top: 50px;">OCAP by OIRRC</div>
                     </div>
                 </form>
             </div>

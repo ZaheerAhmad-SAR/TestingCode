@@ -18,6 +18,15 @@
         <div class="row">
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <div class="card-header d-flex align-items-center">
                             @if(hasPermission(auth()->user(),'users.create'))
                                 <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#createUser">
@@ -317,15 +326,7 @@
                 <form action="{{route('process_invite')}}" enctype="multipart/form-data" method="POST">
                     @csrf
                     <div class="modal-body">
-                        @if ($errors->any())
-                            <div class="alert alert-danger">
-                                <ul>
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
+
                         <div class="tab-content" id="nav-tabContent">
                             <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
                                 @csrf
@@ -334,6 +335,17 @@
                                     <div class="col-md-8">
                                         <input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Enter email">
                                         <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                                    </div>
+                                </div>
+                                <div class="form-group row" style="margin-top: 10px;">
+                                    <div class="col-md-4">Role </div>
+                                    <div class="col-md-8">
+                                        <select name="roles" id="roles" class="form-control">
+                                            <option value="">-- Select Role --</option>
+                                            @foreach($roles as $role)
+                                                <option value="{{$role->id}}">{{$role->name}}</option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -379,8 +391,12 @@
             if (user.value == "selectuser") {
                 alert("Please select a user");
             }
-
         }
+
+            @if (count($errors) > 0)
+            $('#inviteuser').modal('show');
+        @endif
+
         $(document).ready(function() {
             $('#select-roles').multiSelect({
                 selectableHeader: "<label for=''>All Roles</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
