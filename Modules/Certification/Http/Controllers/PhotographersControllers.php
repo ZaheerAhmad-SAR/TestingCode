@@ -19,7 +19,7 @@ class PhotographersControllers extends Controller
         $imaging_modality = DB::connection('mysql2')->table('imaging_modality')->get();
         $photographers = [];
         $photographers = DB::connection('mysql2')->table('photographer_data')->select('photographer_data.*', DB::Raw('CONCAT(first_name, " ", last_name) as photographer_name'), DB::Raw('GROUP_CONCAT(transmission_number SEPARATOR ",") as transmissions'),DB::Raw('GROUP_CONCAT(id SEPARATOR ",") as IDs'), DB::Raw('GROUP_CONCAT(status SEPARATOR ",") as statuses'),DB::Raw('GROUP_CONCAT(certification_officerName SEPARATOR ",") as certification_officerNames'));
-        $photographers = $photographers->where('checked_by',0);
+        // $photographers = $photographers->where('checked_by',0);
         if(isset($request->site) && $request->site !=''){
             $photographers = $photographers->where('photographer_data.site_id', $request->site);
         }
@@ -29,10 +29,13 @@ class PhotographersControllers extends Controller
         if(isset($request->transmission_number) && $request->transmission_number !=''){
             $photographers = $photographers->where('photographer_data.transmission_number','like', $request->transmission_number);
         }
+        if(isset($request->modality) && $request->modality !=''){
+            $photographers = $photographers->where('photographer_data.imaging_modality_req','like', $request->modality);
+        }
         if(isset($request->status) && $request->status !=''){
             $photographers = $photographers->where('photographer_data.certificate_status','like', $request->status);
         }
-        $photographers = $photographers->groupBy('photographer_name')->groupBy('imaging_modality_req')->groupBy('study_name')->paginate(15);
+        $photographers = $photographers->groupBy('photographer_name')->groupBy('study_name')->paginate(15);
         return view('certification::photographer.index', ['photographers' => $photographers,'imaging_modality' =>$imaging_modality]);
     }
     /**
