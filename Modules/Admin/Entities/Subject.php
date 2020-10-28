@@ -11,7 +11,7 @@ class Subject extends Model
 
     public function study()
     {
-        return $this->hasOne(Study::class);
+        return $this->belongsTo(Study::class);
     }
 
     public function sites()

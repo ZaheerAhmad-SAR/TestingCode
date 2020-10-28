@@ -26,7 +26,7 @@ class AddBrowserNameColumnsToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('browser_name');
+           $table->dropColumn('browser_name');
         });
     }
 }

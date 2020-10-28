@@ -14,7 +14,7 @@ class AddColumnQueryAttachmentsToQueriesTable extends Migration
     public function up()
     {
         Schema::table('queries', function (Blueprint $table) {
-        $table->text('query_attachments')->after('query_subject')->nullable();
+        $table->text('query_attachments')->nullable();
         });
     }
 

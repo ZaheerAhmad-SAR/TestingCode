@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddColumnDropGoogle2faSecretToUsersTable extends Migration
+class Add2ColumnsToInvitationsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class AddColumnDropGoogle2faSecretToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('google2fa_secret');
-
+        Schema::table('invitations', function (Blueprint $table) {
+                $table->uuid('role_id')->after('token')->nullable();
         });
     }
 
@@ -26,8 +25,8 @@ class AddColumnDropGoogle2faSecretToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('google2fa_secret')->nullable();
+        Schema::table('invitations', function (Blueprint $table) {
+            $table->dropColumn('role_id');
         });
     }
 }

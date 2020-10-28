@@ -14,7 +14,8 @@ class AddColumnGoogle2faSecretToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            //$table->text('google2fa_secret')->after('browser_name')->nullable();
+            $table->text('google2fa_secret')->after('browser_name')->nullable();
+
         });
     }
 
@@ -26,7 +27,7 @@ class AddColumnGoogle2faSecretToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            //$table->dropColumn('google2fa_secret');
+            $table->dropColumn('google2fa_secret');
         });
     }
 }
