@@ -153,7 +153,7 @@
                                             <td>{{$transmission->Site_ID}}</td>
                                             <td>{{$transmission->Subject_ID}}</td>
                                             <td>{{$transmission->visit_name}}</td>
-                                            <td>{{$transmission->visit_date}}</td>
+                                            <td>{{ date('d-M-Y', strtotime($transmission->visit_date))}}</td>
                                             <td>
                                                 <span class="badge badge-info">
                                                     {{$transmission->ImageModality}}
@@ -221,6 +221,7 @@
         <!-- END: Card DATA-->
     </div>
 
+    {{--
     <!-- transmission status modal  -->
     <!-- Modal -->
     <div class="modal fade" id="transmission-status-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -261,7 +262,8 @@
         </div>
       </div>
     </div>
-
+    --}}
+    
 @endsection
 @section('script')
 
