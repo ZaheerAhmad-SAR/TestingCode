@@ -444,25 +444,20 @@
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" style="max-width: 1000px;" role="document">
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
-                <div class="modal-header ">
+                <div class="modal-header">
                     <p class="modal-title">Query Details</p>
+                    <span class="queryCurrentStatus text-center"></span>
                 </div>
                     <div class="modal-body">
                         <form id="replyForm" name="replyForm">
                             <div class="tab-content clearfix">
                                 @csrf
                                 <div class="replyInput"></div>
-                                <div class="col-sm-6 form-group row">
-                                    <div class="replyClick">
+                                <div class="col-sm-12">
+                                    <div class="replyClick" style="text-align: right;">
                                     <span style="cursor: pointer;">
                                         <i class="fa fa-reply"></i> &nbsp; reply
                                         </span>
-                                    </div>
-                                </div>
-                                <div class="form-group row commentsInput" style="display: none;">
-                                    <label for="Name" class="col-sm-2 col-form-label">Enter your Query</label>
-                                    <div class="col-sm-10">
-                                        <textarea class="summernote-inline" name="reply" id="reply"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -479,6 +474,7 @@
 @endsection
 @section('styles')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="{{ asset("dist/vendors/fancybox/jquery.fancybox.min.css") }}">
 @endsection
 @section('script')
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
@@ -502,6 +498,9 @@
         });
 
     </script>
+    <script src="{{ asset("dist/vendors/fancybox/jquery.fancybox.min.js") }}"></script>
+    <script src="{{ asset("dist/js/gallery.script.js") }}"></script>
+
     <script src="{{ asset('dist/js/jquery.validate.min.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.barfiller.js') }}"></script>
@@ -581,7 +580,6 @@
                $('#study-crud-modal').modal('show');
            })
         });
-
         $('body').on('click', '#delete-study', function () {
             var study_id = $(this).data("id");
             confirm("Are You sure want to delete !");
@@ -601,7 +599,6 @@
                 }
             });
         });
-
         $('body').on('click', '.clone-study', function () {
             $.ajaxSetup({
                 headers: {
@@ -629,7 +626,7 @@
     });
 
     $('body').on('click', '.replyModal', function () {
-        var query_id = $(this).attr('data-id');
+        var query_id     = $(this).attr('data-id');
         $('#reply-modal').modal('show');
         showComments(query_id);
         $('#all-queries-modal').modal('hide');
@@ -649,6 +646,9 @@
             {
                 $('.replyInput').html('');
                 $('.replyInput').html(response);
+                var query_status = $( "#query_status option:selected" ).text();
+                $('.queryCurrentStatus').text('Status: '+query_status);
+                $('.replyClick').css('display','');
             }
         });
     }
@@ -678,26 +678,50 @@
     }
         $('body').on('click', '.replyClick', function () {
             $('.commentsInput').css('display','');
+            $('.queryAttachments').css('display','');
+            $('.queryStatus').css('display','');
             $('.replyClick').css('display','none');
         });
 
     $('#replyqueries').click(function (e){
         $.ajaxSetup({ headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
         e.preventDefault();
+        var reply         = $("#reply").val();
+        var query_id      = $("#query_id").val();
+        var query_url     = $("#query_url").val();
+        var query_type    = $("#query_type").val();
+        var module_id     = $("#module_id").val();
+        var query_status  = $("#query_status").val();
+        var query_subject = $("#query_subject").val();
+
+        var formData      = new FormData();
+        formData.append('reply', reply);
+        formData.append('query_id', query_id);
+        formData.append('query_url', query_url);
+        formData.append('query_type', query_type);
+        formData.append('query_subject', query_subject);
+        formData.append('module_id', module_id);
+        formData.append('query_status', query_status);
+        // Attach file
+        formData.append('query_file', $('input[type=file]')[0].files[0]);
         $.ajax({
-            data: $('#replyForm').serialize(),
             url:"{{route('queries.queryReply')}}",
             type: "POST",
+            data: formData,
             dataType: 'json',
+            contentType: false,
+            cache: false,
+            processData:false,
             success: function (results)
             {
                 // $('.commentsInput').css('display','none');
-                // $('.replyClick').css('display','');
+                $('.replyClick').css('display','');
                 var query_id = results[0].parent_query_id;
+                console.log(query_id);
                 showComments(query_id);
                 //$("#replyForm")[0].reset();
-                $('#summernote').summernote('disable');
-                $("#reply").summernote("reset");
+                //$('#summernote').summernote('disable');
+                //$("#reply").summernote("reset");
             },
             error: function (results) {
                 console.error('Error:', results);

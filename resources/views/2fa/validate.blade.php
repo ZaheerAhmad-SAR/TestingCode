@@ -10,14 +10,12 @@
                                 <img src="{{asset('public/dist/images/Logo.gif')}}" alt="" style="width: 230px;margin-top: 120px;">
                             </div>
                             <div class="login-form col-12 col-sm-7">
-                                <div class="" style="min-height: 10%"></div>
-                            <div class="form-group row{{ $errors->has('totp') ? ' has-error' : '' }}">
+                            <div style="margin-top: 15px" class="form-group row{{ $errors->has('totp') ? ' has-error' : '' }}">
                                 <div class="col-md-2">
                                     <label>OTP</label></div>
 
                                 <div class="col-md-10">
                                     <input type="number" class="form-control" name="totp" required>
-
                                     @if ($errors->has('totp'))
                                         <span class="help-block">
                                     <strong>{{ $errors->first('totp') }}</strong>
@@ -25,9 +23,8 @@
                                     @endif
                                 </div>
                             </div>
-                            <div class="form-group mb-3">
-                               {{-- <img alt="Image of QR barcode" src="{!! $user->	google_auth !!}" />--}}
-
+                            <div class="form-group mb-3" @if($user->qr_flag == 1)style="display: none;" @endif>
+                               <img alt="Image of QR barcode" src="{!! $user->google_auth !!}" />
                             </div>
                             <div class="form-group mb-3">
                                 <input type="checkbox" name="remember_browser" checked> &nbsp; Don't ask for OTP again this browser!!
@@ -39,6 +36,12 @@
                                     </button>
                                 </div>
                             </div>
+                                <div class="form-group mb-3">
+                                    <h6>Protect Your Account.</h6>
+                                    <p>Improve your portal security with Two Factor Authentication.
+                                    We encourage you to take advantage of our two-factor authentication if you haven’t already.
+                                    </p>
+                                </div>
                             </div>
                         </form>
                     </div>

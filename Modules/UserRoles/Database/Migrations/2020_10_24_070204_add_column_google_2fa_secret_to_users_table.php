@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddColumnsToUsersTable extends Migration
+class AddColumnGoogle2faSecretToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddColumnsToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('browser_name')->nullable()->after('user_ip');
+            //$table->text('google2fa_secret')->after('browser_name')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AddColumnsToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('browser_name');
+            //$table->dropColumn('google2fa_secret');
         });
     }
 }

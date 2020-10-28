@@ -126,9 +126,12 @@
       <path value="$PROJECT_DIR$/vendor/pragmarx/google2fa-qrcode" />
       <path value="$PROJECT_DIR$/vendor/pragmarx/google2fa" />
       <path value="$PROJECT_DIR$/vendor/pragmarx/google2fa-laravel" />
+      <path value="$PROJECT_DIR$/vendor/jeremykenedy/laravel2step" />
+      <path value="$PROJECT_DIR$/vendor/pragmarx/random" />
+      <path value="$PROJECT_DIR$/vendor/pragmarx/recovery" />
     </include_path>
   </component>
-  <component name="PhpProjectSharedConfiguration" php_language_level="7.1" />
+  <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />
   <component name="PhpUnit">
     <phpunit_settings>
       <PhpUnitSettings configuration_file_path="$PROJECT_DIR$/phpunit.xml" custom_loader_path="$PROJECT_DIR$/vendor/autoload.php" use_configuration_file="true" />
