@@ -11,7 +11,7 @@ use Modules\Admin\Entities\StudyStructure;
 
 class Study extends Model
 {
-    //use SoftDeletes;
+    use SoftDeletes;
     protected $keyType = 'string';
     protected $fillable = [
         'id',

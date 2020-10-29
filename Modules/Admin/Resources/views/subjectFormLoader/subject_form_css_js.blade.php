@@ -400,11 +400,11 @@
             }
 
             function reloadPage(waitSeconds) {
-                /* startWait();
+                startWait();
                 var seconds = waitSeconds * 1000;
                 setTimeout(function() {
                    location.reload();
-               }, seconds); */
+               }, seconds);
             }
 
         </script>
