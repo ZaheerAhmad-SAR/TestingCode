@@ -20,6 +20,7 @@ use Modules\Admin\Entities\Photographer;
 use Modules\Admin\Entities\TransmissionUpdateDetail;
 use Modules\Admin\Entities\Device;
 use Modules\Admin\Entities\DeviceModility;
+use Modules\Admin\Entities\ModalityPhase;
 use DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
@@ -112,7 +113,7 @@ class TransmissionController extends Controller
     {
 
         // remove the upper section
-        $explodeGetCFtPTrans = explode('<?xml', $request->data);
+        $explodeGetCFtPTrans = explode('<?xml', $request);
       
         // concatinate xml with the remaining  xml
         $xml = '<?xml'.$explodeGetCFtPTrans[1];
@@ -125,7 +126,7 @@ class TransmissionController extends Controller
         if ($checkTransmissionNumber == null) {
 
             $saveData = DB::table('crush_ftp_transmissions')->insert([
-                'data'                      => $request->data,
+                'data'                      => $request,
                 'Transmission_Number'       => $xml->Transmission_Number,
                 'Study_Name'                => $xml->Study_Name,
                 'StudyI_ID'                 => $xml->StudyI_ID,
@@ -241,9 +242,15 @@ class TransmissionController extends Controller
         // get all sites
         $getSites =Site::get();
         // get all subjects
-        $getSubjects = Subject::get();
+        $getSubjects = Subject::select('subjects.id', 'subjects.subject_id')
+                                ->leftjoin('studies', 'studies.id', '=', 'subjects.study_id')
+                                ->where('studies.study_code', $findTransmission->StudyI_ID)
+                                ->get();
         // get all phases
-        $getPhases = StudyStructure::get();
+        $getPhases = StudyStructure::select('study_structures.id', 'study_structures.name')
+                                    ->leftjoin('studies', 'studies.id', '=', 'study_structures.study_id')
+                                    ->where('studies.study_code', $findTransmission->StudyI_ID)
+                                    ->get();
         // get modality
         $getModalities = Modility::get();
 
@@ -570,6 +577,20 @@ class TransmissionController extends Controller
                 $getSubjectPhase->visit_date = $findTransmission->visit_date;
                 $getSubjectPhase->save();
             } // subject phases check is end
+
+            // check modality and phase id
+            $getModalityPhase = ModalityPhase::where('modility_id', $getModality->id)
+                                               ->where('phase_id', $getPhase->id)
+                                               ->first();
+
+            if ($getModalityPhase == null) {
+                // insert into modality phase table
+                $getModalityPhase = new ModalityPhase;
+                $getModalityPhase->modility_id = $getModality->id;
+                $getModalityPhase->phase_id = $getPhase->id;
+                $getModalityPhase->form_type_id = 1;
+                $getModalityPhase->save();
+            }
 
         return true;
 

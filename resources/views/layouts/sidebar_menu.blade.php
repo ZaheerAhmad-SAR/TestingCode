@@ -171,7 +171,7 @@
                         </li>
 
                         <li>
-                            <a href="#">
+                            <a href="{{ route('qualitycontrol.index')}}">
                                 <i class="fas fa-list"></i> Qc List
                             </a>
                         </li>

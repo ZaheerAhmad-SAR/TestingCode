@@ -35,8 +35,8 @@ class GradingController extends Controller
             $subjects = $subjects->select('subjects.*', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'subjects_phases.visit_date', 'sites.site_name')
             ->rightJoin('subjects_phases', 'subjects_phases.subject_id', '=', 'subjects.id')
             ->leftJoin('study_structures', 'study_structures.id', '=', 'subjects_phases.phase_id')
-            ->leftJoin('sites', 'sites.id', 'subjects.site_id')
-            ->leftJoin('form_submit_status', 'form_submit_status.subject_id', 'subjects.id');
+            ->leftJoin('sites', 'sites.id', 'subjects.site_id');
+            //->leftJoin('form_submit_status', 'form_submit_status.subject_id', 'subjects.id');
 
             if ($request->subject != '') {
                 $subjects = $subjects->where('subjects.id', $request->subject);
@@ -212,7 +212,7 @@ class GradingController extends Controller
             } // loop ends modility
 
             }// subject empty check
-
+            
             //get form status depending upon subject, phase and modality
             if ($modalitySteps != null) {
                 foreach($subjects as $subject) {
@@ -226,6 +226,8 @@ class GradingController extends Controller
                         foreach($formType as $type) {
                             
                             $step = PhaseSteps::where('step_id', $type['step_id'])->first();
+
+                            if ($step != null) {
 
                                 $getFormStatusArray = [
                                     'subject_id' => $subject->subj_id,
@@ -245,6 +247,8 @@ class GradingController extends Controller
 
                                     $formStatus[$key.'_'.$type['form_type']] =  \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
                                 }
+
+                            } // step check ends
                             
                         } // step lopp ends
 

@@ -13,17 +13,17 @@
 
 //dd(App::environment());
 
+// test transmission view
 Route::get('transmissions/transmissionData', function(){
     return view('admin::test_transmission_api');
 });
-
+// transmission end point
 Route::post('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
-
-Route::resource('transmissions', 'TransmissionController');
 
 Route::post('transmissions/getAllPIBySiteId', 'TransmissionController@getAllPIBySiteId')->name('transmissions.getAllPIBySiteId');
 
-//Route::post('transmissions-status', 'TransmissionController@transmissionStatus')->name('transmissions-status');
+Route::resource('transmissions', 'TransmissionController');
+
 
 Route::prefix('admin')->group(function () {
     Route::get('/', 'AdminController@index');
@@ -188,8 +188,8 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::post('studySite/deleteSiteCoordinator', 'StudySiteController@deleteSiteCoordinator')->name('studySite.deleteSiteCoordinator');
 
     // CHM-Amir
-
     Route::get('trail_logs', 'TrailLogController@index')->name('trail_logs.list');
+
 });
 
 // for checking subject ID
