@@ -1,4 +1,16 @@
 @php
+/**************************************/
+/**************************************/
+/**************************************/
+$stepIdStr = (isset($stepIdStr) && !empty($stepIdStr))? $stepIdStr:'';
+$subjectId = (isset($subjectId) && !empty($subjectId))? $subjectId:'';
+$studyId = (isset($studyId) && !empty($studyId))? $studyId:'';
+$stepCounter = (isset($stepCounter) && !empty($stepCounter))? $stepCounter:0;
+$form_filled_by_user_id = (isset($form_filled_by_user_id) && !empty($form_filled_by_user_id))? $form_filled_by_user_id:0;
+/**************************************/
+/**************************************/
+/**************************************/
+
 $showForm = false;
 if ($step->form_type_id == 1 && canQualityControl(['index'])){
     $showForm = true;
