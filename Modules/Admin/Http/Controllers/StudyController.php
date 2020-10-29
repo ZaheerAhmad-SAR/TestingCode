@@ -497,7 +497,6 @@ class StudyController extends Controller
                                     'deleted_at'    => Null
                                 ]);
                                 $replica_question_id = Question::select('id')->latest()->first();
-                                $question_validations = QuestionDataValidation::where('')
                             }
                         }
                     }
