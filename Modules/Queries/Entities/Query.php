@@ -72,7 +72,7 @@ class Query extends Model
         if (!empty($query->query_attachments))
         {
             $attachment .= '<div class="row">
-                        <img style="width:200px; height:200px;" class="mr-3" src='.url((string)$query->query_attachments).' alt="">
+                        <img style="width:200px; height:200px; margin: 0 auto;" class="mr-3" src='.url((string)$query->query_attachments).' alt="">
                         </div>
                         <div class="row">
                         <a target="_blank" data-fancybox-group="gallery" href='.url((string)$query->query_attachments).' class="fancybox">View Large</a></div>';

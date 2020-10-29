@@ -22,7 +22,16 @@ Route::post('transmissions/transmissionData', 'TransmissionController@transmissi
 
 Route::post('transmissions/getAllPIBySiteId', 'TransmissionController@getAllPIBySiteId')->name('transmissions.getAllPIBySiteId');
 
+
 Route::resource('transmissions', 'TransmissionController');
+
+
+Route::post('transmissions/queryTransmissionMail', 'TransmissionController@queryTransmissionMail')->name('transmissions.queryTransmissionMail');
+
+Route::post('transmissions-status', 'TransmissionController@transmissionStatus')->name('transmissions-status');
+
+//Route::post('transmissions-status', 'TransmissionController@transmissionStatus')->name('transmissions-status');
+
 
 
 Route::prefix('admin')->group(function () {

@@ -2,9 +2,11 @@
 
 namespace Modules\Admin\Http\Controllers;
 
+use App\Mail\TransmissonQuery;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Mail;
 use Modules\Admin\Entities\Coordinator;
 use Modules\Admin\Entities\CrushFtpTransmission;
 use Modules\Admin\Entities\Other;
@@ -113,6 +115,7 @@ class TransmissionController extends Controller
     {
 
         // remove the upper section
+
         $explodeGetCFtPTrans = explode('<?xml', $request);
       
         // concatinate xml with the remaining  xml
@@ -238,7 +241,7 @@ class TransmissionController extends Controller
         $findTransmission->qc_officerId = \Auth::user()->id;
         $findTransmission->qc_officerName = \Auth::user()->name;
         $findTransmission->save();
-        
+
         // get all sites
         $getSites =Site::get();
         // get all subjects
@@ -274,7 +277,7 @@ class TransmissionController extends Controller
         $findTransmission = CrushFtpTransmission::where('id', decrypt($id))->first();
         $findTransmission->Submitter_email = $request->d_submitter_email;
         $findTransmission->Submitter_phone = $request->d_submitter_phone;
-        
+
         // get site id
         if ($request->d_site_id != "") {
 
@@ -292,7 +295,7 @@ class TransmissionController extends Controller
         $findTransmission->PI_FirstName = $request->d_pi_first_name;
         $findTransmission->PI_LastName = $request->d_pi_last_name;
         $findTransmission->PI_email = $request->d_pi_email;
-        
+
         // get subject Id
         if ($request->d_subject_Id == "1") {
 
@@ -302,11 +305,11 @@ class TransmissionController extends Controller
 
             $subjectID = explode('/', $request->d_subject_Id);
             $findTransmission->subj_id = $subjectID[0];
-            $findTransmission->Subject_ID = $subjectID[1]; 
+            $findTransmission->Subject_ID = $subjectID[1];
         }
-        
+
         $findTransmission->StudyEye = $request->d_study_eye;
-        
+
         // get visit name and visit_id
         if ($request->d_visit_name != "") {
 
@@ -316,7 +319,7 @@ class TransmissionController extends Controller
         }
 
         $findTransmission->visit_date = $request->d_visit_date;
-        
+
         // get modality name and madality_id
         if ($request->d_image_modality != "") {
 
@@ -503,14 +506,20 @@ class TransmissionController extends Controller
                     $getSubject->transmission_status = "1";
                     $getSubject->save();
 
+
+                // change new_subject status to 0
+                $updateSubjectStatus = CrushFtpTransmission::where('id', $findTransmission->id)
+                ->update(['new_subject' => "0"]);
+
                     // assign ID to pointer
                     $getSubject->id = $subjectID;
 
                     // change new_subject status to 0
                     $updateSubjectStatus = CrushFtpTransmission::where('id', $findTransmission->id)
-                    ->update(['new_subject' => 0]);  
+                    ->update(['new_subject' => 0]);
 
                 } // subject check is end
+
 
             } else {
 
@@ -536,12 +545,12 @@ class TransmissionController extends Controller
 
                     // change new_subject status to 0
                     $updateSubjectStatus = CrushFtpTransmission::where('id', $findTransmission->id)
-                    ->update(['new_subject' => 0]);  
+                    ->update(['new_subject' => 0]);
 
                 } // subject check is end
 
             } // else ends
-            
+
         /////////////////// Phase /////////////////////////////////////////////
 
             // get phase
@@ -608,12 +617,38 @@ class TransmissionController extends Controller
 
     public function getAllPIBySiteId(Request $request)
     {
-        $site_id = $request->site_id;
-        $primaryInvestigator    = PrimaryInvestigator::where('site_id',$site_id)->get();
-        $coordinators           = Coordinator::where('site_id',$site_id)->get();
-        $photographer           = Photographer::where('site_id',$site_id)->get();
-        $others                 = Other::where('site_id',$site_id)->get();
-        echo  view('admin::sites.primary_dropdown',compact('primaryInvestigator','coordinators','photographer','others'));
+        $transmissionNumber = $request->transmissionNumber;
+        $records = CrushFtpTransmission::where('Transmission_Number',$transmissionNumber)->get();
+        echo  view('admin::transmissions.users_dropdown',compact('records'));
+    }
+
+    public function queryTransmissionMail()
+    {
+        dd(\request()->all());
+        request()->validate(['cc_email'=>'required|email']);
+        Mail::to(\request('cc_email'))
+            ->send(new TransmissonQuery('shirts'));
+//        //$ccEmail = $request->post('cc_email');
+//        $remarks = $request->post('remarks');
+
+        /// Mail Raw using plain text
+//        Mail::raw(request('remarks'),function ($message){
+//                $message->to(request('cc_email'))
+//                ->subject(request('query_subject'));
+//        });
+        //// Mail Raw end function
+
+
+        return redirect('/transmissions')->with('message','Query has been send');
+        //$users = $request->post('users');
+//        $data = array
+//        (
+//            'query_subject'=>$request['query_subject'],
+//            'site_name'=> $request['site_name'],
+//            'users'=>$users,
+//            'cc_email'=>$request['cc_email'],
+//            'remarks'=>$request['remarks']
+//        );
     }
 }
 
