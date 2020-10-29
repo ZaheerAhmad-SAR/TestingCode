@@ -275,8 +275,7 @@
                                         @if ($modalitySteps != null)
                                             @foreach($modalitySteps as $key => $steps)
 
-                                                @if ($steps[0] != '')
-                                                
+                                                @if ($steps != null)
                                                     @php
                                                         $count = $count + count($steps);
                                                     @endphp

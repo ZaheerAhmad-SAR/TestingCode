@@ -20,19 +20,18 @@ Route::get('transmissions/transmissionData', function(){
 // transmission end point
 Route::post('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
 
-Route::post('transmissions/getAllPIBySiteId', 'TransmissionController@getAllPIBySiteId')->name('transmissions.getAllPIBySiteId');
-
-
+// transmissions routes
 Route::resource('transmissions', 'TransmissionController');
+
+// get study vice transmissions
+Route::get('study-transmissions', 'TransmissionController@studyTransmissions')->name('transmissions.study-transmissions');
+
+Route::post('transmissions/getAllPIBySiteId', 'TransmissionController@getAllPIBySiteId')->name('transmissions.getAllPIBySiteId');
 
 
 Route::post('transmissions/queryTransmissionMail', 'TransmissionController@queryTransmissionMail')->name('transmissions.queryTransmissionMail');
 
 Route::post('transmissions-status', 'TransmissionController@transmissionStatus')->name('transmissions-status');
-
-//Route::post('transmissions-status', 'TransmissionController@transmissionStatus')->name('transmissions-status');
-
-
 
 Route::prefix('admin')->group(function () {
     Route::get('/', 'AdminController@index');

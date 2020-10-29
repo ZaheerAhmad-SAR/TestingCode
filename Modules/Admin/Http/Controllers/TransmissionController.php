@@ -83,28 +83,77 @@ class TransmissionController extends Controller
            $getTransmissions = $getTransmissions->where('status', $request->status);
         }
 
-        // check for system user Admin
-        if(hasPermission(auth()->user(),'systemtools.index') && hasPermission(auth()->user(),'qualitycontrol.index')) {
-
-            $getTransmissions = $getTransmissions->orderBy('id', 'desc')->paginate(50);
-
-        } else if (hasPermission(auth()->user(),'qualitycontrol.index')) {
-
-            // get session id
-            $studyID = Study::where('id', \Session::get('current_study'))
-                            ->pluck('study_code')
-                            ->toArray();
-
-            $getTransmissions = $getTransmissions->where('StudyI_ID', $studyID[0])
-                                                 ->orderBy('id', 'desc')
-                                                 ->paginate(50);
-
-        }
+        $getTransmissions = $getTransmissions->orderBy('id', 'desc')->paginate(50);
 
         // get modality
         $getModalities = Modility::get();
 
         return view('admin::transmission_details', compact('getTransmissions', 'getModalities'));
+    }
+
+    public function studyTransmissions(Request $request)
+    {
+        $getTransmissions = CrushFtpTransmission::query();
+
+        if ($request->trans_id != '') {
+
+           $getTransmissions = $getTransmissions->where('Transmission_Number', 'like', '%' . $request->trans_id . '%');
+        }
+
+        if ($request->subject_id != '') {
+
+           $getTransmissions = $getTransmissions->where('Subject_ID', 'like', '%' . $request->subject_id . '%');
+        }
+
+        if ($request->visit_name != '') {
+
+           $getTransmissions = $getTransmissions->where('visit_name', 'like', '%' . $request->visit_name . '%');
+        }
+
+        if ($request->visit_date != '') {
+
+            $visitDate = explode('-', $request->visit_date);
+                    $from   = Carbon::parse($visitDate[0]); // 2018-09-29 00:00:00
+
+                    $to     = Carbon::parse($visitDate[1]); // 2018-09-29 23:59:59
+
+                $getTransmissions =  $getTransmissions->whereDate('visit_date', '>=', $from)
+                    ->whereDate('visit_date', '<=', $to);
+        }
+
+        if ($request->imagine_modality != '') {
+
+           $getTransmissions = $getTransmissions->where('ImageModality', $request->imagine_modality);
+        }
+
+        if ($request->modility_id != '') {
+
+           $getTransmissions = $getTransmissions->where('modility_id', $request->modility_id);
+        }
+
+        if ($request->is_read != '') {
+
+           $getTransmissions = $getTransmissions->where('is_read', $request->is_read);
+        }
+
+        if ($request->status != '') {
+
+           $getTransmissions = $getTransmissions->where('status', $request->status);
+        }
+
+        // get session id
+        $studyID = Study::where('id', \Session::get('current_study'))
+                            ->pluck('study_code')
+                            ->toArray();
+        $studyID = $studyID != null ? $studyID : null;
+
+        $getTransmissions = $getTransmissions->where('StudyI_ID', $studyID)
+                                            ->orderBy('id', 'desc')
+                                            ->paginate(50);
+        // get modality
+        $getModalities = Modility::get();
+
+        return view('admin::study_transmission_details', compact('getTransmissions', 'getModalities'));
     }
 
     /**

@@ -231,6 +231,8 @@ class QualityControlController extends Controller
                             
                             $step = PhaseSteps::where('step_id', $type['step_id'])->first();
 
+                            if ($step != null) {
+
                                 $getFormStatusArray = [
                                     'subject_id' => $subject->subj_id,
                                     'study_structures_id' => $subject->phase_id,
@@ -249,6 +251,7 @@ class QualityControlController extends Controller
 
                                     $formStatus[$key.'_'.$type['form_type']] =  \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
                                 }
+                            } // steps if ends
                             
                         } // step lopp ends
 
