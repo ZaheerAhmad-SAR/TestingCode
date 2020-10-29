@@ -274,12 +274,17 @@
 
                                         @if ($modalitySteps != null)
                                             @foreach($modalitySteps as $key => $steps)
-                                            @php
-                                                $count = $count + count($steps);
-                                            @endphp
-                                            <th colspan="{{count($steps)}}" class="border-bottom-0" style="text-align: center;">
-                                                    {{$key}}
-                                            </th>
+
+                                                @if ($steps[0] != '')
+                                                
+                                                    @php
+                                                        $count = $count + count($steps);
+                                                    @endphp
+                                                <th colspan="{{count($steps)}}" class="border-bottom-0" style="text-align: center;">
+                                                        {{$key}}
+                                                </th>
+                                                @endif
+
                                             @endforeach
                                         @endif
                                     </tr>

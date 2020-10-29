@@ -168,7 +168,7 @@ class GradingController extends Controller
                     $subjects = $subjects->where('phase_steps.graders_number', $request->graders_number);
                 }
 
-                $subjects = $subjects->groupBy(['form_submit_status.subject_id', 'form_submit_status.study_structures_id', 'form_submit_status.phase_steps_id'])
+                $subjects = $subjects->groupBy(['form_submit_status.subject_id', 'form_submit_status.study_structures_id'])
                 ->paginate(15);
 
 
@@ -185,8 +185,9 @@ class GradingController extends Controller
             }
 
             $getModilities = $getModilities->groupBy('form_submit_status.modility_id')
-                                        ->orderBy('modilities.modility_name')
-                                        ->get();
+                                            ->orderBy('modilities.modility_name')
+                                            ->get();
+
 
             // get form types for modality
             foreach($getModilities as $modility) {

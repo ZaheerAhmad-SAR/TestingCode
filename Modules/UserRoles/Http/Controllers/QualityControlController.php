@@ -171,7 +171,7 @@ class QualityControlController extends Controller
                 //     $subjects = $subjects->where('phase_steps.graders_number', $request->graders_number);
                 // }
 
-                $subjects = $subjects->groupBy(['form_submit_status.subject_id', 'form_submit_status.study_structures_id', 'form_submit_status.phase_steps_id'])
+                $subjects = $subjects->groupBy(['form_submit_status.subject_id', 'form_submit_status.study_structures_id'])
                 ->paginate(15);
 
 
