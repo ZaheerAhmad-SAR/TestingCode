@@ -7,9 +7,11 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
 use Modules\Admin\Entities\Section;
+use Modules\Admin\Traits\Replication\ReplicatePhaseStructure;
 
 class SectionController extends Controller
 {
+    use ReplicatePhaseStructure;
     /**
      * Display a listing of the resource.
      * @return Response
@@ -36,20 +38,25 @@ class SectionController extends Controller
     public function store(Request $request)
     {
         $id    = Str::uuid();
-        $phase = Section::create([
+        Section::create([
             'id'    => $id,
             'phase_steps_id'    => $request->step_id,
             'name'  =>  $request->sec_name,
             'description' =>  $request->sec_description,
             'sort_number' =>  $request->sort_num
         ]);
+
+        /************************* */
+        $section = Section::find($id);
+        $this->addSectionToReplicatedVisits($section);
+
         return $last_id = Section::select('id')->latest()->first();
         // return redirect()->route('study.index');
     }
     public function getSectionby_id(Request $request)
     {
         $id = $request->id;
-        $section = Section::where('phase_steps_id','=',$id)->orderBy('sort_number', 'asc')->get();
+        $section = Section::where('phase_steps_id', '=', $id)->orderBy('sort_number', 'asc')->get();
         $sectionData['data'] = $section;
         echo json_encode($sectionData);
     }
@@ -72,7 +79,7 @@ class SectionController extends Controller
     public function edit($id)
     {
         $section = Section::find($id);
-        return view('admin::edit',compact('section'));
+        return view('admin::edit', compact('section'));
     }
 
     /**
@@ -89,10 +96,11 @@ class SectionController extends Controller
         $section->description  =  $request->post('sec_description');
         $section->sort_number  =  $request->post('sort_num');
         $section->save();
+        $this->updateSectionToReplicatedVisits($section);
         $data = [
-          'success' => true,
-          'message'=> 'Recode updated successfully'
-        ] ;
+            'success' => true,
+            'message' => 'Recode updated successfully'
+        ];
     }
 
     /**
@@ -102,8 +110,7 @@ class SectionController extends Controller
      */
     public function destroy($id)
     {
-         $section = Section::find($id);
-         $section->delete();
-
+        $section = Section::find($id);
+        $this->deleteSection($section);
     }
 }

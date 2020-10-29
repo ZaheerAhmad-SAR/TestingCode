@@ -64,4 +64,9 @@ class StudyStructure extends Model
     {
         return $this->phaseSubjects()->distinct()->pluck('subject_id')->toArray();
     }
+
+    public function replicationStructures()
+    {
+        return $this->hasMany(PhaseReplicationStructure::class, 'study_structures_id', 'id');
+    }
 }

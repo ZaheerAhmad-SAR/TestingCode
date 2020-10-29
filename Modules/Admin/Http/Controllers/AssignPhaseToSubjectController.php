@@ -8,7 +8,7 @@ use Illuminate\Routing\Controller;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\SubjectsPhases;
 use Modules\Admin\Entities\Subject;
-use Modules\Admin\Traits\ReplicatePhaseStructure;
+use Modules\Admin\Traits\Replication\ReplicatePhaseStructure;
 
 class AssignPhaseToSubjectController extends Controller
 {
