@@ -11,5 +11,5 @@ class Annotation extends Model
 	protected $keyType = 'string';
     protected $fillable = ['id','study_id','label','deleted_at'];
 
-   
+
 }

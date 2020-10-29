@@ -12,8 +12,8 @@ class FormFields extends Model
     protected $fillable = ['id', 'question_id', 'variable_name', 'xls_label', 'is_exportable_to_xls', 'is_required', 'lower_limit', 'upper_limit', 'decimal_point', 'field_width', 'text_info', 'validation_rules', 'deleted_at'];
     protected $keyType = 'string';
 
-    public function questions()
+    public function question()
     {
-        return $this->belongsTo(Questions::class, 'question_id', 'id');
+        return $this->belongsTo(Question::class, 'question_id', 'id');
     }
 }

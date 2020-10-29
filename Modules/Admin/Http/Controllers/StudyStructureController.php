@@ -10,9 +10,11 @@ use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\FormType;
 use Modules\Admin\Entities\Modility;
+use Modules\Admin\Traits\Replication\ReplicatePhaseStructure;
 
 class StudyStructureController extends Controller
 {
+    use ReplicatePhaseStructure;
     /**
      * Display a listing of the resource.
      * @return Response
@@ -153,7 +155,7 @@ class StudyStructureController extends Controller
     public function store_steps(Request $request)
     {
         $id    = Str::uuid();
-        $phase = PhaseSteps::create([
+        PhaseSteps::create([
             'step_id'    => $id,
             'phase_id'    => $request->phase_id,
             'step_position'  =>  $request->step_position,
@@ -165,6 +167,10 @@ class StudyStructureController extends Controller
             'q_c' =>  $request->q_c,
             'eligibility' =>  $request->eligibility
         ]);
+        /************************* */
+        $step = PhaseSteps::find($id);
+        $this->addStepToReplicatedVisits($step);
+
         $data = [
             'success' => true,
             'message' => 'Recode added successfully'
@@ -172,17 +178,21 @@ class StudyStructureController extends Controller
     }
     public function update_steps(Request $request, $id = '')
     {
-        $phase = PhaseSteps::find($request->step_id);
-        $phase->phase_id  =  $request->phase_id;
-        $phase->step_position  =  $request->step_position;
-        $phase->form_type_id  =  $request->form_type_id;
-        $phase->modility_id  =  $request->modility_id;
-        $phase->step_name  =  $request->step_name;
-        $phase->step_description  =  $request->step_description;
-        $phase->graders_number  =  $request->graders_number;
-        $phase->q_c  =  $request->q_c;
-        $phase->eligibility  =  $request->eligibility;
-        $phase->save();
+        $step = PhaseSteps::find($request->step_id);
+        $step->phase_id  =  $request->phase_id;
+        $step->step_position  =  $request->step_position;
+        $step->form_type_id  =  $request->form_type_id;
+        $step->modility_id  =  $request->modility_id;
+        $step->step_name  =  $request->step_name;
+        $step->step_description  =  $request->step_description;
+        $step->graders_number  =  $request->graders_number;
+        $step->q_c  =  $request->q_c;
+        $step->eligibility  =  $request->eligibility;
+        $step->save();
+
+
+        $this->updateStepToReplicatedVisits($step);
+
         $data = [
             'success' => true,
             'message' => 'Recode updated successfully'
@@ -222,6 +232,8 @@ class StudyStructureController extends Controller
         $phase->duration  =  $request->duration;
         $phase->is_repeatable  =  $request->is_repeatable;
         $phase->save();
+
+        $this->updatePhaseToReplicatedVisits($phase);
     }
 
     /**
@@ -232,11 +244,11 @@ class StudyStructureController extends Controller
     public function destroy($id)
     {
         $phase = StudyStructure::find($id);
-        $phase->delete($id);
+        $this->deletePhase($phase);
     }
     public function destroySteps($step_id)
     {
-        $steps = PhaseSteps::find($step_id);
-        $steps->delete($step_id);
+        $step = PhaseSteps::find($step_id);
+        $this->deleteStep($step);
     }
 }
