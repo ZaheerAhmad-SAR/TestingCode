@@ -43,7 +43,7 @@ class StudyStructure extends Model
     }
     public function study()
     {
-        return $this->belongsTo(study::class, 'study_id', 'id');
+        return $this->belongsTo(Study::class, 'study_id', 'id');
     }
     public function steps()
     {

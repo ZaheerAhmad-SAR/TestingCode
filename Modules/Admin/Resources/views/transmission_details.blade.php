@@ -58,7 +58,7 @@
 
                     <form action="{{route('transmissions.index')}}" method="get" class="filter-form">
                         <div class="form-row" style="padding: 10px;">
-                            
+
                             <div class="form-group col-md-3">
                                 <label for="trans_id">Transmission#</label>
                                 <input type="text" name="trans_id" id="trans_id" class="form-control filter-form-data" value="{{ request()->trans_id }}" placeholder="Transmission#">
@@ -119,7 +119,7 @@
                                 <button type="button" class="btn btn-primary reset-filter">Reset</button>
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Record</button>
                             </div>
-                           
+
                         </div>
                         <!-- row ends -->
                     </form>
@@ -153,7 +153,7 @@
                                             <td>{{$transmission->Site_ID}}</td>
                                             <td>{{$transmission->Subject_ID}}</td>
                                             <td>{{$transmission->visit_name}}</td>
-                                            <td>{{$transmission->visit_date}}</td>
+                                            <td>{{ date('d-M-Y', strtotime($transmission->visit_date))}}</td>
                                             <td>
                                                 <span class="badge badge-info">
                                                     {{$transmission->ImageModality}}
@@ -184,20 +184,21 @@
                                                 @endif
                                             </td>
                                             <td>
-                                                
+
                                                 &nbsp; &nbsp;
                                                 &nbsp; &nbsp;
 
                                                 <div class="d-flex mt-md-0 ml-auto" style="margin-top: -15px !important;">
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog"></i></span>
-                                                                                                                                               <div class="dropdown-menu p-0 m-0 dropdown-menu-right" style="">
+                                                    <div class="dropdown-menu p-0 m-0 dropdown-menu-right" style="">
+                                                        @if($transmission->status !== 'accepted')
                                                     <span class="dropdown-item">
-                                                        <a href="javascript:void(0)" data-id="6152c130-84d3-474f-b73c-fa7ea81f892d" class="create-new-queries">
+                                                        <a href="javascript:void(0)" data-id="{{$transmission->Transmission_Number}}" class="creatNewTransmissionsForQueries">
                                                             <i class="fas fa-question-circle" aria-hidden="true">
                                                             </i> Queries</a>
                                                     </span>
-                                                    
-                                                </div>
+                                                        @endif
+                                                    </div>
                                             </div>
                                                  <!-- gear dropdown -->
                                             </td>
@@ -211,7 +212,7 @@
                                 </tbody>
                             </table>
                              {{ $getTransmissions->links() }}
-                         
+
                         </div>
                     </div>
                 </div>
@@ -220,6 +221,7 @@
         </div>
         <!-- END: Card DATA-->
     </div>
+
 
     <!-- transmission status modal  -->
     <!-- Modal -->
@@ -262,6 +264,77 @@
       </div>
     </div>
 
+
+    <div class="modal fade" tabindex="-1" role="dialog" id="transmissonQueryModal" aria-labelledby="exampleModalQueries" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header ">
+                    <p class="modal-title">Transmisson Query</p>
+                </div>
+
+
+                <form id="queriesTransmissionForm" name="queriesTransmissionForm" >
+                    <div class="modal-body">
+                        <div id="exTab1">
+                            <div class="tab-content clearfix">
+                                @csrf
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-2 col-form-label"> Sites :</label>
+                                    <div class="col-sm-4">
+                                        <select class="form-control sitesChange" name="site_name" id="site_name">
+                                            <option value="">--Select Sites--</option>
+                                            @foreach($getTransmissions as $transmission)
+                                                <option value="{{$transmission->Transmission_Number}}">{{$transmission->Site_Name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <label for="Name" class="col-sm-2 col-form-label"> Select Users :</label>
+                                    <div class="col-sm-4 primaryList">
+
+                                    </div>
+
+                                </div>
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-2 col-form-label">CC:</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="text" name="cc_email" id="cc_email">
+                                        @error('cc_email')
+                                        <div class="text-danger text-xl-center">{{$message}}</div>
+                                        @enderror
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-2 col-form-label">Query Subject:</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="text" name="query_subject" minlength="6" maxlength="50" id="query_subject">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row ">
+                                    <label for="Name" class="col-sm-2 col-form-label">Email Body</label>
+                                    <div class="col-sm-10">
+                                        <textarea class="form-control"  name="remarks"  id="remarks"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-danger" data-dismiss="modal" id="sendEmail-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="submit" name="sendEmail" class="btn btn-outline-primary" id="sendEmail"><i class="fa fa-save"></i> Send Email</button>
+                        </div>
+                        @if(session('message'))
+                            <div class="alert-success">{{session('message')}}</div>
+                        @endif
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- transmission query model start-->
+
 @endsection
 @section('script')
 
@@ -274,6 +347,66 @@
 <script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
 
 <script type="text/javascript">
+
+    // Transmission Query  Work start
+    $('.creatNewTransmissionsForQueries').click(function () {
+        $('#transmissonQueryModal').modal('show');
+    });
+
+    $(".sitesChange").change(function () {
+        var selectedText = $(this).find("option:selected").text();
+        var selectedValue = $(this).val();
+        console.log(selectedValue);
+        getSitesUsers(selectedValue);
+    });
+
+    function getSitesUsers(selectedValue) {
+        var transmissionNumber = selectedValue;
+        $.ajax({
+            url:"{{route('transmissions.getAllPIBySiteId')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'POST',
+                'transmissionNumber' :transmissionNumber,
+            },
+            success: function(response)
+            {
+                $('.primaryList').html('');
+                $('.primaryList').html(response);
+            }
+        });
+    }
+
+
+
+    $("#queriesTransmissionForm").on('submit', function(e) {
+
+        e.preventDefault();
+        $.ajaxSetup({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+        });
+        var users    = $('#users').val();
+        var remarks  = $('#remarks').val();
+        var cc_email = $('#cc_email').val();
+        var query_subject = $('#query_subject').val();
+
+        $.ajax({
+            type: 'POST',
+            url:"{{route('transmissions.queryTransmissionMail')}}",
+            data: {
+                'users':users,'remarks':remarks,
+                'cc_email':cc_email,'query_subject':query_subject
+            },
+            dataType: 'json',
+            success: function(response)
+            {
+                console.log(response);
+            }
+        });
+    });
+    // Transmission End Work
+
     // initialize date range picker
     $('input[name="visit_date"]').daterangepicker({
         autoUpdateInput: false,

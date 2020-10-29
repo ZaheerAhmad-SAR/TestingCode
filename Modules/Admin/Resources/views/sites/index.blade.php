@@ -30,7 +30,6 @@
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                         <li class="breadcrumb-item">Dashboard</li>
                         <li class="breadcrumb-item">Sites</li>
-                        <li class="breadcrumb-item creatNewTransmissions">Transmissions</li>
                     </ol>
                 </div>
             </div>
@@ -705,64 +704,6 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" tabindex="-1" role="dialog" id="transmissonModal" aria-labelledby="exampleModalQueries" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="alert alert-danger" style="display:none"></div>
-                <div class="modal-header ">
-                    <p class="modal-title">Transmisson Query</p>
-                </div>
-                <form id="queriesForm" name="queriesForm">
-                    <div class="modal-body">
-                        <div id="exTab1">
-                            <div class="tab-content clearfix">
-                                @csrf
-                                <div class="form-group row">
-                                    <label for="Name" class="col-sm-2 col-form-label"> Sites :</label>
-                                    <div class="col-sm-4">
-                                            <select class="form-control sitesChange" name="site_name" id="site_name">
-                                                <option value="">--Select Sites--</option>
-                                                @foreach($siteForTransmissions as $transmission)
-                                                <option value="{{$transmission->id}}">{{$transmission->site_name}}</option>
-                                                @endforeach
-                                            </select>
-                                    </div>
-                                    <label for="Name" class="col-sm-2 col-form-label"> Select Users :</label>
-                                    <div class="col-sm-4 primaryList">
-
-                                    </div>
-
-                                </div>
-                                <div class="form-group row">
-                                    <label for="Name" class="col-sm-2 col-form-label">CC:</label>
-                                    <div class="col-sm-10">
-                                        <input class="form-control" type="text" name="query_subject" minlength="6" maxlength="50" id="query_subject">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="Name" class="col-sm-2 col-form-label">Query Subject:</label>
-                                    <div class="col-sm-10">
-                                        <input class="form-control" type="text" name="query_subject" minlength="6" maxlength="50" id="query_subject">
-                                    </div>
-                                </div>
-
-                                <div class="form-group row ">
-                                    <label for="Name" class="col-sm-2 col-form-label">Email Body</label>
-                                    <div class="col-sm-10">
-                                        <textarea class="summernote-inline" name="remarks" cols="2" rows="1" id="remarks"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="button" class="btn btn-outline-primary" id="savequeries"><i class="fa fa-save"></i> Send Email</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 @endsection
 @section('script')
 {{--    <script src="{{asset('public/dist/js/sites.js')}}"></script>--}}
@@ -775,39 +716,6 @@
 
 <!-- Queries Model scripts end -->
 <script type="text/javascript">
-
-    // Transmission Work start
-    $('.creatNewTransmissions').click(function () {
-        $('#transmissonModal').modal('show');
-    });
-
-    $(".sitesChange").change(function () {
-        var selectedText = $(this).find("option:selected").text();
-        var selectedValue = $(this).val();
-        //console.log(selectedValue);
-        //alert("Selected Text: " + selectedText + " Value: " + selectedValue);
-        getSitesUsers(selectedValue);
-    });
-
-    function getSitesUsers(selectedValue) {
-        var site_id = selectedValue;
-        $.ajax({
-            url:"{{route('transmissions.getAllPIBySiteId')}}",
-            type: 'POST',
-            data: {
-                "_token": "{{ csrf_token() }}",
-                "_method": 'POST',
-                'site_id'      :site_id,
-            },
-            success: function(response)
-            {
-                $('.primaryList').html('');
-                $('.primaryList').html(response);
-            }
-        });
-    }
-    // Transmission Work start
-
     var placeSearch, autocomplete;
     var componentForm = {
         street_number: 'short_name',

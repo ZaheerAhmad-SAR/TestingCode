@@ -30,7 +30,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/login';
+    protected $redirectTo = '/home';
 
     /**
      * Create a new controller instance.
@@ -62,8 +62,8 @@ class RegisterController extends Controller
      *
      * @param  array  $data
      * @return \App\User
-
-    protected function create(array $data)
+     */
+    /*protected function create(array $data)
     {
         return User::create([
             'name' => $data['name'],
@@ -74,7 +74,6 @@ class RegisterController extends Controller
 
     protected function create(array $data)
     {
-        dd($data);
         $invite = Invitation::where('token', $data['token'])->first();
         $invite->delete();
 
