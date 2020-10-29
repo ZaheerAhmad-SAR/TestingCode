@@ -153,7 +153,7 @@
                                             <td>{{$transmission->Site_ID}}</td>
                                             <td>{{$transmission->Subject_ID}}</td>
                                             <td>{{$transmission->visit_name}}</td>
-                                            <td>{{$transmission->visit_date}}</td>
+                                            <td>{{ date('d-M-Y', strtotime($transmission->visit_date))}}</td>
                                             <td>
                                                 <span class="badge badge-info">
                                                     {{$transmission->ImageModality}}
@@ -222,6 +222,7 @@
         <!-- END: Card DATA-->
     </div>
 
+
     <!-- transmission status modal  -->
     <!-- Modal -->
     <div class="modal fade" id="transmission-status-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -262,7 +263,8 @@
         </div>
       </div>
     </div>
-    <!-- transmission query model start-->
+
+
     <div class="modal fade" tabindex="-1" role="dialog" id="transmissonQueryModal" aria-labelledby="exampleModalQueries" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -270,7 +272,7 @@
                 <div class="modal-header ">
                     <p class="modal-title">Transmisson Query</p>
                 </div>
-{{--                action="{{route('transmissions.queryTransmissionMail')}}"--}}
+
 
                 <form id="queriesTransmissionForm" name="queriesTransmissionForm" >
                     <div class="modal-body">
@@ -332,6 +334,7 @@
         </div>
     </div>
     <!-- transmission query model start-->
+
 @endsection
 @section('script')
 
