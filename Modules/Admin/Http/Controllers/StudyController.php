@@ -7,12 +7,21 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Input;
+use Modules\Admin\Entities\Coordinator;
 use Modules\Admin\Entities\DiseaseCohort;
+use Modules\Admin\Entities\Modility;
+use Modules\Admin\Entities\Other;
+use Modules\Admin\Entities\PhaseSteps;
+use Modules\Admin\Entities\Photographer;
+use Modules\Admin\Entities\PrimaryInvestigator;
+use Modules\Admin\Entities\Question;
 use Modules\Admin\Entities\RoleStudyUser;
+use Modules\Admin\Entities\Section;
 use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\Study;
 use Illuminate\Support\Facades\Auth;
 use Modules\Admin\Entities\StudySite;
+use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\StudyUser;
 use Modules\Admin\Entities\Subject;
 use Modules\Queries\Entities\Query;
@@ -22,6 +31,7 @@ use Modules\UserRoles\Entities\RolePermission;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Http\Controllers\RoleController;
 use Illuminate\Support\Str;
+use function Symfony\Component\String\s;
 
 
 class StudyController extends Controller
@@ -298,10 +308,29 @@ class StudyController extends Controller
     public function cloneStudy(Request $request)
     {
         $study_id = $request->study_ID;
-        $mystudy = Study::with('users', 'diseaseCohort', 'sites','studySteps','phase')
+        $mystudy = Study::with('users','subjects', 'diseaseCohort', 'sites','studySteps','phase')
             ->find($study_id);
         $id = \Illuminate\Support\Str::uuid();
-        $study_subjects = Subject::where('study_id', '=', $request->id)->get();
+        $study_subjects = Subject::where('study_id',$study_id)->get();
+        $study_sites = StudySite::where('study_id', '=',$study_id)->get();
+        foreach ($study_sites as $site){
+            $primary_investigators = PrimaryInvestigator::where('site_id','=',$site->site_id)->get();
+            $coordinators = Coordinator::where('site_id','=',$site->site_id)->get();
+            $photographers = Photographer::where('site_id','=',$site->site_id)->get();
+            $others = Other::where('site_id','=',$site->site_id)->get();
+        }
+        $study_users = UserRole::where('study_id','=',$study_id)->get();
+        $study_phases = StudyStructure::where('study_id','=',$study_id)->get();
+        foreach ($study_phases as $phase){
+            $study_phase_steps = PhaseSteps::where('phase_id','=',$phase->id)->get();
+           foreach ($study_phase_steps as $step){
+               $study_step_sections = Section::where('phase_steps_id','=',$step->step_id)->get();
+               foreach ($study_step_sections  as $section){
+                   $study_section_questions = Question::where('section_id','=',$section->id)->get();
+                   dd($study_section_questions);
+               }
+           }
+        }
 
         if (!empty($mystudy)) {
             $replica = Study::create([
