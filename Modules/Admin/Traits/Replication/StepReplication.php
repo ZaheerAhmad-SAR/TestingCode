@@ -46,7 +46,7 @@ trait StepReplication
 
     private function deleteStepToReplicatedVisits($step)
     {
-        $replicatedSteps = PhaseSteps::where('parent_id', 'like', $step->id)->get();
+        $replicatedSteps = PhaseSteps::where('parent_id', 'like', $step->step_id)->get();
         foreach ($replicatedSteps as $replicatedStep) {
             $replicatedStep->delete();
         }
