@@ -10,16 +10,18 @@ use Illuminate\Queue\SerializesModels;
 class TransmissonQuery extends Mailable
 {
     use Queueable, SerializesModels;
-    public $topic;
+    public $data;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(string $topic)
+    public function __construct(array $data)
     {
-        $this->topic = $topic;
+        //dd($data);
+        $this->data = $data;
+        //dd($this->data);
     }
 
     /**
@@ -30,6 +32,10 @@ class TransmissonQuery extends Mailable
     public function build()
     {
         return $this->view('emails.transmisson_query')
-            ->subject('More information about'.$this->topic);
+            ->with($this->data)
+            ->cc($this->data['cc_email'])
+            ->subject($this->data['query_subject']
+                .' | '.$this->data['Transmission_Number'].' | '
+                .$this->data['visit_name'].' | '.$this->data['StudyI_ID'].' | '.$this->data['Subject_ID']);
     }
 }

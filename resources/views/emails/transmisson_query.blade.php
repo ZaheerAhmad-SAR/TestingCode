@@ -16,8 +16,13 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                   <h3>its work again!!!!</h3>
-                    <p>its sound like you want to hear more about {{$topic}}</p>
+                   <h4>Welcome to OCAP by OIRRC</h4>
+{{--                    {{dd($data)}}--}}
+                    <p>Transmission Number: {{$data['Transmission_Number']}}</p>
+                    <p>Visit Name: {{$data['visit_name']}}</p>
+                    <p>Study ID: {{$data['StudyI_ID']}}</p>
+                    <p>Subject ID: {{$data['Subject_ID']}}</p>
+                    <p>{{$data['remarks']}}</p>
                 </div>
             </div>
         </div>
