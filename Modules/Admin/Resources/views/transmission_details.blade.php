@@ -400,18 +400,38 @@
         var subjectID    = $('#Subject_ID').val();
         var transNumber  = $('#Transmission_Number').val();
         var querySubject = $('#query_subject').val();
+
+        var formData      = new FormData();
+        formData.append('users', users);
+        formData.append('StudyI_ID', studyID);
+        formData.append('remarks', remarks);
+        formData.append('cc_email', cc_email);
+        formData.append('visitName', visitName);
+        formData.append('Subject_ID', subjectID);
+        formData.append('Transmission_Number', transNumber);
+        formData.append('query_subject', querySubject);
+        // Attach file
+        formData.append('query_file', $('input[type=file]')[0].files[0]);
+
         $.ajax({
-            type: 'POST',
+
             url:"{{route('transmissions.queryTransmissionMail')}}",
-            data: {
-                'users':users,'remarks':remarks,
-                'cc_email':cc_email,'querySubject':querySubject,'studyID':studyID,
-                'subjectID':subjectID,'transNumber':transNumber,'visitName':visitName
-            },
+            type: "POST",
+            data: formData,
             dataType: 'json',
+            contentType: false,
+            cache: false,
+            processData:false,
+            // data: {
+            //     'users':users,'remarks':remarks,
+            //     'cc_email':cc_email,'querySubject':querySubject,'studyID':studyID,
+            //     'subjectID':subjectID,'transNumber':transNumber,'visitName':visitName
+            // },
+            // dataType: 'json',
             success: function(response)
             {
                 console.log(response);
+                $("#queriesTransmissionForm")[0].reset();
             }
         });
     });
