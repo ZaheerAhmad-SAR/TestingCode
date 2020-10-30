@@ -154,12 +154,14 @@
                 <ul>
                         <li class="dropdown"><a href="#"><i class="icon-grid"></i>Transmissions</a>
                             <ul class="sub-menu">
-                                
+
+                                @if(!empty(session('current_study')))
                                     <li class="@if(is_active('transmissions.study-transmissions')) {{ ' active' }} @endif">
                                         <a href="{!! route('transmissions.study-transmissions') !!}">
                                             Study Transmissions
                                         </a>
                                     </li>
+                                @endif
 
                                     <li class="@if(is_active('transmissions.index')) {{ ' active' }} @endif">
                                         <a href="{!! route('transmissions.index') !!}">
@@ -237,7 +239,7 @@
                 <li class=""><a href="#"><i class="fas fa-database"></i> Adjudication</a>
                     <ul>
                         <li>
-                            <a href="#">
+                            <a href="{{ route('adjudication.index')}}">
                                 <i class="fas fa-list"></i> Adjudication List
                             </a>
                         </li>
