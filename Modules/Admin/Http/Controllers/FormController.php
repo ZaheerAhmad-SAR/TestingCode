@@ -21,7 +21,7 @@ use Modules\Admin\Entities\AnnotationDescription;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\skipLogic;
 use Illuminate\Support\Facades\DB;
-use Modules\Admin\Traits\Replication\ReplicatePhaseStructure;
+use Modules\FormSubmission\Traits\Replication\ReplicatePhaseStructure;
 
 class FormController extends Controller
 {
