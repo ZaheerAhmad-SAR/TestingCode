@@ -265,7 +265,7 @@ class FormController extends Controller
     // Question activate and deactivate
     public function add_skipLogic(Request $request)
     {
-
+        dd($request->all());
         $skip_ques = [];
         if (isset($request->option_title) && count($request->option_title) > 0) {
             for ($i = 0; $i < count($request->option_title); $i++) {
@@ -390,10 +390,14 @@ class FormController extends Controller
                     }
                 }
                 $question_contents .= '</select></div>';
+            }elseif($ques_value->form_field_type->field_type == 'Description'){
+                $question_contents .= '<div class="col-sm-6">'.$ques_value->formFields->text_info.'</div>';
             }
             $question_contents .= '<div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right">';
             if ($ques_value->form_field_type->field_type == 'Certification') {
-            } else {
+            }elseif($ques_value->form_field_type->field_type == 'Description'){
+                $question_contents .= '<span class="dropdown-item edit_desc"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
+            }else {
                 $question_contents .= '<span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
             }
             $question_contents .= '<span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span>';
