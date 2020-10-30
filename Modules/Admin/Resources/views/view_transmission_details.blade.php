@@ -331,7 +331,7 @@
                               
                                 <div class="form-group col-sm-3">
                                     <span class="span-text">{{ date('d-M-Y', strtotime($findTransmission->visit_date)) }}</span>
-                                    <input type="date" value="{{ $findTransmission->visit_date }}" readonly="" name="d_visit_date" id="d_visit_date" class="form-control remove-readonly" required="required">
+                                    <input type="date" value="{{ date('Y-m-d', strtotime($findTransmission->visit_date)) }}" readonly="" name="d_visit_date" id="d_visit_date" class="form-control remove-readonly" required="required">
                                 </div>
 
                                 <!--//////////////// row 13 ///////////////////////// -->

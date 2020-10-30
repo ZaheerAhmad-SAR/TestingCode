@@ -31,106 +31,47 @@
         <!-- START: Card Data-->
         <form action="{{route('forms.apply_skip_logic')}}" enctype="multipart/form-data" method="POST">
             @csrf
-            <div class="row">
+            {{-- {{dd(request('id'))}} --}}
             @php
+                $check_value = '';
                 $options_value = explode(',', $options->optionsGroup->option_value);
                 $options_name = explode(',', $options->optionsGroup->option_name);
             @endphp
-           
+            <input type="hidden" name="question_id" value="{{request('id')}}">
             @foreach($options_name as $key => $value)
+            <div class="row">
                <div class="col-12 col-sm-12 mt-3">
                    <div class="card">
                        <div class="card-body">
                             <input type="hidden" name="option_title[]" value="{{$value}}">
-                            <input type="checkbox" name="option_value[]" value="{{$options_value[$key]}}"> &nbsp; {{$value}} 
+                            @foreach($options->skiplogic as $logic)
+                                @if(!empty($logic->option_value))
+                                   <?php $check_value = $logic->option_value; break; ?>
+                                @endif 
+                            @endforeach()
+                            <input type="checkbox" name="option_value[]" onclick="git_steps_for_checks({{$options_value[$key]}})" value="{{$options_value[$key]}}" @if($check_value == $options_value[$key]) checked="checked" @endif> &nbsp; {{$value}} 
                             (Perform Action Click)
                        </div>
                    </div>
                </div>
-               <div class="col-12 col-sm-6 mt-3">
-                    <div class="card">
-                        <div class="card-body" style="padding: 0;">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 15%">Expand</th>
-                                            <th colspan="5">Activate Modality,Sections,Question</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div> 
-                    </div> 
-                    @foreach($all_study_steps->studySteps as $value)
-                            <div class="card">
-                                <div class="card-body" style="padding: 0;">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;"> 
-                                        <tbody>
-                                            <tr>
-                                                <td class="step_id" style="display: none;">{{$value->step_id}}</td>
-                                                <td style="text-align: center;width: 15%">
-                                                  <div class="btn-group btn-group-sm" role="group">
-                                                    <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon get_sec_ac" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-ac" style="font-size: 20px; color: #1e3d73;"></i>
-                                                  </div>
-                                                </td>
-                                                <td colspan="5"> <input type="checkbox" name="activate_forms[{{$key}}][]" value="{{$value->step_id}}"> &nbsp;&nbsp; {{ $value->step_name }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table> 
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card collapse row-{{$value->step_id}}-ac sections_list_{{$value->step_id}}">
-                          
-                                    
-                        </div>
-                        @endforeach    
-                </div>
-                <div class="col-12 col-sm-6 mt-3">
-                    <div class="card">
-                        <div class="card-body" style="padding: 0;">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 15%">Expand</th>
-                                            <th colspan="5">Deactivate Modality,Sections,Question</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div> 
-                    </div>       
-                    @foreach($all_study_steps->studySteps as $value)
-                            <div class="card">
-                                <div class="card-body" style="padding: 0;">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;"> 
-                                        <tbody>
-                                            <tr>
-                                                <td class="step_id" style="display: none;">{{$value->step_id}}</td>
-                                                <td style="text-align: center;width: 15%">
-                                                  <div class="btn-group btn-group-sm" role="group">
-                                                    <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" onclick="get_section_to_deactivate('{{$value->step_id}}', '.de_sections_list_{{$value->step_id}}')" data-toggle="collapse" data-target=".row-{{$value->step_id}}-de" style="font-size: 20px; color: #1e3d73;"></i>
-                                                  </div>
-                                                </td>
-                                                <td colspan="5"><input type="checkbox" name="deactivate_forms[{{$key}}][]" value="{{$value->step_id}}"> &nbsp;&nbsp; {{ $value->step_name }}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table> 
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card collapse row-{{$value->step_id}}-de de_sections_list_{{$value->step_id}}">
-                            
-                        </div>             
-                    @endforeach
-                </div>
-                   
-                @endforeach
-                   
+            </div>
+            <div class="row append_data_{{$options_value[$key]}}">
+               
+            </div> 
+            @push('script_last')
+             <script>
+                 $(document).ready(function() {
+                 @php
+                 if ($check_value == $options_value[$key]) {
+                 echo "git_steps_for_checks($options_value[$key])";
+                 } else {
+                 
+                 }
+                 @endphp
+                 });
+             </script>
+            @endpush  
+            @endforeach
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
@@ -195,26 +136,7 @@
     </script>
     <script type="text/javascript">
         $(document).ready(function(){
-            $('body').on('click','.get_sec_ac',function(){
-                var row = $(this).closest('tr');
-                    step_id = row.find('td.step_id').text()
-                    append_class = '.sections_list_'+step_id
-                    url = "{{ url('forms/sections_for_skip_logic') }}"
-                    url = url+'/'+step_id;
-                $.ajax({
-                    url: url,
-                    type: 'post',
-                    dataType: 'html',
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        "_method": 'GET',
-                        'step_id': step_id
-                    },
-                    success: function(response) {
-                        $(append_class).html(response);
-                    }
-                });    
-            })
+          
             $('body').on('click','.get_ques_ac',function(){
                 var row = $(this).closest('tr');
                     sec_id = row.find('td.sec_id').text()
@@ -234,7 +156,7 @@
                         $(append_class).html(response);
                     }
                 })
-            })
+            });
             // for deactivate question getting 
             $('body').on('click','.get_ques_de',function(){
                 var row = $(this).closest('tr');
@@ -255,11 +177,47 @@
                         $(append_class).html(response);
                     }
                 })
-            })
+            });
         })
-        function get_section_to_deactivate(id,append_class){
+        function git_steps_for_checks(id){
+           var url = "{{ url('forms/steps_to_skip') }}";
+           var append_class = '.append_data_'+id;
+            $.ajax({
+                url: url,
+                type: 'post',
+                dataType: 'html',
+                data: {
+                    "_token": "{{ csrf_token() }}"
+                },
+                success: function(response) {
+                    $(append_class).slideDown('600');
+                    $(append_class).html(response);
+                }
+            });
+        }
+        function activate_checks(id,append_class){
+            var url = "{{ url('forms/sections_for_skip_logic') }}"
+                url = url+'/'+id
+                row = $('.'+append_class+id).parent('div.current_div_ac');
+                $.ajax({
+                    url: url,
+                    type: 'post',
+                    dataType: 'html',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "_method": 'GET',
+                        'step_id': id
+                    },
+                    success: function(response) {
+                        row.find('.'+append_class+id).html(response);
+                    }
+                });    
+        }
+        function deactivate_checks(id,append_class){
             var url = "{{ url('forms/sections_for_skip_logic_deactivate') }}"
-                url = url+'/'+id;
+                url = url+'/'+id
+                // row = thiss.parent('div.current_div');
+                row = $('.'+append_class+id).parent('div.current_div_de');
             $.ajax({
                 url: url,
                 type: 'post',
@@ -270,9 +228,16 @@
                     'step_id': id
                 },
                 success: function(response) {
-                    $(append_class).html(response);
+                    row.find('.'+append_class+id).html(response);
                 }
             }); 
         }
     </script>
+    @push('script_last')
+ <script>
+    $(document).ready(function() {
+        $()
+    });
+ </script>
+ @endpush
 @endsection

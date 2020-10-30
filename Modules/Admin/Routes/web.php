@@ -13,13 +13,18 @@
 
 //dd(App::environment());
 
+// test transmission view
 Route::get('transmissions/transmissionData', function(){
     return view('admin::test_transmission_api');
 });
-
+// transmission end point
 Route::post('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
 
+// transmissions routes
 Route::resource('transmissions', 'TransmissionController');
+
+// get study vice transmissions
+Route::get('study-transmissions', 'TransmissionController@studyTransmissions')->name('transmissions.study-transmissions');
 
 Route::post('transmissions/getAllPIBySiteId', 'TransmissionController@getAllPIBySiteId')->name('transmissions.getAllPIBySiteId');
 
@@ -27,9 +32,6 @@ Route::post('transmissions/getAllPIBySiteId', 'TransmissionController@getAllPIBy
 Route::post('transmissions/queryTransmissionMail', 'TransmissionController@queryTransmissionMail')->name('transmissions.queryTransmissionMail');
 
 Route::post('transmissions-status', 'TransmissionController@transmissionStatus')->name('transmissions-status');
-
-//Route::post('transmissions-status', 'TransmissionController@transmissionStatus')->name('transmissions-status');
-
 
 Route::prefix('admin')->group(function () {
     Route::get('/', 'AdminController@index');
@@ -60,6 +62,7 @@ Route::resource('studies', 'StudyController');
     Route::get('forms/questions_for_skip_logic/{id}', 'FormController@questions_skip_logic')->name('forms.questionsSkip');
     Route::get('forms/questions_for_skip_logic_deactivate/{id}', 'FormController@questions_skip_logic_deactivate')->name('forms.questionsSkipdeactivate');
     Route::post('forms/add_skip_logic', 'FormController@add_skipLogic')->name('forms.apply_skip_logic');
+    Route::post('forms/steps_to_skip', 'FormController@getSteps_toskip')->name('forms.get_steps_skip_logic');
     Route::get('forms/skip_logic/{id}', 'FormController@skip_question_on_click')->name('forms.skipLogic');
     // skip logic
     Route::get('forms/sections_by_stepId/{id}', 'FormController@get_section_by_stepId')->name('forms.sectionsbystepId');
@@ -194,8 +197,8 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
     Route::post('studySite/deleteSiteCoordinator', 'StudySiteController@deleteSiteCoordinator')->name('studySite.deleteSiteCoordinator');
 
     // CHM-Amir
-
     Route::get('trail_logs', 'TrailLogController@index')->name('trail_logs.list');
+
 });
 
 // for checking subject ID

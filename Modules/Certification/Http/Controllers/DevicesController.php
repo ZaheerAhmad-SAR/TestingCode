@@ -15,13 +15,14 @@ class DevicesController extends Controller
      */
     public function index(Request $request)
     {
+
         $devices = [];
         $devices = DB::connection('mysql2')->table('certify_device')->select('certify_device.*', DB::Raw('GROUP_CONCAT(trans_no SEPARATOR ",") as transmissions'), DB::Raw('GROUP_CONCAT(c_id SEPARATOR ",") as IDs'),DB::Raw('GROUP_CONCAT(status SEPARATOR ",") as statuses'),DB::Raw('GROUP_CONCAT(certification_officerName SEPARATOR ",") as certification_officerNames'));
         if(isset($request->status) && $request->status !=''){
             $devices = $devices->where('certify_device.status', $request->status);
         }
         if(isset($request->device_manf) && $request->device_manf !=''){
-            $devices = $devices->where('certify_device.device_manf','like', $request->device_manf);
+            $devices = $devices->where('certify_device.device_manf','like', '%'.$request->device_manf.'%');
         }
         if(isset($request->device_sn) && $request->device_sn !=''){
             $devices = $devices->where('certify_device.device_sn', $request->device_sn);
@@ -35,7 +36,6 @@ class DevicesController extends Controller
         $devices = $devices->groupBy('certify_device.device_categ')->paginate(15);
         return view('certification::devices.index', ['devices' => $devices]);
     }
-
     /**
      * Show the form for creating a new resource.
      * @return Renderable
