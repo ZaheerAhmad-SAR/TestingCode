@@ -85,4 +85,12 @@ class PhaseSteps extends Model
     {
         return $this->belongsTo(Modility::class, 'modility_id', 'id');
     }
+
+    public static function getStepsIdsArray($form_type_id, $activatedPhasesidsArray)
+    {
+        return self::where('form_type_id', $form_type_id)
+            ->whereIn('phase_id', $activatedPhasesidsArray)
+            ->pluck('step_id')
+            ->toArray();
+    }
 }

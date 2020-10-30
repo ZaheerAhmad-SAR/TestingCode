@@ -43,4 +43,11 @@ class SubjectsPhases extends Model
         ];
         self::create($data);
     }
+
+    public static function getActivatedPhasesidsArray($studyPhasesIdsArray)
+    {
+        return self::whereIn('phase_id', $studyPhasesIdsArray)
+            ->pluck('phase_id')
+            ->toArray();
+    }
 }

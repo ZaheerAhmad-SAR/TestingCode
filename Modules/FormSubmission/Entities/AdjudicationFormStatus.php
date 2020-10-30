@@ -127,4 +127,12 @@ class AdjudicationFormStatus extends Model
         AdjudicationFormStatus::create($adjudicationFormStatusData);
         return AdjudicationFormStatus::find($id);
     }
+
+    public static function getStepsIdsArrayByStatus($form_status, $stepsIdsArray)
+    {
+        return self::whereIn('phase_steps_id', $stepsIdsArray)
+            ->where('adjudication_status', 'like', $form_status)
+            ->pluck('phase_steps_id')
+            ->toArray();
+    }
 }

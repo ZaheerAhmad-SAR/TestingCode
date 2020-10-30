@@ -78,44 +78,7 @@
 
                                         <td class="tablesaw-stack-block">
                                             <p></p>
-                                            <div class="card">
-                                                <div class="card-body p-0">
-                                                    <div  class="barfiller" data-color="#17a2b8">
-                                                        <div class="tipWrap">
-                                                 <span class="tip rounded info">
-                                                     <span class="tip-arrow"></span>
-                                                    </span>
-                                                        </div>
-                                                        <span class="fill" data-percentage="{{rand(10,100)}}" style="color: red"></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                           <br>
-                                            <div class="card">
-                                                <div class="card-body p-0">
-                                                    <div  class="barfiller" data-color="green">
-                                                        <div class="tipWrap">
-                                                 <span class="tip rounded info" style="background: green !important;">
-                                                     <span class="tip-arrow"></span>
-                                                    </span>
-                                                        </div>
-                                                        <span class="fill" data-percentage="{{rand(10,100)}}"></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <br>
-                                            <div class="card">
-                                                <div class="card-body p-0">
-                                                    <div  class="barfiller" data-color="red">
-                                                        <div class="tipWrap">
-                                                 <span class="tip rounded info" style="background: red !important;">
-                                                     <span class="tip-arrow"></span>
-                                                    </span>
-                                                        </div>
-                                                        <span class="fill" data-percentage="{{rand(10,100)}}"></span>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            {!! \Modules\Admin\Entities\Study::calculateFormPercentage($study->id) !!}
                                         </td>
 
                                         <td>{{$study->study_status}}</td>
