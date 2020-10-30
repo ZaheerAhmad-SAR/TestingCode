@@ -5,6 +5,7 @@ namespace Modules\Admin\Entities;
 use Modules\Admin\Scopes\QuestionOrderByScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\FormSubmission\Entities\Answer;
 
 class Question extends Model
 {
@@ -67,8 +68,8 @@ class Question extends Model
     }
     public function skiplogic()
     {
-        return $this->hasMany(SkipLogic::class,'question_id','id');
-    }    
+        return $this->hasMany(SkipLogic::class, 'question_id', 'id');
+    }
     public function questionValidation()
     {
         return $this->hasOne(QuestionValidation::class, 'question_id', 'id')->withDefault();

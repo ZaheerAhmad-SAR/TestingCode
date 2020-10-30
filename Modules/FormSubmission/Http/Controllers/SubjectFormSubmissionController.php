@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
 use Modules\Admin\Entities\Section;
-use Modules\Admin\Entities\Answer;
+use Modules\FormSubmission\Entities\Answer;
 use Modules\FormSubmission\Entities\FormRevisionHistory;
 use Modules\FormSubmission\Entities\FormStatus;
 use Modules\Admin\Entities\Question;
