@@ -62,6 +62,7 @@ Route::resource('studies', 'StudyController');
     Route::get('forms/questions_for_skip_logic/{id}', 'FormController@questions_skip_logic')->name('forms.questionsSkip');
     Route::get('forms/questions_for_skip_logic_deactivate/{id}', 'FormController@questions_skip_logic_deactivate')->name('forms.questionsSkipdeactivate');
     Route::post('forms/add_skip_logic', 'FormController@add_skipLogic')->name('forms.apply_skip_logic');
+    Route::post('forms/steps_to_skip', 'FormController@getSteps_toskip')->name('forms.get_steps_skip_logic');
     Route::get('forms/skip_logic/{id}', 'FormController@skip_question_on_click')->name('forms.skipLogic');
     // skip logic
     Route::get('forms/sections_by_stepId/{id}', 'FormController@get_section_by_stepId')->name('forms.sectionsbystepId');

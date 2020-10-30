@@ -1,7 +1,5 @@
 <?php
-
 namespace Modules\Admin\Http\Controllers;
-
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -93,6 +91,98 @@ class FormController extends Controller
         $section_contents .= '</div>';
         return Response($section_contents);
     }
+     public function skip_question_on_click($id)
+    {
+        $options = Question::where('id', $id)->with('optionsGroup','skiplogic')->first();
+        return view('admin::forms.skip_logic', compact('options'));
+    }
+    public function getSteps_toskip()
+    {
+        $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->first();
+        $step_contents_active = '<div class="col-12 col-sm-6 mt-3 current_div_ac">
+                    <div class="card">
+                        <div class="card-body" style="padding: 0;">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 15%">Expand</th>
+                                            <th colspan="5">Activate Modality,Sections,Question</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div> 
+                    </div>';
+        foreach($all_study_steps->studySteps as $key=>$value){
+            $step_contents_active .= '
+                    <div class="card">
+                        <div class="card-body" style="padding: 0;">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;"> 
+                                <tbody>
+                                    <tr>
+                                        <td class="step_id" style="display: none;">'.$value->step_id.'</td>
+                                        <td style="text-align: center;width: 15%">
+                                          <div class="btn-group btn-group-sm" role="group">
+                                            <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" onclick="activate_checks(\''.$value->step_id.'\',\'sections_list_\');" data-target=".row-'.$value->step_id.'-ac" style="font-size: 20px; color: #1e3d73;"></i>
+                                          </div>
+                                        </td>
+                                        <td colspan="5"> <input type="checkbox" name="activate_forms['.$key.'}}][]" value="'.$value->step_id.'"> &nbsp;&nbsp;'.$value->step_name.'</td>
+                                    </tr>
+                                </tbody>
+                            </table> 
+                        </div>
+                    </div>
+                </div>
+                <div class="card collapse row-'.$value->step_id.'-ac sections_list_'.$value->step_id.'">
+                </div>';
+                
+        }
+        $step_contents_active .='</div>';
+        $step_contents_deactive = '<div class="col-12 col-sm-6 mt-3 current_div_de">
+                    <div class="card">
+                        <div class="card-body" style="padding: 0;">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 15%">Expand</th>
+                                            <th colspan="5">Activate Modality,Sections,Question</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div> 
+                    </div>';
+        foreach($all_study_steps->studySteps as $key=>$value){
+            $step_contents_deactive .='<div class="card">
+                                <div class="card-body" style="padding: 0;">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;"> 
+                                        <tbody>
+                                            <tr>
+                                                <td class="step_id" style="display: none;">'.$value->step_id.'</td>
+                                                <td style="text-align: center;width: 15%">
+                                                  <div class="btn-group btn-group-sm" role="group">
+                                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-'.$value->step_id.'-de" onclick="deactivate_checks(\''.$value->step_id.'\',\'de_sections_list_\');" style="font-size: 20px; color: #1e3d73;"></i>
+                                                  </div>
+                                                </td>
+                                                <td colspan="5"><input type="checkbox" name="deactivate_forms['.$key.'][]" value="'.$value->step_id.'"> &nbsp;&nbsp; '.$value->step_name.'</td>
+                                            </tr>
+                                        </tbody>
+                                    </table> 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card collapse row-'.$value->step_id.'-de de_sections_list_'.$value->step_id.'">
+                            
+                        </div>';
+        }
+        $step_contents_deactive .='</div>';
+        $step_contents = $step_contents_active . $step_contents_deactive;
+        return $step_contents;
+    }
     public function sections_skip_logic($id)
     {
         $section = Section::select('*')->where('phase_steps_id', $id)->orderBy('sort_number', 'asc')->get();
@@ -177,25 +267,26 @@ class FormController extends Controller
     // Question activate and deactivate
     public function add_skipLogic(Request $request)
     {
+        dd($request->all());
         $skip_ques = [];
         if (isset($request->option_title) && count($request->option_title) > 0) {
             for ($i = 0; $i < count($request->option_title); $i++) {
                 $skip_ques = [
                     'id' => Str::uuid(),
-                    'question_id' => '634196f7-7efe-44f9-a4c9-fa02bb2bab3d',
-                    'option_title' => $request->option_title[$i],
-                    'option_value' => $request->option_value[$i],
-                    'activate_forms' => implode(',', (array)$request->activate_forms[$i]),
-                    'activate_sections' => implode(',', (array)$request->activate_sections[$i]),
-                    'activate_questions' => implode(',', (array)$request->activate_questions[$i]),
-                    'deactivate_forms' => implode(',', (array)$request->deactivate_forms[$i]),
-                    'deactivate_sections' => implode(',', (array)$request->deactivate_sections[$i]),
-                    'deactivate_questions' => implode(',', (array)$request->deactivate_questions[$i])
+                    'question_id' => $request->question_id,
+                    'option_title' => (isset($request->option_title[$i]) && $request->option_title[$i] !='') ? $request->option_title[$i] : '',
+                    'option_value' => (isset($request->option_value[$i]) && $request->option_value[$i] !='') ? $request->option_value[$i] : '',
+                    'activate_forms' => (isset($request->activate_forms[$i]) && $request->activate_forms[$i] !='') ? implode(',', $request->activate_forms[$i]) : '',
+                    'activate_sections' => (isset($request->activate_sections[$i]) && $request->activate_sections[$i] !='') ? implode(',', $request->activate_sections[$i]) : '',
+                    'activate_questions' => (isset($request->activate_questions[$i]) && $request->activate_questions[$i] !='') ? implode(',', $request->activate_questions[$i]) : '',
+                    'deactivate_forms' => (isset($request->deactivate_forms[$i]) && $request->deactivate_forms[$i] !='') ?implode(',', $request->deactivate_forms[$i]) :'',
+                    'deactivate_sections' => (isset($request->deactivate_sections[$i]) && $request->deactivate_sections[$i] !='') ? implode(',', $request->deactivate_sections[$i]) :'',
+                    'deactivate_questions' => (isset($request->deactivate_questions[$i]) && $request->deactivate_questions[$i] !='') ? implode(',', $request->deactivate_questions[$i]) : ''
                 ];
                 skipLogic::insert($skip_ques);
             }
         }
-        return redirect()->route('forms.skipLogic', '634196f7-7efe-44f9-a4c9-fa02bb2bab3d')->with('message', 'Checks Applied Successfully!');
+        return redirect()->route('forms.skipLogic', $request->question_id)->with('message', 'Checks Applied Successfully!');
     }
     // add question check end
     public function get_allQuestions($id = '')
@@ -301,10 +392,14 @@ class FormController extends Controller
                     }
                 }
                 $question_contents .= '</select></div>';
+            }elseif($ques_value->form_field_type->field_type == 'Description'){
+                $question_contents .= '<div class="col-sm-6">'.$ques_value->formFields->text_info.'</div>';
             }
             $question_contents .= '<div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right">';
             if ($ques_value->form_field_type->field_type == 'Certification') {
-            } else {
+            }elseif($ques_value->form_field_type->field_type == 'Description'){
+                $question_contents .= '<span class="dropdown-item edit_desc"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
+            }else {
                 $question_contents .= '<span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
             }
             $question_contents .= '<span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span>';
@@ -324,12 +419,7 @@ class FormController extends Controller
         $Response['data'] = 'success';
         echo json_encode($Response);
     }
-    public function skip_question_on_click($id)
-    {
-        $options = Question::where('id', $id)->with('optionsGroup')->first();
-        $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->first();
-        return view('admin::forms.skip_logic', compact('all_study_steps', 'options'));
-    }
+   
     /**
      * Show the form for creating a new resource.
      * @return Response
@@ -368,18 +458,10 @@ class FormController extends Controller
         $questionObj = Question::find($id);
 
         $this->createQuestionFormField($request, $questionObj);
-
-        /// question validation
         $this->createQuestionDataValidations($request, $questionObj);
-
-        //Question dependencies
         $this->createQuestionDependencies($request, $questionObj);
-
-        // Question annotation
         $this->createQuestionAnnotations($request, $questionObj);
-
-        // Question Adjudication
-        $this->createQuestionAdjudicationStatus($request);
+        $this->createQuestionAdjudicationStatus($request, $questionObj);
 
         /*
          * Replicate Question in replicated visits
@@ -410,7 +492,7 @@ class FormController extends Controller
         $this->updateFormField($request);
         $this->updateQuestionValidation($request, $questionObj);
         $this->updateQuestionDependency($request, $questionObj);
-        $this->updateQuestionAdjudicationStatus($request);
+        $this->updateQuestionAdjudicationStatus($request, $questionObj);
 
         return redirect()->route('forms.index')->with('message', 'Record Updated Successfully!');
     }
@@ -452,13 +534,13 @@ class FormController extends Controller
 
         $this->updateQuestionFormFieldToReplicatedVisits($form_field);
     }
-    private function createQuestionAdjudicationStatus($request)
+    private function createQuestionAdjudicationStatus($request, $questionObj)
     {
         if (isset($request->adj_status) && $request->adj_status == 'yes') {
             $id    = Str::uuid();
             $adjStatus = QuestionAdjudicationStatus::create([
                 'id' => $id,
-                'question_id' => $request->id,
+                'question_id' => $questionObj->id,
                 'adj_status' => $request->adj_status,
                 'decision_based_on' => $request->decision_based_on,
                 'opertaor' => $request->opertaor,
@@ -468,7 +550,7 @@ class FormController extends Controller
         }
     }
 
-    private function updateQuestionAdjudicationStatus($request)
+    private function updateQuestionAdjudicationStatus($request, $questionObj)
     {
         // update adjudication
         if (!empty($request->adj_id)) {
@@ -481,7 +563,7 @@ class FormController extends Controller
 
             $this->updateQuestionAdjudicationStatusesToReplicatedVisits($adjStatus);
         } else {
-            $this->createQuestionAdjudicationStatus($request);
+            $this->createQuestionAdjudicationStatus($request, $questionObj);
         }
     }
 
