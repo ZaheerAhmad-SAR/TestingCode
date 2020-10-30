@@ -657,12 +657,13 @@
                 </div>
                 <form action="{{ route('forms.addQuestions') }}" enctype="multipart/form-data" method="POST" id="form_description">
                     @csrf
-                    <input type="hidden" name="id" id="questionId_hide">
                     <div class="modal-body">
                         <div id="exTab1">
                             <div class="tab-content clearfix">
                                 <div class="form-group row" style="margin-top: 10px;">
                                     <input type="hidden" name="form_field_type_id" value="11">
+                                    <input type="hidden" name="id" id="questionId_hide_des" value="">
+                                    <input type="hidden" name="field_id" id="form_field_id_des" value="">
                                     <label for="Sorting" class="col-sm-2 col-form-label">Sort Number / Position</label>
                                     <div class="col-sm-4">
                                         <input type="Number" name="question_sort" id="question_sort_de" class="form-control"
@@ -676,15 +677,9 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="label" class="col-sm-2 col-form-label"> Label <sup>*</sup></label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" name="question_text" id="question_text_de" value="">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
                                     <label for="label" class="col-sm-2 col-form-label"> Description <sup>*</sup></label>
                                     <div class="col-sm-12">
-                                        <textarea name="text_info" id="text_info" cols="2" rows="1" class="summernote"
+                                        <textarea name="text_info" id="text_info_de" cols="2" rows="1" class="summernote"
                                             style="height: 50px;"></textarea>
                                     </div>
                                 </div>
@@ -973,13 +968,14 @@ $(document).ready(function() {
             tId = ''
             ques_id = row.find('input.question_id').val()
             question_sort = row.find('input.question_sort').val()
+            formFields_id = row.find('input.formFields_id').val()
             section_id = row.find('input.section_id').val()
-            question_text = row.find('input.question_text').val()
             text_info = row.find('input.text_info').val();
-        $(".summernote").summernote("code", text_info);
+        $("#text_info_de").summernote("code", text_info);
         $('#question_sort_de').val(question_sort);
+        $('#questionId_hide_des').val(ques_id);
+        $('#form_field_id_des').val(formFields_id);
         $('#section_id_de').val(section_id);
-        $('#question_text_de').val(question_text);
         $('#descriptionModal').modal('show');
     });
     // update question
