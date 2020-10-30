@@ -97,6 +97,10 @@
                     </div>
                 </div>
             </div>
+            @php
+            $visitActivationPreference = \Modules\Admin\Entities\Preference::find(1);
+            @endphp
+            @if($visitActivationPreference->preference_value == 'Manual')
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
                     <div class="card-header  justify-content-between align-items-center">
@@ -113,6 +117,7 @@
                     </div>
                 </div>
             </div>
+            @endif
             <div class="col-12 col-sm-12">
                 <div class="row row-eq-height">
                     <div class="col-12 col-lg-2 mt-3 todo-menu-bar flip-menu pr-lg-0">

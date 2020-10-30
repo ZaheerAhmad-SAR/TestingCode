@@ -202,3 +202,8 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
 // for checking subject ID
 Route::get('check-subject', 'SubjectController@checkSubject')->name('subjects.check-subject');
+
+Route::group(['middleware' => ['auth', 'web']], function () {
+    Route::get('preference/list', 'PreferenceController@index')->name('preference.list');
+    Route::post('preference/updatePreference', 'PreferenceController@updatePreference')->name('preference.updatePreference');
+});
