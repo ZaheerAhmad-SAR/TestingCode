@@ -368,18 +368,10 @@ class FormController extends Controller
         $questionObj = Question::find($id);
 
         $this->createQuestionFormField($request, $questionObj);
-
-        /// question validation
         $this->createQuestionDataValidations($request, $questionObj);
-
-        //Question dependencies
         $this->createQuestionDependencies($request, $questionObj);
-
-        // Question annotation
         $this->createQuestionAnnotations($request, $questionObj);
-
-        // Question Adjudication
-        $this->createQuestionAdjudicationStatus($request);
+        $this->createQuestionAdjudicationStatus($request, $questionObj);
 
         /*
          * Replicate Question in replicated visits
@@ -410,7 +402,7 @@ class FormController extends Controller
         $this->updateFormField($request);
         $this->updateQuestionValidation($request, $questionObj);
         $this->updateQuestionDependency($request, $questionObj);
-        $this->updateQuestionAdjudicationStatus($request);
+        $this->updateQuestionAdjudicationStatus($request, $questionObj);
 
         return redirect()->route('forms.index')->with('message', 'Record Updated Successfully!');
     }
@@ -452,13 +444,13 @@ class FormController extends Controller
 
         $this->updateQuestionFormFieldToReplicatedVisits($form_field);
     }
-    private function createQuestionAdjudicationStatus($request)
+    private function createQuestionAdjudicationStatus($request, $questionObj)
     {
         if (isset($request->adj_status) && $request->adj_status == 'yes') {
             $id    = Str::uuid();
             $adjStatus = QuestionAdjudicationStatus::create([
                 'id' => $id,
-                'question_id' => $request->id,
+                'question_id' => $questionObj->id,
                 'adj_status' => $request->adj_status,
                 'decision_based_on' => $request->decision_based_on,
                 'opertaor' => $request->opertaor,
@@ -468,7 +460,7 @@ class FormController extends Controller
         }
     }
 
-    private function updateQuestionAdjudicationStatus($request)
+    private function updateQuestionAdjudicationStatus($request, $questionObj)
     {
         // update adjudication
         if (!empty($request->adj_id)) {
@@ -481,7 +473,7 @@ class FormController extends Controller
 
             $this->updateQuestionAdjudicationStatusesToReplicatedVisits($adjStatus);
         } else {
-            $this->createQuestionAdjudicationStatus($request);
+            $this->createQuestionAdjudicationStatus($request, $questionObj);
         }
     }
 

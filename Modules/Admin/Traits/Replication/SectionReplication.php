@@ -61,7 +61,7 @@ trait SectionReplication
 
     private function deleteSection($section)
     {
-        foreach ($section->quetions as $question) {
+        foreach ($section->questions as $question) {
             $this->deleteQuestionAndItsRelatedValues($question->id);
         }
         $this->deleteSectionToReplicatedVisits($section);
