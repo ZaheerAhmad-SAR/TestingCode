@@ -5,6 +5,16 @@ namespace Modules\UserRoles\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Modules\Admin\Entities\Subject;
+use Modules\Admin\Entities\StudyStructure;
+use Modules\Admin\Entities\Modility;
+use Modules\Admin\Entities\Site;
+use Modules\Admin\Entities\PhaseSteps;
+use Modules\Admin\Entities\SubjectsPhases;
+use Modules\Admin\Entities\FormStatus;
+use Modules\Admin\Entities\FormType;
+use DB;
+use Carbon\Carbon;
 
 class AdjudicationController extends Controller
 {
@@ -14,7 +24,8 @@ class AdjudicationController extends Controller
      */
     public function index()
     {
-        return view('userroles::index');
+        // get adjudication table data
+        return view('admin::adjudication-list');
     }
 
     /**
