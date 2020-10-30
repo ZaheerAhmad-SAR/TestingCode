@@ -5,6 +5,7 @@ namespace Modules\Admin\Traits\Replication;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use Modules\Admin\Entities\StudyStructure;
+use Modules\Admin\Scopes\StudyStructureWithoutRepeatedScope;
 
 trait ReplicatePhaseStructure
 {
@@ -92,7 +93,9 @@ trait ReplicatePhaseStructure
 
     private function updatePhaseToReplicatedVisits($phase)
     {
-        $replicatedPhases = StudyStructure::where('parent_id', 'like', $phase->id)->get();
+        $replicatedPhases = StudyStructure::where('parent_id', 'like', $phase->id)
+        ->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)
+        ->get();
         foreach ($replicatedPhases as $replicatedPhase) {
             $this->updateReplicatedPhase($phase, $replicatedPhase);
         }
@@ -100,7 +103,9 @@ trait ReplicatePhaseStructure
 
     private function deletePhaseToReplicatedVisits($phase)
     {
-        $replicatedPhases = StudyStructure::where('parent_id', 'like', $phase->id)->get();
+        $replicatedPhases = StudyStructure::where('parent_id', 'like', $phase->id)
+        ->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)
+        ->get();
         foreach ($replicatedPhases as $replicatedPhase) {
             $replicatedPhase->delete();
         }

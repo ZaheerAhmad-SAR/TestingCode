@@ -16,7 +16,7 @@ class Device extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    use SoftDeletes;
+    //use SoftDeletes;
 
     public function sites()
     {
