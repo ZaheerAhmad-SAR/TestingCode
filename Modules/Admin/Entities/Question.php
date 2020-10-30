@@ -65,7 +65,10 @@ class Question extends Model
     {
         return $this->belongsTo(Section::class, 'section_id', 'id');
     }
-
+    public function skiplogic()
+    {
+        return $this->hasMany(SkipLogic::class,'question_id','id');
+    }    
     public function questionValidation()
     {
         return $this->hasOne(QuestionValidation::class, 'question_id', 'id')->withDefault();

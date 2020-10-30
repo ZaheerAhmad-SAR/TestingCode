@@ -56,7 +56,7 @@
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
 
-                    <form action="{{route('transmissions.index')}}" method="get" class="filter-form">
+                    <form action="{{route('transmissions.study-transmissions')}}" method="get" class="filter-form">
                         <div class="form-row" style="padding: 10px;">
 
                             <div class="form-group col-md-3">
@@ -319,13 +319,6 @@
                                         <textarea class="form-control"  name="remarks"  id="remarks"></textarea>
                                     </div>
                                 </div>
-
-                                <div class="form-group row queryAttachments">
-                                    <label for="Attachment" class="col-sm-2 col-form-label">Attachment:</label>
-                                    <div class="col-sm-10">
-                                        <input class="form-control" type="file" name="query_file"  id="query_file">
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">
@@ -355,8 +348,7 @@
 
 <script type="text/javascript">
 
-    //// Transmission Query  Work start
-
+    // Transmission Query  Work start
     $('.creatNewTransmissionsForQueries').click(function () {
         $('#transmissonQueryModal').modal('show');
     });
@@ -386,56 +378,33 @@
         });
     }
 
-    $("#queriesTransmissionForm").on('submit', function(e)
-    {
+
+
+    $("#queriesTransmissionForm").on('submit', function(e) {
+
         e.preventDefault();
         $.ajaxSetup({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         });
-        var users        = $('#users').val();
-        var studyID      = $('#StudyI_ID').val();
-        var remarks      = $('#remarks').val();
-        var cc_email     = $('#cc_email').val();
-        var visitName    = $('#visitName').val();
-        var subjectID    = $('#Subject_ID').val();
-        var transNumber  = $('#Transmission_Number').val();
-        var querySubject = $('#query_subject').val();
-
-        var formData      = new FormData();
-        formData.append('users', users);
-        formData.append('StudyI_ID', studyID);
-        formData.append('remarks', remarks);
-        formData.append('cc_email', cc_email);
-        formData.append('visitName', visitName);
-        formData.append('Subject_ID', subjectID);
-        formData.append('Transmission_Number', transNumber);
-        formData.append('query_subject', querySubject);
-        // Attach file
-        formData.append('query_file', $('input[type=file]')[0].files[0]);
+        var users    = $('#users').val();
+        var remarks  = $('#remarks').val();
+        var cc_email = $('#cc_email').val();
+        var query_subject = $('#query_subject').val();
 
         $.ajax({
-
+            type: 'POST',
             url:"{{route('transmissions.queryTransmissionMail')}}",
-            type: "POST",
-            data: formData,
+            data: {
+                'users':users,'remarks':remarks,
+                'cc_email':cc_email,'query_subject':query_subject
+            },
             dataType: 'json',
-            contentType: false,
-            cache: false,
-            processData:false,
-            // data: {
-            //     'users':users,'remarks':remarks,
-            //     'cc_email':cc_email,'querySubject':querySubject,'studyID':studyID,
-            //     'subjectID':subjectID,'transNumber':transNumber,'visitName':visitName
-            // },
-            // dataType: 'json',
             success: function(response)
             {
                 console.log(response);
-                $("#queriesTransmissionForm")[0].reset();
             }
         });
     });
-
     // Transmission End Work
 
     // initialize date range picker

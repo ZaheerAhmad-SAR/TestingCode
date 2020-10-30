@@ -11,10 +11,10 @@
 
   $('.summernote').summernote({
         height: 100,
-      toolbar: [
-          ['font', ['bold', 'underline', 'clear']],
-          ['para', ['ul', 'ol', 'paragraph']],
-      ]
+      // toolbar: [
+      //     ['font', ['bold', 'underline', 'clear']],
+      //     ['para', ['ul', 'ol', 'paragraph']],
+      // ]
 
       });
 $('.summernote-inline').summernote({
