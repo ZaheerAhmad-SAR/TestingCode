@@ -597,15 +597,42 @@ class TransmissionController extends Controller
     {
         $transmissionNumber = $request->transmissionNumber;
         $records = CrushFtpTransmission::where('Transmission_Number',$transmissionNumber)->get();
+        //dd($records);
         echo  view('admin::transmissions.users_dropdown',compact('records'));
     }
 
     public function queryTransmissionMail()
     {
-        dd(\request()->all());
-        request()->validate(['cc_email'=>'required|email']);
-        Mail::to(\request('cc_email'))
-            ->send(new TransmissonQuery('shirts'));
+
+        //request()->validate(['cc_email'=>'required|email']);
+        //request()->validate(['users'=>'required|email']);
+
+        $transNumber   = request('transNumber');
+        $query_subject = request('querySubject');
+        $users         = request('users');
+        $remarks       = request('remarks');
+        $studyID       = request('studyID');
+        $visit_name    = request('visitName');
+        $cc_email      = request('cc_email');
+        $subjectID     = request('subjectID');
+        $data          = array(
+         'Transmission_Number'=>$transNumber,
+         'query_subject'=>$query_subject,
+         'remarks'=>$remarks,
+         'cc_email'=>$cc_email,
+         'StudyI_ID'=>$studyID,
+         'visit_name'=>$visit_name,
+         'Subject_ID'=>$subjectID
+        );
+
+        foreach ($users as $user)
+        {
+            Mail::to($user)
+                ->send(new TransmissonQuery($data));
+        }
+
+        return response()->json(['Status'=>'Send','message'=>'Query has been send']);
+
 //        //$ccEmail = $request->post('cc_email');
 //        $remarks = $request->post('remarks');
 
@@ -617,7 +644,7 @@ class TransmissionController extends Controller
         //// Mail Raw end function
 
 
-        return redirect('/transmissions')->with('message','Query has been send');
+
         //$users = $request->post('users');
 //        $data = array
 //        (
