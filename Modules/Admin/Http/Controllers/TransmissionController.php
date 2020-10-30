@@ -603,7 +603,7 @@ class TransmissionController extends Controller
 
     public function queryTransmissionMail()
     {
-
+         dd(\request()->all());
         //request()->validate(['cc_email'=>'required|email']);
         //request()->validate(['users'=>'required|email']);
 
