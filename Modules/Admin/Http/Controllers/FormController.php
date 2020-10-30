@@ -19,9 +19,11 @@ use Modules\Admin\Entities\AnnotationDescription;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\skipLogic;
 use Illuminate\Support\Facades\DB;
+use Modules\Admin\Traits\Replication\ReplicatePhaseStructure;
 
 class FormController extends Controller
 {
+    use ReplicatePhaseStructure;
     /**
      * Display a listing of the resource.
      * @return Response
@@ -289,7 +291,7 @@ class FormController extends Controller
     // add question check end
     public function get_allQuestions($id = '')
     {
-        $questions = Question::with('formFields', 'form_field_type', 'optionsGroup', 'DependentQuestion', 'AdjStatus')
+        $questions = Question::with('formFields', 'form_field_type', 'optionsGroup', 'questionDependency', 'questionAdjudicationStatus')
             ->where('question.section_id', '=', $id)->orderBy('question.question_sort', 'asc')->get();
         $question_contents = '';
         foreach ($questions as $ques_value) {
@@ -312,16 +314,16 @@ class FormController extends Controller
             <input type="hidden" class="upper_limit" value="' . $ques_value->formFields->upper_limit . '">
             <input type="hidden" class="decimal_point" value="' . $ques_value->formFields->decimal_point . '">';
             $question_contents .= '<input type="hidden" class="question_type" value="' . $ques_value->form_field_type->field_type . '">
-            <input type="hidden" class="dependency_id" value="' . $ques_value->DependentQuestion->id . '">
-            <input type="hidden" class="dependency_status" value="' . $ques_value->DependentQuestion->q_d_status . '">
-            <input type="hidden" class="dependency_operator" value="' . $ques_value->DependentQuestion->opertaor . '">
-            <input type="hidden" class="dependency_question" value="' . $ques_value->DependentQuestion->dep_on_question_id . '">
-            <input type="hidden" class="dependency_custom_value" value="' . $ques_value->DependentQuestion->custom_value . '">
-            <input type="hidden" class="adj_id" value="' . $ques_value->AdjStatus->id . '">
-            <input type="hidden" class="adj_status" value="' . $ques_value->AdjStatus->adj_status . '">
-            <input type="hidden" class="adj_decision_based" value="' . $ques_value->AdjStatus->decision_based_on . '">
-            <input type="hidden" class="adj_operator" value="' . $ques_value->AdjStatus->opertaor . '">
-            <input type="hidden" class="adj_custom_value" value="' . $ques_value->AdjStatus->custom_value . '">';
+            <input type="hidden" class="dependency_id" value="' . $ques_value->questionDependency->id . '">
+            <input type="hidden" class="dependency_status" value="' . $ques_value->questionDependency->q_d_status . '">
+            <input type="hidden" class="dependency_operator" value="' . $ques_value->questionDependency->opertaor . '">
+            <input type="hidden" class="dependency_question" value="' . $ques_value->questionDependency->dep_on_question_id . '">
+            <input type="hidden" class="dependency_custom_value" value="' . $ques_value->questionDependency->custom_value . '">
+            <input type="hidden" class="adj_id" value="' . $ques_value->questionAdjudicationStatus->id . '">
+            <input type="hidden" class="adj_status" value="' . $ques_value->questionAdjudicationStatus->adj_status . '">
+            <input type="hidden" class="adj_decision_based" value="' . $ques_value->questionAdjudicationStatus->decision_based_on . '">
+            <input type="hidden" class="adj_operator" value="' . $ques_value->questionAdjudicationStatus->opertaor . '">
+            <input type="hidden" class="adj_custom_value" value="' . $ques_value->questionAdjudicationStatus->custom_value . '">';
             $question_contents .= '<div class="col-sm-4">' . $ques_value->question_sort . '. ' . $ques_value->question_text . '</div>';
             if ($ques_value->form_field_type->field_type == 'Radio') {
                 if ($ques_value->optionsGroup->option_layout == 'vertical') {
@@ -439,7 +441,7 @@ class FormController extends Controller
     public function add_questions(Request $request)
     {
         $id    = Str::uuid();
-        $question_info = Question::create([
+        Question::create([
             'id' => $id,
             'form_field_type_id' => $request->form_field_type_id,
             'section_id' => $request->section_id,
@@ -453,11 +455,54 @@ class FormController extends Controller
             'annotations' => $request->dependent_on,
             'certification_type' => $request->certification_type
         ]);
-        $last_id = Question::select('id')->latest()->first();
+        $questionObj = Question::find($id);
+
+        $this->createQuestionFormField($request, $questionObj);
+        $this->createQuestionDataValidations($request, $questionObj);
+        $this->createQuestionDependencies($request, $questionObj);
+        $this->createQuestionAnnotations($request, $questionObj);
+        $this->createQuestionAdjudicationStatus($request, $questionObj);
+
+        /*
+         * Replicate Question in replicated visits
+         */
+        $this->addQuestionToReplicatedVisits($questionObj);
+
+        return redirect()->route('forms.index')->with('message', 'Record Added Successfully!');
+    }
+    public function update_questions(Request $request)
+    {
+        // update Question basic attribute
+        $questionObj = Question::where('id', $request->id)->first();
+        $questionObj->form_field_type_id = $request->form_field_type_id;
+        $questionObj->section_id = $request->section_id;
+        $questionObj->option_group_id = $request->option_group_id;
+        $questionObj->question_sort = $request->question_sort;
+        $questionObj->question_text = $request->question_text;
+        $questionObj->c_disk = $request->c_disk;
+        $questionObj->measurement_unit = $request->measurement_unit;
+        $questionObj->is_dependent = $request->field_dependent;
+        $questionObj->dependent_on = $request->dependent_on;
+        $questionObj->annotations = $request->dependent_on;
+        $questionObj->save();
+
+        $this->updateQuestionToReplicatedVisits($questionObj);
+
+        /**************************************************/
+        $this->updateFormField($request);
+        $this->updateQuestionValidation($request, $questionObj);
+        $this->updateQuestionDependency($request, $questionObj);
+        $this->updateQuestionAdjudicationStatus($request, $questionObj);
+
+        return redirect()->route('forms.index')->with('message', 'Record Updated Successfully!');
+    }
+
+    private function createQuestionFormField($request, $questionObj)
+    {
         $id    = Str::uuid();
         $form_field = FormFields::create([
             'id' => $id,
-            'question_id' => $last_id->id,
+            'question_id' => $questionObj->id,
             'variable_name' => $request->variable_name,
             'is_exportable_to_xls' => $request->is_exportable_to_xls,
             'is_required' => $request->is_required,
@@ -469,86 +514,10 @@ class FormController extends Controller
             'text_info' => $request->text_info,
             //'validation_rules' => $request->validation_rules,
         ]);
-        /// question validation
-        $Question_validation = [];
-        if (isset($request->validation_rules) && count($request->validation_rules) > 0) {
-            for ($i = 0; $i < count($request->validation_rules); $i++) {
-                $id    = Str::uuid();
-                $Question_validation[] = [
-                    'id' => $id,
-                    'question_id' => $last_id->id,
-                    'validation_rule_id' => $request->validation_rules[$i],
-                ];
-            }
-            QuestionValidation::insert($Question_validation);
-        }
-        /*
-        if(isset($request->decision_one) && count($request->decision_one) >0){
-            for ($i = 0; $i < count($request->decision_one); $i++) {
-                $Question_validation[] = [
-                    'id' => $id,
-                    'question_id' => $last_id->id,
-                    'decision_one' => $request->decision_one[$i],
-                    'opertaor_one' => $request->opertaor_one[$i],
-                    'dep_on_question_one_id' => $request->dep_on_question_one_id[$i],
-                    'condition' => $request->operator[$i],
-                    'decision_two' => $request->decision_two[$i],
-                    'opertaor_two' => $request->opertaor_two[$i],
-                    'error_type' => $request->error_type[$i],
-                    'error_message' => $request->error_message[$i]
-                ];
-            }
-            QuestionValidation::insert($Question_validation);
-        }
-        */
-        //Question dependencies
-        if (isset($request->q_d_status) && $request->q_d_status == 'yes') {
-            $id    = Str::uuid();
-            $dependencies = QuestionDependency::create([
-                'id' => $id,
-                'question_id' => $last_id->id,
-                'q_d_status' => $request->q_d_status,
-                'dep_on_question_id' => $request->dep_on_question_id,
-                'opertaor' => $request->opertaor,
-                'custom_value' => $request->custom_value
-
-            ]);
-        }
-        // Question annotation
-        $id    = Str::uuid();
-        $annotation = [];
-        if (isset($request->terminology_id) && count($request->terminology_id) > 0) {
-            for ($i = 0; $i < count($request->terminology_id); $i++) {
-                $annotation[] = [
-                    'id' => $id,
-                    'question_id' => $last_id->id,
-                    'annotation_id' => $request->terminology_id[$i],
-                    'value' => $request->value[$i],
-                    'description' => $request->description[$i]
-                ];
-            }
-            AnnotationDescription::insert($annotation);
-        }
-        // Question Adjudication
-        $this->createQuestionAdjudicationStatus($request);
-
-        return redirect()->route('forms.index')->with('message', 'Record Added Successfully!');
     }
-    public function update_questions(Request $request)
+
+    private function updateFormField($request)
     {
-        // update Question basic attribute
-        $question_update = Question::where('id', $request->id)->first();
-        $question_update->form_field_type_id = $request->form_field_type_id;
-        $question_update->section_id = $request->section_id;
-        $question_update->option_group_id = $request->option_group_id;
-        $question_update->question_sort = $request->question_sort;
-        $question_update->question_text = $request->question_text;
-        $question_update->c_disk = $request->c_disk;
-        $question_update->measurement_unit = $request->measurement_unit;
-        $question_update->is_dependent = $request->field_dependent;
-        $question_update->dependent_on = $request->dependent_on;
-        $question_update->annotations = $request->dependent_on;
-        $question_update->save();
         // update form fields
         $form_field = FormFields::where('id', $request->field_id)->first();
         $form_field->variable_name = $request->variable_name;
@@ -563,15 +532,26 @@ class FormController extends Controller
         $form_field->validation_rules = $request->validation_rules;
         $form_field->save();
 
-        // Question dependency update
-        if (!empty($request->dependency_id)) {
-            $dependencies = QuestionDependency::where('id', $request->dependency_id)->first();
-            $dependencies->q_d_status = $request->q_d_status;
-            $dependencies->dep_on_question_id = $request->dep_on_question_id;
-            $dependencies->opertaor = $request->opertaor;
-            $dependencies->custom_value = $request->custom_value;
-            $dependencies->save();
+        $this->updateQuestionFormFieldToReplicatedVisits($form_field);
+    }
+    private function createQuestionAdjudicationStatus($request, $questionObj)
+    {
+        if (isset($request->adj_status) && $request->adj_status == 'yes') {
+            $id    = Str::uuid();
+            $adjStatus = QuestionAdjudicationStatus::create([
+                'id' => $id,
+                'question_id' => $questionObj->id,
+                'adj_status' => $request->adj_status,
+                'decision_based_on' => $request->decision_based_on,
+                'opertaor' => $request->opertaor,
+                'custom_value' => $request->custom_value
+
+            ]);
         }
+    }
+
+    private function updateQuestionAdjudicationStatus($request, $questionObj)
+    {
         // update adjudication
         if (!empty($request->adj_id)) {
             $adjStatus = QuestionAdjudicationStatus::where('id', $request->adj_id)->first();
@@ -580,25 +560,120 @@ class FormController extends Controller
             $adjStatus->opertaor = $request->opertaor;
             $adjStatus->custom_value = $request->custom_value;
             $adjStatus->save();
+
+            $this->updateQuestionAdjudicationStatusesToReplicatedVisits($adjStatus);
         } else {
-            $this->createQuestionAdjudicationStatus($request);
+            $this->createQuestionAdjudicationStatus($request, $questionObj);
         }
-        return redirect()->route('forms.index')->with('message', 'Record Updated Successfully!');
     }
 
-    private function createQuestionAdjudicationStatus($request)
+    private function createQuestionAnnotations($request, $questionObj)
     {
-        if (isset($request->adj_status) && $request->adj_status == 'yes') {
+        $id    = Str::uuid();
+        $annotation = [];
+        if (isset($request->terminology_id) && count($request->terminology_id) > 0) {
+            for ($i = 0; $i < count($request->terminology_id); $i++) {
+                $annotation[] = [
+                    'id' => $id,
+                    'question_id' => $questionObj->id,
+                    'annotation_id' => $request->terminology_id[$i],
+                    'value' => $request->value[$i],
+                    'description' => $request->description[$i]
+                ];
+            }
+            AnnotationDescription::insert($annotation);
+        }
+    }
+
+    private function createQuestionDependencies($request, $questionObj)
+    {
+        if (isset($request->q_d_status) && $request->q_d_status == 'yes') {
             $id    = Str::uuid();
-            $adjStatus = QuestionAdjudicationStatus::create([
+            $dependencies = QuestionDependency::create([
                 'id' => $id,
-                'question_id' => $request->id,
-                'adj_status' => $request->adj_status,
-                'decision_based_on' => $request->decision_based_on,
+                'question_id' => $questionObj->id,
+                'q_d_status' => $request->q_d_status,
+                'dep_on_question_id' => $request->dep_on_question_id,
                 'opertaor' => $request->opertaor,
                 'custom_value' => $request->custom_value
 
             ]);
+        }
+    }
+
+    private function updateQuestionDependency($request, $questionObj)
+    {
+        // Question dependency update
+        if (!empty($request->dependency_id)) {
+            $dependencies = QuestionDependency::where('id', $request->dependency_id)->first();
+            $dependencies->q_d_status = $request->q_d_status;
+            $dependencies->dep_on_question_id = $request->dep_on_question_id;
+            $dependencies->opertaor = $request->opertaor;
+            $dependencies->custom_value = $request->custom_value;
+            $dependencies->save();
+            $this->updateQuestionDependenciesToReplicatedVisits($dependencies);
+        } else {
+            $this->createQuestionDependencies($request, $questionObj);
+        }
+    }
+
+    private function createQuestionDatavalidations($request, $questionObj)
+    {
+
+        $Question_validation = [];
+        /*
+        if (isset($request->validation_rules) && count($request->validation_rules) > 0) {
+            for ($i = 0; $i < count($request->validation_rules); $i++) {
+                $id    = Str::uuid();
+                $Question_validation[] = [
+                    'id' => $id,
+                    'question_id' => $questionObj->id,
+                    'validation_rule_id' => $request->validation_rules[$i],
+                ];
+            }
+            QuestionValidation::insert($Question_validation);
+        }
+
+        */
+        if (isset($request->decision_one) && count($request->decision_one) > 0) {
+            for ($i = 0; $i < count($request->decision_one); $i++) {
+                $id    = Str::uuid();
+                $Question_validation[] = [
+                    'id' => $id,
+                    'question_id' => $questionObj->id,
+                    'decision_one' => $request->decision_one[$i],
+                    'opertaor_one' => $request->opertaor_one[$i],
+                    'dep_on_question_one_id' => $request->dep_on_question_one_id[$i],
+                    'condition' => $request->operator[$i],
+                    'decision_two' => $request->decision_two[$i],
+                    'opertaor_two' => $request->opertaor_two[$i],
+                    'error_type' => $request->error_type[$i],
+                    'error_message' => $request->error_message[$i]
+                ];
+            }
+            QuestionValidation::insert($Question_validation);
+        }
+    }
+
+    private function updateQuestionValidation($request, $questionObj)
+    {
+        // Question validation update
+        if (!empty($request->validation_id)) {
+            $validation = QuestionValidation::where('id', $request->validation_id)->first();
+
+            $validation->decision_one = $request->decision_one;
+            $validation->opertaor_one = $request->opertaor_one;
+            $validation->dep_on_question_one_id = $request->dep_on_question_one_id;
+            $validation->condition = $request->condition;
+            $validation->decision_two = $request->decision_two;
+            $validation->opertaor_two = $request->opertaor_two;
+            $validation->error_type = $request->error_type;
+            $validation->error_message = $request->error_message;
+
+            $validation->save();
+            $this->updateQuestionValidationToReplicatedVisits($validation);
+        } else {
+            $this->createQuestionDatavalidations($request, $questionObj);
         }
     }
     /**
@@ -645,11 +720,9 @@ class FormController extends Controller
     public function destroy($id = '')
     {
     }
-    function deleteQuestion($id)
+    function deleteQuestion($questionId)
     {
-        Question::where('id', $id)->delete();
-        FormFields::where('question_id', $id)->delete();
-        QuestionValidation::where('question_id', $id)->delete();
+        $this->deleteQuestionAndItsRelatedValues($questionId);
         $Response['data'] = 'success';
         echo json_encode($Response);
     }

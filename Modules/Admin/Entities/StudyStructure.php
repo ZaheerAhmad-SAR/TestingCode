@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class StudyStructure extends Model
 {
-    protected $fillable = ['id', 'study_id', 'name', 'position', 'duration'];
+    protected $fillable = ['id', 'study_id', 'name', 'position', 'duration', 'is_repeatable'];
     // protected $keyType = 'string';
     protected $casts = [
         'id' => 'string'
@@ -63,5 +63,10 @@ class StudyStructure extends Model
     public function phaseSubjectsArray()
     {
         return $this->phaseSubjects()->distinct()->pluck('subject_id')->toArray();
+    }
+
+    public function replicationStructures()
+    {
+        return $this->hasMany(PhaseReplicationStructure::class, 'study_structures_id', 'id');
     }
 }

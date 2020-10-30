@@ -15,8 +15,8 @@ class QuestionAdjudicationStatus extends Model
         'adj_status' => 'no'
     ];
 
-    public function questions()
+    public function question()
     {
-        return $this->belongsTo(Questions::class, 'question_id', 'id');
+        return $this->belongsTo(Question::class, 'question_id', 'id');
     }
 }

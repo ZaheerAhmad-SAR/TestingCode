@@ -11,7 +11,7 @@ use Modules\Admin\Entities\Study;
 
 class PhaseSteps extends Model
 {
-    protected $fillable = ['step_id', 'phase_id', 'step_position', 'form_type', 'form_type_id', 'step_name', 'step_description', 'graders_number', 'q_c', 'eligibility'];
+    protected $fillable = ['step_id', 'phase_id', 'step_position', 'form_type', 'form_type_id', 'modility_id', 'step_name', 'step_description', 'graders_number', 'q_c', 'eligibility'];
     // protected $key = 'string';
     protected $table = 'phase_steps';
     protected $primaryKey = "step_id";

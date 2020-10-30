@@ -42,7 +42,7 @@ trait AdjudicationTrait
                 ];
                 $answersArray = Answer::getAnswersArray($getAnswerArray);
                 $numberOfAnswers = count($answersArray);
-                $questionAdjudicationStatusObj = $question->AdjStatus;
+                $questionAdjudicationStatusObj = $question->questionAdjudicationStatus;
 
                 if ($fieldType == 'Radio') {
                     $returnData =  self::selectMajorityAnswer($questionAdjudicationStatusObj, $answersArray);

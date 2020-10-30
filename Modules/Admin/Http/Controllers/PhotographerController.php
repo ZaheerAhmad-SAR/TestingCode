@@ -74,11 +74,8 @@ class PhotographerController extends Controller
      */
     public function edit($id)
     {
-
         if ($id) {
-
             $record = Photographer::find($id);
-
             return response()->json([$record]);
 
         }

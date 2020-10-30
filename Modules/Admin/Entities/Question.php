@@ -10,7 +10,7 @@ class Question extends Model
 {
     use SoftDeletes;
     protected $table = 'question';
-    protected $fillable = ['id', 'form_field_type_id', 'section_id', 'option_group_id', 'question_sort', 'question_text', 'c_disk', 'measurement_unit', 'is_dependent', 'dependent_on', 'annotations','certification_type', 'deleted_at'];
+    protected $fillable = ['id', 'form_field_type_id', 'section_id', 'option_group_id', 'question_sort', 'question_text', 'c_disk', 'measurement_unit', 'is_dependent', 'dependent_on', 'annotations', 'certification_type', 'deleted_at'];
     protected $keyType = 'string';
 
     protected static function boot()
@@ -46,12 +46,12 @@ class Question extends Model
         }
         return $answer;
     }
-    public function DependentQuestion()
+    public function questionDependency()
     {
         return $this->hasOne(QuestionDependency::class, 'question_id', 'id')->withDefault();
     }
 
-    public function AdjStatus()
+    public function questionAdjudicationStatus()
     {
         return $this->hasOne(QuestionAdjudicationStatus::class, 'question_id', 'id')->withDefault();
     }
@@ -68,5 +68,9 @@ class Question extends Model
     public function skiplogic()
     {
         return $this->hasMany(SkipLogic::class,'question_id','id');
+    }    
+    public function questionValidation()
+    {
+        return $this->hasOne(QuestionValidation::class, 'question_id', 'id')->withDefault();
     }
 }
