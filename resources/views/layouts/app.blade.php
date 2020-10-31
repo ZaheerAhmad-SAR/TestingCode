@@ -26,6 +26,7 @@
         <link rel="stylesheet" href="{{ asset('public/dist/css/multi-select.css') }}">
         <link rel="stylesheet" href="{{ asset('public/dist/vendors/fontawesome/css/all.min.css') }}"/>
         <link rel="stylesheet" href="{{ asset('public/css/fstdropdown.min.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('public/css/sweetalert.css') }}"/>
 
         @stack('styles')
         <!-- END: Custom CSS-->
@@ -66,6 +67,7 @@
         <script src="{{ asset('public/dist/js/app.js') }}"></script>
         <script src="{{ asset('public/dist/js/jquery.multi-select.js') }}"></script>
         <script src="{{ asset('public/js/fstdropdown.min.js') }}"></script>
+        <script src="{{ asset('public/js/sweetalert.min.js') }}"></script>
 
         <!-- END: APP JS-->
 

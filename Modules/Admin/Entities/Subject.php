@@ -2,6 +2,7 @@
 
 namespace Modules\Admin\Entities;
 
+use Modules\FormSubmission\Entities\SubjectsPhases;
 use Illuminate\Database\Eloquent\Model;
 
 class Subject extends Model

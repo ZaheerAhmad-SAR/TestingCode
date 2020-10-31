@@ -101,6 +101,15 @@ class FormFieldTypeSeederTableSeeder extends Seeder
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now()
             ]);
+            $id = 11;
+            $form_filed_Upload = FormFieldType::create([
+                'id' => $id,
+                'field_type'    => 'Description',
+                'icon'          => 'fa fa-file-text',
+                'support_multiple_values' => 'no',
+                'created_at'        => Carbon::now(),
+                'updated_at'        => Carbon::now()
+            ]);
 
         }
         // $this->call("OthersTableSeeder");

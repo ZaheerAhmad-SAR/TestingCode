@@ -2,5 +2,6 @@
     "UserRoles": true,
     "Admin": true,
     "Queries": true,
-    "Certification": true
+    "Certification": true,
+    "FormSubmission": true
 }

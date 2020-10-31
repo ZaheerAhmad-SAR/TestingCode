@@ -136,7 +136,7 @@
                                     </li>
                                 @endif
                                 <li class="">
-                                    <a href="#">
+                                    <a href="{!! route('preference.list') !!}">
                                         Preferences
                                     </a>
                                 </li>
@@ -147,6 +147,35 @@
             </li>
             @endif
             @endif
+
+            <!-- //////////////////////////////// Transmission //////////////////////// -->
+
+            <li class="dropdown">
+                <ul>
+                        <li class="dropdown"><a href="#"><i class="icon-grid"></i>Transmissions</a>
+                            <ul class="sub-menu">
+
+                                @if(!empty(session('current_study')))
+                                    <li class="@if(is_active('transmissions.study-transmissions')) {{ ' active' }} @endif">
+                                        <a href="{!! route('transmissions.study-transmissions') !!}">
+                                            Study Transmissions
+                                        </a>
+                                    </li>
+                                @endif
+
+                                    <li class="@if(is_active('transmissions.index')) {{ ' active' }} @endif">
+                                        <a href="{!! route('transmissions.index') !!}">
+                                            System Transmissions
+                                        </a>
+                                    </li>
+
+
+                            </ul>
+                        </li>
+                </ul>
+            </li>
+
+            <!-- //////////////////////////////// Transmissions ////////////////// -->
             @if(hasPermission(auth()->user(),'subjects.index'))
                 <li class=""><!-- <a href="#"><i class="fas fa-laptop-medical mr-1"></i>Subject Management</a> -->
                     @if(!empty(session('current_study')))
@@ -164,14 +193,16 @@
                 <li class="dropdown"><a href="#"><i class="fas fa-sitemap"></i> Quality Control</a>
                     <ul>
 
+                        {{--
                         <li>
                             <a href="{{ route('transmissions.index')}}">
                                 <i class="fas fa-file-import"></i> Transmissions
                             </a>
                         </li>
+                        --}}
 
                         <li>
-                            <a href="#">
+                            <a href="{{ route('qualitycontrol.index')}}">
                                 <i class="fas fa-list"></i> Qc List
                             </a>
                         </li>
@@ -208,7 +239,7 @@
                 <li class=""><a href="#"><i class="fas fa-database"></i> Adjudication</a>
                     <ul>
                         <li>
-                            <a href="#">
+                            <a href="{{ route('adjudication.index')}}">
                                 <i class="fas fa-list"></i> Adjudication List
                             </a>
                         </li>

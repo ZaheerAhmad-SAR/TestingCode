@@ -13,7 +13,7 @@ use Modules\Admin\Entities\Other;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\StudySite;
 use Modules\Admin\Entities\Subject;
-use Modules\Admin\Entities\SubjectsPhases;
+use Modules\FormSubmission\Entities\SubjectsPhases;
 use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\Modility;
@@ -22,12 +22,15 @@ use Modules\Admin\Entities\Photographer;
 use Modules\Admin\Entities\TransmissionUpdateDetail;
 use Modules\Admin\Entities\Device;
 use Modules\Admin\Entities\DeviceModility;
+use Modules\Admin\Entities\ModalityPhase;
 use DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
+use App\Traits\UploadTrait;
 
 class TransmissionController extends Controller
 {
+    use UploadTrait;
     /**
      * Display a listing of the resource.
      * @return Renderable
@@ -82,28 +85,77 @@ class TransmissionController extends Controller
            $getTransmissions = $getTransmissions->where('status', $request->status);
         }
 
-        // check for system user Admin
-        if(hasPermission(auth()->user(),'systemtools.index') && hasPermission(auth()->user(),'qualitycontrol.index')) {
-
-            $getTransmissions = $getTransmissions->orderBy('id', 'desc')->paginate(50);
-
-        } else if (hasPermission(auth()->user(),'qualitycontrol.index')) {
-
-            // get session id
-            $studyID = Study::where('id', \Session::get('current_study'))
-                            ->pluck('study_code')
-                            ->toArray();
-
-            $getTransmissions = $getTransmissions->where('StudyI_ID', $studyID[0])
-                                                 ->orderBy('id', 'desc')
-                                                 ->paginate(50);
-
-        }
+        $getTransmissions = $getTransmissions->orderBy('id', 'desc')->paginate(50);
 
         // get modality
         $getModalities = Modility::get();
 
         return view('admin::transmission_details', compact('getTransmissions', 'getModalities'));
+    }
+
+    public function studyTransmissions(Request $request)
+    {
+        $getTransmissions = CrushFtpTransmission::query();
+
+        if ($request->trans_id != '') {
+
+           $getTransmissions = $getTransmissions->where('Transmission_Number', 'like', '%' . $request->trans_id . '%');
+        }
+
+        if ($request->subject_id != '') {
+
+           $getTransmissions = $getTransmissions->where('Subject_ID', 'like', '%' . $request->subject_id . '%');
+        }
+
+        if ($request->visit_name != '') {
+
+           $getTransmissions = $getTransmissions->where('visit_name', 'like', '%' . $request->visit_name . '%');
+        }
+
+        if ($request->visit_date != '') {
+
+            $visitDate = explode('-', $request->visit_date);
+                    $from   = Carbon::parse($visitDate[0]); // 2018-09-29 00:00:00
+
+                    $to     = Carbon::parse($visitDate[1]); // 2018-09-29 23:59:59
+
+                $getTransmissions =  $getTransmissions->whereDate('visit_date', '>=', $from)
+                    ->whereDate('visit_date', '<=', $to);
+        }
+
+        if ($request->imagine_modality != '') {
+
+           $getTransmissions = $getTransmissions->where('ImageModality', $request->imagine_modality);
+        }
+
+        if ($request->modility_id != '') {
+
+           $getTransmissions = $getTransmissions->where('modility_id', $request->modility_id);
+        }
+
+        if ($request->is_read != '') {
+
+           $getTransmissions = $getTransmissions->where('is_read', $request->is_read);
+        }
+
+        if ($request->status != '') {
+
+           $getTransmissions = $getTransmissions->where('status', $request->status);
+        }
+
+        // get session id
+        $studyID = Study::where('id', \Session::get('current_study'))
+                            ->pluck('study_code')
+                            ->toArray();
+        $studyID = $studyID != null ? $studyID : null;
+
+        $getTransmissions = $getTransmissions->where('StudyI_ID', $studyID)
+                                            ->orderBy('id', 'desc')
+                                            ->paginate(50);
+        // get modality
+        $getModalities = Modility::get();
+
+        return view('admin::study_transmission_details', compact('getTransmissions', 'getModalities'));
     }
 
     /**
@@ -114,7 +166,8 @@ class TransmissionController extends Controller
     {
 
         // remove the upper section
-        $explodeGetCFtPTrans = explode('<?xml', $request->data);
+
+        $explodeGetCFtPTrans = explode('<?xml', $request);
 
         // concatinate xml with the remaining  xml
         $xml = '<?xml'.$explodeGetCFtPTrans[1];
@@ -127,7 +180,7 @@ class TransmissionController extends Controller
         if ($checkTransmissionNumber == null) {
 
             $saveData = DB::table('crush_ftp_transmissions')->insert([
-                'data'                      => $request->data,
+                'data'                      => $request,
                 'Transmission_Number'       => $xml->Transmission_Number,
                 'Study_Name'                => $xml->Study_Name,
                 'StudyI_ID'                 => $xml->StudyI_ID,
@@ -243,9 +296,15 @@ class TransmissionController extends Controller
         // get all sites
         $getSites =Site::get();
         // get all subjects
-        $getSubjects = Subject::get();
+        $getSubjects = Subject::select('subjects.id', 'subjects.subject_id')
+                                ->leftjoin('studies', 'studies.id', '=', 'subjects.study_id')
+                                ->where('studies.study_code', $findTransmission->StudyI_ID)
+                                ->get();
         // get all phases
-        $getPhases = StudyStructure::get();
+        $getPhases = StudyStructure::select('study_structures.id', 'study_structures.name')
+                                    ->leftjoin('studies', 'studies.id', '=', 'study_structures.study_id')
+                                    ->where('studies.study_code', $findTransmission->StudyI_ID)
+                                    ->get();
         // get modality
         $getModalities = Modility::get();
 
@@ -579,6 +638,20 @@ class TransmissionController extends Controller
                 $getSubjectPhase->save();
             } // subject phases check is end
 
+            // check modality and phase id
+            $getModalityPhase = ModalityPhase::where('modility_id', $getModality->id)
+                                               ->where('phase_id', $getPhase->id)
+                                               ->first();
+
+            if ($getModalityPhase == null) {
+                // insert into modality phase table
+                $getModalityPhase = new ModalityPhase;
+                $getModalityPhase->modility_id = $getModality->id;
+                $getModalityPhase->phase_id = $getPhase->id;
+                $getModalityPhase->form_type_id = 1;
+                $getModalityPhase->save();
+            }
+
         return true;
 
     }
@@ -597,15 +670,50 @@ class TransmissionController extends Controller
     {
         $transmissionNumber = $request->transmissionNumber;
         $records = CrushFtpTransmission::where('Transmission_Number',$transmissionNumber)->get();
+        //dd($records);
         echo  view('admin::transmissions.users_dropdown',compact('records'));
     }
 
     public function queryTransmissionMail()
     {
-        dd(\request()->all());
-        request()->validate(['cc_email'=>'required|email']);
-        Mail::to(\request('cc_email'))
-            ->send(new TransmissonQuery('shirts'));
+         //dd(\request()->all());
+        //request()->validate(['cc_email'=>'required|email']);
+        //request()->validate(['users'=>'required|email']);
+        $transNumber   = request('Transmission_Number');
+        $query_subject = request('query_subject');
+        $users         = request('users');
+        $usersArray    = explode(',',$users);
+        $remarks       = request('remarks');
+        $studyID       = request('StudyI_ID');
+        $visit_name    = request('visitName');
+        $cc_email      = request('cc_email');
+        $subjectID     = request('Subject_ID');
+        $filePath      = '';
+
+        if (!empty(request()->file('query_file'))) {
+            $image = request()->file('query_file');
+            $name = Str::slug(request()->input('name')).'_'.time();
+            $folder = '/query_attachments/';
+            $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
+            $this->uploadOne($image, $folder, 'public', $name);
+        }
+
+        $data = array(
+         'Transmission_Number'=>$transNumber,
+         'query_subject'=>$query_subject,
+         'remarks'=>$remarks,
+         'cc_email'=>$cc_email,
+         'StudyI_ID'=>$studyID,
+         'visit_name'=>$visit_name,
+         'Subject_ID'=>$subjectID,
+          'attachment'=>$filePath
+        );
+        foreach ($usersArray as $user)
+        {
+            Mail::to($user)->send(new TransmissonQuery($data));
+        }
+        return response()->json(['Status'=>'Send','message'=>'Query has been send']);
+
 //        //$ccEmail = $request->post('cc_email');
 //        $remarks = $request->post('remarks');
 
@@ -616,17 +724,6 @@ class TransmissionController extends Controller
 //        });
         //// Mail Raw end function
 
-
-        return redirect('/transmissions')->with('message','Query has been send');
-        //$users = $request->post('users');
-//        $data = array
-//        (
-//            'query_subject'=>$request['query_subject'],
-//            'site_name'=> $request['site_name'],
-//            'users'=>$users,
-//            'cc_email'=>$request['cc_email'],
-//            'remarks'=>$request['remarks']
-//        );
     }
 }
 
