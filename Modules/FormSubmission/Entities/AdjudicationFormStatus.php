@@ -108,21 +108,30 @@ class AdjudicationFormStatus extends Model
 
         $adjudicationFormStatusObj = AdjudicationFormStatus::getAdjudicationFormStatusObj($getAdjudicationFormStatusArray);
 
-        if ($adjudicationFormStatusObj->adjudication_status == 'no_status') {
-            $adjudicationFormStatusObj = self::insertAdjudicationFormStatus($request, $getAdjudicationFormStatusArray);
-        } elseif ($request->has(buildSafeStr($request->stepId, 'adjudication_form_terms_cond_'))) {
+        if (
+            ($adjudicationFormStatusObj->adjudication_status == 'no_status') &&
+            $request->has(buildSafeStr($request->stepId, 'adjudication_form_terms_cond_'))
+        ) {
+            $adjudicationFormStatusObj = self::insertAdjudicationFormStatus('complete', $getAdjudicationFormStatusArray);
+        } elseif (
+            ($adjudicationFormStatusObj->adjudication_status != 'no_status') &&
+            $request->has(buildSafeStr($request->stepId, 'adjudication_form_terms_cond_'))
+        ) {
             $adjudicationFormStatusObj->adjudication_status = 'complete';
             $adjudicationFormStatusObj->update();
+        } elseif ($adjudicationFormStatusObj->adjudication_status == 'no_status') {
+            $adjudicationFormStatusObj = self::insertAdjudicationFormStatus('incomplete', $getAdjudicationFormStatusArray);
         }
+
         return ['id' => $adjudicationFormStatusObj->id, 'adjudicationFormStatus' => $adjudicationFormStatusObj->adjudication_status, 'adjudicationFormStatusIdStr' => buildAdjudicationStatusIdClsStr($adjudicationFormStatusObj->id)];
     }
 
-    public static function insertAdjudicationFormStatus($request, $adjudicationFormStatusArray)
+    public static function insertAdjudicationFormStatus($status = 'incomplete', $adjudicationFormStatusArray)
     {
         $id = Str::uuid();
         $adjudicationFormStatusData = [
             'id' => $id,
-            'adjudication_status' => 'incomplete',
+            'adjudication_status' => $status,
         ] + $adjudicationFormStatusArray;
         AdjudicationFormStatus::create($adjudicationFormStatusData);
         return AdjudicationFormStatus::find($id);
