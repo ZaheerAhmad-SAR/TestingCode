@@ -18,6 +18,13 @@
             <div class="alert alert-primary success-msg" role="alert">
             </div>
         </div>
+         @if(session()->has('message'))
+                <div class="col-lg-12 success-alert">
+                    <div class="alert alert-primary success-msg" role="alert">
+                        {{ session()->get('message') }}
+                    </div>
+                </div>
+            @endif
     </div>
     <!-- END: Breadcrumbs-->
 
@@ -53,7 +60,7 @@
                                     <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                         <span class="dropdown-item edit_phase"><i class="far fa-edit"></i>&nbsp; Edit</span>
-                                        <span class="dropdown-item"><i class="far fa-clone"></i>&nbsp; Clone</span>
+                                        {{-- <span class="dropdown-item"><i class="far fa-clone"></i>&nbsp; Clone</span> --}}
                                         <span class="dropdown-item deletePhase"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                     </div>
                                 </div>
@@ -96,7 +103,7 @@
                                         <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                             <span class="dropdown-item edit_steps"><i class="far fa-edit"></i>&nbsp; Edit</span>
                                             <span class="dropdown-item addsection"><i class="far fa-file-code"></i>&nbsp; Add Section</span>
-                                            <span class="dropdown-item"><i class="far fa-clone"></i>&nbsp; Clone</span>
+                                            <span class="dropdown-item cloneStep"><i class="far fa-clone"></i>&nbsp; Clone</span>
                                             <span class="dropdown-item deleteStep"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                         </div>
                                     </div>
@@ -343,7 +350,7 @@
         </div>
 </div>
 <!--  -->
-
+@include('admin::structure.cloneStep');
 
 @endsection
 @section('styles')

@@ -42,6 +42,9 @@ Route::resource('studies', 'StudyController');
     Route::get('study_phases', 'StudyStructureController@getallphases')->name('getPhases');
     Route::get('forms/get_phases/{id}', 'FormController@get_phases')->name('forms.get_phases');
     Route::post('study/update', 'StudyStructureController@update')->name('study.updatePhase');
+    // for clone steps
+    Route::resource('cloneSteps', 'CloneStepsController');
+    Route::post('clone_steps', 'CloneStepsController@clone_steps')->name('cloneSteps.cloneSteps');
     // for steps
     Route::DELETE('steps/delete_steps/{step_id}', 'StudyStructureController@destroySteps')->name('steps.deleteSteps');
     Route::post('steps/store_steps', 'StudyStructureController@store_steps')->name('steps.save');

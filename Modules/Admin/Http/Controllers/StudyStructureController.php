@@ -72,7 +72,7 @@ class StudyStructureController extends Controller
                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                     <span class="dropdown-item edit_steps"><i class="far fa-edit"></i>&nbsp; Edit</span>
                                     <span class="dropdown-item addsection"><i class="far fa-file-code"></i>&nbsp; Add Section</span>
-                                    <span class="dropdown-item"><i class="far fa-clone"></i>&nbsp; Clone</span>
+                                    <span class="dropdown-item cloneStep"><i class="far fa-clone"></i>&nbsp; Clone</span>
                                     <span class="dropdown-item deleteStep"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                 </div>
                             </div>
