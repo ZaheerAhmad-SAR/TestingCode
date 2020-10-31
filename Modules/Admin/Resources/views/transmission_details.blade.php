@@ -284,8 +284,10 @@
                                     <div class="col-sm-4">
                                         <select class="form-control sitesChange" name="site_name" id="site_name">
                                             <option value="">--Select Sites--</option>
+
                                             @foreach($getTransmissions as $transmission)
                                                 <option value="{{$transmission->Transmission_Number}}">{{$transmission->Site_Name}}</option>
+
                                             @endforeach
                                         </select>
                                     </div>
@@ -399,6 +401,7 @@
         var Subject_ID          = $('#Subject_ID').val();
         var Transmission_Number = $('#Transmission_Number').val();
         var query_subject       = $('#query_subject').val();
+        var studyShortName      = $('#studyShortName').val();
 
         var formData      = new FormData();
         formData.append('users', users);
@@ -409,6 +412,7 @@
         formData.append('Subject_ID', Subject_ID);
         formData.append('Transmission_Number', Transmission_Number);
         formData.append('query_subject', query_subject);
+        formData.append('studyShortName', studyShortName);
         // Attach file
         formData.append('query_file', $('input[type=file]')[0].files[0]);
 

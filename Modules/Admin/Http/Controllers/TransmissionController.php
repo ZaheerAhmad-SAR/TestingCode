@@ -689,6 +689,7 @@ class TransmissionController extends Controller
         $visit_name    = request('visitName');
         $cc_email      = request('cc_email');
         $subjectID     = request('Subject_ID');
+        $studyShortName= request('studyShortName');
         $filePath      = '';
 
         if (!empty(request()->file('query_file'))) {
@@ -707,7 +708,8 @@ class TransmissionController extends Controller
          'StudyI_ID'=>$studyID,
          'visit_name'=>$visit_name,
          'Subject_ID'=>$subjectID,
-          'attachment'=>$filePath
+          'attachment'=>$filePath,
+          'studyShortName'=>$studyShortName
         );
         foreach ($usersArray as $user)
         {

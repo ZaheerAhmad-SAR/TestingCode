@@ -16,13 +16,39 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                   <h4>Welcome to OCAP by OIRRC</h4>
-{{--                    {{dd($data)}}--}}
-                    <p>Transmission Number: {{$data['Transmission_Number']}}</p>
-                    <p>Visit Name: {{$data['visit_name']}}</p>
-                    <p>Study ID: {{$data['StudyI_ID']}}</p>
-                    <p>Subject ID: {{$data['Subject_ID']}}</p>
-                    <p>{{$data['remarks']}}</p>
+                   <blockquote> Welcome to OCAP by OIRRC </blockquote>
+                    <p> <strong>Study Short Name :</strong> {{$data['studyShortName']}}</p>
+                    <p><strong>Transmission Number:</strong> {{$data['Transmission_Number']}}</p>
+                    <p> <strong>Visit Name:</strong> {{$data['visit_name']}}</p>
+                    <p> <strong>Study ID:</strong> {{$data['StudyI_ID']}}</p>
+                    <p><strong>Subject ID:</strong> {{$data['Subject_ID']}}</p>
+                    <p><strong>Remarks</strong> <br> {{$data['remarks']}}</p>
+
+
+{{--                    <div class="table-responsive">--}}
+{{--                        <table id="example" class="display table dataTable table-striped table-bordered" >--}}
+{{--                            <thead>--}}
+{{--                            <tr>--}}
+{{--                                <th>Study Short Name</th>--}}
+{{--                                <th>Transmission Number</th>--}}
+{{--                                <th>Visit Name</th>--}}
+{{--                                <th>Study ID</th>--}}
+{{--                                <th>Subject ID</th>--}}
+{{--                            </tr>--}}
+{{--                            </thead>--}}
+{{--                            <tbody>--}}
+{{--                                <tr>--}}
+{{--                                    <td>{{$data['studyShortName']}}</td>--}}
+{{--                                    <td>{{$data['Transmission_Number']}}</td>--}}
+{{--                                    <td>{{$data['visit_name']}}</td>--}}
+{{--                                    <td>{{$data['StudyI_ID']}}</td>--}}
+{{--                                    <td>{{$data['Subject_ID']}}</td>--}}
+{{--                                </tr>--}}
+
+{{--                            </tbody>--}}
+{{--                        </table>--}}
+{{--                    </div>--}}
+{{--                    <p><strong>Remarks</strong> <br> {{$data['remarks']}}</p>--}}
                 </div>
             </div>
         </div>
