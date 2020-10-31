@@ -34,6 +34,7 @@ class TransmissonQuery extends Mailable
         return $this->view('emails.transmisson_query')
             ->with($this->data)
             ->cc($this->data['cc_email'])
+            ->attach(public_path().'/'.$this->data['attachment'])
             ->subject($this->data['query_subject']
                 .' | '.$this->data['Transmission_Number'].' | '
                 .$this->data['visit_name'].' | '.$this->data['StudyI_ID'].' | '.$this->data['Subject_ID']);
