@@ -35,8 +35,8 @@ class TransmissonQuery extends Mailable
             ->with($this->data)
             ->cc($this->data['cc_email'])
             ->attach(public_path().'/'.$this->data['attachment'])
-            ->subject($this->data['query_subject']
+            ->subject($this->data['studyShortName']. ' | ' .$this->data['StudyI_ID'].' | '.'Query:'. $this->data['query_subject']
                 .' | '.$this->data['Transmission_Number'].' | '
-                .$this->data['visit_name'].' | '.$this->data['StudyI_ID'].' | '.$this->data['Subject_ID']);
+                .$this->data['visit_name']);
     }
 }
