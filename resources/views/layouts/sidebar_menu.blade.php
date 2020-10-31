@@ -136,7 +136,7 @@
                                     </li>
                                 @endif
                                 <li class="">
-                                    <a href="#">
+                                    <a href="{!! route('preference.list') !!}">
                                         Preferences
                                     </a>
                                 </li>
@@ -192,7 +192,7 @@
             @if(hasPermission(auth()->user(),'qualitycontrol.index'))
                 <li class="dropdown"><a href="#"><i class="fas fa-sitemap"></i> Quality Control</a>
                     <ul>
-                        
+
                         {{--
                         <li>
                             <a href="{{ route('transmissions.index')}}">

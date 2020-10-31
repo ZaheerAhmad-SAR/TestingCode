@@ -364,7 +364,6 @@
     $(".sitesChange").change(function () {
         var selectedText = $(this).find("option:selected").text();
         var selectedValue = $(this).val();
-        console.log(selectedValue);
         getSitesUsers(selectedValue);
     });
 
@@ -392,24 +391,24 @@
         $.ajaxSetup({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         });
-        var users        = $('#users').val();
-        var studyID      = $('#StudyI_ID').val();
-        var remarks      = $('#remarks').val();
-        var cc_email     = $('#cc_email').val();
-        var visitName    = $('#visitName').val();
-        var subjectID    = $('#Subject_ID').val();
-        var transNumber  = $('#Transmission_Number').val();
-        var querySubject = $('#query_subject').val();
+        var users               = $('#users').val();
+        var StudyI_ID           = $('#StudyI_ID').val();
+        var remarks             = $('#remarks').val();
+        var cc_email            = $('#cc_email').val();
+        var visitName           = $('#visitName').val();
+        var Subject_ID          = $('#Subject_ID').val();
+        var Transmission_Number = $('#Transmission_Number').val();
+        var query_subject       = $('#query_subject').val();
 
         var formData      = new FormData();
         formData.append('users', users);
-        formData.append('StudyI_ID', studyID);
+        formData.append('StudyI_ID', StudyI_ID);
         formData.append('remarks', remarks);
         formData.append('cc_email', cc_email);
         formData.append('visitName', visitName);
-        formData.append('Subject_ID', subjectID);
-        formData.append('Transmission_Number', transNumber);
-        formData.append('query_subject', querySubject);
+        formData.append('Subject_ID', Subject_ID);
+        formData.append('Transmission_Number', Transmission_Number);
+        formData.append('query_subject', query_subject);
         // Attach file
         formData.append('query_file', $('input[type=file]')[0].files[0]);
 
@@ -431,7 +430,7 @@
             success: function(response)
             {
                 console.log(response);
-                $("#queriesTransmissionForm")[0].reset();
+                //$("#queriesTransmissionForm")[0].reset();
             }
         });
     });

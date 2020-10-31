@@ -10,8 +10,8 @@ use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\PhaseSteps;
-use Modules\Admin\Entities\SubjectsPhases;
-use Modules\Admin\Entities\FormStatus;
+use Modules\FormSubmission\Entities\SubjectsPhases;
+use Modules\FormSubmission\Entities\FormStatus;
 use Modules\Admin\Entities\FormType;
 use DB;
 use Carbon\Carbon;
@@ -76,14 +76,14 @@ class GradingController extends Controller
 
             // get form types for modality
             foreach($getModilities as $key => $modility) {
-                
+
                 $getSteps = PhaseSteps::select('phase_steps.step_id', 'phase_steps.step_name', 'phase_steps.modility_id', 'form_types.id as form_type_id', 'form_types.form_type')
                                         ->leftJoin('form_types', 'form_types.id', '=', 'phase_steps.form_type_id')
                                         ->where('modility_id', $modility->modility_id)
                                         ->orderBy('form_types.sort_order')
                                         ->groupBy('phase_steps.form_type_id')
                                         ->get()->toArray();
-                
+
                 $modalitySteps[$modility->modility_name] = $getSteps;
             }
 
@@ -108,15 +108,15 @@ class GradingController extends Controller
                                     'form_type_id' => $type['form_type_id']
                                 ];
 
-                                
+
                                 if ($step->form_type_id == 2) {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\Admin\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray);
+                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray);
                                 } else {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
+                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
                                 }
-                            
+
                         } // step lopp ends
 
                     } // modality loop ends
@@ -147,7 +147,7 @@ class GradingController extends Controller
                 if ($request->phase != '') {
                     $subjects = $subjects->where('form_submit_status.study_structures_id', $request->phase);
                 }
-                
+
                 if ($request->modility != '') {
 
                     $subjects = $subjects->where('form_submit_status.modility_id', $request->modility);
@@ -178,7 +178,7 @@ class GradingController extends Controller
             $getModilities = $getModilities->select('form_submit_status.modility_id', 'phase_steps.step_id', 'phase_steps.step_name', 'modilities.modility_name')
             ->leftJoin('modilities', 'modilities.id', '=', 'form_submit_status.modility_id')
             ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id');
-            
+
             if ($request->modility != '') {
 
                 $getModilities = $getModilities->where('form_submit_status.modility_id', $request->modility);
@@ -191,7 +191,7 @@ class GradingController extends Controller
 
             // get form types for modality
             foreach($getModilities as $modility) {
-                
+
                 $getSteps = FormStatus::query();
 
                 $getSteps = $getSteps->select('form_submit_status.form_type_id', 'form_submit_status.modility_id','phase_steps.step_id', 'phase_steps.step_name', 'modilities.modility_name', 'form_types.form_type', 'form_types.sort_order')
@@ -213,7 +213,7 @@ class GradingController extends Controller
             } // loop ends modility
 
             }// subject empty check
-            
+
             //get form status depending upon subject, phase and modality
             if ($modalitySteps != null) {
                 foreach($subjects as $subject) {
@@ -222,10 +222,10 @@ class GradingController extends Controller
 
                     // modality loop
                     foreach($modalitySteps as $key => $formType) {
-                       
+
                         // form type loop
                         foreach($formType as $type) {
-                            
+
                             $step = PhaseSteps::where('step_id', $type['step_id'])->first();
 
                             if ($step != null) {
@@ -238,24 +238,24 @@ class GradingController extends Controller
                                 ];
 
                                 // check for graders
-                                $gradersNumbers = ($request->graders_number != '') ? $request->graders_number : 0; 
+                                $gradersNumbers = ($request->graders_number != '') ? $request->graders_number : 0;
 
                                 if ($step->form_type_id == 2) {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\Admin\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $gradersNumbers);
-                                
+                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $gradersNumbers);
+
                                 } else {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
+                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
                                 }
 
                             } // step check ends
-                            
+
                         } // step lopp ends
 
                     } // modality loop ends
                     // assign the array to the key
-                    
+
                     $subject->form_status = $formStatus;
                 }// subject loop ends
 

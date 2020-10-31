@@ -7,7 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
 use Modules\Admin\Entities\Section;
-use Modules\Admin\Traits\Replication\ReplicatePhaseStructure;
+use Modules\FormSubmission\Traits\Replication\ReplicatePhaseStructure;
 
 class SectionController extends Controller
 {

@@ -10,7 +10,7 @@ use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\FormType;
 use Modules\Admin\Entities\Modility;
-use Modules\Admin\Traits\Replication\ReplicatePhaseStructure;
+use Modules\FormSubmission\Traits\Replication\ReplicatePhaseStructure;
 
 class StudyStructureController extends Controller
 {
