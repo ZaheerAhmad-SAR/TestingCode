@@ -13,7 +13,7 @@ use Modules\Admin\Entities\Other;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\StudySite;
 use Modules\Admin\Entities\Subject;
-use Modules\Admin\Entities\SubjectsPhases;
+use Modules\FormSubmission\Entities\SubjectsPhases;
 use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\Modility;
@@ -166,7 +166,7 @@ class TransmissionController extends Controller
         // remove the upper section
 
         $explodeGetCFtPTrans = explode('<?xml', $request);
-      
+
         // concatinate xml with the remaining  xml
         $xml = '<?xml'.$explodeGetCFtPTrans[1];
         //dd($xml);

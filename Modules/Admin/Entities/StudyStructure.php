@@ -69,4 +69,12 @@ class StudyStructure extends Model
     {
         return $this->hasMany(PhaseReplicationStructure::class, 'study_structures_id', 'id');
     }
+
+    public static function getStudyPhaseIdsArray($studyId)
+    {
+        return self::where('study_id', 'like', $studyId)
+            ->withOutGlobalScope(StudyStructureWithoutRepeatedScope::class)
+            ->pluck('id')
+            ->toArray();
+    }
 }
