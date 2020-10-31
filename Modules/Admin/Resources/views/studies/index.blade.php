@@ -386,9 +386,23 @@
                             <div class="col-md-2">
                                 <input type="checkbox" name="studySites" checked>
                             </div>
-                            <div class="col-md-2">Phases & Steps</div>
+                            <div class="col-md-2">Phases & Steps <br>Sections & Questions</div>
                             <div class="col-md-2">
                                 <input type="checkbox" name="phasesSteps" checked>
+                            </div>
+                            <div class="col-md-2">Answers</div>
+                            <div class="col-md-2">
+                                <input type="checkbox" name="answers" checked>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-2">Transmissions</div>
+                            <div class="col-md-2">
+                                <input type="checkbox" name="transmissions" checked>
+                            </div>
+                            <div class="col-md-2">Audit Trail</div>
+                            <div class="col-md-2">
+                                <input type="checkbox" name="auditTrail" checked>
                             </div>
                         </div>
                         <div class="modal-footer">

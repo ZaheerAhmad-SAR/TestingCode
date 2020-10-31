@@ -27,12 +27,6 @@
                             <button class="close" data-dismiss="alert">&times;</button>
                         </div>
                     </div>
-                    @else
-                    <div class="alert alert-danger alert-dismissible">
-                        <a type="submit" class="btn btn-outline-info" href="{{route('users.updateProfile')}}" >Backup Codes</a>
-                        <strong>Warning!</strong> Google 2-Factor Auth is enabled, View your backup Codes.
-                        <button class="close" data-dismiss="alert">&times;</button>
-                    </div>
             @endif
                 <!-- title here  -->
                 <!--  -->

@@ -9,8 +9,11 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Modules\Admin\Entities\Annotation;
+use Modules\Admin\Entities\Answer;
 use Modules\Admin\Entities\Coordinator;
+use Modules\Admin\Entities\CrushFtpTransmission;
 use Modules\Admin\Entities\DiseaseCohort;
+use Modules\Admin\Entities\FinalAnswer;
 use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\Other;
 use Modules\Admin\Entities\PhaseSteps;
@@ -29,6 +32,7 @@ use Modules\Admin\Entities\StudySite;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\StudyUser;
 use Modules\Admin\Entities\Subject;
+use Modules\Admin\Entities\TrailLog;
 use Modules\Admin\Scopes\StudyStructureOrderByScope;
 use Modules\Admin\Scopes\StudyStructureWithoutRepeatedScope;
 use Modules\Admin\Traits\QuestionDataValidation;
@@ -315,7 +319,6 @@ class StudyController extends Controller
     /** get clone of the study */
     public function cloneStudy(Request $request)
     {
-        dd($request->all());
         $study_id = $request->study_ID;
         $mystudy = Study::with('users','subjects', 'diseaseCohort')
             ->find($study_id);
@@ -348,7 +351,7 @@ class StudyController extends Controller
                     ]);
                 }
             }
-            if ($request->user  == 'on') {
+            if ($request->studyUsers  == 'on') {
                 $study_users = UserRole::where('study_id','=',$study_id)->get();
                 foreach ($study_users  as $user) {
                     $id = \Illuminate\Support\Str::uuid();
@@ -365,10 +368,9 @@ class StudyController extends Controller
                 foreach ($study_sites as $site) {
                     $id = \Illuminate\Support\Str::uuid();
                    $site = StudySite::create([
-                        'id'    => $id,
                         'study_id' => $replica_id->id,
-                        'site_id' => $site->id,
-                        'study_site_id' => $site->study_site_id
+                        'site_id' => $site->site_id,
+                        'study_site_id' => $site->study_site_id . 'Cloned'
                     ]);
                     $replica_site_id = Study::select('id')->latest()->first();
                     $primary_investigators = PrimaryInvestigator::where('site_id','=',$site->site_id)->get();
@@ -379,7 +381,7 @@ class StudyController extends Controller
                             'first_name'    => $primary_investigator->first_name,
                             'mid_name'    => $primary_investigator->mid_name,
                             'last_name'    => $primary_investigator->last_name,
-                            'site_id'    => $replica_site_id,
+                            'site_id'    => $replica_site_id->id,
                             'phone'    => $primary_investigator->phone,
                             'email'    => $primary_investigator->email,
                         ]);
@@ -392,7 +394,7 @@ class StudyController extends Controller
                             'first_name'    => $coordinator->first_name,
                             'mid_name'    => $coordinator->mid_name,
                             'last_name'    => $coordinator->last_name,
-                            'site_id'    => $replica_site_id,
+                            'site_id'    => $replica_site_id->id,
                             'phone'    => $coordinator->phone,
                             'email'    => $coordinator->email,
                         ]);
@@ -405,7 +407,7 @@ class StudyController extends Controller
                             'first_name'    => $photographer->first_name,
                             'mid_name'    => $photographer->mid_name,
                             'last_name'    => $photographer->last_name,
-                            'site_id'    => $replica_site_id,
+                            'site_id'    => $replica_site_id->id,
                             'phone'    => $photographer->phone,
                             'email'    => $photographer->email,
                         ]);
@@ -418,7 +420,7 @@ class StudyController extends Controller
                             'first_name'    => $other->first_name,
                             'mid_name'    => $other->mid_name,
                             'last_name'    => $other->last_name,
-                            'site_id'    => $replica_site_id,
+                            'site_id'    => $replica_site_id->id,
                             'phone'    => $other->phone,
                             'email'    => $other->email,
                         ]);
@@ -432,14 +434,14 @@ class StudyController extends Controller
                     $id = \Illuminate\Support\Str::uuid();
                     Subject::create([
                         'id' => $id,
-                        'study_id'  => $replica_id,
+                        'study_id'  => $replica_id->id,
                         'subject_id'    => $subject->subject_id,
                         'enrollment_date'   => $subject->enrollment_date,
                         'study_eye' => $subject->study_eye,
                         'site_id' => $subject->site_id,
                         'disease_cohort_id' => $subject->disease_cohort_id,
-
                     ]);
+                    $replica_subject_id = Study::select('id')->latest()->first();
                 }
             }
             if ($request->phasesSteps == 'on'){
@@ -448,7 +450,7 @@ class StudyController extends Controller
                     $id = \Illuminate\Support\Str::uuid();
                     StudyStructure::create([
                         'id'    =>  $id,
-                        'study_id'  => $replica_id,
+                        'study_id'  => $replica_id->id,
                         'name'  => $phase->name,
                         'position'  => $phase->position,
                         'duration'  => $phase->duration,
@@ -535,7 +537,7 @@ class StudyController extends Controller
                                     $id = Str::uuid();
                                     Annotation::create([
                                         'id'    => $id,
-                                        'study_id'  => $replica_id,
+                                        'study_id'  => $replica_id->id,
                                         'label' => $question_annotation->label,
                                         'deleted_at'    => Null
                                     ]);
@@ -554,15 +556,154 @@ class StudyController extends Controller
                                         'deleted_at'    => NULL,
                                     ]);
                                 }
+                                if($request->answers == 'on'){
+                                    $answers = Answer::where('question_id','=',$question)->get();
+                                    $final_answers = FinalAnswer::where('question_id','=',$question)->get();
+                                    foreach ($answers as $answer){
+                                        $id = \Illuminate\Support\Str::uuid();
+                                        Answer::create([
+                                            'id'    => $id,
+                                            'form_filled_by_user_id'    => $question->form_filled_by_user_id,
+                                            'grader_id' => $question->grader_id,
+                                            'adjudicator_id'   => $question->adjudicator_id,
+                                            'subject_id'    => '',
+                                            'study_id'  => $replica_id->id,
+                                            'study_structures_id'   => $replica_phase_id,
+                                            'phase_steps_id'    => $replica_step_id,
+                                            'section_id'    => $replica_section_id,
+                                            'question_id'   => $replica_question_id,
+                                            'field_id'  => $request->field_id,
+                                            'answer'    => $request->answer,
+                                            'is_answer_accepted'    => $request->is_answer_accepted
+                                        ]);
+                                    }
+                                    foreach ($final_answers as $final_answer){
+                                        $id = \Illuminate\Support\Str::uuid();
+                                        FinalAnswer::create([
+                                            'id'    => $id,
+                                            'study_id'  => $replica_id->id,
+                                            'subject_id'    => '',
+                                            'study_structures_id'   => $replica_phase_id,
+                                            'phase_steps_id'    => $replica_step_id,
+                                            'section_id'    => $replica_section_id,
+                                            'question_id'   => $replica_question_id,
+                                            'field_id'  => $request->field_id,
+                                            'answer'    => $request->answer,
+                                        ]);
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
+            if ($request->transmissions ==  'on'){
+                $transmissions = CrushFtpTransmission::where('study_id','=',$mystudy)->get();
+                foreach ($transmissions as $transmission){
+                    $id = Str::uuid();
+                    CrushFtpTransmission::create([
+                        'id' => $id,
+                        'data'  => $transmission->data,
+                        'Transmission_Number'  => $transmission->Transmission_Number,
+                        'Study_Name'  => $transmission->Study_Name . 'Cloned',
+                        'StudyI_ID'  => $transmission->StudyI_ID,
+                        'sponsor'  => $transmission->sponsor,
+                        'Study_central_email'  => $transmission->Study_central_email,
+                        'Salute'  => $transmission->Salute,
+                        'Submitter_First_Name'  => $transmission->Submitter_First_Name,
+                        'Submitter_Last_Name'  => $transmission->Submitter_Last_Name,
+                        'Submitter_email'  => $transmission->Submitter_email,
+                        'Submitter_phone'  => $transmission->Submitter_phone,
+                        'Submitter_Role'  => $transmission->Submitter_Role,
+                        'Site_Initials'  => $transmission->Site_Initials,
+                        'Site_Name'  => $transmission->Site_Name,
+                        'Site_ID'  => $transmission->Site_ID,
+                        'sit_id'  => $transmission->sit_id,
+                        'PI_Name'  => $transmission->PI_Name,
+                        'PI_FirstName'  => $transmission->PI_FirstName,
+                        'PI_LastName'  => $transmission->PI_LastName,
+                        'PI_email'  => $transmission->PI_email,
+                        'Site_st_address'  => $transmission->Site_st_address,
+                        'Site_city'  => $transmission->Site_city,
+                        'Site_state'  => $transmission->Site_state,
+                        'Site_Zip'  => $transmission->Site_Zip,
+                        'Site_country'  => $transmission->Site_country,
+                        'Subject_ID'  => $transmission->Subject_ID,
+                        'subj_id'  => $transmission->subj_id,
+                        'new_subject'  => $transmission->new_subject,
+                        'StudyEye'  => $transmission->StudyEye,
+                        'visit_name'  => $transmission->visit_name,
+                        'phase_id'  => $transmission->phase_id,
+                        'visit_date'  => $transmission->visit_date,
+                        'ImageModality'  => $transmission->ImageModality,
+                        'modility_id'  => $transmission->modility_id,
+                        'device_model'  => $transmission->device_model,
+                        'device_oirrcID'  => $transmission->device_oirrcID,
+                        'Compliance'  => $transmission->Compliance,
+                        'Compliance_comments'  => $transmission->Compliance_comments,
+                        'Submitted_By'  => $transmission->Submitted_By,
+                        'photographer_full_name'  => $transmission->photographer_full_name,
+                        'photographer_email'  => $transmission->photographer_email,
+                        'photographer_ID'  => $transmission->photographer_ID,
+                        'Number_files'  => $transmission->Number_files,
+                        'transmitted_file_name'  => $transmission->transmitted_file_name,
+                        'transmitted_file_size'  => $transmission->transmitted_file_size,
+                        'archive_physical_location'  => $transmission->archive_physical_location,
+                        'received_month'  => $transmission->received_month,
+                        'received_day'  => $transmission->received_day,
+                        'received_year'  => $transmission->received_year,
+                        'received_hours'  => $transmission->received_hours,
+                        'received_minutes'  => $transmission->received_minutes,
+                        'received_seconds'  => $transmission->received_seconds,
+                        'received-mesc'  => $transmission->received-mesc,
+                        'Study_QCO1'  => $transmission->Study_QCO1,
+                        'StudyQCO2'  => $transmission->StudyQCO2,
+                        'Study_cc1'  => $transmission->Study_cc1,
+                        'Study_cc2'  => $transmission->Study_cc2,
+                        'QC_folder'  => $transmission->QC_folder,
+                        'Graders_folder'  => $transmission->Graders_folder,
+                        'QClink'  => $transmission->QClink,
+                        'Glink'  => $transmission->Glink,
+                        'created_by'  => $transmission->created_by,
+                        'updated_by'  => $transmission->Study_QCO1,
+                        'status'  => $transmission->status,
+                        'is_read'  => $transmission->is_read,
+                        'dcm_availability'  => $transmission->dcm_availability,
+                        'received_file_format'  => $transmission->received_file_format,
+                        'qc_officerId'  => $transmission->qc_officerId,
+                        'qc_officerName'  => $transmission->qc_officerName,
+                        'cms_visit_reference'  => $transmission->cms_visit_reference,
+                        'comment'  => $transmission->comment,
+                        'created_date'  => $transmission->created_date,
+                        'updated_date'  => $transmission->updated_date,
+                    ]);
+                }
+            }
+            if ($request->auditTrail == 'on'){
+                $auditTrails = TrailLog::where('study_id','=',$mystudy)->get();
+                foreach ($auditTrails as $auditTrail){
+                    $id = Str::uuid();
+                    TrailLog::create([
+                        'id'    => $id,
+                        'user_id'   => $auditTrail->user_id,
+                        'user_name' => $auditTrail->user_name,
+                        'role_id'   => $auditTrail->role_id,
+                        'event_id'  => $auditTrail->event_id,
+                        'event_section' =>$auditTrail->event_section,
+                        'event_type'    => $auditTrail->event_type,
+                        'event_message' => $auditTrail->event_message,
+                        'ip_address'    => $auditTrail->ip_address,
+                        'study_id'      => $replica_id->id,
+                        'event_url'     => $request->event_url,
+                        'event_details' => $auditTrail->event_details,
+                        'event_old_details' => $auditTrail->event_old_details,
+                    ]);
+                }
+            }
         }
         $studies = Study::all();
-        return \response()->json($studies);
-        //     return redirect()->route('studies.index')->with('success','Study cloned successfully');
+       // return \response()->json($studies);
+       return redirect()->route('studies.index')->with('success','Study cloned successfully');
     }
 
     /**
@@ -573,7 +714,14 @@ class StudyController extends Controller
     public function destroy($id)
     {
         $study = Study::where('id', $id)->delete();
-        //dd($study);
+        $studyusers = UserRole::where('study_id','=',$id)->get();
+        foreach ($studyusers as $studyuser){
+            $studyuser->delete();
+        }
+        $studysites = StudySite::where('study_id','=',$id)->get();
+        foreach ($studysites as $studysite){
+            $studysite->delete();
+        }
         return \response()->json($study);
     }
 }
