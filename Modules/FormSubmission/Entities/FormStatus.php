@@ -104,11 +104,15 @@ class FormStatus extends Model
         return $query->pluck('form_filled_by_user_id')->toArray();
     }
 
-    public static function getFormStatus($step, $getFormStatusArray, $wrap = false)
+    public static function getFormStatus($step, $getFormStatusArray, $wrap = false, $wrapSeperate = false)
     {
         $formStatusObj = self::getFormStatusObj($getFormStatusArray);
         if ($wrap) {
-            return self::makeFormStatusSpan($step, $formStatusObj);
+            if ($wrapSeperate) {
+                return self::makeFormStatusSeperateSpan($step, $formStatusObj);
+            } else {
+                return self::makeFormStatusSpan($step, $formStatusObj);
+            }
         } else {
             return $formStatusObj->form_status;
         }
@@ -126,6 +130,50 @@ class FormStatus extends Model
         $spanStr = '<span class="' . $imgSpanStepClsStr . '" ' . $info . '>';
         $spanStr .= self::makeFormStatusSpanImage($formStatus) . '</span>';
         return $spanStr;
+    }
+
+    public static function makeFormStatusSeperateSpan($formStatusObj)
+    {
+        $formStatus = $formStatusObj->form_status;
+
+        $status = '';
+        $userName = '';
+
+        switch ($formStatus) {
+            case 'no_status':
+                $status = 'Not Initiated';
+                $userName = '';
+                break;
+
+            case 'no_required':
+                $status = 'Not Required';
+                $userName = '';
+                break;
+
+            case 'incomplete':
+                $status = 'Initiated';
+                $userName = $formStatusObj->user->name;
+                break;
+
+            case 'complete':
+                $status = 'Complete';
+                $userName = $formStatusObj->user->name;
+                break;
+
+            case 'resumable':
+                $status = 'Editing';
+                $userName = $formStatusObj->user->name;
+                break;
+
+            case 'adjudication':
+                $status = 'In Adjudication';
+                $userName = $formStatusObj->user->name;
+                break;
+        }
+        if (!empty($userName)) {
+            $userName = ' - ' . $userName;
+        }
+        return $status . $userName;
     }
 
     public static function makeGraderFormStatusSpan($step, $formStatusObj)

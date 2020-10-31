@@ -7,6 +7,7 @@ $subjectId = (isset($subjectId) && !empty($subjectId))? $subjectId:'';
 $studyId = (isset($studyId) && !empty($studyId))? $studyId:'';
 $stepCounter = (isset($stepCounter) && !empty($stepCounter))? $stepCounter:0;
 $form_filled_by_user_id = (isset($form_filled_by_user_id) && !empty($form_filled_by_user_id))? $form_filled_by_user_id:0;
+$transmissionNumber = \Modules\FormSubmission\Entities\SubjectsPhases::getTransmissionNumber($subjectId, $phase->id);
 /**************************************/
 /**************************************/
 /**************************************/
@@ -91,6 +92,10 @@ if(null !== $formStatusObj){
                                                         {{ $section->name }}
                                                     </h6>
                                                     {{ $section->description }}
+                                                    @if(!empty($transmissionNumber))
+                                                      <br>
+                                                      <span class="text text-danger">Transmission Number : {{ $transmissionNumber }}</span>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </a>

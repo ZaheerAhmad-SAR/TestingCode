@@ -49,14 +49,62 @@ class AdjudicationFormStatus extends Model
         return self::getAdjudicationFormStatusObjQuery($getAdjudicationFormStatusArray)->firstOrNew();
     }
 
-    public static function getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, $wrap = false)
+    public static function getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, $wrap = false, $wrapSeperate = false)
     {
         $adjudicationFormStatusObj = self::getAdjudicationFormStatusObj($getAdjudicationFormStatusArray);
         if ($wrap) {
-            return self::makeAdjudicationFormStatusSpan($step, $adjudicationFormStatusObj);
+            if ($wrapSeperate) {
+                return self::makeAdjudicationFormStatusSeperateSpan($adjudicationFormStatusObj);
+            } else {
+                return self::makeAdjudicationFormStatusSpan($step, $adjudicationFormStatusObj);
+            }
         } else {
             return $adjudicationFormStatusObj->adjudication_status;
         }
+    }
+
+    public static function makeAdjudicationFormStatusSeperateSpan($adjudicationFormStatusObj)
+    {
+        $adjudicationStatus = $adjudicationFormStatusObj->adjudication_status;
+
+        $status = '';
+        $userName = '';
+
+        switch ($adjudicationStatus) {
+            case 'no_status':
+                $status = 'Not Initiated';
+                $userName = '';
+                break;
+
+            case 'no_required':
+                $status = 'Not Required';
+                $userName = '';
+                break;
+
+            case 'incomplete':
+                $status = 'Initiated';
+                $userName = $adjudicationFormStatusObj->user->name;
+                break;
+
+            case 'complete':
+                $status = 'Complete';
+                $userName = $adjudicationFormStatusObj->user->name;
+                break;
+
+            case 'resumable':
+                $status = 'Editing';
+                $userName = $adjudicationFormStatusObj->user->name;
+                break;
+
+            case 'adjudication':
+                $status = 'In Adjudication';
+                $userName = $adjudicationFormStatusObj->user->name;
+                break;
+        }
+        if (!empty($userName)) {
+            $userName = ' - ' . $userName;
+        }
+        return $status . $userName;
     }
 
     public static function makeAdjudicationFormStatusSpan($step, $adjudicationFormStatusObj)
@@ -137,11 +185,11 @@ class AdjudicationFormStatus extends Model
         return AdjudicationFormStatus::find($id);
     }
 
-    public static function getStepsIdsArrayByStatus($form_status, $stepsIdsArray)
+    public sadjudicationc function getStepsIdsArrayByStatus($adjudication_status, $stepsIdsArray)
     {
         return self::whereIn('phase_steps_id', $stepsIdsArray)
             ->where('adjudication_status', 'like', $form_status)
             ->pluck('phase_steps_id')
-            ->toArray();
+            ->toArraadjudication
     }
 }
