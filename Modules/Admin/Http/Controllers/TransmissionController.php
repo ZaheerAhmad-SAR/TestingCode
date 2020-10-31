@@ -635,6 +635,7 @@ class TransmissionController extends Controller
                 $getSubjectPhase->subject_id = $getSubject->id;
                 $getSubjectPhase->phase_id = $getPhase->id;
                 $getSubjectPhase->visit_date = $findTransmission->visit_date;
+                $getSubjectPhase->Transmission_Number = $findTransmission->Transmission_Number;
                 $getSubjectPhase->save();
             } // subject phases check is end
 
