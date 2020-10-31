@@ -115,10 +115,17 @@
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
 
-                    <div class="form-group col-md-4 mt-3">        
+                    <div class="form-group col-md-12 mt-3">        
                         <button type="button" class="btn btn-primary other-filters">Other Filters</button>
                         <button type="button" class="btn btn-primary reset-filter">Reset</button>
+
+                        @if (!$subjects->isEmpty())
+                        <span style="float: right; margin-top: 3px;" class="badge badge-pill badge-primary">
+                            {{ $subjects->count().' out of '.$subjects->total() }}
+                        </span>
+                        @endif
                     </div>
+
                     <hr>
                     <!-- Other Filters ends -->
 
