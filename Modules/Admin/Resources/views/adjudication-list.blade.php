@@ -99,9 +99,9 @@
                             <input type="hidden" name="form_1" value="1" class="form-control">
 
                             <div class="form-group col-md-3">
-                                <label for="inputState">Suject</label>
+                                <label for="inputState">Subject</label>
                                 <select id="subject" name="subject" class="form-control filter-form-data">
-                                    <option value="">All Suject</option>
+                                    <option value="">All Subject</option>
                                     @foreach($getFilterSubjects as $filterSubject)
                                     <option @if(request()->subject == $filterSubject->id) selected @endif value="{{ $filterSubject->id }}">{{ $filterSubject->subject_id }}</option>
                                     @endforeach
@@ -138,6 +138,62 @@
 
                             <div class="form-group col-md-2 mt-4">        
                                <!--  <button type="button" class="btn btn-primary reset-filter-1">Reset</button> -->
+                                <button type="submit" class="btn btn-primary btn-lng">Filter Records</button>
+                            </div>
+
+                        </div>
+                        <!-- row ends -->
+                    </form>
+
+                    <!-- ----------------- Form Two Starts ------------------------ -->
+                    <form action="{{route('adjudication.index')}}" method="get" class="form-2 filter-form">
+                        <div class="form-row" style="padding: 10px;">
+                            
+                            <input type="hidden" name="form_2" value="2" class="form-control">
+
+                            <div class="form-group col-md-2">
+                                <label for="inputState">Subject</label>
+                                <select id="subject" name="subject" class="form-control filter-form-data">
+                                    <option value="">All Subject</option>
+                                    @foreach($getFilterSubjects as $filterSubject)
+                                    <option @if(request()->subject == $filterSubject->id) selected @endif value="{{ $filterSubject->id }}">{{ $filterSubject->subject_id }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label for="inputState">Phase</label>
+                                <select id="phase" name="phase" class="form-control filter-form-data">
+                                    <option value="">All Phase</option>
+                                    @foreach($getFilterPhases as $filterPhase)
+                                    <option  @if(request()->phase == $filterPhase->id) selected @endif value="{{ $filterPhase->id }}">{{ $filterPhase->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <div class="form-group col-md-3">
+                                <label for="inputState">Modality</label>
+                                <select id="modility" name="modility" class="form-control filter-form-data">
+                                    <option value="">All Modality</option>
+                                     @foreach($getFilterModilities as $filterModality)
+                                     <option @if(request()->modility == $filterModality->id) selected @endif value="{{ $filterModality->id }}">{{ $filterModality->modility_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <div class="form-group col-md-3">
+                            
+                                <label for="inputState">Status</label>
+                                <select id="form_status" name="form_status" class="form-control filter-form-data">
+                                    <option value="">All Status</option>
+                                     @foreach($getFilterFormStatus as $filter => $filterStatus)
+                                     <option @if(request()->form_status == $filter) selected @endif value="{{ $filter }}">{{ $filterStatus }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                   
+                            <div class="form-group col-md-2 mt-4">        
+                                <!-- <button type="button" class="btn btn-primary reset-filter-2">Reset</button> -->
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Records</button>
                             </div>
 
@@ -307,7 +363,7 @@
                             
                             @elseif(!$subjects->isEmpty() && request()->has('form_2'))
 
-                             {{$subjects->appends(['form_2' => \Request::get('form_2'), 'subject' => \Request::get('subject'), 'phase' => \Request::get('phase'), 'modility' => \Request::get('modility'), 'form_type' => \Request::get('form_type'), 'form_status' => \Request::get('form_status'), 'graders_number' => \Request::get('graders_number')])->links()}}
+                             {{$subjects->appends(['form_2' => \Request::get('form_2'), 'subject' => \Request::get('subject'), 'phase' => \Request::get('phase'), 'modility' => \Request::get('modility'), 'form_status' => \Request::get('form_status')])->links()}}
 
                             @endif
                            
