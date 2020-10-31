@@ -128,9 +128,9 @@
                             <input type="hidden" name="form_1" value="1" class="form-control">
 
                             <div class="form-group col-md-3">
-                                <label for="inputState">Suject</label>
+                                <label for="inputState">Subject</label>
                                 <select id="subject" name="subject" class="form-control filter-form-data">
-                                    <option value="">All Suject</option>
+                                    <option value="">All Subject</option>
                                     @foreach($getFilterSubjects as $filterSubject)
                                     <option @if(request()->subject == $filterSubject->id) selected @endif value="{{ $filterSubject->id }}">{{ $filterSubject->subject_id }}</option>
                                     @endforeach
@@ -181,9 +181,9 @@
                             <input type="hidden" name="form_2" value="2" class="form-control">
 
                             <div class="form-group col-md-2">
-                                <label for="inputState">Suject</label>
+                                <label for="inputState">Subject</label>
                                 <select id="subject" name="subject" class="form-control filter-form-data">
-                                    <option value="">All Suject</option>
+                                    <option value="">All Subject</option>
                                     @foreach($getFilterSubjects as $filterSubject)
                                     <option @if(request()->subject == $filterSubject->id) selected @endif value="{{ $filterSubject->id }}">{{ $filterSubject->subject_id }}</option>
                                     @endforeach

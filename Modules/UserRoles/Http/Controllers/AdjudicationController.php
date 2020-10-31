@@ -157,7 +157,7 @@ class AdjudicationController extends Controller
 
             // get subjects
             $subjects = AdjudicationFormStatus::query();
-            $subjects = $subjects->select('adjudication_form_status.subject_id as subj_id', 'adjudication_form_status.study_id', 'adjudication_form_status.study_structures_id', 'adjudication_form_status.phase_steps_id', 'adjudication_form_status.form_status', 'adjudication_form_status.modility_id','subjects.subject_id', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'phase_steps.graders_number', 'subjects_phases.visit_date', 'sites.site_name')
+            $subjects = $subjects->select('adjudication_form_status.subject_id as subj_id', 'adjudication_form_status.study_id', 'adjudication_form_status.study_structures_id', 'adjudication_form_status.phase_steps_id', 'adjudication_form_status.adjudication_status', 'adjudication_form_status.modility_id','subjects.subject_id', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'phase_steps.graders_number', 'subjects_phases.visit_date', 'sites.site_name')
                 ->leftJoin('subjects', 'subjects.id', '=', 'adjudication_form_status.subject_id')
                 ->leftJoin('study_structures', 'study_structures.id', '=', 'adjudication_form_status.study_structures_id')
                 ->leftJoin('sites', 'sites.id', '=', 'subjects.site_id')
@@ -177,14 +177,14 @@ class AdjudicationController extends Controller
                     $subjects = $subjects->where('adjudication_form_status.modility_id', $request->modility);
                 }
 
-                if ($request->form_type != '') {
+                // if ($request->form_type != '') {
 
-                    $subjects = $subjects->where('adjudication_form_status.form_type_id', $request->form_type);
-                }
+                //     $subjects = $subjects->where('adjudication_form_status.form_type_id', $request->form_type);
+                // }
 
                 if ($request->form_status != '') {
 
-                    $subjects = $subjects->where('adjudication_form_status.form_status', $request->form_status);
+                    $subjects = $subjects->where('adjudication_form_status.adjudication_status', $request->form_status);
                 }
 
                 if ($request->graders_number != '') {
@@ -192,48 +192,36 @@ class AdjudicationController extends Controller
                     $subjects = $subjects->where('phase_steps.graders_number', $request->graders_number);
                 }
 
-                $subjects = $subjects->groupBy(['adjudication_form_status.subject_id', 'adjudication_form_status.study_structures_id'])
+                 $subjects = $subjects->groupBy(['adjudication_form_status.subject_id', 'adjudication_form_status.study_structures_id'])
                 ->paginate(15);
-
 
             if (!$subjects->isEmpty()) {
             // get modalities
-            $getModilities = FormStatus::query();
-            $getModilities = $getModilities->select('form_submit_status.modility_id', 'phase_steps.step_id', 'phase_steps.step_name', 'modilities.modility_name')
-            ->leftJoin('modilities', 'modilities.id', '=', 'form_submit_status.modility_id')
-            ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id');
+            $getModilities = AdjudicationFormStatus::query();
+            $getModilities = $getModilities->select('adjudication_form_status.modility_id', 'phase_steps.step_id', 'phase_steps.step_name', 'modilities.modility_name')
+            ->leftJoin('modilities', 'modilities.id', '=', 'adjudication_form_status.modility_id')
+            ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'adjudication_form_status.phase_steps_id');
             
             if ($request->modility != '') {
 
-                $getModilities = $getModilities->where('form_submit_status.modility_id', $request->modility);
+                $getModilities = $getModilities->where('adjudication_form_status.modility_id', $request->modility);
             }
 
-            $getModilities = $getModilities->groupBy('form_submit_status.modility_id')
+            $getModilities = $getModilities->groupBy('adjudication_form_status.modility_id')
                                             ->orderBy('modilities.modility_name')
                                             ->get();
-
 
             // get form types for modality
             foreach($getModilities as $modility) {
                 
-                $getSteps = FormStatus::query();
+                // get modalities as per adjudication
+                $modalitySteps['Adjudication'][] = array(
+                    "step_id" => $modility->step_id,
+                    "step_name" => $modility->step_name,
+                    "modility_id" => $modility->modility_id,
+                    "form_type" => $modility->modility_name,
+                );
 
-                $getSteps = $getSteps->select('form_submit_status.form_type_id', 'form_submit_status.modility_id','phase_steps.step_id', 'phase_steps.step_name', 'modilities.modility_name', 'form_types.form_type', 'form_types.sort_order')
-                    ->leftJoin('modilities', 'modilities.id', '=', 'form_submit_status.modility_id')
-                    ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id')
-                    ->leftJoin('form_types', 'form_types.id', '=', 'form_submit_status.form_type_id')
-                    ->where('form_submit_status.modility_id', $modility->modility_id);
-
-                    if ($request->form_type != '') {
-
-                        $getSteps = $getSteps->where('form_submit_status.form_type_id', $request->form_type);
-                    }
-
-                   $getSteps = $getSteps->orderBy('form_types.sort_order')
-                    ->groupBy('form_submit_status.form_type_id')
-                    ->get()->toArray();
-
-                $modalitySteps[$modility->modility_name] = $getSteps;
             } // loop ends modility
 
             }// subject empty check
@@ -254,24 +242,14 @@ class AdjudicationController extends Controller
 
                             if ($step != null) {
 
-                                $getFormStatusArray = [
+                                 // for ajudictaion
+                                $getAdjudicationFormStatusArray = [
                                     'subject_id' => $subject->subj_id,
                                     'study_structures_id' => $subject->phase_id,
                                     'modility_id'=> $type['modility_id'],
-                                    'form_type_id' => $type['form_type_id']
                                 ];
 
-                                // check for graders
-                                $gradersNumbers = ($request->graders_number != '') ? $request->graders_number : 0; 
-
-                                if ($step->form_type_id == 2) {
-
-                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\Admin\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $gradersNumbers);
-                                
-                                } else {
-
-                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\Admin\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
-                                }
+                                $formStatus[$key.'_'.$type['form_type']] = \Modules\Admin\Entities\AdjudicationFormStatus::getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, $wrap = true);
 
                             } // step check ends
                             
@@ -300,7 +278,18 @@ class AdjudicationController extends Controller
         $getFilterSites = Site::select('id', 'site_name')
                                 ->get();
 
-        return view('admin::adjudication-list', compact('subjects', 'modalitySteps', 'getFilterSubjects', 'getFilterPhases', 'getFilterSites'));
+        // get modilities
+        $getFilterModilities = Modility::select('id', 'modility_name')
+                                        ->get();
+
+        // get form status
+        $getFilterFormStatus = array(
+            'incomplete' => 'Initiated',
+            'complete' => 'Complete',
+            'resumable' => 'Editing'
+        );
+
+        return view('admin::adjudication-list', compact('subjects', 'modalitySteps', 'getFilterSubjects', 'getFilterPhases', 'getFilterSites', 'getFilterModilities', 'getFilterFormStatus'));
     }
 
     /**
