@@ -111,42 +111,32 @@ trait QuestionReplication
 
     /*************************** Question Validation *****************************/
 
-    private function addReplicatedQuestionValidation($question, $newQuestionId)
+    private function addReplicatedQuestionValidation($questionValidation, $replicatedQuestionId)
     {
-        $questionValidation = $question->questionValidation()->first();
-        if (null !== $questionValidation) {
-
-            $newQuestionValidationId = Str::uuid();
-            $newQuestionValidation = $questionValidation->replicate();
-            $newQuestionValidation->id = $newQuestionValidationId;
-            $newQuestionValidation->question_id = $newQuestionId;
-            $newQuestionValidation->parent_id = $questionValidation->id;
-            $newQuestionValidation->save();
-        }
+        $newQuestionValidationId = Str::uuid();
+        $newQuestionValidation = $questionValidation->replicate();
+        $newQuestionValidation->id = $newQuestionValidationId;
+        $newQuestionValidation->question_id = $replicatedQuestionId;
+        $newQuestionValidation->parent_id = $questionValidation->id;
+        $newQuestionValidation->save();
     }
 
-    private function updateReplicatedQuestionValidation($questionValidation, $replicatedQuestionValidation)
+    private function updateQuestionValidationToReplicatedVisits($questionId)
     {
-        $questionValidationAttributesArray = Arr::except($questionValidation->attributesToArray(), ['id', 'question_id', 'parent_id']);
-        $replicatedQuestionValidation->fill($questionValidationAttributesArray);
-        $replicatedQuestionValidation->update();
-    }
-
-    private function updateQuestionValidationToReplicatedVisits($questionValidation)
-    {
-        $replicatedQuestionValidations = QuestionValidation::where('parent_id', 'like', $questionValidation->id)->get();
-        foreach ($replicatedQuestionValidations as $replicatedQuestionValidation) {
-            $this->updateReplicatedQuestionValidation($questionValidation, $replicatedQuestionValidation);
-        }
-    }
-
-    private function deleteQuestionValidationToReplicatedVisits($questionValidation)
-    {
-        if (null !== $questionValidation) {
-            $replicatedQuestionValidations = QuestionValidation::where('parent_id', 'like', $questionValidation->id)->get();
-            foreach ($replicatedQuestionValidations as $replicatedQuestionValidation) {
-                $replicatedQuestionValidation->delete();
+        $replicatedQuestions = Question::where('parent_id', 'like', $questionId)->get();
+        foreach ($replicatedQuestions as $replicatedQuestion) {
+            $questionValidations = QuestionValidation::where('question_id', 'like', $questionId)->get();
+            foreach ($questionValidations as $questionValidation) {
+                $this->addReplicatedQuestionValidation($questionValidation, $replicatedQuestion->id);
             }
+        }
+    }
+
+    private function deleteQuestionValidationToReplicatedVisits($questionId)
+    {
+        $replicatedQuestions = Question::where('parent_id', 'like', $questionId)->get();
+        foreach ($replicatedQuestions as $replicatedQuestion) {
+            QuestionValidation::where('question_id', 'like', $replicatedQuestion->id)->delete();
         }
     }
 
@@ -232,24 +222,26 @@ trait QuestionReplication
         }
     }
 
+    private function deleteQuestionValidations($questionId)
+    {
+        $this->deleteQuestionValidationToReplicatedVisits($questionId);
+        QuestionValidation::where('question_id', $questionId)->delete();
+    }
+
     private function deleteQuestionAndItsRelatedValues($questionId)
     {
         $question = Question::find($questionId);
         $formField = FormFields::where('question_id', $questionId)->first();
-        $questionValidation = QuestionValidation::where('question_id', $questionId)->first();
         $questionDependency = QuestionDependency::where('question_id', $questionId)->first();
         $questionAdjudicationStatus = QuestionAdjudicationStatus::where('question_id', $questionId)->first();
 
         $this->deleteQuestionFormFieldToReplicatedVisits($formField);
-        $this->deleteQuestionValidationToReplicatedVisits($questionValidation);
+        $this->deleteQuestionValidations($questionId);
         $this->deleteQuestionDependenciesToReplicatedVisits($questionDependency);
         $this->deleteQuestionAdjudicationStatusesToReplicatedVisits($questionAdjudicationStatus);
 
         if (null !== $formField) {
             $formField->delete();
-        }
-        if (null !== $questionValidation) {
-            $questionValidation->delete();
         }
         if (null !== $questionDependency) {
             $questionDependency->delete();
