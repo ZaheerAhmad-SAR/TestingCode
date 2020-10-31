@@ -67,7 +67,7 @@ class AdjudicationFormStatus extends Model
             $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="' . $adjudicationFormStatusObj->user->name . '"';
         }
 
-        $imgSpanStepClsStr = buildSafeStr($step->step_id, 'img_adjudication_status_');
+        $imgSpanStepClsStr = buildAdjudicationStatusIdClsStr($step->step_id);
         $spanStr = '<span class="' . $imgSpanStepClsStr . '" ' . $info . '>';
         $spanStr .= self::makeAdjudicationFormStatusSpanImage($adjudicationFormStatus) . '</span>';
         return $spanStr;
@@ -123,7 +123,7 @@ class AdjudicationFormStatus extends Model
             $adjudicationFormStatusObj = self::insertAdjudicationFormStatus('incomplete', $getAdjudicationFormStatusArray);
         }
 
-        return ['id' => $adjudicationFormStatusObj->id, 'adjudicationFormStatus' => $adjudicationFormStatusObj->adjudication_status, 'adjudicationFormStatusIdStr' => buildAdjudicationStatusIdClsStr($adjudicationFormStatusObj->id)];
+        return ['id' => $adjudicationFormStatusObj->id, 'adjudicationFormStatus' => $adjudicationFormStatusObj->adjudication_status, 'adjudicationFormStatusIdStr' => buildAdjudicationStatusIdClsStr($request->stepId)];
     }
 
     public static function insertAdjudicationFormStatus($status = 'incomplete', $adjudicationFormStatusArray)

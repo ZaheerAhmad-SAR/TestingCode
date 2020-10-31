@@ -1,6 +1,10 @@
     @push('script')
         <script>
-            function submitAdjudicationForm(stepIdStr, formTypeId, formStatusIdStr) {
+            function putAdjudicationImage(responseImage, adjudicationFormStatusIdStr){
+                $('.' + adjudicationFormStatusIdStr).html('<img src="{{ url('/').'/images/' }}' + responseImage + '.png"/>');
+            }
+
+            function submitAdjudicationForm(stepIdStr, formStatusIdStr) {
                 disableByClass('make_disable_it');
                 var submitAdjudicationFormFlag = true;
                 if (isAdjudicationFormInEditMode(stepIdStr)) {
@@ -16,19 +20,18 @@
                         .serialize() +
                         '&adjudication_form_terms_cond_' + stepIdStr + '=' + term_cond + '&' + 'adjudication_form_edit_reason_text=' +
                         reason;
-                    submitAdjudicationFormRequest(frmData, stepIdStr, formTypeId, formStatusIdStr);
+                    submitAdjudicationFormRequest(frmData, stepIdStr, formStatusIdStr);
                 }
             }
 
-            function submitAdjudicationFormRequest(frmData, stepIdStr, formTypeId, formStatusIdStr) {
+            function submitAdjudicationFormRequest(frmData, stepIdStr, formStatusIdStr) {
                 $.ajax({
                     url: "{{ route('SubjectAdjudicationFormSubmission.submitStudyPhaseStepQuestionAdjudicationForm') }}",
                     type: 'POST',
                     data: frmData,
                     dataType: 'JSON',
                     success: function(response) {
-                        putResponseImage(stepIdStr, response.adjudicationFormStatus, formTypeId, response
-                            .adjudicationFormStatusIdStr);
+                        putAdjudicationImage(response.adjudicationFormStatus, response.adjudicationFormStatusIdStr);
                     }
                 });
             }
@@ -40,8 +43,7 @@
                     data: frmData,
                     dataType: 'JSON',
                     success: function(response) {
-                        putResponseImage(stepIdStr, response.adjudicationFormStatus, 0, response
-                            .adjudicationFormStatusIdStr);
+                        putAdjudicationImage(response.adjudicationFormStatus, response.adjudicationFormStatusIdStr);
                     }
                 });
             }
@@ -95,13 +97,13 @@
                 })
             }
 
-            function validateAndSubmitAdjudicationForm(stepIdStr, formTypeId, formStatusIdStr) {
+            function validateAndSubmitAdjudicationForm(stepIdStr, formStatusIdStr) {
                 if(canSubmitAdjudicationForm()){
                     const promise = validateAdjudicationForm(stepIdStr);
                     promise
                         .then((data) => {
                             console.log(data);
-                            submitAdjudicationForm(stepIdStr, formTypeId, formStatusIdStr);
+                            submitAdjudicationForm(stepIdStr, formStatusIdStr);
                         })
                         .catch((error) => {
                             console.log(error);
