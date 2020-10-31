@@ -65,12 +65,12 @@ class AdjudicationFormStatus extends Model
 
     public static function makeAdjudicationFormStatusSeperateSpan($adjudicationFormStatusObj)
     {
-        $adjudicationStatus = $adjudicationFormStatusObj->adjudication_status;
+        $adjudicationFormStatus = $adjudicationFormStatusObj->adjudication_status;
 
         $status = '';
         $userName = '';
 
-        switch ($adjudicationStatus) {
+        switch ($adjudicationFormStatus) {
             case 'no_status':
                 $status = 'Not Initiated';
                 $userName = '';
@@ -185,11 +185,11 @@ class AdjudicationFormStatus extends Model
         return AdjudicationFormStatus::find($id);
     }
 
-    public sadjudicationc function getStepsIdsArrayByStatus($adjudication_status, $stepsIdsArray)
+    public static function getStepsIdsArrayByStatus($form_status, $stepsIdsArray)
     {
         return self::whereIn('phase_steps_id', $stepsIdsArray)
             ->where('adjudication_status', 'like', $form_status)
             ->pluck('phase_steps_id')
-            ->toArraadjudication
+            ->toArray();
     }
 }
