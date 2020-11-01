@@ -50,7 +50,7 @@
                                     <tr>
                                         <td>{{$count++}}</td>
                                         <td>{{$query->query_subject}}</td>
-                                        <td><a target="_blank" href="{{$query->query_url}}">{{$studyShortName}}</a></td>
+                                        <td><a target="_blank" href="{{$query->query_url}}">{{$query->module_name}}</a></td>
                                         <td>{{ucfirst(auth()->user()->name)}}</td>
                                         <td>{{date_format($query->created_at,'M-d-Y')}}</td>
                                         <td>{{ucfirst($query->query_status)}}</td>

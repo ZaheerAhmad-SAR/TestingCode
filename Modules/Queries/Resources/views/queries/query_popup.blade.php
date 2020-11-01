@@ -143,6 +143,8 @@
         var module_id       = $('#module_id').val();
         var assignedRemarks = $('#remarks').val();
         var query_url       =  document.URL;
+        var documentUrl     = query_url.split('/');
+        var querySection    = documentUrl.pop() || documentUrl.pop();
         var query_subject   = $("#query_subject").val();
         if (queryAssignedTo == 'user')
         {
@@ -164,6 +166,7 @@
         formData.append('query_subject', query_subject);
         formData.append('queryAssignedTo', queryAssignedTo);
         formData.append('assignedRemarks', assignedRemarks);
+        formData.append('querySection', querySection);
         // Attach file
         formData.append('query_file', $('input[type=file]')[0].files[0]);
 
