@@ -9,8 +9,6 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Modules\Admin\Entities\Annotation;
-use Modules\Admin\Entities\FormFields;
-use Modules\Admin\Entities\FormFieldType;
 use Modules\Admin\Entities\SiteStudyCoordinator;
 use Modules\FormSubmission\Entities\Answer;
 use Modules\Admin\Entities\Coordinator;
@@ -465,76 +463,6 @@ class StudyController extends Controller
                                     'deleted_at'    => Null
                                 ]);
                                 $replica_question_id = Question::select('id')->latest()->first();
-                                $question_validations = QuestionValidation::where('question_id','=',$question->id)->get();
-                                foreach ($question_validations as $question_validation){
-                                    $id = Str::uuid();
-                                    QuestionValidation::create([
-                                        'id'    => $id,
-                                        'question_id'   => $replica_question_id->id,
-                                        'validation_rule_id'    => $question->validation_rule_id,
-                                        'decision_one'  => $question->decision_one,
-                                        'opertaor_one'  => $question->opertaor_one,
-                                        'dep_on_question_one_id'  => $question->dep_on_question_one_id,
-                                        'decision_two'  => $question->decision_two,
-                                        'opertaor_two'  => $question->opertaor_two,
-                                        'error_type'  => $question->error_type,
-                                        'error_message'  => $question->error_message,
-                                        'deleted_at'  => $question->deleted_at,
-                                    ]);
-                                }
-                                $question_dependencies = QuestionDependency::where('question_id','=',$question->id)->get();
-                                foreach ($question_dependencies as $question_dependency){
-                                    $id = Str::uuid();
-                                    QuestionDependency::create([
-                                        'id'    => $id,
-                                        'question_id'   => $replica_question_id->id,
-                                        'q_d_status'    => $question->q_d_status,
-                                        'dep_on_question_id'    => $question->dep_on_question_id,
-                                        'opertaor'  => $question->opertaor,
-                                        'custom_value'  => $question->custom_value
-                                    ]);
-                                }
-                                $question_annotations = Annotation::where('study_id','=',$mystudy)->get();
-                                foreach ($question_annotations as $question_annotation){
-                                    $id = Str::uuid();
-                                    Annotation::create([
-                                        'id'    => $id,
-                                        'study_id'  => $replica_id->id,
-                                        'label' => $question_annotation->label,
-                                        'deleted_at'    => Null
-                                    ]);
-                                }
-                                $question_adjudications = QuestionAdjudicationStatus::where('question_id','=',$question->id)->get();
-                                foreach ($question_adjudications as $question_adjudication){
-                                    $id = Str::uuid();
-                                    QuestionAdjudicationStatus::create([
-                                        'id'    => $id,
-                                        'question_id'   => $replica_question_id->id,
-                                        'adj_status'    => $question_adjudication->adj_status,
-                                        'decision_based_on'    => $question_adjudication->decision_based_on,
-                                        'opertaor'    => $question_adjudication->opertaor,
-                                        'differnce_status'    => $question_adjudication->differnce_status,
-                                        'custom_value'    => $question_adjudication->custom_value,
-                                        'deleted_at'    => NULL,
-                                    ]);
-                                }
-                                $get_form_field = FormFields::where('question_id','=',$question->id)->first();
-                                FormFields::create([
-                                    'id' => Str::uuid(),
-                                    'question_id'   => $replica_question_id->id,
-                                    'xls_label' => $get_form_field->xls_label,
-                                    'variable_name' => $get_form_field->variable_name,
-                                    'is_exportable_to_xls' => $get_form_field->is_exportable_to_xls,
-                                    'is_required' => $get_form_field->is_required,
-                                    'lower_limit' => $get_form_field->lower_limit,
-                                    'upper_limit' => $get_form_field->upper_limit,
-                                    'field_width' => $get_form_field->field_width,
-                                    'text_info' => $get_form_field->text_info,
-                                    'validation_rules' => $get_form_field->validation_rules,
-                                    'deleted_at' => $get_form_field->deleted_at,
-                                    'decimal_point' => $get_form_field->decimal_point,
-                                    'parent_id' => $get_form_field->parent_id,
-                                ]);
                             }
                         }
                     }
@@ -713,7 +641,7 @@ class StudyController extends Controller
                 }
             }
         }
-
+        dd($cloned_site);
         $studies = Study::all();
        // return \response()->json($studies);
        return redirect()->route('studies.index')->with('success','Study cloned successfully');
