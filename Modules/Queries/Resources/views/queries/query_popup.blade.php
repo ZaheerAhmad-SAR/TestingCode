@@ -17,9 +17,9 @@
                     <div id="exTab1">
                         <div class="tab-content clearfix">
                             @csrf
-                            <label class="col-form-label">Queries status: <i style="color: red; margin-left: 35px;" class="fas fa-question-circle"></i> New</label>
+                            <label class="col-form-label">Status: <i style="color: red; margin-left: 87px;" class="fas fa-question-circle"></i> New</label>
                             <div class="form-group row">
-                                <label for="Name" class="col-sm-2 col-form-label">Queries Assigned to:</label>
+                                <label for="Name" class="col-sm-2 col-form-label">Assigned to:</label>
                                 <div class="col-sm-10">
                                     <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="user"> Users</label> &nbsp;
                                     <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="role" > Roles</label>
@@ -30,14 +30,14 @@
                                 <div class="col-sm-10" id="usersDropDown"></div>
                             </div>
                             <div class="form-group row querySubject" style="display: none;">
-                                <label for="Name" class="col-sm-2 col-form-label">Query Subject:</label>
+                                <label for="Name" class="col-sm-2 col-form-label">Subject:</label>
                                 <div class="col-sm-10">
                                     <input class="form-control" type="text" name="query_subject" minlength="6" maxlength="50" id="query_subject">
                                 </div>
                             </div>
 
                             <div class="form-group row queryAttachment" style="display: none;">
-                                <label for="Name" class="col-sm-2 col-form-label">Query Attachment:</label>
+                                <label for="Name" class="col-sm-2 col-form-label">Attachment:</label>
                                 <div class="col-sm-10">
                                     <input class="form-control" type="file" name="query_file"  id="query_file">
                                 </div>
@@ -143,6 +143,8 @@
         var module_id       = $('#module_id').val();
         var assignedRemarks = $('#remarks').val();
         var query_url       =  document.URL;
+        var documentUrl     = query_url.split('/');
+        var querySection    = documentUrl.pop() || documentUrl.pop();
         var query_subject   = $("#query_subject").val();
         if (queryAssignedTo == 'user')
         {
@@ -164,6 +166,7 @@
         formData.append('query_subject', query_subject);
         formData.append('queryAssignedTo', queryAssignedTo);
         formData.append('assignedRemarks', assignedRemarks);
+        formData.append('querySection', querySection);
         // Attach file
         formData.append('query_file', $('input[type=file]')[0].files[0]);
 
