@@ -14,8 +14,8 @@ class AddForeignKeysToStudySitesTable extends Migration
     public function up()
     {
         Schema::table('site_study', function (Blueprint $table) {
-            $table->foreign('study_id')->references('id')->on('studies');
-            $table->foreign('site_id')->references('id')->on('sites');
+          //  $table->foreign('study_id')->references('id')->on('studies');
+          //  $table->foreign('site_id')->references('id')->on('sites');
 
         });
     }
@@ -28,8 +28,8 @@ class AddForeignKeysToStudySitesTable extends Migration
     public function down()
     {
         Schema::table('study_sites', function (Blueprint $table) {
-            $table->dropForeign('site_id');
-            $table->dropForeign('study_id');
+           // $table->dropForeign('site_id');
+          //  $table->dropForeign('study_id');
 
         });
     }

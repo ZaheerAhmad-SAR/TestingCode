@@ -1,5 +1,7 @@
 <?php
+
 namespace Modules\Admin\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -91,9 +93,9 @@ class FormController extends Controller
         $section_contents .= '</div>';
         return Response($section_contents);
     }
-     public function skip_question_on_click($id)
+    public function skip_question_on_click($id)
     {
-        $options = Question::where('id', $id)->with('optionsGroup','skiplogic')->first();
+        $options = Question::where('id', $id)->with('optionsGroup', 'skiplogic')->first();
         return view('admin::forms.skip_logic', compact('options'));
     }
     public function getSteps_toskip()
@@ -112,34 +114,34 @@ class FormController extends Controller
                                     </thead>
                                 </table>
                             </div>
-                        </div> 
+                        </div>
                     </div>';
-        foreach($all_study_steps->studySteps as $key=>$value){
+        foreach ($all_study_steps->studySteps as $key => $value) {
             $step_contents_active .= '
                     <div class="card">
                         <div class="card-body" style="padding: 0;">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;"> 
+                                <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;">
                                 <tbody>
                                     <tr>
-                                        <td class="step_id" style="display: none;">'.$value->step_id.'</td>
+                                        <td class="step_id" style="display: none;">' . $value->step_id . '</td>
                                         <td style="text-align: center;width: 15%">
                                           <div class="btn-group btn-group-sm" role="group">
-                                            <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" onclick="activate_checks(\''.$value->step_id.'\',\'sections_list_\');" data-target=".row-'.$value->step_id.'-ac" style="font-size: 20px; color: #1e3d73;"></i>
+                                            <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" onclick="activate_checks(\'' . $value->step_id . '\',\'sections_list_\');" data-target=".row-' . $value->step_id . '-ac" style="font-size: 20px; color: #1e3d73;"></i>
                                           </div>
                                         </td>
-                                        <td colspan="5"> <input type="checkbox" name="activate_forms['.$key.'}}][]" value="'.$value->step_id.'"> &nbsp;&nbsp;'.$value->step_name.'</td>
+                                        <td colspan="5"> <input type="checkbox" name="activate_forms[' . $key . '}}][]" value="' . $value->step_id . '"> &nbsp;&nbsp;' . $value->step_name . '</td>
                                     </tr>
                                 </tbody>
-                            </table> 
+                            </table>
                         </div>
                     </div>
                 </div>
-                <div class="card collapse row-'.$value->step_id.'-ac sections_list_'.$value->step_id.'">
+                <div class="card collapse row-' . $value->step_id . '-ac sections_list_' . $value->step_id . '">
                 </div>';
-                
+
         }
-        $step_contents_active .='</div>';
+        $step_contents_active .= '</div>';
         $step_contents_deactive = '<div class="col-12 col-sm-6 mt-3 current_div_de">
                     <div class="card">
                         <div class="card-body" style="padding: 0;">
@@ -153,33 +155,33 @@ class FormController extends Controller
                                     </thead>
                                 </table>
                             </div>
-                        </div> 
+                        </div>
                     </div>';
-        foreach($all_study_steps->studySteps as $key=>$value){
-            $step_contents_deactive .='<div class="card">
+        foreach ($all_study_steps->studySteps as $key => $value) {
+            $step_contents_deactive .= '<div class="card">
                                 <div class="card-body" style="padding: 0;">
                                     <div class="table-responsive">
-                                        <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;"> 
+                                        <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;">
                                         <tbody>
                                             <tr>
-                                                <td class="step_id" style="display: none;">'.$value->step_id.'</td>
+                                                <td class="step_id" style="display: none;">' . $value->step_id . '</td>
                                                 <td style="text-align: center;width: 15%">
                                                   <div class="btn-group btn-group-sm" role="group">
-                                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-'.$value->step_id.'-de" onclick="deactivate_checks(\''.$value->step_id.'\',\'de_sections_list_\');" style="font-size: 20px; color: #1e3d73;"></i>
+                                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-' . $value->step_id . '-de" onclick="deactivate_checks(\'' . $value->step_id . '\',\'de_sections_list_\');" style="font-size: 20px; color: #1e3d73;"></i>
                                                   </div>
                                                 </td>
-                                                <td colspan="5"><input type="checkbox" name="deactivate_forms['.$key.'][]" value="'.$value->step_id.'"> &nbsp;&nbsp; '.$value->step_name.'</td>
+                                                <td colspan="5"><input type="checkbox" name="deactivate_forms[' . $key . '][]" value="' . $value->step_id . '"> &nbsp;&nbsp; ' . $value->step_name . '</td>
                                             </tr>
                                         </tbody>
-                                    </table> 
+                                    </table>
                                 </div>
                             </div>
                         </div>
-                        <div class="card collapse row-'.$value->step_id.'-de de_sections_list_'.$value->step_id.'">
-                            
+              <div class="card collapse row-' . $value->step_id . '-de de_sections_list_' . $value->step_id . '">
+
                         </div>';
         }
-        $step_contents_deactive .='</div>';
+        $step_contents_deactive .= '</div>';
         $step_contents = $step_contents_active . $step_contents_deactive;
         return $step_contents;
     }
@@ -274,14 +276,14 @@ class FormController extends Controller
                 $skip_ques = [
                     'id' => Str::uuid(),
                     'question_id' => $request->question_id,
-                    'option_title' => (isset($request->option_title[$i]) && $request->option_title[$i] !='') ? $request->option_title[$i] : '',
-                    'option_value' => (isset($request->option_value[$i]) && $request->option_value[$i] !='') ? $request->option_value[$i] : '',
-                    'activate_forms' => (isset($request->activate_forms[$i]) && $request->activate_forms[$i] !='') ? implode(',', $request->activate_forms[$i]) : '',
-                    'activate_sections' => (isset($request->activate_sections[$i]) && $request->activate_sections[$i] !='') ? implode(',', $request->activate_sections[$i]) : '',
-                    'activate_questions' => (isset($request->activate_questions[$i]) && $request->activate_questions[$i] !='') ? implode(',', $request->activate_questions[$i]) : '',
-                    'deactivate_forms' => (isset($request->deactivate_forms[$i]) && $request->deactivate_forms[$i] !='') ?implode(',', $request->deactivate_forms[$i]) :'',
-                    'deactivate_sections' => (isset($request->deactivate_sections[$i]) && $request->deactivate_sections[$i] !='') ? implode(',', $request->deactivate_sections[$i]) :'',
-                    'deactivate_questions' => (isset($request->deactivate_questions[$i]) && $request->deactivate_questions[$i] !='') ? implode(',', $request->deactivate_questions[$i]) : ''
+                    'option_title' => (isset($request->option_title[$i]) && $request->option_title[$i] != '') ? $request->option_title[$i] : '',
+                    'option_value' => (isset($request->option_value[$i]) && $request->option_value[$i] != '') ? $request->option_value[$i] : '',
+                    'activate_forms' => (isset($request->activate_forms[$i]) && $request->activate_forms[$i] != '') ? implode(',', $request->activate_forms[$i]) : '',
+                    'activate_sections' => (isset($request->activate_sections[$i]) && $request->activate_sections[$i] != '') ? implode(',', $request->activate_sections[$i]) : '',
+                    'activate_questions' => (isset($request->activate_questions[$i]) && $request->activate_questions[$i] != '') ? implode(',', $request->activate_questions[$i]) : '',
+                    'deactivate_forms' => (isset($request->deactivate_forms[$i]) && $request->deactivate_forms[$i] != '') ? implode(',', $request->deactivate_forms[$i]) : '',
+                    'deactivate_sections' => (isset($request->deactivate_sections[$i]) && $request->deactivate_sections[$i] != '') ? implode(',', $request->deactivate_sections[$i]) : '',
+                    'deactivate_questions' => (isset($request->deactivate_questions[$i]) && $request->deactivate_questions[$i] != '') ? implode(',', $request->deactivate_questions[$i]) : ''
                 ];
                 skipLogic::insert($skip_ques);
             }
@@ -392,14 +394,14 @@ class FormController extends Controller
                     }
                 }
                 $question_contents .= '</select></div>';
-            }elseif($ques_value->form_field_type->field_type == 'Description'){
-                $question_contents .= '<div class="col-sm-6">'.$ques_value->formFields->text_info.'</div>';
+            } elseif ($ques_value->form_field_type->field_type == 'Description') {
+                $question_contents .= '<div class="col-sm-6">' . $ques_value->formFields->text_info . '</div>';
             }
             $question_contents .= '<div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right">';
             if ($ques_value->form_field_type->field_type == 'Certification') {
-            }elseif($ques_value->form_field_type->field_type == 'Description'){
+            } elseif ($ques_value->form_field_type->field_type == 'Description') {
                 $question_contents .= '<span class="dropdown-item edit_desc"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
-            }else {
+            } else {
                 $question_contents .= '<span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
             }
             $question_contents .= '<span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span>';
@@ -419,7 +421,7 @@ class FormController extends Controller
         $Response['data'] = 'success';
         echo json_encode($Response);
     }
-   
+
     /**
      * Show the form for creating a new resource.
      * @return Response
@@ -443,6 +445,7 @@ class FormController extends Controller
         $id    = Str::uuid();
         Question::create([
             'id' => $id,
+            'old_id'    => $id,
             'form_field_type_id' => $request->form_field_type_id,
             'section_id' => $request->section_id,
             'option_group_id' => $request->option_group_id,
@@ -619,22 +622,20 @@ class FormController extends Controller
 
     private function createQuestionDatavalidations($request, $questionObj)
     {
+        $validationRuleIdsArray = array_unique($request->validation_rules);
 
-        $Question_validation = [];
-        /*
-        if (isset($request->validation_rules) && count($request->validation_rules) > 0) {
-            for ($i = 0; $i < count($request->validation_rules); $i++) {
+        if (count($validationRuleIdsArray) > 0) {
+            foreach ($validationRuleIdsArray as $validationRuleId) {
                 $id    = Str::uuid();
-                $Question_validation[] = [
+                $validation = [
                     'id' => $id,
                     'question_id' => $questionObj->id,
-                    'validation_rule_id' => $request->validation_rules[$i],
+                    'validation_rule_id' => $validationRuleId,
                 ];
+                QuestionValidation::insert($validation);
             }
-            QuestionValidation::insert($Question_validation);
         }
-
-        */
+        /*
         if (isset($request->decision_one) && count($request->decision_one) > 0) {
             for ($i = 0; $i < count($request->decision_one); $i++) {
                 $id    = Str::uuid();
@@ -653,28 +654,14 @@ class FormController extends Controller
             }
             QuestionValidation::insert($Question_validation);
         }
+        */
     }
 
     private function updateQuestionValidation($request, $questionObj)
     {
-        // Question validation update
-        if (!empty($request->validation_id)) {
-            $validation = QuestionValidation::where('id', $request->validation_id)->first();
-
-            $validation->decision_one = $request->decision_one;
-            $validation->opertaor_one = $request->opertaor_one;
-            $validation->dep_on_question_one_id = $request->dep_on_question_one_id;
-            $validation->condition = $request->condition;
-            $validation->decision_two = $request->decision_two;
-            $validation->opertaor_two = $request->opertaor_two;
-            $validation->error_type = $request->error_type;
-            $validation->error_message = $request->error_message;
-
-            $validation->save();
-            $this->updateQuestionValidationToReplicatedVisits($validation);
-        } else {
-            $this->createQuestionDatavalidations($request, $questionObj);
-        }
+        $this->deleteQuestionValidations($questionObj->id);
+        $this->createQuestionDatavalidations($request, $questionObj);
+        $this->updateQuestionValidationToReplicatedVisits($questionObj->id);
     }
     /**
      * Show the specified resource.

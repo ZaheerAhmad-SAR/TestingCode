@@ -35,7 +35,7 @@ class SubjectController extends Controller
             ->get();
 
         $diseaseCohort = DiseaseCohort::where('study_id', '=', $id)->get();
-        
+
         return view('admin::subjects.index', compact('study', 'subjects', 'currentStudy', 'site_study', 'diseaseCohort'));
     }
 
@@ -59,6 +59,7 @@ class SubjectController extends Controller
         $subjectID = Str::uuid();
         $subject = Subject::create([
             'id'    => $subjectID,
+            'old_id'    => $subjectID,
             'study_id' => $request->study_id,
             'subject_id'    => $request->subject_id,
             'user_id'       => $request->user()->id,
@@ -202,7 +203,7 @@ class SubjectController extends Controller
                     return 'error';
                 } else {
                     return 'success';
-                }           
+                }
 
             } // type if ends
         } // ajax if ends

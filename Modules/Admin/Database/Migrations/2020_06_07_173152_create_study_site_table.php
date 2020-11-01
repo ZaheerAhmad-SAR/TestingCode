@@ -14,7 +14,7 @@ class CreateStudySiteTable extends Migration
     public function up()
     {
         Schema::create('site_study', function (Blueprint $table) {
-            $table->increments('id');
+            $table->uuid('id')->primary()->unique();
             $table->uuid('study_id');
             $table->uuid('site_id');
             $table->timestamps();

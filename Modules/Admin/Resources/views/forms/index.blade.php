@@ -82,7 +82,7 @@
                                         aria-hidden="true"></i>&nbsp;&nbsp;{{ $value->field_type }}</div>
                                 @endif
                             @endforeach
-                            
+
                         </div>
                     </div>
                 </div>
@@ -246,7 +246,7 @@
                                 </div>
                             </div>
 
-<!--
+
                     <div class="tab-pane fade" id="nav-Validation" role="tabpanel" aria-labelledby="nav-Validation-tab">
                         <div class="py-3 border-bottom border-primary">
                             <span class="text-muted font-w-600">Default Validation</span><br>
@@ -258,7 +258,7 @@
 
                         </div>
                     </div>
-                -->
+<!--
                 <div class="tab-pane fade" id="nav-Validation" role="tabpanel" aria-labelledby="nav-Validation-tab">
                     <div class="py-3 border-bottom border-primary">
                         <span class="text-muted font-w-600">Default Validation</span><br>
@@ -374,6 +374,7 @@
                     </div>
 
                 </div>
+                                -->
                     <div class="tab-pane fade" id="nav-Dependencies" role="tabpanel" aria-labelledby="nav-Dependencies-tab">
                         <div class="py-3 border-bottom border-primary">
                             <span class="text-muted font-w-600">Define If Dependencies on any Question</span><br>
@@ -959,7 +960,7 @@ $(document).ready(function() {
             })
         }
     })
-    // update Descriptions 
+    // update Descriptions
     $('body').on('click','.edit_desc',function(){
         $('#form_description').trigger('reset');
         $('.modal-title').html('Update Description');
@@ -1068,6 +1069,7 @@ $(document).ready(function() {
         $('#adj_operator').val(adj_operator);
         $('#adj_custom_value').val(adj_custom_value);
         $('#addField').modal('show');
+        loadValidationRulesByQuestionId(ques_id);
     })
 
 })
@@ -1189,6 +1191,20 @@ $('.addvalidations').on('click',function(){
     updateRulesDropDown();
    return false;
 });
+function loadValidationRulesByQuestionId(questionId){
+    $.ajax({
+                url: '{{route('validationRule.getQuestionValidationRules')}}',
+                type: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'questionId': questionId,
+                },
+                success: function(responseHtml) {
+                    $('.appendDatavalidations').append(responseHtml);
+                }
+            });
+}
 /// update sort and delete Questions
 
 $('.updateSort').on('click',function(){

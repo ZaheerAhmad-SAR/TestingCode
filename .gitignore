@@ -4,10 +4,10 @@
 /storage/*.key
 server.php
 /vendor
-.env
-.env_old
 .htaccess
 composer.json
+.env
+.env_old
 .env.backup
 .phpunit.result.cache
 Homestead.json
