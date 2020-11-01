@@ -16,6 +16,8 @@ use Modules\Admin\Entities\FormType;
 use DB;
 use Excel;
 use Carbon\Carbon;
+use App\Exports\GradingFromView;
+use App\Exports\GradingFromView2;
 
 class GradingController extends Controller
 {
@@ -354,83 +356,13 @@ class GradingController extends Controller
 
     public function excelGrading(Request $request) {
         
-         $subjects = Subject::query();
-            $subjects = $subjects->select('subjects.*', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'subjects_phases.visit_date', 'sites.site_name')
-            ->rightJoin('subjects_phases', 'subjects_phases.subject_id', '=', 'subjects.id')
-            ->leftJoin('study_structures', 'study_structures.id', '=', 'subjects_phases.phase_id')
-            ->leftJoin('sites', 'sites.id', 'subjects.site_id');
-            //->leftJoin('form_submit_status', 'form_submit_status.subject_id', 'subjects.id');
+        return Excel::download(new GradingFromView(), 'gradings.xlsx');
 
-            $subjects = $subjects->orderBy('subjects.subject_id')
-            ->orderBy('study_structures.position')
-            ->get()->toArray();
+    }
 
-            // get modalities
-            $getModilities = PhaseSteps::select('phase_steps.step_id', 'phase_steps.step_name','modilities.id as modility_id', 'modilities.modility_name')
-            ->leftJoin('modilities', 'modilities.id', '=', 'phase_steps.modility_id')
-            ->groupBy('phase_steps.modility_id')
-            ->orderBy('modilities.modility_name')
-            ->get();
-
-            // get form types for modality
-            foreach($getModilities as $key => $modility) {
-
-                $getSteps = PhaseSteps::select('phase_steps.step_id', 'phase_steps.step_name', 'phase_steps.modility_id', 'form_types.id as form_type_id', 'form_types.form_type')
-                                        ->leftJoin('form_types', 'form_types.id', '=', 'phase_steps.form_type_id')
-                                        ->where('modility_id', $modility->modility_id)
-                                        ->orderBy('form_types.sort_order')
-                                        ->groupBy('phase_steps.form_type_id')
-                                        ->get()->toArray();
-
-                $modalitySteps[$modility->modility_name] = $getSteps;
-            }
-
-            //get form status depending upon subject, phase and modality
-            if ($modalitySteps != null) {
-                foreach($subjects as $subject) {
-                    //get status
-                    $formStatus = [];
-
-                    // modality loop
-                    foreach($modalitySteps as $key => $formType) {
-
-                        // form type loop
-                        foreach($formType as $type) {
-
-                            $step = PhaseSteps::where('step_id', $type['step_id'])->first();
-
-                                $getFormStatusArray = [
-                                    'subject_id' => $subject['id'],
-                                    'study_structures_id' => $subject['phase_id'],
-                                    'modility_id'=> $type['modility_id'],
-                                    'form_type_id' => $type['form_type_id']
-                                ];
-
-
-                                if ($step->form_type_id == 2) {
-
-                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray);
-                                } else {
-
-                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
-                                }
-
-                        } // step lopp ends
-                      
-                    } // modality loop ends
-                    // assign the array to the key
-                    dd($formStatus);
-                    $subject['form_status'] = $formStatus;
-                }// subject loop ends
-            } // modality step null check
-
-            dd($subjects[0]['form_status']);
-            return Excel::download('admin::grading-list-csv', function($excel) use ($subjects, $modalitySteps) {
-            $excel->sheet('mySheet', function($sheet) use ($subjects, $modalitySteps)
-            {
-                $sheet->fromArray($subjects);
-            });
-        })->download('.csv');
+    public function excelGrading2(Request $request) {
+        
+        return Excel::download(new GradingFromView2(), 'gradings.xlsx');
 
     }
 }

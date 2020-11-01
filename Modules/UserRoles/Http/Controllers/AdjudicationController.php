@@ -16,6 +16,9 @@ use Modules\Admin\Entities\FormType;
 use Modules\FormSubmission\Entities\AdjudicationFormStatus;
 use DB;
 use Carbon\Carbon;
+use Excel;
+use App\Exports\AdjudicationFromView;
+use App\Exports\AdjudicationFromView2;
 
 class AdjudicationController extends Controller
 {
@@ -354,5 +357,17 @@ class AdjudicationController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function excelAdjudication(Request $request) {
+        
+        return Excel::download(new AdjudicationFromView(), 'adjudication.xlsx');
+
+    }
+
+    public function excelAdjudication2(Request $request) {
+        
+        return Excel::download(new AdjudicationFromView2(), 'adjudication.xlsx');
+
     }
 }

@@ -256,6 +256,8 @@
                             <div class="form-group col-md-2 mt-4">        
                                 <!-- <button type="button" class="btn btn-primary reset-filter-2">Reset</button> -->
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Records</button>
+
+                                <button type="button" data-url="{{ route('excel-grading2') }}" class="btn btn-primary btn-lng form-2-excel">Export</button>
                             </div>
 
                         </div>
@@ -293,7 +295,6 @@
                                     @if ($modalitySteps != null)
                                     <tr class="table-secondary">
                                         <th scope="col" colspan="4" class="border-top-0"> </th>
-                                        </th>
                                         @foreach($modalitySteps as $steps)
                                         
                                             @foreach($steps as $value)
@@ -502,6 +503,11 @@
 
     // excel list for form-1
     $('.form-1-excel').on('click', function(){
+        window.location.href = $(this).attr('data-url');
+    });
+
+    // excel list for form-2
+    $('.form-2-excel').on('click', function(){
         window.location.href = $(this).attr('data-url');
     });
 
