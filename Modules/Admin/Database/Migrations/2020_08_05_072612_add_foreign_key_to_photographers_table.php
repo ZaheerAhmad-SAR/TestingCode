@@ -14,7 +14,7 @@ class AddForeignKeyToPhotographersTable extends Migration
     public function up()
     {
         Schema::table('photographers', function (Blueprint $table) {
-            $table->foreign('site_id')->references('id')->on('sites')->onDelete('cascade')->onUpdate('cascade');
+          //  $table->foreign('site_id')->references('id')->on('sites')->onDelete('cascade')->onUpdate('cascade');
 
         });
     }

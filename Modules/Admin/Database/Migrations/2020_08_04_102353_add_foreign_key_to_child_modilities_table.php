@@ -14,7 +14,7 @@ class AddForeignKeyToChildModilitiesTable extends Migration
     public function up()
     {
         Schema::table('child_modilities', function (Blueprint $table) {
-            $table->foreign('modility_id')->references('id')->on('modilities')->onDelete('cascade');
+            //$table->foreign('modility_id')->references('id')->on('modilities')->onDelete('cascade');
         });
     }
 
@@ -26,7 +26,7 @@ class AddForeignKeyToChildModilitiesTable extends Migration
     public function down()
     {
         Schema::table('child_modilities', function (Blueprint $table) {
-            $table->dropForeign('modility_id');
+           // $table->dropForeign('modility_id');
         });
     }
 }

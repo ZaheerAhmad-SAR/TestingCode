@@ -14,8 +14,7 @@ class AddForeignKeyToPrimaryInvestigatorsTable extends Migration
     public function up()
     {
         Schema::table('primary_investigators', function (Blueprint $table) {
-            $table->foreign('site_id')->references('id')
-                ->on('sites')->onDelete('cascade')->onUpdate('cascade');
+         //   $table->foreign('site_id')->references('id')->on('sites')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
