@@ -45,7 +45,6 @@ class SectionController extends Controller
             'description' =>  $request->sec_description,
             'sort_number' =>  $request->sort_num
         ]);
-
         /************************* */
         $section = Section::find($id);
         $this->addSectionToReplicatedVisits($section, true);

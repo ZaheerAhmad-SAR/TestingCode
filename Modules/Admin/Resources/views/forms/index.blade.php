@@ -158,15 +158,19 @@
                                 <div class="form-group row">
                                     <lable for='variable' class="col-sm-2 col-form-label">Variable name <sup>*</sup></lable>
                                     <div class="col-sm-4">
-                                        <input type="text" class="form-control" name="variable_name" id="variable_name"
-                                            value="">
+                                        <p class="space_msg" style="font-size: 9px;color: red;"></p>
+                                        <input type="text" class="form-control variable_name_ques" name="variable_name" id="variable_name" onchange="check_if_name_exists()" onpaste ="return false"  oncut ="return false"  oncopy ="return false">
                                     </div>
                                     <label for="field" class="col-sm-2 col-form-label">Choose field type:</label>
                                     <div class="col-sm-4">
+                                        <p></p>
                                         <select name="form_field_type_id" id="question_type" class="form-control">
                                             <option value="">--- Field Type ---</option>
                                             @foreach ($fields as $key => $value)
-                                                <option value="{{ $value->id }}">{{ $value->field_type }}</option>
+                                              @if($value->field_type =='Certification' || $value->field_type =='Description')
+                                              @else
+                                                <option value="{{ $value->id }}">{{$value->field_type }}</option>
+                                              @endif 
                                             @endforeach
                                         </select>
 
@@ -240,7 +244,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Text/info: <sup>*</sup></label>
                                     <div class="col-sm-10">
-                                        <textarea name="text_info" id="text_info" cols="2" rows="1" class="summernote"
+                                        <textarea name="text_info" id="text_info_add" cols="2" rows="1" class="summernote"
                                             style="height: 50px;"></textarea>
                                     </div>
                                 </div>
@@ -609,7 +613,7 @@
                                 <div class="form-group row">
                                     <lable for='variable' class="col-sm-2 col-form-label">Variable name <sup>*</sup></lable>
                                     <div class="col-sm-4">
-                                        <input type="text" class="form-control" name="variable_name" value="">
+                                        <input type="text" class="form-control variable_name" name="variable_name" value="">
                                     </div>
                                     <label for="list" class="col-sm-2 col-form-label"> List type </label>
                                     <div class="col-sm-4">
@@ -739,6 +743,20 @@ $(document).ready(function(){
     tId=setTimeout(function(){
        $(".success-alert").slideUp('slow');
     }, 4000);
+    $('.variable_name_ques').keydown(function(e){
+        if(e.keyCode == 32){
+            $('.variable_name_ques').css('border', '1px solid red');
+            $('.space_msg').html('Space Not Allowed!!')
+            e.preventDefault();
+        }else{
+            $('.variable_name_ques').css('border', '');
+            $('.space_msg').html('');
+            return true;
+        }
+    })
+    $('.variable_name_ques').onkeyup(function(){
+        alert('Hey');
+    })
 })
 $('.addOptions').on('click',function(){
    $('.appendDataOptions').append('<div class="values_row_options"><div class="form-group row"><div class="form-group col-md-6"><input type="text" id="option_name" name="option_name[]" class="form-control" placeholder="Enter option name" style="background:white;"></div><div class="form-group col-md-4"><input type="number" placeholder="Option value" name="option_value[]" id="option_value" class="form-control" style="background:white;"></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove_option" style="margin-top: 3px;"></i></div></div></div>');
@@ -783,13 +801,13 @@ $('.field_dependent').on('change',function(){
     }
 });
 
-$('body').on('click','.form-fields',function(){
-    $('#formfields').trigger('reset');
-    $('.modal-title').html('Add New Question');
-    $('#formfields').attr('action', "{{route('forms.addQuestions')}}");
-    var id = $(this).attr("data-field-id");
-    $('#question_type').val(id);
-})
+// $('body').on('click','.form-fields',function(){
+//     $('#formfields').trigger('reset');
+//     $('.modal-title').html('Add New Question');
+//     $('#formfields').attr('action', "{{route('forms.addQuestions')}}");
+//     var id = $(this).attr("data-field-id");
+//     $('#question_type').val(id);
+// })
 $('.add_discription').on('click',function(){
    $('#form_description').trigger('reset');
    $('.modal-title').html('Add Description');
@@ -1026,7 +1044,7 @@ $(document).ready(function() {
         $('#variable_name').val(variable_name);
         $('#form_field_id').val(formFields_id);
         // $('#text_info').val();
-        $(".summernote").summernote("code", text_info);
+        $("#text_info_add").summernote("code", text_info);
         if (ques_type == 'Number') {
             $('#measurement_unit_text').val(measurement_unit);
             $('#field_width_text').val(field_width);
@@ -1047,13 +1065,13 @@ $(document).ready(function() {
         } else {
             $('#is_exportable_to_xls_no').prop('checked', true);
         }
-        $('#dependency_id').val(dependency_id);
+        //$('#dependency_id').val(dependency_id);
         if(dependency_status =='yes'){
             $('#field_dependent_yes').prop('checked',true);
             $('.field_dependent').trigger('change');
         }else{
             $('#field_dependent_no').prop('checked',true);
-            $('.field_dependent').trigger('change');
+            $('.append_if_yes').css('display','none');
         }
         get_question_section_id(section_id,dependency_question_class);
         $('#dependency_operator').val(dependency_operator);
@@ -1150,6 +1168,8 @@ $('#question_type').on('change',function(){
     filterRulesByQuestionType();
 });
 $('body').on('click','.form-fields',function(){
+        var id = $(this).attr("data-field-id");
+        $('#question_type').val(id);
         filterRulesByQuestionType();
 });
 function filterRulesByQuestionType(){
@@ -1375,6 +1395,30 @@ function updateRulesDropDown(){
     }
     selectStr += '</select>';
     $('.validationRuleDivCls').html(selectStr);
+}
+function check_if_name_exists(){
+    var value =  $('.variable_name_ques').val()
+      step_id = $('#steps').val()  
+      url_route = "{{ URL('forms/check_variable') }}"
+      url_route = url_route;
+    $.ajax({
+        url:url_route,
+        type:'post',
+         data: {
+            "_token": "{{ csrf_token() }}",
+            "_method": 'POST',
+            'step_id': step_id,
+            'name': value
+        },
+        success:function(response){
+            if(response =='field_found'){
+                $('.space_msg').html('Variable Name already exists!');
+            }else{
+                $('.space_msg').html('');
+            }
+        }
+    });
+   
 }
 /**************************************************************/
 </script>

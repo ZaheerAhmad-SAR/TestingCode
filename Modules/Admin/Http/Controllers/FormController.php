@@ -440,6 +440,17 @@ class FormController extends Controller
     {
         //
     }
+    // check variable name if exist in same form
+    public function check_variable_name(Request $request){
+        $section_ids = Section::where('phase_steps_id', $request->step_id)->pluck('id')->toArray();
+        $question_ids = Question::whereIn('section_id', $section_ids)->pluck('id')->toArray();
+        $formFields = FormFields::whereIn('question_id', $question_ids)->where('variable_name',$request->name)->get();
+        if(count($formFields) < 1){
+            echo 'no_field_found';
+        }else{
+            echo 'field_found';
+        }
+    }
     public function add_questions(Request $request)
     {
         $id    = Str::uuid();
