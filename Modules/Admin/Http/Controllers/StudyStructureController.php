@@ -169,7 +169,7 @@ class StudyStructureController extends Controller
         ]);
         /************************* */
         $step = PhaseSteps::find($id);
-        $this->addStepToReplicatedVisits($step);
+        $this->addStepToReplicatedVisits($step, true);
 
         $data = [
             'success' => true,

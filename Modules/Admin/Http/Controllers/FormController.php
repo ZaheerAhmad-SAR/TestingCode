@@ -467,7 +467,7 @@ class FormController extends Controller
         /*
          * Replicate Question in replicated visits
          */
-        $this->addQuestionToReplicatedVisits($questionObj);
+        $this->addQuestionToReplicatedVisits($questionObj, true);
 
         return redirect()->route('forms.index')->with('message', 'Record Added Successfully!');
     }
@@ -655,11 +655,11 @@ class FormController extends Controller
         */
     }
 
-    private function updateQuestionValidation($request, $questionObj)
+    private function updateQuestionValidation($request, $questionObj, $isReplicating = true)
     {
         $this->deleteQuestionValidations($questionObj->id);
         $this->createQuestionDatavalidations($request, $questionObj);
-        $this->updateQuestionValidationToReplicatedVisits($questionObj->id);
+        $this->updateQuestionValidationToReplicatedVisits($questionObj->id, $isReplicating);
     }
     /**
      * Show the specified resource.

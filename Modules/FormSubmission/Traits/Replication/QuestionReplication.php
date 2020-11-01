@@ -15,13 +15,15 @@ use Modules\Admin\Entities\StudyStructure;
 
 trait QuestionReplication
 {
-    private function addReplicatedQuestion($question, $newSectionId)
+    private function addReplicatedQuestion($question, $newSectionId, $isReplicating = true)
     {
         $newQuestionId = Str::uuid();
         $newQuestion = $question->replicate();
         $newQuestion->id = $newQuestionId;
         $newQuestion->section_id = $newSectionId;
-        $newQuestion->parent_id = $question->id;
+        if ($isReplicating === true) {
+            $newQuestion->parent_id = $question->id;
+        }
         $newQuestion->save();
         return $newQuestionId;
     }
@@ -33,7 +35,7 @@ trait QuestionReplication
         $replicatedQuestion->update();
     }
 
-    private function addQuestionToReplicatedVisits($newQuestion)
+    private function addQuestionToReplicatedVisits($newQuestion, $isReplicating = true)
     {
         $sectionObj = Section::find($newQuestion->section_id);
         $stepObj = PhaseSteps::find($sectionObj->phase_steps_id);
@@ -44,11 +46,11 @@ trait QuestionReplication
             foreach ($phase->steps as $step) {
                 foreach ($step->sections as $section) {
                     if ($section->parent_id == $newQuestion->section_id) {
-                        $newQuestionId = $this->addReplicatedQuestion($newQuestion, $section->id);
-                        $this->addReplicatedFormField($newQuestion, $newQuestionId);
-                        $this->addReplicatedQuestionValidation($newQuestion, $newQuestionId);
-                        $this->addReplicatedQuestionDependency($newQuestion, $newQuestionId);
-                        $this->addReplicatedQuestionAdjudicationStatus($newQuestion, $newQuestionId);
+                        $newQuestionId = $this->addReplicatedQuestion($newQuestion, $section->id, $isReplicating);
+                        $this->addReplicatedFormField($newQuestion, $newQuestionId, $isReplicating);
+                        $this->addReplicatedQuestionValidation($newQuestion, $newQuestionId, $isReplicating);
+                        $this->addReplicatedQuestionDependency($newQuestion, $newQuestionId, $isReplicating);
+                        $this->addReplicatedQuestionAdjudicationStatus($newQuestion, $newQuestionId, $isReplicating);
                     }
                 }
             }
@@ -72,7 +74,7 @@ trait QuestionReplication
     }
 
     /*********************** Form Field *************************** */
-    private function addReplicatedFormField($question, $newQuestionId)
+    private function addReplicatedFormField($question, $newQuestionId, $isReplicating = true)
     {
         $formField = $question->formFields()->first();
 
@@ -80,7 +82,9 @@ trait QuestionReplication
         $newFormField = $formField->replicate();
         $newFormField->id = $newFormFieldId;
         $newFormField->question_id = $newQuestionId;
-        $newFormField->parent_id = $formField->id;
+        if ($isReplicating === true) {
+            $newFormField->parent_id = $formField->id;
+        }
         $newFormField->save();
     }
 
@@ -111,23 +115,25 @@ trait QuestionReplication
 
     /*************************** Question Validation *****************************/
 
-    private function addReplicatedQuestionValidation($questionValidation, $replicatedQuestionId)
+    private function addReplicatedQuestionValidation($questionValidation, $replicatedQuestionId, $isReplicating = true)
     {
         $newQuestionValidationId = Str::uuid();
         $newQuestionValidation = $questionValidation->replicate();
         $newQuestionValidation->id = $newQuestionValidationId;
         $newQuestionValidation->question_id = $replicatedQuestionId;
-        $newQuestionValidation->parent_id = $questionValidation->id;
+        if ($isReplicating === true) {
+            $newQuestionValidation->parent_id = $questionValidation->id;
+        }
         $newQuestionValidation->save();
     }
 
-    private function updateQuestionValidationToReplicatedVisits($questionId)
+    private function updateQuestionValidationToReplicatedVisits($questionId, $isReplicating = true)
     {
         $replicatedQuestions = Question::where('parent_id', 'like', $questionId)->get();
         foreach ($replicatedQuestions as $replicatedQuestion) {
             $questionValidations = QuestionValidation::where('question_id', 'like', $questionId)->get();
             foreach ($questionValidations as $questionValidation) {
-                $this->addReplicatedQuestionValidation($questionValidation, $replicatedQuestion->id);
+                $this->addReplicatedQuestionValidation($questionValidation, $replicatedQuestion->id, $isReplicating);
             }
         }
     }
@@ -142,7 +148,7 @@ trait QuestionReplication
 
     /*************************** Question Dependencies *****************************/
 
-    private function addReplicatedQuestionDependency($question, $newQuestionId)
+    private function addReplicatedQuestionDependency($question, $newQuestionId, $isReplicating = true)
     {
         $questionDependency = $question->questionDependency()->first();
         if (null !== $questionDependency) {
@@ -151,7 +157,9 @@ trait QuestionReplication
             $newQuestionDependency = $questionDependency->replicate();
             $newQuestionDependency->id = $newQuestionDependencyId;
             $newQuestionDependency->question_id = $newQuestionId;
-            $newQuestionDependency->parent_id = $questionDependency->id;
+            if ($isReplicating === true) {
+                $newQuestionDependency->parent_id = $questionDependency->id;
+            }
             $newQuestionDependency->save();
         }
     }
@@ -183,7 +191,7 @@ trait QuestionReplication
 
     /*************************** Question Adjudication Statuses *****************************/
 
-    private function addReplicatedQuestionAdjudicationStatus($question, $newQuestionId)
+    private function addReplicatedQuestionAdjudicationStatus($question, $newQuestionId, $isReplicating = true)
     {
         $questionAdjudicationStatus = $question->questionAdjudicationStatus()->first();
         if (null !== $questionAdjudicationStatus) {
@@ -192,7 +200,9 @@ trait QuestionReplication
             $newQuestionAdjudicationStatus = $questionAdjudicationStatus->replicate();
             $newQuestionAdjudicationStatus->id = $newQuestionAdjudicationStatusId;
             $newQuestionAdjudicationStatus->question_id = $newQuestionId;
-            $newQuestionAdjudicationStatus->parent_id = $questionAdjudicationStatus->id;
+            if ($isReplicating === true) {
+                $newQuestionAdjudicationStatus->parent_id = $questionAdjudicationStatus->id;
+            }
             $newQuestionAdjudicationStatus->save();
         }
     }

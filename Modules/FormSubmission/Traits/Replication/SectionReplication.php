@@ -10,13 +10,15 @@ use Modules\Admin\Entities\StudyStructure;
 
 trait SectionReplication
 {
-    private function addReplicatedSection($section, $newStepId)
+    private function addReplicatedSection($section, $newStepId, $isReplicating = true)
     {
         $newSectionId = Str::uuid();
         $newSection = $section->replicate();
         $newSection->id = $newSectionId;
         $newSection->phase_steps_id = $newStepId;
-        $newSection->parent_id = $section->id;
+        if ($isReplicating === true) {
+            $newSection->parent_id = $section->id;
+        }
         $newSection->save();
         return $newSectionId;
     }
@@ -27,7 +29,7 @@ trait SectionReplication
         $replicatedSection->fill($sectionAttributesArray);
         $replicatedSection->update();
     }
-    private function addSectionToReplicatedVisits($newSection)
+    private function addSectionToReplicatedVisits($newSection, $isReplicating = true)
     {
         $stepObj = PhaseSteps::find($newSection->phase_steps_id);
         $phaseId = $stepObj->phase_id;
@@ -37,7 +39,7 @@ trait SectionReplication
             foreach ($phase->steps as $step) {
                 //parent_id of this step ==
                 if ($step->parent_id == $newSection->phase_steps_id) {
-                    $this->addReplicatedSection($newSection, $step->step_id);
+                    $this->addReplicatedSection($newSection, $step->step_id, $isReplicating);
                 }
             }
         }
