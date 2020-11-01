@@ -175,6 +175,8 @@
                             <div class="form-group col-md-2 mt-4">        
                                <!--  <button type="button" class="btn btn-primary reset-filter-1">Reset</button> -->
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Records</button>
+
+                                <button type="button" data-url="{{ route('excel-grading') }}" class="btn btn-primary btn-lng form-1-excel">Export</button>
                             </div>
 
                         </div>
@@ -496,6 +498,11 @@
     // toggle form filters
     $('.other-filters').on('click', function(){
         $('.form-1, .form-2').toggle();
+    });
+
+    // excel list for form-1
+    $('.form-1-excel').on('click', function(){
+        window.location.href = $(this).attr('data-url');
     });
 
 </script>

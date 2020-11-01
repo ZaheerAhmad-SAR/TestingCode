@@ -11,6 +11,8 @@
 |
 */
 
+Route::get('excel-grading','GradingController@excelGrading')->name('excel-grading');
+
 Route::prefix('userroles')->group(function() {
     Route::get('/', 'UserRolesController@index');
 	Route::get('getallUsers','UserRolesController@getallUsers')->name('getallUsers');

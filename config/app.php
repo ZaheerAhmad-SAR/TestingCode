@@ -178,6 +178,8 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        Maatwebsite\Excel\ExcelServiceProvider::class,
+
     ],
 
     /*
@@ -231,7 +233,7 @@ return [
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
         '2fa' => PragmaRX\Google2FALaravel\Middleware::class,
         'Google2FA' => PragmaRX\Google2FALaravel\Facade::class,
-
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 
 ];
