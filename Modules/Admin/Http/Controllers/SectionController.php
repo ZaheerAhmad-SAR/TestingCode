@@ -48,7 +48,7 @@ class SectionController extends Controller
 
         /************************* */
         $section = Section::find($id);
-        $this->addSectionToReplicatedVisits($section);
+        $this->addSectionToReplicatedVisits($section, true);
 
         return $last_id = Section::select('id')->latest()->first();
         // return redirect()->route('study.index');
