@@ -101,43 +101,25 @@ class Study extends Model
             $adjudication_percentage = (count($completedAdjudicationStepsIdsArray) / count($gradingStepsIdsArray)) * 100;
         }
 
-        return '<div class="card">
-        <div class="card-body p-0">
-            <div  class="barfiller" data-color="#17a2b8">
-                <div class="tipWrap">
-         <span class="tip rounded info">
-             <span class="tip-arrow"></span>
-            </span>
-                </div>
-                <span class="fill" data-percentage="' . $qc_percentage . '" style="color: red"></span>
+        return '<div class="progress">
+            <div class="progress-bar bg-info" role="progressbar" aria-valuenow="' . $qc_percentage . '"
+            aria-valuemin="0" aria-valuemax="100" style="width:' . $qc_percentage . '%">
+            ' . $qc_percentage . '%
             </div>
         </div>
-    </div>
-   <br>
-    <div class="card">
-        <div class="card-body p-0">
-            <div  class="barfiller" data-color="green">
-                <div class="tipWrap">
-         <span class="tip rounded info" style="background: green !important;">
-             <span class="tip-arrow"></span>
-            </span>
-                </div>
-                <span class="fill" data-percentage="' . $grading_percentage . '"></span>
+        <br/>
+        <div class="progress">
+            <div class="progress-bar bg-success" role="progressbar" aria-valuenow="' . $grading_percentage . '"
+            aria-valuemin="0" aria-valuemax="100" style="width:' . $grading_percentage . '%">
+            ' . $grading_percentage . '%
             </div>
         </div>
-    </div>
-    <br>
-    <div class="card">
-        <div class="card-body p-0">
-            <div  class="barfiller" data-color="red">
-                <div class="tipWrap">
-         <span class="tip rounded info" style="background: red !important;">
-             <span class="tip-arrow"></span>
-            </span>
-                </div>
-                <span class="fill" data-percentage="' . $adjudication_percentage . '"></span>
+        <br/>
+        <div class="progress">
+            <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="' . $adjudication_percentage . '"
+            aria-valuemin="0" aria-valuemax="100" style="width:' . $adjudication_percentage . '%">
+            ' . $adjudication_percentage . '%
             </div>
-        </div>
-    </div>';
+        </div>';
     }
 }

@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class QuestionValidation extends Model
 {
-    use SoftDeletes;
     protected $keyType = 'string';
     protected $fillable = ['id', 'question_id', 'validation_rule_id', 'decision_one', 'opertaor_one', 'dep_on_question_one_id',
         'decision_two', 'opertaor_two', 'error_type', 'error_message', 'deleted_at'];

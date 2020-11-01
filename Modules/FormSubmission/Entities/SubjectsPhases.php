@@ -50,4 +50,14 @@ class SubjectsPhases extends Model
             ->pluck('phase_id')
             ->toArray();
     }
+
+    public static function getTransmissionNumber($subjectId, $phaseId)
+    {
+        if (!empty((string)$subjectId) && !empty((string)$phaseId)) {
+            $subjectPhaseDetail = self::where('subject_id', 'like', $subjectId)->where('phase_id', 'like', $phaseId)->first();
+            return $subjectPhaseDetail->Transmission_Number;
+        } else {
+            return '';
+        }
+    }
 }

@@ -115,10 +115,17 @@
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
 
-                    <div class="form-group col-md-4 mt-3">        
+                    <div class="form-group col-md-12 mt-3">        
                         <button type="button" class="btn btn-primary other-filters">Other Filters</button>
                         <button type="button" class="btn btn-primary reset-filter">Reset</button>
+
+                        @if (!$subjects->isEmpty())
+                        <span style="float: right; margin-top: 3px;" class="badge badge-pill badge-primary">
+                            {{ $subjects->count().' out of '.$subjects->total() }}
+                        </span>
+                        @endif
                     </div>
+
                     <hr>
                     <!-- Other Filters ends -->
 
@@ -128,9 +135,9 @@
                             <input type="hidden" name="form_1" value="1" class="form-control">
 
                             <div class="form-group col-md-3">
-                                <label for="inputState">Suject</label>
+                                <label for="inputState">Subject</label>
                                 <select id="subject" name="subject" class="form-control filter-form-data">
-                                    <option value="">All Suject</option>
+                                    <option value="">All Subject</option>
                                     @foreach($getFilterSubjects as $filterSubject)
                                     <option @if(request()->subject == $filterSubject->id) selected @endif value="{{ $filterSubject->id }}">{{ $filterSubject->subject_id }}</option>
                                     @endforeach
@@ -168,6 +175,8 @@
                             <div class="form-group col-md-2 mt-4">        
                                <!--  <button type="button" class="btn btn-primary reset-filter-1">Reset</button> -->
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Records</button>
+
+                                <button type="button" data-url="{{ route('excel-grading') }}" class="btn btn-primary btn-lng form-1-excel">Export</button>
                             </div>
 
                         </div>
@@ -181,9 +190,9 @@
                             <input type="hidden" name="form_2" value="2" class="form-control">
 
                             <div class="form-group col-md-3">
-                                <label for="inputState">Suject</label>
+                                <label for="inputState">Subject</label>
                                 <select id="subject" name="subject" class="form-control filter-form-data">
-                                    <option value="">All Suject</option>
+                                    <option value="">All Subject</option>
                                     @foreach($getFilterSubjects as $filterSubject)
                                     <option @if(request()->subject == $filterSubject->id) selected @endif value="{{ $filterSubject->id }}">{{ $filterSubject->subject_id }}</option>
                                     @endforeach
@@ -489,6 +498,11 @@
     // toggle form filters
     $('.other-filters').on('click', function(){
         $('.form-1, .form-2').toggle();
+    });
+
+    // excel list for form-1
+    $('.form-1-excel').on('click', function(){
+        window.location.href = $(this).attr('data-url');
     });
 
 </script>
