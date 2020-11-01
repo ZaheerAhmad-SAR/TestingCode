@@ -331,23 +331,45 @@
                             <input type="hidden" value="{{$study->id}}" id="study_ID" name="study_ID">
                         @endif
                         <div class="form-group row">
-                            <div class="col-md-3">Basic Info</div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">Basic Info</div>
+                            <div class="col-md-2">
                                 <input type="checkbox" name="basic_info" checked>
                             </div>
-                            <div class="col-md-3">Study Subjects</div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">Study Subjects</div>
+                            <div class="col-md-2">
                                 <input type="checkbox" name="studySubjects" checked>
+                            </div>
+                            <div class="col-md-2">Study Users</div>
+                            <div class="col-md-2">
+                                <input type="checkbox" name="studyUsers" checked>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <div class="col-md-3">Study Users</div>
-                            <div class="col-md-3">
-                                <input type="checkbox" name="studyUsers" checked>
-                            </div>
-                            <div class="col-md-3">Study Sites</div>
-                            <div class="col-md-3">
+                            <div class="col-md-2">Study Sites</div>
+                            <div class="col-md-2">
                                 <input type="checkbox" name="studySites" checked>
+                            </div>
+                            <div class="col-md-2">Phases/Steps <br>Sect/Questions</div>
+                            <div class="col-md-2">
+                                <input type="checkbox" name="phasesSteps" checked>
+                            </div>
+                            <div class="col-md-2">Answers</div>
+                            <div class="col-md-2">
+                                <input type="checkbox" name="answers" checked>
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-2">Study Data</div>
+                            <div class="col-md-2">
+                                <input type="checkbox" name="studyData" checked>
+                            </div>
+                            <div class="col-md-2">Transmissions</div>
+                            <div class="col-md-2">
+                                <input type="checkbox" name="transmissions" checked>
+                            </div>
+                            <div class="col-md-2">Audit Trail</div>
+                            <div class="col-md-2">
+                                <input type="checkbox" name="auditTrail" checked>
                             </div>
                         </div>
                         <div class="modal-footer">

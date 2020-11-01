@@ -139,6 +139,7 @@ class FormController extends Controller
                 </div>
                 <div class="card collapse row-' . $value->step_id . '-ac sections_list_' . $value->step_id . '">
                 </div>';
+
         }
         $step_contents_active .= '</div>';
         $step_contents_deactive = '<div class="col-12 col-sm-6 mt-3 current_div_de">
@@ -176,7 +177,7 @@ class FormController extends Controller
                                 </div>
                             </div>
                         </div>
-                        <div class="card collapse row-' . $value->step_id . '-de de_sections_list_' . $value->step_id . '">
+              <div class="card collapse row-' . $value->step_id . '-de de_sections_list_' . $value->step_id . '">
 
                         </div>';
         }
@@ -444,6 +445,7 @@ class FormController extends Controller
         $id    = Str::uuid();
         Question::create([
             'id' => $id,
+            'old_id'    => $id,
             'form_field_type_id' => $request->form_field_type_id,
             'section_id' => $request->section_id,
             'option_group_id' => $request->option_group_id,

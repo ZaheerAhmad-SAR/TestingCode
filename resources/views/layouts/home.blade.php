@@ -27,12 +27,6 @@
                             <button class="close" data-dismiss="alert">&times;</button>
                         </div>
                     </div>
-                    @else
-                    <div class="alert alert-danger alert-dismissible">
-                        <a type="submit" class="btn btn-outline-info" href="{{route('users.updateProfile')}}" >Backup Codes</a>
-                        <strong>Warning!</strong> Google 2-Factor Auth is enabled, View your backup Codes.
-                        <button class="close" data-dismiss="alert">&times;</button>
-                    </div>
             @endif
                 <!-- title here  -->
                 <!--  -->
@@ -52,7 +46,11 @@
                         <li class="dropdown user-profile align-self-center d-inline-block">
                             <a href="#" class="nav-link py-0" data-toggle="dropdown" aria-expanded="false">
                                 <div class="media">
-                                        <img src="{{ asset(auth()->user()->image) }}" style="width: 40px; height: 40px; border-radius: 50%;">
+                                    @if(!empty(auth()->user()->image))
+                                       <img src="{{ asset(auth()->user()->image) }}" style="width: 40px; height: 40px; border-radius: 50%;">
+                                    @else
+                                       <img src="{{(asset('public/images/download.png'))}}" style="width: 40px; height: 40px; border-radius: 50%;">
+                                        @endif
                                 </div>
                             </a>
                             <div class="dropdown-menu border dropdown-menu-right p-0">

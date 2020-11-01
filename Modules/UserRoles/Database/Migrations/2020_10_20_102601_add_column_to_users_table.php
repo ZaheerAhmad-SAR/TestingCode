@@ -26,7 +26,7 @@ class AddColumnToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('google_auth_status');
+            $table->dropColumn('google_auth');
         });
     }
 }
