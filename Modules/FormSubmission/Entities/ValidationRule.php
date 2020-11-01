@@ -1,13 +1,15 @@
 <?php
 
-namespace Modules\Admin\Entities;
+namespace Modules\FormSubmission\Entities;
 
-use Modules\Admin\Scopes\RuleActiveScope;
+use Modules\FormSubmission\Scopes\RuleActiveScope;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Admin\Entities\Question;
 
 class ValidationRule extends Model
 {
     protected $table = 'validation_rules';
+    protected $keyType = 'string';
     protected $fillable = ['rule', 'title', 'description', 'rule_group', 'is_active', 'is_related_to_other_field'];
 
     protected static function boot()

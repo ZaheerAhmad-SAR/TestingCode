@@ -7,6 +7,7 @@ $subjectId = (isset($subjectId) && !empty($subjectId))? $subjectId:'';
 $studyId = (isset($studyId) && !empty($studyId))? $studyId:'';
 $stepCounter = (isset($stepCounter) && !empty($stepCounter))? $stepCounter:0;
 $form_filled_by_user_id = (isset($form_filled_by_user_id) && !empty($form_filled_by_user_id))? $form_filled_by_user_id:0;
+$transmissionNumber = \Modules\FormSubmission\Entities\SubjectsPhases::getTransmissionNumber($subjectId, $phase->id);
 /**************************************/
 /**************************************/
 /**************************************/
@@ -91,6 +92,10 @@ if(null !== $formStatusObj){
                                                         {{ $section->name }}
                                                     </h6>
                                                     {{ $section->description }}
+                                                    @if(!empty($transmissionNumber))
+                                                      <br>
+                                                      <span class="text text-danger">Transmission Number : {{ $transmissionNumber }}</span>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </a>
@@ -154,7 +159,7 @@ if(null !== $formStatusObj){
                     stopJsHere();
                 }
             }
-            validateAndSubmitForm(stepIdStr, '{{ $formStatusObj->form_type_id }}', '{{ buildGradingStatusIdClsStr($formStatusObj->id) }}');
+            validateAndSubmitForm(stepIdStr, '{{ $step->form_type_id }}', '{{ buildGradingStatusIdClsStr($formStatusObj->id) }}');
             reloadPage(2);
         }
     }
@@ -167,7 +172,7 @@ if(null !== $formStatusObj){
             if ($formStatusObj->form_status != 'complete') {
                 echo "globalDisableByClass($stepCounter, '$studyClsStr', '$stepClsStr');";
             } else {
-                echo "hideReasonField('$stepIdStr', '$stepClsStr', '$formStatusObj->form_type_id', '".buildGradingStatusIdClsStr($formStatusObj->id)."');";
+                echo "hideReasonField('$stepIdStr', '$stepClsStr', '$step->form_type_id', '".buildGradingStatusIdClsStr($formStatusObj->id)."');";
             }
             @endphp
         });

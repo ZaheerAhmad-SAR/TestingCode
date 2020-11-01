@@ -99,7 +99,7 @@ class Google2FAController extends Controller
 
         $user->save();
 
-        return view('userroles::users.profile',compact('user'));
+        return view('userroles::users.profile',compact('user','codes'));
     }
 
     /**

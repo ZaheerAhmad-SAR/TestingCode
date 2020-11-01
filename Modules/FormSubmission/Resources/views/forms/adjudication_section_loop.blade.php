@@ -128,8 +128,7 @@
                             stopJsHere();
                         }
                     }
-                    validateAndSubmitAdjudicationForm(stepIdStr, '{{ $adjudicationFormStatusObj->form_type_id }}',
-                        '{{ buildAdjudicationStatusIdClsStr($adjudicationFormStatusObj->id) }}');
+                    validateAndSubmitAdjudicationForm(stepIdStr, '{{ buildAdjudicationStatusIdClsStr($adjudicationFormStatusObj->id) }}');
                     reloadPage(3);
                 }
             }

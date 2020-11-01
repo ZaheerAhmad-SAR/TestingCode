@@ -65,7 +65,7 @@ trait ReplicatePhaseStructure
                     /* Replicate Question Data Validation */
                     /******************************* */
 
-                    $this->addReplicatedQuestionValidation($question, $newQuestionId);
+                    $this->updateQuestionValidationToReplicatedVisits($question->id);
 
                     /******************************* */
                     /* Replicate Question Dependency */
@@ -94,8 +94,8 @@ trait ReplicatePhaseStructure
     private function updatePhaseToReplicatedVisits($phase)
     {
         $replicatedPhases = StudyStructure::where('parent_id', 'like', $phase->id)
-        ->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)
-        ->get();
+            ->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)
+            ->get();
         foreach ($replicatedPhases as $replicatedPhase) {
             $this->updateReplicatedPhase($phase, $replicatedPhase);
         }
@@ -104,8 +104,8 @@ trait ReplicatePhaseStructure
     private function deletePhaseToReplicatedVisits($phase)
     {
         $replicatedPhases = StudyStructure::where('parent_id', 'like', $phase->id)
-        ->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)
-        ->get();
+            ->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)
+            ->get();
         foreach ($replicatedPhases as $replicatedPhase) {
             $replicatedPhase->delete();
         }

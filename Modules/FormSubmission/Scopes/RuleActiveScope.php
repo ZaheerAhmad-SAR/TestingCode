@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Admin\Scopes;
+namespace Modules\FormSubmission\Scopes;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;

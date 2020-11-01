@@ -14,8 +14,8 @@ class AddForeignKeyToStudyUsersTable extends Migration
     public function up()
     {
         Schema::table('study_user', function (Blueprint $table) {
-            $table->foreign('study_id')->references('id')->on('studies');
-            $table->foreign('user_id')->references('id')->on('users');
+          //  $table->foreign('study_id')->references('id')->on('studies');
+          //  $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -27,8 +27,8 @@ class AddForeignKeyToStudyUsersTable extends Migration
     public function down()
     {
         Schema::table('study_user', function (Blueprint $table) {
-            $table->dropForeign('study_id');
-            $table->dropForeign('user_id');
+           // $table->dropForeign('study_id');
+           // $table->dropForeign('user_id');
 
         });
     }

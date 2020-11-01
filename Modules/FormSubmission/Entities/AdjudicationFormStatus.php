@@ -49,14 +49,62 @@ class AdjudicationFormStatus extends Model
         return self::getAdjudicationFormStatusObjQuery($getAdjudicationFormStatusArray)->firstOrNew();
     }
 
-    public static function getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, $wrap = false)
+    public static function getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, $wrap = false, $wrapSeperate = false)
     {
         $adjudicationFormStatusObj = self::getAdjudicationFormStatusObj($getAdjudicationFormStatusArray);
         if ($wrap) {
-            return self::makeAdjudicationFormStatusSpan($step, $adjudicationFormStatusObj);
+            if ($wrapSeperate) {
+                return self::makeAdjudicationFormStatusSeperateSpan($adjudicationFormStatusObj);
+            } else {
+                return self::makeAdjudicationFormStatusSpan($step, $adjudicationFormStatusObj);
+            }
         } else {
             return $adjudicationFormStatusObj->adjudication_status;
         }
+    }
+
+    public static function makeAdjudicationFormStatusSeperateSpan($adjudicationFormStatusObj)
+    {
+        $adjudicationFormStatus = $adjudicationFormStatusObj->adjudication_status;
+
+        $status = '';
+        $userName = '';
+
+        switch ($adjudicationFormStatus) {
+            case 'no_status':
+                $status = 'Not Initiated';
+                $userName = '';
+                break;
+
+            case 'no_required':
+                $status = 'Not Required';
+                $userName = '';
+                break;
+
+            case 'incomplete':
+                $status = 'Initiated';
+                $userName = $adjudicationFormStatusObj->user->name;
+                break;
+
+            case 'complete':
+                $status = 'Complete';
+                $userName = $adjudicationFormStatusObj->user->name;
+                break;
+
+            case 'resumable':
+                $status = 'Editing';
+                $userName = $adjudicationFormStatusObj->user->name;
+                break;
+
+            case 'adjudication':
+                $status = 'In Adjudication';
+                $userName = $adjudicationFormStatusObj->user->name;
+                break;
+        }
+        if (!empty($userName)) {
+            $userName = ' - ' . $userName;
+        }
+        return $status . $userName;
     }
 
     public static function makeAdjudicationFormStatusSpan($step, $adjudicationFormStatusObj)
@@ -67,7 +115,7 @@ class AdjudicationFormStatus extends Model
             $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="' . $adjudicationFormStatusObj->user->name . '"';
         }
 
-        $imgSpanStepClsStr = buildSafeStr($step->step_id, 'img_adjudication_status_');
+        $imgSpanStepClsStr = buildAdjudicationStatusIdClsStr($step->step_id);
         $spanStr = '<span class="' . $imgSpanStepClsStr . '" ' . $info . '>';
         $spanStr .= self::makeAdjudicationFormStatusSpanImage($adjudicationFormStatus) . '</span>';
         return $spanStr;
@@ -108,21 +156,30 @@ class AdjudicationFormStatus extends Model
 
         $adjudicationFormStatusObj = AdjudicationFormStatus::getAdjudicationFormStatusObj($getAdjudicationFormStatusArray);
 
-        if ($adjudicationFormStatusObj->adjudication_status == 'no_status') {
-            $adjudicationFormStatusObj = self::insertAdjudicationFormStatus($request, $getAdjudicationFormStatusArray);
-        } elseif ($request->has(buildSafeStr($request->stepId, 'adjudication_form_terms_cond_'))) {
+        if (
+            ($adjudicationFormStatusObj->adjudication_status == 'no_status') &&
+            $request->has(buildSafeStr($request->stepId, 'adjudication_form_terms_cond_'))
+        ) {
+            $adjudicationFormStatusObj = self::insertAdjudicationFormStatus('complete', $getAdjudicationFormStatusArray);
+        } elseif (
+            ($adjudicationFormStatusObj->adjudication_status != 'no_status') &&
+            $request->has(buildSafeStr($request->stepId, 'adjudication_form_terms_cond_'))
+        ) {
             $adjudicationFormStatusObj->adjudication_status = 'complete';
             $adjudicationFormStatusObj->update();
+        } elseif ($adjudicationFormStatusObj->adjudication_status == 'no_status') {
+            $adjudicationFormStatusObj = self::insertAdjudicationFormStatus('incomplete', $getAdjudicationFormStatusArray);
         }
-        return ['id' => $adjudicationFormStatusObj->id, 'adjudicationFormStatus' => $adjudicationFormStatusObj->adjudication_status, 'adjudicationFormStatusIdStr' => buildAdjudicationStatusIdClsStr($adjudicationFormStatusObj->id)];
+
+        return ['id' => $adjudicationFormStatusObj->id, 'adjudicationFormStatus' => $adjudicationFormStatusObj->adjudication_status, 'adjudicationFormStatusIdStr' => buildAdjudicationStatusIdClsStr($request->stepId)];
     }
 
-    public static function insertAdjudicationFormStatus($request, $adjudicationFormStatusArray)
+    public static function insertAdjudicationFormStatus($status = 'incomplete', $adjudicationFormStatusArray)
     {
         $id = Str::uuid();
         $adjudicationFormStatusData = [
             'id' => $id,
-            'adjudication_status' => 'incomplete',
+            'adjudication_status' => $status,
         ] + $adjudicationFormStatusArray;
         AdjudicationFormStatus::create($adjudicationFormStatusData);
         return AdjudicationFormStatus::find($id);

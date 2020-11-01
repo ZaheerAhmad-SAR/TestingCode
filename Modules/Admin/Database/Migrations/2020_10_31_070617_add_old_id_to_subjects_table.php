@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddForeignKeyToCoordinatorsTable extends Migration
+class AddOldIdToSubjectsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddForeignKeyToCoordinatorsTable extends Migration
      */
     public function up()
     {
-        Schema::table('coordinators', function (Blueprint $table) {
-            //$table->foreign('site_id')->references('id')->on('sites')->onDelete('cascade');
+        Schema::table('subjects', function (Blueprint $table) {
+            $table->uuid('old_id')->after('id')->nullable();
         });
     }
 
@@ -25,9 +25,8 @@ class AddForeignKeyToCoordinatorsTable extends Migration
      */
     public function down()
     {
-        Schema::table('coordinators', function (Blueprint $table) {
-            //$table->dropForeign('site_id');
-
+        Schema::table('subjects', function (Blueprint $table) {
+            $table->dropColumn('old_id');
         });
     }
 }
