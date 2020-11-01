@@ -83,7 +83,7 @@ class Study extends Model
 
         $completedQcStepsIdsArray = FormStatus::getStepsIdsArrayByStatusAndFormType(1, 'complete', $qcStepsIdsArray);
         if (count($qcStepsIdsArray) > 0) {
-            $qc_percentage = (count($completedQcStepsIdsArray) / count($qcStepsIdsArray)) * 100;
+            $qc_percentage = round((count($completedQcStepsIdsArray) / count($qcStepsIdsArray)) * 100);
         }
 
 
@@ -91,14 +91,14 @@ class Study extends Model
 
         $completedGradingStepsIdsArray = FormStatus::getStepsIdsArrayByStatusAndFormType(2, 'complete', $gradingStepsIdsArray);
         if (count($gradingStepsIdsArray) > 0) {
-            $grading_percentage = (count($completedGradingStepsIdsArray) / count($gradingStepsIdsArray)) * 100;
+            $grading_percentage = round((count($completedGradingStepsIdsArray) / count($gradingStepsIdsArray)) * 100);
         }
 
         /*********************************************************/
 
         $completedAdjudicationStepsIdsArray = AdjudicationFormStatus::getStepsIdsArrayByStatus('complete', $gradingStepsIdsArray);
         if (count($gradingStepsIdsArray) > 0) {
-            $adjudication_percentage = (count($completedAdjudicationStepsIdsArray) / count($gradingStepsIdsArray)) * 100;
+            $adjudication_percentage = round((count($completedAdjudicationStepsIdsArray) / count($gradingStepsIdsArray)) * 100);
         }
 
         return '<div class="progress">
