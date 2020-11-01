@@ -5,18 +5,23 @@
             <th>Phase</th>
             <th>Visit Date</th>
             <th>Site Name</th>
+
             @php
                 $count = 4;
             @endphp
 
             @if ($modalitySteps != null)
                 @foreach($modalitySteps as $key => $steps)
-                @php
-                    $count = $count + count($steps);
-                @endphp
-                <th colspan="{{count($steps)}}">
-                        {{$key}}
-                </th>
+
+                    @if ($steps != null)
+                        @php
+                            $count = $count + count($steps);
+                        @endphp
+                    <th colspan="{{count($steps)}}">
+                            {{$key}}
+                    </th>
+                    @endif
+
                 @endforeach
             @endif
         </tr>
@@ -52,17 +57,25 @@
                 @if($subject->form_status != null)
                     @foreach($subject->form_status as $status)
                        
-                    <td>{{ $status }}</td>
+                        <td>
+                                {{ $status }}  
+                        </td>
 
                     @endforeach
                 @endif
             </tr>
             @endforeach
 
+        
         @else
         <tr>
-            <td colspan="{{$count}}" style="text-align: center;"> No record found.</td>
+            <td colspan="{{$count}}"> No record found.</td>
         </tr>
         @endif
     </tbody>
 </table>
+
+
+
+
+

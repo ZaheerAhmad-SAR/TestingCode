@@ -5,6 +5,7 @@
             <th>Phase</th>
             <th>Visit Date</th>
             <th>Site Name</th>
+
             @php
                 $count = 4;
             @endphp
@@ -43,7 +44,7 @@
             @foreach($subjects as $key => $subject)
             <tr>
                 <td>
-                   {{$subject->subject_id}}
+                  {{$subject->subject_id}}
                 </td>
                 <td>{{$subject->phase_name}}</td>
                 <td>{{date('Y-m-d', strtotime($subject->visit_date))}}</td>
@@ -52,7 +53,9 @@
                 @if($subject->form_status != null)
                     @foreach($subject->form_status as $status)
                        
-                    <td>{{ $status }}</td>
+                    <td>
+                        {{ $status }}   
+                    </td>
 
                     @endforeach
                 @endif
@@ -61,7 +64,7 @@
 
         @else
         <tr>
-            <td colspan="{{$count}}" style="text-align: center;"> No record found.</td>
+            <td colspan="{{$count}}"> No record found.</td>
         </tr>
         @endif
     </tbody>

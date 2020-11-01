@@ -146,6 +146,8 @@
                             <div class="form-group col-md-2 mt-4">        
                                <!--  <button type="button" class="btn btn-primary reset-filter-1">Reset</button> -->
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Records</button>
+
+                                <button type="button" data-url="{{ route('excel-adjudication') }}" class="btn btn-primary btn-lng form-1-adjudication">Export</button>
                             </div>
 
                         </div>
@@ -202,6 +204,8 @@
                             <div class="form-group col-md-2 mt-4">        
                                 <!-- <button type="button" class="btn btn-primary reset-filter-2">Reset</button> -->
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Records</button>
+
+                                <button type="button" data-url="{{ route('excel-adjudication2') }}" class="btn btn-primary btn-lng form-2-adjudication">Export</button>
                             </div>
 
                         </div>
@@ -239,7 +243,7 @@
                                     @if ($modalitySteps != null)
                                     <tr class="table-secondary">
                                         <th scope="col" colspan="4" class="border-top-0"> </th>
-                                        </th>
+        
                                         @foreach($modalitySteps as $steps)
                                         
                                             @foreach($steps as $value)
@@ -428,6 +432,16 @@
     // toggle form filters
     $('.other-filters').on('click', function(){
         $('.form-1, .form-2').toggle();
+    });
+
+     // adjudication list for form-1
+    $('.form-1-adjudication').on('click', function(){
+        window.location.href = $(this).attr('data-url');
+    });
+
+    // adjudication list for form-2
+    $('.form-2-adjudication').on('click', function(){
+        window.location.href = $(this).attr('data-url');
     });
 
 </script>
