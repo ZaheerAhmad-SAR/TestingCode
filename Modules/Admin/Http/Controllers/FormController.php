@@ -112,14 +112,14 @@ class FormController extends Controller
                                     </thead>
                                 </table>
                             </div>
-                        </div> 
+                        </div>
                     </div>';
         foreach($all_study_steps->studySteps as $key=>$value){
             $step_contents_active .= '
                     <div class="card">
                         <div class="card-body" style="padding: 0;">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;"> 
+                                <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;">
                                 <tbody>
                                     <tr>
                                         <td class="step_id" style="display: none;">'.$value->step_id.'</td>
@@ -131,13 +131,13 @@ class FormController extends Controller
                                         <td colspan="5"> <input type="checkbox" name="activate_forms['.$key.'}}][]" value="'.$value->step_id.'"> &nbsp;&nbsp;'.$value->step_name.'</td>
                                     </tr>
                                 </tbody>
-                            </table> 
+                            </table>
                         </div>
                     </div>
                 </div>
                 <div class="card collapse row-'.$value->step_id.'-ac sections_list_'.$value->step_id.'">
                 </div>';
-                
+
         }
         $step_contents_active .='</div>';
         $step_contents_deactive = '<div class="col-12 col-sm-6 mt-3 current_div_de">
@@ -153,13 +153,13 @@ class FormController extends Controller
                                     </thead>
                                 </table>
                             </div>
-                        </div> 
+                        </div>
                     </div>';
         foreach($all_study_steps->studySteps as $key=>$value){
             $step_contents_deactive .='<div class="card">
                                 <div class="card-body" style="padding: 0;">
                                     <div class="table-responsive">
-                                        <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;"> 
+                                        <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;">
                                         <tbody>
                                             <tr>
                                                 <td class="step_id" style="display: none;">'.$value->step_id.'</td>
@@ -171,12 +171,12 @@ class FormController extends Controller
                                                 <td colspan="5"><input type="checkbox" name="deactivate_forms['.$key.'][]" value="'.$value->step_id.'"> &nbsp;&nbsp; '.$value->step_name.'</td>
                                             </tr>
                                         </tbody>
-                                    </table> 
+                                    </table>
                                 </div>
                             </div>
                         </div>
                         <div class="card collapse row-'.$value->step_id.'-de de_sections_list_'.$value->step_id.'">
-                            
+
                         </div>';
         }
         $step_contents_deactive .='</div>';
@@ -419,7 +419,7 @@ class FormController extends Controller
         $Response['data'] = 'success';
         echo json_encode($Response);
     }
-   
+
     /**
      * Show the form for creating a new resource.
      * @return Response
@@ -443,6 +443,7 @@ class FormController extends Controller
         $id    = Str::uuid();
         Question::create([
             'id' => $id,
+            'old_id'    => $id,
             'form_field_type_id' => $request->form_field_type_id,
             'section_id' => $request->section_id,
             'option_group_id' => $request->option_group_id,
@@ -472,6 +473,7 @@ class FormController extends Controller
     }
     public function update_questions(Request $request)
     {
+        dd($request->all());
         // update Question basic attribute
         $questionObj = Question::where('id', $request->id)->first();
         $questionObj->form_field_type_id = $request->form_field_type_id;

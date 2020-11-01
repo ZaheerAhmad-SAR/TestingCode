@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRoleStudiesTable extends Migration
+class AddOldIdToQuestionTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,8 @@ class CreateRoleStudiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('role_study', function (Blueprint $table) {
-            $table->uuid('id')->primary()->unique();
-            $table->uuid('study_id')->nullable();
-            $table->uuid('role_id')->nullable();
-
-            $table->timestamps();
+        Schema::table('question', function (Blueprint $table) {
+            $table->uuid('old_id')->after('id')->nullable();
         });
     }
 
@@ -29,6 +25,8 @@ class CreateRoleStudiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('role_study');
+        Schema::table('question', function (Blueprint $table) {
+            $table->dropColumn('old_id');
+        });
     }
 }

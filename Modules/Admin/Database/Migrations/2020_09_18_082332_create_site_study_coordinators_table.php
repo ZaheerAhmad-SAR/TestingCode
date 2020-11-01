@@ -15,8 +15,8 @@ class CreateSiteStudyCoordinatorsTable extends Migration
     {
         Schema::create('site_study_coordinators', function (Blueprint $table) {
             $table->uuid('id')->primary()->unique();
-            $table->uuid('site_study_id');
-            $table->uuid('coordinator_id');
+            $table->uuid('site_study_id')->nullable();
+            $table->uuid('coordinator_id')->nullable();
             $table->timestamps();
         });
     }

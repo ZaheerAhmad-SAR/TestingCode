@@ -139,8 +139,9 @@ class StudySiteController extends Controller
     public function updatePrimaryInvestigator(Request $request)
     {
         $pi_id_value = $_POST['pi_id_value'];
+        $id = Str::uuid();
         $table_site_study_id   = $_POST['table_site_study_id'];
-        $data      = array('primaryInvestigator_id' => $pi_id_value);
+        $data      = array('primaryInvestigator_id' => $pi_id_value, 'id'   => $id);
         StudySite::where('id',$table_site_study_id)->update($data);
         return response()->json(['success'=>'Primary Investigator is updated successfully!']);
     }

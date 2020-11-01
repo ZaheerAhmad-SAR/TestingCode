@@ -349,7 +349,7 @@
                             <div class="col-md-2">
                                 <input type="checkbox" name="studySites" checked>
                             </div>
-                            <div class="col-md-2">Phases & Steps <br>Sections & Questions</div>
+                            <div class="col-md-2">Phases/Steps <br>Sect/Questions</div>
                             <div class="col-md-2">
                                 <input type="checkbox" name="phasesSteps" checked>
                             </div>
@@ -359,6 +359,10 @@
                             </div>
                         </div>
                         <div class="form-group row">
+                            <div class="col-md-2">Study Data</div>
+                            <div class="col-md-2">
+                                <input type="checkbox" name="studyData" checked>
+                            </div>
                             <div class="col-md-2">Transmissions</div>
                             <div class="col-md-2">
                                 <input type="checkbox" name="transmissions" checked>
