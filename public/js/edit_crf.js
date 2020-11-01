@@ -1,7 +1,6 @@
 // forms fetching validations
 $('body').on('click','.form-fields',function(){
         $('#formfields').trigger('reset');
-        var type = $(this).attr("data-field-type");
         $('#formfields').attr('action', "{{route('addQuestions')}}");
         $('#question_type').val(type);
         if(type =='Number'){
