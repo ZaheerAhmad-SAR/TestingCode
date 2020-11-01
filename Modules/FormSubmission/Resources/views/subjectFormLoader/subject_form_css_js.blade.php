@@ -371,6 +371,7 @@
             }
 
             function canSubmitForm(formTypeId, stepIdStr){
+
                 var canQualityControl = {{ (canQualityControl(['create', 'store', 'edit', 'update']))? 'true':'false' }};
                 var canGrading = {{ (canGrading(['create', 'store', 'edit', 'update']))? 'true':'false' }};
                 var canAdjudication = {{ (canAdjudication(['create', 'store', 'edit', 'update']))? 'true':'false' }};

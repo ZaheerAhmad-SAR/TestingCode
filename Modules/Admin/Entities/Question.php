@@ -6,6 +6,7 @@ use Modules\Admin\Scopes\QuestionOrderByScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\FormSubmission\Entities\Answer;
+use Modules\FormSubmission\Entities\ValidationRule;
 
 class Question extends Model
 {

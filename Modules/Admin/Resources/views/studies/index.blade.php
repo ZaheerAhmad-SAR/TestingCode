@@ -41,9 +41,9 @@
                         </button>
                             @endif
                             <div class="col-md-9 align-items-left" style="padding: 0px 0px 0px 95px;">
-                                <button class="btn" disabled style="background:#17a2b8; color:white ">QC</button>
-                                <button class="btn" disabled style="background:green; color:white">Grader</button>
-                                <button class="btn" disabled style="background:red; color:white">Adjudication</button>
+                                <button type="button" class="btn btn-info">QC</button>
+                                <button type="button" class="btn btn-success">Grader</button>
+                                <button type="button" class="btn btn-danger">Adjudication</button>
                             </div>
                     </div>
                     <div class="card-body">
