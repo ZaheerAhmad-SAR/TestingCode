@@ -25,6 +25,7 @@ class Query extends Model
         $queryCheck   = false;
         $queryByLogin = self::where('queried_remarked_by_id', 'like', auth()->user()->id)
             ->where('parent_query_id', 'like', 0)
+            ->where('query_status', '!=', 'close')
             ->where('module_id', 'like', $module_id)->first();
 
         if (null !== $queryByLogin) {

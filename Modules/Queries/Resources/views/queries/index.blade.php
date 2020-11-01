@@ -33,7 +33,7 @@
                                 <tr>
                                     <th>id</th>
                                     <th>Subject</th>
-                                    <th>Origin Name</th>
+                                    <th>Section Name</th>
                                     <th>Created By</th>
                                     <th>Creation Date</th>
                                     <th>Status</th>
@@ -80,6 +80,9 @@
                     <form id="replyForm" name="replyForm">
                         <div class="replyInput"></div>
                     </form>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-danger" data-dismiss="modal" id="queries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -89,9 +92,21 @@
 @section('script')
     <script type="text/javascript">
 
+        // $('body').on('click','#queries-close',function () {
+        //   $('#replyForm').html('');
+        // });
+
+        let template = null;
+        $('.modal').on('show.bs.modal', function(event) {
+            template = $(this).html();
+        });
+
+        $('.modal').on('hidden.bs.modal', function(e) {
+            $(this).html(template);
+        });
+
         $('body').on('click', '.detailConversation', function () {
             var query_id     = $(this).attr('data-id');
-            console.log(query_id);
             $('#reply-modal').modal('show');
             showComments(query_id);
             $('#all-queries-modal').modal('hide');
