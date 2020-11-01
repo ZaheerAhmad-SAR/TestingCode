@@ -86,6 +86,18 @@
 <script type="text/javascript">
 
     $('.create-new-queries').click(function () {
+
+        var study_id = $(this).attr('data-study_id');
+        var subject_id = $(this).attr('data-subject_id');
+        var study_structures_id = $(this).attr('data-study_structures_id');
+        var phase_steps_id = $(this).attr('data-phase_steps_id');
+        var section_id = $(this).attr('data-section_id');
+        var question_id = $(this).attr('data-question_id');
+        var field_id = $(this).attr('data-field_id');
+        var form_type_id = $(this).attr('data-form_type_id');
+        var module = $(this).attr('data-module');
+        var modility_id = $(this).attr('data-modility_id');
+
         var study_id = $(this).attr('data-id');
         var moduleId = $('#module_id').val(study_id);
         $('#queries-modal').modal('show');

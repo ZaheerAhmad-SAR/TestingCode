@@ -93,7 +93,13 @@ $adjudicationRequiredQuestionIdsArray = \Modules\FormSubmission\Entities\Questio
                 </div>
             </div>
             <div class="col-1">@include('formsubmission::forms.adjudication_form_fields.info_popup', ['question'=>$question])</div>
-            <div class="col-1">@include('formsubmission::forms.adjudication_form_fields.query_popup', ['showAverageIcon'=>$showAverageIcon, 'fieldType'=>$fieldType, 'field_name'=> $grader_field_name, 'questionIdStr'=>
+            @php
+            $queryParams = $getAnswerArray;
+            $queryParams['form_type_id'] = $step->form_type_id;
+            $queryParams['module'] = 'Adjudication Form';
+            $queryParams['modility_id'] = $step->modility_id;
+            @endphp
+            <div class="col-1">@include('formsubmission::forms.adjudication_form_fields.query_popup', ['queryParams'=>$queryParams, 'showAverageIcon'=>$showAverageIcon, 'fieldType'=>$fieldType, 'field_name'=> $grader_field_name, 'questionIdStr'=>
                 $questionIdStr, 'copyToFieldId'=> $fieldId, 'fieldId'=> $grader_field_id, 'answer'=> $answer])</div>
         </div>
     </div>
