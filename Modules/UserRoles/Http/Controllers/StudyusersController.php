@@ -27,13 +27,12 @@ class StudyusersController extends Controller
      */
     public function index()
     {
-        // DB::enableQueryLog();
+
             $roles  =   Role::where('role_type','=','study_role')->get();
             $currentStudy = session('current_study');
 
 
         if (hasPermission(auth()->user(),'studytools.index') && empty(session('current_study'))){
-
             $permissionsIdsArray = Permission::where(function($query){
                 $query->where('permissions.name','!=','studytools.create')
                     ->orwhere('permissions.name','!=','studytools.store')
@@ -53,8 +52,7 @@ class StudyusersController extends Controller
                 ->where('user_roles.study_id','!=',session('current_study'))->distinct()
                 ->get();
         }
-        else if (hasPermission(auth()->user(),'studytools.index') && !empty(session('current_study'))){
-
+        elseif (hasPermission(auth()->user(),'studytools.index') && !empty(session('current_study'))){
             $users =  UserRole::select('users.*','user_roles.study_id','roles.role_type', 'roles.name as role_name')
                 ->join('users','users.id','=','user_roles.user_id')
                 ->join('roles','roles.id','=','user_roles.role_id')
@@ -69,8 +67,6 @@ class StudyusersController extends Controller
                 ->whereNotIn('user_roles.user_id',$enrolledusers)
                 ->where('user_roles.study_id','!=',session('current_study'))->distinct()
                 ->get();
-
-          // dd($enrolledusers);
         }
         $selectStudyUsers =  $selectStudyUsers = UserRole::select('users.*','user_roles.study_id')
             ->join('users','users.id','=','user_roles.user_id')

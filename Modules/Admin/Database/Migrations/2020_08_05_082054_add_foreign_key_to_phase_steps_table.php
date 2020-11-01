@@ -14,7 +14,7 @@ class AddForeignKeyToPhaseStepsTable extends Migration
     public function up()
     {
         Schema::table('phase_steps', function (Blueprint $table) {
-            $table->foreign('phase_id')->references('id')->on('study_structures');
+           // $table->foreign('phase_id')->references('id')->on('study_structures');
         });
     }
 
@@ -26,7 +26,7 @@ class AddForeignKeyToPhaseStepsTable extends Migration
     public function down()
     {
         Schema::table('phase_steps', function (Blueprint $table) {
-            $table->dropForeign('phase_id');
+          //  $table->dropForeign('phase_id');
         });
     }
 }

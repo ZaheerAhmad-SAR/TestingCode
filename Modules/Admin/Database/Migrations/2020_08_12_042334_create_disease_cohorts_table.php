@@ -14,9 +14,9 @@ class CreateDiseaseCohortsTable extends Migration
     public function up()
     {
         Schema::create('disease_cohorts', function (Blueprint $table) {
-            $table->uuid('id');
+            $table->uuid('id')->primary()->unique();
             $table->uuid('study_id');
-            $table->foreign('study_id')->references('id')->on('studies')->onDelete('cascade')->onUpdate('cascade');
+           // $table->foreign('study_id')->references('id')->on('studies')->onDelete('cascade')->onUpdate('cascade');
             $table->string('name');
             $table->timestamps();
         });
