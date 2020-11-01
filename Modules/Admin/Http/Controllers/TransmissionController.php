@@ -650,6 +650,7 @@ class TransmissionController extends Controller
                 $getModalityPhase->modility_id = $getModality->id;
                 $getModalityPhase->phase_id = $getPhase->id;
                 $getModalityPhase->form_type_id = 1;
+                $getModalityPhase->Transmission_Number = $findTransmission->Transmission_Number;
                 $getModalityPhase->save();
             }
 
