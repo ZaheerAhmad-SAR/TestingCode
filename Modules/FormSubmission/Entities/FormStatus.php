@@ -71,7 +71,7 @@ class FormStatus extends Model
         return $this->hasMany(FormRevisionHistory::class, 'form_submit_status_id', 'id');
     }
 
-    public static function getGradersFormsStatusesSpan($step, $getFormStatusArray, $numGraders = 0)
+    public static function getGradersFormsStatusesSpan($step, $getFormStatusArray, $numGraders = 0, $wrapSeperate = false)
     {
         $retStr = '';
         $numberOfGraders = ($numGraders != 0) ? $numGraders : $step->graders_number;
@@ -83,7 +83,11 @@ class FormStatus extends Model
 
         foreach ($formStatusObjects as $formStatusObj) {
 
-            $retStr .= self::makeGraderFormStatusSpan($step, $formStatusObj);
+            if ($wrapSeperate) {
+                $retStr .= self::makeFormStatusSeperateSpan($formStatusObj);
+            } else {
+                $retStr .= self::makeGraderFormStatusSpan($step, $formStatusObj);
+            }
         }
         return $retStr;
     }

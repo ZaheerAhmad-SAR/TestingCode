@@ -13,7 +13,7 @@ trait ReplicatePhaseStructure
     use SectionReplication;
     use StepReplication;
 
-    private function replicatePhaseStructure($phaseId)
+    private function replicatePhaseStructure($phaseId, $isReplicating = true)
     {
         $phase = StudyStructure::find($phaseId);
         $lastChildPhase = StudyStructure::where('parent_id', $phaseId)->orderBy('created_at', 'desc')->first();
@@ -27,57 +27,59 @@ trait ReplicatePhaseStructure
         $newPhaseId = Str::uuid();
         $newPhase = $phase->replicate();
         $newPhase->id = $newPhaseId;
-        $newPhase->is_repeatable = 0;
-        $newPhase->parent_id = $phaseId;
-        $newPhase->count = $count;
-        $newPhase->position = $count + 1;
+        if ($isReplicating === true) {
+            $newPhase->is_repeatable = 0;
+            $newPhase->parent_id = $phaseId;
+            $newPhase->count = $count;
+            $newPhase->position = $count + 1;
+        }
         $newPhase->save();
-        /********************************** */
+        /******************************** */
 
         /******************************* */
         /***  Replicate Phase Steps **** */
         /******************************* */
         foreach ($phase->steps as $step) {
 
-            $newStepId = $this->addReplicatedStep($step, $newPhaseId);
+            $newStepId = $this->addReplicatedStep($step, $newPhaseId, $isReplicating);
 
             /******************************* */
             /***  Replicate Step Sections ** */
             /******************************* */
             foreach ($step->sections as $section) {
 
-                $newSectionId = $this->addReplicatedSection($section, $newStepId);
+                $newSectionId = $this->addReplicatedSection($section, $newStepId, $isReplicating);
 
                 /******************************* */
                 /* Replicate Section Questions * */
                 /******************************* */
                 foreach ($section->questions as $question) {
 
-                    $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId);
+                    $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId, $isReplicating);
 
                     /******************************* */
                     /* Replicate Question Form Field */
                     /******************************* */
 
-                    $this->addReplicatedFormField($question, $newQuestionId);
+                    $this->addReplicatedFormField($question, $newQuestionId, $isReplicating);
 
                     /******************************* */
                     /* Replicate Question Data Validation */
                     /******************************* */
 
-                    $this->updateQuestionValidationToReplicatedVisits($question->id);
+                    $this->updateQuestionValidationToReplicatedVisits($question->id, $isReplicating);
 
                     /******************************* */
                     /* Replicate Question Dependency */
                     /******************************* */
 
-                    $this->addReplicatedQuestionDependency($question, $newQuestionId);
+                    $this->addReplicatedQuestionDependency($question, $newQuestionId, $isReplicating);
 
                     /******************************* */
                     /*Replicate Question Adjudication*/
                     /******************************* */
 
-                    $this->addReplicatedQuestionAdjudicationStatus($question, $newQuestionId);
+                    $this->addReplicatedQuestionAdjudicationStatus($question, $newQuestionId, $isReplicating);
                 }
             }
         }
