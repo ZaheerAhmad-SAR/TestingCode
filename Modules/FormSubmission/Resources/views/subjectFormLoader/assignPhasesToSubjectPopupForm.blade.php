@@ -5,7 +5,7 @@
             <input type="hidden" id="subject_id" name="subject_id" value="{{$subject->id}}">
             <div class="form-group">
                 <label class="">Please select Phase</label>
-            <select name="phase_id" id="phase_id"  class="form-control-ocap bg-transparent">
+            <select name="phase_id" id="phase_id"  class="form-control-ocap bg-transparent" required>
                 @foreach($visitPhases as $phase)
                     <option value="{{$phase->id}}">{{$phase->name}}</option>
                 @endforeach
@@ -14,7 +14,8 @@
 
             <div class="form-group">
                 <label class="">Visit date</label>
-                <input type="date" name="visit_date" id="visit_date" value="" class="form-control-ocap bg-transparent"></div>
+                <input type="date" name="visit_date" id="visit_date" value="" class="form-control-ocap bg-transparent" required>
+            </div>
             <div class="form-group">
                 <label class="">Is out of window?</label>
                 <div class="custom-control custom-radio custom-control-inline">

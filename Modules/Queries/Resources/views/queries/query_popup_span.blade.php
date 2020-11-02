@@ -7,7 +7,7 @@ if(isset($queryParams)){
 }
 @endphp
 <span class="dropdown-item">
-    <a href="javascript:void(0)" {!! $dataStr !!} data-id="{{ $study_id }}" data-studyShortName = "{{$studyShortName}}" data-studyTitle="{{$studyTitle}}"  class="create-new-queries">
+    <a href="javascript:void(0)" {!! $dataStr !!} data-id="{{ $study_id }}" class="create-new-queries">
         <i class="fas fa-question-circle" aria-hidden="true">
         </i> Queries</a>
 </span>
