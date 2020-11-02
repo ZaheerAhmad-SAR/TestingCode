@@ -109,7 +109,7 @@ class FormStatus extends Model
         $formStatusObj = self::getFormStatusObj($getFormStatusArray);
         if ($wrap) {
             if ($wrapSeperate) {
-                return self::makeFormStatusSeperateSpan($step, $formStatusObj);
+                return self::makeFormStatusSeperateSpan($formStatusObj);
             } else {
                 return self::makeFormStatusSpan($step, $formStatusObj);
             }

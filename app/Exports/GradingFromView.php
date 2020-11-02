@@ -77,11 +77,12 @@ class GradingFromView implements FromView
 
                                 if ($step->form_type_id == 2) {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  1;
+                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, false, false);
                                 } else {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  2;
+                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, false, false);
                                 }
+
 
                         } // step lopp ends
                       
@@ -90,6 +91,8 @@ class GradingFromView implements FromView
                     $subject->form_status = $formStatus;
                 }// subject loop ends
             } // modality step null check
+
+            //dd($subject);
 
         return view('userroles::users.grading-list-csv', [
             'subjects' 		=> $subjects,
