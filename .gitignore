@@ -4,6 +4,8 @@
 /storage/*.key
 server.php
 /vendor
+.env
+.env_old
 .htaccess
 composer.json
 .env.backup
