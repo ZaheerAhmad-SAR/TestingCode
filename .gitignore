@@ -9,6 +9,8 @@ server.php
 .env_old
 .htaccess
 composer.json
+.env
+.env_old
 .env.backup
 .phpunit.result.cache
 Homestead.json
@@ -21,3 +23,5 @@ yarn-error.log
 /resources/views/layouts/home.blade.php
 /Modules/UserRoles/Resources/views/dashboard.blade.php
 composer.lock
+/public/query_attachments/
+/public/images/

@@ -10,13 +10,15 @@ use Modules\Admin\Entities\StudyStructure;
 trait StepReplication
 {
 
-    private function addReplicatedStep($step, $newPhaseId)
+    private function addReplicatedStep($step, $newPhaseId, $isReplicating = true)
     {
         $newStepId = Str::uuid();
         $newStep = $step->replicate();
         $newStep->step_id = $newStepId;
         $newStep->phase_id = $newPhaseId;
-        $newStep->parent_id = $step->step_id;
+        if ($isReplicating === true) {
+            $newStep->parent_id = $step->step_id;
+        }
         $newStep->save();
         return $newStepId;
     }
@@ -28,11 +30,11 @@ trait StepReplication
         $replicatedStep->update();
     }
 
-    private function addStepToReplicatedVisits($newStep)
+    private function addStepToReplicatedVisits($newStep, $isReplicating = true)
     {
         $replicatedPhases = StudyStructure::where('parent_id', 'like', $newStep->phase_id)->get();
         foreach ($replicatedPhases as $phase) {
-            $this->addReplicatedStep($newStep, $phase->id);
+            $this->addReplicatedStep($newStep, $phase->id, $isReplicating);
         }
     }
 

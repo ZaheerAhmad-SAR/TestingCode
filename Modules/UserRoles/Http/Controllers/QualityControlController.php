@@ -15,6 +15,9 @@ use Modules\FormSubmission\Entities\FormStatus;
 use Modules\Admin\Entities\FormType;
 use DB;
 use Carbon\Carbon;
+use Excel;
+use App\Exports\QCFromView;
+use App\Exports\QCFromView2;
 
 class QualityControlController extends Controller
 {
@@ -351,5 +354,17 @@ class QualityControlController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function excelQC(Request $request) {
+        
+        return Excel::download(new QCFromView(), 'qc.xlsx');
+
+    }
+
+    public function excelQC2(Request $request) {
+        
+        return Excel::download(new QCFromView2(), 'qc.xlsx');
+
     }
 }

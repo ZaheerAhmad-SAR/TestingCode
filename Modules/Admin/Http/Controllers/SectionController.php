@@ -45,10 +45,9 @@ class SectionController extends Controller
             'description' =>  $request->sec_description,
             'sort_number' =>  $request->sort_num
         ]);
-
         /************************* */
         $section = Section::find($id);
-        $this->addSectionToReplicatedVisits($section);
+        $this->addSectionToReplicatedVisits($section, true);
 
         return $last_id = Section::select('id')->latest()->first();
         // return redirect()->route('study.index');
