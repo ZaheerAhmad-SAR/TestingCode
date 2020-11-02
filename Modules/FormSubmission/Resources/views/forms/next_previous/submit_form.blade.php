@@ -18,4 +18,19 @@
             id="submit_{{ $stepIdStr }}">Submit</button>
     </div>
 </div>
+
+@php
+$queryParams = [
+    'study_id'=>$studyId,
+    'id'=>$studyId,
+    'subject_id'=>$subjectId,
+    'study_structures_id'=>$phase->id,
+    'phase_steps_id'=>$step->step_id,
+    'section_id'=>$section->id,
+    'form_type_id'=>$step->form_type_id,
+    'module'=>$step->formType->form_type.' Form',
+    'modility_id'=>$step->modility_id,
+];
+@endphp
+@include('formsubmission::forms.form_fields.query_popup_btn', ['queryParams'=>$queryParams])
 @endif
