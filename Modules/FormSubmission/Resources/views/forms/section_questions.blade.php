@@ -30,7 +30,14 @@
                             @include('formsubmission::forms.form_fields.form_field_checks', ['fieldType'=>$fieldType, 'question'=> $question, 'field_name'=> $field_name,
                             'questionIdStr'=> $questionIdStr, 'fieldId'=> $fieldId, 'answer'=> $answer])
             </div>
-            <div class="col-1">@include('formsubmission::forms.form_fields.info_popup', ['question'=>$question])</div><div class="col-1">@include('formsubmission::forms.form_fields.query_popup')</div>
+            <div class="col-1">@include('formsubmission::forms.form_fields.info_popup', ['question'=>$question])</div>
+            @php
+            $queryParams = $getAnswerArray;
+            $queryParams['form_type_id'] = $step->form_type_id;
+            $queryParams['module'] = $step->formType->form_type.' Form';
+            $queryParams['modility_id'] = $step->modility_id;
+            @endphp
+            <div class="col-1">@include('formsubmission::forms.form_fields.query_popup', ['queryParams'=>$queryParams])</div>
         </div>
     </div>
             @endforeach
