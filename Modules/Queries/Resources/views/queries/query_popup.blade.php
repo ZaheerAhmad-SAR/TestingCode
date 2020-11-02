@@ -57,6 +57,8 @@
                                 </div>
                             </div>
                             <input type="hidden" name="module_id" id="module_id" value="">
+                            <input type="hidden" name="querySectionData" id="querySectionData" value="">
+
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -98,8 +100,11 @@
         var module = $(this).attr('data-module');
         var modility_id = $(this).attr('data-modility_id');
 
-        var study_id = $(this).attr('data-id');
-        var moduleId = $('#module_id').val(study_id);
+        var study_id       = $(this).attr('data-id');
+        var studyshortname = $(this).attr('data-studyshortname');
+        var studytitle     = $(this).attr('data-studytitle');
+        $('#module_id').val(study_id);
+        $('#querySectionData').val(studyshortname+ '|'.repeat(1) +studytitle);
         $('#queries-modal').modal('show');
         loadQueryPopUpHtml(study_id);
     });
@@ -131,7 +136,6 @@
                 $(".querySubject").show('fast');
                 $(".queryAttachment").show('fast');
                 $(".rolesInput").hide();
-                //$("#remarks").summernote("reset");
             }
             if ($(this).attr("value")=="role")
             {
@@ -140,7 +144,6 @@
                 $(".rolesInput").css('display','');
                 $(".queryAttachment").css('display','');
                 $(".remarksInput").css('display','');
-                //$("#remarks").summernote("reset");
                 $(".select2-selection__choice").remove();
             }
         });
@@ -151,24 +154,24 @@
         $.ajaxSetup({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         });
-        var queryAssignedTo = $("input[name='assignQueries']:checked").val();
-        var module_id       = $('#module_id').val();
-        var assignedRemarks = $('#remarks').val();
-        var query_url       =  document.URL;
-        var documentUrl     = query_url.split('/');
-        var querySection    = documentUrl.pop() || documentUrl.pop();
+        var queryAssignedTo  = $("input[name='assignQueries']:checked").val();
+        var module_id        = $('#module_id').val();
+        var querySectionData = $('#querySectionData').val();
+        var assignedRemarks  = $('#remarks').val();
+        var query_url        =  document.URL;
+        // var documentUrl     = query_url.split('/');
+        // var querySection    = documentUrl.pop() || documentUrl.pop();
         var query_subject   = $("#query_subject").val();
         if (queryAssignedTo == 'user')
         {
             var assignedUsers = $('#users').val();
-            console.log(assignedUsers)
+            //console.log(assignedUsers)
         }
         if(queryAssignedTo =='role')
         {
             var assignedRoles = $('.ads_Checkbox:checked').map(function () {
                 return this.value;
             }).get();
-
         }
         var formData = new FormData();
         formData.append('module_id', module_id);
@@ -178,7 +181,7 @@
         formData.append('query_subject', query_subject);
         formData.append('queryAssignedTo', queryAssignedTo);
         formData.append('assignedRemarks', assignedRemarks);
-        formData.append('querySection', querySection);
+        formData.append('querySectionData', querySectionData);
         // Attach file
         formData.append('query_file', $('input[type=file]')[0].files[0]);
 
