@@ -31,11 +31,21 @@ class AssignPhaseToSubjectController extends Controller
 
     public function submitAssignPhaseToSubjectForm(Request $request)
     {
-        $subjectPhase = SubjectsPhases::where('subject_id', $request->subject_id)->where('phase_id', $request->phase_id)->first();
-        if (null !== $subjectPhase) {
+        $modalityIdsInSubjectPhasesArray = SubjectsPhases::where('subject_id', $request->subject_id)->where('phase_id', $request->phase_id)->pluck('modility_id')->toArray();
+        $modalityIdsInPhaseSteps = PhaseSteps::where('phase_id', 'like', $request->phase_id)->pluck('modility_id')->toArray();
+
+        $modalityIdsInSubjectPhasesArray = array_unique($modalityIdsInSubjectPhasesArray);
+        $modalityIdsInPhaseSteps = array_unique($modalityIdsInPhaseSteps);
+
+        if (count($modalityIdsInSubjectPhasesArray) == count($modalityIdsInPhaseSteps)) {
             $request->phase_id = $this->replicatePhaseStructure($request->phase_id);
+            $modalityIdsInPhaseSteps = PhaseSteps::where('phase_id', 'like', $request->phase_id)->pluck('modility_id')->toArray();
+            $modalityIdsInPhaseSteps = array_unique($modalityIdsInPhaseSteps);
+            SubjectsPhases::createSubjectPhase($request, $modalityIdsInPhaseSteps);
+        } else {
+            $modalityIdsArray = array_diff($modalityIdsInPhaseSteps, $modalityIdsInSubjectPhasesArray);
+            SubjectsPhases::createSubjectPhase($request, $modalityIdsArray);
         }
-        SubjectsPhases::createSubjectPhase($request);
         echo 'success';
     }
 }

@@ -33,13 +33,9 @@ class SubjectsPhases extends Model
         return self::where('subject_id', $subjectId)->where('phase_id', $phaseId)->first();
     }
 
-    public static function createSubjectPhase($request)
+    public static function createSubjectPhase($request, $modalityIdsArray)
     {
-        $modalityIds = PhaseSteps::where('phase_id', 'like', $request->phase_id)
-            ->pluck('modility_id')
-            ->toArray();
-        $modalityIds = array_unique($modalityIds);
-        foreach ($modalityIds as $modalityId) {
+        foreach ($modalityIdsArray as $modalityId) {
             $data = [
                 'id' => Str::uuid(),
                 'subject_id' => $request->subject_id,
