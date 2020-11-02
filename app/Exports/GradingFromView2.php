@@ -26,9 +26,8 @@ class GradingFromView2 implements FromView
             ->leftJoin('study_structures', 'study_structures.id', '=', 'form_submit_status.study_structures_id')
             ->leftJoin('sites', 'sites.id', '=', 'subjects.site_id')
             ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id')
-            ->leftJoin('subjects_phases', 'subjects_phases.phase_id', 'form_submit_status.study_structures_id');
-
-            $subjects = $subjects->groupBy(['form_submit_status.subject_id', 'form_submit_status.study_structures_id'])
+            ->leftJoin('subjects_phases', 'subjects_phases.phase_id', 'form_submit_status.study_structures_id')
+            ->groupBy(['form_submit_status.subject_id', 'form_submit_status.study_structures_id'])
             ->get();
 
             if (!$subjects->isEmpty()) {
@@ -52,12 +51,10 @@ class GradingFromView2 implements FromView
                     ->leftJoin('modilities', 'modilities.id', '=', 'form_submit_status.modility_id')
                     ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id')
                     ->leftJoin('form_types', 'form_types.id', '=', 'form_submit_status.form_type_id')
-                    ->where('form_submit_status.modility_id', $modility->modility_id);
-
-
-               $getSteps = $getSteps->orderBy('form_types.sort_order')
-                ->groupBy('form_submit_status.form_type_id')
-                ->get()->toArray();
+                    ->where('form_submit_status.modility_id', $modility->modility_id)
+                    ->orderBy('form_types.sort_order')
+                    ->groupBy('form_submit_status.form_type_id')
+                    ->get()->toArray();
 
                 $modalitySteps[$modility->modility_name] = $getSteps;
             } // loop ends modility
@@ -76,7 +73,10 @@ class GradingFromView2 implements FromView
                         // form type loop
                         foreach($formType as $type) {
 
-                            $step = PhaseSteps::where('step_id', $type['step_id'])->first();
+                            $step = PhaseSteps::where('phase_id', $subject->phase_id)
+                                                ->where('modility_id', $type['modility_id'])
+                                                ->where('form_type_id', $type['form_type_id'])
+                                                ->first();
 
                             if ($step != null) {
 
@@ -88,15 +88,14 @@ class GradingFromView2 implements FromView
                                 ];
 
 
-                                if ($step->form_type_id == 2) {
+                               if ($step->form_type_id == 2) {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  1;
+                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $step->graders_number, false);
 
                                 } else {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  2;
+                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, false, false);
                                 }
-
                             } // step check ends
 
                         } // step lopp ends
