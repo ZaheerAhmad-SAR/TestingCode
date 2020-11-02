@@ -113,36 +113,62 @@ class AdjudicationController extends Controller
                         // form type loop
                         foreach($formType as $type) {
 
-                            $step = PhaseSteps::where('step_id', $type['step_id'])->first();
+                                if ($key != 'Adjudication') {
 
-                            if ($key != 'Adjudication') {
+                                    $step = PhaseSteps::where('phase_id', $subject->phase_id)
+                                                ->where('modility_id', $type['modility_id'])
+                                                ->where('form_type_id', $type['form_type_id'])
+                                                ->first();
 
-                                $getFormStatusArray = [
-                                    'subject_id' => $subject->id,
-                                    'study_structures_id' => $subject->phase_id,
-                                    'modility_id'=> $type['modility_id'],
-                                    'form_type_id' => $type['form_type_id']
-                                ];
+                                    if ($step != null) {
+
+                                        $getFormStatusArray = [
+                                            'subject_id' => $subject->id,
+                                            'study_structures_id' => $subject->phase_id,
+                                            'modility_id'=> $type['modility_id'],
+                                            'form_type_id' => $type['form_type_id']
+                                        ];
 
 
-                                if ($step->form_type_id == 2) {
+                                        if ($step->form_type_id == 2) {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray);
+                                            $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $step->graders_number, false);
+                                        } else {
+
+                                            $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
+                                        }
+
+
+                                    } else {
+
+                                        $formStatus[$key.'_'.$type['form_type']] = '<img src="' . url('images/no_status.png') . '"/>';
+                                    } // step null check ends
+
                                 } else {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
-                                }
-                            } else {
+                                    $step = PhaseSteps::where('phase_id', $subject->phase_id)
+                                                ->where('modility_id', $type['modility_id'])
+                                                ->where('form_type_id', 2)
+                                                ->first();
 
-                                // for ajudictaion
-                                $getAdjudicationFormStatusArray = [
-                                    'subject_id' => $subject->id,
-                                    'study_structures_id' => $subject->phase_id,
-                                    'modility_id'=> $type['modility_id'],
-                                ];
+                                    if ($step != null) {
 
-                                $formStatus[$key.'_'.$type['form_type']] = \Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, $wrap = true);
-                            }
+                                        // for ajudictaion
+                                        $getAdjudicationFormStatusArray = [
+                                            'subject_id' => $subject->id,
+                                            'study_structures_id' => $subject->phase_id,
+                                            'modility_id'=> $type['modility_id'],
+                                        ];
+
+                                        $formStatus[$key.'_'.$type['form_type']] = \Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, true);
+
+                                    } else {
+
+                                        $formStatus[$key.'_'.$type['form_type']] = '<img src="' . url('images/no_status.png') . '"/>';
+
+                                    }
+
+                                } // ADJUDICATION CHECK ENDS
 
                         } // step lopp ends
 
@@ -199,35 +225,35 @@ class AdjudicationController extends Controller
                 ->paginate(15);
 
             if (!$subjects->isEmpty()) {
-            // get modalities
-
-            $getModilities = AdjudicationFormStatus::query();
-            $getModilities = $getModilities->select('adjudication_form_status.modility_id', 'phase_steps.step_id', 'phase_steps.step_name', 'modilities.modility_name')
-            ->leftJoin('modilities', 'modilities.id', '=', 'adjudication_form_status.modility_id')
-            ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'adjudication_form_status.phase_steps_id');
             
-            if ($request->modility != '') {
-
-                $getModilities = $getModilities->where('adjudication_form_status.modility_id', $request->modility);
-            }
-
-            $getModilities = $getModilities->groupBy('adjudication_form_status.modility_id')
-                                            ->orderBy('modilities.modility_name')
-                                            ->get();
-
-            // get form types for modality
-            foreach($getModilities as $modility) {
+                // get modalities
+                $getModilities = AdjudicationFormStatus::query();
+                $getModilities = $getModilities->select('adjudication_form_status.modility_id', 'phase_steps.step_id', 'phase_steps.step_name', 'modilities.modility_name')
+                ->leftJoin('modilities', 'modilities.id', '=', 'adjudication_form_status.modility_id')
+                ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'adjudication_form_status.phase_steps_id');
                 
-                // get modalities as per adjudication
-                $modalitySteps['Adjudication'][] = array(
-                    "step_id" => $modility->step_id,
-                    "step_name" => $modility->step_name,
-                    "modility_id" => $modility->modility_id,
-                    "form_type" => $modility->modility_name,
-                );
+                if ($request->modility != '') {
+
+                    $getModilities = $getModilities->where('adjudication_form_status.modility_id', $request->modility);
+                }
+
+                $getModilities = $getModilities->groupBy('adjudication_form_status.modility_id')
+                                                ->orderBy('modilities.modility_name')
+                                                ->get();
+
+                // get form types for modality
+                foreach($getModilities as $modility) {
+                    
+                    // get modalities as per adjudication
+                    $modalitySteps['Adjudication'][] = array(
+                        "step_id" => $modility->step_id,
+                        "step_name" => $modility->step_name,
+                        "modility_id" => $modility->modility_id,
+                        "form_type" => $modility->modility_name,
+                    );
 
 
-            } // loop ends modility
+                } // loop ends modility
 
             }// subject empty check
 
@@ -243,7 +269,10 @@ class AdjudicationController extends Controller
                         // form type loop
                         foreach($formType as $type) {
 
-                            $step = PhaseSteps::where('step_id', $type['step_id'])->first();
+                            $step = PhaseSteps::where('phase_id', $subject->phase_id)
+                                                ->where('modility_id', $type['modility_id'])
+                                                ->where('form_type_id', 2)
+                                                ->first();
 
                             if ($step != null) {
 
