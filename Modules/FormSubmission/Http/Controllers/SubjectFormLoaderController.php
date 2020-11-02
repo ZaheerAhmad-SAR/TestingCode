@@ -45,7 +45,8 @@ class SubjectFormLoaderController extends Controller
             ->with('subject', $subject)
             ->with('site', $site)
             ->with('studySite', $studySite)
-            ->with('form_filled_by_user_id', $form_filled_by_user_id);
+            ->with('form_filled_by_user_id', $form_filled_by_user_id)
+            ->with('stepToActivateStr', '');
     }
 
     public function showSubjectForm_bkkkkkkk($studyId, $subjectId)

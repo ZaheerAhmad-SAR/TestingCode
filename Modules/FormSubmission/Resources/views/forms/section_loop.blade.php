@@ -170,7 +170,12 @@ if(null !== $formStatusObj){
         $(document).ready(function() {
             @php
             if ($formStatusObj->form_status != 'complete') {
-                echo "globalDisableByClass($stepCounter, '$studyClsStr', '$stepClsStr');";
+                if(empty($stepToActivateStr)){
+                    $stepToActivateStr = $stepClsStr;
+                    echo "enableByClass('$stepClsStr');";
+                }else{
+                    echo "disableByClass('$studyClsStr');";
+                }
             } else {
                 echo "hideReasonField('$stepIdStr', '$stepClsStr', '$step->form_type_id', '".buildGradingStatusIdClsStr($formStatusObj->id)."');";
             }

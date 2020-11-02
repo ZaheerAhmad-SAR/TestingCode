@@ -8,7 +8,7 @@
         $studyClsStr = ($studyClsStr ?? '');
 
         $getAdjudicationFormStatusArray = [
-        'form_adjudicated_by_id' => $form_filled_by_user_id,
+        //'form_adjudicated_by_id' => $form_filled_by_user_id,
         'subject_id' => $subjectId,
         'study_id' => $studyId,
         'study_structures_id' => $phase->id,
@@ -33,6 +33,8 @@
                             <input type="hidden" name="stepId" value="{{ $step->step_id }}" />
                             <input type="hidden" name="formTypeId" value="{{ $step->form_type_id }}" />
                             <input type="hidden" name="modilityId" value="{{ $step->modility_id }}" />
+                            <input type="hidden" name="form_adjudicated_by_id" value="{{ $adjudicationFormStatusObj->form_adjudicated_by_id }}" />
+                            <input type="hidden" name="adjudication_status" value="{{ $adjudicationFormStatusObj->adjudication_status }}" />
                             <input type="hidden" class="adjudication_form_hid_editing_status_{{ $stepIdStr }}"
                                 name="adjudication_form_editing_status_{{ $stepIdStr }}"
                                 id="adjudication_form_editing_status_{{ $stepIdStr }}"
@@ -140,9 +142,16 @@
             $(document).ready(function() {
                 @php
                 if ($adjudicationFormStatusObj->adjudication_status != 'complete') {
-                    echo "globalDisableByClass($stepCounter, '$studyClsStr', '$stepClsStr');";
+                    if(empty($stepToActivateStr)){
+                        $stepToActivateStr = $stepClsStr;
+                        echo "enableByClass('$stepClsStr');";
+                    }else{
+                        echo "disableByClass('$studyClsStr');";
+                    }
+                    echo "/*globalDisableByClass($stepCounter, '$studyClsStr', '$stepClsStr');*/";
                 } else {
-                    echo "hideAdjudicationFormReasonField('$stepIdStr', '$stepClsStr', '$adjudicationFormStatusObj->form_type_id', '" . buildAdjudicationStatusIdClsStr($adjudicationFormStatusObj->id) . "');";
+                    echo "/*hideAdjudicationFormReasonField('$stepIdStr', '$stepClsStr', '$adjudicationFormStatusObj->form_type_id', '" . buildAdjudicationStatusIdClsStr($adjudicationFormStatusObj->id) . "');*/";
+
                 }
                 @endphp
             });
