@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Admin\Http\Controllers;
+namespace Modules\FormSubmission\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -19,9 +19,9 @@ class AssignRolesPhaseStepController extends Controller
         $phaseRolesIdsArray = $phase->roles()->pluck('roles.id')->toArray();
 
         echo view('admin::assignRolesPhaseStep.assign_roles_to_phase_form')
-        ->with('phase', $phase)
-        ->with('roles', $roles)
-        ->with('phaseRolesIdsArray', $phaseRolesIdsArray);
+            ->with('phase', $phase)
+            ->with('roles', $roles)
+            ->with('phaseRolesIdsArray', $phaseRolesIdsArray);
     }
 
     public function submitAssignRolesToPhaseForm(Request $request)
@@ -40,10 +40,10 @@ class AssignRolesPhaseStepController extends Controller
         $phaseStepRolesIdsArray = $phaseStep->roles()->pluck('roles.id')->toArray();
 
         echo view('admin::assignRolesPhaseStep.assign_roles_to_phase_steps_form')
-        ->with('phase', $phase)
-        ->with('phaseStep', $phaseStep)
-        ->with('roles', $roles)
-        ->with('phaseStepRolesIdsArray', $phaseStepRolesIdsArray);
+            ->with('phase', $phase)
+            ->with('phaseStep', $phaseStep)
+            ->with('roles', $roles)
+            ->with('phaseStepRolesIdsArray', $phaseStepRolesIdsArray);
     }
 
     public function submitAssignRolesToPhaseStepForm(Request $request)
