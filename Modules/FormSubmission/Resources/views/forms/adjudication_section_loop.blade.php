@@ -142,16 +142,10 @@
             $(document).ready(function() {
                 @php
                 if ($adjudicationFormStatusObj->adjudication_status != 'complete') {
-                    if(empty($stepToActivateStr)){
-                        $stepToActivateStr = $stepClsStr;
-                        echo "enableByClass('$stepClsStr');";
-                    }else{
-                        echo "disableByClass('$studyClsStr');";
+                    if(empty(session('stepToActivateStr'))){
+                        session(['stepToActivateStr' => $adjStepClsStr]);
+                        echo "enableByClass('$adjStepClsStr');";
                     }
-                    echo "/*globalDisableByClass($stepCounter, '$studyClsStr', '$stepClsStr');*/";
-                } else {
-                    echo "/*hideAdjudicationFormReasonField('$stepIdStr', '$stepClsStr', '$adjudicationFormStatusObj->form_type_id', '" . buildAdjudicationStatusIdClsStr($adjudicationFormStatusObj->id) . "');*/";
-
                 }
                 @endphp
             });

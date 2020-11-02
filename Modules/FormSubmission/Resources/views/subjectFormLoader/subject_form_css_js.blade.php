@@ -414,6 +414,6 @@
                    location.reload();
                }, seconds);
             }
-
+            disableByClass('{{ $studyClsStr }}');
         </script>
     @endpush
