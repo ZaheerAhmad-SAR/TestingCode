@@ -24,7 +24,6 @@ Route::get('excel-adjudication','AdjudicationController@excelAdjudication')->nam
 // form 2 adjudication
 Route::get('excel-adjudication2','AdjudicationController@excelAdjudication2')->name('excel-adjudication2');
 
-
 Route::prefix('userroles')->group(function() {
     Route::get('/', 'UserRolesController@index');
 	Route::get('getallUsers','UserRolesController@getallUsers')->name('getallUsers');
