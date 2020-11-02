@@ -19,6 +19,7 @@
             </div>
         </div>
         @php
+        $studyObj = \Modules\Admin\Entities\Study::find($studyId);
 $queryParams = [
     'study_id'=>$studyId,
     'id'=>$studyId,
@@ -29,6 +30,8 @@ $queryParams = [
     'form_type_id'=>$step->form_type_id,
     'module'=>'Adjudication Form',
     'modility_id'=>$step->modility_id,
+    'studyShortName'=>$studyObj->study_short_name,
+    'studyTitle'=>$studyObj->study_title,
 ];
 @endphp
 @include('formsubmission::forms.form_fields.query_popup_btn', ['queryParams'=>$queryParams])

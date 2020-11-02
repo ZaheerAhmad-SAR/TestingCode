@@ -7,7 +7,7 @@ use Modules\UserRoles\Entities\Role;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\Study;
-
+use Modules\FormSubmission\Entities\SubjectsPhases;
 
 class PhaseSteps extends Model
 {
@@ -57,7 +57,7 @@ class PhaseSteps extends Model
         return $this->belongsTo(FormType::class, 'form_type_id', 'id')->withDefault();
     }
 
-    static function phaseStepsbyPermissions($phaseId)
+    static function phaseStepsbyPermissions($subjectId, $phaseId)
     {
         $formTypeArray = [];
         if (canQualityControl(['index'])) {
@@ -74,7 +74,12 @@ class PhaseSteps extends Model
         } else {
             $formTypeArray[] = 4;
         }
-        return self::where('phase_id', $phaseId)->whereIn('form_type_id', $formTypeArray)->get();
+
+        $modalityIdsArray = SubjectsPhases::where('subject_id', 'like', $subjectId)->where('phase_id', 'like', $phaseId)->distinct()->pluck('modility_id')->toArray();
+        return self::where('phase_id', $phaseId)
+            ->whereIn('form_type_id', $formTypeArray)
+            ->whereIn('modility_id', $modalityIdsArray)
+            ->get();
     }
     public function phase()
     {

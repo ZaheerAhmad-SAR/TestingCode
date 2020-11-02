@@ -292,17 +292,17 @@
                         <ul class="sub-menu">
                             <li>
                                 <a href="{{route('queries.index')}}">
-                                    Overall Data Report
+                                    Overall Data
                                 </a>
                             </li>
 
-                            @if(hasPermission(auth()->user(),'queries.index'))
-                            <li>
-                                <a href="{{route('queries.chatindex')}}">
-                                    Chat App
-                                </a>
-                            </li>
-                                @endif
+{{--                            @if(hasPermission(auth()->user(),'queries.index'))--}}
+{{--                            <li>--}}
+{{--                                <a href="{{route('queries.chatindex')}}">--}}
+{{--                                    Chat App--}}
+{{--                                </a>--}}
+{{--                            </li>--}}
+{{--                                @endif--}}
                         </ul>
                     </li>
                 </ul>

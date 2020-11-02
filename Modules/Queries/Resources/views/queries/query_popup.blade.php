@@ -99,7 +99,6 @@
         var form_type_id = $(this).attr('data-form_type_id');
         var module = $(this).attr('data-module');
         var modility_id = $(this).attr('data-modility_id');
-
         var study_id       = $(this).attr('data-id');
         var studyshortname = $(this).attr('data-studyshortname');
         var studytitle     = $(this).attr('data-studytitle');
