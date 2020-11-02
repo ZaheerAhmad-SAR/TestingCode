@@ -151,7 +151,7 @@
                                                         @php
                                                         $firstStep = true;
                                                         $steps =
-                                                        \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($phase->id);
+                                                        \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($subjectId, $phase->id);
                                                         $previousStepId = '';
                                                         @endphp
                                                         @foreach ($steps as $step)
@@ -209,7 +209,7 @@
                                             @php
                                             $phaseIdStr = buildSafeStr($phase->id, 'phase_cls_');
                                             $steps =
-                                            \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($phase->id);
+                                            \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($subjectId, $phase->id);
                                             $previousStepId = '';
                                             @endphp
                                             @foreach ($steps as $step)
