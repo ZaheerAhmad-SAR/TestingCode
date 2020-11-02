@@ -73,12 +73,12 @@ class AdjudicationFormStatus extends Model
         switch ($adjudicationFormStatus) {
             case 'no_status':
                 $status = 'Not Initiated';
-                $userName = '';
+                $userName = 'NoName';
                 break;
 
             case 'no_required':
                 $status = 'Not Required';
-                $userName = '';
+                $userName = 'NoName';
                 break;
 
             case 'incomplete':
@@ -100,11 +100,12 @@ class AdjudicationFormStatus extends Model
                 $status = 'In Adjudication';
                 $userName = $adjudicationFormStatusObj->user->name;
                 break;
+            default:
+                $status = 'Not Initiated';
+                $userName = 'NoName';
+                break;
         }
-        if (!empty($userName)) {
-            $userName = ' - ' . $userName;
-        }
-        return $status . $userName;
+        return $status . '-' . $userName . '|';
     }
 
     public static function makeAdjudicationFormStatusSpan($step, $adjudicationFormStatusObj)
