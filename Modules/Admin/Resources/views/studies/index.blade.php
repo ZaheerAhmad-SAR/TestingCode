@@ -128,7 +128,7 @@
                                                                 <i class="fa fa-trash"  aria-hidden="true">
                                                                 </i> Delete</a>
                                                     </span>
-                                                    @include('queries::queries.query_popup_span',['study_id'=>$study->id])
+                                                    @include('queries::queries.query_popup_span',['study_id'=>$study->id,'studyShortName'=>$study->study_short_name,'studyTitle'=>$study->study_title])
                                                     <span class="dropdown-item">
                                                              <a href="#" class="addModalities">
                                                                 <i class="fa fa-object-group" aria-hidden="true"></i> Preferences

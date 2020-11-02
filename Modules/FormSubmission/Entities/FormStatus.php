@@ -146,12 +146,12 @@ class FormStatus extends Model
         switch ($formStatus) {
             case 'no_status':
                 $status = 'Not Initiated';
-                $userName = '';
+                $userName = 'NoName';
                 break;
 
             case 'no_required':
                 $status = 'Not Required';
-                $userName = '';
+                $userName = 'NoName';
                 break;
 
             case 'incomplete':
@@ -173,11 +173,12 @@ class FormStatus extends Model
                 $status = 'In Adjudication';
                 $userName = $formStatusObj->user->name;
                 break;
+            default:
+                $status = 'Not Initiated';
+                $userName = 'NoName';
+                break;
         }
-        if (!empty($userName)) {
-            $userName = ' - ' . $userName;
-        }
-        return $status . $userName;
+        return $status . '-' . $userName . '|';
     }
 
     public static function makeGraderFormStatusSpan($step, $formStatusObj)
