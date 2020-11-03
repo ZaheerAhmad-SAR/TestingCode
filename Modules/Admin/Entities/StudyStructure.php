@@ -10,7 +10,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class StudyStructure extends Model
 {
-    protected $fillable = ['id', 'study_id', 'name', 'position', 'duration', 'is_repeatable'];
+    protected $fillable = ['id', 'study_id', 'name', 'position', 'duration',
+        'is_repeatable','parent_id','count','old_id'];
     // protected $keyType = 'string';
     protected $casts = [
         'id' => 'string'

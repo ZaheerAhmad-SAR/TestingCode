@@ -17,7 +17,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Input;
 use Modules\Admin\Entities\StudyUser;
 use Modules\UserRoles\Entities\Invitation;
+use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\Role;
+use Modules\UserRoles\Entities\RolePermission;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Http\Requests\UserRequest;
 use Illuminate\Support\Str;
@@ -51,11 +53,32 @@ class UserController extends Controller
         if (Auth::user()->can('users.create')) {
             $roles  =   Role::where('role_type','=','system_role')->get();
         }
+        $currentStudy = session('current_study');
 
         if (hasPermission(auth()->user(),'systemtools.index')){
             session(['current_study'=>'']);
             $users  =  User::orderBY('name','asc')->get();
             $studyusers = User::where('id','!=',\auth()->user()->id)->get();
+        }
+        elseif (hasPermission(auth()->user(),'studytools.index') && !empty(session('current_study'))) {
+            $permissionsIdsArray = Permission::where(function ($query) {
+                $query->where('permissions.name', '!=', 'studytools.create')
+                    ->orwhere('permissions.name', '!=', 'studytools.store')
+                    ->orWhere('permissions.name', '!=', 'studytools.edit')
+                    ->orwhere('permissions.name', '!=', 'studytools.update');
+            })->distinct('id')->pluck('id')->toArray();
+
+            $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
+            $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)
+                ->where('study_id', $currentStudy)
+                ->distinct()->pluck('user_id')->toArray();
+            $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->where('id', '!=', \auth()->user()->id)->get();
+            $studyusers = UserRole::select('users.*', 'user_roles.study_id', 'roles.role_type')
+                ->join('users', 'users.id', '=', 'user_roles.user_id')
+                ->join('roles', 'roles.id', '=', 'user_roles.role_id')
+                ->where('roles.role_type', '!=', 'system_role')
+                ->where('user_roles.study_id', '!=', session('current_study'))->distinct()
+                ->get();
         }
         else{
             session(['current_study'=>'']);

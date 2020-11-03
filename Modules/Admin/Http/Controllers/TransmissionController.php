@@ -23,6 +23,7 @@ use Modules\Admin\Entities\TransmissionUpdateDetail;
 use Modules\Admin\Entities\Device;
 use Modules\Admin\Entities\DeviceModility;
 use Modules\Admin\Entities\ModalityPhase;
+use Modules\Admin\Entities\PhaseSteps;
 use DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
@@ -306,12 +307,30 @@ class TransmissionController extends Controller
                                     ->where('studies.study_code', $findTransmission->StudyI_ID)
                                     ->get();
         // get modality
-        $getModalities = Modility::get();
+        $getModalities = [];
+        $getStudy = Study::where('study_code', $findTransmission->StudyI_ID)->first();
+        if ($getStudy != null) {
+            // get phases for that study
+            $getStudyPhases = StudyStructure::where('study_id', $getStudy->id)->pluck('id')->toArray();
+            // fetch modalities
+            $getModalities = Modility::select('modilities.id', 'modilities.modility_name', 'phase_steps.phase_id')
+            ->leftjoin('phase_steps', 'phase_steps.modility_id', '=', 'modilities.id')
+            ->where('phase_steps.form_type_id', 1)
+            ->whereIn('phase_steps.phase_id', $getStudyPhases)
+            ->groupby('phase_steps.modility_id')
+            ->get();
+        }
+
+        // get step for this visit and aubject
+        $getStepForVisit = PhaseSteps::where('phase_id', $findTransmission->phase_id)
+                                       ->where('modility_id', $findTransmission->modility_id)
+                                       ->get()
+                                       ->count();
 
         // get all the transmission updates
         $getTransmissionUpdates = TransmissionUpdateDetail::where('transmission_id', decrypt($id))->get();
 
-        return view('admin::view_transmission_details', compact('findTransmission', 'getSites', 'getSubjects', 'getPhases', 'getModalities', 'getTransmissionUpdates'));
+        return view('admin::view_transmission_details', compact('findTransmission', 'getSites', 'getSubjects', 'getPhases', 'getModalities', 'getTransmissionUpdates', 'getStepForVisit'));
     }
 
     /**
