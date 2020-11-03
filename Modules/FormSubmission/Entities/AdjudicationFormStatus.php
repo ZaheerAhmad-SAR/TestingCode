@@ -66,6 +66,7 @@ class AdjudicationFormStatus extends Model
     public static function makeAdjudicationFormStatusSeperateSpan($adjudicationFormStatusObj)
     {
         $adjudicationFormStatus = $adjudicationFormStatusObj->adjudication_status;
+        $adjudicatorUserName = $adjudicationFormStatusObj->getUser('name');
 
         $status = '';
         $userName = '';
@@ -83,29 +84,29 @@ class AdjudicationFormStatus extends Model
 
             case 'incomplete':
                 $status = 'Initiated';
-                $userName = $adjudicationFormStatusObj->user->name;
+                $userName = $adjudicatorUserName;
                 break;
 
             case 'complete':
                 $status = 'Complete';
-                $userName = $adjudicationFormStatusObj->user->name;
+                $userName = $adjudicatorUserName;
                 break;
 
             case 'resumable':
                 $status = 'Editing';
-                $userName = $adjudicationFormStatusObj->user->name;
+                $userName = $adjudicatorUserName;
                 break;
 
             case 'adjudication':
                 $status = 'In Adjudication';
-                $userName = $adjudicationFormStatusObj->user->name;
+                $userName = $adjudicatorUserName;
                 break;
             default:
                 $status = 'Not Initiated';
                 $userName = 'NoName';
                 break;
         }
-        return $status . '-' . $userName . '|';
+        return $userName . '-' . $status . '|';
     }
 
     public static function makeAdjudicationFormStatusSpan($step, $adjudicationFormStatusObj)
