@@ -84,7 +84,7 @@ class AdjudicationFromView2 implements FromView
                                     'modility_id'=> $type['modility_id'],
                                 ];
 
-                                $formStatus[$key.'_'.$type['form_type']] = \Modules\Admin\Entities\AdjudicationFormStatus::getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, false);
+                                $formStatus[$key.'_'.$type['form_type']] = \Modules\Admin\Entities\AdjudicationFormStatus::getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, true, true);
 
                             } // step check ends
 
