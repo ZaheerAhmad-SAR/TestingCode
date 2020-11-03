@@ -1,3 +1,6 @@
+@php
+//echo $adjudicationFormStatusObj->adjudication_status;
+@endphp
 <div class="d-flex">
     @if ((bool) $subjectId && ($adjudicationFormStatusObj->adjudication_status == 'complete' || $adjudicationFormStatusObj->adjudication_status == 'resumable'))
         <button type="button" class="btn btn-warning" name="adjudication_form_edit_button_{{ $stepIdStr }}"

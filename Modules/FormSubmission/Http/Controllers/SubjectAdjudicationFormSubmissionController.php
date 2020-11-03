@@ -113,6 +113,8 @@ class SubjectAdjudicationFormSubmissionController extends Controller
             'study_id' => $request->studyId,
             'study_structures_id' => $request->phaseId,
             'phase_steps_id' => $request->stepId,
+            'form_type_id' => $request->formTypeId,
+            'modility_id' => $request->modilityId,
         ];
         $adjudicationFormStatusObj = AdjudicationFormStatus::getAdjudicationFormStatusObj($getAdjudicationFormStatusArray);
         if (null !== $adjudicationFormStatusObj) {
