@@ -75,7 +75,7 @@
                 <div class="card">
 
                     <div class="card-body">
-                        <form action="{{ route('transmissions.update', encrypt($findTransmission->id))}}" method="POST">
+                        <form action="{{ route('transmissions.update', encrypt($findTransmission->id))}}" method="POST" class="transmission-form">
                             <div class="row">
                                 @csrf
                                 @method('PUT')
@@ -84,6 +84,8 @@
                                 </div>
 
                                 <div class="form-group col-sm-3">
+                                    <input type="hidden" name="phase_steps" id="phase_steps" value="{{ $getStepForVisit }}">
+
                                     <input type="text" name="d_transmission_no" readonly="" value="{{ $findTransmission->Transmission_Number }}" id="d_transmission_no" class="form-control" required="required">
                                 </div>
 
@@ -783,6 +785,22 @@
 
             } // if ends
         }); // on change ends
+
+        $('.transmission-form').submit(function(e) {
+
+            // check for phase steps if not found alert zero
+            var phaseSteps = $('#phase_steps').val();
+
+            if(phaseSteps == 0) {
+                
+                e.preventDefault();
+                alert('No steps found for this visit.');
+            } else {
+
+               //continue submitting
+                e.currentTarget.submit();
+            }
+        });
 
 }); // document ready
 

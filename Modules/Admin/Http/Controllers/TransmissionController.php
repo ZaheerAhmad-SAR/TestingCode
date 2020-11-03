@@ -23,6 +23,7 @@ use Modules\Admin\Entities\TransmissionUpdateDetail;
 use Modules\Admin\Entities\Device;
 use Modules\Admin\Entities\DeviceModility;
 use Modules\Admin\Entities\ModalityPhase;
+use Modules\Admin\Entities\PhaseSteps;
 use DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
@@ -308,10 +309,16 @@ class TransmissionController extends Controller
         // get modality
         $getModalities = Modility::get();
 
+        // get step for this visit and aubject
+        $getStepForVisit = PhaseSteps::where('phase_id', $findTransmission->phase_id)
+                                       ->where('modility_id', $findTransmission->modility_id)
+                                       ->get()
+                                       ->count();
+
         // get all the transmission updates
         $getTransmissionUpdates = TransmissionUpdateDetail::where('transmission_id', decrypt($id))->get();
 
-        return view('admin::view_transmission_details', compact('findTransmission', 'getSites', 'getSubjects', 'getPhases', 'getModalities', 'getTransmissionUpdates'));
+        return view('admin::view_transmission_details', compact('findTransmission', 'getSites', 'getSubjects', 'getPhases', 'getModalities', 'getTransmissionUpdates', 'getStepForVisit'));
     }
 
     /**
