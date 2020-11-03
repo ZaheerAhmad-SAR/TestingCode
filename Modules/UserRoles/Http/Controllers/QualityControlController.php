@@ -103,24 +103,34 @@ class QualityControlController extends Controller
                         // form type loop
                         foreach($formType as $type) {
 
-                            $step = PhaseSteps::where('step_id', $type['step_id'])->first();
+                            $step = PhaseSteps::where('phase_id', $subject->phase_id)
+                                                ->where('modility_id', $type['modility_id'])
+                                                ->where('form_type_id', $type['form_type_id'])
+                                                ->first();
+                            
+                            if ($step != null) {
 
-                                $getFormStatusArray = [
+                                $getFormStatusArray = array(
                                     'subject_id' => $subject->id,
                                     'study_structures_id' => $subject->phase_id,
                                     'modility_id'=> $type['modility_id'],
                                     'form_type_id' => $type['form_type_id']
-                                ];
-
+                                );
 
                                 if ($step->form_type_id == 2) {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray);
-
+                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $step->graders_number, false);
                                 } else {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
+                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
+
+
                                 }
+
+                            } else {
+
+                                $formStatus[$key.'_'.$type['form_type']] = '<img src="' . url('images/no_status.png') . '"/>';
+                            } // step check ends
 
                         } // step lopp ends
 
@@ -232,7 +242,10 @@ class QualityControlController extends Controller
                         // form type loop
                         foreach($formType as $type) {
 
-                            $step = PhaseSteps::where('step_id', $type['step_id'])->first();
+                            $step = PhaseSteps::where('phase_id', $subject->phase_id)
+                                                ->where('modility_id', $type['modility_id'])
+                                                ->where('form_type_id', $type['form_type_id'])
+                                                ->first();
 
                             if ($step != null) {
 
@@ -243,18 +256,16 @@ class QualityControlController extends Controller
                                     'form_type_id' => $type['form_type_id']
                                 ];
 
-                                // check for graders
-                                $gradersNumbers = ($request->graders_number != '') ? $request->graders_number : 0;
 
                                 if ($step->form_type_id == 2) {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $gradersNumbers);
+                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $step->graders_number, false);
 
                                 } else {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true);
+                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
                                 }
-                            } // steps if ends
+                            } // step check ends
 
                         } // step lopp ends
 

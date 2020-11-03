@@ -23,6 +23,7 @@ use Modules\Admin\Entities\TransmissionUpdateDetail;
 use Modules\Admin\Entities\Device;
 use Modules\Admin\Entities\DeviceModility;
 use Modules\Admin\Entities\ModalityPhase;
+use Modules\Admin\Entities\PhaseSteps;
 use DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
@@ -308,10 +309,16 @@ class TransmissionController extends Controller
         // get modality
         $getModalities = Modility::get();
 
+        // get step for this visit and aubject
+        $getStepForVisit = PhaseSteps::where('phase_id', $findTransmission->phase_id)
+                                       ->where('modility_id', $findTransmission->modility_id)
+                                       ->get()
+                                       ->count();
+
         // get all the transmission updates
         $getTransmissionUpdates = TransmissionUpdateDetail::where('transmission_id', decrypt($id))->get();
 
-        return view('admin::view_transmission_details', compact('findTransmission', 'getSites', 'getSubjects', 'getPhases', 'getModalities', 'getTransmissionUpdates'));
+        return view('admin::view_transmission_details', compact('findTransmission', 'getSites', 'getSubjects', 'getPhases', 'getModalities', 'getTransmissionUpdates', 'getStepForVisit'));
     }
 
     /**
@@ -557,17 +564,12 @@ class TransmissionController extends Controller
                     $getSubject->transmission_status = "1";
                     $getSubject->save();
 
-
-                // change new_subject status to 0
-                $updateSubjectStatus = CrushFtpTransmission::where('id', $findTransmission->id)
-                ->update(['new_subject' => "0"]);
+                    // change new_subject status to 0
+                    $updateSubjectStatus = CrushFtpTransmission::where('id', $findTransmission->id)
+                    ->update(['new_subject' => "0"]);
 
                     // assign ID to pointer
                     $getSubject->id = $subjectID;
-
-                    // change new_subject status to 0
-                    $updateSubjectStatus = CrushFtpTransmission::where('id', $findTransmission->id)
-                    ->update(['new_subject' => 0]);
 
                 } // subject check is end
 
@@ -626,6 +628,7 @@ class TransmissionController extends Controller
             // check for visit date
             $getSubjectPhase = SubjectsPhases::where('subject_id', $getSubject->id)
                                               ->where('phase_id', $getPhase->id)
+                                              ->where('modility_id', $getModality->id)
                                               ->first();
 
             if ($getSubjectPhase == null) {
@@ -636,23 +639,24 @@ class TransmissionController extends Controller
                 $getSubjectPhase->phase_id = $getPhase->id;
                 $getSubjectPhase->visit_date = $findTransmission->visit_date;
                 $getSubjectPhase->Transmission_Number = $findTransmission->Transmission_Number;
+                $getSubjectPhase->modility_id = $getModality->id;
                 $getSubjectPhase->save();
             } // subject phases check is end
 
             // check modality and phase id
-            $getModalityPhase = ModalityPhase::where('modility_id', $getModality->id)
-                                               ->where('phase_id', $getPhase->id)
-                                               ->first();
+            // $getModalityPhase = ModalityPhase::where('modility_id', $getModality->id)
+            //                                    ->where('phase_id', $getPhase->id)
+            //                                    ->first();
 
-            if ($getModalityPhase == null) {
-                // insert into modality phase table
-                $getModalityPhase = new ModalityPhase;
-                $getModalityPhase->modility_id = $getModality->id;
-                $getModalityPhase->phase_id = $getPhase->id;
-                $getModalityPhase->form_type_id = 1;
-                $getModalityPhase->Transmission_Number = $findTransmission->Transmission_Number;
-                $getModalityPhase->save();
-            }
+            // if ($getModalityPhase == null) {
+            //     // insert into modality phase table
+            //     $getModalityPhase = new ModalityPhase;
+            //     $getModalityPhase->modility_id = $getModality->id;
+            //     $getModalityPhase->phase_id = $getPhase->id;
+            //     $getModalityPhase->form_type_id = 1;
+            //     $getModalityPhase->Transmission_Number = $findTransmission->Transmission_Number;
+            //     $getModalityPhase->save();
+            // }
 
         return true;
 

@@ -151,7 +151,7 @@
                                                         @php
                                                         $firstStep = true;
                                                         $steps =
-                                                        \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($phase->id);
+                                                        \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($subjectId, $phase->id);
                                                         $previousStepId = '';
                                                         @endphp
                                                         @foreach ($steps as $step)
@@ -173,6 +173,7 @@
                                                                 }
                                                             }
                                                             $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
+                                                            $adjStepClsStr = buildSafeStr($step->step_id, 'adj_step_cls_');
                                                             $stepIdStr = buildSafeStr($step->step_id, '');
                                                             @endphp
 
@@ -209,7 +210,7 @@
                                             @php
                                             $phaseIdStr = buildSafeStr($phase->id, 'phase_cls_');
                                             $steps =
-                                            \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($phase->id);
+                                            \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($subjectId, $phase->id);
                                             $previousStepId = '';
                                             @endphp
                                             @foreach ($steps as $step)
@@ -231,6 +232,7 @@
                                                     }
                                                 }
                                                 $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
+                                                $adjStepClsStr = buildSafeStr($step->step_id, 'adj_step_cls_');
                                                 $stepIdStr = buildSafeStr($step->step_id, '');
 
                                                 $sections = $step->sections;

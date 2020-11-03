@@ -139,7 +139,6 @@ class FormController extends Controller
                 </div>
                 <div class="card collapse row-' . $value->step_id . '-ac sections_list_' . $value->step_id . '">
                 </div>';
-
         }
         $step_contents_active .= '</div>';
         $step_contents_deactive = '<div class="col-12 col-sm-6 mt-3 current_div_de">
@@ -441,13 +440,14 @@ class FormController extends Controller
         //
     }
     // check variable name if exist in same form
-    public function check_variable_name(Request $request){
+    public function check_variable_name(Request $request)
+    {
         $section_ids = Section::where('phase_steps_id', $request->step_id)->pluck('id')->toArray();
         $question_ids = Question::whereIn('section_id', $section_ids)->pluck('id')->toArray();
-        $formFields = FormFields::whereIn('question_id', $question_ids)->where('variable_name',$request->name)->get();
-        if(count($formFields) < 1){
+        $formFields = FormFields::whereIn('question_id', $question_ids)->where('variable_name', $request->name)->get();
+        if (count($formFields) < 1) {
             echo 'no_field_found';
-        }else{
+        } else {
             echo 'field_found';
         }
     }
@@ -527,7 +527,7 @@ class FormController extends Controller
             'field_width' => $request->field_width,
             'question_info' => $request->question_info,
             'text_info' => $request->text_info,
-            //'validation_rules' => $request->validation_rules,
+
         ]);
     }
 
@@ -544,7 +544,6 @@ class FormController extends Controller
         $form_field->field_width = $request->field_width;
         $form_field->text_info = $request->question_info;
         $form_field->text_info = $request->text_info;
-        $form_field->validation_rules = $request->validation_rules;
         $form_field->save();
 
         $this->updateQuestionFormFieldToReplicatedVisits($form_field);

@@ -1,8 +1,11 @@
+@php
+//echo $formStatusObj->form_status;
+@endphp
 <div class="d-flex">
     @if (
         (bool) $subjectId &&
         ($formStatusObj->form_status == 'complete' || $formStatusObj->form_status == 'resumable') &&
-        ($adjudicationFormStatus !== 'complete')
+        ($adjudicationFormStatus != 'complete')
     )
         <button type="button" class="btn btn-warning" name="edit_form_button_{{ $stepIdStr }}"
             id="edit_form_button_{{ $stepIdStr }}"

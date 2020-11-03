@@ -61,7 +61,7 @@
 
         @else
         <tr>
-            <td colspan="{{$count}}" style="text-align: center;"> No record found.</td>
+            <td colspan="{{$count}}"> No record found.</td>
         </tr>
         @endif
     </tbody>

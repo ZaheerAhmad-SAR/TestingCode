@@ -98,7 +98,7 @@
             }
 
             function validateAndSubmitAdjudicationForm(stepIdStr, formStatusIdStr) {
-                if(canSubmitAdjudicationForm()){
+                if(canSubmitAdjudicationForm(stepIdStr)){
                     const promise = validateAdjudicationForm(stepIdStr);
                     promise
                         .then((data) => {
@@ -115,7 +115,7 @@
             }
 
             function validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, field_name, fieldId) {
-                if(canSubmitAdjudicationForm()){
+                if(canSubmitAdjudicationForm(stepIdStr)){
                     checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
                     const validationPromise = validateAdjudicationFormField(stepIdStr, questionId, field_name, fieldId);
                     validationPromise
@@ -204,7 +204,7 @@
             }
 
             function openAdjudicationFormForEditing(stepIdStr, stepClsStr, formTypeId, formStatusIdStr) {
-                if(canSubmitAdjudicationForm()){
+                if(canSubmitAdjudicationForm(stepIdStr)){
                 var frmData = $("#adjudication_form_master_" + stepIdStr).serialize();
                 frmData = frmData + '&' + 'open_adjudication_form_to_edit=1';
                 $.ajax({
@@ -277,10 +277,21 @@
                 location.href = route;
             }
 
-            function canSubmitAdjudicationForm(){
+            function canSubmitAdjudicationForm(stepIdStr){
                 var canAdjudication = {{ (canAdjudication(['create', 'store', 'edit', 'update']))? 'true':'false' }};
                 var canSubmit = false;
-                if((canAdjudication == true)){
+                var adjudication_status = $('#adjudication_form_master_' + stepIdStr + ' input[name="adjudication_status"]').val();
+                var form_adjudicated_by_id = $('#adjudication_form_master_' + stepIdStr + ' input[name="form_adjudicated_by_id"]').val();
+                var current_user_id = '{{ auth()->user()->id }}';
+
+                if(
+                    (canAdjudication == true) &&
+                    (
+                    ((adjudication_status == 'no_status') && (form_adjudicated_by_id == 'no-user-id')) ||
+                    ((adjudication_status != 'no_status') && (form_adjudicated_by_id == current_user_id))
+                    )
+
+                ){
                     canSubmit = true;
                 }
                 return canSubmit;
