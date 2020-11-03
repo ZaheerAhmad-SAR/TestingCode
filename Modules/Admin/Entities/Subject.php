@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Subject extends Model
 {
-    protected $fillable = ['id','old_id', 'study_id', 'subject_id', 'enrollment_date', 'study_eye', 'site_id', 'disease_cohort_id'];
+    protected $fillable = ['id', 'old_id', 'study_id', 'subject_id', 'enrollment_date', 'study_eye', 'site_id', 'disease_cohort_id'];
     protected $keyType = 'string';
 
     public function study()

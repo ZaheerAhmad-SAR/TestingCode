@@ -139,6 +139,7 @@ class FormStatus extends Model
     public static function makeFormStatusSeperateSpan($formStatusObj)
     {
         $formStatus = $formStatusObj->form_status;
+        $formUserName = $formStatusObj->getUser('name');
 
         $status = '';
         $userName = '';
@@ -146,38 +147,39 @@ class FormStatus extends Model
         switch ($formStatus) {
             case 'no_status':
                 $status = 'Not Initiated';
-                $userName = '';
+                $userName = 'NoName';
                 break;
 
             case 'no_required':
                 $status = 'Not Required';
-                $userName = '';
+                $userName = 'NoName';
                 break;
 
             case 'incomplete':
                 $status = 'Initiated';
-                $userName = $formStatusObj->user->name;
+                $userName = $formUserName;
                 break;
 
             case 'complete':
                 $status = 'Complete';
-                $userName = $formStatusObj->user->name;
+                $userName = $formUserName;
                 break;
 
             case 'resumable':
                 $status = 'Editing';
-                $userName = $formStatusObj->user->name;
+                $userName = $formUserName;
                 break;
 
             case 'adjudication':
                 $status = 'In Adjudication';
-                $userName = $formStatusObj->user->name;
+                $userName = $formUserName;
+                break;
+            default:
+                $status = 'Not Initiated';
+                $userName = 'NoName';
                 break;
         }
-        if (!empty($userName)) {
-            $userName = ' - ' . $userName;
-        }
-        return $status . $userName;
+        return $userName . '-' . $status . '|';
     }
 
     public static function makeGraderFormStatusSpan($step, $formStatusObj)

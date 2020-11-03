@@ -19,7 +19,7 @@ $getAdjudicationRequiredQuestionIdsArray = [
 ];
 $adjudicationRequiredQuestionIdsArray = \Modules\FormSubmission\Entities\QuestionAdjudicationRequired::getAdjudicationRequiredQuestionsArray($getAdjudicationRequiredQuestionIdsArray);
 @endphp
-<fieldset id="fieldset_adjudication_{{ $stepIdStr }}" class="">
+<fieldset id="fieldset_adjudication_{{ $stepIdStr }}" class="{{ $studyClsStr }} {{ $adjStepClsStr }} {{ $sectionClsStr }}">
     <div class="card p-2 mb-1">
         <input type="hidden" name="sectionId[]" value="{{ $section->id }}" />
             @foreach ($section->questions as $question)
@@ -94,10 +94,13 @@ $adjudicationRequiredQuestionIdsArray = \Modules\FormSubmission\Entities\Questio
             </div>
             <div class="col-1">@include('formsubmission::forms.adjudication_form_fields.info_popup', ['question'=>$question])</div>
             @php
+            $studyObj = \Modules\Admin\Entities\Study::find($studyId);
             $queryParams = $getAnswerArray;
             $queryParams['form_type_id'] = $step->form_type_id;
             $queryParams['module'] = 'Adjudication Form';
             $queryParams['modility_id'] = $step->modility_id;
+            $queryParams['studyShortName'] = $studyObj->study_short_name;
+            $queryParams['studyTitle'] = $studyObj->study_title;
             @endphp
             <div class="col-1">@include('formsubmission::forms.adjudication_form_fields.query_popup', ['queryParams'=>$queryParams, 'showAverageIcon'=>$showAverageIcon, 'fieldType'=>$fieldType, 'field_name'=> $grader_field_name, 'questionIdStr'=>
                 $questionIdStr, 'copyToFieldId'=> $fieldId, 'fieldId'=> $grader_field_id, 'answer'=> $answer])</div>

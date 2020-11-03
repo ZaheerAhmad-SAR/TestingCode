@@ -37,6 +37,7 @@ use Modules\Admin\Entities\TrailLog;
 use Modules\Admin\Scopes\StudyStructureOrderByScope;
 use Modules\Admin\Scopes\StudyStructureWithoutRepeatedScope;
 use Modules\FormSubmission\Traits\QuestionDataValidation;
+use Modules\FormSubmission\Traits\Replication\ReplicatePhaseStructure;
 use Modules\Queries\Entities\Query;
 use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\Role;
@@ -49,6 +50,7 @@ use function Symfony\Component\String\s;
 
 class StudyController extends Controller
 {
+    use ReplicatePhaseStructure;
     /**
      * Display a listing of the resource.
      * @return Response
@@ -112,10 +114,10 @@ class StudyController extends Controller
                     ->orderBy('study_short_name')->get();
                 $study = '';
             }
-        //dd($studies);
+            //dd($studies);
 
-        $users = User::all();
-        $sites = Site::all();
+            $users = User::all();
+            $sites = Site::all();
             $study = '';
         }
 
@@ -134,7 +136,7 @@ class StudyController extends Controller
         $study = Study::where('id', $study_id)->update(['study_status'=> $request->status]);
 
         //return \response()->json($data);
-                return redirect()->route('studies.index');
+        return redirect()->route('studies.index');
     }
 
     public function create()
@@ -154,20 +156,20 @@ class StudyController extends Controller
     public function store(Request $request){
         $id    = Str::uuid();
         $study = Study::create([
-                'id'    => $id,
-                'study_short_name'  =>  $request->study_short_name,
-                'study_title' => $request->study_title,
-                'study_status'  => 'Development',
-                'study_code' => $request->study_code,
-                'protocol_number' => $request->protocol_number,
-                'study_phase' => $request->study_phase,
-                'trial_registry_id' => $request->trial_registry_id,
-                'study_sponsor' => $request->study_sponsor,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'description'   =>  $request->description,
-                'user_id'       => $request->user()->id
-            ]);
+            'id'    => $id,
+            'study_short_name'  =>  $request->study_short_name,
+            'study_title' => $request->study_title,
+            'study_status'  => 'Development',
+            'study_code' => $request->study_code,
+            'protocol_number' => $request->protocol_number,
+            'study_phase' => $request->study_phase,
+            'trial_registry_id' => $request->trial_registry_id,
+            'study_sponsor' => $request->study_sponsor,
+            'start_date' => $request->start_date,
+            'end_date' => $request->end_date,
+            'description'   =>  $request->description,
+            'user_id'       => $request->user()->id
+        ]);
         $last_id = Study::select('id')->latest()->first();
         // Disease cohort insertion here
         $id    = Str::uuid();
@@ -320,21 +322,20 @@ class StudyController extends Controller
         $mystudy = Study::with('users','subjects', 'diseaseCohort')
             ->find($study_id);
         $id = \Illuminate\Support\Str::uuid();
-
-        if (!empty($mystudy) && $request->basic_info == 'on') {
             $replica = Study::create([
                 'id'    => $id,
-                'study_short_name'  =>  $mystudy->study_short_name . ' Cloned ',
-                'study_title' => $mystudy->study_title,
+                'parent_id' => $study_id,
+                'study_short_name'  =>  $request->study_short_name,
+                'study_title' => $request->study_title,
                 'study_status'  => 'Development',
-                'study_code' => $mystudy->study_code,
-                'protocol_number' => $mystudy->protocol_number,
-                'study_phase' => $mystudy->study_phase,
-                'trial_registry_id' => $mystudy->trial_registry_id,
-                'study_sponsor' => $mystudy->study_sponsor,
-                'start_date' => $mystudy->start_date,
-                'end_date' => $mystudy->end_date,
-                'description'   =>  $mystudy->description,
+                'study_code' => $request->study_code,
+                'protocol_number' => $request->protocol_number,
+                'study_phase' => $request->study_phase,
+                'trial_registry_id' => $request->trial_registry_id,
+                'study_sponsor' => $request->study_sponsor,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'description'   =>  $request->description,
                 'user_id'       => auth()->user()->id
             ]);
             $replica_id = Study::select('id')->latest()->first();
@@ -364,8 +365,8 @@ class StudyController extends Controller
                 $study_sites = StudySite::where('study_id', '=',$study_id)->get();
                 foreach ($study_sites as $site) {
                     $id = \Illuminate\Support\Str::uuid();
-                   $cloned_site = StudySite::create([
-                       'id' => $id,
+                    $cloned_site = StudySite::create([
+                        'id' => $id,
                         'study_id' => $replica_id->id,
                         'site_id' => $site->site_id,
                         'primaryInvestigator_id' => $site->primaryInvestigator_id,
@@ -376,14 +377,14 @@ class StudyController extends Controller
                 $site_coordinators = SiteStudyCoordinator::where('site_study_id', '=',$site->id)->get();
                 foreach ($site_coordinators as $site_coordinator){
                     $id = Str::uuid();
-                  $coordinator =   SiteStudyCoordinator::create([
+                    $coordinator =   SiteStudyCoordinator::create([
                         'id'    => $id,
                         'site_study_id'     => NULL,
                         'coordinator_id'    => $site_coordinator->coordinator_id
                     ]);
                     $cloned_study_site = StudySite::where('study_id','=',$replica_id->id)->first();
-                        $coordinator->site_study_id = $cloned_study_site->id;
-                        $coordinator->save();
+                    $coordinator->site_study_id = $cloned_study_site->id;
+                    $coordinator->save();
                 }
             }
             if ($request->studySubjects == 'on'){
@@ -404,140 +405,132 @@ class StudyController extends Controller
                 }
             }
             if ($request->phasesSteps == 'on'){
-//                $study_phases = StudyStructure::where('study_id','=',$study_id)->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)->get();
+                /*$study_phases = StudyStructure::where('study_id','=',$study_id)
+                    ->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)->get();*/
                 $study_phases = StudyStructure::where('study_id','=',$study_id)->get();
-                foreach ($study_phases as $phase){
+                foreach ($study_phases as $phase) {
                     $id = \Illuminate\Support\Str::uuid();
                     StudyStructure::create([
-                        'id'    =>  $id,
-                        'study_id'  => $replica_id->id,
-                        'name'  => $phase->name,
-                        'position'  => $phase->position,
-                        'duration'  => $phase->duration,
+                        'id' => $id,
+                        'study_id' => $replica_id->id,
+                        'name' => $phase->name,
+                        'position' => $phase->position,
+                        'duration' => $phase->duration,
                     ]);
                     $replica_phase_id = StudyStructure::select('id')->latest()->first();
-                    $study_phase_steps = PhaseSteps::where('phase_id','=',$phase->id)->get();
-                    foreach ($study_phase_steps as $step){
-                        $id = \Illuminate\Support\Str::uuid();
-                        $phaseStep = PhaseSteps::create([
-                            'step_id'    =>  $id,
-                            'phase_id'  =>   $replica_phase_id->id,
-                            'step_position' => $step->step_position,
-                            'form_type' => $step->form_type,
-                            'form_type_id' => $step->form_type_id,
-                            'step_name' => $step->step_name,
-                            'step_description' => $step->step_description,
-                            'graders_number' => $step->graders_number,
-                            'q_c' => $step->q_c,
-                            'eligibility' => $step->eligibility,
-                        ]);
-                        $replica_step_id = PhaseSteps::select('step_id')->latest()->first();
-                        $study_step_sections = Section::where('phase_steps_id','=',$step->step_id)->get();
-                        foreach ($study_step_sections  as $section){
-                            $id = \Illuminate\Support\Str::uuid();
-                            $clonedSection = Section::create([
-                                'id'    =>  $id,
-                                'phase_steps_id'    =>  $replica_step_id->step_id,
-                                'name'  =>  $section->name,
-                                'description'  =>  $section->description,
-                                'sort_number'  =>  $section->sort_number,
-                                'parent_id'     => 'no parent'
-                            ]);
-                            $replica_section_id = Section::select('id')->latest()->first();
-                            $study_section_questions = Question::where('section_id','=',$section->id)->get();
-                            foreach ($study_section_questions as $question){
-                                $id = \Illuminate\Support\Str::uuid();
-                                Question::create([
-                                    'id'    =>  $id,
-                                    'form_field_type_id'    => $question->form_field_type_id,
-                                    'section_id'    => $replica_section_id->id,
-                                    'option_group_id'    => $question->option_group_id,
-                                    'question_sort'    => $question->question_sort,
-                                    'question_text'    => $question->question_text,
-                                    'c_disk'    => $question->c_disk,
-                                    'measurement_unit'    => $question->measurement_unit,
-                                    'is_dependent'    => $question->is_dependent,
-                                    'dependent_on'    => $question->dependent_on,
-                                    'annotations'    => $question->annotations,
-                                    'certification_type'    => $question->certification_type,
-                                    'deleted_at'    => Null
-                                ]);
-                                $replica_question_id = Question::select('id')->latest()->first();
+                    foreach ($phase->steps as $step) {
+                        $isReplicating = false;
+                        $newStepId = $this->addReplicatedStep($step, $replica_phase_id->id, $isReplicating);
+
+                        /******************************* */
+                        /***  Replicate Step Sections ** */
+                        /******************************* */
+                        foreach ($step->sections as $section) {
+
+                            $newSectionId = $this->addReplicatedSection($section, $newStepId, $isReplicating);
+
+                            /******************************* */
+                            /* Replicate Section Questions * */
+                            /******************************* */
+                            foreach ($section->questions as $question) {
+
+                                $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId, $isReplicating);
+
+                                /******************************* */
+                                /* Replicate Question Form Field */
+                                /******************************* */
+
+                                $this->addReplicatedFormField($question, $newQuestionId, $isReplicating);
+
+                                /******************************* */
+                                /* Replicate Question Data Validation */
+                                /******************************* */
+
+                                $this->updateQuestionValidationToReplicatedVisits($question->id, $isReplicating);
+
+                                /******************************* */
+                                /* Replicate Question Dependency */
+                                /******************************* */
+
+                                $this->addReplicatedQuestionDependency($question, $newQuestionId, $isReplicating);
+
+                                /******************************* */
+                                /*Replicate Question Adjudication*/
+                                /******************************* */
+
+                                $this->addReplicatedQuestionAdjudicationStatus($question, $newQuestionId, $isReplicating);
                             }
                         }
                     }
                 }
-            }
-            if ($request->answers == 'on'){
-                $study_phases = StudyStructure::where('study_id','=',$study_id)->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)->get();
-                foreach ($study_phases as $phase){
-                    $study_phase_steps = PhaseSteps::where('phase_id','=',$phase->id)->get();
-                    foreach ($study_phase_steps as $step){
-                        $study_step_sections = Section::where('phase_steps_id','=',$step->step_id)->get();
-                        foreach ($study_step_sections  as $section){
-                            $study_section_questions = Question::where('section_id','=',$section->id)->get();
-                            foreach ($study_section_questions as $question){
-                                $answers = Answer::where('question_id','=',$question)->get();
-                                $final_answers = FinalAnswer::where('question_id','=',$question)->get();
-                                foreach ($answers as $answer){
-                                    $id = \Illuminate\Support\Str::uuid();
-                                    Answer::create([
-                                        'id'    => $id,
-                                        'form_filled_by_user_id'    => $answer->form_filled_by_user_id,
-                                        'grader_id' => $answer->grader_id,
-                                        'adjudicator_id'   => $answer->adjudicator_id,
-                                        'subject_id'    => $answer->subject_id,
-                                        'study_id'  => $replica_id->id,
-                                        'study_structures_id'   => $replica_phase_id,
-                                        'phase_steps_id'    => $replica_step_id,
-                                        'section_id'    => $replica_section_id,
-                                        'question_id'   => $replica_question_id,
-                                        'field_id'  => $answer->field_id,
-                                        'answer'    => $answer->answer,
-                                        'is_answer_accepted'    => $answer->is_answer_accepted
-                                    ]);
-                                }
-                                foreach ($final_answers as $final_answer){
-                                    $id = \Illuminate\Support\Str::uuid();
-                                    FinalAnswer::create([
-                                        'id'    => $id,
-                                        'study_id'  => $replica_id->id,
-                                        'subject_id'    => $answer->subject_id,
-                                        'study_structures_id'   => $replica_phase_id,
-                                        'phase_steps_id'    => $replica_step_id,
-                                        'section_id'    => $replica_section_id,
-                                        'question_id'   => $replica_question_id,
-                                        'field_id'  => $answer->field_id,
-                                        'answer'    => $answer->answer,
-                                    ]);
-                                }
-                                $cloned_answers = Answer::select('subject_id')->where('study_id','=',$replica_id)->get();
-                                foreach ($cloned_answers as $cloned_answer){
-                                    $find_subject = Subject::where('old_id','=',$cloned_answer->subject_id)->first();
-                                    $find_question = Subject::where('old_id','=',$cloned_answer->question_id)->first();
-                                    $insert_subject_aganist_answer = new Answer();
-                                    $insert_subject_aganist_answer->subject_id = $find_subject->id;
-                                    $insert_subject_aganist_answer->question_id = $find_question->id;
-                                    $insert_subject_aganist_answer->save();
-                                }
-                                $cloned_final_answers = Answer::select('subject_id')->where('study_id','=',$replica_id)->get();
-                                foreach ($cloned_final_answers as $cloned_final_answer){
-                                    $find_subject = Subject::where('old_id','=',$cloned_answer->subject_id)->first();
-                                    $find_question = Subject::where('old_id','=',$cloned_answer->question_id)->first();
-                                    $insert_subject_aganist_answer = new Answer();
-                                    $insert_subject_aganist_answer->subject_id = $find_subject->id;
-                                    $insert_subject_aganist_answer->question_id = $find_question->id;
-                                    $insert_subject_aganist_answer->save();
-                                }
-                            }
+                if ($request->answers == 'on') {
+                    $answers = Answer::where('study_id', '=', $mystudy->id)->get();
+                    foreach ($answers as $answer) {
+                        $cloned_answer = Answer::create([
+                            'id' => Str::uuid(),
+                            'form_filled_by_user_id' => $answer->form_filled_by_user_id,
+                            'grader_id' => $answer->grader_id,
+                            'adjudicator_id' => $answer->adjudicator_id,
+                            'subject_id' => $answer->subject_id,
+                            'study_id' => $replica_id->id,
+                            'study_structures_id' => $replica_phase_id->id,
+                            'phase_steps_id' => $newStepId,
+                            'section_id' => $newSectionId,
+                            'question_id' => $newQuestionId,
+                            'field_id' => $answer->field_id,
+                            'answer' => $answer->answer,
+                            'is_answer_accepted' => $answer->is_answer_accepted,
+                        ]);
+                    }
+                    $final_answers = FinalAnswer::where('study_id', '=', $mystudy->id)->get();
+                    foreach ($final_answers as $final_answer) {
+                        $cloned_answer_final = FinalAnswer::create([
+                            'id' => Str::uuid(),
+                            'study_id' => $replica_id->id,
+                            'form_filled_by_user_id' => $final_answer->form_filled_by_user_id,
+                            'grader_id' => $final_answer->grader_id,
+                            'adjudicator_id' => $final_answer->adjudicator_id,
+                            'subject_id' => $final_answer->subject_id,
+                            'study_structures_id' => $replica_phase_id->id,
+                            'phase_steps_id' => $newStepId,
+                            'section_id' => $newSectionId,
+                            'question_id' => $newQuestionId,
+                            'field_id' => $final_answer->field_id,
+                            'answer' => $final_answer->answer,
+                        ]);
+                    }
+                    $getclonedAnswers = Answer::where('study_id','=',$replica_id->id)->get();
+                    foreach ($getclonedAnswers as $getclonedAnswer){
+                        $clonedSubjects = Subject::where('study_id','=',$replica_id->id)->get();
+                        foreach ($clonedSubjects as $clonedSubject){
+                            $getclonedAnswer->subject_id = $clonedSubject->id;
+                            $getclonedAnswer->save();
                         }
                     }
+                    $getclonedFinalAnswers = Answer::where('study_id','=',$replica_id->id)->get();
+                    foreach ($getclonedFinalAnswers as $getclonedFinalAnswer){
+                        $clonedSubjects = Subject::where('study_id','=',$replica_id->id)->get();
+                        foreach ($clonedSubjects as $clonedSubject){
+                            $getclonedFinalAnswer->subject_id = $clonedSubject->id;
+                            $getclonedFinalAnswer->save();
+                        }
+                    }
+                }
+                $annotations = Annotation::where('study_id','=',$mystudy)->get();
+                foreach ($annotations as $annotation){
+                    Annotation::create([
+                        'id'    => Str::uuid(),
+                        'study_id' => $replica_id->id,
+                        'label' => $annotation->label,
+                        'deleted_at' => $annotation->deleted_at,
+                    ]);
                 }
 
             }
+
             if ($request->transmissions ==  'on'){
-               /* $transmissions = CrushFtpTransmission::all();
-                dd($transmissions);*/
+                /* $transmissions = CrushFtpTransmission::all();
+                 dd($transmissions);*/
                 $transmissions = CrushFtpTransmission::where('StudyI_ID','=',$mystudy->study_code)->get();
                 foreach ($transmissions as $transmission){
                     $id = Str::uuid();
@@ -640,11 +633,11 @@ class StudyController extends Controller
                     ]);
                 }
             }
+            if ($request->studyData == 'on'){
         }
-        dd($cloned_site);
         $studies = Study::all();
-       // return \response()->json($studies);
-       return redirect()->route('studies.index')->with('success','Study cloned successfully');
+        // return \response()->json($studies);
+        return redirect()->route('studies.index')->with('success','Study cloned successfully');
     }
 
     /**

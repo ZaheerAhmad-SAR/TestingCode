@@ -4,12 +4,13 @@ namespace Modules\FormSubmission\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Modules\Admin\Entities\PhaseSteps;
 
 class SubjectsPhases extends Model
 {
     protected $table = 'subjects_phases';
     protected $keyType = 'string';
-    protected $fillable = ['id', 'subject_id', 'phase_id', 'visit_date', 'is_out_of_window'];
+    protected $fillable = ['id', 'subject_id', 'phase_id', 'visit_date', 'is_out_of_window', 'modility_id', 'form_type_id'];
     protected $casts = [
         'id' => 'string'
     ];
@@ -32,16 +33,20 @@ class SubjectsPhases extends Model
         return self::where('subject_id', $subjectId)->where('phase_id', $phaseId)->first();
     }
 
-    public static function createSubjectPhase($request)
+    public static function createSubjectPhase($request, $modalityIdsArray)
     {
-        $data = [
-            'id' => Str::uuid(),
-            'subject_id' => $request->subject_id,
-            'phase_id' => $request->phase_id,
-            'visit_date' => $request->visit_date,
-            'is_out_of_window' => $request->is_out_of_window,
-        ];
-        self::create($data);
+        foreach ($modalityIdsArray as $modalityId) {
+            $data = [
+                'id' => Str::uuid(),
+                'subject_id' => $request->subject_id,
+                'phase_id' => $request->phase_id,
+                'visit_date' => $request->visit_date,
+                'is_out_of_window' => $request->is_out_of_window,
+                'modility_id' => $modalityId,
+                'form_type_id' => 1,
+            ];
+            self::create($data);
+        }
     }
 
     public static function getActivatedPhasesidsArray($studyPhasesIdsArray)

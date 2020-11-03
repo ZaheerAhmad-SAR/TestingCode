@@ -120,7 +120,7 @@ class QueriesController extends Controller
         $users            = $request->post('assignedUsers');
         $usersArray       = explode(',',$users);
         $remarks          = $request->post('assignedRemarks');
-        $querySection     = $request->post('querySection');
+        $querySectionData = $request->post('querySectionData');
         $query_subject    = $request->post('query_subject');
         $module_id        = $request->post('module_id');
         $query_url        = $request->post('query_url');
@@ -143,7 +143,7 @@ class QueriesController extends Controller
             'queried_remarked_by_id'=>\auth()->user()->id,
             'parent_query_id'=> 0,
             'messages'=>$remarks,
-            'module_name'=>$querySection,
+            'module_name'=>$querySectionData,
             'module_id'=>$module_id,
             'query_status'=> 'open',
             'query_type' =>$queryAssignedTo,

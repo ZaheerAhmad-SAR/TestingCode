@@ -14,11 +14,11 @@ class UserRequest extends FormRequest
     public function rules()
     {
 
-        
+
         return [
             'name'      =>  'required',
-            'email'      =>  'required|email|unique:users,email,'.$this->user->id,
-            'password' => 'required|string|min:8|nullable|confirmed'
+            'email'      =>  'required|email',
+            'password' => 'required|string|min:8|nullable|confirmed|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/'
         ];
     }
 

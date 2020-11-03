@@ -25,9 +25,8 @@ class QCFromView implements FromView
         $subjects = $subjects->select('subjects.*', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'subjects_phases.visit_date', 'sites.site_name')
         ->rightJoin('subjects_phases', 'subjects_phases.subject_id', '=', 'subjects.id')
         ->leftJoin('study_structures', 'study_structures.id', '=', 'subjects_phases.phase_id')
-        ->leftJoin('sites', 'sites.id', 'subjects.site_id');
-
-        $subjects = $subjects->orderBy('subjects.subject_id')
+        ->leftJoin('sites', 'sites.id', 'subjects.site_id')
+        ->orderBy('subjects.subject_id')
         ->orderBy('study_structures.position')
         ->get();
 
@@ -64,23 +63,34 @@ class QCFromView implements FromView
                         // form type loop
                         foreach($formType as $type) {
 
-                            $step = PhaseSteps::where('step_id', $type['step_id'])->first();
+                            $step = PhaseSteps::where('phase_id', $subject->phase_id)
+                                                ->where('modility_id', $type['modility_id'])
+                                                ->where('form_type_id', $type['form_type_id'])
+                                                ->first();
+                            
+                            if ($step != null) {
 
-                                $getFormStatusArray = [
+                                $getFormStatusArray = array(
                                     'subject_id' => $subject->id,
                                     'study_structures_id' => $subject->phase_id,
                                     'modility_id'=> $type['modility_id'],
                                     'form_type_id' => $type['form_type_id']
-                                ];
-
+                                );
 
                                 if ($step->form_type_id == 2) {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  1;
+                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $step->graders_number, true);
                                 } else {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  2;
+                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, true);
+
+
                                 }
+
+                            } else {
+
+                                $formStatus[$key.'_'.$type['form_type']] = 'NoName-Not Initiated|';
+                            } // step check ends
 
                         } // step lopp ends
 

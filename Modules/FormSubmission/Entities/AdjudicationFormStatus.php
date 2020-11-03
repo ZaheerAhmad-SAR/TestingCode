@@ -66,6 +66,7 @@ class AdjudicationFormStatus extends Model
     public static function makeAdjudicationFormStatusSeperateSpan($adjudicationFormStatusObj)
     {
         $adjudicationFormStatus = $adjudicationFormStatusObj->adjudication_status;
+        $adjudicatorUserName = $adjudicationFormStatusObj->getUser('name');
 
         $status = '';
         $userName = '';
@@ -73,38 +74,39 @@ class AdjudicationFormStatus extends Model
         switch ($adjudicationFormStatus) {
             case 'no_status':
                 $status = 'Not Initiated';
-                $userName = '';
+                $userName = 'NoName';
                 break;
 
             case 'no_required':
                 $status = 'Not Required';
-                $userName = '';
+                $userName = 'NoName';
                 break;
 
             case 'incomplete':
                 $status = 'Initiated';
-                $userName = $adjudicationFormStatusObj->user->name;
+                $userName = $adjudicatorUserName;
                 break;
 
             case 'complete':
                 $status = 'Complete';
-                $userName = $adjudicationFormStatusObj->user->name;
+                $userName = $adjudicatorUserName;
                 break;
 
             case 'resumable':
                 $status = 'Editing';
-                $userName = $adjudicationFormStatusObj->user->name;
+                $userName = $adjudicatorUserName;
                 break;
 
             case 'adjudication':
                 $status = 'In Adjudication';
-                $userName = $adjudicationFormStatusObj->user->name;
+                $userName = $adjudicatorUserName;
+                break;
+            default:
+                $status = 'Not Initiated';
+                $userName = 'NoName';
                 break;
         }
-        if (!empty($userName)) {
-            $userName = ' - ' . $userName;
-        }
-        return $status . $userName;
+        return $userName . '-' . $status . '|';
     }
 
     public static function makeAdjudicationFormStatusSpan($step, $adjudicationFormStatusObj)

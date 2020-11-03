@@ -7,11 +7,12 @@ use Modules\UserRoles\Entities\Role;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\Study;
-
+use Modules\FormSubmission\Entities\SubjectsPhases;
 
 class PhaseSteps extends Model
 {
-    protected $fillable = ['step_id', 'phase_id', 'step_position', 'form_type', 'form_type_id', 'modility_id', 'step_name', 'step_description', 'graders_number', 'q_c', 'eligibility'];
+    protected $fillable = ['step_id', 'phase_id', 'step_position', 'form_type', 'form_type_id', 'modility_id', 'step_name',
+        'step_description', 'graders_number', 'q_c', 'eligibility','parent_id'];
     // protected $key = 'string';
     protected $table = 'phase_steps';
     protected $primaryKey = "step_id";
@@ -57,7 +58,7 @@ class PhaseSteps extends Model
         return $this->belongsTo(FormType::class, 'form_type_id', 'id')->withDefault();
     }
 
-    static function phaseStepsbyPermissions($phaseId)
+    static function phaseStepsbyPermissions($subjectId, $phaseId)
     {
         $formTypeArray = [];
         if (canQualityControl(['index'])) {
@@ -74,7 +75,12 @@ class PhaseSteps extends Model
         } else {
             $formTypeArray[] = 4;
         }
-        return self::where('phase_id', $phaseId)->whereIn('form_type_id', $formTypeArray)->get();
+
+        $modalityIdsArray = SubjectsPhases::where('subject_id', 'like', $subjectId)->where('phase_id', 'like', $phaseId)->distinct()->pluck('modility_id')->toArray();
+        return self::where('phase_id', $phaseId)
+            ->whereIn('form_type_id', $formTypeArray)
+            ->whereIn('modility_id', $modalityIdsArray)
+            ->get();
     }
     public function phase()
     {

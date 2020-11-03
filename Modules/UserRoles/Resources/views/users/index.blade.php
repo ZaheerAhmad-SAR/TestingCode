@@ -92,46 +92,6 @@
                                 @endforeach
                                     @endif
                                     </tbody>
-                                    @if(hasPermission(auth()->user(),'systemtools.index') && empty(session('current_study')))
-                                        <thead>
-                                        <tr>
-                                            <th scope="col">Name</th>
-                                            <th scope="col">Email</th>
-                                            <th scope="col">Roles</th>
-                                            <th scope="col">2 Factor Auth</th>
-                                            <th scope="col">Actions</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody id="users-crud">
-                                        @foreach($users as $user)
-                                            <tr>
-                                                <td>{{ucfirst($user->name)}}</td>
-                                                <td>{{$user->email}}</td>
-                                                <td>
-                                                    @foreach($user->user_roles as $role)
-                                                        {{ucfirst($role->role->name)}},
-                                                    @endforeach
-                                                </td>
-                                                <td>{{!empty($user->google2fa_secret)?'Enabled':'Disabled'}}</td>
-                                                <td>
-                                                    <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                                        <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
-                                                        <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                                <span class="dropdown-item">
-                                                    <a href="{!! route('users.edit',$user->id) !!}">
-                                                        <i class="far fa-edit"></i>&nbsp; Edit
-                                                    </a>
-                                                </span>
-                                                            <span class="dropdown-item">
-                                                    <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
-                                                        <i class="fa fa-trash"></i>&nbsp; Delete </a>
-                                                    </span>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endif
                                 @if(hasPermission(auth()->user(),'studytools.index') && !empty(session('current_study')))
                                         <thead>
                                         <tr>
@@ -142,7 +102,7 @@
                                         </tr>
                                         </thead>
                                         <tbody id="users-crud">
-                                    @foreach($users as $user)
+                                    @foreach($studyusers as $user)
                                         <tr>
                                             <td>{{ucfirst($user->name)}}</td>
                                             <td>{{$user->email}}</td>
