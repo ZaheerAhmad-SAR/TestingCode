@@ -2,6 +2,7 @@
 $('body').on('click','.form-fields',function(){
         $('#formfields').trigger('reset');
         $('#formfields').attr('action', "{{route('addQuestions')}}");
+        var type = $(this).attr("data-field-id");
         $('#question_type').val(type);
         if(type =='Number'){
             $('.view_to_numeric').css('display', 'block');
