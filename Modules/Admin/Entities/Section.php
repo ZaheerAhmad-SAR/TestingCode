@@ -12,7 +12,8 @@ class Section extends Model
         'phase_steps_id',
         'name',
         'description',
-        'sort_number'
+        'sort_number',
+        'parent_id'
     ];
 
     protected $keyType ='string';
