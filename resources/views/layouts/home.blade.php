@@ -27,12 +27,12 @@
                             <button class="close" data-dismiss="alert">&times;</button>
                         </div>
                     </div>
-                    @else
+                   {{-- @else
                     <div class="alert alert-danger alert-dismissible" id="myalert">
                         <a type="submit" class="btn btn-outline-info" href="{{route('users.updateProfile')}}" >Backup Codes</a>
                         <strong>Warning!</strong> Google 2-Factor Auth is enabled, View your backup Codes.
                         <button class="close" data-dismiss="alert">&times;</button>
-                    </div>
+                    </div>--}}
             @endif
                 <!-- title here  -->
                 <!--  -->
