@@ -786,21 +786,21 @@
             } // if ends
         }); // on change ends
 
-        $('.transmission-form').submit(function(e) {
+        // $('.transmission-form').submit(function(e) {
 
-            // check for phase steps if not found alert zero
-            var phaseSteps = $('#phase_steps').val();
+        //     // check for phase steps if not found alert zero
+        //     var phaseSteps = $('#phase_steps').val();
 
-            if(phaseSteps == 0) {
+        //     if($('select[name="status"]').val() == 'accepted' && phaseSteps == 0) {
                 
-                e.preventDefault();
-                alert('No steps found for this visit.');
-            } else {
+        //         e.preventDefault();
+        //         alert('No steps found for this visit.');
+        //     } else {
 
-               //continue submitting
-                e.currentTarget.submit();
-            }
-        });
+        //        //continue submitting
+        //         e.currentTarget.submit();
+        //     }
+        // });
 
 }); // document ready
 
