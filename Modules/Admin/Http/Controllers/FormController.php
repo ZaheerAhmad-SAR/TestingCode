@@ -440,7 +440,7 @@ class FormController extends Controller
 
     private function createQuestionDatavalidations($request, $questionObj)
     {
-        $validationRuleIdsArray = array_unique($request->validation_rules);
+        $validationRuleIdsArray = array_unique((array)$request->validation_rules);
 
         if (count($validationRuleIdsArray) > 0) {
             foreach ($validationRuleIdsArray as $validationRuleId) {
