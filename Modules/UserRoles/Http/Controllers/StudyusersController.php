@@ -68,13 +68,8 @@ class StudyusersController extends Controller
                 ->where('user_roles.study_id','!=',session('current_study'))->distinct()
                 ->get();
         }
-        $selectStudyUsers =  $selectStudyUsers = UserRole::select('users.*','user_roles.study_id')
-            ->join('users','users.id','=','user_roles.user_id')
-            ->where('user_roles.study_id','!=',session('current_study'))->distinct()
-            ->get();
 
-
-        return view('userroles::users.index',compact('users','roles','studyusers'));
+        return view('userroles::users.index',compact('users','roles','studyusers','enrolledusers'));
 
     }
 

@@ -80,6 +80,10 @@
             $(document).ready(function(){
                 $('[data-toggle="popover"]').popover();
             });
+            $(function () {
+                var duration = 10000;
+                setTimeout(function () { $('#myalert').hide(); }, duration);
+            });
         </script>
         <!-- END: Page JS-->
     </body>
