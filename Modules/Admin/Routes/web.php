@@ -62,13 +62,14 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('forms/sections_against_step/{id}', 'FormController@get_sections_against_step')->name('forms.sections_against_step');
     Route::post('forms/check_variable', 'FormController@check_variable_name')->name('forms.checkVariable');
     // skip logic
-    Route::get('forms/sections_for_skip_logic/{id}', 'FormController@sections_skip_logic')->name('forms.sectionsSkip');
-    Route::get('forms/sections_for_skip_logic_deactivate/{id}', 'FormController@sections_skip_logic_deactivate')->name('forms.sectionsSkipdeactivate');
-    Route::get('forms/questions_for_skip_logic/{id}', 'FormController@questions_skip_logic')->name('forms.questionsSkip');
-    Route::get('forms/questions_for_skip_logic_deactivate/{id}', 'FormController@questions_skip_logic_deactivate')->name('forms.questionsSkipdeactivate');
-    Route::post('forms/add_skip_logic', 'FormController@add_skipLogic')->name('forms.apply_skip_logic');
-    Route::post('forms/steps_to_skip', 'FormController@getSteps_toskip')->name('forms.get_steps_skip_logic');
-    Route::get('forms/skip_logic/{id}', 'FormController@skip_question_on_click')->name('forms.skipLogic');
+    Route::resource('skiplogic', 'SkipLogicController');
+    Route::get('skiplogic/sections_for_skip_logic/{id}', 'SkipLogicController@sections_skip_logic')->name('skiplogic.sectionsSkip');
+    Route::get('skiplogic/sections_for_skip_logic_deactivate/{id}', 'SkipLogicController@sections_skip_logic_deactivate')->name('skiplogic.sectionsSkipdeactivate');
+    Route::get('skiplogic/questions_for_skip_logic/{id}', 'SkipLogicController@questions_skip_logic')->name('skiplogic.questionsSkip');
+    Route::get('skiplogic/questions_for_skip_logic_deactivate/{id}', 'SkipLogicController@questions_skip_logic_deactivate')->name('skiplogic.questionsSkipdeactivate');
+    Route::post('skiplogic/add_skip_logic', 'SkipLogicController@add_skipLogic')->name('skiplogic.apply_skip_logic');
+    Route::post('skiplogic/steps_to_skip', 'SkipLogicController@getSteps_toskip')->name('skiplogic.get_steps_skip_logic');
+    Route::get('skiplogic/skip_logic/{id}', 'SkipLogicController@skip_question_on_click')->name('skiplogic.skipLogic');
     // skip logic
     Route::get('forms/sections_by_stepId/{id}', 'FormController@get_section_by_stepId')->name('forms.sectionsbystepId');
     Route::post('studyStatus', 'StudyController@studyStatus')->name('study.studyStatus');

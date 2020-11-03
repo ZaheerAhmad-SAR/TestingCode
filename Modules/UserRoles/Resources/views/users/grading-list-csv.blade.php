@@ -10,11 +10,30 @@
             @endphp
 
             @if ($modalitySteps != null)
+                
                 @foreach($modalitySteps as $key => $steps)
-                @php
-                    $count = $count + count($steps);
-                @endphp
-                <th colspan="{{count($steps)}}">
+                    
+                    @php
+                        $colspan = 0;
+                    @endphp
+                    
+                    @foreach($steps as $value)
+
+                        @if ($value['form_type'] != 'Grading')
+                            @php
+                                $count = $count + 2;
+                                $colspan = $colspan + 2;
+                            @endphp
+                        @else
+                            @php
+                                $count = $count + 6;
+                                $colspan = $colspan + 6;
+                            @endphp
+                        @endif
+
+                    @endforeach
+                
+                <th colspan="{{ $colspan }}">
                         {{$key}}
                 </th>
                 @endforeach
@@ -27,8 +46,8 @@
             @foreach($modalitySteps as $steps)
             
                 @foreach($steps as $value)
-                <th>
-                      {{$value['form_type']}}
+                <th @if( $value['form_type'] == 'Grading') colspan="6" @else colspan="2" @endif>
+                        {{$value['form_type']}}
                 </th>
                 @endforeach
             @endforeach
@@ -49,11 +68,56 @@
                 <td>{{date('Y-m-d', strtotime($subject->visit_date))}}</td>
                 <td>{{$subject->site_name}}</td>
                 
-                @if($subject->form_status != null)
-                    @foreach($subject->form_status as $status)
-                       
-                    <td>{{ $status }}</td>
+                  @if($subject->form_status != null)
+                    @foreach($subject->form_status as $form => $status)
 
+                    @if ($form != null)
+                        @php
+                            $explodedForm = explode('_', $form);
+                        @endphp
+
+                        @if($explodedForm[1] == 'Grading')
+                            
+                            @if ($status != null)
+                                <!-- explode on Pipe  -->
+                                @php
+                                    $trimStatusPipe = rtrim($status, '|');
+                                    $explodedStatus = explode('|', $trimStatusPipe);
+                                @endphp
+
+                                @foreach($explodedStatus as $explodeStatus)
+                                    
+                                    <!-- explode on dash -->
+                                    @php
+                                    $explodeOnDash = explode('-', $explodeStatus);
+                                    @endphp
+
+                                    @foreach($explodeOnDash as $onDashStatus)
+                                        <td>{{ $onDashStatus }}</td>
+                                    @endforeach
+
+                                @endforeach
+
+                            @endif
+
+                        @else
+
+                            @if ($status != null)
+                                <!-- explode on Pipe  -->
+                                @php
+                                    $trimStatusPipe = rtrim($status, '|');
+                                    $explodedStatus = explode('-', $trimStatusPipe);
+                                @endphp
+
+                                @foreach($explodedStatus as $explodeStatus)  
+                                        <td>{{ $explodeStatus }}</td>
+                                @endforeach
+
+                            @endif
+                        @endif
+
+                    @endif
+    
                     @endforeach
                 @endif
             </tr>
