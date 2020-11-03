@@ -337,51 +337,129 @@
                         @if(!empty($study))
                             <input type="hidden" value="{{$study->id}}" id="study_ID" name="study_ID">
                         @endif
-                        <div class="form-group row">
-                            <div class="col-md-2">Basic Info</div>
-                            <div class="col-md-2">
-                                <input type="checkbox" name="basic_info" checked>
+                        <nav>
+                            <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab-clone" role="tablist">
+                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-BasicInfo" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
+                                <a class="nav-item nav-link" id="nav-clone-tab" data-toggle="tab" href="#nav-Clone" role="tab" aria-controls="nav-clone" aria-selected="false">Clone Study Data</a>
                             </div>
-                            <div class="col-md-2">Study Subjects</div>
-                            <div class="col-md-2">
-                                <input type="checkbox" name="studySubjects" checked>
+                        </nav>
+                        <div class="tab-content" id="nav-ClonetabContent">
+                            {{-- Basic Info Tab --}}
+                            <div class="tab-pane fade show active" id="nav-BasicInfo" role="tabpanel" aria-labelledby="nav-Basic-tab">
+                                @csrf
+                                <div class="form-group row" style="margin-top: 10px;">
+                                    <label for="study_title" class="col-md-2">Title</label>
+                                    <div class="{!! ($errors->has('study_title')) ?'form-group col-md-10 has-error':'form-group col-md-10' !!}">
+                                        <input type="hidden" name="study_id" id="studyID" value="">
+                                        <input type="text" class="form-control" id="study_title" name="study_title" value="{{ $study->study_title }}"> @error('email')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="study_short_name" class="col-md-2">Short Name</label>
+                                    <div class="{!! ($errors->has('study_short_name')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="text" class="form-control" id="study_short_name" name="study_short_name" value="{{$study->study_short_name}}">
+                                        @error('study_short_name')
+                                        <span class="text-danger small">{{ $message }} </span>
+                                        @enderror
+                                    </div>
+
+                                    <label for="study_code" class="col-md-2">Study Code</label>
+                                    <div class="{!! ($errors->has('study_code')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="text" class="form-control" id="study_code" name="study_code" value="{{$study->study_code}}">
+                                        @error('study_code')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="protocol_number" class="col-md-2">Protocol Number</label>
+                                    <div class="{!! ($errors->has('protocol_number')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="text" class="form-control" id="protocol_number" name="protocol_number" value="{{ $study->protocol_number }}">
+                                        @error('protocol_number')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                    <label for="trial_registry_id" class="col-md-2">Trial Registry ID</label>
+                                    <div class="{!! ($errors->has('trial_registry_id')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="text" class="form-control" id="trial_registry_id" name="trial_registry_id" value="{{ $study->trial_registry_id }}">
+                                        @error('trial_registry_id')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="study_sponsor" class="col-md-2">Study Sponsor</label>
+                                    <div class="{!! ($errors->has('study_sponsor')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="text" class="form-control" id="study_sponsor" name="study_sponsor" value="{{ $study->study_sponsor }}">
+                                        @error('study_sponsor')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                    <label for="start_date" class="col-md-2">Start Date</label>
+                                    <div class="{!! ($errors->has('start_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="date" class="form-control" id="start_date" name="start_date" value="{{ $study->start_date }}">
+                                        @error('start_date')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="end_date" class="col-md-2">End Date</label>
+                                    <div class="{!! ($errors->has('end_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="date" class="form-control" id="end_date" name="end_date" value="{{ $study->end_date }}">
+                                        @error('end_date')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                    <label for="description" class="col-md-2">Description</label>
+                                    <div class="{!! ($errors->has('description')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="text" class="form-control" id="description" name="description" value="{{ $study->description }}">
+                                        @error('description')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-2">Study Users</div>
-                            <div class="col-md-2">
-                                <input type="checkbox" name="studyUsers" checked>
+                            {{--Clone tab --}}
+                            <div class="tab-pane fade" id="nav-Clone" role="tabpanel" aria-labelledby="nav-Validation-tab">
+                                <div class="form-group row" style="margin-top: 10px; padding-left: 15px">
+                                    <div class="col-md-2">Study Users</div>
+                                    <div class="col-md-2">
+                                        <input type="checkbox" name="studyUsers" checked>
+                                    </div>
+                                    <div class="col-md-2">Study Sites</div>
+                                    <div class="col-md-2">
+                                        <input type="checkbox" name="studySites" checked>
+                                    </div>
+                                    <div class="col-md-2">Study Subjects</div>
+                                    <div class="col-md-2">
+                                        <input type="checkbox" name="studySubjects" checked>
+                                    </div>
+                                </div>
+                                <div class="form-group row" style="margin-top: 10px; padding-left: 15px">
+                                    <div class="col-md-2">Phases/Steps <br>Sect/Questions</div>
+                                    <div class="col-md-2">
+                                        <input type="checkbox" name="phasesSteps" checked>
+                                    </div>
+                                    <div class="col-md-2">Answers</div>
+                                    <div class="col-md-2">
+                                        <input type="checkbox" name="answers" checked>
+                                    </div>
+                                    <div class="col-md-2">Transmissions</div>
+                                    <div class="col-md-2">
+                                        <input type="checkbox" name="transmissions" checked>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-2">Study Sites</div>
-                            <div class="col-md-2">
-                                <input type="checkbox" name="studySites" checked>
+
+                            <div class="modal-footer">
+                                <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                                @if(hasPermission(auth()->user(),'studies.store'))
+                                    <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                                @endif
                             </div>
-                            <div class="col-md-2">Phases/Steps <br>Sect/Questions</div>
-                            <div class="col-md-2">
-                                <input type="checkbox" name="phasesSteps" checked>
-                            </div>
-                            <div class="col-md-2">Answers</div>
-                            <div class="col-md-2">
-                                <input type="checkbox" name="answers" checked>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-2">Study Data</div>
-                            <div class="col-md-2">
-                                <input type="checkbox" name="studyData" checked>
-                            </div>
-                            <div class="col-md-2">Transmissions</div>
-                            <div class="col-md-2">
-                                <input type="checkbox" name="transmissions" checked>
-                            </div>
-                            <div class="col-md-2">Audit Trail</div>
-                            <div class="col-md-2">
-                                <input type="checkbox" name="auditTrail" checked>
-                            </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
                         </div>
                     </form>
                 </div>

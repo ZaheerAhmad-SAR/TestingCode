@@ -517,6 +517,7 @@ class FormController extends Controller
         $form_field = FormFields::create([
             'id' => $id,
             'question_id' => $questionObj->id,
+            'old_question_id' => $questionObj->id,
             'variable_name' => $request->variable_name,
             'is_exportable_to_xls' => $request->is_exportable_to_xls,
             'is_required' => $request->is_required,
