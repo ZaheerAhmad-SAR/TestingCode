@@ -11,18 +11,27 @@
             @endphp
 
             @if ($modalitySteps != null)
+                
                 @foreach($modalitySteps as $key => $steps)
+                    
+                    @php
+                        $colspan = 0;
+                    @endphp
+                    
+                    @foreach($steps as $value)
 
-                    @if ($steps != null)
                         @php
-                            $count = $count + count($steps);
+                            $count = $count + 2;
+                            $colspan = $colspan + 2;
                         @endphp
-                    <th colspan="{{count($steps)}}">
-                            {{$key}}
-                    </th>
-                    @endif
-
+                    
+                    @endforeach
+                
+                <th colspan="{{ $colspan }}">
+                        {{$key}}
+                </th>
                 @endforeach
+
             @endif
         </tr>
 

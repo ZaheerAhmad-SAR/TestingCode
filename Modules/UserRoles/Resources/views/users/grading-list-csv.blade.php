@@ -18,7 +18,7 @@
                     @endphp
                     
                     @foreach($steps as $value)
-                    
+
                         @if ($value['form_type'] != 'Grading')
                             @php
                                 $count = $count + 2;
@@ -36,6 +36,7 @@
                 <th colspan="{{ $colspan }}">
                         {{$key}}
                 </th>
+                @endforeach
             @endif
         </tr>
 

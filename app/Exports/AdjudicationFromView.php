@@ -101,7 +101,7 @@ class AdjudicationFromView implements FromView
 
                                     } else {
 
-                                        $formStatus[$key.'_'.$type['form_type']] = 'Not Initiated-NoName|';
+                                        $formStatus[$key.'_'.$type['form_type']] = 'NoName-Not Initiated|';
                                     } // step null check ends
 
                                 } else {
@@ -124,7 +124,7 @@ class AdjudicationFromView implements FromView
 
                                     } else {
 
-                                        $formStatus[$key.'_'.$type['form_type']] = 'Not Initiated-NoName|';
+                                        $formStatus[$key.'_'.$type['form_type']] = 'NoName-Not Initiated|';
 
                                     }
 
