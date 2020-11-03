@@ -32,7 +32,7 @@
             @foreach($modalitySteps as $steps)
             
                 @foreach($steps as $value)
-                <th>
+                <th colspan="2">
                       {{$value['form_type']}}
                 </th>
                 @endforeach
@@ -56,10 +56,19 @@
                 
                 @if($subject->form_status != null)
                     @foreach($subject->form_status as $status)
-                       
-                        <td>
-                                {{ $status }}  
-                        </td>
+                    
+                        @if ($status != null)
+                            <!-- explode on Pipe  -->
+                            @php
+                                $trimStatusPipe = rtrim($status, '|');
+                                $explodedStatus = explode('-', $trimStatusPipe);
+                            @endphp
+
+                            @foreach($explodedStatus as $explodeStatus)  
+                                    <td>{{ $explodeStatus }}</td>
+                            @endforeach
+
+                        @endif
 
                     @endforeach
                 @endif
