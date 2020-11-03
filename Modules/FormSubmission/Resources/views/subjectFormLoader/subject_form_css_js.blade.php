@@ -54,11 +54,11 @@
             }
 
             function globalDisableByClass(stepCounter, studyClsStr, stepClsStr) {
-                if (stepCounter < $('#already_global_disabled').val()) {
+                //if (stepCounter < $('#already_global_disabled').val()) {
                     $("." + studyClsStr).prop('disabled', true);
-                    $('#already_global_disabled').val(stepCounter);
-                    enableByClass(stepClsStr);
-                }
+                   // $('#already_global_disabled').val(stepCounter);
+                    //enableByClass(stepClsStr);
+                //}
             }
 
             function enableByClass(cls) {
@@ -378,19 +378,26 @@
                 var canSubmit = false;
                 var formStatus = $('#form_master_' + stepIdStr + ' input[name="formStatus"]').val();
                 var formFilledByUserId = $('#form_master_' + stepIdStr + ' input[name="formFilledByUserId"]').val();
+                var current_user_id = '{{ auth()->user()->id }}';
 
                 if(
                     (formTypeId == 1) &&
                     (canQualityControl == true) &&
                     (
                     ((formStatus == 'no_status') && (formFilledByUserId == 'no-user-id')) ||
-                    ((formStatus != 'no_status') && (formFilledByUserId == '{{ auth()->user()->id }}'))
+                    ((formStatus != 'no_status') && (formFilledByUserId == current_user_id))
                     )
 
                 ){
                     canSubmit = true;
                 }
-                if((formTypeId == 2) && (canGrading == true)){
+                if(
+                    (formTypeId == 2) && (canGrading == true) &&
+                    (
+                    ((formStatus == 'no_status') && (formFilledByUserId == 'no-user-id')) ||
+                    ((formStatus != 'no_status') && (formFilledByUserId == current_user_id))
+                    )
+                ){
                     canSubmit = true;
                 }
                 return canSubmit;
@@ -407,6 +414,6 @@
                    location.reload();
                }, seconds);
             }
-
+            disableByClass('{{ $studyClsStr }}');
         </script>
     @endpush

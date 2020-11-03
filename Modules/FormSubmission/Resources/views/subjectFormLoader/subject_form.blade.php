@@ -173,6 +173,7 @@
                                                                 }
                                                             }
                                                             $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
+                                                            $adjStepClsStr = buildSafeStr($step->step_id, 'adj_step_cls_');
                                                             $stepIdStr = buildSafeStr($step->step_id, '');
                                                             @endphp
 
@@ -231,6 +232,7 @@
                                                     }
                                                 }
                                                 $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
+                                                $adjStepClsStr = buildSafeStr($step->step_id, 'adj_step_cls_');
                                                 $stepIdStr = buildSafeStr($step->step_id, '');
 
                                                 $sections = $step->sections;

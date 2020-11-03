@@ -29,7 +29,7 @@ trait AdjudicationTrait
                 $valDifference = 0;
                 $isPercentage = 'no';
                 $answersArray = [];
-                $returnData = [];
+
                 /********************************** */
                 $getAnswerArray = [
                     'study_id' => $getGradingFormStatusArray['study_id'],
@@ -44,24 +44,33 @@ trait AdjudicationTrait
                 $numberOfAnswers = count($answersArray);
                 $questionAdjudicationStatusObj = $question->questionAdjudicationStatus;
 
-                if ($fieldType == 'Radio') {
-                    $returnData =  self::selectMajorityAnswer($questionAdjudicationStatusObj, $answersArray);
-                } elseif ($fieldType == 'Checkbox') {
-                    $returnData =  self::selectMajorityAnswer($questionAdjudicationStatusObj, $answersArray);
-                } elseif ($fieldType == 'Dropdown') {
-                    $returnData =  self::selectMajorityAnswer($questionAdjudicationStatusObj, $answersArray);
-                } elseif ($fieldType == 'Number') {
-                    $returnData = self::checkAdjudicationForNumber($questionAdjudicationStatusObj, $numberOfAnswers, $answersArray, $question->form_field_type->decimal_point);
-                } elseif ($fieldType == 'Text') {
-                    $returnData =  self::selectMajorityAnswer($questionAdjudicationStatusObj, $answersArray);
-                } elseif ($fieldType == 'Textarea') {
-                    $returnData = self::checkAdjudicationForText($questionAdjudicationStatusObj, $numberOfAnswers, $answersArray);
+                if ($step->graders_number == $numberOfAnswers) {
+                    if ($fieldType == 'Radio') {
+                        $returnData =  self::selectMajorityAnswer($questionAdjudicationStatusObj, $answersArray);
+                    } elseif ($fieldType == 'Checkbox') {
+                        $returnData =  self::selectMajorityAnswer($questionAdjudicationStatusObj, $answersArray);
+                    } elseif ($fieldType == 'Dropdown') {
+                        $returnData =  self::selectMajorityAnswer($questionAdjudicationStatusObj, $answersArray);
+                    } elseif ($fieldType == 'Number') {
+                        $returnData = self::checkAdjudicationForNumber($questionAdjudicationStatusObj, $numberOfAnswers, $answersArray, $question->form_field_type->decimal_point);
+                    } elseif ($fieldType == 'Text') {
+                        $returnData =  self::selectMajorityAnswer($questionAdjudicationStatusObj, $answersArray);
+                    } elseif ($fieldType == 'Textarea') {
+                        $returnData = self::checkAdjudicationForText($questionAdjudicationStatusObj, $numberOfAnswers, $answersArray);
+                    }
+                } else {
+                    $returnData = [
+                        'isQuestionAdjudicationRequired' => true,
+                        'finalAnswer' => $finalAnswer,
+                        'valDifference' => $valDifference,
+                        'isPercentage' => $isPercentage,
+                    ];
                 }
-
                 $isQuestionAdjudicationRequired = (bool)$returnData['isQuestionAdjudicationRequired'];
                 $finalAnswer = (string)$returnData['finalAnswer'];
                 $valDifference = (string)$returnData['valDifference'];
                 $isPercentage = (string)$returnData['isPercentage'];
+
                 /************************************* */
                 /************************************* */
                 /************************************* */
@@ -92,6 +101,7 @@ trait AdjudicationTrait
                     'id' => Str::uuid(),
                     'answer' => $finalAnswer,
                 ];
+
 
                 FinalAnswer::updateOrCreate($finalAnswerArray, $finalAnswerArray_1);
                 /************************************* */
