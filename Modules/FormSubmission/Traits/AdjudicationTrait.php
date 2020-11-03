@@ -138,10 +138,12 @@ trait AdjudicationTrait
                 $retArray = self::customAdjudication($numberOfAnswers, $answersArray, $operator, $customValue);
                 $isQuestionAdjudicationRequired = $retArray['isQuestionAdjudicationRequired'];
                 $valDifference = $retArray['valDifference'];
+                $finalAnswer = $retArray['finalAnswer'];
             } elseif ($decisionBasedOn == 'percentage') {
                 $retArray = self::percentageAdjudication($numberOfAnswers, $answersArray, $operator, $customValue);
                 $isQuestionAdjudicationRequired = $retArray['isQuestionAdjudicationRequired'];
                 $valDifference = $retArray['valDifference'];
+                $finalAnswer = $retArray['finalAnswer'];
                 $isPercentage = 'yes';
             } else {
                 $retArray = self::anyChangeAdjudication($numberOfAnswers, $answersArray);
@@ -149,7 +151,7 @@ trait AdjudicationTrait
                 $valDifference = $retArray['valDifference'];
             }
         }
-        if ($isQuestionAdjudicationRequired == false) {
+        if ($isQuestionAdjudicationRequired == false && $finalAnswer == 0) {
             $finalAnswer = number_format((float)$averageOfSumOfAnswers, $decimalPoint);
         }
 
@@ -239,6 +241,7 @@ trait AdjudicationTrait
 
     public static function customAdjudication($numberOfAnswers, $answersArray, $operator, $customValue)
     {
+
         $isQuestionAdjudicationRequired = false;
         $valDifference = 0;
         $finalAnswer = 0;
@@ -297,6 +300,7 @@ trait AdjudicationTrait
                 }
             }
         }
+
         $countValuesInRange = count($valuesInRange);
         if ($isQuestionAdjudicationRequired == false && $countValuesInRange == 1) {
             $finalAnswer = $valuesInRange[0];
