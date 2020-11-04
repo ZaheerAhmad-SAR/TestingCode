@@ -36,20 +36,35 @@ class PreferenceController extends Controller
 
     public function loadAddPreferenceForm(Request $request)
     {
-        $studyId = session('current_study');
         if ($request->has('preferenceId')) {
             $preference = Preference::find($request->preferenceId);
         } else {
             $preference = new Preference();
         }
         echo view('admin::preference.addPreferencePopUpForm')
-            ->with('preference', $preference)
-            ->with('studyId', $studyId);
+            ->with('preference', $preference);
     }
 
     public function submitAddPreferenceForm(Request $request)
     {
         $studyId = session('current_study');
-        echo view('admin::preference.addPreferenceMsg');
+        if ($request->id > 0) {
+            $preference = Preference::find($request->id);
+        } else {
+            $preference = new Preference();
+        }
+
+        $preference->study_id               = $studyId;
+        $preference->preference_title       = $request->preference_title;
+        $preference->preference_value       = $request->preference_value;
+        $preference->is_selectable          = $request->is_selectable;
+        $preference->preference_options     = $request->preference_options;
+
+        if ($request->id > 0) {
+            $preference->update();
+        } else {
+            $preference->save();
+        }
+        echo 'success';
     }
 }

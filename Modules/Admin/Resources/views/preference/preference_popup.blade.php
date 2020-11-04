@@ -4,7 +4,12 @@
             <div class="modal-header ">
                 <p class="modal-title">Add Preference</p>
             </div>
-            <div class="modal-body" id="addNewPreferenceMainDiv"></div>
+            <div class="modal-body">
+                <form id="preferenceForm">
+                    <div id="addNewPreferenceMainDiv">
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>

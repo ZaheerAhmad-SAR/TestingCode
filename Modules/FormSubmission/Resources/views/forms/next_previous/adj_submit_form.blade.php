@@ -19,20 +19,20 @@
             </div>
         </div>
         @php
-        $studyObj = \Modules\Admin\Entities\Study::find($studyId);
-$queryParams = [
-    'study_id'=>$studyId,
-    'id'=>$studyId,
-    'subject_id'=>$subjectId,
-    'study_structures_id'=>$phase->id,
-    'phase_steps_id'=>$step->step_id,
-    'section_id'=>$section->id,
-    'form_type_id'=>$step->form_type_id,
-    'module'=>'Adjudication Form',
-    'modility_id'=>$step->modility_id,
-    'studyShortName'=>$studyObj->study_short_name,
-    'studyTitle'=>$studyObj->study_title,
+        $queryParams = [
+                    'study_id'=>$studyId,
+                    'subject_id'=>$subjectId,
+                    'study_structures_id'=>$phase->id,
+                    'phase_steps_id'=>$step->step_id,
+                    'section_id'=>'',
+                    'question_id'=>'',
+                    'field_id'=>'',
+                    'form_type_id'=>$step->form_type_id,
+                    'modility_id'=>$step->modility_id,
+                    'module'=>'Adjudication Form',
+            ];
 ];
 @endphp
 @include('formsubmission::forms.form_fields.query_popup_btn', ['queryParams'=>$queryParams])
 @endif
+
