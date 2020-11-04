@@ -187,42 +187,58 @@ class QueriesController extends Controller
 
     public function storeFormQueries(Request $request)
     {
-        dd($request->all());
-        $roles            = $request->post('assignedRoles');
-        $rolesArray       = explode(',',$roles);
-        $users            = $request->post('assignedUsers');
-        $usersArray       = explode(',',$users);
-        $remarks          = $request->post('assignedRemarks');
-        $querySectionData = $request->post('querySectionData');
-        $query_subject    = $request->post('query_subject');
-        $module_id        = $request->post('module_id');
-        $query_url        = $request->post('query_url');
-        $queryAssignedTo  = $request->post('queryAssignedTo');
-        $filePath = '';
-        if ($request->has('query_file'))
-        {
-            if (!empty($request->file('query_file'))) {
-                $image = $request->file('query_file');
-                $name = Str::slug($request->input('name')).'_'.time();
-                $folder = '/query_attachments/';
-                $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
-                $this->uploadOne($image, $folder, 'public', $name);
-            }
-        }
+        $study_id            = $request->post('study_id');
+
+        $question_id         = $request->post('question_id');
+        $phase_steps_id      = $request->post('phase_steps_id');
+        $section_id          = $request->post('section_id');
+        $subject_id          = $request->post('subject_id');
+        $study_structures_id = $request->post('study_structures_id');
+        $field_id            = $request->post('field_id');
+        $form_type_id        = $request->post('form_type_id');
+        $module              = $request->post('module');
+        $modility_id         = $request->post('modility_id');
+        $roles               = $request->post('assignedRolesForm');
+        $rolesArray          = explode(',',$roles);
+        $users               = $request->post('assignedUsers');
+        $usersArray          = explode(',',$users);
+        $message             = $request->post('message');
+        $query_subject       = $request->post('query_subject_form');
+        $query_url           = $request->post('query_url');
+        $queryAssignedTo     = $request->post('queryAssignedTo');
+//        $filePath = '';
+//        if ($request->has('query_file'))
+//        {
+//            if (!empty($request->file('query_file'))) {
+//                $image = $request->file('query_file');
+//                $name = Str::slug($request->input('name')).'_'.time();
+//                $folder = '/query_attachments/';
+//                $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
+//                $this->uploadOne($image, $folder, 'public', $name);
+//            }
+//        }
 
         $id              = Str::uuid();
         $query           = Query::create([
             'id'=>$id,
             'queried_remarked_by_id'=>\auth()->user()->id,
             'parent_query_id'=> 0,
-            'messages'=>$remarks,
-            'module_name'=>$querySectionData,
-            'module_id'=>$module_id,
+            'messages'=>$message,
+            'module_name'=>$module,
+            'study_id'=>$study_id,
             'query_status'=> 'open',
             'query_type' =>$queryAssignedTo,
             'query_url'=>$query_url,
             'query_subject'=>$query_subject,
-            'query_attachments'=>$filePath
+            'question_id'=>$question_id,
+            'subject_id'=>$subject_id,
+            'study_structures_id'=>$study_structures_id,
+            'phase_steps_id'=>$phase_steps_id,
+            'section_id'=>$section_id,
+            'field_id'=>$field_id,
+            'form_type_id'=>$form_type_id,
+            'modility_id'=>$modility_id
+//            'query_attachments'=>$filePath
         ]);
         if ($queryAssignedTo == 'user')
         {
