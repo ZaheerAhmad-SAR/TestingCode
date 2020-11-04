@@ -14,7 +14,6 @@
             <input type="hidden" id="Subject_ID" name="Subject_ID" value="{{$record->Subject_ID}}">
             @php
                 $studyCode = Modules\Admin\Entities\Study::where('study_code', $record->StudyI_ID)->first();
-
             @endphp
             <input type="hidden" id="studyShortName" name="studyShortName" value="{{$studyCode->study_short_name}}">
         </div>
