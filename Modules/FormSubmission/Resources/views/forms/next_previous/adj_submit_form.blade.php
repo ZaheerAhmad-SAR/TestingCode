@@ -30,7 +30,7 @@
                     'form_type_id'=>$step->form_type_id,
                     'modility_id'=>$step->modility_id,
                     'module'=>'Adjudication Form',
-            ];
+
 ];
 @endphp
 @include('formsubmission::forms.form_fields.query_popup_btn', ['queryParams'=>$queryParams])
