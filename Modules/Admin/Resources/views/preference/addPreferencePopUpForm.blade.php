@@ -8,7 +8,7 @@
             </div>
             <div class="form-group">
                 <label class="">Value</label>
-                <input type="text" name="preference_value" id="preference_value" value="{{ old('preference_value', $preference->preference_value) }}" class="form-control-ocap bg-transparent">
+                <textarea name="preference_value" id="preference_value" class="form-control-ocap bg-transparent">{{ old('preference_value', $preference->preference_value) }}</textarea>
             </div>
 
             <div class="form-group">
@@ -44,6 +44,6 @@
             <i class="fa fa-window-close" aria-hidden="true"></i> Close
         </button>
         <button type="submit" class="btn btn-outline-primary" id="addPreferenceBtn">
-            <i class="fa fa-save"></i> Add Preference
+            <i class="fa fa-save"></i> Save
         </button>
     </div>

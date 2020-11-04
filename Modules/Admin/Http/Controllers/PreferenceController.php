@@ -36,7 +36,7 @@ class PreferenceController extends Controller
 
     public function loadAddPreferenceForm(Request $request)
     {
-        if ($request->has('preferenceId')) {
+        if ($request->preferenceId > 0) {
             $preference = Preference::find($request->preferenceId);
         } else {
             $preference = new Preference();

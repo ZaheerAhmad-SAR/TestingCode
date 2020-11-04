@@ -270,6 +270,7 @@
             </div>
             <!-- END: Card DATA-->
         </div>
+        @include('queries::queries.query_popup')
         @include('formsubmission::subjectFormLoader.subject_form_wait_popup')
         @include('formsubmission::subjectFormLoader.assignPhasesToSubjectPopup')
     @stop
