@@ -128,6 +128,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     Route::post('studies/studyStatus', 'StudyController@studyStatus')->name('studies.studyStatus');
     Route::post('studies/cloneStudy', 'StudyController@cloneStudy')->name('studies.cloneStudy');
+    Route::post('studies/exportStudy', 'StudyController@exportStudy')->name('studies.exportStudy');
 
     //end
     // routes for adding sections
