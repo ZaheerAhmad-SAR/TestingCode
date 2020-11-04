@@ -114,14 +114,14 @@
                                 <label for="Name" class="col-sm-2 col-form-label">Roles:</label>
                                 <div class="col-sm-10">
                                     @foreach($roles_for_queries as $role)
-                                        <label class="checked-inline  col-form-label"><input type="checkbox" class="ads_Checkbox" id="roles" name="roles" value="{{$role->id}}"> {{$role->name}} </label>
+                                        <label class="checked-inline  col-form-label"><input type="checkbox" class="assignedRolesForForm" id="roles" name="roles" value="{{$role->id}}"> {{$role->name}} </label>
                                     @endforeach
                                 </div>
                             </div>
                             <div class="form-group row remarksInput" style="display:none;">
                                 <label for="Name" class="col-sm-2 col-form-label">Remarks</label>
                                 <div class="col-sm-10">
-                                    <textarea class="form-control" name="remarks" id="remarks"></textarea>
+                                    <textarea class="form-control" name="message" id="message"></textarea>
                                 </div>
                             </div>
                             <input type="hidden" name="study_id" id="study_id" value="">
@@ -170,34 +170,22 @@
         loadQueryPopUpHtml(study_id);
         getAllStudyData(study_id);
     });
+    function openFormQueryPopup(study_id, subject_id, study_structures_id, phase_steps_id, section_id, question_id, field_id, form_type_id, modility_id, module) {
+            alert(question_id);
+            $('#study_id').val(study_id);
+            $('#question_id').val(question_id);
+            $('#phase_steps_id').val(phase_steps_id);
+            $('#section_id').val(section_id);
+            $('#subject_id').val(subject_id);
+            $('#study_structures_id').val(study_structures_id);
+            $('#field_id').val(field_id);
+            $('#modility_id').val(modility_id);
+            $('#module').val(module);
+            $('#form_type_id').val(form_type_id);
+            $('#queries-modal-form').modal('show');
+            loadUserDropDownList(study_id);
 
-    $('.create-new-queries-form').click(function () {
-
-        var study_id            = $(this).attr('data-study_id');
-        var question_id         = $(this).attr('data-question_id');
-        var phase_steps_id      = $(this).attr('data-phase_steps_id');
-        var section_id          = $(this).attr('data-section_id');
-        var subject_id          = $(this).attr('data-subject_id');
-        var study_structures_id = $(this).attr('data-study_structures_id');
-        var field_id            = $(this).attr('data-field_id');
-        var form_type_id        = $(this).attr('data-form_type_id');
-        var module              = $(this).attr('data-module');
-        var modility_id         = $(this).attr('data-modility_id');
-        //var study_id       = $(this).attr('data-id');
-        $('#study_id').val(study_id);
-        $('#question_id').val(question_id);
-        $('#phase_steps_id').val(phase_steps_id);
-        $('#section_id').val(section_id);
-        $('#subject_id').val(subject_id);
-        $('#study_structures_id').val(study_structures_id);
-        $('#field_id').val(field_id);
-        $('#modility_id').val(modility_id);
-        $('#module').val(module);
-        $('#form_type_id').val(form_type_id);
-        $('#queries-modal-form').modal('show');
-        loadUserDropDownList(study_id);
-    });
-
+    }
 
     $("#queriesQuestionForm").on('submit', function(e)
     {
@@ -214,12 +202,12 @@
         var subject_id          = $("#subject_id").val();
         var study_structures_id = $("#study_structures_id").val();
         var field_id            = $("#field_id").val();
-        var form_type_id        = $("#form_type_id").val();
         var module              = $("#module").val();
         var modility_id         = $("#modility_id").val();
+        var form_type_id        = $("#form_type_id").val();
 
         var queryAssignedTo     = $("input[name='assignQueries']:checked").val();
-        var assignedRemarks     = $('#remarks').val();
+        var message             = $('#message').val();
         var query_url           =  document.URL;
         var query_subject_form  = $("#query_subject_form").val();
         if (queryAssignedTo == 'user')
@@ -228,7 +216,7 @@
         }
         if(queryAssignedTo =='role')
         {
-            var assignedRoles = $('.ads_Checkbox:checked').map(function () {
+            var assignedRolesForm  = $('.assignedRolesForForm:checked').map(function () {
                 return this.value;
             }).get();
         }
@@ -244,16 +232,18 @@
         formData.append('form_type_id', form_type_id);
         formData.append('module', module);
         formData.append('modility_id', modility_id);
+        formData.append('form_type_id', form_type_id);
 
-        formData.append('module_id', module_id);
-        formData.append('assignedRoles', assignedRoles);
+        //formData.append('module_id', module_id);
+
+        formData.append('assignedRolesForm', assignedRolesForm);
         formData.append('query_url', query_url);
         formData.append('assignedUsers', assignedUsers);
         formData.append('query_subject_form', query_subject_form);
         formData.append('queryAssignedTo', queryAssignedTo);
-        formData.append('assignedRemarks', assignedRemarks);
+        formData.append('message', message);
         // Attach file
-        formData.append('query_file_form', $('input[type=file]')[0].files[0]);
+        //formData.append('query_file_form', $('input[type=file]')[0].files[0]);
 
         $.ajax({
             type: 'POST',
@@ -359,9 +349,7 @@
         var querySectionData = $('#querySectionData').val();
         var assignedRemarks  = $('#remarks').val();
         var query_url        =  document.URL;
-        // var documentUrl     = query_url.split('/');
-        // var querySection    = documentUrl.pop() || documentUrl.pop();
-        var query_subject   = $("#query_subject").val();
+        var query_subject    = $("#query_subject").val();
         if (queryAssignedTo == 'user')
         {
             var assignedUsers = $('#users').val();
