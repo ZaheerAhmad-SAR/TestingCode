@@ -185,6 +185,72 @@ class QueriesController extends Controller
 
     }
 
+    public function storeFormQueries(Request $request)
+    {
+        dd($request->all());
+        $roles            = $request->post('assignedRoles');
+        $rolesArray       = explode(',',$roles);
+        $users            = $request->post('assignedUsers');
+        $usersArray       = explode(',',$users);
+        $remarks          = $request->post('assignedRemarks');
+        $querySectionData = $request->post('querySectionData');
+        $query_subject    = $request->post('query_subject');
+        $module_id        = $request->post('module_id');
+        $query_url        = $request->post('query_url');
+        $queryAssignedTo  = $request->post('queryAssignedTo');
+        $filePath = '';
+        if ($request->has('query_file'))
+        {
+            if (!empty($request->file('query_file'))) {
+                $image = $request->file('query_file');
+                $name = Str::slug($request->input('name')).'_'.time();
+                $folder = '/query_attachments/';
+                $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
+                $this->uploadOne($image, $folder, 'public', $name);
+            }
+        }
+
+        $id              = Str::uuid();
+        $query           = Query::create([
+            'id'=>$id,
+            'queried_remarked_by_id'=>\auth()->user()->id,
+            'parent_query_id'=> 0,
+            'messages'=>$remarks,
+            'module_name'=>$querySectionData,
+            'module_id'=>$module_id,
+            'query_status'=> 'open',
+            'query_type' =>$queryAssignedTo,
+            'query_url'=>$query_url,
+            'query_subject'=>$query_subject,
+            'query_attachments'=>$filePath
+        ]);
+        if ($queryAssignedTo == 'user')
+        {
+            foreach ($usersArray as $user)
+            {
+                $roles = (array)null;
+                QueryUser::create([
+                    'id' => Str::uuid(),
+                    'user_id' => $user,
+                    'query_id' => $id
+                ]);
+            }
+        }
+        if ($queryAssignedTo == 'role')
+        {
+            foreach ($rolesArray as $role)
+            {
+                RoleQuery::create([
+                    'id' => Str::uuid(),
+                    'roles_id' => $role,
+                    'query_id' => $id
+                ]);
+            }
+        }
+        return response()->json([$query,'success'=>'Queries is generate successfully!!!!']);
+
+    }
+
     /**
      * Show the specified resource.
      * @param int $id
