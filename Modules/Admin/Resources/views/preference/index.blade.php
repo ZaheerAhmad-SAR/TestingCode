@@ -42,7 +42,7 @@
                                 <div class="col-12">
                                     @foreach ($preferences as $preference)
                                         <div class="form-row">
-                                            <div class="col-12 mb-3">
+                                            <div class="col-10 mb-3">
                                                 <label for="username">{{ $preference->preference_title }}</label><br>
                                                 @if ($preference->is_selectable == 'yes')
                                                     @php
@@ -72,10 +72,10 @@
                                                         value="{{ $preference->preference_value }}"
                                                         onchange="updatePreference('{{ $preference->id }}', this.value);">
                                                 @endif
-                                                <hr class="hr-line">
-
                                             </div>
+                                            <div class="col-2"><button type="button" class="">Edit</button></div>
                                         </div>
+                                        <hr class="hr-line">
                                     @endforeach
                                 </div>
                             </div>
