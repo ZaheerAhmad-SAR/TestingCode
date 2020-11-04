@@ -31,8 +31,8 @@
                                 <h4 class="card-title">Preferences list</h4>
                             </div>
                             <div class="col-md-3 text-right">
-                                <button type="button" class="btn btn-warning"
-                                    onclick="openAddPreferencePopup('{{ $studyId }}');">Add new preference</button>
+                                <button type="button" class="btn btn-primary"
+                                    onclick="openAddPreferencePopup(0);">Add new preference</button>
                             </div>
                         </div>
                     </div>
@@ -42,8 +42,11 @@
                                 <div class="col-12">
                                     @foreach ($preferences as $preference)
                                         <div class="form-row">
-                                            <div class="col-10 mb-3">
-                                                <label for="username">{{ $preference->preference_title }}</label><br>
+                                            <div class="col-12 mb-3">
+                                                <label>{{ $preference->preference_title }}</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                <a href="javascript:void(0);" class="text text-danger" onclick="openAddPreferencePopup({{ $preference->id }});">Edit</a>
+                                                <br>
+                                                <label>ID to used in code : {{ $preference->id }}</label><br>
                                                 @if ($preference->is_selectable == 'yes')
                                                     @php
                                                     $preference_options = explode('|', $preference->preference_options);
@@ -73,7 +76,6 @@
                                                         onchange="updatePreference('{{ $preference->id }}', this.value);">
                                                 @endif
                                             </div>
-                                            <div class="col-2"><button type="button" class="">Edit</button></div>
                                         </div>
                                         <hr class="hr-line">
                                     @endforeach
@@ -107,18 +109,18 @@
             });
         }
 
-        function openAddPreferencePopup(studyId) {
+        function openAddPreferencePopup(preferenceId) {
             $("#addNewPreferencePopUp").modal('show');
-            loadAddPreferenceForm(studyId);
+            loadAddPreferenceForm(preferenceId);
         }
 
-        function loadAddPreferenceForm(studyId) {
+        function loadAddPreferenceForm(preferenceId) {
             $.ajax({
                 url: "{{ route('preference.loadAddPreferenceForm') }}",
                 type: 'POST',
                 data: {
                     "_token": "{{ csrf_token() }}",
-                    'studyId': studyId
+                    'preferenceId': preferenceId,
                 },
                 success: function(response) {
                     $('#addNewPreferenceMainDiv').empty();

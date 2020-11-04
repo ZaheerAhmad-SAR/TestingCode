@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header ">
-                <p class="modal-title">Add Preference</p>
+                <p class="modal-title">Manage Preference</p>
             </div>
             <div class="modal-body">
                 <form id="preferenceForm">
