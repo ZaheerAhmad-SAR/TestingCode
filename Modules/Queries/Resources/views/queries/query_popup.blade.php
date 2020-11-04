@@ -171,7 +171,7 @@
         getAllStudyData(study_id);
     });
     function openFormQueryPopup(study_id, subject_id, study_structures_id, phase_steps_id, section_id, question_id, field_id, form_type_id, modility_id, module) {
-
+            alert(question_id);
             $('#study_id').val(study_id);
             $('#question_id').val(question_id);
             $('#phase_steps_id').val(phase_steps_id);
