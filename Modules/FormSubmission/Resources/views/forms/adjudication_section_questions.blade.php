@@ -94,13 +94,18 @@ $adjudicationRequiredQuestionIdsArray = \Modules\FormSubmission\Entities\Questio
             </div>
             <div class="col-1">@include('formsubmission::forms.adjudication_form_fields.info_popup', ['question'=>$question])</div>
             @php
-            $studyObj = \Modules\Admin\Entities\Study::find($studyId);
-            $queryParams = $getAnswerArray;
-            $queryParams['form_type_id'] = $step->form_type_id;
-            $queryParams['module'] = 'Adjudication Form';
-            $queryParams['modility_id'] = $step->modility_id;
-            $queryParams['studyShortName'] = $studyObj->study_short_name;
-            $queryParams['studyTitle'] = $studyObj->study_title;
+            $queryParams = [
+                    'study_id'=>$studyId,
+                    'subject_id'=>$subjectId,
+                    'study_structures_id'=>$phase->id,
+                    'phase_steps_id'=>$step->step_id,
+                    'section_id'=>$section->id,
+                    'question_id'=>$question->id,
+                    'field_id'=>$question->formfields->id,
+                    'form_type_id'=>$step->form_type_id,
+                    'modility_id'=>$step->modility_id,
+                    'module'=>'Adjudication Form',
+            ];
             @endphp
             <div class="col-1">@include('formsubmission::forms.adjudication_form_fields.query_popup', ['queryParams'=>$queryParams, 'showAverageIcon'=>$showAverageIcon, 'fieldType'=>$fieldType, 'field_name'=> $grader_field_name, 'questionIdStr'=>
                 $questionIdStr, 'copyToFieldId'=> $fieldId, 'fieldId'=> $grader_field_id, 'answer'=> $answer])</div>

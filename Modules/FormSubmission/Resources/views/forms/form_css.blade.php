@@ -157,5 +157,7 @@
     .collapse-body-bg {
         background: #ffffff !important;
     }
-
+.error{
+    color: #C30;
+}
 </style>

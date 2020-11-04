@@ -1,15 +1,14 @@
-<form id="preferenceForm" onsubmit="return submitAddPreferenceForm(event);">
-    <div id="exTab1">
+<div id="exTab1">
         <div class="tab-content clearfix">
             @csrf
-            <input type="hidden" id="study_id" name="study_id" value="{{$studyId}}">
+            <input type="hidden" id="id" name="id" value="{{ $preference->id }}">
             <div class="form-group">
                 <label class="">Title</label>
-            <input type="text" name="preference_title" id="preference_title" value="{{ old('preference_title', $preference->preference_title) }}" class="form-control-ocap bg-transparent" required>
+            <input type="text" name="preference_title" id="preference_title" value="{{ old('preference_title', $preference->preference_title) }}" class="form-control-ocap bg-transparent">
             </div>
             <div class="form-group">
                 <label class="">Value</label>
-                <input type="text" name="preference_value" id="preference_value" value="{{ old('preference_value', $preference->preference_value) }}" class="form-control-ocap bg-transparent" required>
+                <input type="text" name="preference_value" id="preference_value" value="{{ old('preference_value', $preference->preference_value) }}" class="form-control-ocap bg-transparent">
             </div>
 
             <div class="form-group">
@@ -48,4 +47,3 @@
             <i class="fa fa-save"></i> Add Preference
         </button>
     </div>
-</form>

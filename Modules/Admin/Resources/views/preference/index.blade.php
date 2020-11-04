@@ -127,9 +127,7 @@
             });
         }
 
-        function submitAddPreferenceForm(e) {
-            e.preventDefault();
-            validateAddPreferenceForm();
+        function submitAddPreferenceForm() {
             $.ajax({
                 url: "{{ route('preference.submitAddPreferenceForm') }}",
                 type: 'POST',
@@ -137,11 +135,16 @@
                 success: function(response) {
                     $("#addNewPreferencePopUp").modal('hide');
                     $('#addNewPreferenceMainDiv').empty();
-                    reloadPage(0);
+                    location.reload();
                 }
             });
         }
-        function validateAddPreferenceForm {
+        $(document).ready(function() {
+            $.validator.setDefaults({
+                submitHandler: function() {
+                    submitAddPreferenceForm();
+                }
+            });
             $("#preferenceForm").validate({
                 rules: {
                     preference_title: "required",
@@ -162,7 +165,7 @@
                     preference_options: "Please enter preference options",
                 }
             });
-        }
+        });
 
     </script>
 @endpush
