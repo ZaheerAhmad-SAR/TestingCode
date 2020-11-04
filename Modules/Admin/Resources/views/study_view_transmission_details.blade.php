@@ -103,16 +103,10 @@
                                     <label for="Name" class="control-label">Study ID</label>
                                 </div>
 
-                                <div class="form-group col-sm-3">
-                                    <span class="span-text">{{ $findTransmission->StudyI_ID }}</span>
-                                    <select name="d_study_id" id="d_study_id" class="form-control remove-readonly" disabled="" required="required">
-                                        <option value="">Select Study</option>
-                                        @foreach($systemStudies as $study)
-                                        <option @if($study->study_code == $findTransmission->StudyI_ID) selected @endif value="{{ $study->study_code }}">{{$study->study_code}}</option>
-                                        @endforeach
-                                    </select>
+                                <div class=" form-group col-sm-3">
+                                    <input type="text" name="d_study_id" readonly="" value="{{ $findTransmission->StudyI_ID }}" id="d_study_id" class="form-control" required="required">
                                 </div>
-                                
+                               
                                 <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Sponsor</label>
                                 </div>

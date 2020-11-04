@@ -23,6 +23,9 @@ Route::post('transmissions/transmissionData', 'TransmissionController@transmissi
 // transmissions routes
 Route::resource('transmissions', 'TransmissionController');
 
+// edit study transmission route
+Route::get('transmissions-study-edit/{id}', 'TransmissionController@transmissionsStudyEdit')->name('transmissions-study-edit');
+
 // get study vice transmissions
 Route::get('study-transmissions', 'TransmissionController@studyTransmissions')->name('transmissions.study-transmissions');
 
