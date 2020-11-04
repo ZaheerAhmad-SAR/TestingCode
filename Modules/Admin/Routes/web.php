@@ -212,4 +212,7 @@ Route::get('check-subject', 'SubjectController@checkSubject')->name('subjects.ch
 Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('preference/list', 'PreferenceController@index')->name('preference.list');
     Route::post('preference/updatePreference', 'PreferenceController@updatePreference')->name('preference.updatePreference');
+    //Add Preference
+    Route::post('preference/loadAddPreferenceForm', 'PreferenceController@loadAddPreferenceForm')->name('preference.loadAddPreferenceForm');
+    Route::post('preference/submitAddPreferenceForm', 'PreferenceController@submitAddPreferenceForm')->name('preference.submitAddPreferenceForm');
 });
