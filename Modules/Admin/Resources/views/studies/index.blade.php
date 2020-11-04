@@ -435,13 +435,13 @@
                                     </div>
                                     <div class="col-md-2">Study Subjects</div>
                                     <div class="col-md-2">
-                                        <input type="checkbox" name="studySubjects" checked>
+                                        <input type="checkbox" name="studySubjects" id="studySubjects" checked>
                                     </div>
                                 </div>
                                 <div class="form-group row" style="margin-top: 10px; padding-left: 15px">
                                     <div class="col-md-2">Phases/Steps <br>Sect/Questions</div>
                                     <div class="col-md-2">
-                                        <input type="checkbox" name="phasesSteps" checked>
+                                        <input type="checkbox" name="phasesSteps" id="phaseSteps" checked>
                                     </div>
                                     <div class="col-md-2">Answers</div>
                                     <div class="col-md-2">
@@ -450,6 +450,12 @@
                                     <div class="col-md-2">Transmissions</div>
                                     <div class="col-md-2">
                                         <input type="checkbox" name="transmissions" checked>
+                                    </div>
+                                </div>
+                                <div class="form-group row" style="margin-top: 10px">
+                                    <div class="col-md-2">Study Data</div>
+                                    <div class="col-md-2">
+                                        <input type="checkbox" name="studyData" checked>
                                     </div>
                                 </div>
                             </div>
@@ -583,6 +589,17 @@
          $('#study_ID').val(id);
      })
  })
+ $(document).ready(function(){
+     $('input[type="checkbox"]').click(function(){
+         var a = Ge
+         if($(this).prop("checked") == true){
+             $("#result").html("Checkbox is checked.");
+         }
+         else if($(this).prop("checked") == false){
+             $("#result").html("Checkbox is unchecked.");
+         }
+     });
+ });
 </script>
     <script type="text/javascript">
 

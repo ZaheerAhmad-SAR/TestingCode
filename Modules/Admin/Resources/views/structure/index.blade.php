@@ -351,7 +351,7 @@
 </div>
 <!--  -->
 @include('admin::structure.cloneStep');
-
+@include('admin::forms.edit_crf')
 @endsection
 @section('styles')
 <style>
@@ -369,7 +369,6 @@
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
 @endsection
 @section('script')
-<script src="{{ asset('public/js/edit_crf.js') }}"></script>
 <script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script>
 <script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
 <script>

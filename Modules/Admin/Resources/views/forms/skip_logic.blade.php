@@ -29,11 +29,12 @@
         </div>
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
-        <form action="{{route('forms.apply_skip_logic')}}" enctype="multipart/form-data" method="POST">
+        <form action="{{route('skiplogic.apply_skip_logic')}}" enctype="multipart/form-data" method="POST">
             @csrf
             {{-- {{dd(request('id'))}} --}}
             @php
                 $check_value = '';
+                $q_id = request('id');
                 $options_value = explode(',', $options->optionsGroup->option_value);
                 $options_name = explode(',', $options->optionsGroup->option_name);
             @endphp
@@ -46,11 +47,10 @@
                             <input type="hidden" name="option_title[]" value="{{$value}}">
                             @foreach($options->skiplogic as $logic)
                                 @if(!empty($logic->option_value))
-                                   <?php $check_value = $logic->option_value; break; ?>
+                                   <?php $check_value = $logic->option_value; ?>
                                 @endif
                             @endforeach()
-                            <input type="checkbox" name="option_value[]" onclick="git_steps_for_checks({{$options_value[$key]}})" value="{{$options_value[$key]}}" @if($check_value == $options_value[$key]) checked="checked" @endif> &nbsp; {{$value}}
-                            (Perform Action Click)
+                            <input type="checkbox" name="option_value[]" onclick="git_steps_for_checks('{{$options_value[$key]}}','{{$key}}','{{$q_id}}','{{$value}}')" value="{{$options_value[$key]}}" @if($check_value == $options_value[$key]) checked="checked" @endif> &nbsp; {{$value}}
                        </div>
                    </div>
                </div>
@@ -62,13 +62,11 @@
              <script>
                  $(document).ready(function() {
                  @php
-                 if ($check_value == $options_value[$key]) {
-                 echo "git_steps_for_checks($options_value[$key])";
-                 } else {
-
-                 }
+                    if($check_value == $options_value[$key]) {
+                     echo "git_steps_for_checks('$options_value[$key]','$key','$q_id','$value');";
+                    }else {}
                  @endphp
-                 });
+                 })
              </script>
             @endpush
             @endforeach
@@ -135,59 +133,19 @@
 
     </script>
     <script type="text/javascript">
-        $(document).ready(function(){
-
-            $('body').on('click','.get_ques_ac',function(){
-                var row = $(this).closest('tr');
-                    sec_id = row.find('td.sec_id').text()
-                    append_class = '.ac_questions_list_'+sec_id
-                    url = "{{ url('forms/questions_for_skip_logic') }}"
-                    url = url+'/'+sec_id
-                $.ajax({
-                    url: url,
-                    type: 'post',
-                    dataType: 'html',
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        "_method": 'GET',
-                        'sec_id': sec_id
-                    },
-                    success: function(response) {
-                        $(append_class).html(response);
-                    }
-                })
-            });
-            // for deactivate question getting
-            $('body').on('click','.get_ques_de',function(){
-                var row = $(this).closest('tr');
-                    sec_id = row.find('td.sec_id').text()
-                    append_class = '.de_questions_list_'+sec_id
-                    url = "{{ url('forms/questions_for_skip_logic_deactivate') }}"
-                    url = url+'/'+sec_id
-                $.ajax({
-                    url: url,
-                    type: 'post',
-                    dataType: 'html',
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        "_method": 'GET',
-                        'sec_id': sec_id
-                    },
-                    success: function(response) {
-                        $(append_class).html(response);
-                    }
-                })
-            });
-        })
-        function git_steps_for_checks(id){
-           var url = "{{ url('forms/steps_to_skip') }}";
+        function git_steps_for_checks(id,index,q_id,title){
+           var url = "{{ url('skiplogic/steps_to_skip') }}";
            var append_class = '.append_data_'+id;
             $.ajax({
                 url: url,
                 type: 'post',
                 dataType: 'html',
                 data: {
-                    "_token": "{{ csrf_token() }}"
+                    "_token": "{{ csrf_token() }}",
+                    "index": index,
+                    "question_id": q_id,
+                    "option_title": title,
+                    "option_value": id
                 },
                 success: function(response) {
                     $(append_class).slideDown('600');
@@ -195,8 +153,8 @@
                 }
             });
         }
-        function activate_checks(id,append_class){
-            var url = "{{ url('forms/sections_for_skip_logic') }}"
+        function activate_checks(id,append_class,indexq_id,option_value,option_title){
+            var url = "{{ url('skiplogic/sections_for_skip_logic') }}"
                 url = url+'/'+id
                 row = $('.'+append_class+id).parent('div.current_div_ac');
                 $.ajax({
@@ -206,15 +164,19 @@
                     data: {
                         "_token": "{{ csrf_token() }}",
                         "_method": 'GET',
-                        'step_id': id
+                        'step_id': id,
+                        'index': index,
+                        "question_id": q_id,
+                        "option_title": option_value,
+                        "option_value": option_title
                     },
                     success: function(response) {
                         row.find('.'+append_class+id).html(response);
                     }
                 });
         }
-        function deactivate_checks(id,append_class){
-            var url = "{{ url('forms/sections_for_skip_logic_deactivate') }}"
+        function deactivate_checks(id,append_class,index,q_id,option_value,option_title){
+            var url = "{{ url('skiplogic/sections_for_skip_logic_deactivate') }}"
                 url = url+'/'+id
                 // row = thiss.parent('div.current_div');
                 row = $('.'+append_class+id).parent('div.current_div_de');
@@ -225,19 +187,57 @@
                 data: {
                     "_token": "{{ csrf_token() }}",
                     "_method": 'GET',
-                    'step_id': id
+                    'step_id': id,
+                    'index': index,
+                    "question_id": q_id,
+                    "option_title": option_title,
+                    "option_value": option_value
                 },
                 success: function(response) {
                     row.find('.'+append_class+id).html(response);
                 }
             });
         }
+        function question_for_activate(id,append_class,index)
+        {
+            var url = "{{ url('skiplogic/questions_for_skip_logic') }}"
+                url = url+'/'+id;
+            $.ajax({
+                url: url,
+                type: 'post',
+                dataType: 'html',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'GET',
+                    'sec_id': id,
+                    'index': index
+                },
+                success: function(response) {
+                    $('.'+append_class+id).html(response);
+                }
+            })
+        }
+        function question_for_deactivate(id,append_class,index)
+        {
+            var url = "{{ url('skiplogic/questions_for_skip_logic_deactivate') }}"
+                url = url+'/'+id;
+            $.ajax({
+                url: url,
+                type: 'post',
+                dataType: 'html',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'GET',
+                    'sec_id': id,
+                    'index': index
+                },
+                success: function(response) {
+                    $('.'+append_class+id).html(response);
+                }
+            })
+        }
     </script>
     @push('script_last')
- <script>
-    $(document).ready(function() {
-        $()
-    });
- </script>
+
  @endpush
 @endsection
