@@ -101,7 +101,7 @@ class AdjudicationFromView implements FromView
 
                                     } else {
 
-                                        $formStatus[$key.'_'.$type['form_type']] = 'Not Initiated-NoName|';
+                                        $formStatus[$key.'_'.$type['form_type']] = 'NoName-Not Initiated|';
                                     } // step null check ends
 
                                 } else {
@@ -120,11 +120,11 @@ class AdjudicationFromView implements FromView
                                             'modility_id'=> $type['modility_id'],
                                         ];
 
-                                        $formStatus[$key.'_'.$type['form_type']] = \Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, true);
+                                        $formStatus[$key.'_'.$type['form_type']] = \Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, true, true);
 
                                     } else {
 
-                                        $formStatus[$key.'_'.$type['form_type']] = 'Not Initiated-NoName|';
+                                        $formStatus[$key.'_'.$type['form_type']] = 'NoName-Not Initiated|';
 
                                     }
 

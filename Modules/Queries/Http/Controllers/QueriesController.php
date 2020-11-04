@@ -10,6 +10,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Modules\Queries\Entities\Query;
+use Modules\Admin\Entities\Study;
 use Modules\Queries\Entities\QueryUser;
 use Modules\Queries\Entities\RoleQuery;
 use Modules\UserRoles\Entities\UserRole;
@@ -38,6 +39,13 @@ class QueriesController extends Controller
             ->where('user_roles.study_id','=',$request->study_id)
             ->get();
         echo  view('queries::queries.usersdropdown',compact('studyusers'));
+    }
+
+    public function getStudyDataByStudyId(Request $request)
+    {
+        $study_id = $request->study_id;
+        $records = Study::where('id','like',$study_id)->first();
+        echo  view('queries::queries.getstudydata',compact('records'));
     }
 
     public function loadAllQueriesByStudyId(Request $request)
@@ -114,7 +122,6 @@ class QueriesController extends Controller
      */
     public function store(Request $request)
     {
-
         $roles            = $request->post('assignedRoles');
         $rolesArray       = explode(',',$roles);
         $users            = $request->post('assignedUsers');

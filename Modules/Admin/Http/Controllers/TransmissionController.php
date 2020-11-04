@@ -307,7 +307,19 @@ class TransmissionController extends Controller
                                     ->where('studies.study_code', $findTransmission->StudyI_ID)
                                     ->get();
         // get modality
-        $getModalities = Modility::get();
+        $getModalities = [];
+        $getStudy = Study::where('study_code', $findTransmission->StudyI_ID)->first();
+        if ($getStudy != null) {
+            // get phases for that study
+            $getStudyPhases = StudyStructure::where('study_id', $getStudy->id)->pluck('id')->toArray();
+            // fetch modalities
+            $getModalities = Modility::select('modilities.id', 'modilities.modility_name', 'phase_steps.phase_id')
+            ->leftjoin('phase_steps', 'phase_steps.modility_id', '=', 'modilities.id')
+            ->where('phase_steps.form_type_id', 1)
+            ->whereIn('phase_steps.phase_id', $getStudyPhases)
+            ->groupby('phase_steps.modility_id')
+            ->get();
+        }
 
         // get step for this visit and aubject
         $getStepForVisit = PhaseSteps::where('phase_id', $findTransmission->phase_id)
