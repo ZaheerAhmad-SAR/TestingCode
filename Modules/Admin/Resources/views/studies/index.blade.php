@@ -5,7 +5,7 @@
 @section('styles')
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
     <link rel="stylesheet" href="{{ asset("dist/vendors/tablesaw/tablesaw.css") }}">
-    @stop
+@stop
 
 @section('content')
     <div class="container-fluid site-width">
@@ -36,15 +36,15 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         @if(hasPermission(auth()->user(),'studies.create'))
-                        <button type="button" class="btn btn-outline-primary" id="create-new-study" data-toggle="modal" data-target="#createStudy">
-                            <i class="fa fa-plus"></i> Add Study
-                        </button>
-                            @endif
-                            <div class="col-md-9 align-items-left" style="padding: 0px 0px 0px 95px;">
-                                <button type="button" class="btn btn-info">QC</button>
-                                <button type="button" class="btn btn-success">Grader</button>
-                                <button type="button" class="btn btn-danger">Adjudication</button>
-                            </div>
+                            <button type="button" class="btn btn-outline-primary" id="create-new-study" data-toggle="modal" data-target="#createStudy">
+                                <i class="fa fa-plus"></i> Add Study
+                            </button>
+                        @endif
+                        <div class="col-md-9 align-items-left" style="padding: 0px 0px 0px 95px;">
+                            <button type="button" class="btn btn-info">QC</button>
+                            <button type="button" class="btn btn-success">Grader</button>
+                            <button type="button" class="btn btn-danger">Adjudication</button>
+                        </div>
                     </div>
                     <div class="card-body">
                         <table class="tablesaw table-bordered" data-tablesaw-mode="stack" id="studies_crud">
@@ -84,74 +84,82 @@
                                         <td>{{$study->study_status}}</td>
                                         <td>
                                             @if(!empty($study->users))
-                                               @foreach($study->users as $user)
+                                                @foreach($study->users as $user)
                                                     <strong>{!! ucfirst($user->name) !!},</strong>
                                                 @endforeach
-                                                @else
+                                            @else
                                                 <strong>{!! ucfirst($study->name) !!}</strong>
                                             @endif
                                         </td>
                                         @if(hasPermission(auth()->user(),'studies.edit'))
-                                        <td>
-                                            <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                                <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
-                                                @php
-                                                    $studyQuery = Modules\Queries\Entities\Query::where('module_id','=',$study->id)->where('query_status','open')->first();
-                                                    //dd($studyQuery);
-                                                @endphp
-                                               @if(null !== $studyQuery )
-                                                @if(\Modules\Queries\Entities\Query::checkUserhaveQuery($study->id))
-                                                <div class="showQueries">
+                                            <td>
+                                                <div class="d-flex mt-3 mt-md-0 ml-auto">
+                                                    <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                                    @php
+                                                        $studyQuery = Modules\Queries\Entities\Query::where('module_id','=',$study->id)->where('query_status','open')->first();
+                                                        //dd($studyQuery);
+                                                    @endphp
+                                                    @if(null !== $studyQuery )
+                                                        @if(\Modules\Queries\Entities\Query::checkUserhaveQuery($study->id))
+                                                            <div class="showQueries">
                                                     <span class="ml-3" style="cursor: pointer;">
                                                         <i class="fas fa-question-circle showAllStudyQueries" data-id="{{$study->id}}"  style="margin-top: 12px;"></i></span>
-                                                </div>
-
-                                                {{-- <div class="showCheckIcon">
-                                                    <span class="ml-3" style="cursor: pointer;">
-                                                        <i class="fas fa-check-circle showAllStudyQueries" data-id="{{$study->id}}"  style="margin-top: 12px;"></i></span>
-                                                </div> --}}
-
-
-                                                @endif
-                                                @endif
-                                                <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                                    <span class="dropdown-item">
+                                                            </div>
+                                                        @endif
+                                                    @endif
+                                                    <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
+                                                        @if(hasPermission(auth()->user(),'systemtools.index'))
+                                                            <span class="dropdown-item">
                                                         <a href="javascript:void(0)" id="change-status" data-target-id="{{$study->id}}" data-toggle="modal" data-target="#change_status">
                                                             <i class="icon-action-redo"></i> Change Status
                                                         </a>
                                                     </span>
-                                                    <span class="dropdown-item">
+                                                        @endif
+                                                        @if(hasPermission(auth()->user(),'studytools.index'))
+                                                            <span class="dropdown-item">
                                                            <a href="javascript:void(0)" id="edit-study" data-id="{{ $study->id }}">
                                                                <i class="icon-pencil"></i> Edit
                                                            </a>
                                                     </span>
-                                                    <span class="dropdown-item">
+                                                        @endif
+                                                        @if(hasPermission(auth()->user(),'systemtools.index'))
+                                                            <span class="dropdown-item">
                                                         <a href="javascript:void(0)" id="clone-study" data-target-id="{{$study->id}}" data-toggle="modal" data-target="#clone-study-modal">
-                                                <i class="fa fa-clone"></i> Clone
-                                            </a>
+                                                            <i class="fa fa-clone"></i> Clone
+                                                        </a>
                                                         </span>
-                                                    <span class="dropdown-item">
+                                                            @endif
+                                                            @if(hasPermission(auth()->user(),'systemtools.index'))
+                                                                <span class="dropdown-item">
+                                                        <a href="javascript:void(0)" id="export-study" data-target-id="{{$study->id}}" data-toggle="modal" data-target="#export-study-modal">
+                                                            <i class="fa fa-file"></i> Export
+                                                        </a>
+                                                        </span>
+                                                            @endif
+                                                            @if(hasPermission(auth()->user(),'systemtools.index'))
+                                                            <span class="dropdown-item">
                                                             <a href="#" data-id="{{$study->id}}" id="delete-study">
-                                                                <i class="fa fa-trash"  aria-hidden="true">
-                                                                </i> Delete</a>
-                                                    </span>
-                                                    @include('queries::queries.query_popup_span',['study_id'=>$study->id,'studyShortName'=>$study->study_short_name,'studyTitle'=>$study->study_title])
-                                                    <span class="dropdown-item">
+                                                                <i class="fa fa-trash"  aria-hidden="true"></i> Delete
+                                                            </a>
+                                                            </span>
+                                                            @endif
+                                                            @include('queries::queries.query_popup_span',['study_id'=>$study->id,'studyShortName'=>$study->study_short_name,'studyTitle'=>$study->study_title])
+                                                            <span class="dropdown-item">
                                                              <a href="#" class="addModalities">
                                                                 <i class="fa fa-object-group" aria-hidden="true"></i> Preferences
                                                              </a>
                                                         </span>
-                                                    <span class="dropdown-item">
+                                                            <span class="dropdown-item">
                                                             <a href="#" data-id="" class="addModalities">
                                                                 <i class="fa fa-object-group" aria-hidden="true"></i> Modalities
                                                             </a>
                                                         </span>
+                                                    </div>
                                                 </div>
-                                            </div>
 
-                                        </td>
-                                            @else
-                                        <td></td>
+                                            </td>
+                                        @else
+                                            <td></td>
                                         @endif
                                     </tr>
                                     <?php $index++; ?>
@@ -171,159 +179,159 @@
 
     <!-- START: Modal-->
     <div class="modal fade" id="study-crud-modal" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="studyCrudModal"></h4>
-            </div>
-            <div class="modal-body">
-                <form action="{{route('studies.store')}}" name="studyForm" id="studyForm" class="form-horizontal" method="POST">
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <strong>Whoops!</strong> Please fill all required fields!.
-                            <br/>
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-                    <input type="hidden" name="study_id" id="study_id">
-                    <nav>
-                        <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
-                            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-Basic" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
-                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-Disease" role="tab" aria-controls="nav-profile" aria-selected="false">Disease Cohort</a>
-                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-users" role="tab" aria-controls="nav-profile" aria-selected="false">Study Admin</a>
-                        </div>
-                    </nav>
-                    <div class="tab-content" id="nav-tabContent">
-                        {{-- Basic Info Tab --}}
-                        <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
-                            @csrf
-                            <div class="form-group row" style="margin-top: 10px;">
-                                <label for="study_title" class="col-md-2">Title</label>
-                                <div class="{!! ($errors->has('study_title')) ?'form-group col-md-10 has-error':'form-group col-md-10' !!}">
-                                    <input type="hidden" name="study_id" id="studyID" value="">
-                                    <input type="text" class="form-control" id="study_title" name="study_title" value="{{old('study_title')}}"> @error('email')
-                                    <span class="text-danger small"> {{ $message }} </span>
-                                    @enderror
-                                </div>
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="studyCrudModal"></h4>
+                </div>
+                <div class="modal-body">
+                    <form action="{{route('studies.store')}}" name="studyForm" id="studyForm" class="form-horizontal" method="POST">
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <strong>Whoops!</strong> Please fill all required fields!.
+                                <br/>
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
                             </div>
-                            <div class="form-group row">
-                                <label for="study_short_name" class="col-md-2">Short Name</label>
-                                <div class="{!! ($errors->has('study_short_name')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                    <input type="text" class="form-control" id="study_short_name" name="study_short_name" value="{{old('study_short_name')}}">
-                                    @error('study_short_name')
-                                    <span class="text-danger small">{{ $message }} </span>
-                                    @enderror
+                        @endif
+                        <input type="hidden" name="study_id" id="study_id">
+                        <nav>
+                            <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
+                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-Basic" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
+                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-Disease" role="tab" aria-controls="nav-profile" aria-selected="false">Disease Cohort</a>
+                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-users" role="tab" aria-controls="nav-profile" aria-selected="false">Study Admin</a>
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-tabContent">
+                            {{-- Basic Info Tab --}}
+                            <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
+                                @csrf
+                                <div class="form-group row" style="margin-top: 10px;">
+                                    <label for="study_title" class="col-md-2">Title</label>
+                                    <div class="{!! ($errors->has('study_title')) ?'form-group col-md-10 has-error':'form-group col-md-10' !!}">
+                                        <input type="hidden" name="study_id" id="studyID" value="">
+                                        <input type="text" class="form-control" id="study_title" name="study_title" value="{{old('study_title')}}"> @error('email')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
                                 </div>
+                                <div class="form-group row">
+                                    <label for="study_short_name" class="col-md-2">Short Name</label>
+                                    <div class="{!! ($errors->has('study_short_name')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="text" class="form-control" id="study_short_name" name="study_short_name" value="{{old('study_short_name')}}">
+                                        @error('study_short_name')
+                                        <span class="text-danger small">{{ $message }} </span>
+                                        @enderror
+                                    </div>
 
-                                <label for="study_code" class="col-md-2">Study Code</label>
-                                <div class="{!! ($errors->has('study_code')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                    <input type="text" class="form-control" id="study_code" name="study_code" value="{{old('study_code')}}">
-                                    @error('study_code')
-                                    <span class="text-danger small"> {{ $message }} </span>
-                                    @enderror
+                                    <label for="study_code" class="col-md-2">Study Code</label>
+                                    <div class="{!! ($errors->has('study_code')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="text" class="form-control" id="study_code" name="study_code" value="{{old('study_code')}}">
+                                        @error('study_code')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="protocol_number" class="col-md-2">Protocol Number</label>
+                                    <div class="{!! ($errors->has('protocol_number')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="text" class="form-control" id="protocol_number" name="protocol_number" value="{{old('protocol_number')}}">
+                                        @error('protocol_number')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                    <label for="trial_registry_id" class="col-md-2">Trial Registry ID</label>
+                                    <div class="{!! ($errors->has('trial_registry_id')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="text" class="form-control" id="trial_registry_id" name="trial_registry_id" value="{{old('trial_registry_id')}}">
+                                        @error('trial_registry_id')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="study_sponsor" class="col-md-2">Study Sponsor</label>
+                                    <div class="{!! ($errors->has('study_sponsor')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="text" class="form-control" id="study_sponsor" name="study_sponsor" value="{{old('study_sponsor')}}">
+                                        @error('study_sponsor')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                    <label for="start_date" class="col-md-2">Start Date</label>
+                                    <div class="{!! ($errors->has('start_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="date" class="form-control" id="start_date" name="start_date" value="{{(\Carbon\Carbon::today())}}">
+                                        @error('start_date')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="end_date" class="col-md-2">End Date</label>
+                                    <div class="{!! ($errors->has('end_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="date" class="form-control" id="end_date" name="end_date" value="{{old('end_date')}}">
+                                        @error('end_date')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                    <label for="description" class="col-md-2">Description</label>
+                                    <div class="{!! ($errors->has('description')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="text" class="form-control" id="description" name="description" value="{{old('description')}}">
+                                        @error('description')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <label for="protocol_number" class="col-md-2">Protocol Number</label>
-                                <div class="{!! ($errors->has('protocol_number')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                    <input type="text" class="form-control" id="protocol_number" name="protocol_number" value="{{old('protocol_number')}}">
-                                    @error('protocol_number')
-                                    <span class="text-danger small"> {{ $message }} </span>
-                                    @enderror
-                                </div>
-                                <label for="trial_registry_id" class="col-md-2">Trial Registry ID</label>
-                                <div class="{!! ($errors->has('trial_registry_id')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                    <input type="text" class="form-control" id="trial_registry_id" name="trial_registry_id" value="{{old('trial_registry_id')}}">
-                                    @error('trial_registry_id')
-                                    <span class="text-danger small"> {{ $message }} </span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="study_sponsor" class="col-md-2">Study Sponsor</label>
-                                <div class="{!! ($errors->has('study_sponsor')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                    <input type="text" class="form-control" id="study_sponsor" name="study_sponsor" value="{{old('study_sponsor')}}">
-                                    @error('study_sponsor')
-                                    <span class="text-danger small"> {{ $message }} </span>
-                                    @enderror
-                                </div>
-                                <label for="start_date" class="col-md-2">Start Date</label>
-                                <div class="{!! ($errors->has('start_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                    <input type="date" class="form-control" id="start_date" name="start_date" value="{{(\Carbon\Carbon::today())}}">
-                                    @error('start_date')
-                                    <span class="text-danger small"> {{ $message }} </span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="end_date" class="col-md-2">End Date</label>
-                                <div class="{!! ($errors->has('end_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                    <input type="date" class="form-control" id="end_date" name="end_date" value="{{old('end_date')}}">
-                                    @error('end_date')
-                                    <span class="text-danger small"> {{ $message }} </span>
-                                    @enderror
-                                </div>
-                                <label for="description" class="col-md-2">Description</label>
-                                <div class="{!! ($errors->has('description')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                    <input type="text" class="form-control" id="description" name="description" value="{{old('description')}}">
-                                    @error('description')
-                                    <span class="text-danger small"> {{ $message }} </span>
-                                    @enderror
-                                </div>
-                            </div>
-                        </div>
-                        {{--Disease tab --}}
-                        <div class="tab-pane fade" id="nav-Disease" role="tabpanel" aria-labelledby="nav-Validation-tab">
-                            <div class="form-group row" style="margin-top: 10px;">
-                                <div class="col-md-2">
-                                    <label for="disease_cohort">Disease Cohort</label>
-                                </div>
-                                <div class="col-md-7 appendfields">
+                            {{--Disease tab --}}
+                            <div class="tab-pane fade" id="nav-Disease" role="tabpanel" aria-labelledby="nav-Validation-tab">
+                                <div class="form-group row" style="margin-top: 10px;">
+                                    <div class="col-md-2">
+                                        <label for="disease_cohort">Disease Cohort</label>
+                                    </div>
+                                    <div class="col-md-7 appendfields">
 
-                                </div>
-                                <div class="col-md-3" style="text-align: right">
-                                    @if(hasPermission(auth()->user(),'diseaseCohort.create'))
-                                    <button class="btn btn-outline-primary add_field"><i class="fa fa-plus"></i> Add New</button>
-                                    @endif
+                                    </div>
+                                    <div class="col-md-3" style="text-align: right">
+                                        @if(hasPermission(auth()->user(),'diseaseCohort.create'))
+                                            <button class="btn btn-outline-primary add_field"><i class="fa fa-plus"></i> Add New</button>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        {{-- Assign Users --}}
-                        <div class="tab-pane fade" id="nav-users" role="tabpanel" aria-labelledby="nav-Validation-tab">
-                            <div class="form-group row" style="margin-top: 10px;">
-                                <label for="study_users" class="col-sm-3"></label>
-                                <div class="{!! ($errors->has('users')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                    <select class="searchable" id="select-users" multiple="multiple" name="users[]">
-                                       @foreach($users as $user)
-                                        <option value="{{$user->id}}">{{$user->name}}</option>
-                                        @endforeach
-                                    </select>
+                            {{-- Assign Users --}}
+                            <div class="tab-pane fade" id="nav-users" role="tabpanel" aria-labelledby="nav-Validation-tab">
+                                <div class="form-group row" style="margin-top: 10px;">
+                                    <label for="study_users" class="col-sm-3"></label>
+                                    <div class="{!! ($errors->has('users')) ?'col-sm-9 has-error':'col-sm-9' !!}">
+                                        <select class="searchable" id="select-users" multiple="multiple" name="users[]">
+                                            @foreach($users as $user)
+                                                <option value="{{$user->id}}">{{$user->name}}</option>
+                                            @endforeach
+                                        </select>
 
-                                @error('users')
-                                <span class="text-danger small">
+                                        @error('users')
+                                        <span class="text-danger small">
                                     {{ $message }}
                                     </span>
-                                @enderror
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                                @if(hasPermission(auth()->user(),'studies.store'))
+                                    <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                                @endif
                             </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                        @if(hasPermission(auth()->user(),'studies.store'))
-                        <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
-                            @endif
-                    </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
     <!-- cloneStudy -->
     <div class="modal fade" id="clone-study-modal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -452,10 +460,174 @@
                                         <input type="checkbox" name="transmissions" checked>
                                     </div>
                                 </div>
-                                <div class="form-group row" style="margin-top: 10px">
+                                <div class="form-group row" style="margin-top: 10px;  padding-left: 15px">
                                     <div class="col-md-2">Study Data</div>
                                     <div class="col-md-2">
                                         <input type="checkbox" name="studyData" checked>
+                                    </div>
+                                    <div class="col-md-2">Preferences</div>
+                                    <div class="col-md-2">
+                                        <input type="checkbox" name="studyPreferences" checked>
+                                    </div>
+                                    <div class="col-md-2">Study Queries</div>
+                                    <div class="col-md-2">
+                                        <input type="checkbox" name="studyQueries" checked>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                                @if(hasPermission(auth()->user(),'studies.store'))
+                                    <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                                @endif
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- exportStudy -->
+    <div class="modal fade" id="export-study-modal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="studyExportModal">Export Study</h4>
+                </div>
+                <div class="modal-body">
+                    <form action="{{route('studies.exportStudy')}}" name="exportstudy" class="" method="post">
+                        @csrf
+                        @if(!empty($study))
+                            <input type="hidden" value="{{$study->id}}" id="study_ID" name="study_ID">
+                        @endif
+                        <nav>
+                            <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab-clone" role="tablist">
+                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-ExportBasicInfo" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
+                                <a class="nav-item nav-link" id="nav-clone-tab" data-toggle="tab" href="#nav-Export" role="tab" aria-controls="nav-clone" aria-selected="false">Clone Study Data</a>
+                            </div>
+                        </nav>
+                        <div class="tab-content" id="nav-ExporttabContent">
+                            {{-- Basic Info Tab --}}
+                            <div class="tab-pane fade show active" id="nav-ExportBasicInfo" role="tabpanel" aria-labelledby="nav-Basic-tab">
+                                @csrf
+                                <div class="form-group row" style="margin-top: 10px;">
+                                    <label for="study_title" class="col-md-2">Title</label>
+                                    <div class="{!! ($errors->has('study_title')) ?'form-group col-md-10 has-error':'form-group col-md-10' !!}">
+                                        <input type="hidden" name="study_id" id="studyID" value="">
+                                        <input type="text" class="form-control" id="study_title" name="study_title" value="{{ $study->study_title }}"> @error('email')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="study_short_name" class="col-md-2">Short Name</label>
+                                    <div class="{!! ($errors->has('study_short_name')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="text" class="form-control" id="study_short_name" name="study_short_name" value="{{$study->study_short_name}}">
+                                        @error('study_short_name')
+                                        <span class="text-danger small">{{ $message }} </span>
+                                        @enderror
+                                    </div>
+
+                                    <label for="study_code" class="col-md-2">Study Code</label>
+                                    <div class="{!! ($errors->has('study_code')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="text" class="form-control" id="study_code" name="study_code" value="{{$study->study_code}}">
+                                        @error('study_code')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="protocol_number" class="col-md-2">Protocol Number</label>
+                                    <div class="{!! ($errors->has('protocol_number')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="text" class="form-control" id="protocol_number" name="protocol_number" value="{{ $study->protocol_number }}">
+                                        @error('protocol_number')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                    <label for="trial_registry_id" class="col-md-2">Trial Registry ID</label>
+                                    <div class="{!! ($errors->has('trial_registry_id')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="text" class="form-control" id="trial_registry_id" name="trial_registry_id" value="{{ $study->trial_registry_id }}">
+                                        @error('trial_registry_id')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="study_sponsor" class="col-md-2">Study Sponsor</label>
+                                    <div class="{!! ($errors->has('study_sponsor')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="text" class="form-control" id="study_sponsor" name="study_sponsor" value="{{ $study->study_sponsor }}">
+                                        @error('study_sponsor')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                    <label for="start_date" class="col-md-2">Start Date</label>
+                                    <div class="{!! ($errors->has('start_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="date" class="form-control" id="start_date" name="start_date" value="{{ $study->start_date }}">
+                                        @error('start_date')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="end_date" class="col-md-2">End Date</label>
+                                    <div class="{!! ($errors->has('end_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="date" class="form-control" id="end_date" name="end_date" value="{{ $study->end_date }}">
+                                        @error('end_date')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                    <label for="description" class="col-md-2">Description</label>
+                                    <div class="{!! ($errors->has('description')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
+                                        <input type="text" class="form-control" id="description" name="description" value="{{ $study->description }}">
+                                        @error('description')
+                                        <span class="text-danger small"> {{ $message }} </span>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                            {{--Clone tab --}}
+                            <div class="tab-pane fade" id="nav-Export" role="tabpanel" aria-labelledby="nav-Validation-tab">
+                                <div class="form-group row" style="margin-top: 10px; padding-left: 15px">
+                                    <div class="col-md-2">Study Users</div>
+                                    <div class="col-md-2">
+                                        <input type="checkbox" name="studyUsers" checked>
+                                    </div>
+                                    <div class="col-md-2">Study Sites</div>
+                                    <div class="col-md-2">
+                                        <input type="checkbox" name="studySites" checked>
+                                    </div>
+                                    <div class="col-md-2">Study Subjects</div>
+                                    <div class="col-md-2">
+                                        <input type="checkbox" name="studySubjects" id="studySubjects" checked>
+                                    </div>
+                                </div>
+                                <div class="form-group row" style="margin-top: 10px; padding-left: 15px">
+                                    <div class="col-md-2">Phases/Steps <br>Sect/Questions</div>
+                                    <div class="col-md-2">
+                                        <input type="checkbox" name="phasesSteps" id="phaseSteps" checked>
+                                    </div>
+                                    <div class="col-md-2">Answers</div>
+                                    <div class="col-md-2">
+                                        <input type="checkbox" name="answers" checked>
+                                    </div>
+                                    <div class="col-md-2">Transmissions</div>
+                                    <div class="col-md-2">
+                                        <input type="checkbox" name="transmissions" checked>
+                                    </div>
+                                </div>
+                                <div class="form-group row" style="margin-top: 10px;  padding-left: 15px">
+                                    <div class="col-md-2">Study Data</div>
+                                    <div class="col-md-2">
+                                        <input type="checkbox" name="studyData" checked>
+                                    </div>
+                                    <div class="col-md-2">Study Preferences</div>
+                                    <div class="col-md-2">
+                                        <input type="checkbox" name="studyPreferences" checked>
+                                    </div>
+                                    <div class="col-md-2">Study Queries</div>
+                                    <div class="col-md-2">
+                                        <input type="checkbox" name="studyQueries" checked>
                                     </div>
                                 </div>
                             </div>
@@ -473,7 +645,7 @@
         </div>
     </div>
 
-   <div class="modal fade" id="change_status" aria-hidden="true">
+    <div class="modal fade" id="change_status" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -481,9 +653,9 @@
                 </div>
                 <div class="modal-body">
                     <form action="{{route('studies.studyStatus')}}" name="changestatus" class="" method="post">
-                    @csrf
+                        @csrf
                         @if(!empty($study))
-                        <input type="hidden" value="{{$study->id}}" id="study_ID" name="study_ID">
+                            <input type="hidden" value="{{$study->id}}" id="study_ID" name="study_ID">
                         @endif
                         <div class="form-group row">
                             <div class="col-md-3">Status</div>
@@ -542,25 +714,25 @@
                     <p class="modal-title">Query Details</p>
                     <span class="queryCurrentStatus text-center"></span>
                 </div>
-                    <div class="modal-body">
-                        <form id="replyForm" name="replyForm">
-                            <div class="tab-content clearfix">
-                                @csrf
-                                <div class="replyInput"></div>
-                                <div class="col-sm-12">
-                                    <div class="replyClick" style="text-align: right;">
+                <div class="modal-body">
+                    <form id="replyForm" name="replyForm">
+                        <div class="tab-content clearfix">
+                            @csrf
+                            <div class="replyInput"></div>
+                            <div class="col-sm-12">
+                                <div class="replyClick" style="text-align: right;">
                                     <span style="cursor: pointer;">
                                         <i class="fa fa-reply"></i> &nbsp; reply
                                         </span>
-                                    </div>
                                 </div>
                             </div>
+                        </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                             <button type="button" class="btn btn-outline-primary" id="replyqueries"><i class="fa fa-save"></i> Send</button>
                         </div>
-                </form>
-                    </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -574,33 +746,39 @@
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
 
-<script type="text/javascript">
+    <script type="text/javascript">
 
- $(document).ready(function(){
-       $('#change_status').on('show.bs.modal',function (e) {
-        var id = $(e.relatedTarget).data('target-id');
-        $('#study_ID').val(id);
-       })
-    })
+        $(document).ready(function(){
+            $('#change_status').on('show.bs.modal',function (e) {
+                var id = $(e.relatedTarget).data('target-id');
+                $('#study_ID').val(id);
+            })
+        })
 
- $(document).ready(function(){
-     $('#clone-study-modal').on('show.bs.modal',function (e) {
-         var id = $(e.relatedTarget).data('target-id');
-         $('#study_ID').val(id);
-     })
- })
- $(document).ready(function(){
-     $('input[type="checkbox"]').click(function(){
-         var a = Ge
-         if($(this).prop("checked") == true){
-             $("#result").html("Checkbox is checked.");
-         }
-         else if($(this).prop("checked") == false){
-             $("#result").html("Checkbox is unchecked.");
-         }
-     });
- });
-</script>
+        $(document).ready(function(){
+            $('#clone-study-modal').on('show.bs.modal',function (e) {
+                var id = $(e.relatedTarget).data('target-id');
+                $('#study_ID').val(id);
+            })
+        })
+        $(document).ready(function(){
+            $('input[type="checkbox"]').click(function(){
+                var a = Ge
+                if($(this).prop("checked") == true){
+                    $("#result").html("Checkbox is checked.");
+                }
+                else if($(this).prop("checked") == false){
+                    $("#result").html("Checkbox is unchecked.");
+                }
+            });
+        });
+        $(document).ready(function(){
+            $('#export-study-modal').on('show.bs.modal',function (e) {
+                var id = $(e.relatedTarget).data('target-id');
+                $('#study_ID').val(id);
+            })
+        })
+    </script>
     <script type="text/javascript">
 
         // run callbacks
@@ -618,7 +796,7 @@
     <script  src="{{ asset('dist/vendors/lineprogressbar/jquery.barfiller.js') }}"></script>
     <script src="{{ asset('dist/js/home.script.js') }}"></script>
     <script>
-    $(document).ready(function(){
+        $(document).ready(function(){
             $('.add_field').on('click',function (e) {
                 e.preventDefault();
                 $('.appendfields').append('<div class="disease_row" style="margin-top:10px;">' +
@@ -629,165 +807,165 @@
                 row.remove();
             })
         });
-    $(document).ready(function () {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
-
-        $('#create-new-study').click(function () {
-            $('#btn-save').val("create-study");
-            $('#studyForm').trigger("reset");
-            $('#studyCrudModal').html("Add Study");
-            $('#studyForm').attr('action', "{{route('studies.store')}}");
-            $('#study-crud-modal').modal('show');
-        });
-
-
-        $('body').on('click', '#edit-study', function () {
-            $('#studyForm').attr('action', "{{route('studies.update_studies')}}");
-            var study_id = $(this).data('id');
-           var edit_study = $.get('studies/'+study_id+'/edit', function (data) {
-                $('#studyCrudModal').html("Edit study");
-                $('#btn-save').val("edit-study");
-                $('#study_id').val(data.id);
-                $('#study_short_name').val(data.study_short_name);
-                $('#study_title').val(data.study_title);
-                $('#study_code').val(data.study_code);
-                $('#protocol_number').val(data.protocol_number);
-                $('#trial_registry_id').val(data.trial_registry_id);
-                $('#study_sponsor').val(data.study_sponsor);
-                $('#start_date').val(data.start_date);
-                $('#end_date').val(data.end_date);
-                $('#description').val(data.description);
-                $('#disease_cohort').val(data.disease_cohort);
-                $('#users').val(data.users);
-                $('#studyID').val(data.id);
-                var html = '';
-                $('.appendfields').html('');
-                $.each(data.disease_cohort,function (index, value) {
-                    html += '<div class="disease_row" style="margin-top:10px;">' +
-                        '<input type="text" class="form-control" value="'+value.name+'" style="width: 90%;display: inline;" name="disease_cohort_name[]">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>';
-                });
-                $('.appendfields').append(html);
-                var user = '';
-                $('.appendusers').html('');
-
-                $.each(data.users,function (index, value) {
-
-                    user += '<option selected="selected" value=" '+value.id+' " >'+value.name+'</option>';
-
-                });
-               $('.appendusers').html(user);
-
-                var user_id = [];
-
-               $.each(data.users,function (index, value) {
-                   var id = value.id;
-                    user_id.push(id);
-               });
-               $('#select-users').multiSelect('deselect_all');
-               $('#select-users').multiSelect('select',user_id);
-               $('#study-crud-modal').modal('show');
-           })
-        });
-        $('body').on('click', '#delete-study', function () {
-            var study_id = $(this).data("id");
-            confirm("Are You sure want to delete !");
-            $.ajax({
-                type: "DELETE",
-                url: "{{ url('studies')}}"+'/'+study_id,
-                success: function (data) {
-                    $("#study_id_" + study_id).remove();
-                    if(data.success == true){ // if true (1)
-                        setTimeout(function(){// wait for 5 secs(2)
-                            location.reload(); // then reload the page.(3)
-                        }, 100);
-                    }
-                },
-                error: function (data) {
-                    console.log('Error:', data);
-                }
-            });
-        });
-        $('body').on('click', '.clone-study', function () {
+        $(document).ready(function () {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            var parent_id = $(this).data("id");
-            var newPath = "{{URL('studies/cloneStudy')}}";
-            //alert(newPath)
-            confirm("Are You sure want to Clone !");
+
+            $('#create-new-study').click(function () {
+                $('#btn-save').val("create-study");
+                $('#studyForm').trigger("reset");
+                $('#studyCrudModal').html("Add Study");
+                $('#studyForm').attr('action', "{{route('studies.store')}}");
+                $('#study-crud-modal').modal('show');
+            });
+
+
+            $('body').on('click', '#edit-study', function () {
+                $('#studyForm').attr('action', "{{route('studies.update_studies')}}");
+                var study_id = $(this).data('id');
+                var edit_study = $.get('studies/'+study_id+'/edit', function (data) {
+                    $('#studyCrudModal').html("Edit study");
+                    $('#btn-save').val("edit-study");
+                    $('#study_id').val(data.id);
+                    $('#study_short_name').val(data.study_short_name);
+                    $('#study_title').val(data.study_title);
+                    $('#study_code').val(data.study_code);
+                    $('#protocol_number').val(data.protocol_number);
+                    $('#trial_registry_id').val(data.trial_registry_id);
+                    $('#study_sponsor').val(data.study_sponsor);
+                    $('#start_date').val(data.start_date);
+                    $('#end_date').val(data.end_date);
+                    $('#description').val(data.description);
+                    $('#disease_cohort').val(data.disease_cohort);
+                    $('#users').val(data.users);
+                    $('#studyID').val(data.id);
+                    var html = '';
+                    $('.appendfields').html('');
+                    $.each(data.disease_cohort,function (index, value) {
+                        html += '<div class="disease_row" style="margin-top:10px;">' +
+                            '<input type="text" class="form-control" value="'+value.name+'" style="width: 90%;display: inline;" name="disease_cohort_name[]">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>';
+                    });
+                    $('.appendfields').append(html);
+                    var user = '';
+                    $('.appendusers').html('');
+
+                    $.each(data.users,function (index, value) {
+
+                        user += '<option selected="selected" value=" '+value.id+' " >'+value.name+'</option>';
+
+                    });
+                    $('.appendusers').html(user);
+
+                    var user_id = [];
+
+                    $.each(data.users,function (index, value) {
+                        var id = value.id;
+                        user_id.push(id);
+                    });
+                    $('#select-users').multiSelect('deselect_all');
+                    $('#select-users').multiSelect('select',user_id);
+                    $('#study-crud-modal').modal('show');
+                })
+            });
+            $('body').on('click', '#delete-study', function () {
+                var study_id = $(this).data("id");
+                confirm("Are You sure want to delete !");
+                $.ajax({
+                    type: "DELETE",
+                    url: "{{ url('studies')}}"+'/'+study_id,
+                    success: function (data) {
+                        $("#study_id_" + study_id).remove();
+                        if(data.success == true){ // if true (1)
+                            setTimeout(function(){// wait for 5 secs(2)
+                                location.reload(); // then reload the page.(3)
+                            }, 100);
+                        }
+                    },
+                    error: function (data) {
+                        console.log('Error:', data);
+                    }
+                });
+            });
+            $('body').on('click', '.clone-study', function () {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                var parent_id = $(this).data("id");
+                var newPath = "{{URL('studies/cloneStudy')}}";
+                //alert(newPath)
+                confirm("Are You sure want to Clone !");
+                $.ajax({
+                    type: "POST",
+                    data:{'id':parent_id},
+                    url: newPath,
+                    success: function (data) {
+                        console.log(data);
+                        location.reload();
+                    },
+                    error: function (data) {
+                        console.log('Error:', data);
+                    }
+                });
+            });
+
+        });
+
+        $('body').on('click', '.replyModal', function () {
+            var query_id     = $(this).attr('data-id');
+            $('#reply-modal').modal('show');
+            showComments(query_id);
+            $('#all-queries-modal').modal('hide');
+        });
+
+
+        function showComments(query_id) {
             $.ajax({
-                type: "POST",
-                data:{'id':parent_id},
-                url: newPath,
-                success: function (data) {
-                    console.log(data);
-                    location.reload();
+                url:"{{route('queries.showCommentsById')}}",
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'query_id'      :query_id,
                 },
-                error: function (data) {
-                    console.log('Error:', data);
+                success: function(response)
+                {
+                    $('.replyInput').html('');
+                    $('.replyInput').html(response);
+                    var query_status = $( "#query_status option:selected" ).text();
+                    $('.queryCurrentStatus').text('Status: '+query_status);
+                    $('.replyClick').css('display','');
                 }
             });
+        }
+
+        $('.showAllStudyQueries').click(function () {
+            var study_id = $(this).attr('data-id');
+            // var moduleId = $('#module_id').val(id);
+            $('#all-queries-modal').modal('show');
+            loadAllStudyQueries(study_id);
         });
 
-    });
-
-    $('body').on('click', '.replyModal', function () {
-        var query_id     = $(this).attr('data-id');
-        $('#reply-modal').modal('show');
-        showComments(query_id);
-        $('#all-queries-modal').modal('hide');
-    });
-
-
-    function showComments(query_id) {
-        $.ajax({
-            url:"{{route('queries.showCommentsById')}}",
-            type: 'POST',
-            data: {
-                "_token": "{{ csrf_token() }}",
-                "_method": 'POST',
-                'query_id'      :query_id,
-            },
-            success: function(response)
-            {
-                $('.replyInput').html('');
-                $('.replyInput').html(response);
-                var query_status = $( "#query_status option:selected" ).text();
-                $('.queryCurrentStatus').text('Status: '+query_status);
-                $('.replyClick').css('display','');
-            }
-        });
-    }
-
-    $('.showAllStudyQueries').click(function () {
-        var study_id = $(this).attr('data-id');
-        // var moduleId = $('#module_id').val(id);
-        $('#all-queries-modal').modal('show');
-        loadAllStudyQueries(study_id);
-    });
-
-    function loadAllStudyQueries(study_id) {
-        $.ajax({
-            url:"{{route('queries.loadAllQueriesByStudyId')}}",
-            type: 'POST',
-            data: {
-                "_token": "{{ csrf_token() }}",
-                "_method": 'POST',
-                'study_id'      :study_id,
-            },
-            success: function(response)
-            {
-                $('.queriesList').html('');
-                $('.queriesList').html(response);
-            }
-        });
-    }
+        function loadAllStudyQueries(study_id) {
+            $.ajax({
+                url:"{{route('queries.loadAllQueriesByStudyId')}}",
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'study_id'      :study_id,
+                },
+                success: function(response)
+                {
+                    $('.queriesList').html('');
+                    $('.queriesList').html(response);
+                }
+            });
+        }
         $('body').on('click', '.replyClick', function () {
             $('.commentsInput').css('display','');
             $('.queryAttachments').css('display','');
@@ -795,50 +973,50 @@
             $('.replyClick').css('display','none');
         });
 
-    $('#replyqueries').click(function (e){
-        $.ajaxSetup({ headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
-        e.preventDefault();
-        var reply         = $("#reply").val();
-        var query_id      = $("#query_id").val();
-        var query_url     = $("#query_url").val();
-        var query_type    = $("#query_type").val();
-        var module_id     = $("#module_id").val();
-        var query_status  = $("#query_status").val();
-        var query_subject = $("#query_subject").val();
+        $('#replyqueries').click(function (e){
+            $.ajaxSetup({ headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
+            e.preventDefault();
+            var reply         = $("#reply").val();
+            var query_id      = $("#query_id").val();
+            var query_url     = $("#query_url").val();
+            var query_type    = $("#query_type").val();
+            var module_id     = $("#module_id").val();
+            var query_status  = $("#query_status").val();
+            var query_subject = $("#query_subject").val();
 
-        var formData      = new FormData();
-        formData.append('reply', reply);
-        formData.append('query_id', query_id);
-        formData.append('query_url', query_url);
-        formData.append('query_type', query_type);
-        formData.append('query_subject', query_subject);
-        formData.append('module_id', module_id);
-        formData.append('query_status', query_status);
-        // Attach file
-        formData.append('query_file', $('input[type=file]')[0].files[0]);
-        $.ajax({
-            url:"{{route('queries.queryReply')}}",
-            type: "POST",
-            data: formData,
-            dataType: 'json',
-            contentType: false,
-            cache: false,
-            processData:false,
-            success: function (results)
-            {
-                // $('.commentsInput').css('display','none');
-                $('.replyClick').css('display','');
-                var query_id = results[0].parent_query_id;
-                showComments(query_id);
-                //$("#replyForm")[0].reset();
-                //$('#summernote').summernote('disable');
-                //$("#reply").summernote("reset");
-            },
-            error: function (results) {
-                console.error('Error:', results);
-            }
+            var formData      = new FormData();
+            formData.append('reply', reply);
+            formData.append('query_id', query_id);
+            formData.append('query_url', query_url);
+            formData.append('query_type', query_type);
+            formData.append('query_subject', query_subject);
+            formData.append('module_id', module_id);
+            formData.append('query_status', query_status);
+            // Attach file
+            formData.append('query_file', $('input[type=file]')[0].files[0]);
+            $.ajax({
+                url:"{{route('queries.queryReply')}}",
+                type: "POST",
+                data: formData,
+                dataType: 'json',
+                contentType: false,
+                cache: false,
+                processData:false,
+                success: function (results)
+                {
+                    // $('.commentsInput').css('display','none');
+                    $('.replyClick').css('display','');
+                    var query_id = results[0].parent_query_id;
+                    showComments(query_id);
+                    //$("#replyForm")[0].reset();
+                    //$('#summernote').summernote('disable');
+                    //$("#reply").summernote("reset");
+                },
+                error: function (results) {
+                    console.error('Error:', results);
+                }
+            });
         });
-    });
-</script>
+    </script>
 
 @endsection
