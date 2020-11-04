@@ -37,28 +37,33 @@ class AdjudicationFromView implements FromView
         ->orderBy('modilities.modility_name')
         ->get();
 
-            // get form types for modality
-            foreach($getModilities as $key => $modility) {
+        // adjudication array
+        $adjudicationArray = [];
 
-                $getSteps = PhaseSteps::select('phase_steps.step_id', 'phase_steps.step_name', 'phase_steps.modility_id', 'form_types.id as form_type_id', 'form_types.form_type')
-                                        ->leftJoin('form_types', 'form_types.id', '=', 'phase_steps.form_type_id')
-                                        ->where('modility_id', $modility->modility_id)
-                                        ->where('phase_steps.form_type_id', '!=', 3)
-                                        ->orderBy('form_types.sort_order')
-                                        ->groupBy('phase_steps.form_type_id')
-                                        ->get()->toArray();
+        // get form types for modality
+        foreach($getModilities as $key => $modility) {
 
-                $modalitySteps[$modility->modility_name] = $getSteps;
+            $getSteps = PhaseSteps::select('phase_steps.step_id', 'phase_steps.step_name', 'phase_steps.modility_id', 'form_types.id as form_type_id', 'form_types.form_type')
+                                    ->leftJoin('form_types', 'form_types.id', '=', 'phase_steps.form_type_id')
+                                    ->where('modility_id', $modility->modility_id)
+                                    ->where('phase_steps.form_type_id', '!=', 3)
+                                    ->orderBy('form_types.sort_order')
+                                    ->groupBy('phase_steps.form_type_id')
+                                    ->get()->toArray();
 
-                // get modalities as per adjudication
-                $modalitySteps['Adjudication'][] = array(
-                    "step_id" => $modility->step_id,
-                    "step_name" => $modility->step_name,
-                    "modility_id" => $modility->modility_id,
-                    "form_type" => $modility->modility_name,
-                );
+            $modalitySteps[$modility->modility_name] = $getSteps;
 
-            }
+            // get modalities as per adjudication
+            $adjudicationArray[] = array(
+                "step_id" => $modility->step_id,
+                "step_name" => $modility->step_name,
+                "modility_id" => $modility->modility_id,
+                "form_type" => $modility->modility_name,
+            );
+
+        }
+
+        $modalitySteps['Adjudication'] = $adjudicationArray;
 
             //get form status depending upon subject, phase and modality
             if ($modalitySteps != null) {

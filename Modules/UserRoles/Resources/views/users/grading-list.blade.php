@@ -363,7 +363,7 @@
                                                <a href="{{route('subjectFormLoader.showSubjectForm',['study_id' => $subject->study_id, 'subject_id' => $subject->id])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
                                             </td>
                                             <td>{{$subject->phase_name}}</td>
-                                            <td>{{date('Y-m-d', strtotime($subject->visit_date))}}</td>
+                                            <td>{{ date('d-M-Y', strtotime($subject->visit_date))}}</td>
                                             <td>{{$subject->site_name}}</td>
                                             
                                             @if($subject->form_status != null)
@@ -392,7 +392,7 @@
                                                <a href="{{route('subjectFormLoader.showSubjectForm',['study_id' => $subject->study_id, 'subject_id' => $subject->subj_id])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
                                             </td>
                                             <td>{{$subject->phase_name}}</td>
-                                            <td>{{date('Y-m-d', strtotime($subject->visit_date))}}</td>
+                                            <td>{{ date('d-M-Y', strtotime($subject->visit_date))}}</td>
                                             <td>{{$subject->site_name}}</td>
                                             
                                             @if($subject->form_status != null)

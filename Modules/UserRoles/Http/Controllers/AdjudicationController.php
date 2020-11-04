@@ -78,6 +78,8 @@ class AdjudicationController extends Controller
             ->orderBy('modilities.modility_name')
             ->get();
 
+            // adjudication array
+            $adjudicationArray = [];
             // get form types for modality
             foreach($getModilities as $key => $modility) {
 
@@ -92,7 +94,7 @@ class AdjudicationController extends Controller
                 $modalitySteps[$modility->modility_name] = $getSteps;
 
                 // get modalities as per adjudication
-                $modalitySteps['Adjudication'][] = array(
+                $adjudicationArray[] = array(
                     "step_id" => $modility->step_id,
                     "step_name" => $modility->step_name,
                     "modility_id" => $modility->modility_id,
@@ -100,6 +102,8 @@ class AdjudicationController extends Controller
                 );
 
             }
+
+            $modalitySteps['Adjudication'] = $adjudicationArray;
 
             //get form status depending upon subject, phase and modality
             if ($modalitySteps != null) {
@@ -284,7 +288,7 @@ class AdjudicationController extends Controller
                                 ];
 
 
-                                $formStatus[$key.'_'.$type['form_type']] = \Modules\Admin\Entities\AdjudicationFormStatus::getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, $wrap = true);
+                                $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, $wrap = true);
 
 
                             } // step check ends
