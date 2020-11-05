@@ -6,5 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class QueryNotificationUser extends Model
 {
-    protected $fillable = [];
+    protected $table = 'query_notification_users';
+    protected $fillable = ['id','query_notification_user_id'];
+    protected $keyType = 'string';
 }
