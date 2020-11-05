@@ -46,13 +46,11 @@
                                         <div class="form-row">
                                             <div class="col-12 mb-3">
                                                 <label>{{ $preference->preference_title }}</label>
-
                                                 @if(hasPermission(auth()->user(), 'preference.loadAddPreferenceForm'))
                                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                 <a href="javascript:void(0);" class="text text-danger" onclick="openAddPreferencePopup({{ $preference->id }});">Edit</a>
                                                 @endif
                                                 <br>
-                                                <label>ID to use in code : {{ $preference->id }}</label><br>
                                                 @if ($preference->is_selectable == 'yes')
                                                     @php
                                                     $preference_options = explode('|', $preference->preference_options);
@@ -74,13 +72,27 @@
                                                                 for="preference_{{ $optionId }}">{{ $preference_option }}</label>
                                                         </div>
                                                     @endforeach
+                                                    <p><br>
+                                                        <strong>Usage (for developers):</strong><br>
+                                                        <code>
+                                                            use Module\Admin\Entities\Preference;<br>
+                                                            if(Preference::getPreference('{{ $preference->preference_title }}') == '{{ $preference->preference_value }}'){ // code goes here } </code>
+                                                    </p>
                                                 @else
                                                     <input type="text" name="preference_{{ $preference->id }}"
                                                         id="preference_{{ $preference->id }}" class="form-control"
                                                         placeholder="preference value"
                                                         value="{{ $preference->preference_value }}"
                                                         onchange="updatePreference('{{ $preference->id }}', this.value);">
+
+                                                        <p><br>
+                                                            <strong>Usage (for developers):</strong><br>
+                                                            <code>
+                                                                use Module\Admin\Entities\Preference;<br>
+                                                                $variableName = Preference::getPreference('{{ $preference->preference_title }}');</code>
+                                                        </p>
                                                 @endif
+
                                             </div>
                                         </div>
                                         <hr class="hr-line">
@@ -153,9 +165,16 @@
                     submitAddPreferenceForm();
                 }
             });
+            $.validator.addMethod("constant", function(value, element) {
+                return this.optional(element) || /^[A-Z_]+$/.test(value);
+            }, "Capital letters and underscore only please");
+
             $("#preferenceForm").validate({
                 rules: {
-                    preference_title: "required",
+                    preference_title: {
+                        required: true,
+                        constant: true
+                    },
                     preference_value: "required",
                     preference_options: {
                         required: function() {
@@ -168,7 +187,10 @@
                     }
                 },
                 messages: {
-                    preference_title: "Please enter preference title",
+                    preference_title: {
+                        required: "Please enter preference title",
+                        constant: $.validator.format("Capital letters and underscore only please")
+                    },
                     preference_value: "Please enter preference value",
                     preference_options: "Please enter preference options",
                 }

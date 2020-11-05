@@ -54,6 +54,34 @@ trait StepReplication
         }
     }
 
+    private function activateStepToReplicatedVisits($step)
+    {
+        $replicatedSteps = PhaseSteps::where('parent_id', 'like', $step->step_id)->get();
+        foreach ($replicatedSteps as $replicatedStep) {
+            $this->activateThisStep($replicatedStep);
+        }
+    }
+
+    private function deActivateStepToReplicatedVisits($step)
+    {
+        $replicatedSteps = PhaseSteps::where('parent_id', 'like', $step->step_id)->get();
+        foreach ($replicatedSteps as $replicatedStep) {
+            $this->deActivateThisStep($replicatedStep);
+        }
+    }
+
+    private function activateThisStep($step)
+    {
+        $step->is_active = 1;
+        $step->update();
+    }
+
+    private function deActivateThisStep($step)
+    {
+        $step->is_active = 0;
+        $step->update();
+    }
+
     private function deleteStep($step)
     {
         foreach ($step->sections as $section) {
