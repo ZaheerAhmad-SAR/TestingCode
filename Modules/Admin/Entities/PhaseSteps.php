@@ -3,6 +3,7 @@
 namespace Modules\Admin\Entities;
 
 use Modules\Admin\Scopes\PhaseStepOrderByScope;
+use Modules\Admin\Scopes\ActivePhaseStepScope;
 use Modules\UserRoles\Entities\Role;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Admin\Entities\StudyStructure;
@@ -11,8 +12,10 @@ use Modules\FormSubmission\Entities\SubjectsPhases;
 
 class PhaseSteps extends Model
 {
-    protected $fillable = ['step_id', 'phase_id', 'step_position', 'form_type', 'form_type_id', 'modility_id', 'step_name',
-        'step_description', 'graders_number', 'q_c', 'eligibility','parent_id'];
+    protected $fillable = [
+        'step_id', 'phase_id', 'step_position', 'form_type', 'form_type_id', 'modility_id', 'step_name',
+        'step_description', 'graders_number', 'q_c', 'eligibility', 'parent_id'
+    ];
     // protected $key = 'string';
     protected $table = 'phase_steps';
     protected $primaryKey = "step_id";
@@ -24,6 +27,11 @@ class PhaseSteps extends Model
     {
         parent::boot();
         static::addGlobalScope(new PhaseStepOrderByScope);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('phase_steps.is_active', 1);
     }
 
     // public function steps()
@@ -80,6 +88,7 @@ class PhaseSteps extends Model
         return self::where('phase_id', $phaseId)
             ->whereIn('form_type_id', $formTypeArray)
             ->whereIn('modility_id', $modalityIdsArray)
+            ->active()
             ->get();
     }
     public function phase()
@@ -98,5 +107,15 @@ class PhaseSteps extends Model
             ->whereIn('phase_id', $activatedPhasesidsArray)
             ->pluck('step_id')
             ->toArray();
+    }
+
+    public static function isStepActive($step_id)
+    {
+        $step = self::where('step_id', 'like', $step_id)->first();
+        if ($step->is_active == 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

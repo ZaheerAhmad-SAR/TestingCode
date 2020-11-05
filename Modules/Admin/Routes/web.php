@@ -53,6 +53,10 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::DELETE('steps/delete_steps/{step_id}', 'StudyStructureController@destroySteps')->name('steps.deleteSteps');
     Route::post('steps/store_steps', 'StudyStructureController@store_steps')->name('steps.save');
     Route::post('steps/updateSteps', 'StudyStructureController@update_steps')->name('steps.update');
+
+    Route::POST('steps/activate_step/{step_id}', 'StudyStructureController@activateStep')->name('steps.activateStep');
+    Route::POST('steps/deActivate_step/{step_id}', 'StudyStructureController@deActivateStep')->name('steps.deActivateStep');
+
     // for Section
     Route::resource('sections', 'SectionController');
     Route::post('section', 'SectionController@getSectionby_id')->name('section.getSections');
