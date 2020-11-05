@@ -204,7 +204,7 @@ class TransmissionController extends Controller
         // get all the transmission updates
         $getTransmissionUpdates = TransmissionUpdateDetail::where('transmission_id', decrypt($id))->get();
 
-        
+
         return view('admin::study_view_transmission_details', compact('findTransmission', 'getSites', 'getSubjects', 'getPhases', 'getModalities', 'getTransmissionUpdates', 'getStepForVisit'));
     }
 
@@ -381,7 +381,7 @@ class TransmissionController extends Controller
 
         // get studies
         $systemStudies = Study::get();
-        
+
         return view('admin::view_transmission_details', compact('findTransmission', 'getSites', 'getSubjects', 'getPhases', 'getModalities', 'getTransmissionUpdates', 'getStepForVisit', 'systemStudies'));
     }
 
@@ -786,6 +786,8 @@ class TransmissionController extends Controller
         {
             Mail::to($user)->send(new TransmissonQuery($data));
         }
+
+
         return response()->json(['Status'=>'Send','message'=>'Query has been send']);
 
 //        //$ccEmail = $request->post('cc_email');
