@@ -170,7 +170,10 @@
         loadQueryPopUpHtml(study_id);
         getAllStudyData(study_id);
     });
-    function openFormQueryPopup(study_id, subject_id, study_structures_id, phase_steps_id, section_id, question_id, field_id, form_type_id, modility_id, module) {
+    function openFormQueryPopup(study_id, subject_id,
+          study_structures_id, phase_steps_id,
+          section_id, question_id, field_id,
+          form_type_id, modility_id, module){
             $('#study_id').val(study_id);
             $('#question_id').val(question_id);
             $('#phase_steps_id').val(phase_steps_id);
@@ -184,11 +187,10 @@
             $('#queries-modal-form').modal('show');
             loadUserDropDownList(study_id);
 
-    }
+        }
 
     $("#queriesQuestionForm").on('submit', function(e)
     {
-
         e.preventDefault();
         $.ajaxSetup({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
@@ -233,7 +235,6 @@
         formData.append('modility_id', modility_id);
         formData.append('form_type_id', form_type_id);
 
-        //formData.append('module_id', module_id);
 
         formData.append('assignedRolesForm', assignedRolesForm);
         formData.append('query_url', query_url);
