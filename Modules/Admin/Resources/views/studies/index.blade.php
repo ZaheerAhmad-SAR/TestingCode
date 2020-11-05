@@ -25,6 +25,7 @@
                 <div class="col-lg-12 success-alert">
                     <div class="alert alert-primary success-msg" role="alert">
                         {{ session()->get('message') }}
+                        <button class="close" data-dismiss="alert">&times;</button>
                     </div>
                 </div>
             @endif
@@ -640,7 +641,7 @@
             </div>
         </div>
     </div>
-
+    <!-- status change Study -->
     <div class="modal fade" id="change_status" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -673,6 +674,7 @@
             </div>
         </div>
     </div>
+
 
     <div class="modal fade" tabindex="-1" role="dialog" id="all-queries-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
         <div class="modal-dialog  modal-lg modal-dialog-centered" role="document">
@@ -868,11 +870,11 @@
             });
             $('body').on('click', '#delete-study', function () {
                 var study_id = $(this).data("id");
-                confirm("Are You sure want to delete !");
                 $.ajax({
                     type: "DELETE",
                     url: "{{ url('studies')}}"+'/'+study_id,
                     success: function (data) {
+                        confirm("Are You sure want to delete !");
                         $("#study_id_" + study_id).remove();
                         if(data.success == true){ // if true (1)
                             setTimeout(function(){// wait for 5 secs(2)

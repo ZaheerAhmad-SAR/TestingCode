@@ -6,7 +6,6 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use Modules\Admin\Entities\AdjudicationFormStatus;
 use Modules\Admin\Entities\Annotation;
@@ -15,21 +14,9 @@ use Modules\Admin\Entities\Preference;
 use Modules\Admin\Entities\SiteStudyCoordinator;
 use Modules\FormSubmission\Entities\AdjudicationFormRevisionHistory;
 use Modules\FormSubmission\Entities\Answer;
-use Modules\Admin\Entities\Coordinator;
 use Modules\Admin\Entities\CrushFtpTransmission;
 use Modules\Admin\Entities\DiseaseCohort;
 use Modules\FormSubmission\Entities\FinalAnswer;
-use Modules\Admin\Entities\Modility;
-use Modules\Admin\Entities\Other;
-use Modules\Admin\Entities\PhaseSteps;
-use Modules\Admin\Entities\Photographer;
-use Modules\Admin\Entities\PrimaryInvestigator;
-use Modules\Admin\Entities\Question;
-use Modules\Admin\Entities\QuestionAdjudicationStatus;
-use Modules\Admin\Entities\QuestionDependency;
-use Modules\Admin\Entities\QuestionValidation;
-use Modules\Admin\Entities\RoleStudyUser;
-use Modules\Admin\Entities\Section;
 use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\Study;
 use Illuminate\Support\Facades\Auth;
@@ -38,19 +25,15 @@ use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\StudyUser;
 use Modules\Admin\Entities\Subject;
 use Modules\Admin\Entities\TrailLog;
-use Modules\Admin\Scopes\StudyStructureOrderByScope;
 use Modules\Admin\Scopes\StudyStructureWithoutRepeatedScope;
 use Modules\FormSubmission\Entities\FormRevisionHistory;
 use Modules\FormSubmission\Entities\FormStatus;
 use Modules\FormSubmission\Entities\SubjectsPhases;
-use Modules\FormSubmission\Traits\QuestionDataValidation;
 use Modules\FormSubmission\Traits\Replication\ReplicatePhaseStructure;
 use Modules\Queries\Entities\Query;
 use Modules\UserRoles\Entities\Permission;
-use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\RolePermission;
 use Modules\UserRoles\Entities\UserRole;
-use Modules\UserRoles\Http\Controllers\RoleController;
 use Illuminate\Support\Str;
 use function Symfony\Component\String\s;
 
@@ -66,7 +49,7 @@ class StudyController extends Controller
     {
         if (hasPermission(\auth()->user(), 'systemtools.index')) {
             $user = User::with('studies', 'user_roles')->find(Auth::id());
-            session(['current_study'=>'']);
+
             $user = User::with('studies', 'user_roles')->find(Auth::id());
             $studies  =   Study::with('users')->where('id','!=', Null)->orderBy('study_short_name')->get();
             $permissionsIdsArray = Permission::where(function ($query) {
@@ -161,6 +144,21 @@ class StudyController extends Controller
      * @return Response
      */
     public function store(Request $request){
+        $this->validate($request,[
+            'study_short_name'  => 'required',
+            'study_title'  => 'required',
+            'study_status'  => 'required',
+            'study_code'  => 'required',
+            'protocol_number'  => 'required',
+            'study_phase'  => 'required',
+            'trial_registry_id'  => 'required',
+            'study_sponsor'  => 'required',
+            'start_date'  => 'required',
+            'end_date'  => 'required',
+            'description'  => 'required',
+            'name'  => 'required',
+            'users'  => 'required',
+        ]);
         $id    = Str::uuid();
         $study = Study::create([
             'id'    => $id,
@@ -209,7 +207,7 @@ class StudyController extends Controller
         // log event details
         $logEventDetails = eventDetails($study->id, 'Study', 'Add', $request->ip(), $oldStudy);
 
-        return redirect()->route('studies.index')->with('message', 'Record Added Successfully!');
+        return redirect()->route('studies.index')->with('message','Study created successfully');
     }
 
     /**
@@ -430,7 +428,7 @@ class StudyController extends Controller
                             'count' => $phase->count
                         ]);
                     }
-                    $replica_phase_id = StudyStructure::select('id')->latest()->first();
+                   // $replica_phase_id = StudyStructure::select('id')->latest()->first();
                     if ($phase->parent_id != 'no-parent'){
                         $replica_phase_id = StudyStructure::select('id')->latest()->first();
                         StudyStructure::create([
@@ -555,7 +553,6 @@ class StudyController extends Controller
                         }
                     }*/
                 }
-
                 $annotations = Annotation::where('study_id','=',$mystudy)->get();
                 foreach ($annotations as $annotation){
                     Annotation::create([
@@ -577,11 +574,8 @@ class StudyController extends Controller
                         ]);
                     }
                 }
-
-
             }
             if ($request->studyData == 'on') {
-
                 $adjudicationformstatuses = AdjudicationFormStatus::where('study_id', '=', $mystudy->id)->get();
                 foreach ($adjudicationformstatuses as $adjudicationformstatus) {
                     AdjudicationFormStatus::create([
@@ -776,10 +770,14 @@ class StudyController extends Controller
                 ]);
             }
         }
+        $oldStudy = [];
+        // log event details
+        $logEventDetails = eventDetails($replica_id->id, 'Study', 'Add', $request->ip(), $oldStudy);
 
         $studies = Study::all();
         // return \response()->json($studies);
-        return redirect()->route('studies.index')->with('success','Study cloned successfully');
+
+        return redirect()->route('studies.index')->with('message','Study cloned successfully');
     }
 
     /**
@@ -1273,10 +1271,11 @@ class StudyController extends Controller
      * @param int $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        $study = Study::where('id', $id)->delete();
-        $studyusers = UserRole::where('study_id','=',$id)->get();
+        $study = Study::where('id', $request->id)->delete();
+        dd($request->all());
+        $studyusers = UserRole::where('study_id','=',$request->id)->get();
         foreach ($studyusers as $studyuser){
             $studyuser->delete();
         }
