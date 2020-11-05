@@ -107,7 +107,7 @@
                             <div class="form-group row queryAttachment" style="display: none;">
                                 <label for="Name" class="col-sm-2 col-form-label">Attachment:</label>
                                 <div class="col-sm-10">
-                                    <input class="form-control" type="file" name="query_file_form"  id="query_file_form">
+                                    <input class="form-control" type="file" name="queryFileForm"  id="query_file_form">
                                 </div>
                             </div>
                             <div class="form-group row rolesInput" style="display: none;">
@@ -170,7 +170,10 @@
         loadQueryPopUpHtml(study_id);
         getAllStudyData(study_id);
     });
-    function openFormQueryPopup(study_id, subject_id, study_structures_id, phase_steps_id, section_id, question_id, field_id, form_type_id, modility_id, module) {
+    function openFormQueryPopup(study_id, subject_id,
+          study_structures_id, phase_steps_id,
+          section_id, question_id, field_id,
+          form_type_id, modility_id, module){
             $('#study_id').val(study_id);
             $('#question_id').val(question_id);
             $('#phase_steps_id').val(phase_steps_id);
@@ -184,11 +187,10 @@
             $('#queries-modal-form').modal('show');
             loadUserDropDownList(study_id);
 
-    }
+        }
 
     $("#queriesQuestionForm").on('submit', function(e)
     {
-
         e.preventDefault();
         $.ajaxSetup({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
@@ -233,7 +235,6 @@
         formData.append('modility_id', modility_id);
         formData.append('form_type_id', form_type_id);
 
-        //formData.append('module_id', module_id);
 
         formData.append('assignedRolesForm', assignedRolesForm);
         formData.append('query_url', query_url);
@@ -241,9 +242,8 @@
         formData.append('query_subject_form', query_subject_form);
         formData.append('queryAssignedTo', queryAssignedTo);
         formData.append('message', message);
-        // Attach file
-        //formData.append('query_file_form', $('input[type=file]')[0].files[0]);
-
+        // Attach file name = queryFileForm
+        formData.append("queryFileForm", $("#query_file_form")[0].files[0]);
         $.ajax({
             type: 'POST',
             url:"{{route('queries.storeFormQueries')}}",
@@ -255,14 +255,19 @@
             success: function(response)
             {
                 console.log(response);
-                // $("#queriesQuestionForm")[0].reset();
-                // $('#queries-modal-form').modal('hide');
+                $("#queriesQuestionForm")[0].reset();
+                $('#queries-modal-form').modal('hide');
                 // window.setTimeout(function () {
                 //     window.location.reload();
                 // }, 100);
             }
         });
 
+    });
+
+
+    $('#queries-modal-form').on('hidden.bs.modal', function () {
+        $(this).find("input,textarea,select").val('').end();
     });
 
     function getAllStudyData(study_id)
@@ -315,6 +320,8 @@
             }
         });
     }
+
+
     $(document).ready(function (){
         $('input[type="radio"]').click(function (){
             if ($(this).attr("value")=="user")

@@ -10,6 +10,14 @@
           <option name="port" value="22" />
         </fileTransfer>
       </webServer>
+      <webServer id="ce0b2cc4-447b-4fbc-acf8-a6838dad10d8" name="ocap" url="http://devocap.oirrc.net">
+        <fileTransfer host="devocap.oirrc.net" port="22" privateKey="C:\Users\HP\.ssh\known_hosts" accessType="SFTP" keyPair="true">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
     </option>
   </component>
 </project>
