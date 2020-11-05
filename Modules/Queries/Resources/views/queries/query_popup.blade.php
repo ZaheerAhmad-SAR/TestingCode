@@ -107,7 +107,7 @@
                             <div class="form-group row queryAttachment" style="display: none;">
                                 <label for="Name" class="col-sm-2 col-form-label">Attachment:</label>
                                 <div class="col-sm-10">
-                                    <input class="form-control" type="file" name="query_file_form"  id="query_file_form">
+                                    <input class="form-control" type="file" name="queryFileForm"  id="query_file_form">
                                 </div>
                             </div>
                             <div class="form-group row rolesInput" style="display: none;">
@@ -242,9 +242,8 @@
         formData.append('query_subject_form', query_subject_form);
         formData.append('queryAssignedTo', queryAssignedTo);
         formData.append('message', message);
-        // Attach file
-        //formData.append('query_file_form', $('input[type=file]')[0].files[0]);
-
+        // Attach file name = queryFileForm
+        formData.append("queryFileForm", $("#query_file_form")[0].files[0]);
         $.ajax({
             type: 'POST',
             url:"{{route('queries.storeFormQueries')}}",
@@ -256,14 +255,19 @@
             success: function(response)
             {
                 console.log(response);
-                // $("#queriesQuestionForm")[0].reset();
-                // $('#queries-modal-form').modal('hide');
+                $("#queriesQuestionForm")[0].reset();
+                $('#queries-modal-form').modal('hide');
                 // window.setTimeout(function () {
                 //     window.location.reload();
                 // }, 100);
             }
         });
 
+    });
+
+
+    $('#queries-modal-form').on('hidden.bs.modal', function () {
+        $(this).find("input,textarea,select").val('').end();
     });
 
     function getAllStudyData(study_id)
@@ -316,6 +320,8 @@
             }
         });
     }
+
+
     $(document).ready(function (){
         $('input[type="radio"]').click(function (){
             if ($(this).attr("value")=="user")

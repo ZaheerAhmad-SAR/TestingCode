@@ -187,7 +187,6 @@ class QueriesController extends Controller
 
     public function storeFormQueries(Request $request)
     {
-        dd($request->all());
         $study_id            = $request->post('study_id');
         $question_id         = $request->post('question_id');
         $phase_steps_id      = $request->post('phase_steps_id');
@@ -208,9 +207,8 @@ class QueriesController extends Controller
         $queryAssignedTo     = $request->post('queryAssignedTo');
         $filePath            = '';
 
-        if (!empty($request->file('query_file_form'))) {
-            $image = $request->file('query_file_form');
-            dd($image);
+        if (!empty($request->file('queryFileForm'))) {
+            $image = $request->file('queryFileForm');
             $name = Str::slug($request->input('name')).'_'.time();
             $folder = '/query_attachments/';
             $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
@@ -225,6 +223,7 @@ class QueriesController extends Controller
             'messages'=>$message,
             'module_name'=>$module,
             'study_id'=>$study_id,
+            'module_id'=>$study_id,
             'query_status'=> 'open',
             'query_type' =>$queryAssignedTo,
             'query_url'=>$query_url,
