@@ -56,11 +56,11 @@ class UserController extends Controller
         $currentStudy = session('current_study');
 
         if (hasPermission(auth()->user(),'systemtools.index')){
-            session(['current_study'=>'']);
             $users  =  User::orderBY('name','asc')->get();
             $studyusers = User::where('id','!=',\auth()->user()->id)->get();
         }
-        elseif (hasPermission(auth()->user(),'studytools.index') && !empty(session('current_study'))) {
+       /* elseif (hasPermission(auth()->user(),'studytools.index') && !empty(session('current_study'))) {
+            dd('elseif');
             $permissionsIdsArray = Permission::where(function ($query) {
                 $query->where('permissions.name', '!=', 'studytools.create')
                     ->orwhere('permissions.name', '!=', 'studytools.store')
@@ -81,7 +81,7 @@ class UserController extends Controller
                 ->get();
         }
         else{
-            session(['current_study'=>'']);
+
             $users = User::where('deleted_at','=',Null)
                 ->where('user_type','=','study_user')
                 ->get();
@@ -92,7 +92,7 @@ class UserController extends Controller
                 ->where('id','!=',\auth()->user()->id)
                 ->where('user_roles.study_id','!=',session('current_study'))->distinct()
                 ->get();
-        }
+        }*/
 
         return view('userroles::users.index',compact('users','roles','studyusers'));
 

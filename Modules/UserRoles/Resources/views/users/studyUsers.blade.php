@@ -51,7 +51,6 @@
                     <div class="card-body">
                         <div class="table-responsive list">
                             <table class="table table-bordered editable-table" id="laravel_crud">
-                                    @if(hasPermission(auth()->user(),'studytools.index') && !empty(session('current_study')))
                                         <thead>
                                         <tr>
                                             <th scope="col">Name</th>
@@ -61,7 +60,7 @@
                                         </tr>
                                         </thead>
                                         <tbody id="users-crud">
-                                        @foreach($studyusers as $user)
+                                        @foreach($users as $user)
                                             <tr>
                                                 <td>{{ucfirst($user->name)}}</td>
                                                 <td>{{$user->email}}</td>
@@ -85,7 +84,6 @@
                                             </tr>
                                         @endforeach
                                         </tbody>
-                                    @endif
                             </table>
                         </div>
                     </div>
