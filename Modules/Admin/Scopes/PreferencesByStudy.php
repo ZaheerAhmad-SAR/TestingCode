@@ -17,6 +17,8 @@ class PreferencesByStudy implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        $builder->where('study_id', 'like', session('current_study'));
+        if (null !== session('current_study')) {
+            $builder->where('study_id', 'like', session('current_study'));
+        }
     }
 }

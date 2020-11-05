@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Modules\Admin\Entities\Preference;
+use Modules\Admin\Scopes\PreferencesByStudy;
 
 class PreferencesTableSeeder extends Seeder
 {
@@ -19,7 +20,7 @@ class PreferencesTableSeeder extends Seeder
     {
         Model::unguard();
         /*********************************/
-        $preference = Preference::find(1);
+        $preference = Preference::withoutGlobalScopes()->find(1);
         if (null === $preference) {
             Preference::create([
                 'id' => 1,
@@ -40,7 +41,7 @@ class PreferencesTableSeeder extends Seeder
                 'preference_options'  => 'Transmission|Manual', //Pipe sign seperated options
             ]);
         }
-        $preference = Preference::find(2);
+        $preference = Preference::withoutGlobalScopes()->find(2);
         if (null === $preference) {
             Preference::create([
                 'id' => 2,
@@ -62,7 +63,7 @@ class PreferencesTableSeeder extends Seeder
             ]);
         }
 
-        $preference = Preference::find(3);
+        $preference = Preference::withoutGlobalScopes()->find(3);
         if (null === $preference) {
             Preference::create([
                 'id' => 3,
@@ -84,7 +85,7 @@ class PreferencesTableSeeder extends Seeder
             ]);
         }
 
-        $preference = Preference::find(4);
+        $preference = Preference::withoutGlobalScopes()->find(4);
         if (null === $preference) {
             Preference::create([
                 'id' => 4,
