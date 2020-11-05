@@ -479,7 +479,7 @@
                             <div class="modal-footer">
                                 <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                                 @if(hasPermission(auth()->user(),'studies.store'))
-                                    <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                                    <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Clone Study</button>
                                 @endif
                             </div>
                         </div>
@@ -625,17 +625,13 @@
                                     <div class="col-md-2">
                                         <input type="checkbox" name="studyPreferences" checked>
                                     </div>
-                                    <div class="col-md-2">Study Queries</div>
-                                    <div class="col-md-2">
-                                        <input type="checkbox" name="studyQueries" checked>
-                                    </div>
                                 </div>
                             </div>
 
                             <div class="modal-footer">
                                 <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                                @if(hasPermission(auth()->user(),'studies.store'))
-                                    <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                                @if(hasPermission(auth()->user(),'studies.cloneStudy'))
+                                    <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Export Study</button>
                                 @endif
                             </div>
                         </div>
