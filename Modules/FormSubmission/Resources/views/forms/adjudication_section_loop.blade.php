@@ -120,7 +120,6 @@
             </div>
         </div>
     </div>
-    @include('queries::queries.query_popup')
     @push('script')
         <script>
             function submitStepAdjudicationForm{{ $stepIdStr }}(stepIdStr, stepClsStr) {

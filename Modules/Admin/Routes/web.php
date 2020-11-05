@@ -23,6 +23,9 @@ Route::post('transmissions/transmissionData', 'TransmissionController@transmissi
 // transmissions routes
 Route::resource('transmissions', 'TransmissionController');
 
+// edit study transmission route
+Route::get('transmissions-study-edit/{id}', 'TransmissionController@transmissionsStudyEdit')->name('transmissions-study-edit');
+
 // get study vice transmissions
 Route::get('study-transmissions', 'TransmissionController@studyTransmissions')->name('transmissions.study-transmissions');
 
@@ -130,6 +133,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     Route::post('studies/studyStatus', 'StudyController@studyStatus')->name('studies.studyStatus');
     Route::post('studies/cloneStudy', 'StudyController@cloneStudy')->name('studies.cloneStudy');
+    Route::post('studies/exportStudy', 'StudyController@exportStudy')->name('studies.exportStudy');
 
     //end
     // routes for adding sections
@@ -214,4 +218,7 @@ Route::get('check-subject', 'SubjectController@checkSubject')->name('subjects.ch
 Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('preference/list', 'PreferenceController@index')->name('preference.list');
     Route::post('preference/updatePreference', 'PreferenceController@updatePreference')->name('preference.updatePreference');
+    //Add Preference
+    Route::post('preference/loadAddPreferenceForm', 'PreferenceController@loadAddPreferenceForm')->name('preference.loadAddPreferenceForm');
+    Route::post('preference/submitAddPreferenceForm', 'PreferenceController@submitAddPreferenceForm')->name('preference.submitAddPreferenceForm');
 });

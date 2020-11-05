@@ -146,7 +146,7 @@
                                     @foreach($getTransmissions as $transmission)
                                         <tr>
                                             <td>
-                                                <a href="{{route('transmissions.edit', encrypt($transmission->id))}}" id="view-transmission" class="" data-id="" title="Edit Transmission Details" data-url="" style="color: #17a2b8 !important">
+                                                <a href="{{route('transmissions-study-edit', encrypt($transmission->id))}}" id="view-transmission" class="" data-id="" title="Edit Transmission Details" data-url="" style="color: #17a2b8 !important">
                                                     {{$transmission->Transmission_Number}}
                                                 </a>
                                             </td>

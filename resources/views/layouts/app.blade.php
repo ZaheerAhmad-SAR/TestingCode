@@ -68,6 +68,7 @@
         <script src="{{ asset('public/dist/js/jquery.multi-select.js') }}"></script>
         <script src="{{ asset('public/js/fstdropdown.min.js') }}"></script>
         <script src="{{ asset('public/js/sweetalert.min.js') }}"></script>
+        <script src="{{ asset('public/js/jquery.validate.min.js') }}"></script>
 
         <!-- END: APP JS-->
 

@@ -47,7 +47,7 @@
                             @foreach($options->skiplogic as $logic)
                                 @if(!empty($logic->option_value))
                                    <?php $check_value = $logic->option_value; ?>
-                                @endif 
+                                @endif
                             @endforeach()
                             <input type="checkbox" name="option_value[]" onclick="git_steps_for_checks('{{$options_value[$key]}}','{{$key}}','{{$q_id}}','{{$value}}')" value="{{$options_value[$key]}}" @if($check_value == $options_value[$key]) checked="checked" @endif> &nbsp; {{$value}}
                        </div>
@@ -55,8 +55,8 @@
                </div>
             </div>
             <div class="row append_data_{{$options_value[$key]}}">
-               
-            </div> 
+
+            </div>
             @push('script_last')
              <script>
                  $(document).ready(function() {
@@ -67,16 +67,17 @@
                  @endphp
                  })
              </script>
-            @endpush  
+            @endpush
             @endforeach
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
             </div>
-        </form> 
+        </form>
         <!-- END: Card DATA-->
     </div>
 @endsection
+@include('admin::forms.edit_crf')
     @section('styles')
     <style type="text/css">
             /*.table{table-layout: fixed;}*/
@@ -105,7 +106,6 @@
     @section('script')
     <script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script>
     <script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
-    <script src="{{ asset('public/js/edit_crf.js') }}"></script>
     <!-- select2 -->
     <script src="{{ asset('public/dist/vendors/select2/js/select2.full.min.js') }}"></script>
     <script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
@@ -124,7 +124,7 @@
             $('.filter-form').submit();
         });
 
-       
+
         // selct initialize
         $('.user_name').select2();
         $('select[name="event_section"]').select2();
@@ -171,7 +171,7 @@
                     success: function(response) {
                         $('.'+append_class+id+'_'+index).html(response);
                     }
-                });    
+                });
         }
         function deactivate_checks(id,append_class,index,q_id,option_value,option_title){
             var url = "{{ url('skiplogic/sections_for_skip_logic_deactivate') }}"
@@ -192,7 +192,7 @@
                 success: function(response) {
                     $('.'+append_class+id+'_'+index).html(response);
                 }
-            }); 
+            });
         }
         function question_for_activate(id,append_class,index,q_id,option_value,option_title)
         {

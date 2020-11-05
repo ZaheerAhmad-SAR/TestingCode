@@ -32,13 +32,18 @@
             </div>
             <div class="col-1">@include('formsubmission::forms.form_fields.info_popup', ['question'=>$question])</div>
             @php
-            $studyObj = \Modules\Admin\Entities\Study::find($studyId);
-            $queryParams = $getAnswerArray;
-            $queryParams['form_type_id'] = $step->form_type_id;
-            $queryParams['module'] = $step->formType->form_type.' Form';
-            $queryParams['modility_id'] = $step->modility_id;
-            $queryParams['studyShortName'] = $studyObj->study_short_name;
-            $queryParams['studyTitle'] = $studyObj->study_title;
+            $queryParams = [
+                    'study_id'=>$studyId,
+                    'subject_id'=>$subjectId,
+                    'study_structures_id'=>$phase->id,
+                    'phase_steps_id'=>$step->step_id,
+                    'section_id'=>$section->id,
+                    'question_id'=>$question->id,
+                    'field_id'=>$question->formfields->id,
+                    'form_type_id'=>$step->form_type_id,
+                    'modility_id'=>$step->modility_id,
+                    'module'=>$step->formType->form_type.' Form',
+            ];
             @endphp
             <div class="col-1">@include('formsubmission::forms.form_fields.query_popup', ['queryParams'=>$queryParams])</div>
         </div>

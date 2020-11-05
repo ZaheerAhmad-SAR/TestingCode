@@ -170,7 +170,7 @@
                                               @if($value->field_type =='Certification' || $value->field_type =='Description')
                                               @else
                                                 <option value="{{ $value->id }}">{{$value->field_type }}</option>
-                                              @endif 
+                                              @endif
                                             @endforeach
                                         </select>
 
@@ -705,6 +705,7 @@
     <!-- End -->
 
 @endsection
+@include('admin::forms.edit_crf')
 @section('styles')
 <style>
     .custom_fields{
@@ -730,7 +731,6 @@
 <script src="{{ asset("public/dist/js/summernote.script.js") }}"></script>
 <script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script>
 <script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
-<script src="{{ asset('public/js/edit_crf.js') }}"></script>
 {{-- Select 2 --}}
 <script src="{{ asset('public/dist/vendors/select2/js/select2.full.min.js') }}"></script>
 <script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
@@ -753,9 +753,6 @@ $(document).ready(function(){
             $('.space_msg').html('');
             return true;
         }
-    })
-    $('.variable_name_ques').onkeyup(function(){
-        alert('Hey');
     })
 })
 $('.addOptions').on('click',function(){
@@ -1398,7 +1395,7 @@ function updateRulesDropDown(){
 }
 function check_if_name_exists(){
     var value =  $('.variable_name_ques').val()
-      step_id = $('#steps').val()  
+      step_id = $('#steps').val()
       url_route = "{{ URL('forms/check_variable') }}"
       url_route = url_route;
     $.ajax({
@@ -1418,7 +1415,7 @@ function check_if_name_exists(){
             }
         }
     });
-   
+
 }
 /**************************************************************/
 </script>
