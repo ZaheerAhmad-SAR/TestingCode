@@ -54,8 +54,8 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('steps/store_steps', 'StudyStructureController@store_steps')->name('steps.save');
     Route::post('steps/updateSteps', 'StudyStructureController@update_steps')->name('steps.update');
 
-    Route::POST('steps/activate_step/{step_id}', 'StudyStructureController@activateStep')->name('steps.activateStep');
-    Route::POST('steps/deActivate_step/{step_id}', 'StudyStructureController@deActivateStep')->name('steps.deActivateStep');
+    Route::post('steps/activate_step/{step_id}', 'StudyStructureController@activateStep')->name('steps.activateStep');
+    Route::post('steps/deActivate_step/{step_id}', 'StudyStructureController@deActivateStep')->name('steps.deActivateStep');
 
     // for Section
     Route::resource('sections', 'SectionController');
@@ -68,6 +68,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('forms/updateQuestion', 'FormController@update_questions')->name('forms.updateQuestion');
     Route::get('forms/sections_against_step/{id}', 'FormController@get_sections_against_step')->name('forms.sections_against_step');
     Route::post('forms/check_variable', 'FormController@check_variable_name')->name('forms.checkVariable');
+    Route::post('forms/isStepActive/{step_id}', 'FormController@isStepActive')->name('steps.isStepActive');
     // skip logic
     Route::resource('skiplogic', 'SkipLogicController');
     Route::get('skiplogic/sections_for_skip_logic/{id}', 'SkipLogicController@sections_skip_logic')->name('skiplogic.sectionsSkip');

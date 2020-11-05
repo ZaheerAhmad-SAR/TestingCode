@@ -2,6 +2,7 @@
 <script>
 // forms fetching validations
 $('body').on('click','.form-fields',function(){
+    if(checkIsStepActive() == false){
         $('#formfields').trigger('reset');
         $('#formfields').attr('action', "{{route('forms.addQuestions')}}");
         var type = $(this).attr("data-field-id");
@@ -27,6 +28,10 @@ $('body').on('click','.form-fields',function(){
             $('.view_to_textbox_and_number').css('display', 'none');
         }
         $('#addField').modal('show');
+        filterRulesByQuestionType();
+    }else{
+            showStepDeActivationAlert();
+        }
 
    })
 $('#question_type').on('change',function(){
