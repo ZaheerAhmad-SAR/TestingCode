@@ -104,6 +104,13 @@
                                             <span class="dropdown-item edit_steps"><i class="far fa-edit"></i>&nbsp; Edit</span>
                                             <span class="dropdown-item addsection"><i class="far fa-file-code"></i>&nbsp; Add Section</span>
                                             <span class="dropdown-item cloneStep"><i class="far fa-clone"></i>&nbsp; Clone</span>
+                                            <div id="activeStatusDiv">
+                                            @if($step_value->is_active == 0)
+                                            <span class="dropdown-item activateStep" onclick="activateStep('{{ $step_value->step_id }}');"><i class="far fa-play-circle"></i>&nbsp; Make Active</span>
+                                            @else
+                                            <span class="dropdown-item inActivateStep" onclick="deActivateStep('{{ $step_value->step_id }}');"><i class="far fa-pause-circle"></i>&nbsp; Make In-active</span>
+                                            @endif
+                                            </div>
                                             <span class="dropdown-item deleteStep"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                         </div>
                                     </div>
@@ -765,6 +772,36 @@ function get_all_phases(id,phase_class){
                }
             }
         });
+    }
+    function activateStep(step_id){
+            $.ajax({
+                url: 'steps/activate_step/'+step_id,
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'step_id': step_id
+                    },
+                success:function(res){
+                    var spanHtml = '<span class="dropdown-item inActivateStep" onclick="deActivateStep(\''+step_id+'\');"><i class="far fa-pause-circle"></i>&nbsp; Deactive</span>';
+                    $('#activeStatusDiv').html(spanHtml);
+                }
+            })
+    }
+    function deActivateStep(step_id){
+            $.ajax({
+                url: 'steps/deActivate_step/'+step_id,
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'step_id': step_id
+                    },
+                success:function(res){
+                    var spanHtml = '<span class="dropdown-item activateStep" onclick="activateStep(\''+step_id+'\');"><i class="far fa-play-circle"></i>&nbsp; Activate</span>';
+                    $('#activeStatusDiv').html(spanHtml);
+                }
+            })
     }
         </script>
 @endsection

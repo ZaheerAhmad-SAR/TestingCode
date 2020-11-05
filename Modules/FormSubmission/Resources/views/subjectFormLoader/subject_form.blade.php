@@ -97,7 +97,7 @@
                     </div>
                 </div>
             </div>
-            @if($visitActivationPreference->preference_value == 'Manual')
+            @if(\Modules\Admin\Entities\Preference::getPreference('VISIT_ACTIVATION') == 'Manual')
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
                     <div class="card-header  justify-content-between align-items-center">
