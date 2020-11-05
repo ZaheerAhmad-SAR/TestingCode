@@ -83,7 +83,7 @@
     <!-- END: Main Menu-->
     @endif
     <!-- START: Main Content-->
-    <main style="min-height: 500px;">
+    <main style="min-height: calc(100vh - 140px);">
         @yield('content')
     </main>
     <!-- END: Content-->
