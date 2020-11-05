@@ -120,9 +120,10 @@ class Query extends Model
     public static function questionHasQuery($questionQueryArray)
     {
         $query = new Query();
-        $questionQueryArray = array_intersect($query->getFillable(), $questionQueryArray);
-        $sqlQuery = self::getFormQueryObjQuery($questionQueryArray);
 
+        $questionQueryArray = array_intersect_key(array_filter($questionQueryArray), array_flip($query->getFillable()));
+        $sqlQuery = self::getFormQueryObjQuery($questionQueryArray);
+        //printSqlQuery($sqlQuery, false);
         $queryCheck   = false;
         $queryByLogin = $sqlQuery->where('queried_remarked_by_id', 'like', auth()->user()->id)
             ->where('parent_query_id', 'like', 0)
