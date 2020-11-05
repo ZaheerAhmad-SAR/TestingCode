@@ -24,6 +24,14 @@ Route::get('excel-adjudication','AdjudicationController@excelAdjudication')->nam
 // form 2 adjudication
 Route::get('excel-adjudication2','AdjudicationController@excelAdjudication2')->name('excel-adjudication2');
 
+// form 1 grading status
+Route::get('excel-grading-status','GradingController@excelGradingStatus')->name('excel.grading-status');
+// form 2 grading status
+Route::get('excel-grading2-status','GradingController@excelGradingStatus2')->name('excel.grading-status2');
+
+// grading status
+Route::get('grading-status','GradingController@gradingStatus')->name('grading.status');
+
 Route::prefix('userroles')->group(function() {
     Route::get('/', 'UserRolesController@index');
 	Route::get('getallUsers','UserRolesController@getallUsers')->name('getallUsers');

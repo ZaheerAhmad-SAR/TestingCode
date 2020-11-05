@@ -223,7 +223,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="{{route('grading.status')}}">
                                 <i class="fas fa-chart-line"></i> Grading Status
                             </a>
                         </li>
