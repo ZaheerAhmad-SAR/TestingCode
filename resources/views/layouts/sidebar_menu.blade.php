@@ -1,7 +1,7 @@
 <div class="sidebar">
     <div class="site-width">
         <!-- START: Menu-->
-        <ul id="side-menu" class="sidebar-menu" style="height: 560px;overflow-y: scroll;">
+        <ul id="side-menu" class="sidebar-menu" style="height: calc(100vh - 140px);overflow-y: scroll;">
             <li class="dropdown"><a href="#"><i class="icon-home mr-1"></i> Dashboard</a>
                 <ul class="@if(is_active('dashboard.index')) {{ 'active' }} @endif">
                   {{--  @if(hasPermission(auth()->user(),'dashboard.index'))--}}
@@ -190,79 +190,76 @@
             </li>
             @endif
             @if(hasPermission(auth()->user(),'qualitycontrol.index'))
-                <li class="dropdown"><a href="#"><i class="fas fa-sitemap"></i> Quality Control</a>
+                <li class="dropdown">
                     <ul>
-
-                        {{--
-                        <li>
-                            <a href="{{ route('transmissions.index')}}">
-                                <i class="fas fa-file-import"></i> Transmissions
-                            </a>
-                        </li>
-                        --}}
-
-                        <li>
-                            <a href="{{ route('qualitycontrol.index')}}">
-                                <i class="fas fa-list"></i> Qc List
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-chart-line"></i> Qc Status
-                            </a>
-                        </li>
+                        <li class="dropdown"><a href="#"><i class="fas fa-sitemap"></i> Quality Control</a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="{{ route('qualitycontrol.index')}}">
+                                        <i class="fas fa-list"></i> QC List
+                                    </a>
+                                </li>
+                            </ul>    
+                        </li>    
                     </ul>
                 </li>
             @endif
             @if(hasPermission(auth()->user(),'grading.index'))
-                <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Grading</a>
+                <li class="dropdown">
                     <ul>
-                        <li>
-                            <a href="{{route('grading.index')}}">
-                                <i class="fas fa-list"></i> Grading List
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-chart-line"></i> Grading Status
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-chart-line"></i> Adjudication
-                            </a>
-                        </li>
+                        <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Grading</a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="{{route('grading.index')}}">
+                                        <i class="fas fa-list"></i> Grading List
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="fas fa-chart-line"></i> Grading Status
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="fas fa-chart-line"></i> Adjudication
+                                    </a>
+                                </li>
+                            </ul>    
+                        </li>    
                     </ul>
                 </li>
             @endif
             @if(hasPermission(auth()->user(),'adjudication.index'))
-                <li class=""><a href="#"><i class="fas fa-database"></i> Adjudication</a>
+                <li class="dropdown">
                     <ul>
-                        <li>
-                            <a href="{{ route('adjudication.index')}}">
-                                <i class="fas fa-list"></i> Adjudication List
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-chart-line"></i> Adjudication Status
-                            </a>
+                        <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Adjudication</a>
+                           <ul class="sub-menu"> 
+                                <li>
+                                    <a href="{{ route('adjudication.index')}}">
+                                        <i class="fas fa-list"></i> Adjudication List
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </li>
             @endif
-            <li class=""><a href="#"><i class="fas fa-database"></i> Certification Data</a>
+            <li class="dropdown">
                 <ul>
-                    <li  class="@if(is_active('photographers.index')) {{ ' active' }} @endif">
-                        <a href="{{route('photographers.index')}}">
-                            <i class="fas fa-list"></i> Photographers List
-                        </a>
-                    </li>
-                    <li class="@if(is_active('devices_certify.index')) {{ ' active' }} @endif">
-                        <a href="{{route('devices_certify.index')}}">
-                            <i class="fas fa-list"></i> Devices List
-                        </a>
-                    </li>
+                    <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Certification Data</a>
+                        <ul class="sub-menu">
+                            <li  class="@if(is_active('photographers.index')) {{ ' active' }} @endif">
+                                <a href="{{route('photographers.index')}}">
+                                    <i class="fas fa-list"></i> Photographers List
+                                </a>
+                            </li>
+                            <li class="@if(is_active('devices_certify.index')) {{ ' active' }} @endif">
+                                <a href="{{route('devices_certify.index')}}">
+                                    <i class="fas fa-list"></i> Devices List
+                                </a>
+                            </li>
+                        </ul>
+                    </li>    
                 </ul>
             </li>
             @if(hasPermission(auth()->user(),'data_management.index'))
@@ -310,15 +307,18 @@
             @endif
 
                 @if(hasPermission(auth()->user(),'systemtools.index') && hasPermission(auth()->user(),'trail_logs.list'))
-                <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
-                    <ul >
-
-                        <li>
-                            <a href="{{route('trail_logs.list')}}">
-                                <i class="fas fa-history"></i>
-                                Audit Trail
-                            </a>
-                        </li>
+                <li class="dropdown">
+                    <ul>
+                        <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="{{route('trail_logs.list')}}">
+                                        <i class="fas fa-history"></i>
+                                        Audit Trail
+                                    </a>
+                                </li>
+                            </ul>    
+                        </li>    
                     </ul>
                 </li>
                 @elseif(hasPermission(auth()->user(),'trail_logs.list'))

@@ -97,9 +97,6 @@
                     </div>
                 </div>
             </div>
-            @php
-            $visitActivationPreference = \Modules\Admin\Entities\Preference::find(1);
-            @endphp
             @if($visitActivationPreference->preference_value == 'Manual')
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
@@ -270,6 +267,7 @@
             </div>
             <!-- END: Card DATA-->
         </div>
+        @include('queries::queries.query_popup')
         @include('formsubmission::subjectFormLoader.subject_form_wait_popup')
         @include('formsubmission::subjectFormLoader.assignPhasesToSubjectPopup')
     @stop

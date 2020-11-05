@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
+use Modules\Admin\Entities\Preference;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\Subject;
@@ -36,6 +37,9 @@ class SubjectFormLoaderController extends Controller
             ->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)
             ->get();
         /*****************/
+
+        $visitActivationPreference = Preference::find(1);
+
         session(['stepToActivateStr' => '']);
         return view('formsubmission::subjectFormLoader.subject_form')
             ->with('subjectId', $subjectId)
@@ -46,6 +50,7 @@ class SubjectFormLoaderController extends Controller
             ->with('subject', $subject)
             ->with('site', $site)
             ->with('studySite', $studySite)
+            ->with('visitActivationPreference', $visitActivationPreference)
             ->with('form_filled_by_user_id', $form_filled_by_user_id);
     }
 }

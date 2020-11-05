@@ -149,7 +149,6 @@ if(null !== $formStatusObj){
     </div>
 </div>
 </div>
-@include('queries::queries.query_popup')
 @push('script')
 <script>
     function submitStepForm{{ $stepIdStr }}(stepIdStr, stepClsStr) {

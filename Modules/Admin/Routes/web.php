@@ -23,6 +23,9 @@ Route::post('transmissions/transmissionData', 'TransmissionController@transmissi
 // transmissions routes
 Route::resource('transmissions', 'TransmissionController');
 
+// edit study transmission route
+Route::get('transmissions-study-edit/{id}', 'TransmissionController@transmissionsStudyEdit')->name('transmissions-study-edit');
+
 // get study vice transmissions
 Route::get('study-transmissions', 'TransmissionController@studyTransmissions')->name('transmissions.study-transmissions');
 
@@ -67,6 +70,8 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('skiplogic/sections_for_skip_logic_deactivate/{id}', 'SkipLogicController@sections_skip_logic_deactivate')->name('skiplogic.sectionsSkipdeactivate');
     Route::get('skiplogic/questions_for_skip_logic/{id}', 'SkipLogicController@questions_skip_logic')->name('skiplogic.questionsSkip');
     Route::get('skiplogic/questions_for_skip_logic_deactivate/{id}', 'SkipLogicController@questions_skip_logic_deactivate')->name('skiplogic.questionsSkipdeactivate');
+    Route::get('skiplogic/options_for_skip_logic_deactivate/{id}', 'SkipLogicController@options_skip_logic_deactivate')->name('skiplogic.optionsSkipdeactivate');
+
     Route::post('skiplogic/add_skip_logic', 'SkipLogicController@add_skipLogic')->name('skiplogic.apply_skip_logic');
     Route::post('skiplogic/steps_to_skip', 'SkipLogicController@getSteps_toskip')->name('skiplogic.get_steps_skip_logic');
     Route::get('skiplogic/skip_logic/{id}', 'SkipLogicController@skip_question_on_click')->name('skiplogic.skipLogic');
@@ -213,4 +218,7 @@ Route::get('check-subject', 'SubjectController@checkSubject')->name('subjects.ch
 Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('preference/list', 'PreferenceController@index')->name('preference.list');
     Route::post('preference/updatePreference', 'PreferenceController@updatePreference')->name('preference.updatePreference');
+    //Add Preference
+    Route::post('preference/loadAddPreferenceForm', 'PreferenceController@loadAddPreferenceForm')->name('preference.loadAddPreferenceForm');
+    Route::post('preference/submitAddPreferenceForm', 'PreferenceController@submitAddPreferenceForm')->name('preference.submitAddPreferenceForm');
 });

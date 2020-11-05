@@ -159,6 +159,55 @@ class TransmissionController extends Controller
         return view('admin::study_transmission_details', compact('getTransmissions', 'getModalities'));
     }
 
+     public function transmissionsStudyEdit(Request $request, $id)
+    {
+        // find the transmission
+        $findTransmission = CrushFtpTransmission::where('id', decrypt($id))->first();
+        $findTransmission->is_read = 'yes';
+        $findTransmission->qc_officerId = \Auth::user()->id;
+        $findTransmission->qc_officerName = \Auth::user()->name;
+        $findTransmission->save();
+
+        // get all sites
+        $getSites =Site::get();
+        // get all subjects
+        $getSubjects = Subject::select('subjects.id', 'subjects.subject_id')
+                                ->leftjoin('studies', 'studies.id', '=', 'subjects.study_id')
+                                ->where('studies.study_code', $findTransmission->StudyI_ID)
+                                ->get();
+        // get all phases
+        $getPhases = StudyStructure::select('study_structures.id', 'study_structures.name')
+                                    ->leftjoin('studies', 'studies.id', '=', 'study_structures.study_id')
+                                    ->where('studies.study_code', $findTransmission->StudyI_ID)
+                                    ->get();
+        // get modality
+        $getModalities = [];
+        $getStudy = Study::where('study_code', $findTransmission->StudyI_ID)->first();
+        if ($getStudy != null) {
+            // get phases for that study
+            $getStudyPhases = StudyStructure::where('study_id', $getStudy->id)->pluck('id')->toArray();
+            // fetch modalities
+            $getModalities = Modility::select('modilities.id', 'modilities.modility_name', 'phase_steps.phase_id')
+            ->leftjoin('phase_steps', 'phase_steps.modility_id', '=', 'modilities.id')
+            ->where('phase_steps.form_type_id', 1)
+            ->whereIn('phase_steps.phase_id', $getStudyPhases)
+            ->groupby('phase_steps.modility_id')
+            ->get();
+        }
+
+        // get step for this visit and aubject
+        $getStepForVisit = PhaseSteps::where('phase_id', $findTransmission->phase_id)
+                                       ->where('modility_id', $findTransmission->modility_id)
+                                       ->get()
+                                       ->count();
+
+        // get all the transmission updates
+        $getTransmissionUpdates = TransmissionUpdateDetail::where('transmission_id', decrypt($id))->get();
+
+        
+        return view('admin::study_view_transmission_details', compact('findTransmission', 'getSites', 'getSubjects', 'getPhases', 'getModalities', 'getTransmissionUpdates', 'getStepForVisit'));
+    }
+
     /**
      * Display a listing of the resource.
      * @return Renderable
@@ -285,7 +334,7 @@ class TransmissionController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         // find the transmission
         $findTransmission = CrushFtpTransmission::where('id', decrypt($id))->first();
@@ -330,7 +379,10 @@ class TransmissionController extends Controller
         // get all the transmission updates
         $getTransmissionUpdates = TransmissionUpdateDetail::where('transmission_id', decrypt($id))->get();
 
-        return view('admin::view_transmission_details', compact('findTransmission', 'getSites', 'getSubjects', 'getPhases', 'getModalities', 'getTransmissionUpdates', 'getStepForVisit'));
+        // get studies
+        $systemStudies = Study::get();
+        
+        return view('admin::view_transmission_details', compact('findTransmission', 'getSites', 'getSubjects', 'getPhases', 'getModalities', 'getTransmissionUpdates', 'getStepForVisit', 'systemStudies'));
     }
 
     /**
@@ -355,6 +407,8 @@ class TransmissionController extends Controller
             $findTransmission->sit_id = $siteID[0];
             $findTransmission->Site_ID = $siteID[1];
         }
+
+        $findTransmission->StudyI_ID = isset($request->d_study_id) ? $request->d_study_id : $findTransmission->StudyI_ID;
 
         $findTransmission->Site_Name = $request->d_site_name;
         $findTransmission->Site_state = $request->d_site_state;

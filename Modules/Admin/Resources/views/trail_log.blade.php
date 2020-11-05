@@ -163,7 +163,7 @@
                                         <td>{{$log->event_message}}</td>
 
                                         <td>{{$log->ip_address}}</td>
-                                        <td>{{$log->created_at}}</td>
+                                        <td>{{ date('d-M-Y h:m:i a', strtotime($log->created_at))}}</td>
                                     </tr>
                                     <tr class="collapse row-{{$log->id}}">
                                         <td colspan="6">
