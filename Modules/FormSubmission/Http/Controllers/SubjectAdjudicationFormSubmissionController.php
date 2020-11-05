@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
+use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\Section;
 use Modules\FormSubmission\Entities\FinalAnswer;
 use Modules\FormSubmission\Entities\AdjudicationFormRevisionHistory;
@@ -20,42 +21,46 @@ class SubjectAdjudicationFormSubmissionController extends Controller
 
     public function submitAdjudicationForm(Request $request)
     {
-        $adjudicationFormRevisionDataArray = ['adjudication_form_edit_reason_text' => $request->input('adjudication_form_edit_reason_text', '')];
-        $sectionIds = $request->sectionId;
-        foreach ($sectionIds as $sectionId) {
-            $section = Section::find($sectionId);
-            $questions = $section->questions;
-            foreach ($questions as $question) {
-                $adjudicationFormRevisionDataArray['adjudication_form_data'][] = $this->putFinalAnswer($request, $question);
+        if (PhaseSteps::isStepActive($request->stepId)) {
+            $adjudicationFormRevisionDataArray = ['adjudication_form_edit_reason_text' => $request->input('adjudication_form_edit_reason_text', '')];
+            $sectionIds = $request->sectionId;
+            foreach ($sectionIds as $sectionId) {
+                $section = Section::find($sectionId);
+                $questions = $section->questions;
+                foreach ($questions as $question) {
+                    $adjudicationFormRevisionDataArray['adjudication_form_data'][] = $this->putFinalAnswer($request, $question);
+                }
             }
+
+            $adjudicationFormStatusArray = AdjudicationFormStatus::putAdjudicationFormStatus($request);
+            AdjudicationFormRevisionHistory::putAdjudicationFormRevisionHistory($adjudicationFormRevisionDataArray, $adjudicationFormStatusArray['id']);
+
+            /**************************** */
+            /**************************** */
+            $questionAdjudicationRequiredArray = [
+                'study_id' => $request->studyId,
+                'subject_id' => $request->subjectId,
+                'study_structures_id' => $request->phaseId,
+                'phase_steps_id' => $request->stepId,
+            ];
+            QuestionAdjudicationRequired::deleteAdjudicationRequiredQuestion($questionAdjudicationRequiredArray);
+            /**************************** */
+            /**************************** */
+
+            echo json_encode($adjudicationFormStatusArray);
         }
-
-        $adjudicationFormStatusArray = AdjudicationFormStatus::putAdjudicationFormStatus($request);
-        AdjudicationFormRevisionHistory::putAdjudicationFormRevisionHistory($adjudicationFormRevisionDataArray, $adjudicationFormStatusArray['id']);
-
-        /**************************** */
-        /**************************** */
-        $questionAdjudicationRequiredArray = [
-            'study_id' => $request->studyId,
-            'subject_id' => $request->subjectId,
-            'study_structures_id' => $request->phaseId,
-            'phase_steps_id' => $request->stepId,
-        ];
-        QuestionAdjudicationRequired::deleteAdjudicationRequiredQuestion($questionAdjudicationRequiredArray);
-        /**************************** */
-        /**************************** */
-
-        echo json_encode($adjudicationFormStatusArray);
     }
 
     public function submitAdjudicationFormQuestion(Request $request)
     {
-        $adjudicationFormRevisionDataArray = ['adjudication_form_edit_reason_text' => ''];
-        $question = Question::find($request->questionId);
-        $adjudicationFormRevisionDataArray['adjudication_form_data'][] = $this->putFinalAnswer($request, $question);
-        $adjudicationFormStatusArray = AdjudicationFormStatus::putAdjudicationFormStatus($request);
-        AdjudicationFormRevisionHistory::putAdjudicationFormRevisionHistory($adjudicationFormRevisionDataArray, $adjudicationFormStatusArray['id']);
-        echo json_encode($adjudicationFormStatusArray);
+        if (PhaseSteps::isStepActive($request->stepId)) {
+            $adjudicationFormRevisionDataArray = ['adjudication_form_edit_reason_text' => ''];
+            $question = Question::find($request->questionId);
+            $adjudicationFormRevisionDataArray['adjudication_form_data'][] = $this->putFinalAnswer($request, $question);
+            $adjudicationFormStatusArray = AdjudicationFormStatus::putAdjudicationFormStatus($request);
+            AdjudicationFormRevisionHistory::putAdjudicationFormRevisionHistory($adjudicationFormRevisionDataArray, $adjudicationFormStatusArray['id']);
+            echo json_encode($adjudicationFormStatusArray);
+        }
     }
 
 
