@@ -611,7 +611,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         // get event data
         $eventData = CrushFtpTransmission::find($eventId);
         // set message for audit
-        $auditMessage = \Auth::user()->name . ' updated transmission data of ' . $eventData->Transmission_Number.'.';
+        $auditMessage = \Auth::user()->name . ' updated transmission data of ' . $eventData->Transmission_Number . '.';
         // set audit url
         $auditUrl = url('transmissions');
         // store data in event array
@@ -620,7 +620,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             'study_id' => $eventData->StudyI_ID,
             'study_name' => $eventData->Study_Name,
             'sponsor' => $eventData->sponsor,
-            'submitter_name' => $eventData->Submitter_First_Name.' '.$eventData->Submitter_Last_Name,
+            'submitter_name' => $eventData->Submitter_First_Name . ' ' . $eventData->Submitter_Last_Name,
             'submitter_email' => $eventData->Submitter_email,
             'submitter_phone' => $eventData->Submitter_phone,
             'submitter_role' => $eventData->Submitter_Role,
@@ -651,39 +651,39 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         if ($eventType == 'Update') {
             // store data in event array
             $oldData = array(
-               'transmission_number' => $previousData->Transmission_Number,
-            'study_id' => $previousData->StudyI_ID,
-            'study_name' => $previousData->Study_Name,
-            'sponsor' => $previousData->sponsor,
-            'submitter_name' => $previousData->Submitter_First_Name.' '.$previousData->Submitter_Last_Name,
-            'submitter_email' => $previousData->Submitter_email,
-            'submitter_phone' => $previousData->Submitter_phone,
-            'submitter_role' => $previousData->Submitter_Role,
-            'site_id' => $previousData->Site_ID,
-            'site_name' => $previousData->Site_Name,
-            'site_initials' => $previousData->Site_Initials,
-            'site_st_address' => $previousData->Site_st_address,
-            'site_city' => $previousData->Site_city,
-            'site_state' => $previousData->Site_state,
-            'site_zip' => $previousData->Site_Zip,
-            'site_country' => $previousData->Site_country,
-            'pi_name' => $previousData->PI_Name,
-            'pi_email' => $previousData->PI_email,
-            'subject_id' => $previousData->Subject_ID,
-            'study_eye' => $previousData->StudyEye,
-            'visit_name' => $previousData->visit_name,
-            'visit_date' => $previousData->visit_date,
-            'image_modality' => $previousData->ImageModality,
-            'device_model' => $previousData->device_model,
-            'submitted_by' => $previousData->Submitted_By,
-            'photographer_full_name' => $previousData->photographer_full_name,
-            'photographer_email' => $previousData->photographer_email,
-            'status' => $previousData->status,
-            'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
-            'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+                'transmission_number' => $previousData->Transmission_Number,
+                'study_id' => $previousData->StudyI_ID,
+                'study_name' => $previousData->Study_Name,
+                'sponsor' => $previousData->sponsor,
+                'submitter_name' => $previousData->Submitter_First_Name . ' ' . $previousData->Submitter_Last_Name,
+                'submitter_email' => $previousData->Submitter_email,
+                'submitter_phone' => $previousData->Submitter_phone,
+                'submitter_role' => $previousData->Submitter_Role,
+                'site_id' => $previousData->Site_ID,
+                'site_name' => $previousData->Site_Name,
+                'site_initials' => $previousData->Site_Initials,
+                'site_st_address' => $previousData->Site_st_address,
+                'site_city' => $previousData->Site_city,
+                'site_state' => $previousData->Site_state,
+                'site_zip' => $previousData->Site_Zip,
+                'site_country' => $previousData->Site_country,
+                'pi_name' => $previousData->PI_Name,
+                'pi_email' => $previousData->PI_email,
+                'subject_id' => $previousData->Subject_ID,
+                'study_eye' => $previousData->StudyEye,
+                'visit_name' => $previousData->visit_name,
+                'visit_date' => $previousData->visit_date,
+                'image_modality' => $previousData->ImageModality,
+                'device_model' => $previousData->device_model,
+                'submitted_by' => $previousData->Submitted_By,
+                'photographer_full_name' => $previousData->photographer_full_name,
+                'photographer_email' => $previousData->photographer_email,
+                'status' => $previousData->status,
+                'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+                'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
             );
 
-            $auditMessage = \Auth::user()->name . ' updated transmission data of ' . $eventData->Transmission_Number.'.';
+            $auditMessage = \Auth::user()->name . ' updated transmission data of ' . $eventData->Transmission_Number . '.';
         } // update case ends
 
         //////////////////////////////// Transmission Data //////////////////////////////
@@ -878,8 +878,12 @@ function canEligibility($permissionsArray = ['index', 'create', 'store', 'edit',
     $permissionText = 'eligibility.';
     return checkPermission($permissionText, $permissionsArray);
 }
-function printSqlQuery($builder)
+function printSqlQuery($builder, $dd = true)
 {
     $query = vsprintf(str_replace(array('?'), array('\'%s\''), $builder->toSql()), $builder->getBindings());
-    echo $query;
+    if ($dd) {
+        dd($query);
+    } else {
+        echo ($query);
+    }
 }

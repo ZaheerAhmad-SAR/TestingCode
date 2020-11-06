@@ -1,3 +1,4 @@
+@if($step->is_active == 1)
 @php
 $getAdjudicationFormStatusArray = [
 'subject_id' => $subjectId,
@@ -28,4 +29,5 @@ $getAdjudicationFormStatusArray);
         <button type="button" class="btn btn-primary prevtab">Previous</button>
         <button type="button" class="btn btn-primary nexttab ml-auto {{ 'next_' . $sectionClsStr }}">Next</button>
     </div>
+@endif
 @endif

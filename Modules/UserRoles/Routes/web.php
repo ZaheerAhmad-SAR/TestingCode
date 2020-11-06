@@ -10,7 +10,8 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+Route::post('/users/invite', 'UserController@process_invites')->name('process_invite');
+Route::get('/registration/{token}', 'UserController@registration_view')->name('registration');
 // form 1 grading
 Route::get('excel-grading','GradingController@excelGrading')->name('excel-grading');
 // form 2 grading
@@ -44,8 +45,7 @@ Route::group(['middleware' => ['auth','web','roles']],function(){
 
     //Invitation_Routes
     Route::get('/users/invite', 'UserController@invite_view')->name('invite_view');
-    Route::post('/users/invite', 'UserController@process_invites')->name('process_invite');
-    Route::get('/registration/{token}', 'UserController@registration_view')->name('registration');
+
 
 
     Route::resource('roles','RoleController');
