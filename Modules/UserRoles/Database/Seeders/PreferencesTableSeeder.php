@@ -26,7 +26,6 @@ class PreferencesTableSeeder extends Seeder
             $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'VISIT_ACTIVATION')->first();
             if (null === $preference) {
                 Preference::create([
-                    'id' => 1,
                     'study_id' => $study->id,
                     'preference_title'    => 'VISIT_ACTIVATION',
                     'preference_value'    => 'Manual',
@@ -39,7 +38,6 @@ class PreferencesTableSeeder extends Seeder
             $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'STUDY_EMAIL')->first();
             if (null === $preference) {
                 Preference::create([
-                    'id' => 2,
                     'study_id' => $study->id,
                     'preference_title'    => 'STUDY_EMAIL',
                     'preference_value'    => 'study_email@study.com',
@@ -53,7 +51,6 @@ class PreferencesTableSeeder extends Seeder
             $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'STUDY_CC_EMAILS')->first();
             if (null === $preference) {
                 Preference::create([
-                    'id' => 3,
                     'study_id' => $study->id,
                     'preference_title'    => 'STUDY_CC_EMAILS',
                     'preference_value'    => 'studyEmail1@study.com,studyEmail2@study.com,studyEmail3@study.com',
@@ -67,7 +64,6 @@ class PreferencesTableSeeder extends Seeder
             $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'PER_PAGE_PAGINATION')->first();
             if (null === $preference) {
                 Preference::create([
-                    'id' => 4,
                     'study_id' => $study->id,
                     'preference_title'    => 'PER_PAGE_PAGINATION',
                     'preference_value'    => '25',
