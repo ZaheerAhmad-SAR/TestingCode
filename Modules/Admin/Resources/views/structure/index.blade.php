@@ -106,9 +106,9 @@
                                             <span class="dropdown-item cloneStep"><i class="far fa-clone"></i>&nbsp; Clone</span>
                                             <div id="activeStatusDiv">
                                             @if($step_value->is_active == 0)
-                                            <span class="dropdown-item activateStep" onclick="activateStep('{{ $step_value->step_id }}');"><i class="far fa-play-circle"></i>&nbsp; Make Active</span>
+                                            <span class="dropdown-item activateStep" onclick="activateStep('{{ $step_value->step_id }}');"><i class="far fa-play-circle"></i>&nbsp; Put In Production Mode</span>
                                             @else
-                                            <span class="dropdown-item inActivateStep" onclick="deActivateStep('{{ $step_value->step_id }}');"><i class="far fa-pause-circle"></i>&nbsp; Make In-active</span>
+                                            <span class="dropdown-item inActivateStep" onclick="deActivateStep('{{ $step_value->step_id }}');"><i class="far fa-pause-circle"></i>&nbsp; Put In Draft Mode</span>
                                             @endif
                                             </div>
                                             <span class="dropdown-item deleteStep"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
@@ -783,7 +783,7 @@ function get_all_phases(id,phase_class){
                     'step_id': step_id
                     },
                 success:function(res){
-                    var spanHtml = '<span class="dropdown-item inActivateStep" onclick="deActivateStep(\''+step_id+'\');"><i class="far fa-pause-circle"></i>&nbsp; Deactive</span>';
+                    var spanHtml = '<span class="dropdown-item inActivateStep" onclick="deActivateStep(\''+step_id+'\');"><i class="far fa-pause-circle"></i>&nbsp; Put In Draft Mode</span>';
                     $('#activeStatusDiv').html(spanHtml);
                 }
             })
@@ -798,7 +798,7 @@ function get_all_phases(id,phase_class){
                     'step_id': step_id
                     },
                 success:function(res){
-                    var spanHtml = '<span class="dropdown-item activateStep" onclick="activateStep(\''+step_id+'\');"><i class="far fa-play-circle"></i>&nbsp; Activate</span>';
+                    var spanHtml = '<span class="dropdown-item activateStep" onclick="activateStep(\''+step_id+'\');"><i class="far fa-play-circle"></i>&nbsp; Put In Production Mode</span>';
                     $('#activeStatusDiv').html(spanHtml);
                 }
             })
