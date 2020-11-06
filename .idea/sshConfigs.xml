@@ -5,6 +5,9 @@
       <sshConfig authType="PASSWORD" host="159.89.201.37" id="041f73ed-193c-49ae-82a2-8a217d994dc4" port="22" customName="2stravel" nameFormat="CUSTOM">
         <option name="customName" value="2stravel" />
       </sshConfig>
+      <sshConfig host="devocap.oirrc.net" id="535d3ff9-00ae-41d6-b7f2-713e0d266a2c" keyPath="C:\Users\HP\.ssh\known_hosts" port="22" customName="ocap" nameFormat="CUSTOM">
+        <option name="customName" value="ocap" />
+      </sshConfig>
     </configs>
   </component>
 </project>
