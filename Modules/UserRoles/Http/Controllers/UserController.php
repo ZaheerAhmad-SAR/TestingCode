@@ -420,12 +420,12 @@ class UserController extends Controller
             }
         });
         if ($validator->fails()) {
-            return redirect(route('invite_view'))
+            return redirect(route('users.index'))
                 ->withErrors($validator)
                 ->withInput();
         }
         do {
-            $token = Str::random(6);
+            $token = Str::random(15);
         } while (Invitation::where('token', $token)->first());
         Invitation::create([
             'id'    => Str::uuid(),
