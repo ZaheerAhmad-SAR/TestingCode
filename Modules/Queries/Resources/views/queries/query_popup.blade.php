@@ -146,6 +146,36 @@
     </div>
 </div>
 <!-- queries-model-form end -->
+
+<div class="modal fade" tabindex="-1" role="dialog" id="show-question-table-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
+    <div class="modal-dialog  modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="alert alert-danger" style="display:none"></div>
+            <div class="modal-header ">
+                <p class="modal-title">All Question Queries</p>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table id="example" class="display table dataTable table-striped table-bordered" >
+                        <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>Query Subject</th>
+                            <th>Submited By</th>
+                            <th>Assigned To</th>
+                            <th>Created Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody class="queriesquestionList"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @push('styles')
 <!-- Queries Model style sheet start -->
 <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2.min.css") }}"/>
@@ -188,6 +218,46 @@
             loadUserDropDownList(study_id);
 
         }
+
+        function getAllQuestionQueryData(study_id, subject_id,
+          study_structures_id, phase_steps_id,
+          section_id, question_id, field_id,
+          form_type_id, modility_id, module){
+            $('#study_id').val(study_id);
+            $('#question_id').val(question_id);
+            $('#phase_steps_id').val(phase_steps_id);
+            $('#section_id').val(section_id);
+            $('#subject_id').val(subject_id);
+            $('#study_structures_id').val(study_structures_id);
+            $('#field_id').val(field_id);
+            $('#modility_id').val(modility_id);
+            $('#module').val(module);
+            $('#form_type_id').val(form_type_id);
+            openQuestionTableView(question_id);
+        }
+
+    $('.showAllQuestionQueries').click(function () {
+        $('#show-question-table-modal').modal('show');
+    });
+
+
+    function openQuestionTableView(question_id) {
+        $.ajax({
+            url:"{{route('queries.loadAllQuestionById')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'POST',
+                'question_id'      :question_id,
+            },
+            success: function(response)
+            {
+                $('.queriesquestionList').html('');
+                $('.queriesquestionList').html(response);
+            }
+        });
+    }
+
 
     $("#queriesQuestionForm").on('submit', function(e)
     {

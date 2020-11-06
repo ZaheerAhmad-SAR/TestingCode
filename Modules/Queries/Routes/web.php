@@ -20,6 +20,7 @@ Route::group(['middleware' => ['auth','web']],function(){
     Route::get('queries/chatindex','QueriesController@chatindex')->name('queries.chatindex');
     Route::post('queries/loadHtml', 'QueriesController@loadHtml')->name('queries.loadHtml');
     Route::post('queries/loadAllQueriesByStudyId', 'QueriesController@loadAllQueriesByStudyId')->name('queries.loadAllQueriesByStudyId');
+    Route::post('queries/loadAllQuestionById', 'QueriesController@loadAllQuestionById')->name('queries.loadAllQuestionById');
     Route::post('queries/showCommentsById', 'QueriesController@showCommentsById')->name('queries.showCommentsById');
     Route::post('queries/queryReply', 'QueriesController@queryReply')->name('queries.queryReply');
     Route::post('queries/getStudyDataByStudyId', 'QueriesController@getStudyDataByStudyId')->name('queries.getStudyDataByStudyId');
