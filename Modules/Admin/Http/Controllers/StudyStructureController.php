@@ -251,4 +251,18 @@ class StudyStructureController extends Controller
         $step = PhaseSteps::find($step_id);
         $this->deleteStep($step);
     }
+
+    public function activateStep($step_id)
+    {
+        $step = PhaseSteps::find($step_id);
+        $this->activateStepToReplicatedVisits($step);
+        $this->activateThisStep($step);
+    }
+
+    public function deActivateStep($step_id)
+    {
+        $step = PhaseSteps::find($step_id);
+        $this->deActivateStepToReplicatedVisits($step);
+        $this->deActivateThisStep($step);
+    }
 }

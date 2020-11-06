@@ -16,17 +16,17 @@
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
         <div class="row">
+            @if(session()->has('message'))
+                <div class="col-lg-12 success-alert">
+                    <div class="alert alert-primary success-msg" role="alert">
+                        {{ session()->get('message') }}
+                        <button class="close" data-dismiss="alert">&times;</button>
+                    </div>
+                </div>
+            @endif
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+
                     <div class="card-header d-flex align-items-center">
                             @if(hasPermission(auth()->user(),'users.create'))
                                 <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#createUser">
@@ -51,7 +51,6 @@
                     <div class="card-body">
                         <div class="table-responsive list">
                             <table class="table table-bordered editable-table" id="laravel_crud">
-                                @if(hasPermission(auth()->user(),'systemtools.index') && empty(session('current_study')))
                                     <thead>
                                     <tr>
                                         <th scope="col">Name</th>
@@ -62,7 +61,7 @@
                                     </tr>
                                     </thead>
                                     <tbody id="users-crud">
-                                @foreach($users as $user)
+                                        @foreach($users as $user)
                                     <tr>
                                         <td>{{ucfirst($user->name)}}</td>
                                         <td>{{$user->email}}</td>
@@ -90,43 +89,8 @@
                                         </td>
                                     </tr>
                                 @endforeach
-                                    @endif
                                     </tbody>
-                                @if(hasPermission(auth()->user(),'studytools.index') && !empty(session('current_study')))
-                                        <thead>
-                                        <tr>
-                                            <th scope="col">Name</th>
-                                            <th scope="col">Email</th>
-                                            <th scope="col">Role</th>
-                                            <th scope="col">Actions</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody id="users-crud">
-                                    @foreach($studyusers as $user)
-                                        <tr>
-                                            <td>{{ucfirst($user->name)}}</td>
-                                            <td>{{$user->email}}</td>
-                                            <td>{{$user->role_name}}</td>
-                                            <td>
-                                                <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                                    <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
-                                                    <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                                <span class="dropdown-item">
-                                                    <a href="{!! route('users.edit',$user->id) !!}">
-                                                        <i class="far fa-edit"></i>&nbsp; Edit
-                                                    </a>
-                                                </span>
-                                                        <span class="dropdown-item">
-                                                    <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
-                                                        <i class="far fa-edit"></i>&nbsp; Delete </a>
-                                                    </span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                                    @endif
+
                             </table>
                         </div>
                     </div>
@@ -138,6 +102,15 @@
     <!-- modal code  -->
     <div class="modal fade" tabindex="-1" role="dialog" id="createUser">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header">
@@ -178,7 +151,11 @@
                                         @error('password')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
+                                        <p id="passwordHelpBlock" class="form-text text-muted">
+                                            Your password must be 8 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.
+                                        </p>
                                     </div>
+
                                 </div>
                                 <div class="form-group row">
                                     <label for="C-Password" class="col-md-3">Confirm Password</label>

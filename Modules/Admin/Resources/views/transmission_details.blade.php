@@ -291,9 +291,8 @@
                                             @endforeach
                                         </select>
                                     </div>
-                                    <label for="Name" class="col-sm-2 col-form-label"> Select Users :</label>
+                                    <label for="Name" id="usersList" class="col-sm-2 col-form-label" style="display: none;"> Select Users :</label>
                                     <div class="col-sm-4 primaryList">
-
                                     </div>
 
                                 </div>
@@ -309,7 +308,7 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label for="Name" class="col-sm-2 col-form-label">Query Subject:</label>
+                                    <label for="Name" class="col-sm-2 col-form-label">Subject:</label>
                                     <div class="col-sm-10">
                                         <input class="form-control" type="text" name="query_subject" minlength="6" maxlength="50" id="query_subject">
                                     </div>
@@ -363,6 +362,11 @@
         $('#transmissonQueryModal').modal('show');
     });
 
+    $('#transmissonQueryModal').on('hidden.bs.modal', function () {
+        $(this).find("input,textarea,select").val('').end();
+        $('#usersList').css('display','');
+    });
+
     $(".sitesChange").change(function () {
         var selectedText = $(this).find("option:selected").text();
         var selectedValue = $(this).val();
@@ -382,6 +386,7 @@
             success: function(response)
             {
                 $('.primaryList').html('');
+                $('#usersList').css('display','');
                 $('.primaryList').html(response);
             }
         });

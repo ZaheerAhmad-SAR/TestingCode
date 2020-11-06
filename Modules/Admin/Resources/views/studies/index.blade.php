@@ -25,6 +25,7 @@
                 <div class="col-lg-12 success-alert">
                     <div class="alert alert-primary success-msg" role="alert">
                         {{ session()->get('message') }}
+                        <button class="close" data-dismiss="alert">&times;</button>
                     </div>
                 </div>
             @endif
@@ -479,7 +480,7 @@
                             <div class="modal-footer">
                                 <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                                 @if(hasPermission(auth()->user(),'studies.store'))
-                                    <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                                    <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Clone Study</button>
                                 @endif
                             </div>
                         </div>
@@ -625,17 +626,13 @@
                                     <div class="col-md-2">
                                         <input type="checkbox" name="studyPreferences" checked>
                                     </div>
-                                    <div class="col-md-2">Study Queries</div>
-                                    <div class="col-md-2">
-                                        <input type="checkbox" name="studyQueries" checked>
-                                    </div>
                                 </div>
                             </div>
 
                             <div class="modal-footer">
                                 <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                                @if(hasPermission(auth()->user(),'studies.store'))
-                                    <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                                @if(hasPermission(auth()->user(),'studies.cloneStudy'))
+                                    <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Export Study</button>
                                 @endif
                             </div>
                         </div>
@@ -644,7 +641,7 @@
             </div>
         </div>
     </div>
-
+    <!-- status change Study -->
     <div class="modal fade" id="change_status" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
@@ -677,6 +674,7 @@
             </div>
         </div>
     </div>
+
 
     <div class="modal fade" tabindex="-1" role="dialog" id="all-queries-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
         <div class="modal-dialog  modal-lg modal-dialog-centered" role="document">
@@ -872,11 +870,11 @@
             });
             $('body').on('click', '#delete-study', function () {
                 var study_id = $(this).data("id");
-                confirm("Are You sure want to delete !");
                 $.ajax({
                     type: "DELETE",
                     url: "{{ url('studies')}}"+'/'+study_id,
                     success: function (data) {
+                        confirm("Are You sure want to delete !");
                         $("#study_id_" + study_id).remove();
                         if(data.success == true){ // if true (1)
                             setTimeout(function(){// wait for 5 secs(2)

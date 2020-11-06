@@ -11,6 +11,7 @@ use Modules\FormSubmission\Entities\Answer;
 use Modules\FormSubmission\Entities\FormRevisionHistory;
 use Modules\FormSubmission\Entities\FormStatus;
 use Modules\Admin\Entities\Question;
+use Modules\FormSubmission\Entities\FormVersion;
 use Modules\FormSubmission\Traits\QuestionDataValidation;
 
 class SubjectFormSubmissionController extends Controller
@@ -19,48 +20,55 @@ class SubjectFormSubmissionController extends Controller
 
     public function submitForm(Request $request)
     {
-        $editReason = $request->input('edit_reason_text', '');
-        $formRevisionDataArray = ['edit_reason_text' => $editReason];
-        $trailLogDataArray['trail_log']['edit_reason'] = $editReason;
+        if (PhaseSteps::isStepActive($request->stepId)) {
+            $editReason = $request->input('edit_reason_text', '');
+            $formRevisionDataArray = ['edit_reason_text' => $editReason];
+            $trailLogDataArray['trail_log']['edit_reason'] = $editReason;
 
-        $sectionIds = $request->sectionId;
-        foreach ($sectionIds as $sectionId) {
-            $section = Section::find($sectionId);
-            $questions = $section->questions;
-            foreach ($questions as $question) {
-                $retArray = $this->putAnswer($request, $question);
-                $formRevisionDataArray['form_data'][] = $retArray['form_data'];
-                $trailLogDataArray['trail_log'][] = $retArray['trail_log'];
+            $sectionIds = $request->sectionId;
+            foreach ($sectionIds as $sectionId) {
+                $section = Section::find($sectionId);
+                $questions = $section->questions;
+                foreach ($questions as $question) {
+                    $retArray = $this->putAnswer($request, $question);
+                    $formRevisionDataArray['form_data'][] = $retArray['form_data'];
+                    $trailLogDataArray['trail_log'][] = $retArray['trail_log'];
+                }
             }
-        }
-        $formStatusArray = FormStatus::putFormStatus($request);
-        FormRevisionHistory::putFormRevisionHistory($formRevisionDataArray, $formStatusArray['id']);
+            $formStatusArray = FormStatus::putFormStatus($request);
+            FormRevisionHistory::putFormRevisionHistory($formRevisionDataArray, $formStatusArray['id']);
 
-        /***********************
-         *  Trail Log
-         */
-        $formAddOrEdit = 'Add';
-        if (!empty($editReason)) {
-            $formAddOrEdit = 'Update';
+            /***********************
+             *  Trail Log
+             */
+            $formAddOrEdit = 'Add';
+            if (!empty($editReason)) {
+                $formAddOrEdit = 'Update';
+            }
+            eventDetails($trailLogDataArray['trail_log'], 'Form', $formAddOrEdit, request()->ip, []);
+            /********************* */
+            echo json_encode($formStatusArray);
         }
-        eventDetails($trailLogDataArray['trail_log'], 'Form', $formAddOrEdit, request()->ip, []);
-        /********************* */
-        echo json_encode($formStatusArray);
     }
 
     public function submitQuestion(Request $request)
     {
-        $formRevisionDataArray = ['edit_reason_text' => ''];
-        $question = Question::find($request->questionId);
-        $formRevisionDataArray['form_data'][] = $this->putAnswer($request, $question);
-        $formStatusArray = FormStatus::putFormStatus($request);
-        FormRevisionHistory::putFormRevisionHistory($formRevisionDataArray, $formStatusArray['id']);
-        echo json_encode($formStatusArray);
+        if (PhaseSteps::isStepActive($request->stepId)) {
+            $formRevisionDataArray = ['edit_reason_text' => ''];
+            $question = Question::find($request->questionId);
+            $formRevisionDataArray['form_data'][] = $this->putAnswer($request, $question);
+            $formStatusArray = FormStatus::putFormStatus($request);
+            FormRevisionHistory::putFormRevisionHistory($formRevisionDataArray, $formStatusArray['id']);
+            echo json_encode($formStatusArray);
+        }
     }
 
 
     private function putAnswer($request, $question)
     {
+        $step = PhaseSteps::find($request->stepId);
+        $formVersion = PhaseSteps::getFormVersion($step->step_id);
+
         $formDataArray = [];
         $finalFormDataArray = [];
         $trailLogArray = [];
@@ -71,8 +79,6 @@ class SubjectFormSubmissionController extends Controller
         $answerFixedArray['phase_steps_id'] = $request->stepId;
         $answerFixedArray['section_id'] = $question->section->id;
         $answerFixedArray['form_filled_by_user_id'] = auth()->user()->id;
-
-        $step = PhaseSteps::find($request->stepId);
 
         $form_field_name = buildFormFieldName($question->formFields->variable_name);
         $form_field_id = $question->formFields->id;
@@ -95,10 +101,12 @@ class SubjectFormSubmissionController extends Controller
             /************************** */
             if ($answerObj) {
                 $answerArray['answer'] = $answer;
+                $answerArray['form_version_num'] = $formVersion->form_version_num;
                 $answerObj->update($answerArray);
             } else {
                 $answerArray['id'] = Str::uuid();
                 $answerArray['answer'] = $answer;
+                $answerArray['form_version_num'] = $formVersion->form_version_num;
                 $answerObj = Answer::create($answerArray);
             }
             $trailLogArray = $answerArray;

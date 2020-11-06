@@ -9,8 +9,10 @@ class Answer extends Model
 {
     use SoftDeletes;
     protected $table = 'answer';
-    protected $fillable = ['id', 'form_filled_by_user_id', 'grader_id', 'adjudicator_id', 'subject_id', 'study_id', 'study_structures_id',
-        'phase_steps_id', 'section_id', 'question_id', 'field_id', 'answer', 'is_answer_accepted'];
+    protected $fillable = [
+        'id', 'form_filled_by_user_id', 'grader_id', 'adjudicator_id', 'subject_id', 'study_id', 'study_structures_id',
+        'phase_steps_id', 'section_id', 'question_id', 'field_id', 'answer', 'is_answer_accepted', 'form_version_num'
+    ];
     protected $keyType = 'string';
 
     public function question()
