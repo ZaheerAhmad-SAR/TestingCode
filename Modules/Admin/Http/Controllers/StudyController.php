@@ -64,8 +64,6 @@ class StudyController extends Controller
             $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->orderBy('name','asc')->get();
             $sites = Site::all();
             $study = '';
-//            dd($studies);
-
         }
         else{
             $user=\auth()->user()->id;
@@ -144,21 +142,7 @@ class StudyController extends Controller
      * @return Response
      */
     public function store(Request $request){
-        $this->validate($request,[
-            'study_short_name'  => 'required',
-            'study_title'  => 'required',
-            'study_status'  => 'required',
-            'study_code'  => 'required',
-            'protocol_number'  => 'required',
-            'study_phase'  => 'required',
-            'trial_registry_id'  => 'required',
-            'study_sponsor'  => 'required',
-            'start_date'  => 'required',
-            'end_date'  => 'required',
-            'description'  => 'required',
-            'name'  => 'required',
-            'users'  => 'required',
-        ]);
+
         $id    = Str::uuid();
         $study = Study::create([
             'id'    => $id,
@@ -193,13 +177,16 @@ class StudyController extends Controller
         $id    = Str::uuid();
         $users = [];
         if (isset($request->users) && count($request->users) > 0) {
-            for ($i = 0; $i < count($request->users); $i++) {
-                $users = [
-                    'id' => Str::uuid(),
-                    'study_id' =>$last_id->id,
-                    'user_id' => $request->users[$i],
-                ];
-                StudyUser::insert($users);
+            foreach ($request->users as $user){
+                $get_role = UserRole::where('user_id','=',$user)->get();
+               if (!empty($get_role)){
+                   dd('sdfdsf');
+                   $get_role->study_id = $id;
+                   $get_role->save();
+               }
+               else{
+                   dd('jhkjdsfhkjsdhfjk');
+               }
             }
         }
 
@@ -224,7 +211,6 @@ class StudyController extends Controller
             ->join('studies','studies.id','=','study_user.study_id')
             ->where('users.id','=',\auth()->user()->id)
             ->orderBy('study_short_name')->get();
-        $study_role= StudyUser::where('study_id','=',$id)->get();
         $currentStudy = Study::find($id);
         $study = Study::find($id);
 
