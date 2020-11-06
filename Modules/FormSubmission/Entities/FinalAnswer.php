@@ -9,7 +9,7 @@ class FinalAnswer extends Model
 {
     use SoftDeletes;
     protected $table = 'final_answer';
-    protected $fillable = ['id', 'study_id', 'subject_id', 'study_structures_id', 'phase_steps_id', 'section_id', 'question_id', 'field_id', 'answer'];
+    protected $fillable = ['id', 'study_id', 'subject_id', 'study_structures_id', 'phase_steps_id', 'section_id', 'question_id', 'field_id', 'answer', 'form_version_num'];
     protected $keyType = 'string';
 
     protected $attributes = [

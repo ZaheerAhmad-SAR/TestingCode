@@ -1,6 +1,6 @@
 @extends ('layouts.home')
 @section('content')
-<input type="hidden" name="isStepActiveField" id="isStepActiveField" value="1"/>
+    <input type="hidden" name="isStepActiveField" id="isStepActiveField" value="1" />
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
         <div class="row ">
@@ -20,7 +20,7 @@
                 <div class="alert alert-primary success-msg" role="alert">
                 </div>
             </div>
-            @if(session()->has('message'))
+            @if (session()->has('message'))
                 <div class="col-lg-12 success-alert">
                     <div class="alert alert-primary success-msg" role="alert">
                         {{ session()->get('message') }}
@@ -69,18 +69,24 @@
                     <div class="card-body p-0">
                         <div class="scrollertodo">
                             @foreach ($fields as $key => $value)
-                                @if($value->field_type =='Certification')
-                                <div class="border-btm add_certify_list color-black" data-field-type="{{ $value->field_type }}"
-                                    data-field-id="{{ $value->id }}" style="font-size: 12px;padding: 5px;cursor: pointer;"><i class="{{ $value->icon }}"
-                                        aria-hidden="true" ></i>&nbsp;&nbsp;{{ $value->field_type }}</div>
+                                @if ($value->field_type == 'Certification')
+                                    <div class="border-btm add_certify_list color-black"
+                                        data-field-type="{{ $value->field_type }}" data-field-id="{{ $value->id }}"
+                                        style="font-size: 12px;padding: 5px;cursor: pointer;"><i class="{{ $value->icon }}"
+                                            aria-hidden="true"></i>&nbsp;&nbsp;{{ $value->field_type }}</div>
                                 @elseif($value->field_type =='Description')
-                                <div class="border-btm add_discription color-black" data-field-type="&nbsp;&nbsp;{{ $value->field_type }}"
-                                    data-field-id="&nbsp;&nbsp;{{ $value->id }}" style="font-size: 12px;padding: 5px;cursor: pointer;"><i class="&nbsp;&nbsp;{{ $value->icon }}" aria-hidden="true" ></i>&nbsp;&nbsp;&nbsp;&nbsp;{{ $value->field_type }}
-                                </div>
+                                    <div class="border-btm add_discription color-black"
+                                        data-field-type="&nbsp;&nbsp;{{ $value->field_type }}"
+                                        data-field-id="&nbsp;&nbsp;{{ $value->id }}"
+                                        style="font-size: 12px;padding: 5px;cursor: pointer;"><i
+                                            class="&nbsp;&nbsp;{{ $value->icon }}"
+                                            aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp;{{ $value->field_type }}
+                                    </div>
                                 @else
-                                <div class="border-btm form-fields color-black" data-field-type="{{ $value->field_type }}"
-                                    data-field-id="{{ $value->id }}"><i class="{{ $value->icon }}"
-                                        aria-hidden="true"></i>&nbsp;&nbsp;{{ $value->field_type }}</div>
+                                    <div class="border-btm form-fields color-black"
+                                        data-field-type="{{ $value->field_type }}" data-field-id="{{ $value->id }}"><i
+                                            class="{{ $value->icon }}"
+                                            aria-hidden="true"></i>&nbsp;&nbsp;{{ $value->field_type }}</div>
                                 @endif
                             @endforeach
 
@@ -102,7 +108,8 @@
                         <span aria-hidden="true">×</span>
                     </button>
                 </div>
-                <form action="{{ route('forms.addQuestions') }}" enctype="multipart/form-data" method="POST" id="formfields">
+                <form action="{{ route('forms.addQuestions') }}" enctype="multipart/form-data" method="POST"
+                    id="formfields">
                     @csrf
                     <div class="modal-body">
                         <nav>
@@ -160,7 +167,9 @@
                                     <lable for='variable' class="col-sm-2 col-form-label">Variable name <sup>*</sup></lable>
                                     <div class="col-sm-4">
                                         <p class="space_msg" style="font-size: 9px;color: red;"></p>
-                                        <input type="text" class="form-control variable_name_ques" name="variable_name" id="variable_name" onchange="check_if_name_exists()" onpaste ="return false"  oncut ="return false"  oncopy ="return false">
+                                        <input type="text" class="form-control variable_name_ques" name="variable_name"
+                                            id="variable_name" onchange="check_if_name_exists()" onpaste="return false"
+                                            oncut="return false" oncopy="return false">
                                     </div>
                                     <label for="field" class="col-sm-2 col-form-label">Choose field type:</label>
                                     <div class="col-sm-4">
@@ -168,10 +177,10 @@
                                         <select name="form_field_type_id" id="question_type" class="form-control">
                                             <option value="">--- Field Type ---</option>
                                             @foreach ($fields as $key => $value)
-                                              @if($value->field_type =='Certification' || $value->field_type =='Description')
-                                              @else
-                                                <option value="{{ $value->id }}">{{$value->field_type }}</option>
-                                              @endif
+                                                @if ($value->field_type == 'Certification' || $value->field_type == 'Description')
+                                                @else
+                                                    <option value="{{ $value->id }}">{{ $value->field_type }}</option>
+                                                @endif
                                             @endforeach
                                         </select>
 
@@ -184,23 +193,25 @@
                                         <input type="number" name="lower_limit" id="lower_limit_num" class="form-control"
                                             placeholder="Minimum limits">
                                     </div>
-                                    <label for="Upper Limit" class="col-sm-2 col-form-label view_to_numeric">Upper Limit</label>
+                                    <label for="Upper Limit" class="col-sm-2 col-form-label view_to_numeric">Upper
+                                        Limit</label>
                                     <div class="col-sm-2 view_to_numeric">
                                         <input type="number" name="upper_limit" id="upper_limit_num" class="form-control"
                                             placeholder="Maximum limits">
                                     </div>
-                                    <label for="Upper Limit" class="col-sm-2 col-form-label view_to_numeric">Decimal Point</label>
+                                    <label for="Upper Limit" class="col-sm-2 col-form-label view_to_numeric">Decimal
+                                        Point</label>
                                     <div class="col-sm-2 view_to_numeric">
-                                        <input type="number" name="decimal_point" id="decimal_point_num" class="form-control"
-                                            placeholder="Decimal Point">
+                                        <input type="number" name="decimal_point" id="decimal_point_num"
+                                            class="form-control" placeholder="Decimal Point">
                                     </div>
                                 </div>
                                 <div class="view_to_textbox_and_number">
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Field width <sup>*</sup></label>
                                         <div class="col-sm-4">
-                                            <input type="number" class="form-control" name="field_width" id="field_width_text"
-                                                value="">
+                                            <input type="number" class="form-control" name="field_width"
+                                                id="field_width_text" value="">
                                         </div>
                                         <label class="col-sm-2 col-form-label">Measurement unit</label>
                                         <div class="col-sm-4">
@@ -238,8 +249,10 @@
                                     </div>
                                     <div class="col-sm-2">Exports: <sup>*</sup></div>
                                     <div class="col-sm-4">
-                                        <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_no" value="no"> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_yes"  value="yes" checked> Yes
+                                        <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_no"
+                                            value="no"> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_yes"
+                                            value="yes" checked> Yes
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -252,157 +265,37 @@
                             </div>
 
 
+                            <div class="tab-pane fade" id="nav-Validation" role="tabpanel"
+                                aria-labelledby="nav-Validation-tab">
+                                <div class="py-3 border-bottom border-primary">
+                                    <span class="text-muted font-w-600">Default Validation</span><br>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-sm-12" style="margin-top: 10px;padding-left: 0px;"><button type="button"
+                                            class="btn btn-outline-primary addvalidations"><i class="fa fa-plus"></i> Add
+                                            Message</button></div>
+                                </div>
+                                <div class="appendDatavalidations">
+
+                                </div>
+                            </div>
+                            <!--
                     <div class="tab-pane fade" id="nav-Validation" role="tabpanel" aria-labelledby="nav-Validation-tab">
                         <div class="py-3 border-bottom border-primary">
                             <span class="text-muted font-w-600">Default Validation</span><br>
                         </div>
-                        <div class="form-group">
+                       {{--  <div class="form-group">
                             <div class="col-sm-12" style="margin-top: 10px;padding-left: 0px;"><button type="button" class="btn btn-outline-primary addvalidations"><i class="fa fa-plus"></i> Add Message</button></div>
-                        </div>
-                        <div class="appendDatavalidations">
-
-                        </div>
-                    </div>
-<!--
-                <div class="tab-pane fade" id="nav-Validation" role="tabpanel" aria-labelledby="nav-Validation-tab">
-                    <div class="py-3 border-bottom border-primary">
-                        <span class="text-muted font-w-600">Default Validation</span><br>
-                    </div>
-                   {{--  <div class="form-group">
-                        <div class="col-sm-12" style="margin-top: 10px;padding-left: 0px;"><button type="button" class="btn btn-outline-primary addvalidations"><i class="fa fa-plus"></i> Add Message</button></div>
-                    </div> --}}
-                    <div class="values_row">
-                        <div class="form-group row" style="margin-top: 10px;">
-                            <div class="col-sm-2"> Take Decision:</div>
-                            <div class="col-sm-4">
-                                <select class="form-control decision"><option value="">---Based ON---</option><option value="question_value">Question Value</option><option value="custom_value">Custom Value</option></select>
-                            </div>
-                            <div class="col-sm-2"> Operator:</div>
-                            <div class="col-sm-4">
-                                <select class="form-control">
-                                    <option value="">---Select---</option>
-                                    <option value="=">Equal</option>
-                                    <option value=">=">Greater OR Equal</option>
-                                    <option value="<=">Less OR Equal</option>
-                                    <option value="!=">Not Equal</option>
-                                    <option value=">">Greater Then</option>
-                                    <option value="<">Less</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-2 questionValue" style="display: none;">Section:</div>
-                            <div class="col-sm-4 questionValue" style="display: none;">
-                                <select class="form-control decisionSections">
-                                    <option value="">---Section---</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-2 questionValue" style="display: none;">With:</div>
-                            <div class="col-sm-4 questionValue" style="display: none;">
-                                <select class="form-control decision_question">
-                                    <option value="">---Select Question---</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-2 customValue" style="display: none;">Decision Value:</div>
-                            <div class="col-sm-4 customValue" style="display: none;">
-                                <input type="text" name="custom_value" class="form-control custom_value" placeholder="Define Value">
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-2"> Condition:</div>
-                            <div class="col-sm-10">
-                                <select class="form-control operators">
-                                    <option value="">Select if third conditon as well</option>
-                                    <option value="and">AND</option>
-                                    <option value="or">OR</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="third_condition" style="display: none;">
-                        <div class="form-group row">
-                            <div class="col-sm-2"> Take Decision:</div>
-                            <div class="col-sm-4">
-                                <select class="form-control decision2">
-                                    <option value="">---Based ON---</option>
-                                    <option value="question_value_sec">Question Value</option>
-                                    <option value="custom_value_sec">Custom Value</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-2"> Operator:</div>
-                            <div class="col-sm-4">
-                                <select class="form-control">
-                                    <option value="">---Select---</option>
-                                    <option value="=">Equal</option>
-                                    <option value=">=">Greater OR Equal</option>
-                                    <option value="<=">Less OR Equal</option>
-                                    <option value="!=">Not Equal</option>
-                                    <option value=">">Greater Then</option>
-                                    <option value="<">Less</option>
-                                </select>
-                            </div>
-                        </div>
-                         <div class="form-group row">
-                            <div class="col-sm-2 questionValue2" style="display: none;">Section:</div>
-                            <div class="col-sm-4 questionValue2" style="display: none;">
-                                <select class="form-control decisionSections2">
-                                    <option value="">---Section---</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-2 questionValue2" style="display: none;">With:</div>
-                            <div class="col-sm-4 questionValue2" style="display: none;">
-                                <select class="form-control decision_question2">
-                                    <option value="">---Select Question---</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-2 customValue2" style="display: none;">Decision Value:</div>
-                            <div class="col-sm-4 customValue2" style="display: none;">
-                                <input type="text" name="custom_value" class="form-control custom_value" placeholder="Define Value">
-                            </div>
-                        </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-sm-2"> Show a:</div>
-                            <div class="col-sm-4">
-                                <select name="requiredvalidation_value" id="requiredvalidation_value" class="form-control">
-                                    <option value="">Exclusion</option>
-                                    <option value="">Error</option>
-                                    <option value="">Warning</option>
-                                </select>
-                            </div>
-                            <div class="col-sm-2">Message:</div>
-                            <div class="col-sm-4">
-                                <textarea name="validation_message" class="form-control" rows="1"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="appendDatavalidations values_row">
-                    </div>
-
-                </div>
-                                -->
-                    <div class="tab-pane fade" id="nav-Dependencies" role="tabpanel" aria-labelledby="nav-Dependencies-tab">
-                        <div class="py-3 border-bottom border-primary">
-                            <span class="text-muted font-w-600">Define If Dependencies on any Question</span><br>
-                        </div>
-                        <div class="form-group row" style="margin-top: 10px;">
-                            <div class="col-sm-2">Field is dependent: <sup>*</sup></div>
-                            <div class="col-sm-10">
-                                <input type="hidden" name="dependency_id" id="dependency_id">
-                                <input type="radio" name="q_d_status" class="field_dependent" id="field_dependent_no" value="no" checked> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <input type="radio" name="q_d_status" class="field_dependent" id="field_dependent_yes" value="yes" > Yes
-                            </div>
-                        </div>
-                        <div class="append_if_yes" style="display: none;">
-                            <div class="form-group row">
-                                <div class="col-sm-2"> Questions:</div>
+                        </div> --}}
+                        <div class="values_row">
+                            <div class="form-group row" style="margin-top: 10px;">
+                                <div class="col-sm-2"> Take Decision:</div>
                                 <div class="col-sm-4">
-                                    <select name="dep_on_question_id" class="form-control select_ques_for_dep" id="select_ques_for_dep">
-                                        <option value="">---Select Question---</option>
-                                    </select>
+                                    <select class="form-control decision"><option value="">---Based ON---</option><option value="question_value">Question Value</option><option value="custom_value">Custom Value</option></select>
                                 </div>
-                                <div class="col-sm-2"> field operator:</div>
+                                <div class="col-sm-2"> Operator:</div>
                                 <div class="col-sm-4">
-                                    <select name="opertaor" id="dependency_operator" class="form-control" name="dep_operator">
+                                    <select class="form-control">
                                         <option value="">---Select---</option>
                                         <option value="=">Equal</option>
                                         <option value=">=">Greater OR Equal</option>
@@ -414,69 +307,205 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <div class="col-sm-2">Value:</div>
+                                <div class="col-sm-2 questionValue" style="display: none;">Section:</div>
+                                <div class="col-sm-4 questionValue" style="display: none;">
+                                    <select class="form-control decisionSections">
+                                        <option value="">---Section---</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-2 questionValue" style="display: none;">With:</div>
+                                <div class="col-sm-4 questionValue" style="display: none;">
+                                    <select class="form-control decision_question">
+                                        <option value="">---Select Question---</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-2 customValue" style="display: none;">Decision Value:</div>
+                                <div class="col-sm-4 customValue" style="display: none;">
+                                    <input type="text" name="custom_value" class="form-control custom_value" placeholder="Define Value">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-2"> Condition:</div>
+                                <div class="col-sm-10">
+                                    <select class="form-control operators">
+                                        <option value="">Select if third conditon as well</option>
+                                        <option value="and">AND</option>
+                                        <option value="or">OR</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="third_condition" style="display: none;">
+                            <div class="form-group row">
+                                <div class="col-sm-2"> Take Decision:</div>
                                 <div class="col-sm-4">
-                                    <input type="text" name="custom_value" id="dependency_custom_value" class="form-control">
+                                    <select class="form-control decision2">
+                                        <option value="">---Based ON---</option>
+                                        <option value="question_value_sec">Question Value</option>
+                                        <option value="custom_value_sec">Custom Value</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-2"> Operator:</div>
+                                <div class="col-sm-4">
+                                    <select class="form-control">
+                                        <option value="">---Select---</option>
+                                        <option value="=">Equal</option>
+                                        <option value=">=">Greater OR Equal</option>
+                                        <option value="<=">Less OR Equal</option>
+                                        <option value="!=">Not Equal</option>
+                                        <option value=">">Greater Then</option>
+                                        <option value="<">Less</option>
+                                    </select>
+                                </div>
+                            </div>
+                             <div class="form-group row">
+                                <div class="col-sm-2 questionValue2" style="display: none;">Section:</div>
+                                <div class="col-sm-4 questionValue2" style="display: none;">
+                                    <select class="form-control decisionSections2">
+                                        <option value="">---Section---</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-2 questionValue2" style="display: none;">With:</div>
+                                <div class="col-sm-4 questionValue2" style="display: none;">
+                                    <select class="form-control decision_question2">
+                                        <option value="">---Select Question---</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-2 customValue2" style="display: none;">Decision Value:</div>
+                                <div class="col-sm-4 customValue2" style="display: none;">
+                                    <input type="text" name="custom_value" class="form-control custom_value" placeholder="Define Value">
+                                </div>
+                            </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-sm-2"> Show a:</div>
+                                <div class="col-sm-4">
+                                    <select name="requiredvalidation_value" id="requiredvalidation_value" class="form-control">
+                                        <option value="">Exclusion</option>
+                                        <option value="">Error</option>
+                                        <option value="">Warning</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-2">Message:</div>
+                                <div class="col-sm-4">
+                                    <textarea name="validation_message" class="form-control" rows="1"></textarea>
                                 </div>
                             </div>
                         </div>
+                        <div class="appendDatavalidations values_row">
                         </div>
 
-                    <div class="tab-pane fade" id="nav-Annotations" role="tabpanel" aria-labelledby="nav-Annotations-tab">
-                        <div class="py-3 border-bottom border-primary">
-                            <span class="text-muted font-w-600">Annotations</span><br>
-                        </div>
-                        <div class="form-group row" style="margin-top: 10px;">
-                            <div class="col-sm-12"><button type="button" class="btn btn-outline-primary addannotation"><i class="fa fa-plus"></i> Add annotation</button></div>
-                        </div>
-                        <div class="appendannotation">
-
-                        </div>
                     </div>
+                                    -->
+                            <div class="tab-pane fade" id="nav-Dependencies" role="tabpanel"
+                                aria-labelledby="nav-Dependencies-tab">
+                                <div class="py-3 border-bottom border-primary">
+                                    <span class="text-muted font-w-600">Define If Dependencies on any Question</span><br>
+                                </div>
+                                <div class="form-group row" style="margin-top: 10px;">
+                                    <div class="col-sm-2">Field is dependent: <sup>*</sup></div>
+                                    <div class="col-sm-10">
+                                        <input type="hidden" name="dependency_id" id="dependency_id">
+                                        <input type="radio" name="q_d_status" class="field_dependent"
+                                            id="field_dependent_no" value="no" checked> No
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" name="q_d_status" class="field_dependent"
+                                            id="field_dependent_yes" value="yes"> Yes
+                                    </div>
+                                </div>
+                                <div class="append_if_yes" style="display: none;">
+                                    <div class="form-group row">
+                                        <div class="col-sm-2"> Questions:</div>
+                                        <div class="col-sm-4">
+                                            <select name="dep_on_question_id" class="form-control select_ques_for_dep"
+                                                id="select_ques_for_dep">
+                                                <option value="">---Select Question---</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2"> field operator:</div>
+                                        <div class="col-sm-4">
+                                            <select name="opertaor" id="dependency_operator" class="form-control"
+                                                name="dep_operator">
+                                                <option value="">---Select---</option>
+                                                <option value="=">Equal</option>
+                                                <option value=">=">Greater OR Equal</option>
+                                                <option value="<=">Less OR Equal</option>
+                                                <option value="!=">Not Equal</option>
+                                                <option value=">">Greater Then</option>
+                                                <option value="<">Less</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-2">Value:</div>
+                                        <div class="col-sm-4">
+                                            <input type="text" name="custom_value" id="dependency_custom_value"
+                                                class="form-control">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="tab-pane fade" id="nav-Adjudication" role="tabpanel"
-                            aria-labelledby="nav-Advanced-tab">
-                            <div class="py-3 border-bottom border-primary">
-                                <span class="text-muted font-w-600">Set Up Adjudication Status On Current Question</span><br>
-                            </div>
-                            <div class="form-group row" style="margin-top: 10px">
-                                <input type="hidden" name="adj_id" id="adj_id">
-                                <div class="col-sm-2">Adjudication</div>
-                                <div class="col-sm-4">
-                                    <select class="form-control" name="adj_status" id="adj_status">
-                                        <option value="no">Not Required </option>
-                                        <option value="yes"> Required </option>
-                                    </select>
+                            <div class="tab-pane fade" id="nav-Annotations" role="tabpanel"
+                                aria-labelledby="nav-Annotations-tab">
+                                <div class="py-3 border-bottom border-primary">
+                                    <span class="text-muted font-w-600">Annotations</span><br>
                                 </div>
-                                <div class="col-sm-2 display-none show_if_required">Based ON</div>
-                                <div class="col-sm-4 display-none show_if_required">
-                                    <select class="form-control" name="decision_based_on" id="decision_based_on">
-                                        <option value="">---Decision---</option>
-                                        <option value="any_change">Any Change</option>
-                                        <option value="custom">Custom Value</option>
-                                        <option value="percentage">Percentage Value</option>
-                                    </select>
+                                <div class="form-group row" style="margin-top: 10px;">
+                                    <div class="col-sm-12"><button type="button"
+                                            class="btn btn-outline-primary addannotation"><i class="fa fa-plus"></i> Add
+                                            annotation</button></div>
+                                </div>
+                                <div class="appendannotation">
+
                                 </div>
                             </div>
-                            <div class="show_if_custom_percent display-none">
-                                <div class="form-group row">
-                                    <div class="col-sm-2"> Operator:</div>
+
+                            <div class="tab-pane fade" id="nav-Adjudication" role="tabpanel"
+                                aria-labelledby="nav-Advanced-tab">
+                                <div class="py-3 border-bottom border-primary">
+                                    <span class="text-muted font-w-600">Set Up Adjudication Status On Current
+                                        Question</span><br>
+                                </div>
+                                <div class="form-group row" style="margin-top: 10px">
+                                    <input type="hidden" name="adj_id" id="adj_id">
+                                    <div class="col-sm-2">Adjudication</div>
                                     <div class="col-sm-4">
-                                        <select class="form-control" name="opertaor" id="adj_operator">
-                                            <option value="">---Select---</option>
-                                            <option value=">=">Greater OR Equal</option>
-                                            <option value="<=">Less OR Equal</option>
-                                            <option value=">">Greater Then</option>
-                                            <option value="<">Less Then</option>
+                                        <select class="form-control" name="adj_status" id="adj_status">
+                                            <option value="no">Not Required </option>
+                                            <option value="yes"> Required </option>
                                         </select>
                                     </div>
-                                    <div class="col-sm-2">Value:</div>
-                                    <div class="col-sm-4">
-                                        <input type="text" name="custom_value" id="adj_custom_value" class="form-control" placeholder="Define custom or percentage value for adjudication">
+                                    <div class="col-sm-2 display-none show_if_required">Based ON</div>
+                                    <div class="col-sm-4 display-none show_if_required">
+                                        <select class="form-control" name="decision_based_on" id="decision_based_on">
+                                            <option value="">---Decision---</option>
+                                            <option value="any_change">Any Change</option>
+                                            <option value="custom">Custom Value</option>
+                                            <option value="percentage">Percentage Value</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="show_if_custom_percent display-none">
+                                    <div class="form-group row">
+                                        <div class="col-sm-2"> Operator:</div>
+                                        <div class="col-sm-4">
+                                            <select class="form-control" name="opertaor" id="adj_operator">
+                                                <option value="">---Select---</option>
+                                                <option value=">=">Greater OR Equal</option>
+                                                <option value="<=">Less OR Equal</option>
+                                                <option value=">">Greater Then</option>
+                                                <option value="<">Less Then</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2">Value:</div>
+                                        <div class="col-sm-4">
+                                            <input type="text" name="custom_value" id="adj_custom_value"
+                                                class="form-control"
+                                                placeholder="Define custom or percentage value for adjudication">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close"
@@ -582,7 +611,8 @@
                 <div class="modal-header">
                     <p class="modal-title"></p>
                 </div>
-                <form action="{{ route('forms.addQuestions') }}" enctype="multipart/form-data" method="POST" id="form_certify">
+                <form action="{{ route('forms.addQuestions') }}" enctype="multipart/form-data" method="POST"
+                    id="form_certify">
                     @csrf
                     <div class="modal-body">
                         <div id="exTab1">
@@ -634,26 +664,27 @@
                                     </div>
                                     <div class="col-sm-2">Exports: <sup>*</sup></div>
                                     <div class="col-sm-4">
-                                        <input type="radio" name="is_exportable_to_xls" value="no"> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" name="is_exportable_to_xls" value="no"> No
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <input type="radio" name="is_exportable_to_xls" value="yes" checked> Yes
                                     </div>
                                 </div>
-                              </div>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button id="question-sort-close" class="btn btn-outline-danger" data-dismiss="modal"><i
-                                    class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save
-                                Changes</button>
-                        </div>
                     </div>
-                </form>
+                    <div class="modal-footer">
+                        <button id="question-sort-close" class="btn btn-outline-danger" data-dismiss="modal"><i
+                                class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                        <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save
+                            Changes</button>
+                    </div>
             </div>
+            </form>
         </div>
     </div>
+    </div>
     <!-- End -->
-   <!-- Modal To add Option Groups -->
+    <!-- Modal To add Option Groups -->
     <div class="modal fade" tabindex="-1" role="dialog" id="descriptionModal">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="min-width: 1130px;">
             <div class="modal-content">
@@ -661,7 +692,8 @@
                 <div class="modal-header">
                     <p class="modal-title"></p>
                 </div>
-                <form action="{{ route('forms.addQuestions') }}" enctype="multipart/form-data" method="POST" id="form_description">
+                <form action="{{ route('forms.addQuestions') }}" enctype="multipart/form-data" method="POST"
+                    id="form_description">
                     @csrf
                     <div class="modal-body">
                         <div id="exTab1">
@@ -689,531 +721,545 @@
                                             style="height: 50px;"></textarea>
                                     </div>
                                 </div>
-                              </div>
                             </div>
                         </div>
-                        <div class="modal-footer">
-                            <button id="question-sort-close" class="btn btn-outline-danger" data-dismiss="modal"><i
-                                    class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save
-                                Changes</button>
-                        </div>
                     </div>
-                </form>
+                    <div class="modal-footer">
+                        <button id="question-sort-close" class="btn btn-outline-danger" data-dismiss="modal"><i
+                                class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                        <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save
+                            Changes</button>
+                    </div>
             </div>
+            </form>
         </div>
+    </div>
     </div>
     <!-- End -->
 
 @endsection
 @include('admin::forms.edit_crf')
 @section('styles')
-<style>
-    .custom_fields{
-        border-bottom: 1px solid #F6F6F7;
-        padding: 10px;
-    }
-    .float-right{
-        float: right;
-    }
-    .display-none{
-        display: none;
-    }
-    .overlay_container{
-        position: relative;
+    <style>
+        .custom_fields {
+            border-bottom: 1px solid #F6F6F7;
+            padding: 10px;
+        }
 
-    }
-</style>
-<link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
-<link rel="stylesheet" href="{{ asset("public/dist/vendors/summernote/summernote-bs4.css") }}">
-{{-- Select 2 --}}
-<link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2.min.css") }}"/>
-<link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
+        .float-right {
+            float: right;
+        }
+
+        .display-none {
+            display: none;
+        }
+
+        .overlay_container {
+            position: relative;
+
+        }
+
+    </style>
+    <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
+    <link rel="stylesheet" href="{{ asset('public/dist/vendors/summernote/summernote-bs4.css') }}">
+    {{-- Select 2 --}}
+    <link rel="stylesheet" href="{{ asset('dist/vendors/select2/css/select2.min.css') }}" />
+    <link rel="stylesheet" href="{{ asset('dist/vendors/select2/css/select2-bootstrap.min.css') }}" />
 
 @endsection
 @section('script')
-<script src="{{ asset("public/dist/vendors/summernote/summernote-bs4.js") }}"></script>
-<script src="{{ asset("public/dist/js/summernote.script.js") }}"></script>
-<script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script>
-<script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
-{{-- Select 2 --}}
-<script src="{{ asset('public/dist/vendors/select2/js/select2.full.min.js') }}"></script>
-<script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
-<script>
-// selct initialize
-// $('select[name="phases"]').select2();
+    <script src="{{ asset('public/dist/vendors/summernote/summernote-bs4.js') }}"></script>
+    <script src="{{ asset('public/dist/js/summernote.script.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script>
+    <script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
+    {{-- Select 2 --}}
+    <script src="{{ asset('public/dist/vendors/select2/js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
+    <script>
+        // selct initialize
+        // $('select[name="phases"]').select2();
 
-$(document).ready(function(){
-    var tId;
-    tId=setTimeout(function(){
-       $(".success-alert").slideUp('slow');
-    }, 4000);
-    $('.variable_name_ques').keydown(function(e){
-        if(e.keyCode == 32){
-            $('.variable_name_ques').css('border', '1px solid red');
-            $('.space_msg').html('Space Not Allowed!!')
-            e.preventDefault();
-        }else{
-            $('.variable_name_ques').css('border', '');
-            $('.space_msg').html('');
-            return true;
-        }
-    })
-})
-$('.addOptions').on('click',function(){
-   $('.appendDataOptions').append('<div class="values_row_options"><div class="form-group row"><div class="form-group col-md-6"><input type="text" id="option_name" name="option_name[]" class="form-control" placeholder="Enter option name" style="background:white;"></div><div class="form-group col-md-4"><input type="number" placeholder="Option value" name="option_value[]" id="option_value" class="form-control" style="background:white;"></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove_option" style="margin-top: 3px;"></i></div></div></div>');
-   return false;
-});
-
-$('body').on('click','.remove',function(){
-    var row = $(this).closest('div.values_row');
-    row.remove();
-})
-$('body').on('click','.remove_option',function(){
-    var row = $(this).closest('div.values_row_options');
-    row.remove();
-})
-//
-$('.addannotation').on('click',function(){
-   $('.appendannotation').append('<div class="anno_values_row"><div class="form-group row" style="margin-top: 10px;"><div class="col-sm-2">Terminology:</div><div class="col-sm-4"><span style="float: right;"><input type="button" value="Fetch" class="btn btn-primary fetch_annotation"></span><span><select name="terminology_id[]" class="form-control terminology_value" style="width: 82%;"><option value="">---Click on fetch to select Annotations---</option></select></span></div><div class="col-sm-1"> Value:</div><div class="col-sm-4"><input type="text" name="value[]" id="annotation_field_value" class="form-control"></div><div class="col-sm-1"><i class="btn btn-outline-danger fa fa-trash remove_anno" style="cursor:pointer;"></i></div></div><div class="form-group row"><div class="col-sm-2">Description:</div><div class="col-md-10"><textarea name="description[]" class="form-control" rows="2"></textarea></div></div></div>');
-   return false;
-});
-$('body').on('click','.remove_anno',function(){
-    var row = $(this).closest('div.anno_values_row');
-    row.remove();
-})
-$('body').on('click','.fetch_annotation',function(){
-    var study_id = '{{ session("current_study") }}';
-    var row = $(this).closest('div.anno_values_row');
-    var anno_class = row.find('select.terminology_value');
-    get_all_annotations(study_id,anno_class);
-})
-$('#section_id').on('change',function(){
-    $('.field_dependent').trigger('change');
-})
-$('.field_dependent').on('change',function(){
-    var value = $(this).val();
-    var sec_id = $('#section_id').val();
-    var ques_class = $('.select_ques_for_dep');
-    if(value =='yes'){
-        $('.append_if_yes').css('display','block');
-        get_question_section_id(sec_id,ques_class);
-    }else{
-        $('.append_if_yes').css('display','none');
-    }
-});
-
-// $('body').on('click','.form-fields',function(){
-//     $('#formfields').trigger('reset');
-//     $('.modal-title').html('Add New Question');
-//     $('#formfields').attr('action', "{{route('forms.addQuestions')}}");
-//     var id = $(this).attr("data-field-id");
-//     $('#question_type').val(id);
-// })
-$('.add_discription').on('click',function(){
-   $('#form_description').trigger('reset');
-   $('.modal-title').html('Add Description');
-   $('#form_description').attr('action', "{{route('forms.addQuestions')}}");
-   var id = $(this).attr("data-field-id");
-   $('#question_type').val(id);
-   $('#descriptionModal').modal('show');
-})
-$('.add_certify_list').on('click',function(){
-    if(checkIsStepActive() == false){
-   $('#form_certify').trigger('reset');
-   $('.modal-title').html('Add Certification list');
-   $('#form_certify').attr('action', "{{route('forms.addQuestions')}}");
-   var id = $(this).attr("data-field-id");
-   $('#question_type').val(id);
-   $('#listModal').modal('show');
-}else{
-            showStepDeActivationAlert();
-        }
-})
-$('body').on('click','.fetch_phases',function(){
-    var phase_id = '1';
-    var row = $(this).closest('div.values_row');
-    var phase_class = row.find('select.all_phases');
-    get_all_phases(phase_id,phase_class);
-})
-$('body').on('change','.all_phases',function(){
-    var phase_id = $(this).val();
-    var row = $(this).closest('div.values_row');
-    var step_class = row.find('select.all_forms');
-    get_steps_phase_id(phase_id,step_class);
-});
-$('body').on('change','.all_forms',function(){
-    var step_id = $(this).val();
-    var row = $(this).closest('div.values_row');
-    var section_class = row.find('select.all_sections');
-    section_against_step(step_id,section_class);
-});
-$('body').on('change','.all_sections',function(){
-    var sec_id = $(this).val();
-    var row = $(this).closest('div.values_row');
-    var ques_class = row.find('select.all_questions');
-    get_question_section_id(sec_id,ques_class);
-});
-$('body').on('click','.fetch_sections',function(){
-    var step_id = $('#steps').val();
-    var row = $(this).closest('div.values_row');
-    var section_class = row.find('select.all_sections');
-    section_against_step(step_id,section_class);
-})
-$('body').on('click','.fetch_sections2',function(){
-    var step_id = $('#steps').val();
-    var row = $(this).closest('div.values_row');
-    var section_class = row.find('select.all_sections2');
-    section_against_step(step_id,section_class);
-})
- $('body').on('change','.all_sections2',function(){
-    var sec_id = $(this).val();
-    var row = $(this).closest('div.values_row');
-    var ques_class = row.find('select.all_questions2');
-    get_question_section_id(sec_id,ques_class);
-});
-$('body').on('change','.decision',function(){
-    var value = $(this).val();
-    var row = $(this).closest('div.values_row');
-    var sec_id = row.find('select.all_sections').val();
-    var ques_class = row.find('select.decision_question');
-    if(value == 'question_value'){
-        row.find('.questionValue').css('display', 'block');
-        row.find('.customValue').css('display', 'none');
-    }else if(value == 'custom_value'){
-        row.find('.customValue').css('display', 'block');
-        row.find('.questionValue').css('display', 'none');
-    }
-});
-$('body').on('change','.decision2',function(){
-    var value = $(this).val();
-    var row = $(this).closest('div.values_row');
-    var sec_id = row.find('select.all_sections').val();
-    var ques_class = row.find('select.decision_question2');
-    if(value == 'question_value_sec'){
-        row.find('.questionValue2').css('display', 'block');
-        row.find('.customValue2').css('display', 'none');
-    }else if(value == 'custom_value_sec'){
-        row.find('.customValue2').css('display', 'block');
-        row.find('.questionValue2').css('display', 'none');
-    }
-});
-$('body').on('change','.operators',function(){
-    var value = $(this).val();
-    var row = $(this).closest('div.values_row');
-    if(value == 'and' || value == 'or'){
-        row.find('.third_condition').css('display', 'block');
-    }else if(value == ''){
-         row.find('.third_condition').css('display', 'none');
-    }
-});
-$('#phases').on('change',function(){
-    var phase_id = $(this).val();
-    var step_class = $('select#steps');
-    get_steps_phase_id(phase_id,step_class);
-})
-$('#steps').on('change',function(){
-    var step_id = $(this).val();
-    var sec_class = $('select.decisionSections');
-    var sec_class2 = $('select.decisionSections2');
-    var basic_section = $('select.basic_section');
-    display_sections(step_id);
-    section_against_step(step_id,basic_section);
-});
-$('.decisionSections').on('change',function(){
-    var sec_id = $(this).val();
-    var ques_class = $('select.decision_question');
-    get_question_section_id(sec_id,ques_class);
-});
-$('.decisionSections2').on('change',function(){
-    var sec_id = $(this).val();
-    var ques_class = $('select.decision_question2');
-    get_question_section_id(sec_id,ques_class);
-});
-
-$('#adj_status').on('change',function(){
-    var value = $(this).val();
-    if(value =='yes'){
-        $('.show_if_required').css('display', 'block');
-    }else{
-        $('.show_if_required').css('display', 'none');
-        $('.show_if_custom_percent').css('display', 'none');
-    }
-})
-$('#decision_based_on').on('change',function(){
-    var value = $(this).val();
-    if(value =='custom' || value =='percentage'){
-        $('.show_if_custom_percent').css('display', 'block');
-    }else{
-        $('.show_if_custom_percent').css('display', '');
-    }
-})
-/// update Question sort
-$(document).ready(function() {
-    $('body').on('click', '.change_ques_sort', function() {
-        var row = $(this).closest('div.custom_fields');
-        var question_id = row.find('input.question_id').val();
-        var question_sort = row.find('input.question_sort').val();
-        $('#questionId').val(question_id);
-        $('#up_question_sort').val(question_sort);
-        $('#ChangeQuestionSort').modal('show');
-    })
-    $('body').on('click', '.delete_ques', function() {
-        if(checkIsStepActive() == false){
-        var row = $(this).closest('div.custom_fields');
-        var tId;
-        var question_id = row.find('input.question_id').val();
-        if (confirm('Are you sure to delete ?')) {
-            $.ajax({
-                url: 'forms/delete/' + question_id,
-                type: 'post',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'DELETE',
-                    'questionId': question_id,
-                },
-                dataType: 'json',
-                success: function(res) {
-                    row.remove();
-                    $('.success-msg').html('');
-                     $('.success-msg').html('Operation Done!')
-                     $('.success-alert').slideDown('slow');
-                     tId=setTimeout(function(){
-                        $(".success-alert").slideUp('slow');
-                     }, 4000);
+        $(document).ready(function() {
+            var tId;
+            tId = setTimeout(function() {
+                $(".success-alert").slideUp('slow');
+            }, 4000);
+            $('.variable_name_ques').keydown(function(e) {
+                if (e.keyCode == 32) {
+                    $('.variable_name_ques').css('border', '1px solid red');
+                    $('.space_msg').html('Space Not Allowed!!')
+                    e.preventDefault();
+                } else {
+                    $('.variable_name_ques').css('border', '');
+                    $('.space_msg').html('');
+                    return true;
                 }
             })
-        }
-    }else{
-            showStepDeActivationAlert();
-        }
-    })
-    // update Descriptions
-    $('body').on('click','.edit_desc',function(){
-        $('#form_description').trigger('reset');
-        $('.modal-title').html('Update Description');
-        $('#form_description').attr('action', "{{ route('forms.updateQuestion') }}");
-        var row = $(this).closest('div.custom_fields')
-            tId = ''
-            ques_id = row.find('input.question_id').val()
-            question_sort = row.find('input.question_sort').val()
-            formFields_id = row.find('input.formFields_id').val()
-            section_id = row.find('input.section_id').val()
-            text_info = row.find('input.text_info').val();
-        $("#text_info_de").summernote("code", text_info);
-        $('#question_sort_de').val(question_sort);
-        $('#questionId_hide_des').val(ques_id);
-        $('#form_field_id_des').val(formFields_id);
-        $('#section_id_de').val(section_id);
-        $('#descriptionModal').modal('show');
-    });
-    // update question
-    $('body').on('click', '.Edit_ques', function() {
-        if(checkIsStepActive() == false){
-            $('#formfields').trigger('reset');
-        $('.modal-title').html('Update Question')
-        $('#formfields').attr('action', "{{ route('forms.updateQuestion') }}");
-        var row = $(this).closest('div.custom_fields')
-            tId = ''
-            ques_id = row.find('input.question_id').val()
-            ques_type = row.find('input.question_type').val()
-            ques_type_id = row.find('input.question_type_id').val()
-            question_sort = row.find('input.question_sort').val()
-            section_id = row.find('input.section_id').val()
-            option_group_id = row.find('input.option_group_id').val()
-            c_disk = row.find('input.c_disk').val()
-            question_text = row.find('input.question_text').val()
-            variable_name = row.find('input.variable_name').val()
-            formFields_id = row.find('input.formFields_id').val()
-            text_info = row.find('input.text_info').val()
-            is_required = row.find('input.is_required').val()
-            is_exportable_to_xls = row.find('input.is_exportable_to_xls').val()
-            measurement_unit = row.find('input.measurement_unit').val()
-            field_width = row.find('input.field_width').val()
-            upper_limit = row.find('input.upper_limit').val()
-            decimal_point = row.find('input.decimal_point').val()
-            lower_limit = row.find('input.lower_limit').val()
-            dependency_id = row.find('input.dependency_id').val()
-            dependency_status = row.find('input.dependency_status').val()
-            dependency_question = row.find('input.dependency_question').val()
-            dependency_operator = row.find('input.dependency_operator').val()
-            dependency_custom_value = row.find('input.dependency_custom_value').val()
-            dependency_question_class = $('select.select_ques_for_dep')
-            adj_status = row.find('input.adj_status').val()
-            adj_decision_based = row.find('input.adj_decision_based').val()
-            adj_operator = row.find('input.adj_operator').val()
-            adj_custom_value = row.find('input.adj_custom_value').val()
-            adj_id = row.find('input.adj_id').val();
-        $('#questionId_hide').val(ques_id);
-        $('#question_sort').val(question_sort);
-        $('#question_type').val(ques_type_id);
-        $('#question_type').trigger('change');
-        $('#section_id').val(section_id);
-        $('#option_group_id').val(option_group_id);
-        $('#c_disk').val(c_disk);
-        $('#question_text').val(question_text);
-        $('#variable_name').val(variable_name);
-        $('#form_field_id').val(formFields_id);
-        // $('#text_info').val();
-        $("#text_info_add").summernote("code", text_info);
-        if (ques_type == 'Number') {
-            $('#measurement_unit_text').val(measurement_unit);
-            $('#field_width_text').val(field_width);
-            $('#lower_limit_num').val(lower_limit);
-            $('#upper_limit_num').val(upper_limit);
-            $('#decimal_point_num').val(decimal_point);
-        } else {
-            $('#measurement_unit_text').val(measurement_unit);
-            $('#field_width_text').val(field_width);
-        }
-        if (is_required == 'yes') {
-            $('#required_yes').prop('checked', true);
-        } else {
-            $('#required_no').prop('checked', true);
-        }
-        if (is_exportable_to_xls == 'yes') {
-            $('#is_exportable_to_xls_yes').prop('checked', true);
-        } else {
-            $('#is_exportable_to_xls_no').prop('checked', true);
-        }
-        //$('#dependency_id').val(dependency_id);
-        if(dependency_status =='yes'){
-            $('#field_dependent_yes').prop('checked',true);
+        })
+        $('.addOptions').on('click', function() {
+            $('.appendDataOptions').append(
+                '<div class="values_row_options"><div class="form-group row"><div class="form-group col-md-6"><input type="text" id="option_name" name="option_name[]" class="form-control" placeholder="Enter option name" style="background:white;"></div><div class="form-group col-md-4"><input type="number" placeholder="Option value" name="option_value[]" id="option_value" class="form-control" style="background:white;"></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove_option" style="margin-top: 3px;"></i></div></div></div>'
+                );
+            return false;
+        });
+
+        $('body').on('click', '.remove', function() {
+            var row = $(this).closest('div.values_row');
+            row.remove();
+        })
+        $('body').on('click', '.remove_option', function() {
+            var row = $(this).closest('div.values_row_options');
+            row.remove();
+        })
+        //
+        $('.addannotation').on('click', function() {
+            $('.appendannotation').append(
+                '<div class="anno_values_row"><div class="form-group row" style="margin-top: 10px;"><div class="col-sm-2">Terminology:</div><div class="col-sm-4"><span style="float: right;"><input type="button" value="Fetch" class="btn btn-primary fetch_annotation"></span><span><select name="terminology_id[]" class="form-control terminology_value" style="width: 82%;"><option value="">---Click on fetch to select Annotations---</option></select></span></div><div class="col-sm-1"> Value:</div><div class="col-sm-4"><input type="text" name="value[]" id="annotation_field_value" class="form-control"></div><div class="col-sm-1"><i class="btn btn-outline-danger fa fa-trash remove_anno" style="cursor:pointer;"></i></div></div><div class="form-group row"><div class="col-sm-2">Description:</div><div class="col-md-10"><textarea name="description[]" class="form-control" rows="2"></textarea></div></div></div>'
+                );
+            return false;
+        });
+        $('body').on('click', '.remove_anno', function() {
+            var row = $(this).closest('div.anno_values_row');
+            row.remove();
+        })
+        $('body').on('click', '.fetch_annotation', function() {
+            var study_id = '{{ session('
+            current_study ') }}';
+            var row = $(this).closest('div.anno_values_row');
+            var anno_class = row.find('select.terminology_value');
+            get_all_annotations(study_id, anno_class);
+        })
+        $('#section_id').on('change', function() {
             $('.field_dependent').trigger('change');
-        }else{
-            $('#field_dependent_no').prop('checked',true);
-            $('.append_if_yes').css('display','none');
-        }
-        get_question_section_id(section_id,dependency_question_class);
-        $('#dependency_operator').val(dependency_operator);
-        $('#dependency_custom_value').val(dependency_custom_value);
-        tId=setTimeout(function(){
-            $('#select_ques_for_dep').val(dependency_question);
-        }, 2000);
-        $('#adj_id').val(adj_id);
-        $('#adj_status').val(adj_status);
-        $('#adj_status').trigger('change');
-        $('#decision_based_on').val(adj_decision_based)
-        $('#decision_based_on').trigger('change');
-        $('#adj_operator').val(adj_operator);
-        $('#adj_custom_value').val(adj_custom_value);
-        $('#addField').modal('show');
-        loadValidationRulesByQuestionId(ques_id);
-        }else{
-            showStepDeActivationAlert();
-        }
-    })
-
-})
-function showStepDeActivationAlert(){
-    alert('Please first deactivate this step!');
-}
-function display_sections(step_id) {
-    var html = '';
-    var sections = '';
-    $("#wait").css("display", "block");
-    $.ajax({
-        url: 'forms/sections_by_stepId/' + step_id,
-        type: 'post',
-        dataType: 'html',
-        data: {
-            "_token": "{{ csrf_token() }}",
-            "_method": 'GET',
-            'step_id': step_id
-        },
-        success: function(response) {
-            $('.display-sections').html(response);
-            $('select[name="question_list"]').select2();
-            isStepActive(step_id);
-        }
-    });
-}
-
-function isStepActive(step_id) {
-    $("#wait").css("display", "block");
-    $.ajax({
-        url: 'forms/isStepActive/'+step_id,
-        type: 'POST',
-        data: {
-            "_token": "{{ csrf_token() }}",
-            "_method": 'POST',
-            'step_id': step_id
-        },
-        success: function(response) {
-            $('#isStepActiveField').val(response);
-        }
-    });
-}
-
-function checkIsStepActive() {
-    var is_active = $('#isStepActiveField').val();
-    if(is_active == 1){
-        return true;
-    }else{
-        return false;
-    }
-}
-
-function applychecks(){
-    var route = <?php echo '"'.url('forms/skip_logic').'";';?>;
-    window.open(route + '/' + id);
-}
-function showFormPreview() {
-    var route = <?php echo '"'.url('forms/show').'";';?>;
-    var phase_id = $('#phases').val();
-    var step_id = $('#steps').val();
-    window.open(route + '/' + phase_id + '/' + step_id);
-}
-// Add New Option Group
-function addOptionsGroup() {
-    $("#OptionsGroupForm").submit(function(e) {
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        })
+        $('.field_dependent').on('change', function() {
+            var value = $(this).val();
+            var sec_id = $('#section_id').val();
+            var ques_class = $('.select_ques_for_dep');
+            if (value == 'yes') {
+                $('.append_if_yes').css('display', 'block');
+                get_question_section_id(sec_id, ques_class);
+            } else {
+                $('.append_if_yes').css('display', 'none');
             }
         });
-        e.preventDefault();
-        $.ajax({
-            data: $('#OptionsGroupForm').serialize(),
-            url: "{{ route('optionsGroup.store') }}",
-            type: "POST",
-            dataType: 'json',
-            success: function(results) {
-                fetch_options();
-                $('#OptionsGroupForm').trigger("reset");
-                $("#optiongroup-close").click();
-            },
-            error: function(results) {
-                console.log('Error:', results);
+
+        // $('body').on('click','.form-fields',function(){
+        //     $('#formfields').trigger('reset');
+        //     $('.modal-title').html('Add New Question');
+        //     $('#formfields').attr('action', "{{ route('forms.addQuestions') }}");
+        //     var id = $(this).attr("data-field-id");
+        //     $('#question_type').val(id);
+        // })
+        $('.add_discription').on('click', function() {
+            $('#form_description').trigger('reset');
+            $('.modal-title').html('Add Description');
+            $('#form_description').attr('action', "{{ route('forms.addQuestions') }}");
+            var id = $(this).attr("data-field-id");
+            $('#question_type').val(id);
+            $('#descriptionModal').modal('show');
+        })
+        $('.add_certify_list').on('click', function() {
+            if (checkIsStepActive() == false) {
+                $('#form_certify').trigger('reset');
+                $('.modal-title').html('Add Certification list');
+                $('#form_certify').attr('action', "{{ route('forms.addQuestions') }}");
+                var id = $(this).attr("data-field-id");
+                $('#question_type').val(id);
+                $('#listModal').modal('show');
+            } else {
+                showStepDeActivationAlert();
+            }
+        })
+        $('body').on('click', '.fetch_phases', function() {
+            var phase_id = '1';
+            var row = $(this).closest('div.values_row');
+            var phase_class = row.find('select.all_phases');
+            get_all_phases(phase_id, phase_class);
+        })
+        $('body').on('change', '.all_phases', function() {
+            var phase_id = $(this).val();
+            var row = $(this).closest('div.values_row');
+            var step_class = row.find('select.all_forms');
+            get_steps_phase_id(phase_id, step_class);
+        });
+        $('body').on('change', '.all_forms', function() {
+            var step_id = $(this).val();
+            var row = $(this).closest('div.values_row');
+            var section_class = row.find('select.all_sections');
+            section_against_step(step_id, section_class);
+        });
+        $('body').on('change', '.all_sections', function() {
+            var sec_id = $(this).val();
+            var row = $(this).closest('div.values_row');
+            var ques_class = row.find('select.all_questions');
+            get_question_section_id(sec_id, ques_class);
+        });
+        $('body').on('click', '.fetch_sections', function() {
+            var step_id = $('#steps').val();
+            var row = $(this).closest('div.values_row');
+            var section_class = row.find('select.all_sections');
+            section_against_step(step_id, section_class);
+        })
+        $('body').on('click', '.fetch_sections2', function() {
+            var step_id = $('#steps').val();
+            var row = $(this).closest('div.values_row');
+            var section_class = row.find('select.all_sections2');
+            section_against_step(step_id, section_class);
+        })
+        $('body').on('change', '.all_sections2', function() {
+            var sec_id = $(this).val();
+            var row = $(this).closest('div.values_row');
+            var ques_class = row.find('select.all_questions2');
+            get_question_section_id(sec_id, ques_class);
+        });
+        $('body').on('change', '.decision', function() {
+            var value = $(this).val();
+            var row = $(this).closest('div.values_row');
+            var sec_id = row.find('select.all_sections').val();
+            var ques_class = row.find('select.decision_question');
+            if (value == 'question_value') {
+                row.find('.questionValue').css('display', 'block');
+                row.find('.customValue').css('display', 'none');
+            } else if (value == 'custom_value') {
+                row.find('.customValue').css('display', 'block');
+                row.find('.questionValue').css('display', 'none');
             }
         });
-    });
-}
-addOptionsGroup();
-function fetch_options() {
-    $('#option_group_id').html('');
-    var options = '<option value="">None</option>';
-    $.ajax({
-        url: "{{ route('getall_options') }}",
-        type: "post",
-        dataType: 'json',
-        success: function(res) {
-            $.each(res['data'], function(k, v) {
-                options += '<option value="' + v.id + '">' + v.option_group_name + '</option>'
+        $('body').on('change', '.decision2', function() {
+            var value = $(this).val();
+            var row = $(this).closest('div.values_row');
+            var sec_id = row.find('select.all_sections').val();
+            var ques_class = row.find('select.decision_question2');
+            if (value == 'question_value_sec') {
+                row.find('.questionValue2').css('display', 'block');
+                row.find('.customValue2').css('display', 'none');
+            } else if (value == 'custom_value_sec') {
+                row.find('.customValue2').css('display', 'block');
+                row.find('.questionValue2').css('display', 'none');
+            }
+        });
+        $('body').on('change', '.operators', function() {
+            var value = $(this).val();
+            var row = $(this).closest('div.values_row');
+            if (value == 'and' || value == 'or') {
+                row.find('.third_condition').css('display', 'block');
+            } else if (value == '') {
+                row.find('.third_condition').css('display', 'none');
+            }
+        });
+        $('#phases').on('change', function() {
+            var phase_id = $(this).val();
+            var step_class = $('select#steps');
+            get_steps_phase_id(phase_id, step_class);
+        })
+        $('#steps').on('change', function() {
+            var step_id = $(this).val();
+            var sec_class = $('select.decisionSections');
+            var sec_class2 = $('select.decisionSections2');
+            var basic_section = $('select.basic_section');
+            display_sections(step_id);
+            section_against_step(step_id, basic_section);
+        });
+        $('.decisionSections').on('change', function() {
+            var sec_id = $(this).val();
+            var ques_class = $('select.decision_question');
+            get_question_section_id(sec_id, ques_class);
+        });
+        $('.decisionSections2').on('change', function() {
+            var sec_id = $(this).val();
+            var ques_class = $('select.decision_question2');
+            get_question_section_id(sec_id, ques_class);
+        });
+
+        $('#adj_status').on('change', function() {
+            var value = $(this).val();
+            if (value == 'yes') {
+                $('.show_if_required').css('display', 'block');
+            } else {
+                $('.show_if_required').css('display', 'none');
+                $('.show_if_custom_percent').css('display', 'none');
+            }
+        })
+        $('#decision_based_on').on('change', function() {
+            var value = $(this).val();
+            if (value == 'custom' || value == 'percentage') {
+                $('.show_if_custom_percent').css('display', 'block');
+            } else {
+                $('.show_if_custom_percent').css('display', '');
+            }
+        })
+        /// update Question sort
+        $(document).ready(function() {
+            $('body').on('click', '.change_ques_sort', function() {
+                var row = $(this).closest('div.custom_fields');
+                var question_id = row.find('input.question_id').val();
+                var question_sort = row.find('input.question_sort').val();
+                $('#questionId').val(question_id);
+                $('#up_question_sort').val(question_sort);
+                $('#ChangeQuestionSort').modal('show');
             })
-            $('#option_group_id').append(options);
+            $('body').on('click', '.delete_ques', function() {
+                if (checkIsStepActive() == false) {
+                    var row = $(this).closest('div.custom_fields');
+                    var tId;
+                    var question_id = row.find('input.question_id').val();
+                    if (confirm('Are you sure to delete ?')) {
+                        $.ajax({
+                            url: 'forms/delete/' + question_id,
+                            type: 'post',
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                "_method": 'DELETE',
+                                'questionId': question_id,
+                            },
+                            dataType: 'json',
+                            success: function(res) {
+                                row.remove();
+                                $('.success-msg').html('');
+                                $('.success-msg').html('Operation Done!')
+                                $('.success-alert').slideDown('slow');
+                                tId = setTimeout(function() {
+                                    $(".success-alert").slideUp('slow');
+                                }, 4000);
+                            }
+                        })
+                    }
+                } else {
+                    showStepDeActivationAlert();
+                }
+            })
+            // update Descriptions
+            $('body').on('click', '.edit_desc', function() {
+                $('#form_description').trigger('reset');
+                $('.modal-title').html('Update Description');
+                $('#form_description').attr('action', "{{ route('forms.updateQuestion') }}");
+                var row = $(this).closest('div.custom_fields')
+                tId = ''
+                ques_id = row.find('input.question_id').val()
+                question_sort = row.find('input.question_sort').val()
+                formFields_id = row.find('input.formFields_id').val()
+                section_id = row.find('input.section_id').val()
+                text_info = row.find('input.text_info').val();
+                $("#text_info_de").summernote("code", text_info);
+                $('#question_sort_de').val(question_sort);
+                $('#questionId_hide_des').val(ques_id);
+                $('#form_field_id_des').val(formFields_id);
+                $('#section_id_de').val(section_id);
+                $('#descriptionModal').modal('show');
+            });
+            // update question
+            $('body').on('click', '.Edit_ques', function() {
+                if (checkIsStepActive() == false) {
+                    $('#formfields').trigger('reset');
+                    $('.modal-title').html('Update Question')
+                    $('#formfields').attr('action', "{{ route('forms.updateQuestion') }}");
+                    var row = $(this).closest('div.custom_fields')
+                    tId = ''
+                    ques_id = row.find('input.question_id').val()
+                    ques_type = row.find('input.question_type').val()
+                    ques_type_id = row.find('input.question_type_id').val()
+                    question_sort = row.find('input.question_sort').val()
+                    section_id = row.find('input.section_id').val()
+                    option_group_id = row.find('input.option_group_id').val()
+                    c_disk = row.find('input.c_disk').val()
+                    question_text = row.find('input.question_text').val()
+                    variable_name = row.find('input.variable_name').val()
+                    formFields_id = row.find('input.formFields_id').val()
+                    text_info = row.find('input.text_info').val()
+                    is_required = row.find('input.is_required').val()
+                    is_exportable_to_xls = row.find('input.is_exportable_to_xls').val()
+                    measurement_unit = row.find('input.measurement_unit').val()
+                    field_width = row.find('input.field_width').val()
+                    upper_limit = row.find('input.upper_limit').val()
+                    decimal_point = row.find('input.decimal_point').val()
+                    lower_limit = row.find('input.lower_limit').val()
+                    dependency_id = row.find('input.dependency_id').val()
+                    dependency_status = row.find('input.dependency_status').val()
+                    dependency_question = row.find('input.dependency_question').val()
+                    dependency_operator = row.find('input.dependency_operator').val()
+                    dependency_custom_value = row.find('input.dependency_custom_value').val()
+                    dependency_question_class = $('select.select_ques_for_dep')
+                    adj_status = row.find('input.adj_status').val()
+                    adj_decision_based = row.find('input.adj_decision_based').val()
+                    adj_operator = row.find('input.adj_operator').val()
+                    adj_custom_value = row.find('input.adj_custom_value').val()
+                    adj_id = row.find('input.adj_id').val();
+                    $('#questionId_hide').val(ques_id);
+                    $('#question_sort').val(question_sort);
+                    $('#question_type').val(ques_type_id);
+                    $('#question_type').trigger('change');
+                    $('#section_id').val(section_id);
+                    $('#option_group_id').val(option_group_id);
+                    $('#c_disk').val(c_disk);
+                    $('#question_text').val(question_text);
+                    $('#variable_name').val(variable_name);
+                    $('#form_field_id').val(formFields_id);
+                    // $('#text_info').val();
+                    $("#text_info_add").summernote("code", text_info);
+                    if (ques_type == 'Number') {
+                        $('#measurement_unit_text').val(measurement_unit);
+                        $('#field_width_text').val(field_width);
+                        $('#lower_limit_num').val(lower_limit);
+                        $('#upper_limit_num').val(upper_limit);
+                        $('#decimal_point_num').val(decimal_point);
+                    } else {
+                        $('#measurement_unit_text').val(measurement_unit);
+                        $('#field_width_text').val(field_width);
+                    }
+                    if (is_required == 'yes') {
+                        $('#required_yes').prop('checked', true);
+                    } else {
+                        $('#required_no').prop('checked', true);
+                    }
+                    if (is_exportable_to_xls == 'yes') {
+                        $('#is_exportable_to_xls_yes').prop('checked', true);
+                    } else {
+                        $('#is_exportable_to_xls_no').prop('checked', true);
+                    }
+                    //$('#dependency_id').val(dependency_id);
+                    if (dependency_status == 'yes') {
+                        $('#field_dependent_yes').prop('checked', true);
+                        $('.field_dependent').trigger('change');
+                    } else {
+                        $('#field_dependent_no').prop('checked', true);
+                        $('.append_if_yes').css('display', 'none');
+                    }
+                    get_question_section_id(section_id, dependency_question_class);
+                    $('#dependency_operator').val(dependency_operator);
+                    $('#dependency_custom_value').val(dependency_custom_value);
+                    tId = setTimeout(function() {
+                        $('#select_ques_for_dep').val(dependency_question);
+                    }, 2000);
+                    $('#adj_id').val(adj_id);
+                    $('#adj_status').val(adj_status);
+                    $('#adj_status').trigger('change');
+                    $('#decision_based_on').val(adj_decision_based)
+                    $('#decision_based_on').trigger('change');
+                    $('#adj_operator').val(adj_operator);
+                    $('#adj_custom_value').val(adj_custom_value);
+                    $('#addField').modal('show');
+                    loadValidationRulesByQuestionId(ques_id);
+                } else {
+                    showStepDeActivationAlert();
+                }
+            })
+
+        })
+
+        function showStepDeActivationAlert() {
+            alert('Please put the step in draft mode first!');
         }
-    });
-}
-/**************************************************************/
-var validationRules =new Array;
-$('#question_type').on('change',function(){
-    filterRulesByQuestionType();
-});
-function filterRulesByQuestionType(){
-    var questionType = $('#question_type :selected').text();
-    $.ajax({
-                url: '{{route('validationRule.filterRulesDataValidation')}}',
+
+        function display_sections(step_id) {
+            var html = '';
+            var sections = '';
+            $("#wait").css("display", "block");
+            $.ajax({
+                url: 'forms/sections_by_stepId/' + step_id,
+                type: 'post',
+                dataType: 'html',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'GET',
+                    'step_id': step_id
+                },
+                success: function(response) {
+                    $('.display-sections').html(response);
+                    $('select[name="question_list"]').select2();
+                    isStepActive(step_id);
+                }
+            });
+        }
+
+        function isStepActive(step_id) {
+            $("#wait").css("display", "block");
+            $.ajax({
+                url: 'forms/isStepActive/' + step_id,
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'step_id': step_id
+                },
+                success: function(response) {
+                    $('#isStepActiveField').val(response);
+                }
+            });
+        }
+
+        function checkIsStepActive() {
+            var is_active = $('#isStepActiveField').val();
+            if (is_active == 1) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function applychecks() {
+            var route = <?php echo '"'.url('forms/skip_logic').
+            '";'; ?>;        window.open(route + '/' + id);
+        }
+
+        function showFormPreview() {
+            var route = <?php echo '"'.url('forms/show').
+            '";'; ?>;        var phase_id = $('#phases').val();
+            var step_id = $('#steps').val();
+            window.open(route + '/' + phase_id + '/' + step_id);
+        }
+        // Add New Option Group
+        function addOptionsGroup() {
+            $("#OptionsGroupForm").submit(function(e) {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                e.preventDefault();
+                $.ajax({
+                    data: $('#OptionsGroupForm').serialize(),
+                    url: "{{ route('optionsGroup.store') }}",
+                    type: "POST",
+                    dataType: 'json',
+                    success: function(results) {
+                        fetch_options();
+                        $('#OptionsGroupForm').trigger("reset");
+                        $("#optiongroup-close").click();
+                    },
+                    error: function(results) {
+                        console.log('Error:', results);
+                    }
+                });
+            });
+        }
+        addOptionsGroup();
+
+        function fetch_options() {
+            $('#option_group_id').html('');
+            var options = '<option value="">None</option>';
+            $.ajax({
+                url: "{{ route('getall_options') }}",
+                type: "post",
+                dataType: 'json',
+                success: function(res) {
+                    $.each(res['data'], function(k, v) {
+                        options += '<option value="' + v.id + '">' + v.option_group_name + '</option>'
+                    })
+                    $('#option_group_id').append(options);
+                }
+            });
+        }
+        /**************************************************************/
+        var validationRules = new Array;
+        $('#question_type').on('change', function() {
+            filterRulesByQuestionType();
+        });
+
+        function filterRulesByQuestionType() {
+            var questionType = $('#question_type :selected').text();
+            $.ajax({
+                url: "{{ route('validationRule.filterRulesDataValidation') }}",
                 type: 'post',
                 data: {
                     "_token": "{{ csrf_token() }}",
@@ -1226,32 +1272,36 @@ function filterRulesByQuestionType(){
                         validationRules.pop();
                     }
                     $.each(opts, function(i, d) {
-                        validationRules.push({"id": i,"title": d});
+                        validationRules.push({
+                            "id": i,
+                            "title": d
+                        });
                     });
                     updateRulesDropDown();
                 }
             });
-}
-$('.addvalidations').on('click',function(){
+        }
+        $('.addvalidations').on('click', function() {
 
-    var htmlStr = `<div class="values_row">
-                        <div class="form-group row" style="margin-top: 10px;">
-                            <div class="col-sm-1"> Rule:</div>
-                            <div class="col-sm-4 validationRuleDivCls">
+            var htmlStr = `<div class="values_row">
+                            <div class="form-group row" style="margin-top: 10px;">
+                                <div class="col-sm-1"> Rule:</div>
+                                <div class="col-sm-4 validationRuleDivCls">
 
+                                </div>
+                                <div class="form-group col-md-1" style="text-align: right;!important;">
+                                    <i class="btn btn-outline-danger fa fa-trash remove" style="margin-top: 3px;"></i>
+                                </div>
                             </div>
-                            <div class="form-group col-md-1" style="text-align: right;!important;">
-                                <i class="btn btn-outline-danger fa fa-trash remove" style="margin-top: 3px;"></i>
-                            </div>
-                        </div>
-                    </div>`;
-    $('.appendDatavalidations').append(htmlStr);
-    updateRulesDropDown();
-   return false;
-});
-function loadValidationRulesByQuestionId(questionId){
-    $.ajax({
-                url: '{{route('validationRule.getQuestionValidationRules')}}',
+                        </div>`;
+            $('.appendDatavalidations').append(htmlStr);
+            updateRulesDropDown();
+            return false;
+        });
+
+        function loadValidationRulesByQuestionId(questionId) {
+            $.ajax({
+                url: "{{ route('validationRule.getQuestionValidationRules') }}",
                 type: 'post',
                 data: {
                     "_token": "{{ csrf_token() }}",
@@ -1262,203 +1312,206 @@ function loadValidationRulesByQuestionId(questionId){
                     $('.appendDatavalidations').append(responseHtml);
                 }
             });
-}
-/// update sort and delete Questions
+        }
+        /// update sort and delete Questions
 
-$('.updateSort').on('click',function(){
-    var questionId = $('#questionId').val();
-    var sort_value = $('#up_question_sort').val();
-    $.ajax({
-        url:'forms/changeSort/'+questionId,
-        type: 'post',
-        data:{
-            "_token": "{{ csrf_token() }}",
-            "_method": 'GET',
-            'questionId':questionId,
-            'sort_value':sort_value
-        },
-        dataType:'json',
-        success:function(res){
-            $('#question-sort-close').click();
-            var step_id = $('#steps').val()
-                tId;
-            display_sections(step_id);
-            $('.success-msg').html('');
-            $('.success-msg').html('Question Sort Number Updated!')
-            $('.success-alert').slideDown('slow');
-            tId=setTimeout(function(){
-                $(".success-alert").slideUp('slow');
-            }, 4000);
-        }
-    })
-})
+        $('.updateSort').on('click', function() {
+            var questionId = $('#questionId').val();
+            var sort_value = $('#up_question_sort').val();
+            $.ajax({
+                url: 'forms/changeSort/' + questionId,
+                type: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'GET',
+                    'questionId': questionId,
+                    'sort_value': sort_value
+                },
+                dataType: 'json',
+                success: function(res) {
+                    $('#question-sort-close').click();
+                    var step_id = $('#steps').val()
+                    tId;
+                    display_sections(step_id);
+                    $('.success-msg').html('');
+                    $('.success-msg').html('Question Sort Number Updated!')
+                    $('.success-alert').slideDown('slow');
+                    tId = setTimeout(function() {
+                        $(".success-alert").slideUp('slow');
+                    }, 4000);
+                }
+            })
+        })
 
-/// get steps
-function get_steps_phase_id(id,step_class){
-    step_class.html('');
-    var options = '<option value="">---Select Step / Form---</option>';
-    var url_route = "{{ URL('forms/step_by_phaseId') }}"
-        url_route = url_route+"/"+id;
+        /// get steps
+        function get_steps_phase_id(id, step_class) {
+            step_class.html('');
+            var options = '<option value="">---Select Step / Form---</option>';
+            var url_route = "{{ URL('forms/step_by_phaseId') }}"
+            url_route = url_route + "/" + id;
 
-    $.ajax({
-        url:url_route,
-        type:'post',
-        dataType: 'json',
-         data: {
-            "_token": "{{ csrf_token() }}",
-            "_method": 'GET',
-            'phase_id': id
-        },
-        success:function(response){
-            $.each(response['data'],function(k,v){
-                options += '<option value="'+v.step_id+'" >'+v.form_type+'-'+v.step_name+'</option>';
+            $.ajax({
+                url: url_route,
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'GET',
+                    'phase_id': id
+                },
+                success: function(response) {
+                    $.each(response['data'], function(k, v) {
+                        options += '<option value="' + v.step_id + '" >' + v.form_type + '-' + v
+                            .step_name + '</option>';
+                    });
+                    step_class.append(options);
+                }
             });
-            step_class.append(options);
         }
-    });
-}
-// get sections
-function get_section_step_id(id,section_class){
-   section_class.html('');
-   var options = '<option value="">---Form / Sections---</option>';
-   $.ajax({
-        url:'forms/sections_by_stepId/'+id,
-        type:'post',
-        dataType: 'json',
-         data: {
-            "_token": "{{ csrf_token() }}",
-            "_method": 'GET',
-            'step_id': id
-        },
-        success:function(response){
-             $.each(response['data'],function(k,v){
-                options += '<option value="'+v.id+'" >'+v.name+'</option>';
+        // get sections
+        function get_section_step_id(id, section_class) {
+            section_class.html('');
+            var options = '<option value="">---Form / Sections---</option>';
+            $.ajax({
+                url: 'forms/sections_by_stepId/' + id,
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'GET',
+                    'step_id': id
+                },
+                success: function(response) {
+                    $.each(response['data'], function(k, v) {
+                        options += '<option value="' + v.id + '" >' + v.name + '</option>';
+                    });
+                    section_class.append(options);
+                }
             });
-            section_class.append(options);
         }
-    });
-}
-// for new route
-/// get phases or visits
-function get_all_phases(id,phase_class){
-    phase_class.html('');
-    var options = '<option value="">---Select Phase / visits---</option>';
-    $.ajax({
-        url:'forms/get_phases/'+id,
-        type:'post',
-        dataType: 'json',
-         data: {
-            "_token": "{{ csrf_token() }}",
-            "_method": 'GET',
-            'id': id
-        },
-        success:function(response){
-            $.each(response['data'],function(k,v){
-                options += '<option value="'+v.id+'" >'+v.name+'</option>';
+        // for new route
+        /// get phases or visits
+        function get_all_phases(id, phase_class) {
+            phase_class.html('');
+            var options = '<option value="">---Select Phase / visits---</option>';
+            $.ajax({
+                url: 'forms/get_phases/' + id,
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'GET',
+                    'id': id
+                },
+                success: function(response) {
+                    $.each(response['data'], function(k, v) {
+                        options += '<option value="' + v.id + '" >' + v.name + '</option>';
+                    });
+                    phase_class.append(options);
+                }
             });
-            phase_class.append(options);
         }
-    });
-}
-// get Question
-function get_question_section_id(id,div_class){
-    div_class.html('');
-    var options = '<option value="">---Select Question---</option>';
-    $.ajax({
-        url:'forms/get_Questions/'+id,
-        type:'post',
-        dataType:'json',
-        data:{
-            "_token": "{{ csrf_token() }}",
-            "_method": 'GET',
-            'id': id
-        },
-        success:function(response){
-            $.each(response['data'],function(k,v){
-                options += '<option value="'+v.id+'" >'+v.question_text+'</option>';
+        // get Question
+        function get_question_section_id(id, div_class) {
+            div_class.html('');
+            var options = '<option value="">---Select Question---</option>';
+            $.ajax({
+                url: 'forms/get_Questions/' + id,
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'GET',
+                    'id': id
+                },
+                success: function(response) {
+                    $.each(response['data'], function(k, v) {
+                        options += '<option value="' + v.id + '" >' + v.question_text + '</option>';
+                    });
+                    div_class.append(options);
+                }
             });
-            div_class.append(options);
         }
-    });
-}
-// get all annotations
-function get_all_annotations(id,div_class){
-    div_class.html('');
-    var options = '<option value="">---Select Annotation---</option>';
-    $.ajax({
-        url:'annotation/get_allAnnotations/'+id,
-        type:'post',
-        dataType:'json',
-        data:{
-            "_token": "{{ csrf_token() }}",
-            "_method": 'GET',
-            'id': id
-        },
-        success:function(response){
-            $.each(response['data'],function(k,v){
-                options += '<option value="'+v.id+'" >'+v.label+'</option>';
+        // get all annotations
+        function get_all_annotations(id, div_class) {
+            div_class.html('');
+            var options = '<option value="">---Select Annotation---</option>';
+            $.ajax({
+                url: 'annotation/get_allAnnotations/' + id,
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'GET',
+                    'id': id
+                },
+                success: function(response) {
+                    $.each(response['data'], function(k, v) {
+                        options += '<option value="' + v.id + '" >' + v.label + '</option>';
+                    });
+                    div_class.append(options);
+                }
             });
-            div_class.append(options);
         }
-    });
-}
 
-// get sections for dropdown
-function section_against_step(id,section_class){
-   section_class.html('');
-   var options = '<option value="">---Form / Sections---</option>';
-   $.ajax({
-        url:'forms/sections_against_step/'+id,
-        type:'post',
-        dataType: 'json',
-         data: {
-            "_token": "{{ csrf_token() }}",
-            "_method": 'GET',
-            'step_id': id
-        },
-        success:function(response){
-             $.each(response['data'],function(k,v){
-                options += '<option value="'+v.id+'" >'+v.name+'</option>';
+        // get sections for dropdown
+        function section_against_step(id, section_class) {
+            section_class.html('');
+            var options = '<option value="">---Form / Sections---</option>';
+            $.ajax({
+                url: 'forms/sections_against_step/' + id,
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'GET',
+                    'step_id': id
+                },
+                success: function(response) {
+                    $.each(response['data'], function(k, v) {
+                        options += '<option value="' + v.id + '" >' + v.name + '</option>';
+                    });
+                    section_class.append(options);
+                }
             });
-            section_class.append(options);
         }
-    });
-}
-// for new route end
-function updateRulesDropDown(){
-    var selectStr = '<select name="validation_rules[]" class="form-control validationRuleDdCls">';
-    for(var i = 0; i < validationRules.length; i++) {
-        var opt = validationRules[i];
-        selectStr += '<option value="'+opt.id+'">'+opt.title+'</option>';
-    }
-    selectStr += '</select>';
-    $('.validationRuleDivCls').html(selectStr);
-}
-function check_if_name_exists(){
-    var value =  $('.variable_name_ques').val()
-      step_id = $('#steps').val()
-      url_route = "{{ URL('forms/check_variable') }}"
-      url_route = url_route;
-    $.ajax({
-        url:url_route,
-        type:'post',
-         data: {
-            "_token": "{{ csrf_token() }}",
-            "_method": 'POST',
-            'step_id': step_id,
-            'name': value
-        },
-        success:function(response){
-            if(response =='field_found'){
-                $('.space_msg').html('Variable Name already exists!');
-            }else{
-                $('.space_msg').html('');
+        // for new route end
+        function updateRulesDropDown() {
+            var selectStr = '<select name="validation_rules[]" class="form-control validationRuleDdCls">';
+            for (var i = 0; i < validationRules.length; i++) {
+                var opt = validationRules[i];
+                selectStr += '<option value="' + opt.id + '">' + opt.title + '</option>';
             }
+            selectStr += '</select>';
+            $('.validationRuleDivCls').html(selectStr);
         }
-    });
 
-}
-/**************************************************************/
-</script>
+        function check_if_name_exists() {
+            var value = $('.variable_name_ques').val()
+            step_id = $('#steps').val()
+            url_route = "{{ URL('forms/check_variable') }}"
+            url_route = url_route;
+            $.ajax({
+                url: url_route,
+                type: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'step_id': step_id,
+                    'name': value
+                },
+                success: function(response) {
+                    if (response == 'field_found') {
+                        $('.space_msg').html('Variable Name already exists!');
+                    } else {
+                        $('.space_msg').html('');
+                    }
+                }
+            });
+
+        }
+        /**************************************************************/
+
+    </script>
 
 @endsection
