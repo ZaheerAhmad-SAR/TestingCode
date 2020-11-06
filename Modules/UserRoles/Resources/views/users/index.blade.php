@@ -26,15 +26,7 @@
             @endif
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
-                    @if ($errors->any())
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+
                     <div class="card-header d-flex align-items-center">
                             @if(hasPermission(auth()->user(),'users.create'))
                                 <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#createUser">
@@ -110,6 +102,15 @@
     <!-- modal code  -->
     <div class="modal fade" tabindex="-1" role="dialog" id="createUser">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header">
@@ -150,7 +151,11 @@
                                         @error('password')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
+                                        <p id="passwordHelpBlock" class="form-text text-muted">
+                                            Your password must be 8 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.
+                                        </p>
                                     </div>
+
                                 </div>
                                 <div class="form-group row">
                                     <label for="C-Password" class="col-md-3">Confirm Password</label>
