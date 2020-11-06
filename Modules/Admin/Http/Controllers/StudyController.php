@@ -1283,15 +1283,20 @@ class StudyController extends Controller
      */
     public function destroy($id)
     {
+        
+
         $study = Study::where('id', $id)->delete();
+
         $studyusers = UserRole::where('study_id','=',$id)->get();
         foreach ($studyusers as $studyuser){
             $studyuser->delete();
         }
+
         $studysites = StudySite::where('study_id','=',$id)->get();
         foreach ($studysites as $studysite){
             $studysite->delete();
         }
+
         return \response()->json($study);
     }
 }

@@ -169,7 +169,7 @@
                                         <td colspan="6">
                                            <table class="table table-hover" style="width: 100%">
                                                 <thead class="table-secondary">
-                                                    @if($log->event_type == 'Add')
+                                                    @if($log->event_type == 'Add' || $log->event_section == 'QC Form' || $log->event_section == 'Grading Form')
                                                         <th>Name</th>
                                                         <th>Value</th>
                                                     @else
@@ -184,25 +184,68 @@
                                                         $oldDetails = json_decode($log->event_old_details);
                                                     @endphp
 
-                                                    <!-- for add event -->
-                                                    @if($log->event_type == 'Add')
+                                                    <!-- Form Type check for QC and Grading -->
+                                                    @if($log->event_section == 'QC Form' || $log->event_section == 'Grading Form')
                                                         @foreach($newDetails as $key => $details)
+                                                        
+                                                        @if($key != 'section_id')
                                                         <tr>
-                                                            <td>{{$key}}</td>
-                                                            <td>{{$details}}</td>
+                                                            
+                                                                <td> {{$key}} </td>
+                                                                <td> {{$details}} </td>
                                                         </tr>
-                                                        @endforeach
+                                                            
+                                                            @else
 
-                                                        <!-- for update event -->
-                                                        @else
-                                                        @foreach($newDetails as $key => $details)
-                                                        <tr>
-                                                            <td>{{$key}}</td>
-                                                            <td>{{$details}}</td>
-                                                            <td>{{$oldDetails->$key}}</td>
-                                                        </tr>
+                                                                <!-- look for section -->
+                                                                @foreach($details as $sectionKey => $sectionValue)
+                                                                <tr>
+                                                                    <td colspan="2" style="color: #1e3d73;">
+                                                                        <b>
+                                                                            Section_ID: {{ $sectionKey }}
+                                                                        </b> 
+                                                                    </td>
+                                                                </tr>
+                                                                    <!-- section index -->
+                                                                    @foreach($sectionValue as $section_index => $section_value)
+                                                                        
+                                                                        @foreach($section_value as $section_key => $value )
+                                                                            <tr>
+                                                                                <td> {{ $section_key}} </td>
+                                                                                <td> {{ $value}} </td>
+                                                                            </tr>
+                                                                        @endforeach
+
+                                                                    @endforeach
+
+                                                                @endforeach
+                                                            @endif
+                                                       
+
                                                         @endforeach
+                                                    @else
+                                                        <!-- for add event -->
+                                                        @if($log->event_type == 'Add')
+                                                            @foreach($newDetails as $key => $details)
+                                                            <tr>
+                                                                <td>{{$key}}</td>
+                                                                <td>{{$details}}</td>
+                                                            </tr>
+                                                            @endforeach
+
+                                                            <!-- for update event -->
+                                                        @else
+                                                            @foreach($newDetails as $key => $details)
+                                                            <tr>
+                                                                <td>{{$key}}</td>
+                                                                <td>{{$details}}</td>
+                                                                <td>{{$oldDetails->$key}}</td>
+                                                            </tr>
+                                                            @endforeach
+                                                        @endif
+                                                        <!-- ad update event -->
                                                     @endif
+                                                    <!-- form type check end -->
                                                 </tbody>
                                             </table>
                                         </td>
