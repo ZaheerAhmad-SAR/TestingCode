@@ -3,4 +3,7 @@
     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
         @include('queries::queries.query_popup_span_form', ['queryParams'=>$queryParams, 'study_id'=> (isset($study) && null !== $study)? $study->id:''])
     </div>
+    @if(\Modules\Queries\Entities\Query::questionHasQuery($queryParams))
+        this question has query
+        @endif
 </div>

@@ -28,6 +28,8 @@ use DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\Traits\UploadTrait;
+use Modules\Queries\Entities\QueryNotification;
+use Modules\Queries\Entities\QueryNotificationUser;
 
 class TransmissionController extends Controller
 {
@@ -204,7 +206,7 @@ class TransmissionController extends Controller
         // get all the transmission updates
         $getTransmissionUpdates = TransmissionUpdateDetail::where('transmission_id', decrypt($id))->get();
 
-        
+
         return view('admin::study_view_transmission_details', compact('findTransmission', 'getSites', 'getSubjects', 'getPhases', 'getModalities', 'getTransmissionUpdates', 'getStepForVisit'));
     }
 
@@ -381,7 +383,7 @@ class TransmissionController extends Controller
 
         // get studies
         $systemStudies = Study::get();
-        
+
         return view('admin::view_transmission_details', compact('findTransmission', 'getSites', 'getSubjects', 'getPhases', 'getModalities', 'getTransmissionUpdates', 'getStepForVisit', 'systemStudies'));
     }
 
@@ -782,10 +784,32 @@ class TransmissionController extends Controller
           'attachment'=>$filePath,
           'studyShortName'=>$studyShortName
         );
+        $id              = Str::uuid();
+
+        $queryNotification = QueryNotification::create([
+           'id'=>$id,
+           'cc_email'=>$cc_email,
+            'subject'=>$query_subject,
+            'email_body'=>$remarks,
+            'email_attachment'=>$filePath,
+            'parent_notification_id'=> 0,
+            'notification_remarked_id'=>\auth()->user()->id,
+            'study_id'=>$studyID,
+            'subject_id'=>$subjectID,
+            'transmission_number'=>$transNumber,
+            'vist_name'=>$visit_name
+        ]);
         foreach ($usersArray as $user)
         {
+
             Mail::to($user)->send(new TransmissonQuery($data));
+//            QueryNotificationUser::create([
+//                'id' => Str::uuid(),
+//               'query_notification_user_id'=>$user
+//            ]);
         }
+
+
         return response()->json(['Status'=>'Send','message'=>'Query has been send']);
 
 //        //$ccEmail = $request->post('cc_email');
