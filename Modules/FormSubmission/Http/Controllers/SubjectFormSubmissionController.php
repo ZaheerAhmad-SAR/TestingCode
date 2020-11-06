@@ -143,4 +143,37 @@ class SubjectFormSubmissionController extends Controller
 
         echo $formStatusObj->form_status;
     }
+
+    public function lockFormData(Request $request)
+    {
+        $getFormStatusArray = [
+            'subject_id' => $request->subjectId,
+            'study_id' => $request->studyId,
+            'study_structures_id' => $request->phaseId,
+            'phase_steps_id' => $request->stepId,
+        ];
+        $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
+        if (null !== $formStatusObj) {
+            $formStatusObj->is_data_locked = 1;
+            $formStatusObj->update();
+        }
+
+        echo $formStatusObj->is_data_locked;
+    }
+    public function unlockFormData(Request $request)
+    {
+        $getFormStatusArray = [
+            'subject_id' => $request->subjectId,
+            'study_id' => $request->studyId,
+            'study_structures_id' => $request->phaseId,
+            'phase_steps_id' => $request->stepId,
+        ];
+        $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
+        if (null !== $formStatusObj) {
+            $formStatusObj->is_data_locked = 0;
+            $formStatusObj->update();
+        }
+
+        echo $formStatusObj->is_data_locked;
+    }
 }
