@@ -239,6 +239,27 @@
                 }
             })
         }
+        function question_options_activate(id,append_class,index,q_id,option_value,option_title){
+            var url = "{{ url('skiplogic/options_for_skip_logic_activate') }}"
+                url = url+'/'+id;
+            $.ajax({
+                url: url,
+                type: 'post',
+                dataType: 'html',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'GET',
+                    'id': id,
+                    'index': index,
+                    "question_id": q_id,
+                    "option_title": option_title,
+                    "option_value": option_value
+                },
+                success: function(response){
+                    $('.'+append_class+q_id+'_'+index).html(response);
+                }
+            })
+        }
         function question_options_deactivate(id,append_class,index,q_id,option_value,option_title){
            var url = "{{ url('skiplogic/options_for_skip_logic_deactivate') }}"
                 url = url+'/'+id;
@@ -255,13 +276,12 @@
                     "option_title": option_title,
                     "option_value": option_value
                 },
-                success: function(response) {
-                    alert(response);
-                    alert('.'+append_class+id+'_'+index);
+                success: function(response){
                     $('.'+append_class+id+'_'+index).html(response);
                 }
             })
         }
+
     </script>
     @push('script_last')
 
