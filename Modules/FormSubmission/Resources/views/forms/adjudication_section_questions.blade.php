@@ -1,3 +1,4 @@
+@if($step->is_active == 1)
 @if (count($section->questions))
 @php
 $showAllQuestions = request('showAllQuestions', 'no');
@@ -114,4 +115,7 @@ $adjudicationRequiredQuestionIdsArray = \Modules\FormSubmission\Entities\Questio
             @endforeach
     </div>
 </fieldset>
+@endif
+@else
+<div class="alert alert-danger" role="alert">Form is in draft mode</div>
 @endif

@@ -11,6 +11,7 @@ use Modules\FormSubmission\Entities\Answer;
 use Modules\FormSubmission\Entities\FormRevisionHistory;
 use Modules\FormSubmission\Entities\FormStatus;
 use Modules\Admin\Entities\Question;
+use Modules\FormSubmission\Entities\FormVersion;
 use Modules\FormSubmission\Traits\QuestionDataValidation;
 
 class SubjectFormSubmissionController extends Controller
@@ -65,6 +66,9 @@ class SubjectFormSubmissionController extends Controller
 
     private function putAnswer($request, $question)
     {
+        $step = PhaseSteps::find($request->stepId);
+        $formVersion = PhaseSteps::getFormVersion($step->step_id);
+
         $formDataArray = [];
         $finalFormDataArray = [];
         $trailLogArray = [];
@@ -75,8 +79,6 @@ class SubjectFormSubmissionController extends Controller
         $answerFixedArray['phase_steps_id'] = $request->stepId;
         $answerFixedArray['section_id'] = $question->section->id;
         $answerFixedArray['form_filled_by_user_id'] = auth()->user()->id;
-
-        $step = PhaseSteps::find($request->stepId);
 
         $form_field_name = buildFormFieldName($question->formFields->variable_name);
         $form_field_id = $question->formFields->id;
@@ -99,10 +101,12 @@ class SubjectFormSubmissionController extends Controller
             /************************** */
             if ($answerObj) {
                 $answerArray['answer'] = $answer;
+                $answerArray['form_version_num'] = $formVersion->form_version_num;
                 $answerObj->update($answerArray);
             } else {
                 $answerArray['id'] = Str::uuid();
                 $answerArray['answer'] = $answer;
+                $answerArray['form_version_num'] = $formVersion->form_version_num;
                 $answerObj = Answer::create($answerArray);
             }
             $trailLogArray = $answerArray;

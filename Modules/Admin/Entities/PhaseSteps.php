@@ -8,6 +8,7 @@ use Modules\UserRoles\Entities\Role;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\Study;
+use Modules\FormSubmission\Entities\FormVersion;
 use Modules\FormSubmission\Entities\SubjectsPhases;
 
 class PhaseSteps extends Model
@@ -88,7 +89,7 @@ class PhaseSteps extends Model
         return self::where('phase_id', $phaseId)
             ->whereIn('form_type_id', $formTypeArray)
             ->whereIn('modility_id', $modalityIdsArray)
-            ->active()
+            //->active()
             ->get();
     }
     public function phase()
@@ -117,5 +118,11 @@ class PhaseSteps extends Model
         } else {
             return false;
         }
+    }
+
+    public static function getFormVersion($step_id)
+    {
+        $formVersion = FormVersion::where('step_id', 'like', $step_id)->where('is_active', 1)->first();
+        return $formVersion;
     }
 }
