@@ -1270,7 +1270,7 @@ class StudyController extends Controller
     {
 
         $study = Study::where('id', $request->id)->delete();
-        dd($request->all());
+
         $studyusers = UserRole::where('study_id','=',$request->id)->get();
 
         foreach ($studyusers as $studyuser){
