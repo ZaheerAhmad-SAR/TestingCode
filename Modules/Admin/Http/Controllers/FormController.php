@@ -93,9 +93,15 @@ class FormController extends Controller
         $section_contents .= '</div>';
         return Response($section_contents);
     }
+
+    public function isStepActive(Request $request)
+    {
+        $step = PhaseSteps::find($request->step_id);
+        echo $step->is_active;
+    }
     // add question check start
     // Question activate and deactivate
- 
+
     // add question check end
     public function get_allQuestions($id = '')
     {

@@ -48,9 +48,7 @@ class StudyController extends Controller
     public function index()
     {
         if (hasPermission(\auth()->user(), 'systemtools.index')) {
-            $user = User::with('studies', 'user_roles')->find(Auth::id());
-
-            $user = User::with('studies', 'user_roles')->find(Auth::id());
+           $user = User::with('studies', 'user_roles')->find(Auth::id());
             $studies  =   Study::with('users')->where('id','!=', Null)->orderBy('study_short_name')->get();
             $permissionsIdsArray = Permission::where(function ($query) {
                 $query->where('permissions.name', '=', 'studytools.index')
@@ -64,8 +62,6 @@ class StudyController extends Controller
             $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->orderBy('name','asc')->get();
             $sites = Site::all();
             $study = '';
-//            dd($studies);
-
         }
         else{
             $user=\auth()->user()->id;
@@ -97,9 +93,9 @@ class StudyController extends Controller
                 $study = '';
             }
             if (hasPermission(\auth()->user(),'studytools.index')) {
-                $studies = UserRole::select('study_user.*', 'users.*', 'studies.*')
-                    ->join('users', 'users.id', '=', 'study_user.user_id')
-                    ->join('studies', 'studies.id', '=', 'study_user.study_id')
+                $studies = UserRole::select('user_roles.*', 'users.*', 'studies.*')
+                    ->join('users', 'users.id', '=', 'user_roles.user_id')
+                    ->join('studies', 'studies.id', '=', 'user_roles.study_id')
                     ->where('users.id', '=', \auth()->user()->id)
                     ->orderBy('study_short_name')->get();
                 $study = '';
@@ -109,6 +105,7 @@ class StudyController extends Controller
             $users = User::all();
             $sites = Site::all();
             $study = '';
+            $studies = [];
         }
 
         return view('admin::studies.index', compact('studies', 'sites', 'users','study'));
@@ -144,21 +141,8 @@ class StudyController extends Controller
      * @return Response
      */
     public function store(Request $request){
-        $this->validate($request,[
-            'study_short_name'  => 'required',
-            'study_title'  => 'required',
-            'study_status'  => 'required',
-            'study_code'  => 'required',
-            'protocol_number'  => 'required',
-            'study_phase'  => 'required',
-            'trial_registry_id'  => 'required',
-            'study_sponsor'  => 'required',
-            'start_date'  => 'required',
-            'end_date'  => 'required',
-            'description'  => 'required',
-            'name'  => 'required',
-            'users'  => 'required',
-        ]);
+        dd('store');
+
         $id    = Str::uuid();
         $study = Study::create([
             'id'    => $id,
@@ -193,13 +177,12 @@ class StudyController extends Controller
         $id    = Str::uuid();
         $users = [];
         if (isset($request->users) && count($request->users) > 0) {
-            for ($i = 0; $i < count($request->users); $i++) {
-                $users = [
-                    'id' => Str::uuid(),
-                    'study_id' =>$last_id->id,
-                    'user_id' => $request->users[$i],
-                ];
-                StudyUser::insert($users);
+            foreach ($request->users as $user){
+                $get_role = UserRole::where('user_id','=',$user)->where('study_id','=','')->first();
+               if($get_role){
+                   $get_role->study_id =  $last_id->id;
+                   $get_role->save();
+               }
             }
         }
 
@@ -224,7 +207,6 @@ class StudyController extends Controller
             ->join('studies','studies.id','=','study_user.study_id')
             ->where('users.id','=',\auth()->user()->id)
             ->orderBy('study_short_name')->get();
-        $study_role= StudyUser::where('study_id','=',$id)->get();
         $currentStudy = Study::find($id);
         $study = Study::find($id);
 
@@ -300,10 +282,23 @@ class StudyController extends Controller
             }
         }
         // update multi users here
-        $study_users = StudyUser::where('study_id',$request->study_id)->delete();
+
+
+       // $study_users = StudyUser::where('study_id',$request->study_id)->delete();
         $users = [];
         if (isset($request->users) && count($request->users) > 0) {
             for ($i = 0; $i < count($request->users); $i++) {
+                $permissionsIdsArray = Permission::where(function ($query) {
+                    $query->where('permissions.name', '=', 'studytools.index')
+                        ->orwhere('permissions.name', '=', 'studytools.store')
+                        ->orWhere('permissions.name', '=', 'studytools.edit')
+                        ->orwhere('permissions.name', '=', 'studytools.update');
+                })->distinct('id')->pluck('id')->toArray();
+
+                $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
+                $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
+                $study_users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->orderBy('name','asc')->get();
+                dd($userIdsArrayFromUserRole);
                 $users = [
                     'id' => Str::uuid(),
                     'study_id' =>$request->study_id,

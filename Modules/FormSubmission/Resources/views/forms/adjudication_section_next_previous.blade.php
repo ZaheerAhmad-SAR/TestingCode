@@ -1,3 +1,4 @@
+@if($step->is_active == 1)
 @php
 $showAllQuestions = request('showAllQuestions', 'no');
 @endphp
@@ -21,4 +22,5 @@ $showAllQuestions = request('showAllQuestions', 'no');
         <button type="button" class="btn btn-primary prevtab">Previous</button>
         <button type="button" class="btn btn-primary nexttab ml-auto {{ 'next_' . $sectionClsStr }}">Next</button>
     </div>
+@endif
 @endif

@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\StudyStructure;
+use Modules\FormSubmission\Entities\FormVersion;
 
 trait StepReplication
 {
@@ -70,10 +71,25 @@ trait StepReplication
         }
     }
 
+    private function putStepFormVersion($step)
+    {
+        $formVersion = PhaseSteps::getFormVersion($step->step_id);
+        if (null !== $formVersion) {
+            $newFormVersionNum = (int)$formVersion->form_version_num + 1;
+            $formVersion->is_active = 0;
+            $formVersion->update();
+            ///////////////////////////////////////
+            FormVersion::createFormVersion($step, $newFormVersionNum);
+        } else {
+            FormVersion::createFormVersion($step, 1);
+        }
+    }
+
     private function activateThisStep($step)
     {
         $step->is_active = 1;
         $step->update();
+        $this->putStepFormVersion($step);
     }
 
     private function deActivateThisStep($step)

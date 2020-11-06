@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 class AdjudicationFormStatus extends Model
 {
     protected $table = 'adjudication_form_status';
-    protected $fillable = ['id', 'form_adjudicated_by_id', 'subject_id', 'study_id', 'study_structures_id', 'phase_steps_id', 'section_id', 'modility_id', 'adjudication_status'];
+    protected $fillable = ['id', 'form_adjudicated_by_id', 'subject_id', 'study_id', 'study_structures_id', 'phase_steps_id', 'section_id', 'modility_id', 'adjudication_status', 'form_version_num'];
     protected $keyType = 'string';
 
     protected $attributes = [

@@ -55,44 +55,8 @@ class UserController extends Controller
         }
         $currentStudy = session('current_study');
 
-        if (hasPermission(auth()->user(),'systemtools.index')){
             $users  =  User::orderBY('name','asc')->get();
             $studyusers = User::where('id','!=',\auth()->user()->id)->get();
-        }
-       /* elseif (hasPermission(auth()->user(),'studytools.index') && !empty(session('current_study'))) {
-            dd('elseif');
-            $permissionsIdsArray = Permission::where(function ($query) {
-                $query->where('permissions.name', '!=', 'studytools.create')
-                    ->orwhere('permissions.name', '!=', 'studytools.store')
-                    ->orWhere('permissions.name', '!=', 'studytools.edit')
-                    ->orwhere('permissions.name', '!=', 'studytools.update');
-            })->distinct('id')->pluck('id')->toArray();
-
-            $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
-            $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)
-                ->where('study_id', $currentStudy)
-                ->distinct()->pluck('user_id')->toArray();
-            $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->where('id', '!=', \auth()->user()->id)->get();
-            $studyusers = UserRole::select('users.*', 'user_roles.study_id', 'roles.role_type')
-                ->join('users', 'users.id', '=', 'user_roles.user_id')
-                ->join('roles', 'roles.id', '=', 'user_roles.role_id')
-                ->where('roles.role_type', '!=', 'system_role')
-                ->where('user_roles.study_id', '!=', session('current_study'))->distinct()
-                ->get();
-        }
-        else{
-
-            $users = User::where('deleted_at','=',Null)
-                ->where('user_type','=','study_user')
-                ->get();
-
-
-            $studyusers = UserRole::select('users.*','user_roles.study_id')
-                ->join('users','users.id','=','user_roles.user_id')
-                ->where('id','!=',\auth()->user()->id)
-                ->where('user_roles.study_id','!=',session('current_study'))->distinct()
-                ->get();
-        }*/
 
         return view('userroles::users.index',compact('users','roles','studyusers'));
 
@@ -456,12 +420,12 @@ class UserController extends Controller
             }
         });
         if ($validator->fails()) {
-            return redirect(route('invite_view'))
+            return redirect(route('users.index'))
                 ->withErrors($validator)
                 ->withInput();
         }
         do {
-            $token = Str::random(20);
+            $token = Str::random(15);
         } while (Invitation::where('token', $token)->first());
         Invitation::create([
             'id'    => Str::uuid(),
@@ -476,7 +440,7 @@ class UserController extends Controller
 
         Notification::route('mail', $request->input('email'))->notify(new InviteNotification($url));
 
-        return redirect('/users')->with('success', 'The Invite has been sent successfully');
+        return redirect('/users')->with('message', 'The Invite has been sent successfully');
     }
 
     public function registration_view($token)
