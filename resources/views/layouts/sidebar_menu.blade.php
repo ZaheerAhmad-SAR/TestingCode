@@ -207,25 +207,23 @@
             @if(hasPermission(auth()->user(),'grading.index'))
                 <li class="dropdown">
                     <ul>
-                        <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Grading</a>
-                            <ul class="sub-menu">
-                                <li>
-                                    <a href="{{route('grading.index')}}">
-                                        <i class="fas fa-list"></i> Grading List
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <i class="fas fa-chart-line"></i> Grading Status
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <i class="fas fa-chart-line"></i> Adjudication
-                                    </a>
-                                </li>
-                            </ul>    
-                        </li>    
+
+                        <li>
+                            <a href="{{route('grading.index')}}">
+                                <i class="fas fa-list"></i> Grading List
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('grading.status')}}">
+                                <i class="fas fa-chart-line"></i> Grading Status
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <i class="fas fa-chart-line"></i> Adjudication
+                            </a>
+                        </li>
+
                     </ul>
                 </li>
             @endif
