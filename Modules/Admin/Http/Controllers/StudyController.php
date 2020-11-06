@@ -1268,6 +1268,7 @@ class StudyController extends Controller
      */
     public function destroy(Request $request)
     {
+        
 
         $study = Study::where('id', $request->id)->delete();
 

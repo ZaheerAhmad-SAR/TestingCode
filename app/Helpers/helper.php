@@ -688,7 +688,9 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
 
         //////////////////////////////// Transmission Data //////////////////////////////
     } else if ($eventSection == 'QC Form') {
-
+        
+        $ip = 'N/A';
+        $eventId = 0;
         // get event data
         $eventData = $eventId;
         // set message for audit
@@ -744,7 +746,9 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
 
         ///////////////////////////// QC Form Data //////////////////////////////
     } else if ($eventSection == 'Grading Form') {
-       
+        
+        $ip = 'N/A';
+        $eventId = 0;
        // get event data
         $eventData = $eventId;
         // set message for audit
@@ -802,14 +806,14 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
 
     // Log the event
     $trailLog = new TrailLog;
-    $trailLog->event_id = 0;
+    $trailLog->event_id = $eventId;
     $trailLog->event_section = $eventSection;
     $trailLog->event_type = $eventType;
     $trailLog->event_message = $auditMessage;
     $trailLog->user_id = \Auth::user()->id;
     $trailLog->user_name = \Auth::user()->name;
     $trailLog->role_id = \Auth::user()->role_id;
-    $trailLog->ip_address = 'N/A';
+    $trailLog->ip_address = $ip;
     $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
     $trailLog->event_url = $auditUrl;
     $trailLog->event_details = json_encode($newData);
