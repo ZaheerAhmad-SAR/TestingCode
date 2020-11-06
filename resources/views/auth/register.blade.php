@@ -1,5 +1,6 @@
 @extends ('layouts.app')
 @section('body')
+
     <div class="container" id ="container">
         <div class="row vh-100 justify-content-between align-items-center">
             <div class="col-12">
