@@ -26,7 +26,7 @@
 
                         <div class="form-group mb-3">
                             <label for="email">Email</label>
-                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
+                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $invite->email  }}" required autocomplete="email">
 
                             @error('email')
                             <span class="invalid-feedback" role="alert">
@@ -52,6 +52,8 @@
                         <div class="form-group mb-3">
                             <label for="email">Confirm Password</label>
                             <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
+                            <input type="hidden" name="role" value="{{$invite->role_id}}">
+                            <input type="hidden" name="token" value="{{$invite->token}}">
                         </div>
 
                         <div class="form-group mb-3">

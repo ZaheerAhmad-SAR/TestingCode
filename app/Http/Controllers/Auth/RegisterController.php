@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Modules\UserRoles\Entities\Invitation;
+use Modules\UserRoles\Entities\UserRole;
 use Psy\Util\Str;
 
 class RegisterController extends Controller
@@ -30,7 +31,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/login';
 
     /**
      * Create a new controller instance.
@@ -74,13 +75,25 @@ class RegisterController extends Controller
 
     protected function create(array $data)
     {
-        $invite = Invitation::where('token', $data['token'])->first();
-        $invite->delete();
+       $invite = Invitation::where('token', $data['token'])->first();
+       $invite->delete();
 
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        return [
+            $id = \Illuminate\Support\Str::uuid(),
+            User::create([
+                'id'    => $id,
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+                'role_id'   => $data['role']
+            ]),
+            UserRole::create([
+                'id'    => \Illuminate\Support\Str::uuid(),
+                'role_id'   => $data['role'],
+                'user_id'   => $id,
+                'study_id'  => ''
+            ])
+        ];
+
     }
 }
