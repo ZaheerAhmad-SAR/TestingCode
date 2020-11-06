@@ -16,6 +16,14 @@
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
         <div class="row">
+            @if(session()->has('message'))
+                <div class="col-lg-12 success-alert">
+                    <div class="alert alert-primary success-msg" role="alert">
+                        {{ session()->get('message') }}
+                        <button class="close" data-dismiss="alert">&times;</button>
+                    </div>
+                </div>
+            @endif
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
                     @if ($errors->any())
@@ -51,7 +59,6 @@
                     <div class="card-body">
                         <div class="table-responsive list">
                             <table class="table table-bordered editable-table" id="laravel_crud">
-                                @if(hasPermission(auth()->user(),'systemtools.index') && empty(session('current_study')))
                                     <thead>
                                     <tr>
                                         <th scope="col">Name</th>
@@ -62,7 +69,7 @@
                                     </tr>
                                     </thead>
                                     <tbody id="users-crud">
-                                @foreach($users as $user)
+                                        @foreach($users as $user)
                                     <tr>
                                         <td>{{ucfirst($user->name)}}</td>
                                         <td>{{$user->email}}</td>
@@ -90,7 +97,6 @@
                                         </td>
                                     </tr>
                                 @endforeach
-                                    @endif
                                     </tbody>
 
                             </table>

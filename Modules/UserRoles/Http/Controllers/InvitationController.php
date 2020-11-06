@@ -33,7 +33,8 @@ class InvitationController extends Controller
         $invite = Invitation::create([
             'id'    => \Illuminate\Support\Str::uuid(),
             'email' => $request->get('email'),
-            'token' => $token
+            'token' => $token,
+            'role_id'   => $request->roles
         ]);
         $user = User::where('email','=',$invite->email)->first();
         if(empty($user)) {

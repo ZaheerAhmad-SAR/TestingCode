@@ -97,9 +97,9 @@ class StudyController extends Controller
                 $study = '';
             }
             if (hasPermission(\auth()->user(),'studytools.index')) {
-                $studies = UserRole::select('study_user.*', 'users.*', 'studies.*')
-                    ->join('users', 'users.id', '=', 'study_user.user_id')
-                    ->join('studies', 'studies.id', '=', 'study_user.study_id')
+                $studies = UserRole::select('user_roles.*', 'users.*', 'studies.*')
+                    ->join('users', 'users.id', '=', 'user_roles.user_id')
+                    ->join('studies', 'studies.id', '=', 'user_roles.study_id')
                     ->where('users.id', '=', \auth()->user()->id)
                     ->orderBy('study_short_name')->get();
                 $study = '';
