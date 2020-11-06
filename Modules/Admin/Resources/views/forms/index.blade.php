@@ -1,5 +1,6 @@
 @extends ('layouts.home')
 @section('content')
+<input type="hidden" name="isStepActiveField" id="isStepActiveField" value="1"/>
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
         <div class="row ">
@@ -611,7 +612,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <lable for='variable' class="col-sm-2 col-form-label">Variable name <sup>*</sup></lable>
+                                    <label for='variable' class="col-sm-2 col-form-label">Variable name <sup>*</sup></label>
                                     <div class="col-sm-4">
                                         <input type="text" class="form-control variable_name" name="variable_name" value="">
                                     </div>
@@ -718,6 +719,10 @@
     .display-none{
         display: none;
     }
+    .overlay_container{
+        position: relative;
+
+    }
 </style>
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
 <link rel="stylesheet" href="{{ asset("public/dist/vendors/summernote/summernote-bs4.css") }}">
@@ -814,12 +819,16 @@ $('.add_discription').on('click',function(){
    $('#descriptionModal').modal('show');
 })
 $('.add_certify_list').on('click',function(){
+    if(checkIsStepActive() == false){
    $('#form_certify').trigger('reset');
    $('.modal-title').html('Add Certification list');
    $('#form_certify').attr('action', "{{route('forms.addQuestions')}}");
    var id = $(this).attr("data-field-id");
    $('#question_type').val(id);
    $('#listModal').modal('show');
+}else{
+            showStepDeActivationAlert();
+        }
 })
 $('body').on('click','.fetch_phases',function(){
     var phase_id = '1';
@@ -950,6 +959,7 @@ $(document).ready(function() {
         $('#ChangeQuestionSort').modal('show');
     })
     $('body').on('click', '.delete_ques', function() {
+        if(checkIsStepActive() == false){
         var row = $(this).closest('div.custom_fields');
         var tId;
         var question_id = row.find('input.question_id').val();
@@ -974,6 +984,9 @@ $(document).ready(function() {
                 }
             })
         }
+    }else{
+            showStepDeActivationAlert();
+        }
     })
     // update Descriptions
     $('body').on('click','.edit_desc',function(){
@@ -996,7 +1009,8 @@ $(document).ready(function() {
     });
     // update question
     $('body').on('click', '.Edit_ques', function() {
-        $('#formfields').trigger('reset');
+        if(checkIsStepActive() == false){
+            $('#formfields').trigger('reset');
         $('.modal-title').html('Update Question')
         $('#formfields').attr('action', "{{ route('forms.updateQuestion') }}");
         var row = $(this).closest('div.custom_fields')
@@ -1085,9 +1099,15 @@ $(document).ready(function() {
         $('#adj_custom_value').val(adj_custom_value);
         $('#addField').modal('show');
         loadValidationRulesByQuestionId(ques_id);
+        }else{
+            showStepDeActivationAlert();
+        }
     })
 
 })
+function showStepDeActivationAlert(){
+    alert('Please first deactivate this step!');
+}
 function display_sections(step_id) {
     var html = '';
     var sections = '';
@@ -1104,8 +1124,34 @@ function display_sections(step_id) {
         success: function(response) {
             $('.display-sections').html(response);
             $('select[name="question_list"]').select2();
+            isStepActive(step_id);
         }
     });
+}
+
+function isStepActive(step_id) {
+    $("#wait").css("display", "block");
+    $.ajax({
+        url: 'forms/isStepActive/'+step_id,
+        type: 'POST',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            "_method": 'POST',
+            'step_id': step_id
+        },
+        success: function(response) {
+            $('#isStepActiveField').val(response);
+        }
+    });
+}
+
+function checkIsStepActive() {
+    var is_active = $('#isStepActiveField').val();
+    if(is_active == 1){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 function applychecks(){
@@ -1163,11 +1209,6 @@ function fetch_options() {
 var validationRules =new Array;
 $('#question_type').on('change',function(){
     filterRulesByQuestionType();
-});
-$('body').on('click','.form-fields',function(){
-        var id = $(this).attr("data-field-id");
-        $('#question_type').val(id);
-        filterRulesByQuestionType();
 });
 function filterRulesByQuestionType(){
     var questionType = $('#question_type :selected').text();
