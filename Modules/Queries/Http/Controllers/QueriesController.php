@@ -57,6 +57,17 @@ class QueriesController extends Controller
         echo  view('queries::queries.queries_table_view',compact('records'));
     }
     }
+    public function loadAllQuestionById(Request $request)
+    {
+        $question_id = $request->question_id;
+        $records = Query::where('query_status','!=','close')->where('question_id','like',$question_id)->where('parent_query_id','like',0)->get();
+        echo  view('queries::queries.queries_table_view',compact('records'));
+
+    }
+
+
+
+
 
     public function queryReply(Request $request)
     {
@@ -223,7 +234,6 @@ class QueriesController extends Controller
             'messages'=>$message,
             'module_name'=>$module,
             'study_id'=>$study_id,
-            'module_id'=>$study_id,
             'query_status'=> 'open',
             'query_type' =>$queryAssignedTo,
             'query_url'=>$query_url,
