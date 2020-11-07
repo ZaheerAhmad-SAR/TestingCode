@@ -22,7 +22,9 @@ Route::group(['middleware' => ['auth','web']],function(){
     Route::post('queries/loadAllQueriesByStudyId', 'QueriesController@loadAllQueriesByStudyId')->name('queries.loadAllQueriesByStudyId');
     Route::post('queries/loadAllQuestionById', 'QueriesController@loadAllQuestionById')->name('queries.loadAllQuestionById');
     Route::post('queries/showCommentsById', 'QueriesController@showCommentsById')->name('queries.showCommentsById');
+    Route::post('queries/showQuestionsById', 'QueriesController@showQuestionsById')->name('queries.showQuestionsById');
     Route::post('queries/queryReply', 'QueriesController@queryReply')->name('queries.queryReply');
+    Route::post('queries/queryQuestionReply', 'QueriesController@queryQuestionReply')->name('queries.queryQuestionReply');
     Route::post('queries/getStudyDataByStudyId', 'QueriesController@getStudyDataByStudyId')->name('queries.getStudyDataByStudyId');
     Route::post('queries/storeFormQueries', 'QueriesController@storeFormQueries')->name('queries.storeFormQueries');
 

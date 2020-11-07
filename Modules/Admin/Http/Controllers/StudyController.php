@@ -139,9 +139,7 @@ class StudyController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function store(Request $request)
-    {
-        dd('store');
+    public function store(Request $request){
 
         $id    = Str::uuid();
         $study = Study::create([
@@ -1262,8 +1260,9 @@ class StudyController extends Controller
      * @param int $id
      * @return Response
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, $id)
     {
+<<<<<<< HEAD
 
 
         $study = Study::where('id', $request->id)->delete();
@@ -1273,12 +1272,15 @@ class StudyController extends Controller
         foreach ($studyusers as $studyuser) {
             $studyuser->delete();
         }
+=======
+        $study = Study::where('id', $id)->delete();
+>>>>>>> 4f76c6cb06c486a879ca938ed73bcb3adcbbc878
 
         $studysites = StudySite::where('study_id', '=', $id)->get();
         foreach ($studysites as $studysite) {
             $studysite->delete();
         }
 
-        return \response()->json($study);
+        return \response()->json(['sucess'=> 'Study deleted successfully.']);
     }
 }

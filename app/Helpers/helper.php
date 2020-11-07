@@ -500,11 +500,13 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         }
 
         //////////////////////////// Study Sites Ends /////////////////////////////////////////
-    } else if ($eventSection == 'Study') {
+    } else if ($eventSection == 'Study' && $eventType != 'Delete') {
         // get event data
         $eventData = Study::find($eventId);
+
         // set message for audit
         $auditMessage = \Auth::user()->name . ' added study ' . $eventData->study_title . '.';
+
         // set audit url
         $auditUrl = url('studies');
         // store data in event array
@@ -547,6 +549,35 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         }
 
         //////////////////////////// Study Ends /////////////////////////////////////////
+    } else if ($eventSection == 'Study' && $eventType == 'Delete') {
+
+            // get event data
+            $eventData = Study::find($eventId);
+
+            $eventId = $eventData->id;
+
+            // set audit url
+            $auditUrl = url('studies');
+            // store data in event array
+            $newData = array(
+                'study_short_name'  =>  $eventData->study_short_name,
+                'study_title' => $eventData->study_title,
+                'study_status'  => 'Development',
+                'study_code' => $eventData->study_code,
+                'protocol_number' => $eventData->protocol_number,
+                'study_phase' => $eventData->study_phase,
+                'trial_registry_id' => $eventData->trial_registry_id,
+                'study_sponsor' => $eventData->study_sponsor,
+                'start_date' => $eventData->start_date,
+                'end_date' => $eventData->end_date,
+                'description'   =>  $eventData->description,
+                'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+                'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
+            );
+
+            // set message for audit
+            $auditMessage = \Auth::user()->name . ' deleted study ' . $eventData->study_title . '.';
+
     } else if ($eventSection == 'Subject') {
         // get event data
         $eventData = Subject::find($eventId);
