@@ -170,42 +170,50 @@
             }
 
             function validateAndSubmitForm(stepIdStr, formTypeId, formStatusIdStr) {
-                if(canSubmitForm(formTypeId,stepIdStr)){
-                    const promise = validateForm(stepIdStr);
-                    promise
-                        .then((data) => {
-                            console.log(data);
-                            submitForm(stepIdStr, formTypeId, formStatusIdStr);
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                            handleValidationErrors(error);
-                        });
+                if(isFormDataLocked(stepIdStr) == false){
+                    if(canSubmitForm(formTypeId,stepIdStr)){
+                        const promise = validateForm(stepIdStr);
+                        promise
+                            .then((data) => {
+                                console.log(data);
+                                submitForm(stepIdStr, formTypeId, formStatusIdStr);
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                                handleValidationErrors(error);
+                            });
+                    }else{
+                        showPermissionError();
+                    }
                 }else{
-                    showPermissionError();
+                    showDataLockError();
                 }
 
             }
 
             function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, formTypeId, field_name, fieldId) {
-                if(canSubmitForm(formTypeId,stepIdStr)){
-                    checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
-                    const validationPromise = validateFormField(stepIdStr, questionId, field_name, fieldId);
-                    validationPromise
-                        .then((data) => {
-                            console.log(data)
-                            submitFormField(stepIdStr, questionId, field_name, fieldId);
-                        })
-                        .then((data) => {
-                            console.log(data)
-                            validateDependentFields(sectionIdStr, questionId, field_name, fieldId);
-                        })
-                        .catch((error) => {
-                            console.log(error)
-                            handleValidationErrors(error);
-                        });
+                if(isFormDataLocked(stepIdStr) == false){
+                    if(canSubmitForm(formTypeId,stepIdStr)){
+                        checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
+                        const validationPromise = validateFormField(stepIdStr, questionId, field_name, fieldId);
+                        validationPromise
+                            .then((data) => {
+                                console.log(data)
+                                submitFormField(stepIdStr, questionId, field_name, fieldId);
+                            })
+                            .then((data) => {
+                                console.log(data)
+                                validateDependentFields(sectionIdStr, questionId, field_name, fieldId);
+                            })
+                            .catch((error) => {
+                                console.log(error)
+                                handleValidationErrors(error);
+                            });
+                    }else{
+                        showPermissionError();
+                    }
                 }else{
-                    showPermissionError();
+                    showDataLockError();
                 }
             }
 
@@ -283,19 +291,61 @@
             }
 
             function openFormForEditing(stepIdStr, stepClsStr, formTypeId, formStatusIdStr) {
-                if(canSubmitForm(formTypeId,stepIdStr)){
+                if(isFormDataLocked(stepIdStr) == false){
+                    if(canSubmitForm(formTypeId,stepIdStr)){
+                        var frmData = $("#form_master_" + stepIdStr).serialize();
+                        frmData = frmData + '&' + 'open_form_to_edit=1';
+                        $.ajax({
+                            url: "{{ route('SubjectFormSubmission.openSubjectFormToEdit') }}",
+                            type: 'POST',
+                            data: frmData,
+                            success: function(response) {
+                                showReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr);
+                            }
+                        });
+                    }else{
+                        showPermissionError();
+                    }
+                }else{
+                    showDataLockError();
+                }
+            }
+
+            function lockFormData(stepIdStr) {
+                if(canLockFormData() == true){
                     var frmData = $("#form_master_" + stepIdStr).serialize();
-                    frmData = frmData + '&' + 'open_form_to_edit=1';
                     $.ajax({
-                        url: "{{ route('SubjectFormSubmission.openSubjectFormToEdit') }}",
+                        url: "{{ route('SubjectFormSubmission.lockFormData') }}",
                         type: 'POST',
                         data: frmData,
                         success: function(response) {
-                            showReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr);
+                            $('#form_master_' + stepIdStr + ' input[name="isFormDataLocked"]').val(response);
+                            $('#lock_data_button_' + stepIdStr).hide('slow');
+                            $('#unlock_data_button_' + stepIdStr).show('slow');
+                            showAlert('Data lock status', 'Data locked successfully!', 'info');
                         }
                     });
                 }else{
-                    showPermissionError();
+                    showAlert('Data lock status', 'You can not lock data!', 'error');
+                }
+            }
+
+            function unlockFormData(stepIdStr) {
+                if(canLockFormData() == true){
+                    var frmData = $("#form_master_" + stepIdStr).serialize();
+                    $.ajax({
+                        url: "{{ route('SubjectFormSubmission.unlockFormData') }}",
+                        type: 'POST',
+                        data: frmData,
+                        success: function(response) {
+                            $('#form_master_' + stepIdStr + ' input[name="isFormDataLocked"]').val(response);
+                            $('#unlock_data_button_' + stepIdStr).hide('slow');
+                            $('#lock_data_button_' + stepIdStr).show('slow');
+                            showAlert('Data lock status', 'Data unlocked successfully!', 'info');
+                        }
+                    });
+                }else{
+                    showAlert('Data lock status', 'You can not unlock data!', 'error');
                 }
             }
 
@@ -369,7 +419,29 @@
                 });
 
             }
+            function isFormDataLocked(stepIdStr){
+                var isFormDataLocked = $('#form_master_' + stepIdStr + ' input[name="isFormDataLocked"]').val();
+                if(isFormDataLocked == 1){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
 
+            function canLockFormData(){
+                var canQualityControl = {{ (canQualityControl(['create', 'store', 'edit', 'update']))? 'true':'false' }};
+                var canGrading = {{ (canGrading(['create', 'store', 'edit', 'update']))? 'true':'false' }};
+                var canAdjudication = {{ (canAdjudication(['create', 'store', 'edit', 'update']))? 'true':'false' }};
+                userCanLockFormData = false;
+                if(
+                    (canQualityControl == true) &&
+                    (canGrading == true) &&
+                    (canAdjudication == true)
+                ){
+                    userCanLockFormData = true;
+                }
+                return userCanLockFormData;
+            }
             function canSubmitForm(formTypeId, stepIdStr){
 
                 var canQualityControl = {{ (canQualityControl(['create', 'store', 'edit', 'update']))? 'true':'false' }};
@@ -405,6 +477,10 @@
 
             function showPermissionError(){
                 showAlert('Alert', 'You do not have permission to submit form', 'error');
+            }
+
+            function showDataLockError(){
+                showAlert('Data lock status', 'Form data is locked, you can not change data!', 'error');
             }
 
             function reloadPage(waitSeconds) {

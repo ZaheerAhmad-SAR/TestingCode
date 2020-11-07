@@ -11,7 +11,11 @@ if(isset($queryParams)){
     <div class="col-md-6"></div>
     <div class="col-md-6 text-right btn-group mb-3">
         @if(\Modules\Queries\Entities\Query::questionHasQuery($queryParams))
-        this form has query
+            <div class="showQueries">
+        <span class="ml-3" style="cursor: pointer;">
+            <i class="fas fa-question-circle showAllStudyQueries" data-id=""  style="margin-top: 12px;"></i>
+        </span>
+            </div>
         @endif
         <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Queries</button>
             <div class="dropdown-menu p-0">

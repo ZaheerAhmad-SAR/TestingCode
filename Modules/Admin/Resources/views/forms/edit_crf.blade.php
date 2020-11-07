@@ -2,6 +2,7 @@
 <script>
 // forms fetching validations
 $('body').on('click','.form-fields',function(){
+    checkIsStepHasData();
     if(checkIsStepActive() == false){
         $('#formfields').trigger('reset');
         $('#formfields').attr('action', "{{route('forms.addQuestions')}}");
@@ -56,5 +57,6 @@ $('#question_type').on('change',function(){
         $('.view_to_textbox_and_number').css('display', 'none');
     }
 });
+
 </script>
 @endpush

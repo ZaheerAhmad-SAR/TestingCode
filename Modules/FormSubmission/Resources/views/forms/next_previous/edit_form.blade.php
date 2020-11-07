@@ -14,6 +14,23 @@
             Edit Form
         </button>
     @endif
+
+    @if(canQualityControl(['create', 'store', 'edit', 'update']) && canGrading(['create', 'store', 'edit', 'update']) &&  canAdjudication(['create', 'store', 'edit', 'update']))
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <button type="button" class="btn btn-danger" name="lock_data_button_{{ $stepIdStr }}"
+            id="lock_data_button_{{ $stepIdStr }}"
+            onclick="lockFormData('{{ $stepIdStr }}');"
+            style="display: {{ $formStatusObj->is_data_locked == 0 ? 'block' : 'none' }};">
+            Lock Data
+        </button>
+    <button type="button" class="btn btn-danger" name="unlock_data_button_{{ $stepIdStr }}"
+            id="unlock_data_button_{{ $stepIdStr }}"
+            onclick="unlockFormData('{{ $stepIdStr }}');"
+            style="display: {{ $formStatusObj->is_data_locked == 1 ? 'block' : 'none' }};">
+            UnLock Data
+        </button>
+    @endif
+
 </div>
 <div class="row">
     <div class="col-md-12" id="edit_form_div_{{ $stepIdStr }}"

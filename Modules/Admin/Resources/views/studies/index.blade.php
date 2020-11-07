@@ -969,6 +969,7 @@
                 }
             });
         }
+
         $('body').on('click', '.replyClick', function () {
             $('.commentsInput').css('display','');
             $('.queryAttachments').css('display','');
