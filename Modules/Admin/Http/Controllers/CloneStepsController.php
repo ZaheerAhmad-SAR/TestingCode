@@ -22,12 +22,13 @@ use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\skipLogic;
 use Illuminate\Support\Facades\DB;
 use Modules\FormSubmission\Traits\Replication\ReplicatePhaseStructure;
+
 class CloneStepsController extends Controller
 {
     use ReplicatePhaseStructure;
     public function clone_phase(request $request)
     {
-        $phase = StudyStructure::where('id','=',$request->phase_id)->first();
+        $phase = StudyStructure::where('id', '=', $request->phase_id)->first();
         $id    = Str::uuid();
         $phase = StudyStructure::create([
             'id'    => $id,
@@ -39,25 +40,25 @@ class CloneStepsController extends Controller
         ]);
         $new_phase = StudyStructure::find($id);
         $new_phase_id = $new_phase->id;
-        $all_steps = PhaseSteps::where('phase_id',$request->phase_id)->get();
+        $all_steps = PhaseSteps::where('phase_id', $request->phase_id)->get();
         foreach ($all_steps as $step) {
-           $this->steps_data($step->step_id,$new_phase_id);
+            $this->steps_data($step->step_id, $new_phase_id);
         }
         return redirect()->route('study.index')->with('message', 'Phase Cloned Successfully!');
     }
     public function clone_steps(request $request)
     {
-            if(isset($request->phase) && count($request->phase) > 0) {
+        if (isset($request->phase) && count($request->phase) > 0) {
             ///// Clone to phases
-            for($i = 0; $i < count($request->phase); $i++) {
-                $this->steps_data($request->step_id,$request->phase[$i]);
+            for ($i = 0; $i < count($request->phase); $i++) {
+                $this->steps_data($request->step_id, $request->phase[$i]);
             }
-            return redirect()->route('study.index')->with('message', 'Cloned Successfully!');        
+            return redirect()->route('study.index')->with('message', 'Cloned Successfully!');
         }
-   
     }
-    public function steps_data($step_id,$new_phase_id){
-        $step = PhaseSteps::where('step_id','=',$step_id)->first();
+    public function steps_data($step_id, $new_phase_id)
+    {
+        $step = PhaseSteps::where('step_id', '=', $step_id)->first();
         ///// Clone to phases
         $id    = Str::uuid();
         PhaseSteps::create([
@@ -73,39 +74,39 @@ class CloneStepsController extends Controller
             'eligibility' =>  $step->eligibility
         ]);
         foreach ($step->sections as $section) {
-
-            $newSectionId = $this->addReplicatedSection($section, $id,$isReplicating = false);
+            $isReplicating = false;
+            $newSectionId = $this->addReplicatedSection($section, $id, $isReplicating);
 
             /******************************* */
             /* Replicate Section Questions * */
             /******************************* */
             foreach ($section->questions as $question) {
 
-                $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId, $isReplicating = false);
+                $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId, $isReplicating);
 
                 /******************************* */
                 /* Replicate Question Form Field */
                 /******************************* */
 
-                $this->addReplicatedFormField($question, $newQuestionId, $isReplicating = false);
+                $this->addReplicatedFormField($question, $newQuestionId, $isReplicating);
 
                 /******************************* */
                 /* Replicate Question Data Validation */
                 /******************************* */
 
-                $this->updateQuestionValidationToReplicatedVisits($question->id, $isReplicating = false);
+                $this->$this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId);
 
                 /******************************* */
                 /* Replicate Question Dependency */
                 /******************************* */
 
-                $this->addReplicatedQuestionDependency($question, $newQuestionId, $isReplicating = false);
+                $this->addReplicatedQuestionDependency($question, $newQuestionId, $isReplicating);
 
                 /******************************* */
                 /*Replicate Question Adjudication*/
                 /******************************* */
 
-                $this->addReplicatedQuestionAdjudicationStatus($question, $newQuestionId,$isReplicating = false);
+                $this->addReplicatedQuestionAdjudicationStatus($question, $newQuestionId, $isReplicating);
             }
         }
     }

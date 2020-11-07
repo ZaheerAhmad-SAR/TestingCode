@@ -130,10 +130,8 @@ class PhaseSteps extends Model
     public static function isThisStepHasData($stepId)
     {
         $step = PhaseSteps::find($stepId);
-        $answer = Answer::where('study_structure_id', 'like', $step->phase_id)
+        $answer = Answer::where('study_structures_id', 'like', $step->phase_id)
             ->where('phase_steps_id', 'like', $step->step_id)
-            ->where('form_type_id', 'like', $step->form_type_id)
-            ->where('modility_id', 'like', $step->modility_id)
             ->first();
         if (null !== $answer) {
             return 1;
