@@ -1263,6 +1263,9 @@ class StudyController extends Controller
      */
     public function destroy(Request $request, $id)
     {
+        // log event details
+        $logEventDetails = eventDetails($id, 'Study', 'Delete', $request->ip(), []);
+
         $study = Study::where('id', $id)->delete();
 
         $studysites = StudySite::where('study_id', '=', $id)->get();
