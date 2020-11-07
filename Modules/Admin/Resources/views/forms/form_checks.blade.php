@@ -98,8 +98,8 @@
         }
 
         function checkIsStepHasData() {
-            var is_active = $('#isThisStepHasDataField').val();
-            if (is_active == 1) {
+            var hasData = $('#isThisStepHasDataField').val();
+            if (hasData == 1) {
                 alert('Please be noticed; This form has data!'); //return true;
             } else {
                 //return false;
