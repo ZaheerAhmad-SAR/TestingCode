@@ -176,6 +176,37 @@
     </div>
 </div>
 
+<div class="modal fade" tabindex="-1" role="dialog" id="reply-question-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" style="max-width: 1000px;" role="document">
+        <div class="modal-content">
+            <div class="alert alert-danger" style="display:none"></div>
+            <div class="modal-header">
+                <p class="modal-title"> Question Details</p>
+                <span class="queryCurrentStatus text-center"></span>
+            </div>
+            <div class="modal-body">
+                <form id="replyQuestionForm" name="replyQuestionForm">
+                    <div class="tab-content clearfix">
+                        @csrf
+                        <div class="replyInput"></div>
+                        <div class="col-sm-12">
+                            <div class="replyClick" style="text-align: right;">
+                                    <span style="cursor: pointer;">
+                                        <i class="fa fa-reply"></i> &nbsp; reply
+                                        </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                        <button type="button" class="btn btn-outline-primary" id="replyquestion"><i class="fa fa-save"></i> Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 @push('styles')
 <!-- Queries Model style sheet start -->
 <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2.min.css") }}"/>
@@ -257,6 +288,112 @@
             }
         });
     }
+
+
+
+    $('body').on('click', '.replyQuestionQuery', function () {
+        var query_id     = $(this).attr('data-id');
+        $('#reply-question-modal').modal('show');
+        showQuestions(query_id);
+        $('#show-question-table-modal').modal('hide');
+    });
+
+
+    function showQuestions(query_id) {
+        $.ajax({
+            url:"{{route('queries.showQuestionsById')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'POST',
+                'query_id'      :query_id,
+            },
+            success: function(response)
+            {
+                $('.replyInput').html('');
+                $('.replyInput').html(response);
+                var query_status = $( "#query_status option:selected" ).text();
+                $('.queryCurrentStatus').text('Status: '+query_status);
+                $('.replyClick').css('display','');
+            }
+        });
+    }
+
+    $('#replyquestion').click(function (e){
+        $.ajaxSetup({ headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
+        e.preventDefault();
+
+        var reply                = $("#reply").val();
+        var query_id             = $("#query_id").val();
+        var query_url            = $("#query_url").val();
+        var query_type           = $("#query_type").val();
+        var query_status         = $("#query_status").val();
+        var subject_question     = $("#subject_question").val();
+
+        var study_id             = $("#study_id").val();
+        var subject_id           = $("#subject_id").val();
+        var phase_steps_id       = $("#phase_steps_id").val();
+        var section_id           = $("#section_id").val();
+        var question_id          = $("#question_id").val();
+        var field_id             = $("#field_id").val();
+        var form_type_id         = $("#form_type_id").val();
+        var modility_id          = $("#modility_id").val();
+        var module_name          = $("#module_name").val();
+        var study_structures_id  = $("#study_structures_id").val();
+
+
+        var formData             = new FormData();
+        formData.append('reply', reply);
+        formData.append('query_id', query_id);
+        formData.append('query_url', query_url);
+        formData.append('query_type', query_type);
+        formData.append('query_status', query_status);
+        formData.append('subject_question', subject_question);
+
+        formData.append('study_id', study_id);
+        formData.append('subject_id', subject_id);
+        formData.append('phase_steps_id', phase_steps_id);
+        formData.append('section_id', section_id);
+        formData.append('question_id', question_id);
+        formData.append('field_id', field_id);
+        formData.append('form_type_id', form_type_id);
+        formData.append('modility_id', modility_id);
+        formData.append('module_name', module_name);
+        formData.append('study_structures_id', study_structures_id);
+
+        // Attach file
+        formData.append("question_file", $("#question_file")[0].files[0]);
+        $.ajax({
+            url:"{{route('queries.queryQuestionReply')}}",
+            type: "POST",
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function (results)
+            {
+                // $('.commentsInput').css('display','none');
+                $('.replyClick').css('display','');
+                var query_id = results[0].parent_query_id;
+                showQuestions(query_id);
+                //$("#replyForm")[0].reset();
+                //$('#summernote').summernote('disable');
+                //$("#reply").summernote("reset");
+            },
+            error: function (results) {
+                console.error('Error:', results);
+            }
+        });
+    });
+
+
+    $('body').on('click', '.replyClick', function () {
+        $('.commentsInput').css('display','');
+        $('.queryAttachments').css('display','');
+        $('.queryStatus').css('display','');
+        $('.replyClick').css('display','none');
+    });
 
 
     $("#queriesQuestionForm").on('submit', function(e)
