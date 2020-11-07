@@ -139,7 +139,8 @@ class StudyController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function store(Request $request){
+    public function store(Request $request)
+    {
 
         $id    = Str::uuid();
         $study = Study::create([
@@ -704,7 +705,7 @@ class StudyController extends Controller
                     'received_hours'  => $transmission->received_hours,
                     'received_minutes'  => $transmission->received_minutes,
                     'received_seconds'  => $transmission->received_seconds,
-                    'received-mesc'  => $transmission->received - mesc,
+                    'received-mesc'  => $transmission->received,
                     'Study_QCO1'  => $transmission->Study_QCO1,
                     'StudyQCO2'  => $transmission->StudyQCO2,
                     'Study_cc1'  => $transmission->Study_cc1,
@@ -1170,7 +1171,7 @@ class StudyController extends Controller
                     'received_hours'  => $transmission->received_hours,
                     'received_minutes'  => $transmission->received_minutes,
                     'received_seconds'  => $transmission->received_seconds,
-                    'received-mesc'  => $transmission->received - mesc,
+                    'received-mesc'  => $transmission->received,
                     'Study_QCO1'  => $transmission->Study_QCO1,
                     'StudyQCO2'  => $transmission->StudyQCO2,
                     'Study_cc1'  => $transmission->Study_cc1,
@@ -1262,25 +1263,13 @@ class StudyController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-<<<<<<< HEAD
-
-
-        $study = Study::where('id', $request->id)->delete();
-
-        $studyusers = UserRole::where('study_id', '=', $request->id)->get();
-
-        foreach ($studyusers as $studyuser) {
-            $studyuser->delete();
-        }
-=======
         $study = Study::where('id', $id)->delete();
->>>>>>> 4f76c6cb06c486a879ca938ed73bcb3adcbbc878
 
         $studysites = StudySite::where('study_id', '=', $id)->get();
         foreach ($studysites as $studysite) {
             $studysite->delete();
         }
 
-        return \response()->json(['sucess'=> 'Study deleted successfully.']);
+        return \response()->json(['sucess' => 'Study deleted successfully.']);
     }
 }
