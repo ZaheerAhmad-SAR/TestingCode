@@ -864,25 +864,35 @@
                     $('#study-crud-modal').modal('show');
                 })
             });
+
             $('body').on('click', '#delete-study', function () {
                 var study_id = $(this).data("id");
-                $.ajax({
-                    type: "DELETE",
-                    url: "{{ url('studies')}}"+'/'+study_id,
-                    success: function (data) {
-                        confirm("Are You sure want to delete !");
-                        $("#study_id_" + study_id).remove();
-                        if(data.success == true){ // if true (1)
-                            setTimeout(function(){// wait for 5 secs(2)
-                                location.reload(); // then reload the page.(3)
-                            }, 100);
+
+                if(confirm("Are You sure want to delete !")) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: "{{ url('studies')}}"+'/'+study_id,
+                        success: function (data) {
+                            
+                            if(data.success == null){ // if true (1)
+
+                                $("#study_id_" + study_id).remove();
+                                    setTimeout(function(){// wait for 5 secs(2)
+                                        location.reload(); // then reload the page.(3)
+                                    }, 100);
+
+                            } // if ends
+
+                        },
+                        error: function (data) {
+                            console.log('Error:', data);
                         }
-                    },
-                    error: function (data) {
-                        console.log('Error:', data);
-                    }
-                });
+                    }); // ajax
+
+                } // confirm
+                
             });
+
             $('body').on('click', '.clone-study', function () {
                 $.ajaxSetup({
                     headers: {
