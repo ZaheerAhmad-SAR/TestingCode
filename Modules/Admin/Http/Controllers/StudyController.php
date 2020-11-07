@@ -1266,13 +1266,14 @@ class StudyController extends Controller
      * @param int $id
      * @return Response
      */
-    public function destroy(Request $request)
+    public function destroy(Request $request, $id)
     {
-        
+        // log event details
+        $logEventDetails = eventDetails($id, 'Study', 'Delete', $request->ip(), []);
 
-        $study = Study::where('id', $request->id)->delete();
+        $study = Study::where('id', $id)->delete();
 
-        $studyusers = UserRole::where('study_id','=',$request->id)->get();
+        $studyusers = UserRole::where('study_id','=',$id)->get();
 
         foreach ($studyusers as $studyuser){
             $studyuser->delete();
