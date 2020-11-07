@@ -35,22 +35,23 @@ trait QuestionReplication
         $replicatedQuestion->update();
     }
 
-    private function addQuestionToReplicatedVisits($newQuestion, $isReplicating = true)
+    private function addQuestionToReplicatedVisits($question, $isReplicating = true)
     {
-        $sectionObj = Section::find($newQuestion->section_id);
+        $sectionObj = Section::find($question->section_id);
         $stepObj = PhaseSteps::find($sectionObj->phase_steps_id);
         $phaseId = $stepObj->phase_id;
 
-        $replicatedPhases = StudyStructure::where('parent_id', 'like', $phaseId)->get();
+        $replicatedPhases = StudyStructure::where('parent_id', 'like', $phaseId)->withoutGlobalScopes()->get();
+
         foreach ($replicatedPhases as $phase) {
             foreach ($phase->steps as $step) {
                 foreach ($step->sections as $section) {
-                    if ($section->parent_id == $newQuestion->section_id) {
-                        $newQuestionId = $this->addReplicatedQuestion($newQuestion, $section->id, $isReplicating);
-                        $this->addReplicatedFormField($newQuestion, $newQuestionId, $isReplicating);
-                        $this->addReplicatedQuestionValidation($newQuestion, $newQuestionId, $isReplicating);
-                        $this->addReplicatedQuestionDependency($newQuestion, $newQuestionId, $isReplicating);
-                        $this->addReplicatedQuestionAdjudicationStatus($newQuestion, $newQuestionId, $isReplicating);
+                    if ($section->parent_id == $question->section_id) {
+                        $replicatedQuestionId = $this->addReplicatedQuestion($question, $section->id, $isReplicating);
+                        $this->addReplicatedFormField($question, $replicatedQuestionId, $isReplicating);
+                        $this->addQuestionValidationToReplicatedQuestion($question->id, $replicatedQuestionId);
+                        $this->addReplicatedQuestionDependency($question, $replicatedQuestionId, $isReplicating);
+                        $this->addReplicatedQuestionAdjudicationStatus($question, $replicatedQuestionId, $isReplicating);
                     }
                 }
             }
@@ -115,26 +116,31 @@ trait QuestionReplication
 
     /*************************** Question Validation *****************************/
 
-    private function addReplicatedQuestionValidation($questionValidation, $replicatedQuestionId, $isReplicating = true)
+    private function addReplicatedQuestionValidation($questionValidation, $replicatedQuestionId)
     {
         $newQuestionValidationId = Str::uuid();
         $newQuestionValidation = $questionValidation->replicate();
         $newQuestionValidation->id = $newQuestionValidationId;
         $newQuestionValidation->question_id = $replicatedQuestionId;
-        if ($isReplicating === true) {
-            $newQuestionValidation->parent_id = $questionValidation->id;
-        }
         $newQuestionValidation->save();
     }
 
-    private function updateQuestionValidationToReplicatedVisits($questionId, $isReplicating = true)
+    private function updateQuestionValidationToReplicatedVisits($questionId)
     {
         $replicatedQuestions = Question::where('parent_id', 'like', $questionId)->get();
         foreach ($replicatedQuestions as $replicatedQuestion) {
             $questionValidations = QuestionValidation::where('question_id', 'like', $questionId)->get();
             foreach ($questionValidations as $questionValidation) {
-                $this->addReplicatedQuestionValidation($questionValidation, $replicatedQuestion->id, $isReplicating);
+                $this->addReplicatedQuestionValidation($questionValidation, $replicatedQuestion->id);
             }
+        }
+    }
+
+    private function addQuestionValidationToReplicatedQuestion($questionId, $replicatedQuestionId)
+    {
+        $questionValidations = QuestionValidation::where('question_id', 'like', $questionId)->get();
+        foreach ($questionValidations as $questionValidation) {
+            $this->addReplicatedQuestionValidation($questionValidation, $replicatedQuestionId);
         }
     }
 
