@@ -11,23 +11,13 @@
 |
 */
 
-//dd(App::environment());
-
 // test transmission view
-Route::get('transmissions/transmissionData', function () {
+/*Route::get('transmissions/transmissionData', function () {
     return view('admin::test_transmission_api');
-});
+});*/
 // transmission end point
 Route::post('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
 
-// transmissions routes
-Route::resource('transmissions', 'TransmissionController');
-
-// edit study transmission route
-Route::get('transmissions-study-edit/{id}', 'TransmissionController@transmissionsStudyEdit')->name('transmissions-study-edit');
-
-// get study vice transmissions
-Route::get('study-transmissions', 'TransmissionController@studyTransmissions')->name('transmissions.study-transmissions');
 
 Route::post('transmissions/getAllPIBySiteId', 'TransmissionController@getAllPIBySiteId')->name('transmissions.getAllPIBySiteId');
 
@@ -79,9 +69,13 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('skiplogic/questions_for_skip_logic_deactivate/{id}', 'SkipLogicController@questions_skip_logic_deactivate')->name('skiplogic.questionsSkipdeactivate');
     Route::get('skiplogic/options_for_skip_logic_deactivate/{id}', 'SkipLogicController@options_skip_logic_deactivate')->name('skiplogic.optionsSkipdeactivate');
 
+    Route::get('skiplogic/options_for_skip_logic_activate/{id}', 'SkipLogicController@options_skip_logic_activate')->name('skiplogic.optionsSkipactivate');
+
     Route::post('skiplogic/add_skip_logic', 'SkipLogicController@add_skipLogic')->name('skiplogic.apply_skip_logic');
     Route::post('skiplogic/steps_to_skip', 'SkipLogicController@getSteps_toskip')->name('skiplogic.get_steps_skip_logic');
     Route::get('skiplogic/skip_logic/{id}', 'SkipLogicController@skip_question_on_click')->name('skiplogic.skipLogic');
+    Route::get('skiplogic/num_skip_logic/{id}', 'SkipLogicController@skip_question_on_number')->name('skiplogic.numskipLogic');
+    Route::get('skiplogic/text_skip_logic/{id}', 'SkipLogicController@skip_question_on_text')->name('skiplogic.textskipLogic');
     // skip logic
     Route::get('forms/sections_by_stepId/{id}', 'FormController@get_section_by_stepId')->name('forms.sectionsbystepId');
     Route::post('studyStatus', 'StudyController@studyStatus')->name('study.studyStatus');
@@ -217,6 +211,10 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     // CHM-Amir
     Route::get('trail_logs', 'TrailLogController@index')->name('trail_logs.list');
+    //Transmissions Routes
+    Route::resource('transmissions', 'TransmissionController');
+    Route::get('transmissions-study-edit/{id}', 'TransmissionController@transmissionsStudyEdit')->name('transmissions-study-edit');
+    Route::get('study-transmissions', 'TransmissionController@studyTransmissions')->name('transmissions.study-transmissions');
 });
 
 // for checking subject ID

@@ -149,11 +149,11 @@
             @endif
 
             <!-- //////////////////////////////// Transmission //////////////////////// -->
-
+            @if(hasPermission(auth()->user(),'systemtools.index'))
             <li class="dropdown">
                 <ul>
-                        <li class="dropdown"><a href="#"><i class="icon-grid"></i>Transmissions</a>
-                            <ul class="sub-menu">
+                    <li class="dropdown"><a href="#"><i class="icon-grid"></i>Transmissions</a>
+                        <ul class="sub-menu">
 
                                 @if(!empty(session('current_study')))
                                     <li class="@if(is_active('transmissions.study-transmissions')) {{ ' active' }} @endif">
@@ -162,18 +162,18 @@
                                         </a>
                                     </li>
                                 @endif
-
-                                    <li class="@if(is_active('transmissions.index')) {{ ' active' }} @endif">
-                                        <a href="{!! route('transmissions.index') !!}">
-                                            System Transmissions
-                                        </a>
-                                    </li>
-
-
-                            </ul>
-                        </li>
+                            @if(hasPermission(auth()->user(),'studytools.index'))
+                                <li class="@if(is_active('transmissions.index')) {{ ' active' }} @endif">
+                                    <a href="{!! route('transmissions.index') !!}">
+                                        System Transmissions
+                                    </a>
+                                </li>
+                            @endif
+                        </ul>
+                    </li>
                 </ul>
             </li>
+            @endif
 
             <!-- //////////////////////////////// Transmissions ////////////////// -->
             @if(hasPermission(auth()->user(),'subjects.index'))
@@ -199,31 +199,28 @@
                                         <i class="fas fa-list"></i> QC List
                                     </a>
                                 </li>
-                            </ul>    
-                        </li>    
+                            </ul>
+                        </li>
                     </ul>
                 </li>
             @endif
             @if(hasPermission(auth()->user(),'grading.index'))
                 <li class="dropdown">
                     <ul>
-
-                        <li>
-                            <a href="{{route('grading.index')}}">
-                                <i class="fas fa-list"></i> Grading List
-                            </a>
+                        <li class="dropdown"><a href="#"><i class="fas fa-sitemap"></i> Grading</a>
+                            <ul class="sub-menu">
+                                <li>
+                                    <a href="{{route('grading.index')}}">
+                                        <i class="fas fa-list"></i> Grading List
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{route('grading.status')}}">
+                                        <i class="fas fa-chart-line"></i> Grading Status
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
-                        <li>
-                            <a href="{{route('grading.status')}}">
-                                <i class="fas fa-chart-line"></i> Grading Status
-                            </a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fas fa-chart-line"></i> Adjudication
-                            </a>
-                        </li>
-
                     </ul>
                 </li>
             @endif
@@ -231,7 +228,7 @@
                 <li class="dropdown">
                     <ul>
                         <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Adjudication</a>
-                           <ul class="sub-menu"> 
+                           <ul class="sub-menu">
                                 <li>
                                     <a href="{{ route('adjudication.index')}}">
                                         <i class="fas fa-list"></i> Adjudication List
@@ -257,7 +254,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>    
+                    </li>
                 </ul>
             </li>
             @if(hasPermission(auth()->user(),'data_management.index'))
@@ -315,8 +312,8 @@
                                         Audit Trail
                                     </a>
                                 </li>
-                            </ul>    
-                        </li>    
+                            </ul>
+                        </li>
                     </ul>
                 </li>
                 @elseif(hasPermission(auth()->user(),'trail_logs.list'))
