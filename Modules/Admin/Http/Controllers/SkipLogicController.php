@@ -30,10 +30,23 @@ class SkipLogicController extends Controller
         $options = Question::where('id', $id)->with('optionsGroup', 'skiplogic')->first();
         return view('admin::forms.skip_logic', compact('options'));
     }
+    public function skip_question_on_number($id)
+    {
+        $num_values = Question::where('id', $id)->with('skiplogic')->first();
+        $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->get();
+        return view('admin::forms.skip_question_num', compact('num_values','all_study_steps'));
+    }
+    public function skip_question_on_text($id)
+    {
+        $num_values = Question::where('id', $id)->with('skiplogic')->first();
+        $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->get();
+        return view('admin::forms.skip_question_text', compact('num_values','all_study_steps'));
+    }
     public function getSteps_toskip(Request $request)
     {
         $activate_forms_array = [];
         $deactivate_forms_array = [];
+        //$view = return view('admin::forms.skip_sections');
         $where = array(
             "question_id" =>$request->question_id,
             "option_title" =>$request->option_title,
@@ -122,11 +135,14 @@ class SkipLogicController extends Controller
                                 </div>
                             </div>
                         </div>
-              <div class="card collapse row-'.$value->step_id.'-de-'.$request->index.' de_sections_list_'.$value->step_id.'_'.$request->index.'">
 
-                        </div>';
-
+              <div class="card collapse row-'.$value->step_id.'-de-'.$request->index.' de_sections_list_'.$value->step_id.'_'.$request->index.'">';
+             
+            $step_contents_deactive .= '</div>';
+           
+            
         }
+
         $step_contents_deactive .= '</div>';
         $step_contents = $step_contents_active . $step_contents_deactive;
         return $step_contents;
@@ -199,6 +215,7 @@ class SkipLogicController extends Controller
                             </div>
                             <div class="card-body collapse row-'.$value->id.'-de-'.$request->index.' de_questions_list_'.$value->id.'_'.$request->index.'" style="padding: 0;">
                             </div>';
+
         }
         return Response($section_contents);
     }
@@ -225,12 +242,13 @@ class SkipLogicController extends Controller
                                       <div class="btn-group btn-group-sm" role="group">
                                         <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-'.$value->id.'-ac-'.$request->index.'" style="font-size: 20px; color: #1e3d73;" onclick="question_options_activate(\''.$value->id.'\',\'ac_options_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\')"></i>
                                       </div>
-                                    </td><td colspan="5"> <input type="checkbox" name="activate_[' .$request->index. '][]" value="' . $value->id . '" '.$checked.'> ' . $value->question_text . '</td>';
+                                    </td><td colspan="5"> <input type="checkbox" name="activate_questions[' .$request->index. '][]" value="' . $value->id . '" '.$checked.'> ' . $value->question_text . '</td>';
             $options_ac_contents .= '</tr></tbody></table></div></div>';
             $options_ac_contents .= '<div class="card-body collapse row-'.$value->id.'-ac-'.$request->index.' " style="padding: 0;"><table class="table table-bordered" style="margin-bottom:0px;">
                                     <tbody class="ac_options_list_'.$value->id.'_'.$request->index.'">
                                     </tbody>
                                 </table> </div>';
+
         }
         return Response($options_ac_contents);
     }
@@ -329,6 +347,44 @@ class SkipLogicController extends Controller
                 ];
                 skipLogic::insert($skip_ques);
             }
+        }elseif(isset($request->number_value) && count($request->number_value) > 0){
+
+            $where = array('question_id' =>$request->question_id);
+            $remove_checks_if_already_exists = skipLogic::where($where)->delete();
+            for ($i = 0; $i < count($request->number_value); $i++) {
+                $skip_ques = [
+                    'id' => Str::uuid(),
+                    'question_id' => $request->question_id,
+                    'number_value' => (isset($request->number_value) && $request->number_value != '') ? implode(',', $request->number_value) : '',
+                    'operator' => (isset($request->operator) && $request->operator != '') ? implode(',', $request->operator) : '',
+                    'activate_forms' => (isset($request->activate_forms[$i]) && $request->activate_forms[$i] != '') ? implode(',', $request->activate_forms[$i]) : '',
+                    'activate_sections' => (isset($request->activate_sections[$i]) && $request->activate_sections[$i] != '') ? implode(',', $request->activate_sections[$i]) : '',
+                    'activate_questions' => (isset($request->activate_questions[$i]) && $request->activate_questions[$i] != '') ? implode(',', $request->activate_questions[$i]) : '',
+                    'deactivate_forms' => (isset($request->deactivate_forms[$i]) && $request->deactivate_forms[$i] != '') ? implode(',', $request->deactivate_forms[$i]) : '',
+                    'deactivate_sections' => (isset($request->deactivate_sections[$i]) && $request->deactivate_sections[$i] != '') ? implode(',', $request->deactivate_sections[$i]) : '',
+                    'deactivate_questions' => (isset($request->deactivate_questions[$i]) && $request->deactivate_questions[$i] != '') ? implode(',', $request->deactivate_questions[$i]) : ''
+                ];
+                skipLogic::insert($skip_ques);
+            }
+            return redirect()->route('skiplogic.numskipLogic', $request->question_id)->with('message', 'Checks Applied Successfully!');
+        }elseif (isset($request->textbox_value) && count($request->textbox_value) > 0) {
+            $where = array('question_id' =>$request->question_id);
+            $remove_checks_if_already_exists = skipLogic::where($where)->delete();
+            for ($i = 0; $i < count($request->textbox_value); $i++) {
+                $skip_ques = [
+                    'id' => Str::uuid(),
+                    'question_id' => $request->question_id,
+                    'textbox_value' => (isset($request->textbox_value) && $request->textbox_value != '') ? implode(',', $request->textbox_value) : '',
+                    'activate_forms' => (isset($request->activate_forms[$i]) && $request->activate_forms[$i] != '') ? implode(',', $request->activate_forms[$i]) : '',
+                    'activate_sections' => (isset($request->activate_sections[$i]) && $request->activate_sections[$i] != '') ? implode(',', $request->activate_sections[$i]) : '',
+                    'activate_questions' => (isset($request->activate_questions[$i]) && $request->activate_questions[$i] != '') ? implode(',', $request->activate_questions[$i]) : '',
+                    'deactivate_forms' => (isset($request->deactivate_forms[$i]) && $request->deactivate_forms[$i] != '') ? implode(',', $request->deactivate_forms[$i]) : '',
+                    'deactivate_sections' => (isset($request->deactivate_sections[$i]) && $request->deactivate_sections[$i] != '') ? implode(',', $request->deactivate_sections[$i]) : '',
+                    'deactivate_questions' => (isset($request->deactivate_questions[$i]) && $request->deactivate_questions[$i] != '') ? implode(',', $request->deactivate_questions[$i]) : ''
+                ];
+                skipLogic::insert($skip_ques);
+            }
+            return redirect()->route('skiplogic.textskipLogic', $request->question_id)->with('message', 'Checks Applied Successfully!');
         }
         return redirect()->route('skiplogic.skipLogic', $request->question_id)->with('message', 'Checks Applied Successfully!');
     }
