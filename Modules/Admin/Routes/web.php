@@ -11,23 +11,13 @@
 |
 */
 
-//dd(App::environment());
-
 // test transmission view
-Route::get('transmissions/transmissionData', function () {
+/*Route::get('transmissions/transmissionData', function () {
     return view('admin::test_transmission_api');
-});
+});*/
 // transmission end point
 Route::post('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
 
-// transmissions routes
-Route::resource('transmissions', 'TransmissionController');
-
-// edit study transmission route
-Route::get('transmissions-study-edit/{id}', 'TransmissionController@transmissionsStudyEdit')->name('transmissions-study-edit');
-
-// get study vice transmissions
-Route::get('study-transmissions', 'TransmissionController@studyTransmissions')->name('transmissions.study-transmissions');
 
 Route::post('transmissions/getAllPIBySiteId', 'TransmissionController@getAllPIBySiteId')->name('transmissions.getAllPIBySiteId');
 
@@ -220,6 +210,10 @@ Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], f
 
     // CHM-Amir
     Route::get('trail_logs', 'TrailLogController@index')->name('trail_logs.list');
+    //Transmissions Routes
+    Route::resource('transmissions', 'TransmissionController');
+    Route::get('transmissions-study-edit/{id}', 'TransmissionController@transmissionsStudyEdit')->name('transmissions-study-edit');
+    Route::get('study-transmissions', 'TransmissionController@studyTransmissions')->name('transmissions.study-transmissions');
 });
 
 // for checking subject ID

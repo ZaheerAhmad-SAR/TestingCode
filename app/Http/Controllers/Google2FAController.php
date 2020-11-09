@@ -116,6 +116,6 @@ class Google2FAController extends Controller
 
     public function getcodes(){
         $codes = backupCode::where('user_id','=',\auth()->user()->id)->get();
-        dd($codes);
+
     }
 }

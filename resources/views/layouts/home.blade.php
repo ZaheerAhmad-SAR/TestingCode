@@ -8,10 +8,9 @@
             <nav class="navbar navbar-expand-lg  p-0">
 
                 <div class="navbar-header  h-100 h4 mb-0 align-self-center logo-bar text-left">
-                    <a href="{{ url('/') }}" class="horizontal-logo text-left">
+                    <a href="{{ url('/dashboard') }}" class="horizontal-logo text-left">
                 <span class="h4 font-weight-bold align-self-center mb-0 ml-auto">
                     OIRRC
-                 {{-- <img src="{{asset('public/dist/images/Logo.gif')}}" alt="OIRRC" style="width: 50px;"> --}}
                 </span>
                     </a>
                 </div>
@@ -27,12 +26,6 @@
                             <button class="close" data-dismiss="alert">&times;</button>
                         </div>
                     </div>
-                   {{-- @else
-                    <div class="alert alert-danger alert-dismissible" id="myalert">
-                        <a type="submit" class="btn btn-outline-info" href="{{route('users.updateProfile')}}" >Backup Codes</a>
-                        <strong>Warning!</strong> Google 2-Factor Auth is enabled, View your backup Codes.
-                        <button class="close" data-dismiss="alert">&times;</button>
-                    </div>--}}
             @endif
                 <!-- title here  -->
                 <!--  -->
