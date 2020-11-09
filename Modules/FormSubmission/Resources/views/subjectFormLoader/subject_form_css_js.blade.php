@@ -484,11 +484,11 @@
             }
 
             function reloadPage(waitSeconds) {
-                startWait();
-                var seconds = waitSeconds * 1000;
-                setTimeout(function() {
-                   location.reload();
-               }, seconds);
+               //  startWait();
+               //  var seconds = waitSeconds * 1000;
+               //  setTimeout(function() {
+               //     location.reload();
+               // }, seconds);
             }
             disableByClass('{{ $studyClsStr }}');
         </script>
