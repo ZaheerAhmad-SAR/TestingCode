@@ -39,7 +39,7 @@
             }
         </style>
     </head>
-   <!--  <div  id="wait" style="display:none;width:69px;height:89px;position:absolute;top:40%;left:50%;z-index: 9999;"><img src="{{url('old-style/images/loader.gif')}}" width="64" height="64" /><br></div> -->
+
 <body class="@yield('class')">
     <!-- START: Pre Loader-->
         <div class="se-pre-con">
