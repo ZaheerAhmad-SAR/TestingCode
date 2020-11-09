@@ -203,7 +203,7 @@
                                                                 <tr>
                                                                     <td colspan="2" style="color: #1e3d73;">
                                                                         <b>
-                                                                            Section_ID: {{ $sectionKey }}
+                                                                            Section:  {{ $sectionKey }}
                                                                         </b> 
                                                                     </td>
                                                                 </tr>
