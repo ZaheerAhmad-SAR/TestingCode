@@ -13,6 +13,7 @@
                 </div>
             </div>
         </div>
+
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -21,6 +22,11 @@
                     @endforeach
                 </ul>
             </div>
+            <script>
+                $( document ).ready(function() {
+                    $('#createUser').modal('show');
+                });
+            </script>
     @endif
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
@@ -109,9 +115,8 @@
     </div>
     <!-- END: Card DATA-->
     <!-- modal code  -->
-    <div class="modal fade" tabindex="-1" role="dialog" id="createUser">
+    <div class="modal " tabindex="-1" role="dialog" id="createUser">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header">

@@ -67,6 +67,7 @@
                                 <?php $index= 1; ?>
                                 @foreach($studies as $study)
                                     <tr id="study_id_{{ $study->id }}">
+                                        {{$study}}
                                         <td>{{$index}}</td>
                                         <td class="studyID" style="display: none">{{ $study->id }}</td>
                                         <td class="title">
@@ -300,7 +301,6 @@
                                     <div class="{!! ($errors->has('users')) ?'col-sm-9 has-error':'col-sm-9' !!}">
                                         <select class="searchable" id="select-users" multiple="multiple" name="users[]">
                                             @foreach($users as $user)
-                                                {{$user}}
                                                 <option value="{{$user->id}}">{{$user->name}}</option>
                                             @endforeach
                                         </select>
