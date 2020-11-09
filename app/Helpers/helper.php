@@ -722,8 +722,8 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             $auditMessage = \Auth::user()->name . ' updated transmission data of ' . $eventData->Transmission_Number . '.';
         } // update case ends
 
-        //////////////////////////////// Transmission Data //////////////////////////////
-    } else if ($eventSection == 'QC Form') {
+    ////////////////////////////////// Transmission Data //////////////////////////////////////
+    } else if ($eventSection == 'QC Form' || $eventSection == 'Grading Form' || $eventSection == 'Adjudication Form') {
         
         $ip = 'N/A';
 
@@ -810,96 +810,8 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
 
         $eventId = 0;
 
-        ///////////////////////////// QC Form Data //////////////////////////////
-    } else if ($eventSection == 'Grading Form') {
-        
-        $ip = 'N/A';
-
-        // get event data
-        $eventData = $eventId;
-
-        // get study name
-        $studyName = Study::where('id', $eventData[1]['study_id'])->first();
-        //get subject
-        $subjectName = Subject::where('id', $eventData[1]['subject_id'])->first();
-        // visit name
-        $visitName = StudyStructure::where('id', $eventData[1]['study_structures_id'])
-        ->withOutGlobalScope(StudyStructureWithoutRepeatedScope::class)
-        ->first();
-
-        // get steps
-        $stepName = PhaseSteps::where('step_id', $eventData[1]['phase_steps_id'])->first();
-        // modality name
-        $modalityName = Modility::where('id', $eventData[1]['modility_id'])->first();
-
-        // set message for audit
-        $auditMessage = \Auth::user()->name . ' added '.$eventSection.' for Study ' .$studyName->study_title.'.';
-        // set audit url
-        $auditUrl = '';
-        // store data in event array
-        $newData = [];
-        $editReason = '';
-        
-        //  loop through the dorm data
-        foreach($eventData as $key => $data) {
-            // check for edit key
-            if ($key == 0) {
-
-                $editReason = $data;
-
-            } else if ($key == 1) {
-                //first time loop data 
-                $newData['study'] = $studyName->study_title;
-                $newData['subject'] = $subjectName->subject_id;
-                $newData['visit'] = $visitName->name;
-                $newData['steps'] = $stepName->step_name;
-                $newData['modility'] = $modalityName->modility_name;
-                $newData['form_type'] = $data['form_type'];
-                $newData['form_version_num'] = $data['form_version_num'];
-                $newData['edit_reason'] = $editReason;
-
-                // get section name
-                $sectionName = Section::where('id', $data['section_id'])->first();
-                // get question
-                $questionName = Question::where('id', $data['question_id'])->first();
-
-                $newData['section_id'][$sectionName->name][] = array(
-                // "question_id" => $data['question_id'],
-                //"field_id" => $data['field_id'],
-                //"answer_id" => $data['answer_id'],
-                "question_label" => $questionName->question_text,
-                "answer" => $data['answer']
-                );
-
-            } else {
-
-                // get section name
-                $sectionName = Section::where('id', $data['section_id'])->first();
-                // get question
-                $questionName = Question::where('id', $data['question_id'])->first();
-
-                $newData['section_id'][$sectionName->name][] = array(
-                    // "question_id" => $data['question_id'],
-                    // "field_id" => $data['field_id'],
-                    // "answer_id" => $data['answer_id'],
-                    "question_label" => $questionName->question_text,
-                    "answer" => $data['answer']
-                );
-
-            }
-
-        } // main loop ends
-
-        // check if it is update case
-        if ($eventType == 'Update') {
-            
-            $auditMessage = \Auth::user()->name . ' updated '.$eventSection.' for Study ' .$studyName->study_title.'.';
-        } // update case ends
-
-        $eventId = 0;
-
-        ///////////////////////////// Grading Form Data //////////////////////////////
-    }  // main If else ends
+        ///////////////////////////// QC/ Grading Form Data //////////////////////////////
+    }   // main If else ends
 
     // Log the event
     $trailLog = new TrailLog;
