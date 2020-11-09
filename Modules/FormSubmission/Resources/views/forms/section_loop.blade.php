@@ -37,9 +37,11 @@ if($step->form_type_id == 2){
 $formStatusObj = \Modules\FormSubmission\Entities\FormStatus::getFormStatusObj($getFormStatusArray);
 $formStatus = 'no_status';
 $formFilledByUserId = 'no-user-id';
+$isFormDataLocked = 0;
 if(null !== $formStatusObj){
     $formStatus = $formStatusObj->form_status;
     $formFilledByUserId = $formStatusObj->form_filled_by_user_id;
+    $isFormDataLocked = $formStatusObj->is_data_locked;
 }
 @endphp
 <div class="row">
@@ -55,6 +57,7 @@ if(null !== $formStatusObj){
                     <input type="hidden" name="formTypeId" value="{{ $step->form_type_id }}" />
                     <input type="hidden" name="modilityId" value="{{ $step->modility_id }}" />
                     <input type="hidden" name="formFilledByUserId" value="{{ $formFilledByUserId }}" />
+                    <input type="hidden" name="isFormDataLocked" value="{{ $isFormDataLocked }}" />
                     <input type="hidden" name="formStatus" value="{{ $formStatus }}" />
                     <input type="hidden" class="form_hid_editing_status_{{ $stepIdStr }}" name="form_editing_status_{{ $stepIdStr }}"
                         id="form_editing_status_{{ $stepIdStr }}" value="{{ $formStatus == 'resumable' ? 'yes' : 'no' }}" />

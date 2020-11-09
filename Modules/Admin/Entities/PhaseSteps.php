@@ -8,6 +8,7 @@ use Modules\UserRoles\Entities\Role;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\Study;
+use Modules\FormSubmission\Entities\Answer;
 use Modules\FormSubmission\Entities\FormVersion;
 use Modules\FormSubmission\Entities\SubjectsPhases;
 
@@ -124,5 +125,18 @@ class PhaseSteps extends Model
     {
         $formVersion = FormVersion::where('step_id', 'like', $step_id)->where('is_active', 1)->first();
         return $formVersion;
+    }
+
+    public static function isThisStepHasData($stepId)
+    {
+        $step = PhaseSteps::find($stepId);
+        $answer = Answer::where('study_structures_id', 'like', $step->phase_id)
+            ->where('phase_steps_id', 'like', $step->step_id)
+            ->first();
+        if (null !== $answer) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }

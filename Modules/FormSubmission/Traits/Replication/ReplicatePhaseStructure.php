@@ -67,7 +67,7 @@ trait ReplicatePhaseStructure
                     /* Replicate Question Data Validation */
                     /******************************* */
 
-                    $this->updateQuestionValidationToReplicatedVisits($question->id, $isReplicating);
+                    $this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId);
 
                     /******************************* */
                     /* Replicate Question Dependency */

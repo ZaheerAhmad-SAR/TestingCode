@@ -22,11 +22,12 @@ class Answer extends Model
 
     public static function getAnswerQuery($answerArray)
     {
-        return self::where(function ($q) use ($answerArray) {
+        $query = self::where(function ($q) use ($answerArray) {
             foreach ($answerArray as $key => $value) {
                 $q->where($key, 'like', $value);
             }
         });
+        return $query;
     }
 
     public static function getAnswer($answerArray)
@@ -37,5 +38,10 @@ class Answer extends Model
     public static function getAnswersArray($answerArray)
     {
         return self::getAnswerQuery($answerArray)->pluck('answer')->toArray();
+    }
+
+    public static function getSubjectIdsAgainstStepFromAnswers($answerArray)
+    {
+        return self::getAnswerQuery($answerArray)->pluck('form_filled_by_user_id', 'subject_id')->toArray();
     }
 }

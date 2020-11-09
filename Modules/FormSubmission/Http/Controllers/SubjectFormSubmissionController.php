@@ -21,10 +21,12 @@ class SubjectFormSubmissionController extends Controller
     public function submitForm(Request $request)
     {
         if (PhaseSteps::isStepActive($request->stepId)) {
+            // step object
+            $step = PhaseSteps::find($request->stepId);
+
             $editReason = $request->input('edit_reason_text', '');
             $formRevisionDataArray = ['edit_reason_text' => $editReason];
-            $trailLogDataArray['trail_log']['edit_reason'] = $editReason;
-
+            $trailLogDataArray['trail_log'][] = $editReason;
             $sectionIds = $request->sectionId;
             foreach ($sectionIds as $sectionId) {
                 $section = Section::find($sectionId);
@@ -34,7 +36,9 @@ class SubjectFormSubmissionController extends Controller
                     $formRevisionDataArray['form_data'][] = $retArray['form_data'];
                     $trailLogDataArray['trail_log'][] = $retArray['trail_log'];
                 }
+                
             }
+
             $formStatusArray = FormStatus::putFormStatus($request);
             FormRevisionHistory::putFormRevisionHistory($formRevisionDataArray, $formStatusArray['id']);
 
@@ -45,7 +49,11 @@ class SubjectFormSubmissionController extends Controller
             if (!empty($editReason)) {
                 $formAddOrEdit = 'Update';
             }
-            eventDetails($trailLogDataArray['trail_log'], 'Form', $formAddOrEdit, request()->ip, []);
+
+            // get form type
+            $formType = $step->form_type_id == 1 ? 'QC Form' : 'Grading Form';
+
+            eventDetails($trailLogDataArray['trail_log'], $formType, $formAddOrEdit, request()->ip, []);
             /********************* */
             echo json_encode($formStatusArray);
         }
@@ -142,5 +150,38 @@ class SubjectFormSubmissionController extends Controller
         }
 
         echo $formStatusObj->form_status;
+    }
+
+    public function lockFormData(Request $request)
+    {
+        $getFormStatusArray = [
+            'subject_id' => $request->subjectId,
+            'study_id' => $request->studyId,
+            'study_structures_id' => $request->phaseId,
+            'phase_steps_id' => $request->stepId,
+        ];
+        $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
+        if (null !== $formStatusObj) {
+            $formStatusObj->is_data_locked = 1;
+            $formStatusObj->update();
+        }
+
+        echo $formStatusObj->is_data_locked;
+    }
+    public function unlockFormData(Request $request)
+    {
+        $getFormStatusArray = [
+            'subject_id' => $request->subjectId,
+            'study_id' => $request->studyId,
+            'study_structures_id' => $request->phaseId,
+            'phase_steps_id' => $request->stepId,
+        ];
+        $formStatusObj = FormStatus::getFormStatusObj($getFormStatusArray);
+        if (null !== $formStatusObj) {
+            $formStatusObj->is_data_locked = 0;
+            $formStatusObj->update();
+        }
+
+        echo $formStatusObj->is_data_locked;
     }
 }
