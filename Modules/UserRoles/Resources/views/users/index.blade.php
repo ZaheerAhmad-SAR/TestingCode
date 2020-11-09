@@ -13,6 +13,15 @@
                 </div>
             </div>
         </div>
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+    @endif
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
         <div class="row">
@@ -102,15 +111,7 @@
     <!-- modal code  -->
     <div class="modal fade" tabindex="-1" role="dialog" id="createUser">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header">
