@@ -12,26 +12,8 @@
 */
 Route::post('/users/invite', 'UserController@process_invites')->name('process_invite');
 Route::get('/registration/{token}', 'UserController@registration_view')->name('registration');
-// form 1 grading
-Route::get('excel-grading','GradingController@excelGrading')->name('excel-grading');
-// form 2 grading
-Route::get('excel-grading2','GradingController@excelGrading2')->name('excel-grading2');
-// form 1 qc
-Route::get('excel-qc','QualityControlController@excelQC')->name('excel-qc');
-// form 2 qc
-Route::get('excel-qc2','QualityControlController@excelQC2')->name('excel-qc2');
-// form 1 adjudication
-Route::get('excel-adjudication','AdjudicationController@excelAdjudication')->name('excel-adjudication');
-// form 2 adjudication
-Route::get('excel-adjudication2','AdjudicationController@excelAdjudication2')->name('excel-adjudication2');
 
-// form 1 grading status
-Route::get('excel-grading-status','GradingController@excelGradingStatus')->name('excel.grading-status');
-// form 2 grading status
-Route::get('excel-grading2-status','GradingController@excelGradingStatus2')->name('excel.grading-status2');
 
-// grading status
-Route::get('grading-status','GradingController@gradingStatus')->name('grading.status');
 
 Route::prefix('userroles')->group(function() {
     Route::get('/', 'UserRolesController@index');
@@ -42,6 +24,29 @@ Route::group(['middleware' => ['auth','web']],function (){
     Route::get('update_profile', 'UserController@update_profile')->name('users.updateProfile');
 });
 Route::group(['middleware' => ['auth','web','roles']],function(){
+
+    //Amir
+    // form 1 grading
+    Route::get('excel-grading','GradingController@excelGrading')->name('excel-grading');
+// form 2 grading
+    Route::get('excel-grading2','GradingController@excelGrading2')->name('excel-grading2');
+// form 1 qc
+    Route::get('excel-qc','QualityControlController@excelQC')->name('excel-qc');
+// form 2 qc
+    Route::get('excel-qc2','QualityControlController@excelQC2')->name('excel-qc2');
+// form 1 adjudication
+    Route::get('excel-adjudication','AdjudicationController@excelAdjudication')->name('excel-adjudication');
+// form 2 adjudication
+    Route::get('excel-adjudication2','AdjudicationController@excelAdjudication2')->name('excel-adjudication2');
+
+// form 1 grading status
+    Route::get('excel-grading-status','GradingController@excelGradingStatus')->name('excel.grading-status');
+// form 2 grading status
+    Route::get('excel-grading2-status','GradingController@excelGradingStatus2')->name('excel.grading-status2');
+
+// grading status
+    Route::get('grading-status','GradingController@gradingStatus')->name('grading.status');
+
 
     //Invitation_Routes
     Route::get('/users/invite', 'UserController@invite_view')->name('invite_view');

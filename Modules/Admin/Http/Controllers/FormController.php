@@ -225,7 +225,11 @@ class FormController extends Controller
             $question_contents .= '<span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span>';
             if ($ques_value->form_field_type->field_type == 'Radio') {
                 $question_contents .= '<span class="dropdown-item add_checks"><a href="' . url("skiplogic/skip_logic", $ques_value->id) . '" style="cursor:pointer;"><i class="fas fa-crop-alt"></i>&nbsp; Skip Logic </a></span>';
-            } else {
+            }elseif($ques_value->form_field_type->field_type == 'Number'){
+                $question_contents .= '<span class="dropdown-item add_checks"><a href="' . url("skiplogic/num_skip_logic", $ques_value->id) . '" style="cursor:pointer;"><i class="fas fa-crop-alt"></i>&nbsp; Skip Logic </a></span>';
+            }elseif($ques_value->form_field_type->field_type == 'Text'){
+                $question_contents .= '<span class="dropdown-item add_checks"><a href="' . url("skiplogic/text_skip_logic", $ques_value->id) . '" style="cursor:pointer;"><i class="fas fa-crop-alt"></i>&nbsp; Skip Logic </a></span>';
+            }else {
             }
             $question_contents .= '</div></div></div></div>';
         }

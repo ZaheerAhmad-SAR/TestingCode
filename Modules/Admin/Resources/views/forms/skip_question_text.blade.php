@@ -6,7 +6,7 @@
             <div class="col-12 align-self-center">
                 <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
                     <div class="w-sm-100 mr-auto">
-                        <h4 class="mb-0">Skip Logic</h4>
+                        <h4 class="mb-0">Validations ON Number</h4>
                     </div>
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                         <li class="breadcrumb-item">Dashboard</li>
@@ -31,46 +31,112 @@
         <form action="{{route('skiplogic.apply_skip_logic')}}" enctype="multipart/form-data" method="POST">
             @csrf
             {{-- {{dd(request('id'))}} --}}
-            @php
-                $check_value = [];
-                $q_id = request('id');
-                $options_value = explode(',', $options->optionsGroup->option_value);
-                $options_name = explode(',', $options->optionsGroup->option_name);
-            @endphp
+           
             <input type="hidden" name="question_id" value="{{request('id')}}">
-            @foreach($options_name as $key => $value)
             <div class="row">
                <div class="col-12 col-sm-12 mt-3">
                    <div class="card">
                        <div class="card-body">
-                            <input type="hidden" name="option_title[]" value="{{$value}}">
-                           
-                            @foreach($options->skiplogic as $logic)
-                                @if(!empty($logic->option_value))
-                                   <?php $check_value[] = $logic->option_value; ?>
-                                @endif
-                            @endforeach()
-                            <input type="checkbox" name="option_value[]" onclick="git_steps_for_checks('{{$options_value[$key]}}','{{$key}}','{{$q_id}}','{{$value}}')" value="{{$options_value[$key]}}" @if(in_array($options_value[$key], $check_value)) checked="checked" @endif> &nbsp; {{$value}}
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" name="textbox_value[]" placeholder="Enter comma separated Text values">
+                                </div>
+                            </div>                           
                        </div>
                    </div>
                </div>
             </div>
-            <div class="row append_data_{{$options_value[$key]}}">
+            <div class="row">
+                <div class="col-12 col-sm-6 mt-3 current_div_ac">
+                    <div class="card">
+                        <div class="card-body" style="padding: 0;">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 15%">Expand</th>
+                                            <th colspan="5">Activate Modality,Sections,Question</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+        @foreach ($all_study_steps as $value)
+        @foreach($value->studySteps as $key => $value)
+            {{-- @if(in_array($value->step_id, $activate_forms_array)){ $checked = 'checked'; }@else{ $checked = ''; }@endif --}}
+                    <div class="card">
+                        <div class="card-body" style="padding: 0;">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;">
+                                <tbody>
+                                    <tr>
+                                        <td class="step_id" style="display: none;">{{$value->step_id}}</td>
+                                        <td style="text-align: center;width: 15%">
+                                          <div class="btn-group btn-group-sm" role="group">
+                                            <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" onclick="activate_checks('{{$value->step_id}}','sections_list_','{{$key}}','{{request('id')}}');" data-target=".row-{{$value->step_id}}-ac-{{$key}}" style="font-size: 20px; color: #1e3d73;"></i>
+                                          </div>
+                                        </td>
+                                        <td colspan="5"> <input type="checkbox" name="activate_forms[{{$key}}][]" value="{{$value->step_id}}"> &nbsp;&nbsp;{{$value->step_name}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="card collapse row-{{$value->step_id}}-ac-{{$key}} sections_list_{{$value->step_id}}_{{$key}}">
+                </div>
+        @endforeach
+        @endforeach
+        </div>
+        <div class="col-12 col-sm-6 mt-3 current_div_de">
+                    <div class="card">
+                        <div class="card-body" style="padding: 0;">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 15%">Expand</th>
+                                            <th colspan="5">Deactivate Modality,Sections,Question</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+        @foreach ($all_study_steps as $value)
+        @foreach($value->studySteps as $key => $value)
+            {{-- if(in_array($value->step_id, $deactivate_forms_array)){ $checked = 'checked'; }else{ $checked = ''; } --}}
+            <div class="card">
+                <div class="card-body" style="padding: 0;">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;">
+                        <tbody>
+                            <tr>
+                                <td class="step_id" style="display: none;">{{$value->step_id}}</td>
+                                <td style="text-align: center;width: 15%">
+                                  <div class="btn-group btn-group-sm" role="group">
+                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-de-{{$key}}" onclick="deactivate_checks('{{$value->step_id}}','de_sections_list_','{{$key}}','{{request('id')}}');" style="font-size: 20px; color: #1e3d73;"></i>
+                                  </div>
+                                </td>
+                                <td colspan="5"><input type="checkbox" name="deactivate_forms[{{$key}}][]" value="'{{$value->step_id}}"> &nbsp;&nbsp;{{$value->step_name}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="card collapse row-{{$value->step_id}}-de-{{$key}} de_sections_list_{{$value->step_id}}_{{$key}}">
+        </div>
+        @endforeach
+        @endforeach
+        </div>
             </div>
             @push('script_last')
              <script>
-                 $(document).ready(function() {
-                 @php
-                    if(in_array($options_value[$key], $check_value)) {
-                        // id,append_class,index,q_id,option_value,option_title
-                     echo "git_steps_for_checks('$options_value[$key]','$key','$q_id','$value');";
-                     
-                    }else {}
-                 @endphp
-                 })
+                
              </script>
             @endpush
-            @endforeach
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>

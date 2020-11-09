@@ -147,6 +147,7 @@ class RoleController extends Controller
             if ($request->study_view){
                 //dd('log store');
                 $permissions = Permission::where('name','=','studies.index')
+                    ->orwhere('name', '=', 'transmissions.study-transmissions')
                     ->get();
                 foreach ($permissions as $permission){
                     $permission_id = $permission->id;
@@ -248,6 +249,11 @@ class RoleController extends Controller
             }
             if ($request->grading_view){
                 $permissions = Permission::where('name','=','grading.index')
+                    ->orwhere('name','excel-grading')
+                    ->orwhere('name','excel-grading2')
+                    ->orwhere('name','excel.grading-status')
+                    ->orwhere('name','excel.grading-status2')
+                    ->orwhere('name','grading.status')
                     ->get();
 
                 foreach ($permissions as $permission){
@@ -299,6 +305,8 @@ class RoleController extends Controller
             }
             if ($request->qualityControl_view){
                 $permissions = Permission::where('name','=','qualitycontrol.index')
+                    ->orwhere('name','excel-qc')
+                    ->orwhere('name','excel-qc2')
                     ->get();
 
                 foreach ($permissions as $permission){
@@ -350,6 +358,8 @@ class RoleController extends Controller
             }
             if ($request->adjudication_view){
                 $permissions = Permission::where('name','=','adjudication.index')
+                    ->orwhere('name','=','excel-adjudication')
+                    ->orwhere('name','=','excel-adjudication2')
                     ->get();
 
                 foreach ($permissions as $permission){
@@ -759,8 +769,9 @@ class RoleController extends Controller
             }
         }
         if ($request->study_view){
-            //dd('log');
+            //dd('log store');
             $permissions = Permission::where('name','=','studies.index')
+                ->orwhere('name', '=', 'transmissions.study-transmissions')
                 ->get();
             foreach ($permissions as $permission){
                 $permission_id = $permission->id;
@@ -864,6 +875,11 @@ class RoleController extends Controller
         }
         if ($request->grading_view){
             $permissions = Permission::where('name','=','grading.index')
+                ->orwhere('name','excel-grading')
+                ->orwhere('name','excel-grading2')
+                ->orwhere('name','excel.grading-status')
+                ->orwhere('name','excel.grading-status2')
+                ->orwhere('name','grading.status')
                 ->get();
 
             foreach ($permissions as $permission){
@@ -916,6 +932,8 @@ class RoleController extends Controller
         }
         if ($request->qualityControl_view){
             $permissions = Permission::where('name','=','qualitycontrol.index')
+                ->orwhere('name','excel-qc')
+                ->orwhere('name','excel-qc2')
                 ->get();
 
             foreach ($permissions as $permission){
@@ -968,6 +986,8 @@ class RoleController extends Controller
         }
         if ($request->adjudication_view){
             $permissions = Permission::where('name','=','adjudication.index')
+                ->orwhere('name','=','excel-adjudication')
+                ->orwhere('name','=','excel-adjudication2')
                 ->get();
 
             foreach ($permissions as $permission){

@@ -81,7 +81,7 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        if(session('current_study')){
+
             $id = Str::uuid();
             $user = User::create([
                 'id' => $id,
@@ -98,50 +98,15 @@ class UserController extends Controller
                         'id'    => Str::uuid(),
                         'user_id'     => $user->id,
                         'role_id'   => $role,
-                        'study_id' => !empty(session('current_study'))?session('current_study'):''
+                        'study_id' => NULL
                     ]);
-                    if (session('current_study')){
-                        $studyuser = StudyUser::create([
-                            'id'    => Str::uuid(),
-                            'user_id'     => $user->id,
-                            'study_id' => !empty(session('current_study'))?session('current_study'):''
-                        ]);
-                    }
+
                 }
             }
             $oldUser = [];
             // log event details
             $logEventDetails = eventDetails($id, 'User', 'Add', $request->ip(), $oldUser);
             return redirect()->route('studyusers.index');
-        }
-        else {
-            $id = Str::uuid();
-            $user = User::create([
-                'id' => $id,
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'created_by'    => \auth()->user()->id,
-                'role_id'   =>  !empty($request->roles)?$request->roles[0]:2
-            ]);
-            if (!empty($request->roles))
-            {
-                foreach ($request->roles as $role){
-                    $roles =UserRole::create([
-                        'id'    => Str::uuid(),
-                        'user_id'     => $user->id,
-                        'role_id'   => $role,
-                        'study_id' => !empty(session('current_study'))?session('current_study'):''
-                    ]);
-                }
-            }
-            $oldUser = [];
-            // log event details
-            $logEventDetails = eventDetails($id, 'User', 'Add', $request->ip(), $oldUser);
-
-            return redirect()->route('users.index');
-
-        }
     }
 
     /**

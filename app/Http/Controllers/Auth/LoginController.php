@@ -50,6 +50,7 @@ class LoginController extends Controller
     private function authenticated(Request $request, Authenticatable $user)
     {
         $getbrowser = UserSystemInfoHelper::get_browsers();
+        $get_ip = UserSystemInfoHelper::get_ip();
         $secret = $user->google2fa_secret;
 
         if ($user->google2fa_secret) {
@@ -76,6 +77,7 @@ class LoginController extends Controller
 
                         $info->browser_name = $getbrowser;
                         $info->user_id = $user->id;
+                        $info->user_ip = $get_ip;
                         $info->save();
 
                         Auth::logout();
@@ -92,6 +94,7 @@ class LoginController extends Controller
                 $system_info->user_id = $user->id;
                 $system_info->browser_name = $getbrowser;
                 $user->qr_flag = '1';
+                $system_info->user_ip = $get_ip;
                 $system_info->save();
                 $user->save();
                 $request->session()->put('2fa:user:id', $user->id);

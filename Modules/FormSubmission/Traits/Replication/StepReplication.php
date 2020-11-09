@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\StudyStructure;
+use Modules\FormSubmission\Entities\Answer;
 use Modules\FormSubmission\Entities\FormVersion;
 
 trait StepReplication
@@ -21,6 +22,7 @@ trait StepReplication
             $newStep->parent_id = $step->step_id;
         }
         $newStep->save();
+        $this->addFormVersionToReplicatedStep($step->step_id, $newStepId);
         return $newStepId;
     }
 
@@ -39,6 +41,24 @@ trait StepReplication
         }
     }
 
+    private function addFormVersionToReplicatedStep($stepId, $replicatedStepId)
+    {
+        $stepFormVersions = FormVersion::where('step_id', 'like', $stepId)->get();
+        foreach ($stepFormVersions as $stepFormVersion) {
+            $this->addReplicatedStepFormVersion($stepFormVersion, $replicatedStepId);
+        }
+    }
+
+    private function addReplicatedStepFormVersion($stepFormVersion, $replicatedStepId)
+    {
+
+        $newStepFormVersionId = Str::uuid();
+        $newStepFormVersion = $stepFormVersion->replicate();
+        $newStepFormVersion->id = $newStepFormVersionId;
+        $newStepFormVersion->step_id = $replicatedStepId;
+        $newStepFormVersion->save();
+    }
+
     private function updateStepToReplicatedVisits($step)
     {
         $replicatedSteps = PhaseSteps::where('parent_id', 'like', $step->step_id)->get();
@@ -52,7 +72,15 @@ trait StepReplication
         $replicatedSteps = PhaseSteps::where('parent_id', 'like', $step->step_id)->get();
         foreach ($replicatedSteps as $replicatedStep) {
             $replicatedStep->delete();
+            $this->deleteFormVersion($replicatedStep);
         }
+        $step->delete();
+        $this->deleteFormVersion($step);
+    }
+
+    private function deleteFormVersion($step)
+    {
+        FormVersion::where('step_id', 'like', $step->step_id)->delete();
     }
 
     private function activateStepToReplicatedVisits($step)
@@ -61,6 +89,7 @@ trait StepReplication
         foreach ($replicatedSteps as $replicatedStep) {
             $this->activateThisStep($replicatedStep);
         }
+        $this->activateThisStep($step);
     }
 
     private function deActivateStepToReplicatedVisits($step)
@@ -69,6 +98,7 @@ trait StepReplication
         foreach ($replicatedSteps as $replicatedStep) {
             $this->deActivateThisStep($replicatedStep);
         }
+        $this->deActivateThisStep($step);
     }
 
     private function putStepFormVersion($step)
@@ -85,11 +115,73 @@ trait StepReplication
         }
     }
 
+    private function putDefaultAnswersInNewQuestionsOfAllSteps($step)
+    {
+        $replicatedSteps = PhaseSteps::where('parent_id', 'like', $step->step_id)->get();
+        foreach ($replicatedSteps as $replicatedStep) {
+            $this->putDefaultAnswersInNewQuestions($replicatedStep);
+        }
+        $this->putDefaultAnswersInNewQuestions($step);
+    }
+
+    private function putDefaultAnswersInNewQuestions($step)
+    {
+        $studyId = (string)session('current_study');
+        if (!empty($studyId)) {
+            $getSubjectsIdsAnswerArray = [
+                'study_id' => $studyId,
+                'study_structures_id' => $step->phase_id,
+                'phase_steps_id' => $step->step_id,
+            ];
+            $subjectIdsArray = Answer::getSubjectIdsAgainstStepFromAnswers($getSubjectsIdsAnswerArray);
+            if (count($subjectIdsArray) > 0) {
+                //dd($subjectIdsArray);
+                foreach ($step->sections as $section) {
+                    foreach ($section->questions as $question) {
+                        $getAnswerArray = [
+                            'study_id' => $studyId,
+                            'study_structures_id' => $step->phase_id,
+                            'phase_steps_id' => $step->step_id,
+                            'section_id' => $section->id,
+                            'question_id' => $question->id,
+                        ];
+                        if (null === Answer::getAnswer($getAnswerArray)) {
+                            $oldFormFilledByUserId = $oldSubjectId = '';
+                            foreach ($subjectIdsArray as $subjectId => $formFilledByUserId) {
+                                if (($subjectId == $oldSubjectId) && ($formFilledByUserId == $oldFormFilledByUserId)) {
+                                    continue;
+                                }
+                                $defaultAnswerArray = [
+                                    'id' => Str::uuid(),
+                                    'form_filled_by_user_id' => $formFilledByUserId,
+                                    'subject_id' => $subjectId,
+                                    'study_id' => $studyId,
+                                    'study_structures_id' => $step->phase_id,
+                                    'phase_steps_id' => $step->step_id,
+                                    'section_id' => $section->id,
+                                    'question_id' => $question->id,
+                                    'field_id' => $question->formFields->id,
+                                    'answer' => '123456789123456789',
+                                ];
+
+                                Answer::create($defaultAnswerArray);
+                                /*----------------------------------*/
+                                $oldFormFilledByUserId = $formFilledByUserId;
+                                $oldSubjectId = $subjectId;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private function activateThisStep($step)
     {
         $step->is_active = 1;
         $step->update();
         $this->putStepFormVersion($step);
+        $this->putDefaultAnswersInNewQuestions($step);
     }
 
     private function deActivateThisStep($step)
@@ -104,6 +196,5 @@ trait StepReplication
             $this->deleteSection($section);
         }
         $this->deleteStepToReplicatedVisits($step);
-        $step->delete();
     }
 }
