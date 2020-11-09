@@ -500,11 +500,13 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         }
 
         //////////////////////////// Study Sites Ends /////////////////////////////////////////
-    } else if ($eventSection == 'Study') {
+    } else if ($eventSection == 'Study' && $eventType != 'Delete') {
         // get event data
         $eventData = Study::find($eventId);
+
         // set message for audit
         $auditMessage = \Auth::user()->name . ' added study ' . $eventData->study_title . '.';
+
         // set audit url
         $auditUrl = url('studies');
         // store data in event array
@@ -547,6 +549,35 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         }
 
         //////////////////////////// Study Ends /////////////////////////////////////////
+    } else if ($eventSection == 'Study' && $eventType == 'Delete') {
+
+            // get event data
+            $eventData = Study::find($eventId);
+
+            $eventId = $eventData->id;
+
+            // set audit url
+            $auditUrl = url('studies');
+            // store data in event array
+            $newData = array(
+                'study_short_name'  =>  $eventData->study_short_name,
+                'study_title' => $eventData->study_title,
+                'study_status'  => 'Development',
+                'study_code' => $eventData->study_code,
+                'protocol_number' => $eventData->protocol_number,
+                'study_phase' => $eventData->study_phase,
+                'trial_registry_id' => $eventData->trial_registry_id,
+                'study_sponsor' => $eventData->study_sponsor,
+                'start_date' => $eventData->start_date,
+                'end_date' => $eventData->end_date,
+                'description'   =>  $eventData->description,
+                'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+                'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
+            );
+
+            // set message for audit
+            $auditMessage = \Auth::user()->name . ' deleted study ' . $eventData->study_title . '.';
+
     } else if ($eventSection == 'Subject') {
         // get event data
         $eventData = Subject::find($eventId);
@@ -687,6 +718,121 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         } // update case ends
 
         //////////////////////////////// Transmission Data //////////////////////////////
+    } else if ($eventSection == 'QC Form') {
+        
+        $ip = 'N/A';
+        $eventId = 0;
+        // get event data
+        $eventData = $eventId;
+        // set message for audit
+        $auditMessage = \Auth::user()->name . ' added '.$eventSection.' for Study ' . $eventData[1]['study_id'].'.';
+        // set audit url
+        $auditUrl = '';
+        // store data in event array
+        $newData = [];
+        $editReason = '';
+        
+        //  loop through the dorm data
+        foreach($eventData as $key => $data) {
+
+            // check for edit key
+            if ($key == 0) {
+
+                $editReason = $data;
+
+            } else if ($key == 1) {
+                //first time loop data 
+                $newData['study_id'] = $data['study_id'];
+                $newData['subject_id'] = $data['subject_id'];
+                $newData['visit_id'] = $data['study_structures_id'];
+                $newData['steps_id'] = $data['phase_steps_id'];
+                $newData['modility_id'] = $data['modility_id'];
+                $newData['form_type'] = $data['form_type'];
+                $newData['edit_reason'] = $editReason;
+                $newData['section_id'][$data['section_id']][] = array(
+                "question_id" => $data['question_id'],
+                "field_id" => $data['field_id'],
+                "answer_id" => $data['answer_id'],
+                "answer" => $data['answer']
+                );
+
+            } else {
+
+                $newData['section_id'][$data['section_id']][] = array(
+                    "question_id" => $data['question_id'],
+                    "field_id" => $data['field_id'],
+                    "answer_id" => $data['answer_id'],
+                    "answer" => $data['answer']
+                );
+
+            }
+
+        } // main loop ends
+
+        // check if it is update case
+        if ($eventType == 'Update') {
+            
+            $auditMessage = \Auth::user()->name . ' updated '.$eventSection.' for Study ' . $eventData[1]['study_id'].'.';
+        } // update case ends
+
+        ///////////////////////////// QC Form Data //////////////////////////////
+    } else if ($eventSection == 'Grading Form') {
+        
+        $ip = 'N/A';
+        $eventId = 0;
+       // get event data
+        $eventData = $eventId;
+        // set message for audit
+        $auditMessage = \Auth::user()->name . ' added '.$eventSection.' for Study ' . $eventData[1]['study_id'].'.';
+        // set audit url
+        $auditUrl = '';
+        // store data in event array
+        $newData = [];
+        $editReason = '';
+        
+        //  loop through the dorm data
+        foreach($eventData as $key => $data) {
+            // check for edit key
+            if ($key == 0) {
+
+                $editReason = $data;
+
+            }else if ($key == 1) {
+                //first time loop data 
+                $newData['study_id'] = $data['study_id'];
+                $newData['subject_id'] = $data['subject_id'];
+                $newData['visit_id'] = $data['study_structures_id'];
+                $newData['steps_id'] = $data['phase_steps_id'];
+                $newData['modility_id'] = $data['modility_id'];
+                $newData['form_type'] = $data['form_type'];
+                $newData['edit_reason'] = $editReason;
+                $newData['section_id'][$data['section_id']][] = array(
+                "question_id" => $data['question_id'],
+                "field_id" => $data['field_id'],
+                "answer_id" => $data['answer_id'],
+                "answer" => $data['answer']
+                );
+
+            } else {
+
+                $newData['section_id'][$data['section_id']][] = array(
+                    "question_id" => $data['question_id'],
+                    "field_id" => $data['field_id'],
+                    "answer_id" => $data['answer_id'],
+                    "answer" => $data['answer']
+                );
+
+            }
+
+        } // main loop ends
+
+        // check if it is update case
+        if ($eventType == 'Update') {
+            
+            $auditMessage = \Auth::user()->name . ' updated '.$eventSection.' for Study ' . $eventData[1]['study_id'].'.';
+        } // update case ends
+
+        ///////////////////////////// Grading Form Data //////////////////////////////
     }  // main If else ends
 
     // Log the event
@@ -704,6 +850,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
     $trailLog->event_details = json_encode($newData);
     $trailLog->event_old_details = json_encode($oldData);
     $trailLog->save();
+
 } // trail log function ends
 
 function buildSafeStr($id, $str = '')

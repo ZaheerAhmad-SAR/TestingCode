@@ -197,7 +197,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6">
-                                            <label for="protocol_number" class="col-md-3">Protocol Number</label>
+                                            <label for="protocol_number" class="col-md-3">Protocol Numbersdffffffffffff</label>
                                             <div class="{!! ($errors->has('protocol_number')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
                                                 <input type="text" class="form-control" name="protocol_number" value="{{old('protocol_number')}}">
                                                 @error('protocol_number')

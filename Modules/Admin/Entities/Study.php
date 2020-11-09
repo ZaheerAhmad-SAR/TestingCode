@@ -33,7 +33,7 @@ class Study extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'study_user');
+        return $this->belongsToMany(User::class, 'user_roles');
     }
 
     public function sites()

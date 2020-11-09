@@ -64,16 +64,29 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return \App\User
      */
-    /*protected function create(array $data)
-    {
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
-    }*/
-
     protected function create(array $data)
+    {
+        $invite = Invitation::where('token', $data['token'])->first();
+        $invite->delete();
+
+        return [
+            User::create([
+                'id'    =>  $id = \Illuminate\Support\Str::uuid(),
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+                'role_id'   => $data['role']
+            ]),
+            UserRole::create([
+                'id'    => \Illuminate\Support\Str::uuid(),
+                'role_id'   => $data['role'],
+                'user_id'   => $id,
+                'study_id'  => ''
+            ])
+        ];
+    }
+
+    protected function create1(array $data)
     {
        $invite = Invitation::where('token', $data['token'])->first();
        $invite->delete();

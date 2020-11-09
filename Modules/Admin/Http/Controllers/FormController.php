@@ -99,6 +99,12 @@ class FormController extends Controller
         $step = PhaseSteps::find($request->step_id);
         echo $step->is_active;
     }
+
+    public function isThisStepHasData(Request $request)
+    {
+        echo PhaseSteps::isThisStepHasData($request->stepId);
+    }
+
     // add question check start
     // Question activate and deactivate
 

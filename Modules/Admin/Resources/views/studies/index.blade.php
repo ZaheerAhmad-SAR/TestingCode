@@ -64,7 +64,6 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @if(count($studies) !=0)
                                 <?php $index= 1; ?>
                                 @foreach($studies as $study)
                                     <tr id="study_id_{{ $study->id }}">
@@ -165,9 +164,6 @@
                                     </tr>
                                     <?php $index++; ?>
                                 @endforeach
-                            @elseif(count($studies) == 0)
-                                <p>No records</p>
-                            @endif
                             </tbody>
                         </table>
                     </div>
@@ -220,7 +216,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="study_short_name" class="col-md-2">Short Name</label>
+                                    <label for="study_short_name" class="col-md-2">Short Name </label>
                                     <div class="{!! ($errors->has('study_short_name')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
                                         <input type="text" class="form-control" id="study_short_name" name="study_short_name" value="{{old('study_short_name')}}">
                                         @error('study_short_name')
@@ -343,7 +339,7 @@
                 <div class="modal-body">
                     <form action="{{route('studies.cloneStudy')}}" name="clonestudy" class="" method="post">
                         @csrf
-                        @if(!empty($study))
+                        @if(!empty($study) )
                             <input type="hidden" value="{{$study->id}}" id="study_ID" name="study_ID">
                         @endif
                         <nav>
@@ -360,7 +356,7 @@
                                     <label for="study_title" class="col-md-2">Title</label>
                                     <div class="{!! ($errors->has('study_title')) ?'form-group col-md-10 has-error':'form-group col-md-10' !!}">
                                         <input type="hidden" name="study_id" id="studyID" value="">
-                                        <input type="text" class="form-control" id="study_title" name="study_title" value="{{ $study->study_title }}"> @error('email')
+                                        <input type="text" class="form-control" id="study_title" name="study_title" value="{{ old('value') }}"> @error('email')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
                                     </div>
@@ -368,7 +364,7 @@
                                 <div class="form-group row">
                                     <label for="study_short_name" class="col-md-2">Short Name</label>
                                     <div class="{!! ($errors->has('study_short_name')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                        <input type="text" class="form-control" id="study_short_name" name="study_short_name" value="{{$study->study_short_name}}">
+                                        <input type="text" class="form-control" id="study_short_name" name="study_short_name" value="{{old('value')}}">
                                         @error('study_short_name')
                                         <span class="text-danger small">{{ $message }} </span>
                                         @enderror
@@ -376,7 +372,7 @@
 
                                     <label for="study_code" class="col-md-2">Study Code</label>
                                     <div class="{!! ($errors->has('study_code')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                        <input type="text" class="form-control" id="study_code" name="study_code" value="{{$study->study_code}}">
+                                        <input type="text" class="form-control" id="study_code" name="study_code" value="{{old('value')}}">
                                         @error('study_code')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
@@ -385,14 +381,14 @@
                                 <div class="form-group row">
                                     <label for="protocol_number" class="col-md-2">Protocol Number</label>
                                     <div class="{!! ($errors->has('protocol_number')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                        <input type="text" class="form-control" id="protocol_number" name="protocol_number" value="{{ $study->protocol_number }}">
+                                        <input type="text" class="form-control" id="protocol_number" name="protocol_number" value="{{ old('value') }}">
                                         @error('protocol_number')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
                                     </div>
                                     <label for="trial_registry_id" class="col-md-2">Trial Registry ID</label>
                                     <div class="{!! ($errors->has('trial_registry_id')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                        <input type="text" class="form-control" id="trial_registry_id" name="trial_registry_id" value="{{ $study->trial_registry_id }}">
+                                        <input type="text" class="form-control" id="trial_registry_id" name="trial_registry_id" value="{{ old('value') }}">
                                         @error('trial_registry_id')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
@@ -401,14 +397,14 @@
                                 <div class="form-group row">
                                     <label for="study_sponsor" class="col-md-2">Study Sponsor</label>
                                     <div class="{!! ($errors->has('study_sponsor')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                        <input type="text" class="form-control" id="study_sponsor" name="study_sponsor" value="{{ $study->study_sponsor }}">
+                                        <input type="text" class="form-control" id="study_sponsor" name="study_sponsor" value="{{ old('value') }}">
                                         @error('study_sponsor')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
                                     </div>
                                     <label for="start_date" class="col-md-2">Start Date</label>
                                     <div class="{!! ($errors->has('start_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                        <input type="date" class="form-control" id="start_date" name="start_date" value="{{ $study->start_date }}">
+                                        <input type="date" class="form-control" id="start_date" name="start_date" value="{{ old('value') }}">
                                         @error('start_date')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
@@ -417,14 +413,14 @@
                                 <div class="form-group row">
                                     <label for="end_date" class="col-md-2">End Date</label>
                                     <div class="{!! ($errors->has('end_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                        <input type="date" class="form-control" id="end_date" name="end_date" value="{{ $study->end_date }}">
+                                        <input type="date" class="form-control" id="end_date" name="end_date" value="{{ old('value') }}">
                                         @error('end_date')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
                                     </div>
                                     <label for="description" class="col-md-2">Description</label>
                                     <div class="{!! ($errors->has('description')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                        <input type="text" class="form-control" id="description" name="description" value="{{ $study->description }}">
+                                        <input type="text" class="form-control" id="description" name="description" value="{{ old('value') }}">
                                         @error('description')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
@@ -516,7 +512,7 @@
                                     <label for="study_title" class="col-md-2">Title</label>
                                     <div class="{!! ($errors->has('study_title')) ?'form-group col-md-10 has-error':'form-group col-md-10' !!}">
                                         <input type="hidden" name="study_id" id="studyID" value="">
-                                        <input type="text" class="form-control" id="study_title" name="study_title" value="{{ $study->study_title }}"> @error('email')
+                                        <input type="text" class="form-control" id="study_title" name="study_title" value="{{ old('value') }}"> @error('email')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
                                     </div>
@@ -524,7 +520,7 @@
                                 <div class="form-group row">
                                     <label for="study_short_name" class="col-md-2">Short Name</label>
                                     <div class="{!! ($errors->has('study_short_name')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                        <input type="text" class="form-control" id="study_short_name" name="study_short_name" value="{{$study->study_short_name}}">
+                                        <input type="text" class="form-control" id="study_short_name" name="study_short_name" value="{{old('value')}}">
                                         @error('study_short_name')
                                         <span class="text-danger small">{{ $message }} </span>
                                         @enderror
@@ -532,7 +528,7 @@
 
                                     <label for="study_code" class="col-md-2">Study Code</label>
                                     <div class="{!! ($errors->has('study_code')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                        <input type="text" class="form-control" id="study_code" name="study_code" value="{{$study->study_code}}">
+                                        <input type="text" class="form-control" id="study_code" name="study_code" value="{{old('value')}}">
                                         @error('study_code')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
@@ -541,14 +537,14 @@
                                 <div class="form-group row">
                                     <label for="protocol_number" class="col-md-2">Protocol Number</label>
                                     <div class="{!! ($errors->has('protocol_number')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                        <input type="text" class="form-control" id="protocol_number" name="protocol_number" value="{{ $study->protocol_number }}">
+                                        <input type="text" class="form-control" id="protocol_number" name="protocol_number" value="{{ old('value') }}">
                                         @error('protocol_number')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
                                     </div>
                                     <label for="trial_registry_id" class="col-md-2">Trial Registry ID</label>
                                     <div class="{!! ($errors->has('trial_registry_id')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                        <input type="text" class="form-control" id="trial_registry_id" name="trial_registry_id" value="{{ $study->trial_registry_id }}">
+                                        <input type="text" class="form-control" id="trial_registry_id" name="trial_registry_id" value="{{ old('value') }}">
                                         @error('trial_registry_id')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
@@ -557,14 +553,14 @@
                                 <div class="form-group row">
                                     <label for="study_sponsor" class="col-md-2">Study Sponsor</label>
                                     <div class="{!! ($errors->has('study_sponsor')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                        <input type="text" class="form-control" id="study_sponsor" name="study_sponsor" value="{{ $study->study_sponsor }}">
+                                        <input type="text" class="form-control" id="study_sponsor" name="study_sponsor" value="{{ old('value') }}">
                                         @error('study_sponsor')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
                                     </div>
                                     <label for="start_date" class="col-md-2">Start Date</label>
                                     <div class="{!! ($errors->has('start_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                        <input type="date" class="form-control" id="start_date" name="start_date" value="{{ $study->start_date }}">
+                                        <input type="date" class="form-control" id="start_date" name="start_date" value="{{ old('value') }}">
                                         @error('start_date')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
@@ -573,14 +569,14 @@
                                 <div class="form-group row">
                                     <label for="end_date" class="col-md-2">End Date</label>
                                     <div class="{!! ($errors->has('end_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                        <input type="date" class="form-control" id="end_date" name="end_date" value="{{ $study->end_date }}">
+                                        <input type="date" class="form-control" id="end_date" name="end_date" value="{{ old('value') }}">
                                         @error('end_date')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
                                     </div>
                                     <label for="description" class="col-md-2">Description</label>
                                     <div class="{!! ($errors->has('description')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                        <input type="text" class="form-control" id="description" name="description" value="{{ $study->description }}">
+                                        <input type="text" class="form-control" id="description" name="description" value="{{ old('value') }}">
                                         @error('description')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
@@ -868,25 +864,35 @@
                     $('#study-crud-modal').modal('show');
                 })
             });
+
             $('body').on('click', '#delete-study', function () {
                 var study_id = $(this).data("id");
-                $.ajax({
-                    type: "DELETE",
-                    url: "{{ url('studies')}}"+'/'+study_id,
-                    success: function (data) {
-                        confirm("Are You sure want to delete !");
-                        $("#study_id_" + study_id).remove();
-                        if(data.success == true){ // if true (1)
-                            setTimeout(function(){// wait for 5 secs(2)
-                                location.reload(); // then reload the page.(3)
-                            }, 100);
+
+                if(confirm("Are You sure want to delete !")) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: "{{ url('studies')}}"+'/'+study_id,
+                        success: function (data) {
+                            
+                            if(data.success == null){ // if true (1)
+
+                                $("#study_id_" + study_id).remove();
+                                    setTimeout(function(){// wait for 5 secs(2)
+                                        location.reload(); // then reload the page.(3)
+                                    }, 100);
+
+                            } // if ends
+
+                        },
+                        error: function (data) {
+                            console.log('Error:', data);
                         }
-                    },
-                    error: function (data) {
-                        console.log('Error:', data);
-                    }
-                });
+                    }); // ajax
+
+                } // confirm
+                
             });
+
             $('body').on('click', '.clone-study', function () {
                 $.ajaxSetup({
                     headers: {
@@ -964,6 +970,7 @@
                 }
             });
         }
+
         $('body').on('click', '.replyClick', function () {
             $('.commentsInput').css('display','');
             $('.queryAttachments').css('display','');
