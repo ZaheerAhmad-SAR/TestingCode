@@ -12,6 +12,7 @@
 */
 Route::post('/users/invite', 'UserController@process_invites')->name('process_invite');
 Route::get('/registration/{token}', 'UserController@registration_view')->name('registration');
+
 // form 1 grading
 Route::get('excel-grading','GradingController@excelGrading')->name('excel-grading');
 // form 2 grading
