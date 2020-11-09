@@ -56,6 +56,21 @@
                             <i class="far fa-eye"></i> Preview</button>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-12">&nbsp;</div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4" id="activateStepDiv" style="display: none;">
+                        <button class="btn btn-outline-primary" onclick="activateStepForm();"
+                            style="background-color: white;">
+                            <i class="far fa-play-circle"></i> Put in Production Mode</button>
+                    </div>
+                    <div class="col-sm-4" id="deactivateStepDiv" style="display: none;">
+                        <button class="btn btn-outline-primary" onclick="deactivateStepForm();"
+                            style="background-color: white;">
+                            <i class="far fa-pause-circle"></i> Put in Draft Mode</button>
+                    </div>
+                </div>
             </div>
             <div class="col-lg-2 col-xl-2">
                 <label for="username" class="col-form-label">Fields Types</label>

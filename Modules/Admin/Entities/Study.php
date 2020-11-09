@@ -77,22 +77,26 @@ class Study extends Model
 
         $studyPhasesIdsArray = StudyStructure::getStudyPhaseIdsArray($studyId);
         $activatedPhasesidsArray = SubjectsPhases::getActivatedPhasesidsArray($studyPhasesIdsArray);
+        $subjectIdsFromActivatedPhasesIdsArray = SubjectsPhases::getSubjectIdsFromActivatedPhasesidsArray($activatedPhasesidsArray);
+        $modilityIdsFromActivatedPhasesIdsArray = SubjectsPhases::getModilityIdsFromActivatedPhasesidsArray($activatedPhasesidsArray);
         $qcStepsIdsArray = PhaseSteps::getStepsIdsArray(1, $activatedPhasesidsArray);
         $gradingStepsIdsArray = PhaseSteps::getStepsIdsArray(2, $activatedPhasesidsArray);
+        $countGradingSteps = PhaseSteps::countGradingSteps($activatedPhasesidsArray, $modilityIdsFromActivatedPhasesIdsArray);
 
         /*********************************************************/
 
         $completedQcStepsIdsArray = FormStatus::getStepsIdsArrayByStatusAndFormType(1, 'complete', $qcStepsIdsArray);
-        if (count($qcStepsIdsArray) > 0) {
-            $qc_percentage = round((count($completedQcStepsIdsArray) / count($qcStepsIdsArray)) * 100);
+        if (count($qcStepsIdsArray) > 0 && count($subjectIdsFromActivatedPhasesIdsArray) > 0) {
+            $qc_percentage = round((count($completedQcStepsIdsArray) / count($subjectIdsFromActivatedPhasesIdsArray)) * 100);
         }
 
 
         /*********************************************************/
 
         $completedGradingStepsIdsArray = FormStatus::getStepsIdsArrayByStatusAndFormType(2, 'complete', $gradingStepsIdsArray);
+        //dd($completedGradingStepsIdsArray);
         if (count($gradingStepsIdsArray) > 0) {
-            $grading_percentage = round((count($completedGradingStepsIdsArray) / count($gradingStepsIdsArray)) * 100);
+            $grading_percentage = round((count($completedGradingStepsIdsArray) / ($countGradingSteps * count($subjectIdsFromActivatedPhasesIdsArray))) * 100);
         }
 
         /*********************************************************/

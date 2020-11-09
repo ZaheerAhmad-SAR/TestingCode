@@ -123,7 +123,11 @@ class PhaseSteps extends Model
 
     public static function getFormVersion($step_id)
     {
-        $formVersion = FormVersion::where('step_id', 'like', $step_id)->where('is_active', 1)->first();
+        $formVersionObj = FormVersion::getFormVersionObj($step_id);
+        $formVersion = 0;
+        if (null !== $formVersionObj) {
+            $formVersion = $formVersionObj->form_version_num;
+        }
         return $formVersion;
     }
 
@@ -138,5 +142,19 @@ class PhaseSteps extends Model
         } else {
             return 0;
         }
+    }
+
+    public static function countGradingSteps($activatedPhasesidsArray, $modilityIdsFromActivatedPhasesIdsArray)
+    {
+        $steps = self::where('form_type_id', 2)
+            ->whereIn('phase_id', $activatedPhasesidsArray)
+            ->whereIn('modility_id', $modilityIdsFromActivatedPhasesIdsArray)
+            ->get();
+
+        $count = 0;
+        foreach ($steps as $step) {
+            $count += $step->graders_number;
+        }
+        return $count;
     }
 }

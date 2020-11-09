@@ -21,6 +21,7 @@ use Modules\Admin\Entities\AnnotationDescription;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\skipLogic;
 use Illuminate\Support\Facades\DB;
+use Modules\FormSubmission\Entities\FormVersion;
 use Modules\FormSubmission\Traits\Replication\ReplicatePhaseStructure;
 
 class FormController extends Controller
@@ -83,7 +84,7 @@ class FormController extends Controller
     {
         $section = Section::select('*')->where('phase_steps_id', $id)->orderBy('sort_number', 'asc')->get();
         $section_contents = '';
-        $section_contents .= '<div id="accordion">';
+        $section_contents .= '<div id="accordion"><div id="formVersionDiv"></div><br>';
         foreach ($section as $key => $value) {
             $show = ($key == 0) ? 'show' : '';
             $section_contents .= '<div class="card"><div class="card-header"><a class="card-link" data-toggle="collapse" href="#collapse_' . $value->id . '">' . $value->sort_number . '&nbsp;&nbsp;&nbsp;&nbsp;' . $value->name . '</a></div><div id="collapse_' . $value->id . '" class="collapse ' . $show . '" data-parent="#accordion"><div class="card-body questions_' . $value->id . '">';
@@ -92,6 +93,12 @@ class FormController extends Controller
         }
         $section_contents .= '</div>';
         return Response($section_contents);
+    }
+
+    public function getStepVersion($id)
+    {
+        $formVersion = PhaseSteps::getFormVersion($id);
+        echo $formVersion;
     }
 
     public function isStepActive(Request $request)

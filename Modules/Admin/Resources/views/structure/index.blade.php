@@ -80,6 +80,9 @@
                         @foreach ($phases as $keys => $phase)
 
                            @foreach ($phase->phases as $key => $step_value)
+                           @php
+                            $formVersion = \Modules\Admin\Entities\PhaseSteps::getFormVersion($step_value->step_id);
+                           @endphp
 
                         <li class="py-3 px-2 mail-item tab_{{$step_value->phase_id}}" style="@if($keys ==0) display:block;@else  @endif">
                             <input type="hidden" class="step_id" value="{{$step_value->step_id}}">
@@ -95,7 +98,7 @@
                             <div class="d-flex align-self-center align-middle">
                                 <div class="mail-content d-md-flex w-100">
                                     <span class="mail-user">{{$step_value->step_position}}. {{$step_value->formType->form_type}} - {{$step_value->step_name}}</span>
-                                    <p class="mail-subject">{{$step_value->step_description}}.</p>
+                                <p class="mail-subject">{{$step_value->step_description}} - Form version:<span id="formVersionSpan_{{$step_value->step_id}}">{{ $formVersion }}</span></p>
                                     <div class="d-flex mt-3 mt-md-0 ml-auto">
                                         <div class="ml-md-auto mr-3 dot primary"></div>
                                         <p class="ml-auto mail-date mb-0">{{$step_value->created_at}}</p>
@@ -104,7 +107,7 @@
                                             <span class="dropdown-item edit_steps"><i class="far fa-edit"></i>&nbsp; Edit</span>
                                             <span class="dropdown-item addsection"><i class="far fa-file-code"></i>&nbsp; Add Section</span>
                                             <span class="dropdown-item cloneStep"><i class="far fa-clone"></i>&nbsp; Clone</span>
-                                            <div id="activeStatusDiv">
+                                        <div id="activeStatusDiv_{{$step_value->step_id}}">
                                             @if($step_value->is_active == 0)
                                             <span class="dropdown-item activateStep" onclick="activateStep('{{ $step_value->step_id }}');"><i class="far fa-play-circle"></i>&nbsp; Put In Production Mode</span>
                                             @else
@@ -773,20 +776,60 @@ function get_all_phases(id,phase_class){
             }
         });
     }
+
     function activateStep(step_id){
+            var confirmation = 'draft_mode';
+            $.confirm({
+                columnClass: 'col-md-12',
+                title: 'Default values confirmation!',
+                content: 'Do system put default values, in previously filled forms; for newly added questions?',
+                buttons: {
+                    putDefaultData: {
+                        text: 'Put form in production mode with default data',
+                        btnClass: 'btn-green',
+                        keys: ['enter', 'shift'],
+                        action: function(){
+                            confirmation = 'default_data_and_production_mode';
+                            submitActivateStepRequest(step_id, confirmation);
+                        }
+                    },
+                    doNotPutDefaultData: {
+                        text: 'Put form in production mode only',
+                        btnClass: 'btn-blue',
+                        keys: ['enter', 'shift'],
+                        action: function(){
+                            confirmation = 'production_mode_only';
+                            submitActivateStepRequest(step_id, confirmation);
+                        }
+                    },
+                    remainInDraftMode: {
+                        text: 'Remain in draft mode',
+                        btnClass: 'btn-red',
+                        keys: ['enter', 'shift'],
+                        action: function(){
+                            confirmation = 'draft_mode';
+                        }
+                    }
+                }
+            });
+
+    }
+    function submitActivateStepRequest(step_id, confirmation){
             $.ajax({
                 url: 'steps/activate_step/'+step_id,
                 type: 'POST',
                 data: {
                     "_token": "{{ csrf_token() }}",
                     "_method": 'POST',
-                    'step_id': step_id
+                    'step_id': step_id,
+                    'default_data_option': confirmation
                     },
                 success:function(res){
                     var spanHtml = '<span class="dropdown-item inActivateStep" onclick="deActivateStep(\''+step_id+'\');"><i class="far fa-pause-circle"></i>&nbsp; Put In Draft Mode</span>';
-                    $('#activeStatusDiv').html(spanHtml);
+                    $('#activeStatusDiv_' + step_id).html(spanHtml);
+                    getStepVersion(step_id);
                 }
-            })
+            });
     }
     function deActivateStep(step_id){
             $.ajax({
@@ -799,7 +842,22 @@ function get_all_phases(id,phase_class){
                     },
                 success:function(res){
                     var spanHtml = '<span class="dropdown-item activateStep" onclick="activateStep(\''+step_id+'\');"><i class="far fa-play-circle"></i>&nbsp; Put In Production Mode</span>';
-                    $('#activeStatusDiv').html(spanHtml);
+                    $('#activeStatusDiv_' + step_id).html(spanHtml);
+                    getStepVersion(step_id);
+                }
+            })
+    }
+    function getStepVersion(step_id){
+            $.ajax({
+                url: 'forms/getStepVersion/'+step_id,
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'step_id': step_id
+                    },
+                success:function(res){
+                    $('#formVersionSpan_' + step_id).html(res);
                 }
             })
     }

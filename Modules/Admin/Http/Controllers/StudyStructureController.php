@@ -45,11 +45,22 @@ class StudyStructureController extends Controller
         $html = '';
         foreach ($phases as $keys => $phase) {
             foreach ($phase->phases as $key => $step_value) {
+                $formVersion = PhaseSteps::getFormVersion($step_value->step_id);
                 if ($keys === 0) {
                     $active = 'display:block';
                 } else {
                     $active = '';
                 }
+
+                $activateHtml = '<div id="activeStatusDiv_' . $step_value->step_id . '">';
+                if ($step_value->is_active == 0) {
+                    $activateHtml .= '<span class="dropdown-item activateStep" onclick="activateStep(\'' . $step_value->step_id . '\');"><i class="far fa-play-circle"></i>&nbsp; Put In Production Mode</span>';
+                } else {
+                    $activateHtml .= '<span class="dropdown-item inActivateStep" onclick="deActivateStep(\'' . $step_value->step_id . '\');"><i class="far fa-pause-circle"></i>&nbsp; Put In Draft Mode</span>';
+                }
+                $activateHtml .= '</div>';
+
+
                 $html .= '<li class="py-3 px-2 mail-item tab_' . $step_value->phase_id . '" style="' . $active . '">
                     <input type="hidden" class="step_id" value="' . $step_value->step_id . '">
                     <input type="hidden" class="step_phase_id" value="' . $step_value->phase_id . '">
@@ -64,7 +75,7 @@ class StudyStructureController extends Controller
                     <div class="d-flex align-self-center align-middle">
                         <div class="mail-content d-md-flex w-100">
                             <span class="mail-user">' . $step_value->step_position . '. ' . $step_value->formType->form_type . ' - ' . $step_value->step_name . '</span>
-                            <p class="mail-subject">' . $step_value->step_description . '.</p>
+                            <p class="mail-subject">' . $step_value->step_description . ' - Form version:<span id="formVersionSpan_' . $step_value->step_id . '">' . $formVersion . '</span>.</p>
                             <div class="d-flex mt-3 mt-md-0 ml-auto">
                                 <div class="ml-md-auto mr-3 dot primary"></div>
                                 <p class="ml-auto mail-date mb-0">' . $step_value->created_at . '</p>
@@ -73,6 +84,7 @@ class StudyStructureController extends Controller
                                     <span class="dropdown-item edit_steps"><i class="far fa-edit"></i>&nbsp; Edit</span>
                                     <span class="dropdown-item addsection"><i class="far fa-file-code"></i>&nbsp; Add Section</span>
                                     <span class="dropdown-item cloneStep"><i class="far fa-clone"></i>&nbsp; Clone</span>
+                                    ' . $activateHtml . '
                                     <span class="dropdown-item deleteStep"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                 </div>
                             </div>
@@ -252,10 +264,11 @@ class StudyStructureController extends Controller
         $this->deleteStep($step);
     }
 
-    public function activateStep($step_id)
+    public function activateStep(Request $request, $step_id)
     {
+        $default_data_option = $request->default_data_option;
         $step = PhaseSteps::find($step_id);
-        $this->activateStepToReplicatedVisits($step);
+        $this->activateStepToReplicatedVisits($step, $default_data_option);
     }
 
     public function deActivateStep($step_id)
