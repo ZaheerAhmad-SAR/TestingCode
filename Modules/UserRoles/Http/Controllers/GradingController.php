@@ -266,7 +266,10 @@ class GradingController extends Controller
                                     $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
                                 }
 
-                            } // step check ends
+                            } else {
+
+                                $formStatus[$key.'_'.$type['form_type']] = '<img src="' . url('images/no_status.png') . '"/>';
+                            } // step null check ends
 
                         } // step lopp ends
 

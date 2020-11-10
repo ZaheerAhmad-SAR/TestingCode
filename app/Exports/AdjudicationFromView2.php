@@ -86,6 +86,9 @@ class AdjudicationFromView2 implements FromView
 
                                 $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, true, true);
 
+                            } else {
+
+                                $formStatus[$key.'_'.$type['form_type']] = 'NoName-Not Initiated|';
                             } // step check ends
 
                         } // step lopp ends
