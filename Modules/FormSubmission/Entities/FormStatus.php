@@ -278,25 +278,19 @@ class FormStatus extends Model
 
     public static function getStepsIdsArrayByStatusAndFormType($form_type_id, $form_status, $stepsIdsArray)
     {
-        if ($form_type_id == 2) {
-            $phaseStepIdsArray = [];
-            foreach ($stepsIdsArray as $phase_steps_id) {
-                $getFormStatusArray = [
-                    'phase_steps_id' => $phase_steps_id,
-                    'form_type_id' => $form_type_id,
-                ];
-                $step = PhaseSteps::find($phase_steps_id);
-                if (self::isAllGradersGradedThatForm($step, $getFormStatusArray)) {
-                    $phaseStepIdsArray[] = $phase_steps_id;
-                }
-            }
-            return $phaseStepIdsArray;
-        } else {
-            return self::whereIn('phase_steps_id', $stepsIdsArray)
-                ->where('form_status', 'like', $form_status)
-                ->where('form_type_id', 'like', $form_type_id)
-                ->pluck('phase_steps_id')
-                ->toArray();
-        }
+        return self::whereIn('phase_steps_id', $stepsIdsArray)
+            ->where('form_status', 'like', $form_status)
+            ->where('form_type_id', 'like', $form_type_id)
+            ->pluck('phase_steps_id')
+            ->toArray();
+    }
+
+    public static function getSubjectIdsArrayByStatusAndFormType($form_type_id, $form_status, $stepsIdsArray)
+    {
+        return self::whereIn('phase_steps_id', $stepsIdsArray)
+            ->where('form_status', 'like', $form_status)
+            ->where('form_type_id', 'like', $form_type_id)
+            ->pluck('subject_id')
+            ->toArray();
     }
 }

@@ -41,6 +41,18 @@ class QueriesController extends Controller
         echo  view('queries::queries.usersdropdown',compact('studyusers'));
     }
 
+    public function usersDropDownListForm(Request $request)
+    {
+        $studyusers =  UserRole::select('users.*','user_roles.study_id','roles.role_type', 'roles.name as role_name')
+            ->join('users','users.id','=','user_roles.user_id')
+            ->join('roles','roles.id','=','user_roles.role_id')
+            ->where('roles.role_type','!=','system_role')
+            ->where('user_roles.study_id','=',$request->study_id)
+            ->get();
+        echo  view('queries::queries.form.usersdropdownform',compact('studyusers'));
+    }
+
+
     public function getStudyDataByStudyId(Request $request)
     {
         $study_id = $request->study_id;
@@ -265,8 +277,7 @@ class QueriesController extends Controller
 
     }
 
-    public function storeFormQueries(Request $request)
-    {
+    public function storeQuestionQueries(Request $request){
         $study_id            = $request->post('study_id');
         $question_id         = $request->post('question_id');
         $phase_steps_id      = $request->post('phase_steps_id');
@@ -289,6 +300,85 @@ class QueriesController extends Controller
 
         if (!empty($request->file('queryFileForm'))) {
             $image = $request->file('queryFileForm');
+            $name = Str::slug($request->input('name')).'_'.time();
+            $folder = '/query_attachments/';
+            $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
+            $this->uploadOne($image, $folder, 'public', $name);
+        }
+
+        $id              = Str::uuid();
+        $query           = Query::create([
+            'id'=>$id,
+            'queried_remarked_by_id'=>\auth()->user()->id,
+            'parent_query_id'=> 0,
+            'messages'=>$message,
+            'module_name'=>$module,
+            'study_id'=>$study_id,
+            'query_status'=> 'open',
+            'query_type' =>$queryAssignedTo,
+            'query_url'=>$query_url,
+            'query_subject'=>$query_subject,
+            'question_id'=>$question_id,
+            'subject_id'=>$subject_id,
+            'study_structures_id'=>$study_structures_id,
+            'phase_steps_id'=>$phase_steps_id,
+            'section_id'=>$section_id,
+            'field_id'=>$field_id,
+            'form_type_id'=>$form_type_id,
+            'modility_id'=>$modility_id,
+            'query_attachments'=>$filePath
+        ]);
+        if ($queryAssignedTo == 'user')
+        {
+            foreach ($usersArray as $user)
+            {
+                $roles = (array)null;
+                QueryUser::create([
+                    'id' => Str::uuid(),
+                    'user_id' => $user,
+                    'query_id' => $id
+                ]);
+            }
+        }
+        if ($queryAssignedTo == 'role')
+        {
+            foreach ($rolesArray as $role)
+            {
+                RoleQuery::create([
+                    'id' => Str::uuid(),
+                    'roles_id' => $role,
+                    'query_id' => $id
+                ]);
+            }
+        }
+        return response()->json([$query,'success'=>'Queries is generate successfully!!!!']);
+
+    }
+
+    public function storeFormQueries(Request $request){
+        dd($request->all());
+        $study_id            = $request->post('form_study_id');
+        $question_id         = $request->post('form_question_id');
+        $phase_steps_id      = $request->post('form_phase_steps_id');
+        $section_id          = $request->post('form_section_id');
+        $subject_id          = $request->post('form_subject_id');
+        $study_structures_id = $request->post('form_study_structures_id');
+        $field_id            = $request->post('form_field_id');
+        $form_type_id        = $request->post('form_form_type_id');
+        $module              = $request->post('form_module');
+        $modility_id         = $request->post('form_modility_id');
+        $roles               = $request->post('assignedRolesForm');
+        $rolesArray          = explode(',',$roles);
+        $users               = $request->post('assignedUsers');
+        $usersArray          = explode(',',$users);
+        $message             = $request->post('form_message');
+        $query_subject       = $request->post('form_subject');
+        $query_url           = $request->post('form_query_url');
+        $queryAssignedTo     = $request->post('queryAssignedTo');
+        $filePath            = '';
+
+        if (!empty($request->file('inputFormFile'))) {
+            $image = $request->file('inputFormFile');
             $name = Str::slug($request->input('name')).'_'.time();
             $folder = '/query_attachments/';
             $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();

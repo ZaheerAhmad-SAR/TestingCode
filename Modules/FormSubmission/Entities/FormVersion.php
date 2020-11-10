@@ -17,6 +17,11 @@ class FormVersion extends Model
         return $this->belongsTo(PhaseSteps::class, 'step_id', 'id');
     }
 
+    public static function getFormVersionObj($step_id)
+    {
+        return FormVersion::where('step_id', 'like', $step_id)->where('is_active', 1)->first();
+    }
+
     public static function createFormVersion($step, $newVersion)
     {
         $formQuestionArray = [];

@@ -27,6 +27,7 @@
         <link rel="stylesheet" href="{{ asset('public/dist/vendors/fontawesome/css/all.min.css') }}"/>
         <link rel="stylesheet" href="{{ asset('public/css/fstdropdown.min.css') }}"/>
         <link rel="stylesheet" href="{{ asset('public/css/sweetalert.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('public/css/jquery-confirm.min.css') }}"/>
 
         @stack('styles')
         <!-- END: Custom CSS-->
@@ -69,6 +70,7 @@
         <script src="{{ asset('public/js/fstdropdown.min.js') }}"></script>
         <script src="{{ asset('public/js/sweetalert.min.js') }}"></script>
         <script src="{{ asset('public/js/jquery.validate.min.js') }}"></script>
+        <script src="{{ asset('public/js/jquery-confirm.min.js') }}"></script>
 
         <!-- END: APP JS-->
 

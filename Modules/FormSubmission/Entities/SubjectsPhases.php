@@ -10,7 +10,7 @@ class SubjectsPhases extends Model
 {
     protected $table = 'subjects_phases';
     protected $keyType = 'string';
-    protected $fillable = ['id', 'subject_id','old_subject_id', 'phase_id', 'visit_date', 'is_out_of_window', 'modility_id', 'form_type_id'];
+    protected $fillable = ['id', 'subject_id', 'old_subject_id', 'phase_id', 'visit_date', 'is_out_of_window', 'modility_id', 'form_type_id'];
     protected $casts = [
         'id' => 'string'
     ];
@@ -53,6 +53,20 @@ class SubjectsPhases extends Model
     {
         return self::whereIn('phase_id', $studyPhasesIdsArray)
             ->pluck('phase_id')
+            ->toArray();
+    }
+
+    public static function getSubjectIdsFromActivatedPhasesidsArray($activatedPhasesidsArray)
+    {
+        return self::whereIn('phase_id', $activatedPhasesidsArray)
+            ->pluck('subject_id')
+            ->toArray();
+    }
+
+    public static function getModilityIdsFromActivatedPhasesidsArray($activatedPhasesidsArray)
+    {
+        return self::whereIn('phase_id', $activatedPhasesidsArray)
+            ->pluck('modility_id')
             ->toArray();
     }
 
