@@ -72,6 +72,7 @@ class StudyusersController extends Controller
      */
     public function store(UserRequest $request)
     {
+        //dd(session('current_study'));
         $id = Str::uuid();
         $user = User::create([
             'id' => $id,
@@ -88,7 +89,7 @@ class StudyusersController extends Controller
                     'id'    => Str::uuid(),
                     'user_id'     => $user->id,
                     'role_id'   => $role,
-                    'study_id'  => session('current-study')
+                    'study_id'  => session('current_study')
                 ]);
 
             }
@@ -96,7 +97,7 @@ class StudyusersController extends Controller
         $oldUser = [];
         // log event details
         $logEventDetails = eventDetails($id, 'User', 'Add', $request->ip(), $oldUser);
-        return redirect()->route('users.index')->with('message','StudyUser added');
+        return redirect()->route('studyusers.index')->with('message','StudyUser added');
     }
 
     /**

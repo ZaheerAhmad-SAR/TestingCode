@@ -135,6 +135,9 @@
                                         @error('password')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
+                                        <p id="passwordHelpBlock" class="form-text text-muted">
+                                            Your password must be 8 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="form-group row">
