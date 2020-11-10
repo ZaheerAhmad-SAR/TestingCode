@@ -817,37 +817,40 @@
                 $('#studyForm').attr('action', "{{route('studies.update_studies')}}");
                 var study_id = $(this).data('id');
                 var edit_study = $.get('studies/'+study_id+'/edit', function (data) {
+
                     $('#studyCrudModal').html("Edit study");
                     $('#btn-save').val("edit-study");
-                    $('#study_id').val(data.id);
-                    $('#study_short_name').val(data.study_short_name);
-                    $('#study_title').val(data.study_title);
-                    $('#study_code').val(data.study_code);
-                    $('#protocol_number').val(data.protocol_number);
-                    $('#trial_registry_id').val(data.trial_registry_id);
-                    $('#study_sponsor').val(data.study_sponsor);
-                    $('#start_date').val(data.start_date);
-                    $('#end_date').val(data.end_date);
-                    $('#description').val(data.description);
-                    $('#disease_cohort').val(data.disease_cohort);
-                    $('#users').val(data.users);
-                    $('#studyID').val(data.id);
-                    var html = '';
+                    $('#study_id').val(data.study.id);
+                    $('#study_short_name').val(data.study.study_short_name);
+                    $('#study_title').val(data.study.study_title);
+                    $('#study_code').val(data.study.study_code);
+                    $('#protocol_number').val(data.study.protocol_number);
+                    $('#trial_registry_id').val(data.study.trial_registry_id);
+                    $('#study_sponsor').val(data.study.study_sponsor);
+                    $('#start_date').val(data.study.start_date);
+                    $('#end_date').val(data.study.end_date);
+                    $('#description').val(data.study.description);
+                    $('#disease_cohort').val(data.study.disease_cohort);
+                    //$('#users').val(data.users);
+                    //$('#studyID').val(data.id);
+                    var disease_cohort = '';
                     $('.appendfields').html('');
-                    $.each(data.disease_cohort,function (index, value) {
-                        html += '<div class="disease_row" style="margin-top:10px;">' +
+
+                    $.each(data.study.disease_cohort,function (index, value) {
+                        disease_cohort += '<div class="disease_row" style="margin-top:10px;">' +
                             '<input type="text" class="form-control" value="'+value.name+'" style="width: 90%;display: inline;" name="disease_cohort_name[]">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>';
                     });
-                    $('.appendfields').append(html);
-                    var user = '';
+                    $('.appendfields').append(disease_cohort);
+                    
+                    var users = '';
                     $('.appendusers').html('');
 
                     $.each(data.users,function (index, value) {
 
-                        user += '<option selected="selected" value=" '+value.id+' " >'+value.name+'</option>';
+                        users += '<option selected="selected" value=" '+value.id+' " >'+value.name+'</option>';
 
                     });
-                    $('.appendusers').html(user);
+                    $('.appendusers').html(users);
 
                     var user_id = [];
 
@@ -861,6 +864,7 @@
                 })
                 console.log(edit_study);
             });
+            
             $('body').on('click', '#delete-study', function () {
                 var study_id = $(this).data("id");
 
