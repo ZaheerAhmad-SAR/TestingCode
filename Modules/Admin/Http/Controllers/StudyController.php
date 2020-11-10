@@ -184,7 +184,7 @@ class StudyController extends Controller
 
         if ($request->users != null) {
 
-           foreach ($request->users as $user) {
+            foreach ($request->users as $user) {
 
                $permissionsIdsArray = Permission::where(function ($query) {
                    $query->where('permissions.name', '=', 'studytools.index')
@@ -210,7 +210,8 @@ class StudyController extends Controller
                        'id' => Str::uuid(),
                        'user_id'    => $user,
                        'role_id'    => $role,
-                       'study_id'   => $study->id
+                       'study_id'   => $study->id,
+                       'user_type'  => '1'
                    ]);
 
                 }
@@ -296,7 +297,7 @@ class StudyController extends Controller
     }
     public function update_studies(Request $request)
     {
-        dd($request->all());
+        //dd($request->all());
         // get old data for audit section
         $oldStudy = Study::find($request->study_id);
 
@@ -329,33 +330,50 @@ class StudyController extends Controller
         }
         // update multi users here
 
-
         // $study_users = StudyUser::where('study_id',$request->study_id)->delete();
         $users = [];
         if ($request->users != null) {
 
-            for ($i = 0; $i < count($request->users); $i++) {
-                $permissionsIdsArray = Permission::where(function ($query) {
-                    $query->where('permissions.name', '=', 'studytools.index')
-                        ->orwhere('permissions.name', '=', 'studytools.store')
-                        ->orWhere('permissions.name', '=', 'studytools.edit')
-                        ->orwhere('permissions.name', '=', 'studytools.update');
-                })->distinct('id')->pluck('id')->toArray();
+            // delete user from UserRole Table on the basis of study
+            $deleteUserRole = UserRole::where('study_id', $request->study_id)
+                                        ->where('user_type', '1')
+                                        ->delete();
 
-                $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
+            foreach ($request->users as $user) {
 
-                $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
+               $permissionsIdsArray = Permission::where(function ($query) {
+                   $query->where('permissions.name', '=', 'studytools.index')
+                       ->orwhere('permissions.name', '=', 'studytools.store')
+                       ->orWhere('permissions.name', '=', 'studytools.edit')
+                       ->orwhere('permissions.name', '=', 'studytools.update');
+               })->distinct('id')->pluck('id')->toArray();
 
-                // $study_users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->orderBy('name', 'asc')->get();
+               $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
 
-                $users = [
-                    'id' => Str::uuid(),
-                    'study_id' => $request->study_id,
-                    'user_id' => $request->users[$i],
-                ];
-                UserRole::insert($users);
-            }
-        }
+               // $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('role_id')->toArray();
+
+               $getuserRole = UserRole::where('user_id', $user)->whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('role_id')->toArray();
+               
+                // dd($getuserRole);
+
+               // $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->orderBy('name','asc')->get();
+
+               // dd($getuserRole,$user);
+
+                foreach ($getuserRole as $role) {
+                   $user = UserRole::create([
+                       'id' => Str::uuid(),
+                       'user_id'    => $user,
+                       'role_id'    => $role,
+                       'study_id'   => $study->id,
+                       'user_type'  => '1'
+                   ]);
+
+                } //inner loop ends
+
+            } // loop ends
+
+        } // if end
 
         // log event details
         $logEventDetails = eventDetails($study->id, 'Study', 'Update', $request->ip(), $oldStudy);

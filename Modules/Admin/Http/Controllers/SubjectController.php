@@ -178,7 +178,7 @@ class SubjectController extends Controller
         // log event details
         $logEventDetails = eventDetails($id, 'Subject', 'Delete', $request->ip(), []);
 
-        //$subject = Subject::where('id', $id)->delete();
+        $subject = Subject::where('id', $id)->delete();
 
         return \response()->json(['sucess' => 'Subject deleted successfully.']);
     }

@@ -229,7 +229,7 @@ class QualityControlController extends Controller
             } // loop ends modility
 
             }// subject empty check
-
+            //dd($modalitySteps);
             //get form status depending upon subject, phase and modality
             if ($modalitySteps != null) {
                 foreach($subjects as $subject) {
@@ -265,6 +265,10 @@ class QualityControlController extends Controller
 
                                     $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
                                 }
+
+                            } else {
+
+                                $formStatus[$key.'_'.$type['form_type']] = '<img src="' . url('images/no_status.png') . '"/>';
                             } // step check ends
 
                         } // step lopp ends
@@ -278,6 +282,8 @@ class QualityControlController extends Controller
             } // modality step null check
 
         } // form 2 if ends
+
+        //dd($subjects[0]['form_status']);
 
         /////////////////////////////// get filters ///////////////////////////////////////
 
