@@ -81,22 +81,7 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name'      =>  'required',
-            'email'      =>  'required|email',
-            'password' => 'required|string|min:8|nullable|confirmed|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
-
-        ]);
-
-        if ($validator->fails())
-        {
-            return response()->json(['errors'=>$validator->errors()->all()]);
-        }
-
-
-
-
-            $id = Str::uuid();
+       $id = Str::uuid();
             $user = User::create([
                 'id' => $id,
                 'name' => $request->name,

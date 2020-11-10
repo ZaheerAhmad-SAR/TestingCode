@@ -100,7 +100,7 @@
                 <div class="modal-header">
                     <p class="modal-title">Add User</p>
                 </div>
-                <form action="{{route('users.store')}}" enctype="multipart/form-data" method="POST">
+                <form action="{{route('studyusers.store')}}" enctype="multipart/form-data" method="POST">
                     <div class="modal-body">
                         <nav>
                             <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
