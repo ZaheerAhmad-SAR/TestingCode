@@ -96,6 +96,10 @@ class GradingFromView2 implements FromView
 
                                     $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, true);
                                 }
+                                
+                            } else {
+
+                                $formStatus[$key.'_'.$type['form_type']] = 'NoName-Not Initiated|';
                             } // step check ends
 
                         } // step lopp ends

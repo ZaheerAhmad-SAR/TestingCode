@@ -1,6 +1,6 @@
 @extends('layouts.home')
 @section('title')
-    <title> View Study Details | {{ config('app.name', 'Laravel') }}</title>
+    <title> View Subject Details | {{ config('app.name', 'Laravel') }}</title>
 @stop
 @section('content')
 
@@ -41,7 +41,7 @@
                                 </thead>
                                 <tbody>
                                 @foreach($subjects as $subject)
-                                    <tr>
+                                    <tr id="subject_id_{{ $subject->id }}">
                                         <td class="id" style="display: none;">{{$subject->id}}</td>
                                         <td class="site_id" style="display: none;">{{$subject->site_id}}</td>
                                         <td class="edit_study_eye" style="display: none;">{{$subject->study_eye}}</td>
@@ -65,8 +65,8 @@
                                                         <i class="far fa-edit"></i> Edit</a>
                                                         </span>
                                                         <span class="dropdown-item">
-                                                            <a href="{{route('users.destroy',$subject->id)}}" id="delete-device" data-id="{{ $subject->id }}">
-                                                            <i class="far fa-edit"></i>&nbsp; Delete
+                                                            <a href="javascript:void(0)" data-href="{{route('subjects.destroy',$subject->id)}}" id="delete-subject" data-id="{{ $subject->id }}">
+                                                            <i class="fa fa-trash"></i>&nbsp; Delete
                                                             </a>
                                                         </span>
                                                 </div>
@@ -339,6 +339,37 @@
                 } // success ends
             });
         });
+
+        $('body').on('click', '#delete-subject', function () {
+                var subject_id = $(this).data("id");
+                if(confirm("Are You sure want to delete !")) {
+                    $.ajax({
+                        type: "DELETE",
+                        data:{
+                            'subject_id': subject_id,
+                            '_token': '{{ csrf_token() }}',
+                        },
+                        url: $(this).data("href"),
+                        success: function (data) {
+                            
+                            if(data.success == null){ // if true (1)
+
+                                $("#subject_id_" + subject_id).slideUp(500).delay(5000);
+                                    setTimeout(function(){// wait for 5 secs(2)
+                                        location.reload(); // then reload the page.(3)
+                                    }, 100);
+
+                            } // if ends
+
+                        },
+                        error: function (data) {
+                            console.log('Error:', data);
+                        }
+                    }); // ajax
+
+                } // confirm
+
+            });
 
     </script>
 @endsection

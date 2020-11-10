@@ -81,8 +81,7 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-
-            $id = Str::uuid();
+       $id = Str::uuid();
             $user = User::create([
                 'id' => $id,
                 'name' => $request->name,
@@ -98,7 +97,6 @@ class UserController extends Controller
                         'id'    => Str::uuid(),
                         'user_id'     => $user->id,
                         'role_id'   => $role,
-                        'study_id' => NULL
                     ]);
 
                 }
@@ -106,7 +104,7 @@ class UserController extends Controller
             $oldUser = [];
             // log event details
             $logEventDetails = eventDetails($id, 'User', 'Add', $request->ip(), $oldUser);
-            return redirect()->route('studyusers.index');
+            return redirect()->route('users.index')->with('message','User added');
     }
 
     /**
@@ -234,11 +232,12 @@ class UserController extends Controller
 
     public function getcodes(){
         $codes = backupCode::where('user_id','=',\auth()->user()->id)->get();
-        dd($codes);
+
     }
 
     public function update(Request $request, $id)
     {
+
         // get old user data for trail log
         $oldUser = User::where('id', $id)->first();
         $data = array('name'=>$oldUser->name);
@@ -249,6 +248,7 @@ class UserController extends Controller
         $user->email =  $request->email;
         $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
         $user->password =   Hash::make($request->password);
+        $user->qr_flag = '0';
         $user->save();
         if ($request->roles){
             $userroles  = UserRole::where('user_id',$user->id)->get();
@@ -277,10 +277,11 @@ class UserController extends Controller
         }
         elseif($request->fa == 'enabled' && empty($request->password))
         {
-            //dd('fa enabled and empty password');
+          //  dd('fa enabled and empty password');
             $user->name  =  $request->name;
             $user->email =  $request->email;
             $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
+            $user->qr_flag = '0';
             $user->save();
             if ($request->roles){
                 $userroles  = UserRole::where('user_id',$user->id)->get();
@@ -313,6 +314,7 @@ class UserController extends Controller
             $user->email =  $request->email;
             $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
             $user->password =   Hash::make($request->password);
+            $user->qr_flag = '0';
             $user->save();
             if ($request->roles){
                 $userroles  = UserRole::where('user_id',$user->id)->get();
@@ -333,6 +335,7 @@ class UserController extends Controller
             $user->name  =  $request->name;
             $user->email =  $request->email;
             $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
+            $user->qr_flag = '0';
             $user->save();
             if ($request->roles){
                 $userroles  = UserRole::where('user_id',$user->id)->get();

@@ -57,7 +57,9 @@ class LoginController extends Controller
             $check_info = UserSystemInfo::where('user_id', '=', $user->id)->get();
             if (count($check_info) > 0) {
                 foreach ($check_info as $info) {
-                    if (!empty($info->browser_name && $info->browser_name == $getbrowser && $info->remember_flag == 1)) {
+                    if (!empty($info->browser_name )&& $info->browser_name == $getbrowser && $info->remember_flag == 1) {
+                        $user->qr_flag = '1';
+                        $user->save();
                         return redirect(route('studies.index'));
                     }
                     elseif (!empty($info->browser_name && $info->browser_name == $getbrowser)) {

@@ -27,7 +27,7 @@ class SubjectAdjudicationFormSubmissionController extends Controller
 
             $editReason = $request->input('adjudication_form_edit_reason_text', '');
             $adjudicationFormRevisionDataArray = ['adjudication_form_edit_reason_text' => $editReason];
-            $trailLogDataArray['trail_log']['edit_reason'] = $editReason;
+            $trailLogDataArray['trail_log'][] = $editReason;
             $sectionIds = $request->sectionId;
             foreach ($sectionIds as $sectionId) {
                 $section = Section::find($sectionId);

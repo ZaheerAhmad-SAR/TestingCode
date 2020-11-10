@@ -173,9 +173,14 @@ class SubjectController extends Controller
      * @param int $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        // log event details
+        $logEventDetails = eventDetails($id, 'Subject', 'Delete', $request->ip(), []);
+
+        $subject = Subject::where('id', $id)->delete();
+
+        return \response()->json(['sucess' => 'Subject deleted successfully.']);
     }
 
     public function checkSubject(Request $request) {

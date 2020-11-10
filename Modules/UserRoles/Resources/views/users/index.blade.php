@@ -14,20 +14,7 @@
             </div>
         </div>
 
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            <script>
-                $( document ).ready(function() {
-                    $('#createUser').modal('show');
-                });
-            </script>
-    @endif
+
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
         <div class="row">
@@ -122,7 +109,8 @@
                 <div class="modal-header">
                     <p class="modal-title">Add User</p>
                 </div>
-                <form action="{{route('users.store')}}" enctype="multipart/form-data" method="POST">
+                <form action="{{route('users.store')}}" enctype="multipart/form-data" method="POST" id="createUserForm">
+                    @csrf
                     <div class="modal-body">
                         <nav>
                             <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
@@ -177,7 +165,7 @@
                                 <div class="form-group row" style="margin-top: 10px;">
                                     <label for="device_manufacturer" class="col-sm-3">Select Roles</label>
                                     <div class="{!! ($errors->has('roles')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                        <select class="searchable" id="select-roles" multiple="multiple" name="roles[]">
+                                        <select class="searchable" id="select_roles" multiple="multiple" name="roles[]">
                                             @foreach($roles as $role)
                                                 <option value="{{$role->id}}">{{$role->name}}</option>
                                             @endforeach
@@ -193,9 +181,11 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                        <button class="btn btn-outline-danger" data-dismiss="modal">
+                            <i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                         @if(hasPermission(auth()->user(),'users.store'))
-                            <button type="submit" class="btn btn-outline-primary" id="btn-save" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                            <button  class="btn btn-outline-primary" id="userSubmit">
+                                <i class="fa fa-save"></i>  Save changes</button>
                         @endif
                     </div>
                 </form>
@@ -302,7 +292,6 @@
     <div class="modal fade" tabindex="-1" role="dialog" id="inviteuser">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
-                <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header">
                     <p class="modal-title">Invite User</p>
                 </div>
@@ -381,7 +370,7 @@
         @endif
 
         $(document).ready(function() {
-            $('#select-roles').multiSelect({
+            $('#select_roles').multiSelect({
                 selectableHeader: "<label for=''>All Roles</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
                 selectionHeader: "<label for=''>Assigned Roles</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
                 afterInit: function(ms){
@@ -419,6 +408,50 @@
         });
     </script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
+
+    <script>
+        jQuery(document).ready(function(){
+            jQuery('#userSubmit').click(function(e){
+                e.preventDefault();
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                    }
+                });
+                jQuery.ajax({
+                    url: "{{ url('/users') }}",
+                    method: 'post',
+                    data: {
+                        name: jQuery('#name').val(),
+                        password: jQuery('#password').val(),
+                        email: jQuery('#email').val(),
+                        select_roles: jQuery('#select_roles').val(),
+                    },
+                    success: function(result){
+                        if(result.errors)
+                        {
+                            jQuery('.alert-danger').html('');
+
+                            jQuery.each(result.errors, function(key, value){
+                                jQuery('.alert-danger').show();
+                                jQuery('.alert-danger').append('<li>'+value+'</li>');
+                            });
+                        }
+                        else
+                        {
+                            jQuery('.alert-danger').hide();
+                            $('#open').hide();
+                            $('#myModal').modal('hide');
+                        }
+                    }});
+            });
+        });
+    </script>
+
+
+
+
+
+
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
 @stop

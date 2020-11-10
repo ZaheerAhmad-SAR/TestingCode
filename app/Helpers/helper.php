@@ -583,7 +583,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             // set message for audit
             $auditMessage = \Auth::user()->name . ' deleted study ' . $eventData->study_title . '.';
 
-    } else if ($eventSection == 'Subject') {
+    } else if ($eventSection == 'Subject' && $eventType != 'Delete') {
         // get event data
         $eventData = Subject::find($eventId);
 
@@ -598,17 +598,22 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             ->select('sites.site_name', 'sites.id')
             ->first();
 
+        $site_study = $site_study != null ? $site_study->site_name : 'N/A';
+
         // get disease cohort
         $diseaseCohort = DiseaseCohort::where('study_id', '=', \Session::get('current_study'))
             ->where('id', $eventData->disease_cohort_id)
             ->first();
+
+        $diseaseCohort = $diseaseCohort != null ? $diseaseCohort->name : 'N/A';
+
         // store data in event array
         $newData = array(
             'study_id' => \Session::get('current_study'),
             'subject_id' => $eventData->subject_id,
             'enrollment_date' => $eventData->enrollment_date,
-            'site_name' => $site_study->site_name,
-            'disease_cohort' => $diseaseCohort->name,
+            'site_name' => $site_study,
+            'disease_cohort' => $diseaseCohort,
             'study_eye' => $eventData->study_eye,
             'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
             'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
@@ -622,17 +627,21 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
                 ->select('sites.site_name', 'sites.id')
                 ->first();
 
+            $old_site_study = $old_site_study != null ? $old_site_study->site_name : 'N/A';
+
             // get disease cohort
             $old_diseaseCohort = DiseaseCohort::where('study_id', '=', $previousData->study_id)
                 ->where('id', $previousData->disease_cohort_id)
                 ->first();
 
+            $old_diseaseCohort = $old_diseaseCohort != null ? $old_diseaseCohort->name : 'N/A';
+
             $oldData = array(
                 'study_id' => $previousData->study_id,
                 'subject_id' => $previousData->subject_id,
                 'enrollment_date' => $previousData->enrollment_date,
-                'site_name' => $old_site_study->site_name,
-                'disease_cohort' => $old_diseaseCohort->name,
+                'site_name' => $old_site_study,
+                'disease_cohort' => $old_diseaseCohort,
                 'study_eye' => $previousData->study_eye,
                 'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
                 'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
@@ -641,6 +650,43 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             // set message for audit
             $auditMessage = \Auth::user()->name . ' updated subject ' . $eventData->subject_id . '.';
         }
+
+        //////////////////////////// Subjects Ends /////////////////////////////////////////
+    } else if ($eventSection == 'Subject' && $eventType == 'Delete') {
+        // get event data
+        $eventData = Subject::find($eventId);
+
+        // set message for audit
+        $auditMessage = \Auth::user()->name . ' added subject ' . $eventData->subject_id . '.';
+        // set audit url
+        $auditUrl = url('subjects/' . $eventData->id);
+        // get site name
+        $site_study = StudySite::where('study_id', '=', \Session::get('current_study'))
+            ->where('site_id', $eventData->site_id)
+            ->join('sites', 'sites.id', '=', 'site_study.site_id')
+            ->select('sites.site_name', 'sites.id')
+            ->first();
+
+        $site_study = $site_study != null ? $site_study->site_name : 'N/A';
+
+        // get disease cohort
+        $diseaseCohort = DiseaseCohort::where('study_id', '=', \Session::get('current_study'))
+            ->where('id', $eventData->disease_cohort_id)
+            ->first();
+
+        $diseaseCohort = $diseaseCohort != null ? $diseaseCohort->name : 'N/A';
+
+        // store data in event array
+        $newData = array(
+            'study_id' => \Session::get('current_study'),
+            'subject_id' => $eventData->subject_id,
+            'enrollment_date' => $eventData->enrollment_date,
+            'site_name' => $site_study,
+            'disease_cohort' => $diseaseCohort,
+            'study_eye' => $eventData->study_eye,
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
+        );
 
         //////////////////////////// Subjects Ends /////////////////////////////////////////
     } else if ($eventSection == 'Transmission Data') {
