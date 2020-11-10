@@ -644,7 +644,7 @@
                     <form action="{{route('studies.studyStatus')}}" name="changestatus" class="" method="post">
                         @csrf
                         @if(!empty($study))
-                            <input type="hidden" value="{{$study->id}}" id="study_ID" name="study_ID">
+                            <input type="hidden" value="" id="study_ID" name="study_ID">
                         @endif
                         <div class="form-group row">
                             <div class="col-md-3">Status</div>
@@ -738,17 +738,20 @@
 
     <script type="text/javascript">
 
-        $(document).ready(function(){
+        $(document).ready(function() {
+
             $('#change_status').on('show.bs.modal',function (e) {
                 var id = $(e.relatedTarget).data('target-id');
-                $('#study_ID').val(id);
+                $(this).find('#study_ID').val(id);
+                //$('#study_ID').val(id);
             })
         })
 
         $(document).ready(function(){
             $('#clone-study-modal').on('show.bs.modal',function (e) {
                 var id = $(e.relatedTarget).data('target-id');
-                $('#study_ID').val(id);
+                $(this).find('#study_ID').val(id);
+                //$('#study_ID').val(id);
             })
         })
         $(document).ready(function(){
@@ -832,7 +835,7 @@
                     $('#description').val(data.study.description);
                     $('#disease_cohort').val(data.study.disease_cohort);
                     //$('#users').val(data.users);
-                    //$('#studyID').val(data.id);
+                    $('#studyID').val(data.study.id);
                     var disease_cohort = '';
                     $('.appendfields').html('');
 
