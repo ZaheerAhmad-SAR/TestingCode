@@ -81,6 +81,20 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
+        $validator = Validator::make($request->all(), [
+            'name'      =>  'required',
+            'email'      =>  'required|email',
+            'password' => 'required|string|min:8|nullable|confirmed|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
+
+        ]);
+
+        if ($validator->fails())
+        {
+            return response()->json(['errors'=>$validator->errors()->all()]);
+        }
+
+
+
 
             $id = Str::uuid();
             $user = User::create([
@@ -98,7 +112,6 @@ class UserController extends Controller
                         'id'    => Str::uuid(),
                         'user_id'     => $user->id,
                         'role_id'   => $role,
-                        'study_id' => NULL
                     ]);
 
                 }
@@ -106,7 +119,7 @@ class UserController extends Controller
             $oldUser = [];
             // log event details
             $logEventDetails = eventDetails($id, 'User', 'Add', $request->ip(), $oldUser);
-            return redirect()->route('studyusers.index');
+            return redirect()->route('users.index')->with('message','User added');
     }
 
     /**
@@ -234,7 +247,7 @@ class UserController extends Controller
 
     public function getcodes(){
         $codes = backupCode::where('user_id','=',\auth()->user()->id)->get();
-        dd($codes);
+
     }
 
     public function update(Request $request, $id)

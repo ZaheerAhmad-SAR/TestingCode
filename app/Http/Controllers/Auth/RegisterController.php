@@ -46,7 +46,7 @@ class RegisterController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
@@ -54,14 +54,14 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed','regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/'],
+            'password' => ['required', 'string', 'min:8', 'confirmed', 'regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/'],
         ]);
     }
 
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param array $data
      * @return \App\User
      */
     protected function create(array $data)
@@ -71,42 +71,18 @@ class RegisterController extends Controller
 
         return [
             User::create([
-                'id'    =>  $id = \Illuminate\Support\Str::uuid(),
+                'id' => $id = \Illuminate\Support\Str::uuid(),
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => Hash::make($data['password']),
-                'role_id'   => $data['role']
+                'role_id' => $data['role']
             ]),
             UserRole::create([
-                'id'    => \Illuminate\Support\Str::uuid(),
-                'role_id'   => $data['role'],
-                'user_id'   => $id,
-                'study_id'  => ''
+                'id' => \Illuminate\Support\Str::uuid(),
+                'role_id' => $data['role'],
+                'user_id' => $id,
+                'study_id' => ''
             ])
         ];
-    }
-
-    protected function create1(array $data)
-    {
-       $invite = Invitation::where('token', $data['token'])->first();
-       $invite->delete();
-
-        return [
-            $id = \Illuminate\Support\Str::uuid(),
-            User::create([
-                'id'    => $id,
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
-                'role_id'   => $data['role']
-            ]),
-            UserRole::create([
-                'id'    => \Illuminate\Support\Str::uuid(),
-                'role_id'   => $data['role'],
-                'user_id'   => $id,
-                'study_id'  => ''
-            ])
-        ];
-
     }
 }
