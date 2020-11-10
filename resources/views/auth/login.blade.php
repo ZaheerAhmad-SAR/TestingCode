@@ -2,6 +2,14 @@
 @section('body')
 <div class="container" id ="container">
     <div class="row vh-100 justify-content-between align-items-center">
+        @if(session()->has('message'))
+            <div class="col-lg-12 success-alert">
+                <div class="alert alert-primary success-msg" role="alert">
+                    {{ session()->get('message') }}
+                    <button class="close" data-dismiss="alert">&times;</button>
+                </div>
+            </div>
+        @endif
         <div class="col-12">
            <form  action="{{ route('login') }}" method="POST" class="row row-eq-height lockscreen  mt-5 mb-5">
             @csrf
