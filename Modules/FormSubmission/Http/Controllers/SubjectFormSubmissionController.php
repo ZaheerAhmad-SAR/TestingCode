@@ -26,7 +26,7 @@ class SubjectFormSubmissionController extends Controller
 
             $editReason = $request->input('edit_reason_text', '');
             $formRevisionDataArray = ['edit_reason_text' => $editReason];
-            $trailLogDataArray['trail_log'][] = $editReason;
+            $trailLogDataArray['trail_log']['edit_reason'] = $editReason;
             $sectionIds = $request->sectionId;
             foreach ($sectionIds as $sectionId) {
                 $section = Section::find($sectionId);
@@ -36,7 +36,6 @@ class SubjectFormSubmissionController extends Controller
                     $formRevisionDataArray['form_data'][] = $retArray['form_data'];
                     $trailLogDataArray['trail_log'][] = $retArray['trail_log'];
                 }
-                
             }
 
             $formStatusArray = FormStatus::putFormStatus($request);
@@ -109,12 +108,12 @@ class SubjectFormSubmissionController extends Controller
             /************************** */
             if ($answerObj) {
                 $answerArray['answer'] = $answer;
-                $answerArray['form_version_num'] = $formVersion->form_version_num;
+                $answerArray['form_version_num'] = $formVersion;
                 $answerObj->update($answerArray);
             } else {
                 $answerArray['id'] = Str::uuid();
                 $answerArray['answer'] = $answer;
-                $answerArray['form_version_num'] = $formVersion->form_version_num;
+                $answerArray['form_version_num'] = $formVersion;
                 $answerObj = Answer::create($answerArray);
             }
             $trailLogArray = $answerArray;

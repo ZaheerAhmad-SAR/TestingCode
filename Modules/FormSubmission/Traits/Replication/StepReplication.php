@@ -35,7 +35,7 @@ trait StepReplication
 
     private function addStepToReplicatedVisits($newStep, $isReplicating = true)
     {
-        $replicatedPhases = StudyStructure::where('parent_id', 'like', $newStep->phase_id)->get();
+        $replicatedPhases = StudyStructure::where('parent_id', 'like', $newStep->phase_id)->withoutGlobalScopes()->get();
         foreach ($replicatedPhases as $phase) {
             $this->addReplicatedStep($newStep, $phase->id, $isReplicating);
         }
@@ -83,13 +83,13 @@ trait StepReplication
         FormVersion::where('step_id', 'like', $step->step_id)->delete();
     }
 
-    private function activateStepToReplicatedVisits($step)
+    private function activateStepToReplicatedVisits($step, $default_data_option)
     {
         $replicatedSteps = PhaseSteps::where('parent_id', 'like', $step->step_id)->get();
         foreach ($replicatedSteps as $replicatedStep) {
-            $this->activateThisStep($replicatedStep);
+            $this->activateThisStep($replicatedStep, $default_data_option);
         }
-        $this->activateThisStep($step);
+        $this->activateThisStep($step, $default_data_option);
     }
 
     private function deActivateStepToReplicatedVisits($step)
@@ -103,7 +103,7 @@ trait StepReplication
 
     private function putStepFormVersion($step)
     {
-        $formVersion = PhaseSteps::getFormVersion($step->step_id);
+        $formVersion = FormVersion::getFormVersionObj($step->step_id);
         if (null !== $formVersion) {
             $newFormVersionNum = (int)$formVersion->form_version_num + 1;
             $formVersion->is_active = 0;
@@ -176,12 +176,14 @@ trait StepReplication
         }
     }
 
-    private function activateThisStep($step)
+    private function activateThisStep($step, $default_data_option)
     {
         $step->is_active = 1;
         $step->update();
         $this->putStepFormVersion($step);
-        $this->putDefaultAnswersInNewQuestions($step);
+        if ($default_data_option == 'default_data_and_production_mode') {
+            $this->putDefaultAnswersInNewQuestions($step);
+        }
     }
 
     private function deActivateThisStep($step)
