@@ -291,7 +291,10 @@ class AdjudicationController extends Controller
                                 $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, $wrap = true);
 
 
-                            } // step check ends
+                            } else {
+
+                                $formStatus[$key.'_'.$type['form_type']] = '<img src="' . url('images/no_status.png') . '"/>';
+                            } // step null check ends
 
                         } // step lopp ends
 
