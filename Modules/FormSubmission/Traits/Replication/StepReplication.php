@@ -161,7 +161,7 @@ trait StepReplication
                                     'section_id' => $section->id,
                                     'question_id' => $question->id,
                                     'field_id' => $question->formFields->id,
-                                    'answer' => '123456789123456789',
+                                    'answer' => '-9999',
                                 ];
 
                                 Answer::create($defaultAnswerArray);
