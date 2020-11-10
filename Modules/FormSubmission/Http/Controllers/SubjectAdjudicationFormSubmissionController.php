@@ -34,7 +34,7 @@ class SubjectAdjudicationFormSubmissionController extends Controller
                 $questions = $section->questions;
                 foreach ($questions as $question) {
                     $retArray = $this->putFinalAnswer($request, $question);
-                    $adjudicationFormRevisionDataArray['adjudication_form_data'][] = $retArray['form_data'];
+                    $adjudicationFormRevisionDataArray['adjudication_form_data'][] = $retArray['adjudication_form_data'];
                     $trailLogDataArray['trail_log'][] = $retArray['trail_log'];
                 }
             }
@@ -88,6 +88,7 @@ class SubjectAdjudicationFormSubmissionController extends Controller
     {
         $step = PhaseSteps::find($request->stepId);
         $answerFixedArray = [];
+        $finalFormDataArray = [];
         $formDataArray = [];
         $trailLogArray = [];
         $answerFixedArray['study_id'] = $request->studyId;
@@ -130,11 +131,12 @@ class SubjectAdjudicationFormSubmissionController extends Controller
             $trailLogArray['modility_id'] = $step->modility_id;
             $trailLogArray['answer_id'] = $answerObj->id;
 
-            $formDataArray['trail_log'] = $trailLogArray;
+            $finalFormDataArray['trail_log'] = $trailLogArray;
 
             unset($answerArray);
         }
-        return $formDataArray;
+        $finalFormDataArray['adjudication_form_data'] = $formDataArray;
+        return $finalFormDataArray;
     }
 
 

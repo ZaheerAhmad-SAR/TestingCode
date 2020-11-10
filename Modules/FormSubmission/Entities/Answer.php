@@ -4,6 +4,7 @@ namespace Modules\FormSubmission\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class Answer extends Model
 {
@@ -40,8 +41,8 @@ class Answer extends Model
         return self::getAnswerQuery($answerArray)->pluck('answer')->toArray();
     }
 
-    public static function getSubjectIdsAgainstStepFromAnswers($answerArray)
+    public static function getAnswersAgainstStepId($answerArray)
     {
-        return self::getAnswerQuery($answerArray)->pluck('form_filled_by_user_id', 'subject_id')->toArray();
+        return DB::select('SELECT `form_filled_by_user_id`, `subject_id` FROM `answer` WHERE `phase_steps_id` LIKE :phase_steps_id ORDER BY `form_filled_by_user_id`, `subject_id`', ['phase_steps_id' => $answerArray['phase_steps_id']]);
     }
 }

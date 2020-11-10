@@ -12,9 +12,6 @@ trait QuestionDataValidation
 {
     public function validateSectionQuestionsForm(Request $request)
     {
-        $returnArray = [];
-        $returnArray['success'] = 'yes';
-        $returnArray['error'] = '';
 
         $sectionIds = $request->sectionId;
         foreach ($sectionIds as $sectionId) {
@@ -22,12 +19,11 @@ trait QuestionDataValidation
             $questions = $section->questions;
             foreach ($questions as $question) {
                 $returnArray = $this->validateField($request, $question);
-                if ($returnArray['success'] == 'no') {
-                    break;
+                if (null !== $returnArray && $returnArray['success'] == 'no') {
+                    break 2;
                 }
             }
         }
-
         echo json_encode($returnArray);
     }
 
@@ -41,13 +37,9 @@ trait QuestionDataValidation
 
     private function validateField($request, $question)
     {
-        $returnArray = [];
-        $returnArray['success'] = 'yes';
-        $returnArray['error'] = '';
-
         $form_field_name = buildFormFieldName($question->formFields->variable_name);
-        if ($request->has($form_field_name)) {
 
+        if ($request->has($form_field_name)) {
             /************************************** */
             $validationRulesArray = [];
             if ($question->formFields->is_required == 'yes') {
@@ -90,21 +82,18 @@ trait QuestionDataValidation
 
                 $validationRulesArray[] = $validationRuleStr;
             }
-
-            $validator = Validator::make([$form_field_name => $request->{$form_field_name}], [
-                $form_field_name => implode('|', $validationRulesArray)
-            ]);
+            $validationRulesString = implode('|', $validationRulesArray);
+            $validator = Validator::make(
+                [$form_field_name => trim($request->{$form_field_name})],
+                [$form_field_name => $validationRulesString]
+            );
 
             if ($validator->fails()) {
                 $errors = $validator->errors();
-                $returnArray['success'] = 'no';
-                $returnArray['error'] = $errors->first($form_field_name);
+                return ['success' => 'no', 'error' => $errors->first($form_field_name)];
             }
-            /************************************** */
-            return $returnArray;
         }
-
-        return $returnArray;
+        return ['success' => 'yes', 'error' => ''];
     }
 
     private function abortValidationWithError()
