@@ -1,6 +1,6 @@
 @extends('layouts.home')
 @section('title')
-    <title> View Study Details | {{ config('app.name', 'Laravel') }}</title>
+    <title> View Subject Details | {{ config('app.name', 'Laravel') }}</title>
 @stop
 @section('content')
     <div class="container-fluid site-width">
@@ -48,6 +48,7 @@
                                         <td>{{!empty($subject->disease_cohort->name)?$subject->disease_cohort->name:'Not Defined'}}</td>
                                         <td>{{!empty($subject->study_eye)?$subject->study_eye:'Not Defined'}}</td>
                                         <td>
+                                    
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
@@ -59,8 +60,8 @@
                                                     @endif
                                                     @if(hasPermission(auth()->user(),'subjects.destroy'))
                                                         <span class="dropdown-item">
-                                                            <a href="{{route('users.destroy',$subject->id)}}" id="delete-device" data-id="{{ $subject->id }}">
-                                                            <i class="far fa-edit"></i>&nbsp; Delete </a>
+                                                            <a href="{{route('subjects.destroy',$subject->id)}}" id="delete-subject" data-id="{{ $subject->id }}">
+                                                            <i class="far fa-bin"></i>&nbsp; Delete </a>
                                                     </span>
                                                     @endif
                                                 </div>
