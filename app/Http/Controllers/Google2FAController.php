@@ -53,6 +53,7 @@ class Google2FAController extends Controller
             'info@oirrc.net',
             $secret
         );
+        $user->qr_flag = '0';
         $user->google_auth = $inlineUrl;
         $user->save();
 

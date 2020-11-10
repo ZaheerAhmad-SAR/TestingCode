@@ -81,22 +81,7 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name'      =>  'required',
-            'email'      =>  'required|email',
-            'password' => 'required|string|min:8|nullable|confirmed|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
-
-        ]);
-
-        if ($validator->fails())
-        {
-            return response()->json(['errors'=>$validator->errors()->all()]);
-        }
-
-
-
-
-            $id = Str::uuid();
+       $id = Str::uuid();
             $user = User::create([
                 'id' => $id,
                 'name' => $request->name,
@@ -252,6 +237,7 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
+
         // get old user data for trail log
         $oldUser = User::where('id', $id)->first();
         $data = array('name'=>$oldUser->name);
@@ -262,6 +248,7 @@ class UserController extends Controller
         $user->email =  $request->email;
         $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
         $user->password =   Hash::make($request->password);
+        $user->qr_flag = '0';
         $user->save();
         if ($request->roles){
             $userroles  = UserRole::where('user_id',$user->id)->get();
@@ -290,10 +277,11 @@ class UserController extends Controller
         }
         elseif($request->fa == 'enabled' && empty($request->password))
         {
-            //dd('fa enabled and empty password');
+          //  dd('fa enabled and empty password');
             $user->name  =  $request->name;
             $user->email =  $request->email;
             $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
+            $user->qr_flag = '0';
             $user->save();
             if ($request->roles){
                 $userroles  = UserRole::where('user_id',$user->id)->get();
@@ -326,6 +314,7 @@ class UserController extends Controller
             $user->email =  $request->email;
             $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
             $user->password =   Hash::make($request->password);
+            $user->qr_flag = '0';
             $user->save();
             if ($request->roles){
                 $userroles  = UserRole::where('user_id',$user->id)->get();
@@ -346,6 +335,7 @@ class UserController extends Controller
             $user->name  =  $request->name;
             $user->email =  $request->email;
             $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
+            $user->qr_flag = '0';
             $user->save();
             if ($request->roles){
                 $userroles  = UserRole::where('user_id',$user->id)->get();

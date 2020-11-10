@@ -31,42 +31,6 @@ class StudyusersController extends Controller
             $roles  =   Role::where('role_type','=','study_role')->get();
             $currentStudy = session('current_study');
 
-       /* if (hasPermission(auth()->user(),'studytools.index') && empty(session('current_study'))){
-            $permissionsIdsArray = Permission::where(function($query){
-                $query->where('permissions.name','!=','studytools.create')
-                    ->orwhere('permissions.name','!=','studytools.store')
-                    ->orWhere('permissions.name','!=','studytools.edit')
-                    ->orwhere('permissions.name','!=','studytools.update');
-            })->distinct('id')->pluck('id')->toArray();
-
-            $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
-            $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)
-                ->where('study_id',$currentStudy)
-                ->distinct()->pluck('user_id')->toArray();
-            $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->where('id','!=',\auth()->user()->id)->get();
-            $studyusers = UserRole::select('users.*','user_roles.study_id','roles.role_type')
-                ->join('users','users.id','=','user_roles.user_id')
-                ->join('roles','roles.id','=','user_roles.role_id')
-                ->where('roles.role_type','!=','system_role')
-                ->where('user_roles.study_id','!=',session('current_study'))->distinct()
-                ->get();
-        }
-        elseif (hasPermission(auth()->user(),'studytools.index') && !empty(session('current_study'))){
-            $users =  UserRole::select('users.*','user_roles.study_id','roles.role_type', 'roles.name as role_name')
-                ->join('users','users.id','=','user_roles.user_id')
-                ->join('roles','roles.id','=','user_roles.role_id')
-                ->where('roles.role_type','!=','system_role')
-                ->where('user_roles.study_id','=',session('current_study'))
-                ->get();
-            $enrolledusers = UserRole::where('study_id','=',session('current_study'))->pluck('user_id')->toArray();
-           $studyusers = UserRole::select('users.*','user_roles.study_id','roles.role_type')
-                ->join('users','users.id','=','user_roles.user_id')
-                ->join('roles','roles.id','=','user_roles.role_id')
-                ->where('roles.role_type','!=','system_role')
-                ->whereNotIn('user_roles.user_id',$enrolledusers)
-                ->where('user_roles.study_id','!=',session('current_study'))->distinct()
-                ->get();
-        }*/
         $enrolledusers = UserRole::where('study_id','=',session('current_study'))->pluck('user_id')->toArray();
         $studyusers = UserRole::select('users.*','user_roles.study_id','roles.role_type')
             ->join('users','users.id','=','user_roles.user_id')
@@ -108,36 +72,32 @@ class StudyusersController extends Controller
      */
     public function store(UserRequest $request)
     {
-        if ($request->ajax()) {
-            $userID = $request->user_id;
-            $id = Str::uuid();
-            $user = User::updateOrCreate([
-                'id' => $id],
-                ['name' => $request->name,
-                    'email' => $request->email,
-                    'password' => encrypt($request->password),
-                    'created_by'    => \auth()->user()->id
+        //dd(session('current_study'));
+        $id = Str::uuid();
+        $user = User::create([
+            'id' => $id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'created_by'    => \auth()->user()->id,
+            'role_id'   =>  !empty($request->roles)?$request->roles[0]:2
+        ]);
+        if (!empty($request->roles))
+        {
+            foreach ($request->roles as $role){
+                $roles =UserRole::create([
+                    'id'    => Str::uuid(),
+                    'user_id'     => $user->id,
+                    'role_id'   => $role,
+                    'study_id'  => session('current_study')
                 ]);
-            if ($request->roles)
-            {
-                foreach ($request->roles as $role){
-                    UserRole::updateOrCreate([
-                        'id'    => Str::uuid(),
-                        'user_id'     => $user->id,
-                        'role_id'   => $role
-                    ]);
 
-                    RoleStudyUser::updateOrCreate([
-                        'id'    => Str::uuid(),
-                        'user_id'     => $user->id,
-                        'role_id'   => $role,
-                        'study_id' => ''
-                    ]);
-                }
             }
         }
-        return \response()->json($user);
-
+        $oldUser = [];
+        // log event details
+        $logEventDetails = eventDetails($id, 'User', 'Add', $request->ip(), $oldUser);
+        return redirect()->route('studyusers.index')->with('message','StudyUser added');
     }
 
     /**
