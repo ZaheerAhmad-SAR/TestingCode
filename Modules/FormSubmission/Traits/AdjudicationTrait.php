@@ -12,6 +12,9 @@ trait AdjudicationTrait
 {
     public static function runAdjudicationCheckForThisStep($step, $getGradingFormStatusArray)
     {
+        $trailLogArray = [];
+        $trailLogArray['edit_reason'] = 'system started adjudication';
+
         $sections = $step->sections;
         foreach ($sections as $section) {
             $questions = $section->questions;
@@ -110,8 +113,28 @@ trait AdjudicationTrait
                 if ($isQuestionAdjudicationRequired) {
                     QuestionAdjudicationRequired::deleteAdjudicationRequiredQuestion($questionAdjudicationRequiredArray);
                     QuestionAdjudicationRequired::create($questionAdjudicationRequiredArray + $questionAdjudicationRequiredArray_1);
+                } else {
+                    /***********************
+                     *  Trail Log
+                     */
+                    $finalAnswer = FinalAnswer::find($finalAnswerArray_1['id']);
+                    $trailLogArray = $finalAnswer->attributesToArray();
+                    $trailLogArray['form_type_id'] = $step->form_type_id;
+                    $trailLogArray['form_type'] = 'Adjudication Form';
+                    $trailLogArray['modility_id'] = $step->modility_id;
+                    $trailLogArray['answer_id'] = $finalAnswer->id;
                 }
             }
+        }
+        if (count($trailLogArray) > 0) {
+            /***********************
+             *  Trail Log
+             */
+            $formAddOrEdit = 'Add';
+            $formType = 'System Adjudication Form';
+
+            eventDetails($trailLogArray, $formType, $formAddOrEdit, request()->ip, []);
+            /********************* */
         }
     }
 

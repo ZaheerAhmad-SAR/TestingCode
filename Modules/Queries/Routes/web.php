@@ -27,6 +27,8 @@ Route::group(['middleware' => ['auth','web']],function(){
     Route::post('queries/queryQuestionReply', 'QueriesController@queryQuestionReply')->name('queries.queryQuestionReply');
     Route::post('queries/getStudyDataByStudyId', 'QueriesController@getStudyDataByStudyId')->name('queries.getStudyDataByStudyId');
     Route::post('queries/storeFormQueries', 'QueriesController@storeFormQueries')->name('queries.storeFormQueries');
+    Route::post('queries/storeQuestionQueries', 'QueriesController@storeQuestionQueries')->name('queries.storeQuestionQueries');
+    Route::post('queries/usersDropDownListForm', 'QueriesController@usersDropDownListForm')->name('queries.usersDropDownListForm');
 
 
 });

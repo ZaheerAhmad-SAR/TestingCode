@@ -60,6 +60,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('forms/check_variable', 'FormController@check_variable_name')->name('forms.checkVariable');
     Route::post('forms/isStepActive/{step_id}', 'FormController@isStepActive')->name('steps.isStepActive');
     Route::post('forms/isThisStepHasData', 'FormController@isThisStepHasData')->name('steps.isThisStepHasData');
+    Route::post('forms/getStepVersion/{step_id}', 'FormController@getStepVersion')->name('forms.getStepVersion');
     // skip logic
     Route::resource('skiplogic', 'SkipLogicController');
     Route::get('skiplogic/sections_for_skip_logic/{id}', 'SkipLogicController@sections_skip_logic')->name('skiplogic.sectionsSkip');
