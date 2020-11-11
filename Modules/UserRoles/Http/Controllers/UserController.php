@@ -5,6 +5,7 @@ namespace Modules\UserRoles\Http\Controllers;
 use App\backupCode;
 use App\Notifications\InviteNotification;
 use App\User;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\URL;
@@ -21,6 +22,7 @@ use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\RolePermission;
 use Modules\UserRoles\Entities\UserRole;
+use Modules\UserRoles\Entities\UserSystemInfo;
 use Modules\UserRoles\Http\Requests\UserRequest;
 use Illuminate\Support\Str;
 use ParagonIE\ConstantTime\Base32;
@@ -81,6 +83,7 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
+        $validator = Validate::;
        $id = Str::uuid();
             $user = User::create([
                 'id' => $id,
@@ -237,7 +240,7 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-
+        //dd($request->all());
         // get old user data for trail log
         $oldUser = User::where('id', $id)->first();
         $data = array('name'=>$oldUser->name);
@@ -329,6 +332,10 @@ class UserController extends Controller
                     ]);
                 }
             }
+            $system_infos = UserSystemInfo::where('user_id','=',$oldUser->id)->get();
+            foreach ($system_infos as $system_info){
+                $system_info->delete();
+            }
         }
         elseif ($request->fa == 'disabled' && empty($request->password)){
             //dd('fa disabled and empty password');
@@ -336,6 +343,8 @@ class UserController extends Controller
             $user->email =  $request->email;
             $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
             $user->qr_flag = '0';
+            $user->google2fa_secret= '';
+            $user->google_auth = '';
             $user->save();
             if ($request->roles){
                 $userroles  = UserRole::where('user_id',$user->id)->get();
@@ -350,6 +359,11 @@ class UserController extends Controller
                     ]);
                 }
             }
+            $system_infos = UserSystemInfo::where('user_id','=',$oldUser->id)->get();
+            foreach ($system_infos as $system_info){
+                $system_info->delete();
+            }
+
         }
 
 
