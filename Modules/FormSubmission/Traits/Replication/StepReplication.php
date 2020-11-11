@@ -126,49 +126,44 @@ trait StepReplication
 
     private function putDefaultAnswersInNewQuestions($step)
     {
-        $studyId = (string)session('current_study');
-        if (!empty($studyId)) {
-            $getSubjectsIdsAnswerArray = [
-                'study_id' => $studyId,
-                'study_structures_id' => $step->phase_id,
-                'phase_steps_id' => $step->step_id,
-            ];
-            $subjectIdsArray = Answer::getSubjectIdsAgainstStepFromAnswers($getSubjectsIdsAnswerArray);
-            if (count($subjectIdsArray) > 0) {
-                //dd($subjectIdsArray);
-                foreach ($step->sections as $section) {
-                    foreach ($section->questions as $question) {
-                        $getAnswerArray = [
-                            'study_id' => $studyId,
-                            'study_structures_id' => $step->phase_id,
-                            'phase_steps_id' => $step->step_id,
-                            'section_id' => $section->id,
-                            'question_id' => $question->id,
-                        ];
-                        if (null === Answer::getAnswer($getAnswerArray)) {
-                            $oldFormFilledByUserId = $oldSubjectId = '';
-                            foreach ($subjectIdsArray as $subjectId => $formFilledByUserId) {
-                                if (($subjectId == $oldSubjectId) && ($formFilledByUserId == $oldFormFilledByUserId)) {
-                                    continue;
-                                }
-                                $defaultAnswerArray = [
-                                    'id' => Str::uuid(),
-                                    'form_filled_by_user_id' => $formFilledByUserId,
-                                    'subject_id' => $subjectId,
-                                    'study_id' => $studyId,
-                                    'study_structures_id' => $step->phase_id,
-                                    'phase_steps_id' => $step->step_id,
-                                    'section_id' => $section->id,
-                                    'question_id' => $question->id,
-                                    'field_id' => $question->formFields->id,
-                                    'answer' => '123456789123456789',
-                                ];
-
-                                Answer::create($defaultAnswerArray);
-                                /*----------------------------------*/
-                                $oldFormFilledByUserId = $formFilledByUserId;
-                                $oldSubjectId = $subjectId;
+        $getSubjectsIdsAnswerArray = [
+            'phase_steps_id' => $step->step_id,
+        ];
+        $answersArray = Answer::getAnswersAgainstStepId($getSubjectsIdsAnswerArray);
+        if (count($answersArray) > 0) {
+            foreach ($step->sections as $section) {
+                foreach ($section->questions as $question) {
+                    $getAnswerArray = [
+                        'study_structures_id' => $step->phase_id,
+                        'phase_steps_id' => $step->step_id,
+                        'section_id' => $section->id,
+                        'question_id' => $question->id,
+                    ];
+                    if (null === Answer::getAnswer($getAnswerArray)) {
+                        $combinationArray = [];
+                        foreach ($answersArray as $previousAnswer) {
+                            //-------------------------------------
+                            $combineString = $previousAnswer->form_filled_by_user_id . $previousAnswer->subject_id;
+                            if (in_array($combineString, $combinationArray)) {
+                                continue;
                             }
+                            $combinationArray[] = $combineString;
+                            //-------------------------------------
+
+                            $defaultAnswerArray = [
+                                'id' => Str::uuid(),
+                                'study_id' => session('current_study'),
+                                'form_filled_by_user_id' => $previousAnswer->form_filled_by_user_id,
+                                'subject_id' => $previousAnswer->subject_id,
+                                'study_structures_id' => $step->phase_id,
+                                'phase_steps_id' => $step->step_id,
+                                'section_id' => $section->id,
+                                'question_id' => $question->id,
+                                'field_id' => $question->formFields->id,
+                                'answer' => '-9999',
+                            ];
+                            Answer::create($defaultAnswerArray);
+                            /*----------------------------------*/
                         }
                     }
                 }

@@ -360,8 +360,9 @@
         </div>
 </div>
 <!--  -->
-@include('admin::structure.cloneStep');
+@include('admin::structure.cloneStep')
 @include('admin::forms.edit_crf')
+@include('admin::forms.form_checks')
 @endsection
 @section('styles')
 <style>
@@ -777,89 +778,5 @@ function get_all_phases(id,phase_class){
         });
     }
 
-    function activateStep(step_id){
-            var confirmation = 'draft_mode';
-            $.confirm({
-                columnClass: 'col-md-12',
-                title: 'Default values confirmation!',
-                content: 'Do system put default values, in previously filled forms; for newly added questions?',
-                buttons: {
-                    putDefaultData: {
-                        text: 'Put form in production mode with default data',
-                        btnClass: 'btn-green',
-                        keys: ['enter', 'shift'],
-                        action: function(){
-                            confirmation = 'default_data_and_production_mode';
-                            submitActivateStepRequest(step_id, confirmation);
-                        }
-                    },
-                    doNotPutDefaultData: {
-                        text: 'Put form in production mode only',
-                        btnClass: 'btn-blue',
-                        keys: ['enter', 'shift'],
-                        action: function(){
-                            confirmation = 'production_mode_only';
-                            submitActivateStepRequest(step_id, confirmation);
-                        }
-                    },
-                    remainInDraftMode: {
-                        text: 'Remain in draft mode',
-                        btnClass: 'btn-red',
-                        keys: ['enter', 'shift'],
-                        action: function(){
-                            confirmation = 'draft_mode';
-                        }
-                    }
-                }
-            });
-
-    }
-    function submitActivateStepRequest(step_id, confirmation){
-            $.ajax({
-                url: 'steps/activate_step/'+step_id,
-                type: 'POST',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'POST',
-                    'step_id': step_id,
-                    'default_data_option': confirmation
-                    },
-                success:function(res){
-                    var spanHtml = '<span class="dropdown-item inActivateStep" onclick="deActivateStep(\''+step_id+'\');"><i class="far fa-pause-circle"></i>&nbsp; Put In Draft Mode</span>';
-                    $('#activeStatusDiv_' + step_id).html(spanHtml);
-                    getStepVersion(step_id);
-                }
-            });
-    }
-    function deActivateStep(step_id){
-            $.ajax({
-                url: 'steps/deActivate_step/'+step_id,
-                type: 'POST',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'POST',
-                    'step_id': step_id
-                    },
-                success:function(res){
-                    var spanHtml = '<span class="dropdown-item activateStep" onclick="activateStep(\''+step_id+'\');"><i class="far fa-play-circle"></i>&nbsp; Put In Production Mode</span>';
-                    $('#activeStatusDiv_' + step_id).html(spanHtml);
-                    getStepVersion(step_id);
-                }
-            })
-    }
-    function getStepVersion(step_id){
-            $.ajax({
-                url: 'forms/getStepVersion/'+step_id,
-                type: 'POST',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'POST',
-                    'step_id': step_id
-                    },
-                success:function(res){
-                    $('#formVersionSpan_' + step_id).html(res);
-                }
-            })
-    }
-        </script>
+            </script>
 @endsection

@@ -75,9 +75,7 @@
                 if (submitFormFlag) {
                     var term_cond = $('#terms_cond_' + stepIdStr).val();
                     var reason = $('#edit_reason_text_' + stepIdStr).val();
-                    var frmData = $("#form_master_" + stepIdStr).serialize() + '&' + $("#form_" + stepIdStr)
-                        .serialize() +
-                        '&terms_cond_' + stepIdStr + '=' + term_cond + '&' + 'edit_reason_text=' + reason;
+                    var frmData = $("#form_master_" + stepIdStr).serialize() + '&' + $("#form_" + stepIdStr).serialize() + '&terms_cond_' + stepIdStr + '=' + term_cond + '&' + 'edit_reason_text=' + reason;
                     submitRequest(frmData, stepIdStr, formTypeId, formStatusIdStr);
                 }
             }
@@ -125,16 +123,14 @@
             function validateFormField(stepIdStr, questionId, field_name, fieldId) {
                 var field_val;
                 field_val = getFormFieldValue(stepIdStr, field_name, fieldId);
-                var frmData = $("#form_master_" + stepIdStr).serialize() + '&questionId=' + questionId + '&' + field_name +
-                    '=' + field_val;
+                var frmData = $("#form_master_" + stepIdStr).serialize() + '&questionId=' + questionId + '&' + field_name + '=' + field_val;
                 return validateSingleQuestion(frmData);
 
             }
 
             function validateForm(stepIdStr) {
                 return new Promise(function(resolve, reject) {
-                    var frmData = $("#form_master_" + stepIdStr).serialize() + '&' + $("#form_" + stepIdStr)
-                        .serialize();
+                    var frmData = $("#form_master_" + stepIdStr).serialize() + '&' + $("#form_" + stepIdStr).serialize();
                     $.ajax({
                         url: "{{ route('subjectFormSubmission.validateSectionQuestionsForm') }}",
                         type: 'POST',
@@ -484,11 +480,11 @@
             }
 
             function reloadPage(waitSeconds) {
-                startWait();
+                /* startWait();
                 var seconds = waitSeconds * 1000;
                 setTimeout(function() {
                    location.reload();
-               }, seconds);
+               }, seconds); */
             }
             disableByClass('{{ $studyClsStr }}');
         </script>
