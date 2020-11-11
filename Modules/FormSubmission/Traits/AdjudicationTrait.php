@@ -138,6 +138,14 @@ trait AdjudicationTrait
         }
     }
 
+    public static function make_abs($array)
+    {
+        $abs_array = array();
+        foreach ($array as $key => $value)
+            $abs_array[$key] = abs($value);
+        return $abs_array;
+    }
+
     public static function checkAdjudicationForNumber($questionAdjudicationStatusObj, $numberOfAnswers, $answersArray, $decimalPoint)
     {
         $isQuestionAdjudicationRequired = false;

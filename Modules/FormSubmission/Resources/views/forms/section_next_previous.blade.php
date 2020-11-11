@@ -16,7 +16,7 @@ $getAdjudicationFormStatusArray);
 @elseif ($key == $first)
     <div class="d-flex">
         <button type="button"
-            class="btn btn-primary nexttab ml-auto {{ $studyClsStr }} {{ $stepClsStr }} {{ $sectionClsStr }}">Next</button>
+            class="btn btn-primary nexttab ml-auto">Next</button>
     </div>
     @include('formsubmission::forms.next_previous.edit_form')
 @elseif($key == $last)
@@ -27,7 +27,7 @@ $getAdjudicationFormStatusArray);
 @else
     <div class="d-flex">
         <button type="button" class="btn btn-primary prevtab">Previous</button>
-        <button type="button" class="btn btn-primary nexttab ml-auto {{ 'next_' . $sectionClsStr }}">Next</button>
+        <button type="button" class="btn btn-primary nexttab ml-auto">Next</button>
     </div>
 @endif
 @endif

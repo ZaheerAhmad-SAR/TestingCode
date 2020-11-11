@@ -52,7 +52,6 @@ $adjudicationRequiredQuestionIdsArray = \Modules\FormSubmission\Entities\Questio
                 'field_id'=>$question->formfields->id,
             ];
             $finalAnswer = \Modules\FormSubmission\Entities\FinalAnswer::getFinalAnswer($getFinalAnswerArray);
-
             @endphp
             <div class="form-group adjudication-border">
                 <label class="">{{ $question->question_text }}</label>
