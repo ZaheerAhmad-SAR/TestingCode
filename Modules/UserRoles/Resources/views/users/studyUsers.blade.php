@@ -70,7 +70,7 @@
                                                         <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                         <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                 <span class="dropdown-item">
-                                                    <a href="{!! route('users.edit',$user->id) !!}">
+                                                    <a href="{!! route('studyusers.edit',$user->id) !!}">
                                                         <i class="far fa-edit"></i>&nbsp; Edit
                                                     </a>
                                                 </span>
@@ -100,8 +100,11 @@
                 <div class="modal-header">
                     <p class="modal-title">Add User</p>
                 </div>
-                <form action="{{route('studyusers.store')}}" enctype="multipart/form-data" method="POST">
+                <form action="{{route('studyusers.store')}}" enctype="multipart/form-data" method="POST" class="user-store-form">
                     <div class="modal-body">
+
+                        <p class="alert alert-danger user-store-error" style="display: none;"></p>
+
                         <nav>
                             <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
                                 <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-Basic" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
@@ -341,8 +344,39 @@
             $('#2fa').on('show.bs.modal',function (e) {
                 var id = $(e.relatedTarget).data('target-id');
                 $('#user_id').val(id);
-            })
-        })
+            });
+
+            // form submit create user
+            $('.user-store-form').submit(function(e){
+                e.preventDefault();
+                // get form data
+                var formData = new FormData($(this)[0]);
+                $.ajax({
+                  url: $(this).attr('action'),
+                  data: formData,
+                  processData: false,
+                  contentType: false,
+                  type: 'POST',
+                  success: function(data) {
+
+                    if (data.errors) {
+
+                        $('.user-store-error').text(data.errors);
+                        $('.user-store-error').css('display', 'block');
+
+                        setTimeout(function() {
+                            $('.user-store-error').slideUp(500);
+                        }, 5000);
+
+                    } else {
+
+                        location.reload();
+                    }
+                  }
+                }); // ajax ends
+            }); // form submit function
+            
+        });
     </script>
 
     <script type="text/javascript">
