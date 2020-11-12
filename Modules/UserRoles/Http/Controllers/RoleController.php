@@ -64,7 +64,7 @@ class RoleController extends Controller
                 'created_by'    => auth()->user()->id,
             ]);
             /*--Basic Role Permission */
-            if ($request->dashboard_add){
+            if ($request->dashboard_add == 'on'){
                 $permissions = Permission::where('name','=','dashboard.create')
                     ->orwhere('name','=','dashboard.store')
                     ->get();
@@ -76,7 +76,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->dashboard_edit){
+            if ($request->dashboard_edit == 'on'){
                 $permissions = Permission::where('name','=','dashboard.edit')
                     ->orwhere('name','=','dashboard.update')
                     ->get();
@@ -89,7 +89,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->dashboard_view){
+            if ($request->dashboard_view == 'on'){
                 $permissions = Permission::where('name','=','dashboard.index')
                     ->get();
                 foreach ($permissions as $permission){
@@ -100,7 +100,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->dashboard_delete){
+            if ($request->dashboard_delete == 'on'){
                 $permissions = Permission::where('name','=','dashboard.destroy')
                     ->get();
 
@@ -113,7 +113,7 @@ class RoleController extends Controller
                 }
             }
             /*-- Studies Permissions */
-            if ($request->study_add){
+            if ($request->study_add == 'on'){
                 $permissions = Permission::where('name','=','studies.create')
                     ->orwhere('name','=','studies.store')
                     ->get();
@@ -125,7 +125,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->study_edit){
+            if ($request->study_edit == 'on'){
                 $permissions = Permission::where('name','=','studies.edit')
                     ->orwhere('name','=','studies.update')
                     ->orwhere('name','=','diseaseCohort.index')
@@ -144,7 +144,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->study_view){
+            if ($request->study_view == 'on'){
                 //dd('log store');
                 $permissions = Permission::where('name','=','studies.index')
                     ->orwhere('name', '=', 'transmissions.study-transmissions')
@@ -157,7 +157,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->study_delete){
+            if ($request->study_delete == 'on'){
                 $permissions = Permission::where('name','=','studies.destroy')
                     ->get();
 
@@ -170,7 +170,7 @@ class RoleController extends Controller
                 }
             }
             /*-- Subjects Permissions */
-            if ($request->subjects_add){
+            if ($request->subjects_add == 'on'){
                 $permissions = Permission::where('name','=','subjects.create')
                     ->orwhere('name','=','subjects.store')
                     ->get();
@@ -183,7 +183,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->subjects_edit){
+            if ($request->subjects_edit == 'on'){
                 $permissions = Permission::where('name','=','subjects.edit')
                     ->orwhere('name','=','subjects.update')
                     ->get();
@@ -195,7 +195,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->subjects_view){
+            if ($request->subjects_view == 'on'){
                 $permissions = Permission::where('name','=','subjects.index')
                     ->orwhere('name','=','studies.show')
                     ->get();
@@ -208,7 +208,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->subjects_delete){
+            if ($request->subjects_delete == 'on'){
                 $permissions = Permission::where('name','=','subjects.destroy')
                     ->get();
 
@@ -221,7 +221,7 @@ class RoleController extends Controller
                 }
             }
             /*-- Grading Permissions */
-            if ($request->grading_add){
+            if ($request->grading_add == 'on'){
                 $permissions = Permission::where('name','=','grading.create')
                     ->orwhere('name','=','grading.store')
                     ->get();
@@ -234,7 +234,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->grading_edit){
+            if ($request->grading_edit == 'on'){
                 $permissions = Permission::where('name','=','grading.edit')
                     ->orwhere('name','=','grading.update')
                     ->get();
@@ -247,7 +247,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->grading_view){
+            if ($request->grading_view == 'on'){
                 $permissions = Permission::where('name','=','grading.index')
                     ->orwhere('name','excel-grading')
                     ->orwhere('name','excel-grading2')
@@ -264,7 +264,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->grading_delete){
+            if ($request->grading_delete == 'on'){
                 $permissions = Permission::where('name','=','grading.destroy')
                     ->get();
 
@@ -277,7 +277,7 @@ class RoleController extends Controller
                 }
             }
             /*-- Quality Control Permissions */
-            if ($request->qualityControl_add){
+            if ($request->qualityControl_add == 'on'){
                 $permissions = Permission::where('name','=','qualitycontrol.create')
                     ->orwhere('name','=','qualitycontrol.store')
                     ->get();
@@ -290,7 +290,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->qualityControl_edit){
+            if ($request->qualityControl_edit == 'on'){
                 $permissions = Permission::where('name','=','qualitycontrol.edit')
                     ->orwhere('name','=','qualitycontrol.update')
                     ->get();
@@ -303,7 +303,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->qualityControl_view){
+            if ($request->qualityControl_view == 'on'){
                 $permissions = Permission::where('name','=','qualitycontrol.index')
                     ->orwhere('name','excel-qc')
                     ->orwhere('name','excel-qc2')
@@ -317,7 +317,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->qualityControl_delete){
+            if ($request->qualityControl_delete == 'on'){
                 $permissions = Permission::where('name','=','qualitycontrol.destroy')
                     ->get();
 
@@ -330,7 +330,7 @@ class RoleController extends Controller
                 }
             }
             /*-- Adjudication Permissions --*/
-            if ($request->adjudication_add){
+            if ($request->adjudication_add == 'on'){
                 $permissions = Permission::where('name','=','adjudication.create')
                     ->orwhere('name','=','adjudication.store')
                     ->get();
@@ -343,7 +343,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->adjudication_edit){
+            if ($request->adjudication_edit == 'on'){
                 $permissions = Permission::where('name','=','adjudication.edit')
                     ->orwhere('name','=','adjudication.update')
                     ->get();
@@ -356,7 +356,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->adjudication_view){
+            if ($request->adjudication_view == 'on'){
                 $permissions = Permission::where('name','=','adjudication.index')
                     ->orwhere('name','=','excel-adjudication')
                     ->orwhere('name','=','excel-adjudication2')
@@ -370,7 +370,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->adjudication_delete){
+            if ($request->adjudication_delete == 'on'){
                 $permissions = Permission::where('name','=','adjudication.destroy')
                     ->get();
 
@@ -383,7 +383,7 @@ class RoleController extends Controller
                 }
             }
             /*-- Eligibility Permissions --*/
-            if ($request->eligibility_add){
+            if ($request->eligibility_add == 'on'){
                 $permissions = Permission::where('name','=','eligibility.create')
                     ->orwhere('name','=','eligibility.store')
                     ->get();
@@ -396,7 +396,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->eligibility_edit){
+            if ($request->eligibility_edit == 'on'){
                 $permissions = Permission::where('name','=','eligibility.edit')
                     ->orwhere('name','=','eligibility.update')
                     ->get();
@@ -409,7 +409,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->eligibility_view){
+            if ($request->eligibility_view == 'on'){
                 $permissions = Permission::where('name','=','eligibility.index')
                     ->get();
 
@@ -421,7 +421,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->eligibility_delete){
+            if ($request->eligibility_delete == 'on'){
                 $permissions = Permission::where('name','=','eligibility.destroy')
                     ->get();
 
@@ -434,7 +434,7 @@ class RoleController extends Controller
                 }
             }
             /*-- Queries Permissions --*/
-            if ($request->queries_add){
+            if ($request->queries_add == 'on'){
                 $permissions = Permission::where('name','=','queries.create')
                     ->orwhere('name','=','queries.store')
                     ->get();
@@ -447,7 +447,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->queries_edit){
+            if ($request->queries_edit == 'on'){
                 $permissions = Permission::where('name','=','queries.edit')
                     ->orwhere('name','=','queries.update')
                     ->get();
@@ -460,7 +460,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->queries_view){
+            if ($request->queries_view == 'on'){
                 $permissions = Permission::where('name','=','queries.index')
                     ->get();
 
@@ -472,7 +472,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
-            if ($request->queries_delete){
+            if ($request->queries_delete == 'on'){
                 $permissions = Permission::where('name','=','queries.destroy')
                     ->get();
 
@@ -485,7 +485,7 @@ class RoleController extends Controller
                 }
             }
             /*-- System Tools Permissions */
-            if ($request->system_tools ) {
+            if ($request->system_tools == 'on') {
                 $permissions = Permission::where('name', '=', 'systemtools.index')
                     ->orwhere('name', '=', 'devices.index')
                     ->orwhere('name', '=', 'users.index')
@@ -503,9 +503,8 @@ class RoleController extends Controller
                 }
             }
             /*-- Study Tools Permissions */
-            if ($request->study_tools ) {
+            if ($request->study_tools == 'on') {
                 $permissions = Permission::where('name', '=', 'studytools.index')
-                    ->orwhere('name', '=', 'studyusers.index')
                     ->orwhere('name', '=', 'users.create')
                     ->orwhere('name', '=', 'users.index')
                     ->orwhere('name', '=', 'users.assignUsers')
@@ -515,6 +514,15 @@ class RoleController extends Controller
                     ->orwhere('name', '=', 'users.update')
                     ->orwhere('name', '=', 'users.destroy')
                     ->orwhere('name', '=', 'users.show')
+                    ->orwhere('name', '=', 'studyusers.create')
+                    ->orwhere('name', '=', 'studyusers.index')
+                    ->orwhere('name', '=', 'studyusers.assignUsers')
+                    ->orwhere('name', '=', 'studyusers.update_user')
+                    ->orwhere('name', '=', 'studyusers.store')
+                    ->orwhere('name', '=', 'studyusers.edit')
+                    ->orwhere('name', '=', 'studyusers.update')
+                    ->orwhere('name', '=', 'studyusers.destroy')
+                    ->orwhere('name', '=', 'studyusers.show')
                     ->orwhere('name', '=', 'studyRoles.index')
                     ->orwhere('name', '=', 'studySite.index')
                     ->orwhere('name', '=', 'studySite.create')
@@ -577,7 +585,7 @@ class RoleController extends Controller
             }
 
             /*-- Data management Permissions */
-            if ($request->management ) {
+            if ($request->management == 'on') {
                 $permissions = Permission::where('name', '=', 'data_management.index')
                     ->get();
                 foreach ($permissions as $permission) {
@@ -591,7 +599,7 @@ class RoleController extends Controller
             }
 
             /*-- Activity Log Permissions */
-            if ($request->activity_log ) {
+            if ($request->activity_log == 'on' ) {
                 $permissions = Permission::where('name', '=', 'trail_logs.list')
                     ->get();
                 foreach ($permissions as $permission) {
@@ -605,7 +613,7 @@ class RoleController extends Controller
             }
 
             /*-- Certification Permissions */
-            if ($request->certification ) {
+            if ($request->certification == 'on') {
                 $permissions = Permission::where('name', '=', 'certification.index')
                     ->get();
                 foreach ($permissions as $permission) {
@@ -619,7 +627,7 @@ class RoleController extends Controller
             }
 
             /*-- Finance Permissions */
-            if ($request->finance ) {
+            if ($request->finance == 'on') {
                 $permissions = Permission::where('name', '=', 'finance.index')
                     ->get();
                 foreach ($permissions as $permission) {
@@ -677,10 +685,6 @@ class RoleController extends Controller
         // get old roles data for trail log
             $oldRole = Role::where('id', $id)->first();
             $role   =   Role::find($id);
-            $role_permissions   =   RolePermission::where('role_id','=',$id)->get();
-            foreach ($role_permissions as $role_permission) {
-                $role_permission->delete();
-            }
             $role->update([
             'id'    => $id,
             'name'  =>  $request->name,
@@ -688,7 +692,7 @@ class RoleController extends Controller
             'role_type'     => $request->role_type
         ]);
 
-        if ($request->dashboard_add){
+        if ($request->dashboard_add == 'on'){
             $permissions = Permission::where('name','=','dashboard.create')
                 ->orwhere('name','=','dashboard.store')
                 ->get();
@@ -700,7 +704,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->dashboard_edit){
+        if ($request->dashboard_edit== 'on'){
             $permissions = Permission::where('name','=','dashboard.edit')
                 ->orwhere('name','=','dashboard.update')
                 ->get();
@@ -713,7 +717,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->dashboard_view){
+        if ($request->dashboard_view== 'on'){
             $permissions = Permission::where('name','=','dashboard.index')
                 ->get();
             foreach ($permissions as $permission){
@@ -724,7 +728,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->dashboard_delete){
+        if ($request->dashboard_delete== 'on'){
             $permissions = Permission::where('name','=','dashboard.destroy')
                 ->get();
 
@@ -737,7 +741,7 @@ class RoleController extends Controller
             }
         }
         /*-- Studies Permissions */
-        if ($request->study_add){
+        if ($request->study_add== 'on'){
             $permissions = Permission::where('name','=','studies.create')
                 ->orwhere('name','=','studies.store')
                 ->get();
@@ -749,7 +753,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->study_edit){
+        if ($request->study_edit== 'on'){
             $permissions = Permission::where('name','=','studies.edit')
                 ->orwhere('name','=','studies.update')
                 ->orwhere('name','=','diseaseCohort.index')
@@ -768,7 +772,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->study_view){
+        if ($request->study_view== 'on'){
             //dd('log store');
             $permissions = Permission::where('name','=','studies.index')
                 ->orwhere('name', '=', 'transmissions.study-transmissions')
@@ -781,7 +785,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->study_delete){
+        if ($request->study_delete== 'on'){
             $permissions = Permission::where('name','=','studies.destroy')
                 ->get();
 
@@ -795,7 +799,7 @@ class RoleController extends Controller
         }
 
         /*-- Subjects Permissions */
-        if ($request->subjects_add){
+        if ($request->subjects_add== 'on'){
             $permissions = Permission::where('name','=','subjects.create')
                 ->orwhere('name','=','subjects.store')
                 ->get();
@@ -808,7 +812,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->subjects_edit){
+        if ($request->subjects_edit== 'on'){
             $permissions = Permission::where('name','=','subjects.edit')
                 ->orwhere('name','=','subjects.update')
                 ->get();
@@ -820,7 +824,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->subjects_view){
+        if ($request->subjects_view== 'on'){
             $permissions = Permission::where('name','=','subjects.index')
                 ->orwhere('name','=','studies.show')
                 ->get();
@@ -833,7 +837,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->subjects_delete){
+        if ($request->subjects_delete== 'on'){
             $permissions = Permission::where('name','=','subjects.destroy')
                 ->get();
 
@@ -847,7 +851,7 @@ class RoleController extends Controller
         }
 
         /*-- Grading Permissions */
-        if ($request->grading_add){
+        if ($request->grading_add== 'on'){
             $permissions = Permission::where('name','=','grading.create')
                 ->orwhere('name','=','grading.store')
                 ->get();
@@ -860,7 +864,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->grading_edit){
+        if ($request->grading_edit== 'on'){
             $permissions = Permission::where('name','=','grading.edit')
                 ->orwhere('name','=','grading.update')
                 ->get();
@@ -873,7 +877,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->grading_view){
+        if ($request->grading_view== 'on'){
             $permissions = Permission::where('name','=','grading.index')
                 ->orwhere('name','excel-grading')
                 ->orwhere('name','excel-grading2')
@@ -890,7 +894,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->grading_delete){
+        if ($request->grading_delete== 'on'){
             $permissions = Permission::where('name','=','grading.destroy')
                 ->get();
 
@@ -904,7 +908,7 @@ class RoleController extends Controller
         }
 
         /*-- Quality Control Permissions */
-        if ($request->qualityControl_add){
+        if ($request->qualityControl_add== 'on'){
             $permissions = Permission::where('name','=','qualitycontrol.create')
                 ->orwhere('name','=','qualitycontrol.store')
                 ->get();
@@ -917,7 +921,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->qualityControl_edit){
+        if ($request->qualityControl_edit== 'on'){
             $permissions = Permission::where('name','=','qualitycontrol.edit')
                 ->orwhere('name','=','qualitycontrol.update')
                 ->get();
@@ -930,7 +934,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->qualityControl_view){
+        if ($request->qualityControl_view== 'on'){
             $permissions = Permission::where('name','=','qualitycontrol.index')
                 ->orwhere('name','excel-qc')
                 ->orwhere('name','excel-qc2')
@@ -944,7 +948,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->qualityControl_delete){
+        if ($request->qualityControl_delete== 'on'){
             $permissions = Permission::where('name','=','qualitycontrol.destroy')
                 ->get();
 
@@ -958,7 +962,7 @@ class RoleController extends Controller
         }
 
         /*-- Adjudication Permissions --*/
-        if ($request->adjudication_add) {
+        if ($request->adjudication_add == 'on') {
             $permissions = Permission::where('name','=','adjudication.create')
                 ->orwhere('name','=','adjudication.store')
                 ->get();
@@ -971,7 +975,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->adjudication_edit){
+        if ($request->adjudication_edit == 'on'){
             $permissions = Permission::where('name','=','adjudication.edit')
                 ->orwhere('name','=','adjudication.update')
                 ->get();
@@ -984,7 +988,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->adjudication_view){
+        if ($request->adjudication_view == 'on'){
             $permissions = Permission::where('name','=','adjudication.index')
                 ->orwhere('name','=','excel-adjudication')
                 ->orwhere('name','=','excel-adjudication2')
@@ -998,7 +1002,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->adjudication_delete){
+        if ($request->adjudication_delete == 'on'){
             $permissions = Permission::where('name','=','adjudication.destroy')
                 ->get();
 
@@ -1012,7 +1016,7 @@ class RoleController extends Controller
         }
 
         /*-- Eligibility Permissions --*/
-        if ($request->eligibility_add){
+        if ($request->eligibility_add == 'on'){
             $permissions = Permission::where('name','=','eligibility.create')
                 ->orwhere('name','=','eligibility.store')
                 ->get();
@@ -1025,7 +1029,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->eligibility_edit){
+        if ($request->eligibility_edit == 'on'){
             $permissions = Permission::where('name','=','eligibility.edit')
                 ->orwhere('name','=','eligibility.update')
                 ->get();
@@ -1038,7 +1042,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->eligibility_view){
+        if ($request->eligibility_view == 'on'){
             $permissions = Permission::where('name','=','eligibility.index')
                 ->get();
 
@@ -1050,7 +1054,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->eligibility_delete){
+        if ($request->eligibility_delete == 'on'){
             $permissions = Permission::where('name','=','eligibility.destroy')
                 ->get();
 
@@ -1064,7 +1068,7 @@ class RoleController extends Controller
         }
 
         /*-- Queries Permissions --*/
-        if ($request->queries_add){
+        if ($request->queries_add == 'on'){
             $permissions = Permission::where('name','=','queries.create')
                 ->orwhere('name','=','queries.store')
                 ->get();
@@ -1077,7 +1081,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->queries_edit){
+        if ($request->queries_edit == 'on'){
             $permissions = Permission::where('name','=','queries.edit')
                 ->orwhere('name','=','queries.update')
                 ->get();
@@ -1090,7 +1094,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->queries_view){
+        if ($request->queries_view == 'on'){
             $permissions = Permission::where('name','=','queries.index')
                 ->get();
 
@@ -1102,7 +1106,7 @@ class RoleController extends Controller
                 ]);
             }
         }
-        if ($request->queries_delete){
+        if ($request->queries_delete == 'on'){
             $permissions = Permission::where('name','=','queries.destroy')
                 ->get();
 
@@ -1116,7 +1120,7 @@ class RoleController extends Controller
         }
 
         /*-- System Tools Permissions */
-        if ($request->system_tools ) {
+        if ($request->system_tools == 'on') {
             $permissions = Permission::where('name', '=', 'systemtools.index')
                 ->orwhere('name', '=', 'devices.index')
                 ->orwhere('name', '=', 'users.index')
@@ -1135,7 +1139,7 @@ class RoleController extends Controller
         }
 
         /*-- Study Tools Permissions */
-        if ($request->study_tools ) {
+        if ($request->study_tools == 'on') {
             $permissions = Permission::where('name', '=', 'studytools.index')
                 ->orwhere('name', '=', 'studyusers.index')
                 ->orwhere('name', '=', 'users.index')
@@ -1147,6 +1151,15 @@ class RoleController extends Controller
                 ->orwhere('name', '=', 'users.destroy')
                 ->orwhere('name', '=', 'users.show')
                 ->orwhere('name', '=', 'users.update')
+                ->orwhere('name', '=', 'studyusers.create')
+                ->orwhere('name', '=', 'studyusers.index')
+                ->orwhere('name', '=', 'studyusers.assignUsers')
+                ->orwhere('name', '=', 'studyusers.update_user')
+                ->orwhere('name', '=', 'studyusers.store')
+                ->orwhere('name', '=', 'studyusers.edit')
+                ->orwhere('name', '=', 'studyusers.update')
+                ->orwhere('name', '=', 'studyusers.destroy')
+                ->orwhere('name', '=', 'studyusers.show')
                 ->orwhere('name', '=', 'studyRoles.index')
                 ->orwhere('name', '=', 'studySite.index')
                 ->orwhere('name', '=', 'studySite.create')
@@ -1210,7 +1223,7 @@ class RoleController extends Controller
         }
 
         /*-- Data management Permissions */
-        if ($request->management ) {
+        if ($request->management == 'on') {
             $permissions = Permission::where('name', '=', 'data_management.index')
                 ->get();
             foreach ($permissions as $permission) {
@@ -1224,7 +1237,7 @@ class RoleController extends Controller
         }
 
         /*-- Activity Log Permissions */
-        if ($request->activity_log ) {
+        if ($request->activity_log == 'on') {
             $permissions = Permission::where('name', '=', 'trail_logs.list')
                 ->get();
             foreach ($permissions as $permission) {
@@ -1238,7 +1251,7 @@ class RoleController extends Controller
         }
 
         /*-- Certification Permissions */
-        if ($request->certification ) {
+        if ($request->certification == 'on') {
             $permissions = Permission::where('name', '=', 'certification.index')
                 ->get();
             foreach ($permissions as $permission) {
@@ -1252,7 +1265,7 @@ class RoleController extends Controller
         }
 
         /*-- Finance Permissions */
-        if ($request->finance ) {
+        if ($request->finance == 'on') {
             $permissions = Permission::where('name', '=', 'finance.index')
                 ->get();
             foreach ($permissions as $permission) {

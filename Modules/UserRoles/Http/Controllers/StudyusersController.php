@@ -81,7 +81,6 @@ class StudyusersController extends Controller
                 'password'  => 'required|string|min:8|nullable|confirmed|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
                 'roles'    => "required|array|min:1",
                 'roles.*'  => "required|min:1",
-
             ]);
 
             if ($validator->fails()) {

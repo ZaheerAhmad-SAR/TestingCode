@@ -366,7 +366,7 @@
 
                         setTimeout(function() {
                             $('.user-store-error').slideUp(500);
-                        }, 5000);
+                        }, 2000);
 
                     } else {
 
@@ -375,7 +375,7 @@
                   }
                 }); // ajax ends
             }); // form submit function
-            
+
         });
     </script>
 
