@@ -180,7 +180,7 @@
                                 <div class="form-group row" style="margin-top: 10px;">
                                     <label for="device_manufacturer" class="col-sm-3">Select Roles</label>
                                     <div class="{!! ($errors->has('roles')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                        <select class="searchable" id="select-roles" multiple="multiple" name="roles[]">
+                                        <select class="searchable" id="select-roles" multiple="multiple" name="roles[]" required>
                                             @foreach($roles as $role)
                                                 <option value="{{$role->id}}">{{$role->name}}</option>
                                             @endforeach
@@ -398,7 +398,7 @@
                   }
                 }); // ajax ends
             }); // form submit function
-            
+
         });
     </script>
 
