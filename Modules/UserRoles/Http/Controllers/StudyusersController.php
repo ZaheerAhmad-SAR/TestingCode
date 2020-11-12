@@ -72,7 +72,7 @@ class StudyusersController extends Controller
      */
     public function store(UserRequest $request)
     {
-        //dd(session('current_study'));
+       //dd(session('current_study'));
         $id = Str::uuid();
         $user = User::create([
             'id' => $id,

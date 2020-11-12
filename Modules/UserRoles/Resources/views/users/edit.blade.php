@@ -8,7 +8,7 @@
         <div class="row ">
             <div class="col-12  align-self-center">
                 <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
-                    <div class="w-sm-100 mr-auto"><h4 class="mb-0">Update User</h4></div>
+                    <div class="w-sm-100 mr-auto"><h4 class="mb-0">Update Users</h4></div>
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                         <li class="breadcrumb-item"><a href="{{url('/')}}">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="{{url('/users')}}">Users</a></li>
@@ -21,6 +21,13 @@
         <!-- START: Card Data-->
         <div class="row">
             <div class="col-12 col-sm-12 mt-3">
+                @if(session()->has('message'))
+                    <div class="col-lg-12 success-alert">
+                        <div class="alert alert-primary success-msg" role="alert">
+                            {{ session()->get('message') }}
+                        </div>
+                    </div>
+                @endif
                 <div class="card">
                     <form action="{{route('users.update',$user->id)}}" enctype="multipart/form-data" method="POST">
                         @csrf
@@ -101,8 +108,8 @@
                                                 <div class="{!! ($errors->has('2fa')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
                                                     <select class="form-control dropdown" name="fa" id="2fa">
                                                         <option value="">Select 2 Factor Status</option>
-                                                        <option value="enabled" @if(!empty($user->browser_name))selected @endif>Enabled</option>
-                                                        <option value="disabled" @if(empty($user->browser_name))selected @endif>Disabled</option>
+                                                        <option value="enabled" @if(!empty($user->google2fa_secret))selected @endif>Enabled</option>
+                                                        <option value="disabled" @if(empty($user->google2fa_secret))selected @endif>Disabled</option>
                                                     </select>
                                                     @error('name')
                                                     <span class="text-danger small">{{ $message }} </span>

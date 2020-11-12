@@ -71,6 +71,7 @@
         <script src="{{ asset('public/js/sweetalert.min.js') }}"></script>
         <script src="{{ asset('public/js/jquery.validate.min.js') }}"></script>
         <script src="{{ asset('public/js/jquery-confirm.min.js') }}"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.0/jquery.validate.js"></script>
 
         <!-- END: APP JS-->
 

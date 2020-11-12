@@ -83,7 +83,7 @@ class UserController extends Controller
      */
     public function store(UserRequest $request)
     {
-        $validator = Validate::;
+//        $validator = Validate::;
        $id = Str::uuid();
             $user = User::create([
                 'id' => $id,
@@ -318,6 +318,9 @@ class UserController extends Controller
             $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
             $user->password =   Hash::make($request->password);
             $user->qr_flag = '0';
+            $user->google2fa_secret = NULL;
+            $user->google_auth = NULL;
+
             $user->save();
             if ($request->roles){
                 $userroles  = UserRole::where('user_id',$user->id)->get();
@@ -343,8 +346,8 @@ class UserController extends Controller
             $user->email =  $request->email;
             $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
             $user->qr_flag = '0';
-            $user->google2fa_secret= '';
-            $user->google_auth = '';
+            $user->google2fa_secret = NULL;
+            $user->google_auth = NULL;
             $user->save();
             if ($request->roles){
                 $userroles  = UserRole::where('user_id',$user->id)->get();
@@ -370,7 +373,7 @@ class UserController extends Controller
      // log event details
         $logEventDetails = eventDetails($user->id, 'User', 'Update', $request->ip(), $oldUser);
 
-        return redirect()->route('users.index');
+        return redirect()->back()->with('message','user updated');
 
     }
 
