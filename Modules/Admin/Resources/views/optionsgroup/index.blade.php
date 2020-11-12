@@ -201,13 +201,13 @@
 <script>
 
        $('.addOptions').on('click',function(){
-           $('.appendDataOptions').append('<div class="values_row"><div class="form-group row"><div class="col-md-3">Option Name:</div><div class="form-group col-md-4"><input type="text" id="option_name" name="option_name[]" class="form-control"></div><div class="form-group col-md-4"><input type="number" placeholder="value" name="option_value[]" id="option_value" class="form-control"></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove" style="margin-top: 3px;"></i></div></div></div>');
+           $('.appendDataOptions').append('<div class="values_row"><div class="form-group row"><div class="col-md-3">Option Name:</div><div class="form-group col-md-4"><input type="text" id="option_name" name="option_name[]" class="form-control" required></div><div class="form-group col-md-4"><input type="number" placeholder="value" name="option_value[]" id="option_value" class="form-control" required></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove" style="margin-top: 3px;"></i></div></div></div>');
            return false;
        });
 
 
        $('.addOptions_edit').on('click',function(){
-           $('.appendDataOptions_edit').append('<div class="edit_values_row"><div class="form-group row"><div class="col-md-3">Option Name:</div><div class="form-group col-md-4"><input type="text" id="option_name_edit" name="option_name_edit[]" class="form-control"></div><div class="form-group col-md-4"><input type="number" placeholder="value" name="option_value_edit[]" id="option_value_edit" class="form-control"></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash edit_remove" style="margin-top: 3px;"></i></div></div> </div>');
+           $('.appendDataOptions_edit').append('<div class="edit_values_row"><div class="form-group row"><div class="col-md-3">Option Name:</div><div class="form-group col-md-4"><input type="text" id="option_name_edit" name="option_name_edit[]" class="form-control" required></div><div class="form-group col-md-4"><input type="number" placeholder="value" name="option_value_edit[]" id="option_value_edit" class="form-control" required></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash edit_remove" style="margin-top: 3px;"></i></div></div> </div>');
            return false;
        });
 
@@ -294,10 +294,10 @@
                        $('.appendDataOptions_edit').append('<div class="edit_values_row"><div class="form-group row">\n' +
                            '     <div class="col-md-3">Option Name:</div>\n' +
                            '      <div class="form-group col-md-4">\n' +
-                           '       <input type="text" id="option_name_edit" name="option_name_edit[]"  value='+value+' class="form-control">\n' +
+                           '       <input type="text" id="option_name_edit" name="option_name_edit[]"  value='+value+' class="form-control" required>\n' +
                            '       </div>\n' +
                            '        <div class="form-group col-md-4">\n' +
-                           '        <input type="number" value='+optionValueArray[index]+' name="option_value_edit[]" id="option_value_edit" class="form-control">\n' +
+                           '        <input type="number" value='+optionValueArray[index]+' name="option_value_edit[]" id="option_value_edit" class="form-control" required>\n' +
                            '         </div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash edit_remove" style="margin-top: 3px;"></i></div></div>\n' +
                            '   ');
                        });

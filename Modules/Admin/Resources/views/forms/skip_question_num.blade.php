@@ -48,8 +48,8 @@
                                         <option value="">---Select---</option>
                                         <option value=">=" {{-- @if($value->operator =='>=') @php echo "selected"; @endphp @endif --}}>Greater OR Equal</option>
                                         <option value="<=" {{-- @if($value->operator =='<=') @php echo "selected"; @endphp @endif --}}>Less OR Equal</option>
-                                        <option value=">" {{-- @if($value->operator =='>') @php echo "selected"; @endphp @endif --}}>Greater Then</option>
-                                        <option value="<" {{-- @if($value->operator =='<') @php echo "selected"; @endphp @endif --}}>Less Then</option>
+                                        <option value=">" {{-- @if($value->operator =='>') @php echo "selected"; @endphp @endif --}}>Greater Than</option>
+                                        <option value="<" {{-- @if($value->operator =='<') @php echo "selected"; @endphp @endif --}}>Less Than</option>
                                     </select>
                             </div>
                         {{-- @endforeach     --}}

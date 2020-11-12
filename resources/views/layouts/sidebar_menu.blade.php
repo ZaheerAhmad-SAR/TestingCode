@@ -144,7 +144,7 @@
                             </ul>
                         </li>
                 </ul>
-            </li>
+                </li>
             @endif
             @endif
 
@@ -190,55 +190,62 @@
             </li>
             @endif
             @if(hasPermission(auth()->user(),'qualitycontrol.index'))
-                <li class="dropdown">
-                    <ul>
-                        <li class="dropdown"><a href="#"><i class="fas fa-sitemap"></i> Quality Control</a>
-                            <ul class="sub-menu">
-                                <li>
-                                    <a href="{{ route('qualitycontrol.index')}}">
-                                        <i class="fas fa-list"></i> QC List
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
+                @if(session('current_study'))
+                    <li class="dropdown">
+                        <ul>
+                            <li class="dropdown"><a href="#"><i class="fas fa-sitemap"></i> Quality Control</a>
+                                <ul class="sub-menu">
+                                    <li>
+                                        <a href="{{ route('qualitycontrol.index')}}">
+                                            <i class="fas fa-list"></i> QC List
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                @endif    
             @endif
             @if(hasPermission(auth()->user(),'grading.index'))
-                <li class="dropdown">
-                    <ul>
-                        <li class="dropdown"><a href="#"><i class="fas fa-sitemap"></i> Grading</a>
-                            <ul class="sub-menu">
-                                <li>
-                                    <a href="{{route('grading.index')}}">
-                                        <i class="fas fa-list"></i> Grading List
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{route('grading.status')}}">
-                                        <i class="fas fa-chart-line"></i> Grading Status
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
+                @if(session('current_study'))
+                    <li class="dropdown">
+                        <ul>
+                            <li class="dropdown"><a href="#"><i class="fas fa-sitemap"></i> Grading</a>
+                                <ul class="sub-menu">
+                                    <li>
+                                        <a href="{{route('grading.index')}}">
+                                            <i class="fas fa-list"></i> Grading List
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{route('grading.status')}}">
+                                            <i class="fas fa-chart-line"></i> Grading Status
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                @endif
             @endif
             @if(hasPermission(auth()->user(),'adjudication.index'))
-                <li class="dropdown">
-                    <ul>
-                        <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Adjudication</a>
-                           <ul class="sub-menu">
-                                <li>
-                                    <a href="{{ route('adjudication.index')}}">
-                                        <i class="fas fa-list"></i> Adjudication List
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
+                @if(session('current_study'))
+                    <li class="dropdown">
+                        <ul>
+                            <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Adjudication</a>
+                               <ul class="sub-menu">
+                                    <li>
+                                        <a href="{{ route('adjudication.index')}}">
+                                            <i class="fas fa-list"></i> Adjudication List
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                @endif    
             @endif
+            @if(session('current_study'))
             <li class="dropdown">
                 <ul>
                     <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Certification Data</a>
@@ -257,48 +264,53 @@
                     </li>
                 </ul>
             </li>
-            @if(hasPermission(auth()->user(),'data_management.index'))
-                <li class="dropdown">
-                    <ul>
-                        <li class="dropdown"><a href="#"><i class="fas fa-chart-bar"></i>Data Management</a>
-                            <ul class="sub-menu">
-                                <li>
-                                    <a href="#">
-                                        Overall Data Report
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        Data Exports
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
             @endif
-            @if(hasPermission(auth()->user(),'queries.index'))
-            <li class="dropdown">
-                <ul>
-                    <li class="dropdown"><a href="#"><i class="fab fa-rocketchat"></i>Queries</a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a href="{{route('queries.index')}}">
-                                    Overall Data
-                                </a>
+            @if(hasPermission(auth()->user(),'data_management.index'))
+                @if(session('current_study'))
+                    <li class="dropdown">
+                        <ul>
+                            <li class="dropdown"><a href="#"><i class="fas fa-chart-bar"></i>Data Management</a>
+                                <ul class="sub-menu">
+                                    <li>
+                                        <a href="#">
+                                            Overall Data Report
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            Data Exports
+                                        </a>
+                                    </li>
+                                </ul>
                             </li>
-
-{{--                            @if(hasPermission(auth()->user(),'queries.index'))--}}
-{{--                            <li>--}}
-{{--                                <a href="{{route('queries.chatindex')}}">--}}
-{{--                                    Chat App--}}
-{{--                                </a>--}}
-{{--                            </li>--}}
-{{--                                @endif--}}
                         </ul>
                     </li>
-                </ul>
-            </li>
+                @endif    
+            @endif
+            @if(hasPermission(auth()->user(),'queries.index'))
+                @if(session('current_study'))
+                    <li class="dropdown">
+                        <ul>
+                            <li class="dropdown"><a href="#"><i class="fab fa-rocketchat"></i>Queries</a>
+                                <ul class="sub-menu">
+                                    <li>
+                                        <a href="{{route('queries.index')}}">
+                                            Overall Data
+                                        </a>
+                                    </li>
+
+        {{--                            @if(hasPermission(auth()->user(),'queries.index'))--}}
+        {{--                            <li>--}}
+        {{--                                <a href="{{route('queries.chatindex')}}">--}}
+        {{--                                    Chat App--}}
+        {{--                                </a>--}}
+        {{--                            </li>--}}
+        {{--                                @endif--}}
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                @endif    
             @endif
 
                 @if(hasPermission(auth()->user(),'systemtools.index') && hasPermission(auth()->user(),'trail_logs.list'))
