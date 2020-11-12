@@ -81,33 +81,70 @@ class UserController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function store(UserRequest $request)
+    public function store(Request $request)
     {
-//        $validator = Validate::;
-       $id = Str::uuid();
-            $user = User::create([
-                'id' => $id,
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'created_by'    => \auth()->user()->id,
-                'role_id'   =>  !empty($request->roles)?$request->roles[0]:2
+        if($request->ajax()) {
+            // make validator
+            $validator = Validator::make($request->all(), [
+                'name'      => 'required',
+                'email'     => 'required|email',
+                'password'  => 'required|string|min:8|nullable|confirmed|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
+                'roles'    => "required|array|min:1",
+                'roles.*'  => "required|min:1",
             ]);
-            if (!empty($request->roles))
-            {
-                foreach ($request->roles as $role){
-                    $roles =UserRole::create([
-                        'id'    => Str::uuid(),
-                        'user_id'     => $user->id,
-                        'role_id'   => $role,
+
+            if ($validator->fails()) {
+
+                return response()->json(['errors'=> $validator->errors()->first()]);
+
+            } else {
+
+                //CHECK FOR DUPLICATE EMAIL
+                $checkEmail = User::where('email', $request->email)
+                                    ->where('deleted_at', NULL)
+                                    ->first();
+
+                if ($checkEmail != null) {
+
+                    return response()->json(['errors'=> 'Email already exists.']);
+
+                } else {
+
+                    // unique ID
+                    $id = Str::uuid();
+
+                    $user = User::create([
+                        'id' => $id,
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'password' => Hash::make($request->password),
+                        'created_by'    => \auth()->user()->id,
+                        'role_id'   =>  !empty($request->roles) ? $request->roles[0] : 2
                     ]);
 
-                }
-            }
-            $oldUser = [];
-            // log event details
-            $logEventDetails = eventDetails($id, 'User', 'Add', $request->ip(), $oldUser);
-            return redirect()->route('users.index')->with('message','User added');
+                        if (!empty($request->roles)) {
+                            foreach ($request->roles as $role){
+                                $roles =UserRole::create([
+                                    'id'    => Str::uuid(),
+                                    'user_id'     => $user->id,
+                                    'role_id'   => $role,
+                                ]);
+
+                            }
+                        } // roles
+
+                    $oldUser = [];
+                    // log event details
+                    $logEventDetails = eventDetails($id, 'User', 'Add', $request->ip(), $oldUser);
+
+                    return response()->json(['success'=> 'User created successfully.']);
+
+                } // check email ends
+
+            } // validator check edns
+
+        } // ajax ends
+
     }
 
     /**
