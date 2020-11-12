@@ -47,6 +47,10 @@ class StudyController extends Controller
      */
     public function index()
     {
+        $users = User::all();
+        $sites = Site::all();
+        $study = '';
+        $studies = [];
         if (hasPermission(\auth()->user(), 'systemtools.index')) {
             $sites = Site::all();
            $user = User::with('studies', 'user_roles')->find(Auth::id());
@@ -105,14 +109,12 @@ class StudyController extends Controller
                     ->join('studies', 'studies.id', '=', 'user_roles.study_id')
                     ->where('users.id', '=', \auth()->user()->id)
                     ->orderBy('study_short_name')->get();
+
                 $study = '';
             }
             //dd($studies);
 
-            $users = User::all();
-            $sites = Site::all();
-            $study = '';
-            $studies = [];
+
         }
 
         return view('admin::studies.index', compact('studies', 'sites', 'users', 'study'));
@@ -198,7 +200,7 @@ class StudyController extends Controller
                // $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('role_id')->toArray();
 
                $getuserRole = UserRole::where('user_id',$user)->whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('role_id')->toArray();
-               
+
                 // dd($getuserRole);
 
                // $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->orderBy('name','asc')->get();
@@ -353,7 +355,7 @@ class StudyController extends Controller
                // $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('role_id')->toArray();
 
                $getuserRole = UserRole::where('user_id', $user)->whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('role_id')->toArray();
-               
+
                 // dd($getuserRole);
 
                // $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->orderBy('name','asc')->get();

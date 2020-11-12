@@ -14,7 +14,7 @@ use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\RolePermission;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Http\Requests\UserRequest;
-
+use Session;
 use Illuminate\Support\Str;
 
 
@@ -28,8 +28,8 @@ class StudyusersController extends Controller
     public function index()
     {
 
-            $roles  =   Role::where('role_type','=','study_role')->get();
-            $currentStudy = session('current_study');
+        $roles  =   Role::where('role_type','=','study_role')->get();
+        $currentStudy = session('current_study');
 
         $enrolledusers = UserRole::where('study_id','=',session('current_study'))->pluck('user_id')->toArray();
         $studyusers = UserRole::select('users.*','user_roles.study_id','roles.role_type')
@@ -70,34 +70,73 @@ class StudyusersController extends Controller
      * @param Request $request
      * @return Response
      */
-    public function store(UserRequest $request)
+    public function store(Request $request)
     {
-        //dd(session('current_study'));
-        $id = Str::uuid();
-        $user = User::create([
-            'id' => $id,
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'created_by'    => \auth()->user()->id,
-            'role_id'   =>  !empty($request->roles)?$request->roles[0]:2
-        ]);
-        if (!empty($request->roles))
-        {
-            foreach ($request->roles as $role){
-                $roles =UserRole::create([
-                    'id'    => Str::uuid(),
-                    'user_id'     => $user->id,
-                    'role_id'   => $role,
-                    'study_id'  => session('current_study')
-                ]);
+        if($request->ajax()) {
+            // make validator
+            $validator = \Validator::make($request->all(), [
+                'name'      => 'required',
+                'email'     => 'required|email',
+                'password'  => 'required|string|min:8|nullable|confirmed|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
+                'roles'    => "required|array|min:1",
+                'roles.*'  => "required|min:1",
 
-            }
-        }
-        $oldUser = [];
-        // log event details
-        $logEventDetails = eventDetails($id, 'User', 'Add', $request->ip(), $oldUser);
-        return redirect()->route('studyusers.index')->with('message','StudyUser added');
+            ]);
+
+            if ($validator->fails()) {
+
+                return response()->json(['errors'=> $validator->errors()->first()]);
+
+            } else {
+
+                //CHECK FOR DUPLICATE EMAIL
+                $checkEmail = User::where('email', $request->email)
+                                    ->where('deleted_at', NULL)
+                                    ->first();
+
+                if ($checkEmail != null) {
+
+                    return response()->json(['errors'=> 'Email already exists.']);
+
+                } else {
+
+                    // unique ID
+                    $id = Str::uuid();
+                    
+                    $user = User::create([
+                        'id' => $id,
+                        'name' => $request->name,
+                        'email' => $request->email,
+                        'password' => Hash::make($request->password),
+                        'created_by'    => \auth()->user()->id,
+                        'role_id'   =>  !empty($request->roles)?$request->roles[0]:2
+                    ]);
+
+                        if (!empty($request->roles)) {
+                            foreach ($request->roles as $role){
+                                $roles =UserRole::create([
+                                    'id'        => Str::uuid(),
+                                    'user_id'   => $user->id,
+                                    'role_id'   => $role,
+                                    'study_id'  => session('current_study'),
+                                    'user_type' => '0'
+                                ]);
+
+                            }
+                        } // roles
+
+                    $oldUser = [];
+                    // log event details
+                    $logEventDetails = eventDetails($id, 'User', 'Add', $request->ip(), $oldUser);
+
+                    return response()->json(['success'=> 'User created successfully.']);
+
+                } // check email ends
+
+            } // validator check edns
+
+        } // ajax ends
+    
     }
 
     /**
@@ -118,14 +157,35 @@ class StudyusersController extends Controller
      * @param int $id
      * @return Response
      */
-    public function edit($id)
-    {
-        dd('study');
-        $where = array('id' => $id);
-        $user  = User::with('user_roles')->where($where)->first();
-        dd($user);
 
-        return \response()->json($user);
+    public function edit($id) {
+        $user  = User::with('user_roles')->find($id);
+
+        $currentRoles = UserRole::select('user_roles.*','roles.*')
+            ->join('roles','roles.id','user_roles.role_id')
+            ->where('user_roles.user_id','=', $user->id)
+            ->where('user_roles.study_id','=', session('current_study'))
+            ->get();
+
+        $unassignedRoles = Role::select('roles.*')
+            ->join('user_roles','user_roles.role_id','roles.id')
+            ->where('user_roles.user_id','=',$user->id)
+            ->get();
+
+        foreach ($currentRoles as $currentRole){
+            $roleArray[] = $currentRole->role_id;
+        }
+
+        if (!empty($roleArray)) {
+            $unassignedRoles = Role::select('roles.*')
+            ->whereNotIn('roles.id', $roleArray)->get();
+        }
+        else {
+            $unassignedRoles = Role::where('role_type','=','system_role' )->get();
+        }
+
+
+        return view('userroles::users.edit-study-user',compact('user','unassignedRoles','currentRoles'));
     }
 
     /**
@@ -134,29 +194,36 @@ class StudyusersController extends Controller
      * @param int $id
      * @return Response
      */
-    public function update(UserRequest $request, $id)
+    public function update(Request $request, $id)
     {
-
-
-        $user   =   User::find($id);
+        dd($request->all());
+        $user   =  User::find($id);
         $user->update([
             'name'  =>  $request->name,
             'email' =>  $request->email,
             'password'  =>  Hash::make($request->password),
-            'role_id'   =>  !empty($request->roles)?$request->roles[0]:2
+            'role_id'   =>  !empty($request->roles) ? $request->roles[0]: 2
         ]);
-        $userroles  = UserRole::where('user_id',$user->id)->get();
-        foreach ($userroles as $role_id){
-            $role_id->delete();
-        }
-        foreach ($request->roles as $role){
-            UserRole::create([
-                'user_id'    =>  $user->id,
-                'role_id'    =>  $role
-            ]);
+
+        if($request->roles != null) {
+        
+            $userroles  = UserRole::where('study_id', session('current_study'))
+                                    ->where('user_id', $user->id)
+                                    ->where('user_type', 0)
+                                    ->delete();
+
+            foreach ($request->roles as $role) {
+                UserRole::create([
+                    'id'         => Str::uuid(),
+                    'user_id'    =>  $user->id,
+                    'role_id'    =>  $role,
+                    'study_id'   => session('current_study'),
+                    'user_type'  => '0'
+                ]);
+            }
         }
 
-        return redirect()->route('users.index');
+        return redirect(route('studyusers.index'));
 
     }
 
