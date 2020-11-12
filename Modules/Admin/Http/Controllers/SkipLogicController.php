@@ -20,6 +20,7 @@ use Modules\Admin\Entities\QuestionAdjudicationStatus;
 use Modules\Admin\Entities\AnnotationDescription;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\skipLogic;
+use Modules\Admin\Entities\QuestionOption;
 use Illuminate\Support\Facades\DB;
 use Modules\FormSubmission\Traits\Replication\ReplicatePhaseStructure;
 
@@ -298,9 +299,23 @@ class SkipLogicController extends Controller
         $options_name = explode(',', $questions->optionsGroup->option_name);
         if(null !== $questions->optionsGroup){
             foreach ($options_name as $key => $value) {
+                $where = array(
+                    "question_id" =>$request->question_id,
+                    "title" =>$value,
+                    "value" =>$options_value[$key]
+                );
+                $if_exists_record = QuestionOption::where($where)->first();
+                if(null !==$if_exists_record && ($if_exists_record->value == $options_value[$key])){ 
+                    $checked = "checked"; 
+                }else{
+                    $checked = ""; 
+                }
+                if(null !==$if_exists_record){
+                    $deactivate_questions_array = explode(',', $if_exists_record->deactivate_questions);
+                } 
                 $options_contents .= '<tr>
                                         <td style="text-align: center;width:15%;">
-                                           <input type="checkbox" name="activate_options['.$request->index.'][]" value="'.$options_value[$key].'">
+                                           <input type="checkbox" name="activate_options['.$request->index.'][]" value="'.$options_value[$key].'_'.$value.'_'.$questions->id.'" '.$checked.'>
                                         </td>
                                         <td colspan="5">'.$value.'</td>';
                 $options_contents .= '</tr>';               
@@ -316,9 +331,20 @@ class SkipLogicController extends Controller
         $options_name = explode(',', $questions->optionsGroup->option_name);
         if(null !== $questions->optionsGroup){
             foreach ($options_name as $key => $value) {
+                $where = array(
+                    "question_id" =>$request->question_id,
+                    "title" =>$value,
+                    "value" =>$options_value[$key]
+                );
+                $if_exists_record = QuestionOption::where($where)->first();
+                if(null !==$if_exists_record && ($if_exists_record->value == $options_value[$key])){ 
+                    $checked = "checked"; 
+                }else{
+                    $checked = ""; 
+                }
                 $options_contents .= '<tr>
                                         <td style="text-align: center;width:15%;">
-                                           <input type="checkbox" name="deactivate_options['.$request->index.'][]" value="'.$options_value[$key].'">
+                                           <input type="checkbox" name="deactivate_options['.$request->index.'][]" value="'.$options_value[$key].'_'.$value.'_'.$questions->id.'" '.$checked.'>
                                         </td>
                                         <td colspan="5">'.$value.'</td>';
                 $options_contents .= '</tr>';               
@@ -329,9 +355,11 @@ class SkipLogicController extends Controller
     public function add_skipLogic(Request $request)
     {
         $skip_ques = [];
+        $skip_options = [];
         if (isset($request->option_value) && count($request->option_value) > 0) {
             $where = array('question_id' =>$request->question_id);
             $remove_checks_if_already_exists = skipLogic::where($where)->delete();
+            $remove_options_checks_if_exists = QuestionOption::where($where)->delete();
             for ($i = 0; $i < count($request->option_value); $i++) {
                 $skip_ques = [
                     'id' => Str::uuid(),
@@ -345,6 +373,34 @@ class SkipLogicController extends Controller
                     'deactivate_sections' => (isset($request->deactivate_sections[$i]) && $request->deactivate_sections[$i] != '') ? implode(',', $request->deactivate_sections[$i]) : '',
                     'deactivate_questions' => (isset($request->deactivate_questions[$i]) && $request->deactivate_questions[$i] != '') ? implode(',', $request->deactivate_questions[$i]) : ''
                 ];
+                // Deactivate Questions options
+                if(isset($request->deactivate_options[$i]) && count($request->deactivate_options[$i]) > 0){
+                  for($j = 0; $j < count($request->deactivate_options[$i]); $j++) {
+                    $op_content = explode('_', $request->deactivate_options[$i][$j]);
+                    $skip_options = [
+                        'id' => Str::uuid(),
+                        'question_id' => $request->question_id,
+                        'value' => $op_content[0], 
+                        'title' => $op_content[1],
+                        'option_question_id' => $op_content[2]
+                        ];
+                    QuestionOption::insert($skip_options);
+                  }  
+                }
+                // Activate Questions options
+                if(isset($request->activate_options[$i]) && count($request->activate_options[$i]) > 0){
+                   for($j = 0; $j < count($request->activate_options[$i]); $j++) {
+                    $op_content = explode('_', $request->activate_options[$i][$j]);
+                    $skip_options = [
+                        'id' => Str::uuid(),
+                        'question_id' => $request->question_id,
+                        'value' => $op_content[0], 
+                        'title' => $op_content[1],
+                        'option_question_id' => $op_content[2]
+                        ];
+                    QuestionOption::insert($skip_options);
+                  } 
+                }
                 skipLogic::insert($skip_ques);
             }
         }elseif(isset($request->number_value) && count($request->number_value) > 0){
@@ -364,6 +420,34 @@ class SkipLogicController extends Controller
                     'deactivate_sections' => (isset($request->deactivate_sections[$i]) && $request->deactivate_sections[$i] != '') ? implode(',', $request->deactivate_sections[$i]) : '',
                     'deactivate_questions' => (isset($request->deactivate_questions[$i]) && $request->deactivate_questions[$i] != '') ? implode(',', $request->deactivate_questions[$i]) : ''
                 ];
+                // Deactivate Questions options
+                if(isset($request->deactivate_options[$i]) && count($request->deactivate_options[$i]) > 0){
+                  for($j = 0; $j < count($request->deactivate_options[$i]); $j++) {
+                    $op_content = explode('_', $request->deactivate_options[$i][$j]);
+                    $skip_options = [
+                        'id' => Str::uuid(),
+                        'question_id' => $request->question_id,
+                        'value' => $op_content[0], 
+                        'title' => $op_content[1],
+                        'option_question_id' => $op_content[2]
+                        ];
+                    QuestionOption::insert($skip_options);
+                  }  
+                }
+                // Activate Questions options
+                if(isset($request->activate_options[$i]) && count($request->activate_options[$i]) > 0){
+                   for($j = 0; $j < count($request->activate_options[$i]); $j++) {
+                    $op_content = explode('_', $request->activate_options[$i][$j]);
+                    $skip_options = [
+                        'id' => Str::uuid(),
+                        'question_id' => $request->question_id,
+                        'value' => $op_content[0], 
+                        'title' => $op_content[1],
+                        'option_question_id' => $op_content[2]
+                        ];
+                    QuestionOption::insert($skip_options);
+                  } 
+                }
                 skipLogic::insert($skip_ques);
             }
             return redirect()->route('skiplogic.numskipLogic', $request->question_id)->with('message', 'Checks Applied Successfully!');
@@ -382,6 +466,34 @@ class SkipLogicController extends Controller
                     'deactivate_sections' => (isset($request->deactivate_sections[$i]) && $request->deactivate_sections[$i] != '') ? implode(',', $request->deactivate_sections[$i]) : '',
                     'deactivate_questions' => (isset($request->deactivate_questions[$i]) && $request->deactivate_questions[$i] != '') ? implode(',', $request->deactivate_questions[$i]) : ''
                 ];
+                // Deactivate Questions options
+                if(isset($request->deactivate_options[$i]) && count($request->deactivate_options[$i]) > 0){
+                  for($j = 0; $j < count($request->deactivate_options[$i]); $j++) {
+                    $op_content = explode('_', $request->deactivate_options[$i][$j]);
+                    $skip_options = [
+                        'id' => Str::uuid(),
+                        'question_id' => $request->question_id,
+                        'value' => $op_content[0], 
+                        'title' => $op_content[1],
+                        'option_question_id' => $op_content[2]
+                        ];
+                    QuestionOption::insert($skip_options);
+                  }  
+                }
+                // Activate Questions options
+                if(isset($request->activate_options[$i]) && count($request->activate_options[$i]) > 0){
+                   for($j = 0; $j < count($request->activate_options[$i]); $j++) {
+                    $op_content = explode('_', $request->activate_options[$i][$j]);
+                    $skip_options = [
+                        'id' => Str::uuid(),
+                        'question_id' => $request->question_id,
+                        'value' => $op_content[0], 
+                        'title' => $op_content[1],
+                        'option_question_id' => $op_content[2]
+                        ];
+                    QuestionOption::insert($skip_options);
+                  } 
+                }
                 skipLogic::insert($skip_ques);
             }
             return redirect()->route('skiplogic.textskipLogic', $request->question_id)->with('message', 'Checks Applied Successfully!');
