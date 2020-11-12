@@ -257,6 +257,26 @@
                                                 $previousStepId = $step->step_id;
                                                 @endphp
                                             @endforeach
+
+
+                                            @php
+                                            $stepValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidationForStep($phase, $subjectId, $studyId, false);
+                                            $adjudicationStepValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidationForStep($phase, $subjectId, $studyId, true);
+                                            @endphp
+                                            @push('script')
+                                            <script>
+                                                function validateStep(stepIdStr){
+                                                    var isFormValid = true;
+                                                    {!! $stepValidationStr !!}
+                                                    return isFormValid;
+                                                }
+                                                function validateAdjudicationStep(stepIdStr){
+                                                    var isFormValid = true;
+                                                    {!! $adjudicationStepValidationStr !!}
+                                                    return isFormValid;
+                                                }
+                                            </script>
+                                            @endpush
                                         @endforeach
                                     @endif
                                 </div>
