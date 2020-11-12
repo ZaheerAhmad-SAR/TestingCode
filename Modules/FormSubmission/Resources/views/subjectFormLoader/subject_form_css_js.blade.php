@@ -77,6 +77,7 @@
                     var reason = $('#edit_reason_text_' + stepIdStr).val();
                     var frmData = $("#form_master_" + stepIdStr).serialize() + '&' + $("#form_" + stepIdStr).serialize() + '&terms_cond_' + stepIdStr + '=' + term_cond + '&' + 'edit_reason_text=' + reason;
                     submitRequest(frmData, stepIdStr, formTypeId, formStatusIdStr);
+                    reloadPage(2);
                 }
             }
 
@@ -165,19 +166,42 @@
                 })
             }
 
+            function validateAndSubmitForm_bk123445567(stepIdStr, formTypeId, formStatusIdStr) {
+                if(isFormDataLocked(stepIdStr) == false){
+                    if(canSubmitForm(formTypeId,stepIdStr)){
+                        if(needToPutFormInEditMode(stepIdStr) == false){
+                            const promise = validateForm(stepIdStr);
+                            promise
+                                .then((data) => {
+                                    console.log(data);
+                                    submitForm(stepIdStr, formTypeId, formStatusIdStr);
+                                })
+                                .catch((error) => {
+                                    console.log(error);
+                                    handleValidationErrors(error);
+                                });
+                        }else{
+                            showPutFormInEditModeError();
+                        }
+                    }else{
+                        showPermissionError();
+                    }
+                }else{
+                    showDataLockError();
+                }
+
+            }
+
             function validateAndSubmitForm(stepIdStr, formTypeId, formStatusIdStr) {
                 if(isFormDataLocked(stepIdStr) == false){
                     if(canSubmitForm(formTypeId,stepIdStr)){
-                        const promise = validateForm(stepIdStr);
-                        promise
-                            .then((data) => {
-                                console.log(data);
+                        if(needToPutFormInEditMode(stepIdStr) == false){
+                            if(validateStep(stepIdStr)){
                                 submitForm(stepIdStr, formTypeId, formStatusIdStr);
-                            })
-                            .catch((error) => {
-                                console.log(error);
-                                handleValidationErrors(error);
-                            });
+                            }
+                        }else{
+                            showPutFormInEditModeError();
+                        }
                     }else{
                         showPermissionError();
                     }
@@ -190,21 +214,44 @@
             function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, formTypeId, field_name, fieldId) {
                 if(isFormDataLocked(stepIdStr) == false){
                     if(canSubmitForm(formTypeId,stepIdStr)){
-                        checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
-                        const validationPromise = validateFormField(stepIdStr, questionId, field_name, fieldId);
-                        validationPromise
-                            .then((data) => {
-                                console.log(data)
+                        if(needToPutFormInEditMode(stepIdStr) == false){
+                            checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
+                            if(validateStep(stepIdStr)){
                                 submitFormField(stepIdStr, questionId, field_name, fieldId);
-                            })
-                            .then((data) => {
-                                console.log(data)
-                                validateDependentFields(sectionIdStr, questionId, field_name, fieldId);
-                            })
-                            .catch((error) => {
-                                console.log(error)
-                                handleValidationErrors(error);
-                            });
+                            }
+                        }else{
+                            showPutFormInEditModeError();
+                        }
+                    }else{
+                        showPermissionError();
+                    }
+                }else{
+                    showDataLockError();
+                }
+            }
+
+            function validateAndSubmitField_bk123(stepIdStr, sectionIdStr, questionId, formTypeId, field_name, fieldId) {
+                if(isFormDataLocked(stepIdStr) == false){
+                    if(canSubmitForm(formTypeId,stepIdStr)){
+                        if(needToPutFormInEditMode(stepIdStr) == false){
+                            checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
+                            const validationPromise = validateFormField(stepIdStr, questionId, field_name, fieldId);
+                            validationPromise
+                                .then((data) => {
+                                    console.log(data)
+                                    submitFormField(stepIdStr, questionId, field_name, fieldId);
+                                })
+                                .then((data) => {
+                                    console.log(data)
+                                    validateDependentFields(sectionIdStr, questionId, field_name, fieldId);
+                                })
+                                .catch((error) => {
+                                    console.log(error)
+                                    handleValidationErrors(error);
+                                });
+                        }else{
+                            showPutFormInEditModeError();
+                        }
                     }else{
                         showPermissionError();
                     }
@@ -289,16 +336,16 @@
             function openFormForEditing(stepIdStr, stepClsStr, formTypeId, formStatusIdStr) {
                 if(isFormDataLocked(stepIdStr) == false){
                     if(canSubmitForm(formTypeId,stepIdStr)){
-                        var frmData = $("#form_master_" + stepIdStr).serialize();
-                        frmData = frmData + '&' + 'open_form_to_edit=1';
-                        $.ajax({
-                            url: "{{ route('SubjectFormSubmission.openSubjectFormToEdit') }}",
-                            type: 'POST',
-                            data: frmData,
-                            success: function(response) {
-                                showReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr);
-                            }
-                        });
+                            var frmData = $("#form_master_" + stepIdStr).serialize();
+                            frmData = frmData + '&' + 'open_form_to_edit=1';
+                            $.ajax({
+                                url: "{{ route('SubjectFormSubmission.openSubjectFormToEdit') }}",
+                                type: 'POST',
+                                data: frmData,
+                                success: function(response) {
+                                    showReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr);
+                                }
+                            });
                     }else{
                         showPermissionError();
                     }
@@ -450,29 +497,49 @@
 
                 if(
                     (formTypeId == 1) &&
-                    (canQualityControl == true) &&
-                    (
-                    ((formStatus == 'no_status') && (formFilledByUserId == 'no-user-id')) ||
-                    ((formStatus != 'no_status') && (formFilledByUserId == current_user_id))
-                    )
-
+                    (canQualityControl == true)
                 ){
-                    canSubmit = true;
+                    if((formStatus == 'no_status') && (formFilledByUserId == 'no-user-id')){
+                        canSubmit = true;
+                    }
+                    if((formStatus != 'no_status') && (formFilledByUserId == current_user_id)){
+                        canSubmit = true;
+                    }
+                    if((formStatus == 'complete') && (isFormInEditMode == 'no')){
+                        canSubmit = false;
+                    }
                 }
                 if(
-                    (formTypeId == 2) && (canGrading == true) &&
-                    (
-                    ((formStatus == 'no_status') && (formFilledByUserId == 'no-user-id')) ||
-                    ((formStatus != 'no_status') && (formFilledByUserId == current_user_id))
-                    )
+                    (formTypeId == 2) &&
+                    (canGrading == true)
                 ){
-                    canSubmit = true;
+                    if((formStatus == 'no_status') && (formFilledByUserId == 'no-user-id')){
+                        canSubmit = true;
+                    }
+                    if((formStatus != 'no_status') && (formFilledByUserId == current_user_id)){
+                        canSubmit = true;
+                    }
                 }
                 return canSubmit;
             }
 
+            function needToPutFormInEditMode(stepIdStr){
+                var putFormInEditMode = false;
+                var formStatus = $('#form_master_' + stepIdStr + ' input[name="formStatus"]').val();
+                var isFormInEditMode = $('#form_editing_status_' + stepIdStr).val();
+
+                if((formStatus == 'complete') && (isFormInEditMode == 'no')){
+                    putFormInEditMode = true;
+                }
+                return putFormInEditMode;
+            }
+
             function showPermissionError(){
                 showAlert('Alert', 'You do not have permission to submit form', 'error');
+            }
+
+            function showPutFormInEditModeError(){
+                showAlert('Alert', 'Please put form in edit mode first', 'error');
             }
 
             function showDataLockError(){
@@ -480,11 +547,11 @@
             }
 
             function reloadPage(waitSeconds) {
-                /* startWait();
+                startWait();
                 var seconds = waitSeconds * 1000;
                 setTimeout(function() {
                    location.reload();
-               }, seconds); */
+               }, seconds);
             }
             disableByClass('{{ $studyClsStr }}');
         </script>

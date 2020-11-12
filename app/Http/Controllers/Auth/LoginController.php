@@ -90,7 +90,6 @@ class LoginController extends Controller
             }
             else
             {
-                // dd('count is zero');
                 Auth::logout();
                 $system_info = new UserSystemInfo();
                 $system_info->user_id = $user->id;

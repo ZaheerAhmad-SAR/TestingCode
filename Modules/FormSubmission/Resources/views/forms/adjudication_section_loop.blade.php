@@ -130,7 +130,6 @@
                         }
                     }
                     validateAndSubmitAdjudicationForm(stepIdStr, '{{ buildAdjudicationStatusIdClsStr($adjudicationFormStatusObj->id) }}');
-                    reloadPage(3);
                 }
             }
 

@@ -21,6 +21,7 @@
                         '&adjudication_form_terms_cond_' + stepIdStr + '=' + term_cond + '&' + 'adjudication_form_edit_reason_text=' +
                         reason;
                     submitAdjudicationFormRequest(frmData, stepIdStr, formStatusIdStr);
+                    reloadPage(2);
                 }
             }
 
@@ -99,16 +100,20 @@
 
             function validateAndSubmitAdjudicationForm(stepIdStr, formStatusIdStr) {
                 if(canSubmitAdjudicationForm(stepIdStr)){
-                    const promise = validateAdjudicationForm(stepIdStr);
-                    promise
-                        .then((data) => {
-                            console.log(data);
-                            submitAdjudicationForm(stepIdStr, formStatusIdStr);
-                        })
-                        .catch((error) => {
-                            console.log(error);
-                            handleValidationErrors(error);
-                        });
+                    if(needToPutAdjudicationFormInEditMode(stepIdStr) == false){
+                        const promise = validateAdjudicationForm(stepIdStr);
+                        promise
+                            .then((data) => {
+                                console.log(data);
+                                submitAdjudicationForm(stepIdStr, formStatusIdStr);
+                            })
+                            .catch((error) => {
+                                console.log(error);
+                                handleValidationErrors(error);
+                            });
+                    }else{
+                        showPutFormInEditModeError();
+                    }
                 }else{
                     showPermissionError();
                 }
@@ -116,21 +121,25 @@
 
             function validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, field_name, fieldId) {
                 if(canSubmitAdjudicationForm(stepIdStr)){
-                    checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
-                    const validationPromise = validateAdjudicationFormField(stepIdStr, questionId, field_name, fieldId);
-                    validationPromise
-                        .then((data) => {
-                            console.log(data)
-                            submitAdjudicationFormField(stepIdStr, questionId, field_name, fieldId);
-                        })
-                        .then((data) => {
-                            console.log(data)
-                            validateDependentFields(sectionIdStr, questionId, field_name, fieldId);
-                        })
-                        .catch((error) => {
-                            console.log(error)
-                            handleValidationErrors(error);
-                        });
+                    if(needToPutAdjudicationFormInEditMode(stepIdStr) == false){
+                        checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
+                        const validationPromise = validateAdjudicationFormField(stepIdStr, questionId, field_name, fieldId);
+                        validationPromise
+                            .then((data) => {
+                                console.log(data)
+                                submitAdjudicationFormField(stepIdStr, questionId, field_name, fieldId);
+                            })
+                            .then((data) => {
+                                console.log(data)
+                                validateDependentFields(sectionIdStr, questionId, field_name, fieldId);
+                            })
+                            .catch((error) => {
+                                console.log(error)
+                                handleValidationErrors(error);
+                            });
+                    }else{
+                        showPutFormInEditModeError();
+                    }
                 }else{
                     showPermissionError();
                 }
@@ -205,17 +214,17 @@
 
             function openAdjudicationFormForEditing(stepIdStr, stepClsStr, formTypeId, formStatusIdStr) {
                 if(canSubmitAdjudicationForm(stepIdStr)){
-                var frmData = $("#adjudication_form_master_" + stepIdStr).serialize();
-                frmData = frmData + '&' + 'open_adjudication_form_to_edit=1';
-                $.ajax({
-                    url: "{{ route('SubjectAdjudicationFormSubmission.openSubjectAdjudicationFormToEdit') }}",
-                    type: 'POST',
-                    data: frmData,
-                    success: function(response) {
-                        showAdjudicationFormReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr);
-                    }
-                });
-            }else{
+                        var frmData = $("#adjudication_form_master_" + stepIdStr).serialize();
+                        frmData = frmData + '&' + 'open_adjudication_form_to_edit=1';
+                        $.ajax({
+                            url: "{{ route('SubjectAdjudicationFormSubmission.openSubjectAdjudicationFormToEdit') }}",
+                            type: 'POST',
+                            data: frmData,
+                            success: function(response) {
+                                showAdjudicationFormReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr);
+                            }
+                        });
+                }else{
                     showPermissionError();
                 }
             }
@@ -284,17 +293,25 @@
                 var form_adjudicated_by_id = $('#adjudication_form_master_' + stepIdStr + ' input[name="form_adjudicated_by_id"]').val();
                 var current_user_id = '{{ auth()->user()->id }}';
 
-                if(
-                    (canAdjudication == true) &&
-                    (
-                    ((adjudication_status == 'no_status') && (form_adjudicated_by_id == 'no-user-id')) ||
-                    ((adjudication_status != 'no_status') && (form_adjudicated_by_id == current_user_id))
-                    )
-
-                ){
-                    canSubmit = true;
+                if(canAdjudication == true){
+                    if((adjudication_status == 'no_status') && (form_adjudicated_by_id == 'no-user-id')){
+                        canSubmit = true;
+                    }
+                    if((adjudication_status != 'no_status') && (form_adjudicated_by_id == current_user_id)){
+                        canSubmit = true;
+                    }
+                    return canSubmit;
                 }
-                return canSubmit;
+            }
+
+            function needToPutAdjudicationFormInEditMode(stepIdStr){
+                var putFormInEditMode = false;
+                var adjudication_status = $('#adjudication_form_master_' + stepIdStr + ' input[name="adjudication_status"]').val();
+                var isFormInEditMode = $('#adjudication_form_editing_status_' + stepIdStr).val();
+                if((adjudication_status == 'complete') && (isFormInEditMode == 'no')){
+                    putFormInEditMode = true;
+                }
+                return putFormInEditMode;
             }
 
         </script>

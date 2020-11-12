@@ -162,7 +162,6 @@ if(null !== $formStatusObj){
                 }
             }
             validateAndSubmitForm(stepIdStr, '{{ $step->form_type_id }}', '{{ buildGradingStatusIdClsStr($formStatusObj->id) }}');
-            reloadPage(2);
         }
     }
 </script>

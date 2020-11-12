@@ -11,9 +11,11 @@ use Modules\Admin\Entities\Study;
 use Modules\FormSubmission\Entities\Answer;
 use Modules\FormSubmission\Entities\FormVersion;
 use Modules\FormSubmission\Entities\SubjectsPhases;
+use Modules\FormSubmission\Traits\JSQuestionDataValidation;
 
 class PhaseSteps extends Model
 {
+    use JSQuestionDataValidation;
     protected $fillable = [
         'step_id', 'phase_id', 'step_position', 'form_type', 'form_type_id', 'modility_id', 'step_name',
         'step_description', 'graders_number', 'q_c', 'eligibility', 'parent_id'
