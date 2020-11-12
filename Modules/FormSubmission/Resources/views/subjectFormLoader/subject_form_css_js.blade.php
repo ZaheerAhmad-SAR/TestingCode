@@ -450,12 +450,13 @@
             }
             function submitAssignPhaseToSubjectForm(e){
                 e.preventDefault();
+                $("#assignPhasesToSubjectPopup").modal('hide');
+                startWait();
                 $.ajax({
                     url: "{{route('assignPhaseToSubject.submitAssignPhaseToSubjectForm')}}",
                     type: 'POST',
                     data: $( "#assignPhaseToSubjectForm" ).serialize(),
                     success: function(response){
-                        $("#assignPhasesToSubjectPopup").modal('hide');
                         $('#assignPhaseToSubjectMainDiv').empty();
                         reloadPage(0);
                     }
@@ -553,6 +554,6 @@
                    location.reload();
                }, seconds);
             }
-            disableByClass('{{ $studyClsStr }}');
+            //disableByClass('{{ $studyClsStr }}');
         </script>
     @endpush

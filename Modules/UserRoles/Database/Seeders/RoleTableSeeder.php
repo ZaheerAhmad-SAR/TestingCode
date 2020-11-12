@@ -28,7 +28,7 @@ class RoleTableSeeder extends Seeder
                     'id' => Str::uuid(),
                     'name' => $role,
                     'description' => $role,
-                    'role_type' => 'system_role',
+                    'role_type' => 'super',
                     'created_by' => ''
                 ]);
             }
