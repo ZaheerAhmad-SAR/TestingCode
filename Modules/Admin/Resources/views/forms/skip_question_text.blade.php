@@ -6,7 +6,7 @@
             <div class="col-12 align-self-center">
                 <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
                     <div class="w-sm-100 mr-auto">
-                        <h4 class="mb-0">Validations ON Number</h4>
+                        <h4 class="mb-0">Validations ON Box</h4>
                     </div>
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                         <li class="breadcrumb-item">Dashboard</li>
@@ -34,17 +34,19 @@
            
             <input type="hidden" name="question_id" value="{{request('id')}}">
             <div class="row">
-               <div class="col-12 col-sm-12 mt-3">
-                   <div class="card">
-                       <div class="card-body">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <input type="text" class="form-control" name="textbox_value[]" placeholder="Enter comma separated Text values">
-                                </div>
-                            </div>                           
+                {{-- @foreach($num_values->skiplogic as $key => $value)  {{$value->textbox_value}}--}}
+                   <div class="col-12 col-sm-12 mt-3">
+                       <div class="card">
+                           <div class="card-body">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" name="textbox_value[]" placeholder="Enter comma separated Text values" value="">
+                                    </div>
+                                </div>                           
+                           </div>
                        </div>
                    </div>
-               </div>
+                {{-- @endforeach    --}}
             </div>
             <div class="row">
                 <div class="col-12 col-sm-6 mt-3 current_div_ac">

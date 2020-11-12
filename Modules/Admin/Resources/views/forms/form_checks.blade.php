@@ -39,12 +39,30 @@
         }
         $('.addvalidations').on('click', function() {
 
+            var parameter_1 = $('#lower_limit_num').val();
             var htmlStr = `<div class="values_row">
                                     <div class="form-group row" style="margin-top: 10px;">
-                                        <div class="col-sm-1"> Rule:</div>
-                                        <div class="col-sm-4 validationRuleDivCls">
+                                        <div class="col-sm-2"> Rule:</div>
+                                        <div class="col-sm-2 validationRuleDivCls">
 
                                         </div>
+                                        <div class="col-sm-2"> Parameter-1:</div>
+                                        <div class="col-sm-2"> <input type="number" name="parameter_1" id="parameter_1" class="form-control" required></div>
+                                        <div class="col-sm-2"> Parameter-2:</div>
+                                        <div class="col-sm-2"> <input type="number" name="parameter_2" id="parameter_2" class="form-control" required></div>
+                                    </div>
+                                    <div class="form-group row" style="margin-top: 10px;">
+                                        <div class="col-sm-2"> Message Type:</div>
+                                        <div class="col-sm-2">
+                                            <select name="message_type" class="form-control" required>
+                                                <option value="">--Select--</option>
+                                                <option value="warning">Warning</option>
+                                                <option value="error">Error</option>
+                                                <option value="info">Info</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2"> Message:</div>
+                                        <div class="col-sm-5"> <input type="text" name="message" id="message" class="form-control" required></div>
                                         <div class="form-group col-md-1" style="text-align: right;!important;">
                                             <i class="btn btn-outline-danger fa fa-trash remove" style="margin-top: 3px;"></i>
                                         </div>
@@ -52,6 +70,7 @@
                                 </div>`;
             $('.appendDatavalidations').append(htmlStr);
             updateRulesDropDown();
+            updateParameters();
             return false;
         });
 
