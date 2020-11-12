@@ -52,13 +52,12 @@ class UserController extends Controller
     }
     public function index()
     {
-        if (Auth::user()->can('users.create')) {
-            $roles  =   Role::where('role_type','=','system_role')->get();
-        }
+
+        $roles  =   Role::where('role_type','=','system_role')->get();
         $currentStudy = session('current_study');
 
-            $users  =  User::orderBY('name','asc')->get();
-            $studyusers = User::where('id','!=',\auth()->user()->id)->get();
+        $users  =  User::orderBY('name','asc')->get();
+        $studyusers = User::where('id','!=',\auth()->user()->id)->get();
 
         return view('userroles::users.index',compact('users','roles','studyusers'));
 
@@ -83,12 +82,13 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        dd('user controller');
         if($request->ajax()) {
             // make validator
             $validator = Validator::make($request->all(), [
                 'name'      => 'required',
                 'email'     => 'required|email',
-                'password'  => 'required|string|min:8|nullable|confirmed|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
+                'password'  => 'required|string|min:8|confirmed|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
                 'roles'    => "required|array|min:1",
                 'roles.*'  => "required|min:1",
             ]);
@@ -112,7 +112,7 @@ class UserController extends Controller
 
                     // unique ID
                     $id = Str::uuid();
-                    
+
                     $user = User::create([
                         'id' => $id,
                         'name' => $request->name,
@@ -144,7 +144,7 @@ class UserController extends Controller
             } // validator check edns
 
         } // ajax ends
-    
+
     }
 
     /**
@@ -355,6 +355,9 @@ class UserController extends Controller
             $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
             $user->password =   Hash::make($request->password);
             $user->qr_flag = '0';
+            $user->google2fa_secret = NULL;
+            $user->google_auth = NULL;
+
             $user->save();
             if ($request->roles){
                 $userroles  = UserRole::where('user_id',$user->id)->get();
@@ -380,8 +383,8 @@ class UserController extends Controller
             $user->email =  $request->email;
             $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
             $user->qr_flag = '0';
-            $user->google2fa_secret= '';
-            $user->google_auth = '';
+            $user->google2fa_secret = NULL;
+            $user->google_auth = NULL;
             $user->save();
             if ($request->roles){
                 $userroles  = UserRole::where('user_id',$user->id)->get();
@@ -407,7 +410,7 @@ class UserController extends Controller
      // log event details
         $logEventDetails = eventDetails($user->id, 'User', 'Update', $request->ip(), $oldUser);
 
-        return redirect()->route('users.index');
+        return redirect()->back()->with('message','user updated');
 
     }
 
