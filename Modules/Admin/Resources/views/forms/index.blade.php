@@ -95,8 +95,16 @@
                                         data-field-type="&nbsp;&nbsp;{{ $value->field_type }}"
                                         data-field-id="&nbsp;&nbsp;{{ $value->id }}"
                                         style="font-size: 12px;padding: 5px;cursor: pointer;"><i
-                                            class="&nbsp;&nbsp;{{ $value->icon }}"
-                                            aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp;{{ $value->field_type }}
+                                            class="{{ $value->icon }}"
+                                            aria-hidden="true"></i>&nbsp;&nbsp;{{ $value->field_type }}
+                                    </div>
+                                @elseif($value->field_type =='Calculated')
+                                    <div class="border-btm add_calculated_field color-black"
+                                        data-field-type="&nbsp;&nbsp;{{ $value->field_type }}"
+                                        data-field-id="&nbsp;&nbsp;{{ $value->id }}"
+                                        style="font-size: 12px;padding: 5px;cursor: pointer;"><i
+                                            class="{{ $value->icon }}"
+                                            aria-hidden="true"></i>&nbsp;&nbsp;{{ $value->field_type }}
                                     </div>
                                 @else
                                     <div class="border-btm form-fields color-black"
@@ -446,7 +454,7 @@
                                                 <option value=">=">Greater OR Equal</option>
                                                 <option value="<=">Less OR Equal</option>
                                                 <option value="!=">Not Equal</option>
-                                                <option value=">">Greater Then</option>
+                                                <option value=">">Greater Than</option>
                                                 <option value="<">Less</option>
                                             </select>
                                         </div>
@@ -496,8 +504,8 @@
                                         <select class="form-control" name="decision_based_on" id="decision_based_on">
                                             <option value="">---Decision---</option>
                                             <option value="any_change">Any Change</option>
-                                            <option value="custom">Custom Value</option>
-                                            <option value="percentage">Percentage Value</option>
+                                            <option value="custom">Custom</option>
+                                            <option value="percentage">Percentage</option>
                                         </select>
                                     </div>
                                 </div>
@@ -509,8 +517,8 @@
                                                 <option value="">---Select---</option>
                                                 <option value=">=">Greater OR Equal</option>
                                                 <option value="<=">Less OR Equal</option>
-                                                <option value=">">Greater Then</option>
-                                                <option value="<">Less Then</option>
+                                                <option value=">">Greater Than</option>
+                                                <option value="<">Less Than</option>
                                             </select>
                                         </div>
                                         <div class="col-sm-2">Value:</div>
@@ -756,6 +764,7 @@
 @endsection
 @include('admin::forms.edit_crf')
 @include('admin::forms.form_checks')
+@include('admin::forms.add_calculated_field')
 @section('styles')
     <style>
         .custom_fields {
@@ -815,7 +824,7 @@
         })
         $('.addOptions').on('click', function() {
             $('.appendDataOptions').append(
-                '<div class="values_row_options"><div class="form-group row"><div class="form-group col-md-6"><input type="text" id="option_name" name="option_name[]" class="form-control" placeholder="Enter option name" style="background:white;"></div><div class="form-group col-md-4"><input type="number" placeholder="Option value" name="option_value[]" id="option_value" class="form-control" style="background:white;"></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove_option" style="margin-top: 3px;"></i></div></div></div>'
+                '<div class="values_row_options"><div class="form-group row"><div class="form-group col-md-6"><input type="text" id="option_name" name="option_name[]" class="form-control" placeholder="Enter option name" style="background:white;" required></div><div class="form-group col-md-4"><input type="number" placeholder="Option value" name="option_value[]" id="option_value" class="form-control" style="background:white;" required></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove_option" style="margin-top: 3px;"></i></div></div></div>'
                 );
             return false;
         });
