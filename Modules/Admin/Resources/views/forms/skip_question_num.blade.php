@@ -37,20 +37,22 @@
                <div class="col-12 col-sm-12 mt-3">
                    <div class="card">
                        <div class="card-body">
+                        {{-- @foreach($num_values->skiplogic as $key => $value) {{$value->number_value}} --}}
                             <div class="col-md-6" style="display: inline-block;">
                                 <div class="">
-                                    <input type="text" class="form-control" name="number_value[]" placeholder="Enter comma separated Number values">
+                                    <input type="text" class="form-control" name="number_value[]" placeholder="Enter comma separated Number values " value="">
                                 </div>
                             </div>
                             <div class="col-md-5" style="display: inline-block;">    
                                     <select class="form-control" name="operator[]">
                                         <option value="">---Select---</option>
-                                        <option value=">=">Greater OR Equal</option>
-                                        <option value="<=">Less OR Equal</option>
-                                        <option value=">">Greater Then</option>
-                                        <option value="<">Less Then</option>
+                                        <option value=">=" {{-- @if($value->operator =='>=') @php echo "selected"; @endphp @endif --}}>Greater OR Equal</option>
+                                        <option value="<=" {{-- @if($value->operator =='<=') @php echo "selected"; @endphp @endif --}}>Less OR Equal</option>
+                                        <option value=">" {{-- @if($value->operator =='>') @php echo "selected"; @endphp @endif --}}>Greater Then</option>
+                                        <option value="<" {{-- @if($value->operator =='<') @php echo "selected"; @endphp @endif --}}>Less Then</option>
                                     </select>
                             </div>
+                        {{-- @endforeach     --}}
                        </div>
                    </div>
                </div>
@@ -70,7 +72,7 @@
                                 </table>
                             </div>
                         </div>
-                    </div>
+                    </div>           
         @foreach ($all_study_steps as $value)
         @foreach($value->studySteps as $key => $value)
             {{-- @if(in_array($value->step_id, $activate_forms_array)){ $checked = 'checked'; }@else{ $checked = ''; }@endif --}}
