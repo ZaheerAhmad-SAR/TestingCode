@@ -7,23 +7,21 @@ use Modules\FormSubmission\Entities\ValidationRule;
 
 trait JSQuestionDataValidation
 {
-    public static function generateJSFormValidationForStep($phase, $subjectId, $studyId, $isForAdjudication = false)
+    public static function generateJSFormValidationForStep($step, $isForAdjudication = false)
     {
         $stepValidationStr = '';
-
-        foreach ($phase->steps as $step) {
-            $questionValidationStr = '';
-            $functionName = ($isForAdjudication) ? 'validateAdjudicationQuestion' : 'validateQuestion';
-            foreach ($step->sections as $section) {
-                foreach ($section->questions as $question) {
-                    $questionIdStr = buildSafeStr($question->id, '');
-                    $stepIdStr = buildSafeStr($step->step_id, '');
-                    $questionValidationStr .= 'isFormValid = ' . $functionName . $questionIdStr . '(isFormValid, "' . $stepIdStr . '");';
-                }
+        $questionValidationStr = '';
+        $stepIdStr = buildSafeStr($step->step_id, '');
+        $functionName = ($isForAdjudication) ? 'validateAdjudicationQuestion' : 'validateQuestion';
+        foreach ($step->sections as $section) {
+            foreach ($section->questions as $question) {
+                $questionIdStr = buildSafeStr($question->id, '');
+                $questionValidationStr .= '
+                    isFormValid = ' . $functionName . $questionIdStr . '(isFormValid, "' . $stepIdStr . '");';
             }
-
-            $stepValidationStr .= $questionValidationStr;
         }
+
+        $stepValidationStr .= $questionValidationStr;
         return $stepValidationStr;
     }
 
