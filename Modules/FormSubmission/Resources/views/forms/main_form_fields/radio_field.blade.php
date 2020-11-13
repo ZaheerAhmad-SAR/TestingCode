@@ -22,7 +22,7 @@ if($checked == 'checked'){
     <div
         class="custom-control custom-radio {{ $optionGroup->option_layout == 'horizontal' ? 'custom-control-inline' : '' }}">
         <input type="radio" name="{{ $field_name }}"
-            onchange="validateAndSubmitAdjudicationFormField('{{ $stepIdStr }}', '{{ $sectionIdStr }}', '{{ $question->id }}', '{{ $questionIdStr }}', {{ $step->form_type_id }}, '{{ $field_name }}', '{{ $fieldId }}');"
+            onchange="validateAndSubmitAdjudicationFormField('{{ $stepIdStr }}', '{{ $sectionIdStr }}', '{{ $question->id }}', '{{ $questionIdStr }}', '{{ $field_name }}', '{{ $fieldId }}');"
             value="{{ $option_value }}" {{ $checked }}
             class="custom-control-input {{ $fieldId }}">
         <label class="custom-control-label" for="customCheck1">{{ $option_name }}</label>

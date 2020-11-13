@@ -87,6 +87,7 @@ trait JSQuestionDataValidation
 
 
         $functionName = ($isForAdjudication) ? 'validateAdjudicationQuestion' : 'validateQuestion';
+        $getValueFunctionName = ($isForAdjudication) ? 'getAdjudicationFormFieldValue' : 'getFormFieldValue';
 
         $mainQuestionValidationStr .= '
                 function ' . $functionName . $questionIdStr . '(isFormValid, stepIdStr){
@@ -96,7 +97,8 @@ trait JSQuestionDataValidation
                         var fieldTitle = "' . $fieldTitle . '";
                         ' . $messageTypeStr . '
 
-                        var fieldVal = getFormFieldValue(stepIdStr, fieldName, fieldId);
+                        var fieldVal = ' . $getValueFunctionName . '(stepIdStr, fieldName, fieldId);
+
                         ' . $questionValidationStr . '
                     }
                     return isFormValid;
