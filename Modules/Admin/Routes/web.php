@@ -34,6 +34,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('get_steps', 'StudyStructureController@get_steps')->name('study.getSteps');
     Route::get('study_phases', 'StudyStructureController@getallphases')->name('getPhases');
     Route::get('forms/get_phases/{id}', 'FormController@get_phases')->name('forms.get_phases');
+    Route::post('forms/create_filter_session', 'FormController@create_filter_session')->name('forms.makeFilterSession');
     Route::post('study/update', 'StudyStructureController@update')->name('study.updatePhase');
     // for clone steps
     //Route::resource('cloneSteps', 'CloneStepsController');
@@ -53,6 +54,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('section/update', 'SectionController@update')->name('section.updateSections');
     /// for form management
     Route::get('forms/step_by_phaseId/{id}', 'FormController@get_steps_by_phaseId')->name('forms.stepbyphaseId');
+    Route::get('forms/get_questions_for_calculation/{id}', 'FormController@get_questions_calculation')->name('forms.calculationQuestions');
     Route::resource('forms', 'FormController');
     Route::post('forms/add_questions', 'FormController@add_questions')->name('forms.addQuestions');
     Route::post('forms/updateQuestion', 'FormController@update_questions')->name('forms.updateQuestion');
