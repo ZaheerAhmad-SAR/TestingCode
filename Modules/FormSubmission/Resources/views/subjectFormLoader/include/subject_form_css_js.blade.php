@@ -463,15 +463,9 @@
             }
 
             function canLockFormData(){
-                var canQualityControl = {{ (canQualityControl(['create', 'store', 'edit', 'update']))? 'true':'false' }};
-                var canGrading = {{ (canGrading(['create', 'store', 'edit', 'update']))? 'true':'false' }};
-                var canAdjudication = {{ (canAdjudication(['create', 'store', 'edit', 'update']))? 'true':'false' }};
+                var canManageData = {{ (canManageData(['create', 'store', 'edit', 'update']))? 'true':'false' }};
                 userCanLockFormData = false;
-                if(
-                    (canQualityControl == true) &&
-                    (canGrading == true) &&
-                    (canAdjudication == true)
-                ){
+                if(canManageData == true){
                     userCanLockFormData = true;
                 }
                 return userCanLockFormData;

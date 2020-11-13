@@ -152,7 +152,7 @@
     @endpush
 
     @php
-    $adjudicationStepValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidationForStep($phase, $subjectId, $studyId, true);
+    $adjudicationStepValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidationForStep($step, true);
     @endphp
     @push('script')
         <script>

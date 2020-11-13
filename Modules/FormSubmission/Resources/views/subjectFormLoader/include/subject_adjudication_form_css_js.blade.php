@@ -282,11 +282,11 @@
                 putResponseImage(stepIdStr, 'complete', formTypeId, formStatusIdStr);
             }
 
-            function copyValueToField(stepIdStr, sectionIdStr, questionId, field_name, fieldId, copyToFieldId) {
+            function copyValueToField(stepIdStr, sectionIdStr, questionId, questionIdStr, field_name, fieldId, copyToFieldId) {
                 var fieldVal = $('#' + fieldId).val();
                 $('#' + copyToFieldId).val(fieldVal);
                 var copyToFieldName = $("#" + copyToFieldId).attr("name");
-                validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, copyToFieldName, copyToFieldId);
+                validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, questionIdStr, copyToFieldName, copyToFieldId);
             }
 
             function calculateAverage(stepIdStr, sectionIdStr, questionId, questionIdStr, copyToFieldId, decimalPoint){
@@ -303,7 +303,7 @@
                 var avg = avg.toFixed(decimalPoint);
                 $('#' + copyToFieldId).val(avg);
                 var copyToFieldName = $("#" + copyToFieldId).attr("name");
-                validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, copyToFieldName, copyToFieldId);
+                validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, questionIdStr, copyToFieldName, copyToFieldId);
             }
 
             function showAllQuestions(){

@@ -52,9 +52,12 @@ $adjudicationRequiredQuestionIdsArray = \Modules\FormSubmission\Entities\Questio
                 'field_id'=>$question->formfields->id,
             ];
             $finalAnswer = \Modules\FormSubmission\Entities\FinalAnswer::getFinalAnswer($getFinalAnswerArray);
+
+            $is_required = ($question->formFields->is_required == 'yes')? 'required':'';
+            $is_required_star = ($question->formFields->is_required == 'yes')? '<span class="text text-danger">*</span>':'';
             @endphp
             <div class="form-group adjudication-border">
-                <label class="">{{ $question->question_text }}</label>
+                <label class="">{{ $question->question_text }} {!! $is_required_star !!}</label>
                 <div class="row">
                     <div class="col-10">
                         <div class="row">
@@ -83,11 +86,14 @@ $adjudicationRequiredQuestionIdsArray = \Modules\FormSubmission\Entities\Questio
 
                 $grader_field_name = $field_name . '_' . $graderIdStr;
                 $grader_field_id = $field_name . '_' . $graderIdStr . '_' . $questionIdStr;
+
+                $is_required = ($question->formFields->is_required == 'yes')? 'required':'';
+                $is_required_star = ($question->formFields->is_required == 'yes')? '<span class="text text-danger">*</span>':'';
                 @endphp
                 <div class="col-{{$colNum}}">
-                    <label class="">{{ $grader->name }}</label>
+                    <label class="">{{ $grader->name }} {!! $is_required_star !!}</label>
                     @include('formsubmission::forms.adjudication_form_fields.adjudication_form_field_checks', ['fieldType'=>$fieldType, 'field_name'=> $grader_field_name, 'questionIdStr'=>
-                    $questionIdStr, 'copyToFieldId'=> $fieldId, 'fieldId'=> $grader_field_id, 'answer'=> $answer])
+                    $questionIdStr, 'copyToFieldId'=> $fieldId, 'fieldId'=> $grader_field_id, 'answer'=> $answer, 'is_required'=> $is_required])
                 </div>
                 @endforeach
                 </div>
