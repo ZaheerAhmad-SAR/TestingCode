@@ -1,5 +1,9 @@
 @extends ('layouts.home')
 @section('content')
+    {{-- {{dd(Session::all())}} --}}
+  {{--   @if(session()->has('filter_step'))
+            {{dd(Session('filter_step'))}}
+    @endif --}}  
     <input type="hidden" name="isStepActiveField" id="isStepActiveField" value="1" />
     <input type="hidden" name="isThisStepHasDataField" id="isThisStepHasDataField" value="1" />
     <div class="container-fluid site-width">
@@ -40,7 +44,7 @@
                         <select id="phases" name="phases" class="form-control" style="background: #fff;">
                             <option value="">---Select Phase---</option>
                             @foreach ($phases as $key => $phase)
-                                <option value="{{ $phase->id }}">{{ $phase->name }}</option>
+                                <option value="{{ $phase->id }}" @if($phase->id ==Session('filter_phase')) selected @endif>{{ $phase->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -820,6 +824,12 @@
                     return true;
                 }
             })
+            @if(session()->has('filter_phase'))
+                $('#phases').trigger('change');
+            @endif
+            @if(session()->has('filter_step'))
+                $('#steps').trigger('change');
+            @endif
         })
         $('.addOptions').on('click', function() {
             $('.appendDataOptions').append(
@@ -981,25 +991,17 @@
         })
         $('#steps').on('change', function() {
             var step_id = $(this).val();
-            var phases_id = $('#phases').val();
+            var check_session_step = '{{Session('filter_step')}}';
+            if(check_session_step != ''){
+            var step_id = '{{Session('filter_step')}}';    
+            }
+            var phase_id = $('#phases').val();
             var sec_class = $('select.decisionSections');
             var sec_class2 = $('select.decisionSections2');
             var basic_section = $('select.basic_section');
-            $.ajax({
-                url: "{{ route('forms.makeFilterSession') }}",
-                type: 'post',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'POST',
-                    'step_id': step_id,
-                    'phases_id': phases_id,
-                },
-                dataType: 'json',
-                success: function(res) {
-                }
-            });
             display_sections(step_id);
             section_against_step(step_id, basic_section);
+            make_session(step_id,phase_id);
         });
         $('.decisionSections').on('change', function() {
             var sec_id = $(this).val();
@@ -1272,25 +1274,21 @@
         /// get steps
         function get_steps_phase_id(id, step_class) {
             step_class.html('');
-            var options = '<option value="">---Select Step / Form---</option>';
+            // var options = '<option value="">---Select Step / Form---</option>';
             var url_route = "{{ URL('forms/step_by_phaseId') }}"
             url_route = url_route + "/" + id;
 
             $.ajax({
                 url: url_route,
                 type: 'post',
-                dataType: 'json',
+                dataType: 'html',
                 data: {
                     "_token": "{{ csrf_token() }}",
                     "_method": 'GET',
                     'phase_id': id
                 },
                 success: function(response) {
-                    $.each(response['data'], function(k, v) {
-                        options += '<option value="' + v.step_id + '" >' + v.form_type + '-' + v
-                            .step_name + '</option>';
-                    });
-                    step_class.append(options);
+                    step_class.append(response);
                 }
             });
         }
@@ -1430,7 +1428,22 @@
         }
 
         /**************************************************************/
-
+        function make_session(step_id,phase_id)
+        {
+            $.ajax({
+                url: "{{ route('forms.makeFilterSession') }}",
+                type: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'step_id': step_id,
+                    'phase_id': phase_id,
+                },
+                dataType: 'json',
+                success: function(res) {
+                }
+            });
+        }
     </script>
 
 @endsection

@@ -55,16 +55,20 @@ class FormController extends Controller
     public function get_steps_by_phaseId($id)
     {
         $PhaseSteps = PhaseSteps::select('*')->where('phase_id', $id)->get();
-        $parentArray = $step = [];
+        // $parentArray = $step = [];
+        $step_id_sess = Session::get('filter_step');
+        $options = '<option value="">---Select Step---</option>';
         foreach ($PhaseSteps as $phaseStep) {
-            $step['step_id'] = $phaseStep->step_id;
-            $step['form_type'] = $phaseStep->formType->form_type;
-            $step['step_name'] = $phaseStep->step_name;
-            $parentArray[] = $step;
+            if($phaseStep->step_id == $step_id_sess){ $selected = 'selected';}else{$selected = '';}
+            // $step['step_id'] = $phaseStep->step_id;
+            // $step['form_type'] = $phaseStep->formType->form_type;
+            // $step['step_name'] = $phaseStep->step_name;
+            // $parentArray[] = $step;
+            $options .= '<option value ="'.$phaseStep->step_id.'" '.$selected.'>'.$phaseStep->formType->form_type.'-'.$phaseStep->step_name.'</option>';
         }
-
-        $stepsData['data'] = $parentArray;
-        echo json_encode($stepsData);
+        // $stepsData['data'] = $parentArray;
+        // echo json_encode($stepsData);
+        return $options;
     }
 
     public function get_sections_against_step($id)
@@ -592,11 +596,10 @@ class FormController extends Controller
     }
     public function create_filter_session(Request $request)
     {
-        $filter_session_array = array(
-            'filter_phase' => $request->phases_id,
-            'filter_step' => $request->step_id
-        );
-        $filter_sess = Session::push('Sess_Filter', $filter_session_array);
-        dd($filter_sess['Sess_Filter']);
+        session()->forget('filter_phase');
+        session()->forget('filter_step');
+        session()->put('filter_phase',$request->phase_id);
+        session()->put('filter_step',$request->step_id);
+                                                                        
     }
 }
