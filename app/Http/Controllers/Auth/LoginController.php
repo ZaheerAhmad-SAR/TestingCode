@@ -52,17 +52,18 @@ class LoginController extends Controller
         $getbrowser = UserSystemInfoHelper::get_browsers();
         $get_ip = UserSystemInfoHelper::get_ip();
         $secret = $user->google2fa_secret;
+        $qr_flag = $user->qr_flag;
 
         if ($user->google2fa_secret) {
             $check_info = UserSystemInfo::where('user_id', '=', $user->id)->get();
             if (count($check_info) > 0) {
                 foreach ($check_info as $info) {
                     if (!empty($info->browser_name )&& $info->browser_name == $getbrowser && $info->remember_flag == 1) {
-                        $user->qr_flag = '1';
-                        $user->save();
+                        $info->remember_flag = '1';
+                        $info->save();
                         return redirect(route('studies.index'));
                     }
-                    elseif (!empty($info->browser_name && $info->browser_name == $getbrowser)) {
+                    elseif (!empty($info->browser_name && $info->browser_name == $getbrowser )) {
                         Auth::logout();
                         $request->session()->put('2fa:user:id', $user->id);
                         return view('2fa/validate', compact('user'));
@@ -94,13 +95,13 @@ class LoginController extends Controller
                 $system_info = new UserSystemInfo();
                 $system_info->user_id = $user->id;
                 $system_info->browser_name = $getbrowser;
-                $user->qr_flag = '1';
                 $system_info->user_ip = $get_ip;
                 $system_info->save();
-                $user->save();
                 $request->session()->put('2fa:user:id', $user->id);
                 return view('2fa/validate', compact('user', 'secret'));
             }
+            $user->qr_flag = '1';
+            $user->save();
         }
         return redirect(route('studies.index'));
     }

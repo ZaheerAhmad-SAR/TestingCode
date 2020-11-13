@@ -72,6 +72,7 @@ class StudyusersController extends Controller
      */
     public function store(Request $request)
     {
+
         if($request->ajax()) {
             // make validator
             $validator = \Validator::make($request->all(), [
@@ -80,7 +81,6 @@ class StudyusersController extends Controller
                 'password'  => 'required|string|min:8|nullable|confirmed|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
                 'roles'    => "required|array|min:1",
                 'roles.*'  => "required|min:1",
-
             ]);
 
             if ($validator->fails()) {
@@ -102,7 +102,7 @@ class StudyusersController extends Controller
 
                     // unique ID
                     $id = Str::uuid();
-                    
+
                     $user = User::create([
                         'id' => $id,
                         'name' => $request->name,
@@ -136,7 +136,7 @@ class StudyusersController extends Controller
             } // validator check edns
 
         } // ajax ends
-    
+
     }
 
     /**
@@ -206,7 +206,7 @@ class StudyusersController extends Controller
         ]);
 
         if($request->roles != null) {
-        
+
             $userroles  = UserRole::where('study_id', session('current_study'))
                                     ->where('user_id', $user->id)
                                     ->where('user_type', 0)

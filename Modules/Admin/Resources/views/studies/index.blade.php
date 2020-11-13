@@ -59,7 +59,9 @@
                                 </th>
                                 <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block">Progress bar</th>
                                 <th scope="col" data-tablesaw-priority="1">Status</th>
-                                <th scope="col" data-tablesaw-priority="1">Study Admin</th>
+                                @if(hasPermission(auth()->user(),'systemtools.index'))
+                                    <th scope="col" data-tablesaw-priority="1">Study Admin</th>
+                                @endif
                                 <th scope="col" data-tablesaw-priority="4">Action</th>
                             </tr>
                             </thead>
@@ -82,10 +84,11 @@
                                         </td>
 
                                         <td>{{$study->study_status}}</td>
-                                        <td>
-                                           {{$study->admin_name}}
-
-                                        </td>
+                                        @if(hasPermission(auth()->user(),'systemtools.index'))
+                                            <td>
+                                                {{$study->admin_name}}
+                                            </td>
+                                        @endif
                                         @if(hasPermission(auth()->user(),'studies.edit'))
                                             <td>
                                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
@@ -844,7 +847,7 @@
                             '<input type="text" class="form-control" value="'+value.name+'" style="width: 90%;display: inline;" name="disease_cohort_name[]">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>';
                     });
                     $('.appendfields').append(disease_cohort);
-                    
+
                     var users = '';
                     $('.appendusers').html('');
 
@@ -867,7 +870,7 @@
                 })
                 console.log(edit_study);
             });
-            
+
             $('body').on('click', '#delete-study', function () {
                 var study_id = $(this).data("id");
 
