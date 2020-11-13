@@ -3,6 +3,7 @@
 namespace Modules\FormSubmission\Traits;
 
 use Modules\FormSubmission\Entities\FormStatus;
+use Modules\FormSubmission\Entities\ValidationRule;
 
 trait JSQuestionDataValidation
 {
@@ -21,10 +22,7 @@ trait JSQuestionDataValidation
                 }
             }
 
-            $stepValidationStr .= '
-            if(stepIdStr == \'' . $stepIdStr . '\'){
-                ' . $questionValidationStr . '
-            }';
+            $stepValidationStr .= $questionValidationStr;
         }
         return $stepValidationStr;
     }
@@ -33,40 +31,48 @@ trait JSQuestionDataValidation
     {
         $mainQuestionValidationStr = '';
         $questionValidationStr = '';
+        $messageTypeStr = '';
+
         if ($question->formFields->is_required == 'yes') {
             $questionValidationStr .= '
                     isFormValid = mustRequired(isFormValid, fieldTitle, fieldVal);
                     ';
         }
-        foreach ($question->validationRules as $validationRule) {
+        //dd($question->questionValidations);
+        foreach ($question->questionValidations as $questionValidation) {
+            $validationRule = ValidationRule::find($questionValidation->validation_rule_id);
             $validationRuleStr = '';
+
+            $messageType = $questionValidation->message_type;
+            $message = $questionValidation->message;
+
             if ($validationRule->is_range == 1 || (int)$validationRule->num_params == 2) {
-                if (!empty($question->formFields->lower_limit) && !empty($question->formFields->upper_limit)) {
+                if (!empty($questionValidation->parameter_1) && !empty($questionValidation->parameter_2)) {
                     $validationRuleStr .= $validationRule->rule;
-                    $validationRuleStr .= '(isFormValid, fieldTitle, fieldVal, ' . $question->formFields->lower_limit . ',' . $question->formFields->upper_limit . ');';
+                    $validationRuleStr .= '(isFormValid, fieldTitle, fieldVal, ' . $questionValidation->parameter_1 . ',' . $questionValidation->parameter_2 . ', \'' . $messageType . '\', \'' . $message . '\');';
                 } else {
                     $validationRuleStr .= 'abortValidationWithError();';
                 }
             } elseif ((int)$validationRule->num_params == 1) {
                 if (
-                    !empty($question->formFields->lower_limit)
+                    !empty($questionValidation->parameter_1)
                 ) {
                     $validationRuleStr .= $validationRule->rule;
-                    $validationRuleStr .= '(isFormValid, fieldTitle, fieldVal, ' . $question->formFields->lower_limit . ');';
+                    $validationRuleStr .= '(isFormValid, fieldTitle, fieldVal, ' . $questionValidation->parameter_1 . ', \'' . $messageType . '\', \'' . $message . '\');';
                 } else {
                     $validationRuleStr .= 'abortValidationWithError();';
                 }
             } elseif ((string)$validationRule->num_params == 'unlimited') {
                 if (
-                    !empty($question->formFields->lower_limit)
+                    !empty($questionValidation->parameter_1)
                 ) {
                     $validationRuleStr .= $validationRule->rule;
-                    $validationRuleStr .= '(isFormValid, fieldTitle, fieldVal, ' . $question->formFields->lower_limit . ');';
+                    $validationRuleStr .= '(isFormValid, fieldTitle, fieldVal, ' . $questionValidation->parameter_1 . ', \'' . $messageType . '\', \'' . $message . '\');';
                 } else {
                     $validationRuleStr .= 'abortValidationWithError();';
                 }
             } else {
-                $validationRuleStr .= $validationRule->rule . '(isFormValid, fieldTitle, fieldVal);';
+                $validationRuleStr .= $validationRule->rule . '(isFormValid, fieldTitle, fieldVal, messageType, message);';
             }
             $questionValidationStr .= '
                     isFormValid = ' . $validationRuleStr;
@@ -79,6 +85,7 @@ trait JSQuestionDataValidation
         $questionIdStr = buildSafeStr($question->id, '');
         $fieldId = $fieldName . '_' . $questionIdStr;
 
+
         $functionName = ($isForAdjudication) ? 'validateAdjudicationQuestion' : 'validateQuestion';
 
         $mainQuestionValidationStr .= '
@@ -87,6 +94,8 @@ trait JSQuestionDataValidation
                         var fieldName = "' . $fieldName . '";
                         var fieldId = "' . $fieldId . '";
                         var fieldTitle = "' . $fieldTitle . '";
+                        ' . $messageTypeStr . '
+
                         var fieldVal = getFormFieldValue(stepIdStr, fieldName, fieldId);
                         ' . $questionValidationStr . '
                     }

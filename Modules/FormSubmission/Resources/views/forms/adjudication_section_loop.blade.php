@@ -150,4 +150,17 @@
 
         </script>
     @endpush
-@endif
+
+    @php
+    $adjudicationStepValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidationForStep($phase, $subjectId, $studyId, true);
+    @endphp
+    @push('script')
+        <script>
+            function validateAdjudicationStep{{$stepIdStr}}() {
+                var isFormValid = true;
+                {!! $adjudicationStepValidationStr !!}
+                return isFormValid;
+            }
+        </script>
+    @endpush
+    @endif

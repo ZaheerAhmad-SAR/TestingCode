@@ -11,16 +11,6 @@
                     icon: messageType,
                     dangerMode: true,
                 });
-                /*
-                var field = $("#previous_alert_message");
-                var previous_alert_message = field.val();
-                if(previous_alert_message != message){
-                    swal("Alert", message, "error");
-                    field.val(message);
-                }else{
-                    field.val('');
-                }
-                */
             }
 
             function showSections(step_id_class) {
@@ -196,7 +186,8 @@
                 if(isFormDataLocked(stepIdStr) == false){
                     if(canSubmitForm(formTypeId,stepIdStr)){
                         if(needToPutFormInEditMode(stepIdStr) == false){
-                            if(validateStep(stepIdStr)){
+                            if(window['validateStep' + stepIdStr]()){
+                            //if(validateStep(stepIdStr)){
                                 submitForm(stepIdStr, formTypeId, formStatusIdStr);
                             }
                         }else{
@@ -211,12 +202,12 @@
 
             }
 
-            function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, formTypeId, field_name, fieldId) {
+            function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, questionIdStr, formTypeId, field_name, fieldId) {
                 if(isFormDataLocked(stepIdStr) == false){
                     if(canSubmitForm(formTypeId,stepIdStr)){
                         if(needToPutFormInEditMode(stepIdStr) == false){
                             checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
-                            if(validateStep(stepIdStr)){
+                            if(window['validateQuestion' + questionIdStr](true, stepIdStr)){
                                 submitFormField(stepIdStr, questionId, field_name, fieldId);
                             }
                         }else{

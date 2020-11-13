@@ -183,4 +183,18 @@ if(null !== $formStatusObj){
 
     </script>
 @endpush
+
+
+@php
+$stepValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidationForStep($phase, $subjectId, $studyId, false);
+@endphp
+@push('script')
+    <script>
+        function validateStep{{$stepIdStr}}() {
+            var isFormValid = true;
+            {!! $stepValidationStr !!}
+            return isFormValid;
+        }
+    </script>
+@endpush
 @endif
