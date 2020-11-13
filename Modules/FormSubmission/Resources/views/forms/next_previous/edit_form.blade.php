@@ -15,7 +15,7 @@
         </button>
     @endif
 
-    @if(canQualityControl(['create', 'store', 'edit', 'update']) && canGrading(['create', 'store', 'edit', 'update']) &&  canAdjudication(['create', 'store', 'edit', 'update']))
+    @if(canManageData(['create', 'store', 'edit', 'update']))
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button type="button" class="btn btn-danger" name="lock_data_button_{{ $stepIdStr }}"
             id="lock_data_button_{{ $stepIdStr }}"
