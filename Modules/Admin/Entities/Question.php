@@ -73,8 +73,8 @@ class Question extends Model
         return $this->hasMany(SkipLogic::class, 'question_id', 'id');
     }
 
-    public function questionValidation()
+    public function questionValidations()
     {
-        return $this->hasOne(QuestionValidation::class, 'question_id', 'id')->withDefault();
+        return $this->hasMany(QuestionValidation::class, 'question_id', 'id');
     }
 }
