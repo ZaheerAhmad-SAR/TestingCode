@@ -122,7 +122,7 @@
             function validateAndSubmitAdjudicationForm(stepIdStr, formStatusIdStr) {
                 if(canSubmitAdjudicationForm(stepIdStr)){
                     if(needToPutAdjudicationFormInEditMode(stepIdStr) == false){
-                        if(validateAdjudicationStep(stepIdStr)){
+                        if(window['validateAdjudicationStep' + stepIdStr]()){
                             submitAdjudicationForm(stepIdStr, formStatusIdStr);
                         }
                     }else{
@@ -133,11 +133,11 @@
                 }
             }
 
-            function validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, field_name, fieldId) {
+            function validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, questionIdStr, field_name, fieldId) {
                 if(canSubmitAdjudicationForm(stepIdStr)){
                     if(needToPutAdjudicationFormInEditMode(stepIdStr) == false){
                         checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
-                        if(validateAdjudicationStep(stepIdStr)){
+                        if(window['validateAdjudicationQuestion' + questionIdStr](true, stepIdStr)){
                             submitAdjudicationFormField(stepIdStr, questionId, field_name, fieldId);
                         }
                     }else{

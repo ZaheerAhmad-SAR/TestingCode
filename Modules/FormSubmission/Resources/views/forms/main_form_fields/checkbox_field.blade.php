@@ -24,7 +24,7 @@ if($checked == 'checked'){
 <div
         class="custom-control custom-checkbox {{ $optionGroup->option_layout == 'horizontal' ? 'custom-control-inline' : '' }}">
         <input type="checkbox" name="{{ $field_name }}[]"
-            onchange="validateAndSubmitAdjudicationFormField('{{ $stepIdStr }}', '{{ $sectionIdStr }}', '{{ $question->id }}', {{ $step->form_type_id }}, '{{ $field_name }}', '{{ $fieldId }}');"
+            onchange="validateAndSubmitAdjudicationFormField('{{ $stepIdStr }}', '{{ $sectionIdStr }}', '{{ $question->id }}', '{{ $questionIdStr }}', {{ $step->form_type_id }}, '{{ $field_name }}', '{{ $fieldId }}');"
             value="{{ $option_value }}" {{ $checked }}
             class="custom-control-input">
         <label class="custom-control-label" for="customCheck1">{{ $option_name }}</label>

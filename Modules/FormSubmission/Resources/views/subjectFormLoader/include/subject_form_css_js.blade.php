@@ -187,7 +187,6 @@
                     if(canSubmitForm(formTypeId,stepIdStr)){
                         if(needToPutFormInEditMode(stepIdStr) == false){
                             if(window['validateStep' + stepIdStr]()){
-                            //if(validateStep(stepIdStr)){
                                 submitForm(stepIdStr, formTypeId, formStatusIdStr);
                             }
                         }else{
