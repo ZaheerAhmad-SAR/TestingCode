@@ -11,16 +11,6 @@
                     icon: messageType,
                     dangerMode: true,
                 });
-                /*
-                var field = $("#previous_alert_message");
-                var previous_alert_message = field.val();
-                if(previous_alert_message != message){
-                    swal("Alert", message, "error");
-                    field.val(message);
-                }else{
-                    field.val('');
-                }
-                */
             }
 
             function showSections(step_id_class) {
@@ -196,7 +186,7 @@
                 if(isFormDataLocked(stepIdStr) == false){
                     if(canSubmitForm(formTypeId,stepIdStr)){
                         if(needToPutFormInEditMode(stepIdStr) == false){
-                            if(validateStep(stepIdStr)){
+                            if(window['validateStep' + stepIdStr]()){
                                 submitForm(stepIdStr, formTypeId, formStatusIdStr);
                             }
                         }else{
@@ -211,12 +201,12 @@
 
             }
 
-            function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, formTypeId, field_name, fieldId) {
+            function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, questionIdStr, formTypeId, field_name, fieldId) {
                 if(isFormDataLocked(stepIdStr) == false){
                     if(canSubmitForm(formTypeId,stepIdStr)){
                         if(needToPutFormInEditMode(stepIdStr) == false){
                             checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
-                            if(validateStep(stepIdStr)){
+                            if(window['validateQuestion' + questionIdStr](true, stepIdStr)){
                                 submitFormField(stepIdStr, questionId, field_name, fieldId);
                             }
                         }else{
@@ -473,15 +463,9 @@
             }
 
             function canLockFormData(){
-                var canQualityControl = {{ (canQualityControl(['create', 'store', 'edit', 'update']))? 'true':'false' }};
-                var canGrading = {{ (canGrading(['create', 'store', 'edit', 'update']))? 'true':'false' }};
-                var canAdjudication = {{ (canAdjudication(['create', 'store', 'edit', 'update']))? 'true':'false' }};
+                var canManageData = {{ (canManageData(['create', 'store', 'edit', 'update']))? 'true':'false' }};
                 userCanLockFormData = false;
-                if(
-                    (canQualityControl == true) &&
-                    (canGrading == true) &&
-                    (canAdjudication == true)
-                ){
+                if(canManageData == true){
                     userCanLockFormData = true;
                 }
                 return userCanLockFormData;

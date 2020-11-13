@@ -257,26 +257,6 @@
                                                 $previousStepId = $step->step_id;
                                                 @endphp
                                             @endforeach
-
-
-                                            @php
-                                            $stepValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidationForStep($phase, $subjectId, $studyId, false);
-                                            $adjudicationStepValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidationForStep($phase, $subjectId, $studyId, true);
-                                            @endphp
-                                            @push('script')
-                                            <script>
-                                                function validateStep(stepIdStr){
-                                                    var isFormValid = true;
-                                                    {!! $stepValidationStr !!}
-                                                    return isFormValid;
-                                                }
-                                                function validateAdjudicationStep(stepIdStr){
-                                                    var isFormValid = true;
-                                                    {!! $adjudicationStepValidationStr !!}
-                                                    return isFormValid;
-                                                }
-                                            </script>
-                                            @endpush
                                         @endforeach
                                     @endif
                                 </div>
@@ -288,8 +268,9 @@
             <!-- END: Card DATA-->
         </div>
         @include('queries::queries.query_popup')
-        @include('formsubmission::subjectFormLoader.subject_form_wait_popup')
-        @include('formsubmission::subjectFormLoader.assignPhasesToSubjectPopup')
+        @include('formsubmission::subjectFormLoader.include.subject_form_wait_popup')
+        @include('formsubmission::subjectFormLoader.include.assignPhasesToSubjectPopup')
+        @include('formsubmission::subjectFormLoader.include.subject_form_css_js')
+        @include('formsubmission::subjectFormLoader.include.subject_adjudication_form_css_js')
+        @include('formsubmission::subjectFormLoader.include.validation_rules_functions_js')
     @stop
-    @include('formsubmission::subjectFormLoader.subject_form_css_js')
-    @include('formsubmission::subjectFormLoader.subject_adjudication_form_css_js')

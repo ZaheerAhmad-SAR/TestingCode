@@ -296,8 +296,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12" style="margin-top: 10px;padding-left: 0px;"><button type="button"
-                                            class="btn btn-outline-primary addvalidations"><i class="fa fa-plus"></i> Add
-                                            Message</button></div>
+                                            class="btn btn-outline-primary addvalidations"><i class="fa fa-plus"></i> Add Validation Rule</button></div>
                                 </div>
                                 <div class="appendDatavalidations">
 
