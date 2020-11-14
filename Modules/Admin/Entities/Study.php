@@ -34,7 +34,7 @@ class Study extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'user_roles','user_id','');
+        return $this->belongsToMany(User::class, 'user_roles', 'user_id', '');
     }
 
     public function sites()
@@ -79,6 +79,7 @@ class Study extends Model
         $studyPhasesIdsArray = StudyStructure::getStudyPhaseIdsArray($studyId);
         $activatedPhasesidsArray = SubjectsPhases::getActivatedPhasesidsArray($studyPhasesIdsArray);
         $subjectIdsFromActivatedPhasesIdsArray = SubjectsPhases::getSubjectIdsFromActivatedPhasesidsArray($activatedPhasesidsArray);
+        $subjectIdsFromActivatedPhasesIdsArray = array_unique($subjectIdsFromActivatedPhasesIdsArray);
         $modilityIdsFromActivatedPhasesIdsArray = SubjectsPhases::getModilityIdsFromActivatedPhasesidsArray($activatedPhasesidsArray);
         $qcStepsIdsArray = PhaseSteps::getStepsIdsArray(1, $activatedPhasesidsArray);
         $gradingStepsIdsArray = PhaseSteps::getStepsIdsArray(2, $activatedPhasesidsArray);
@@ -88,14 +89,14 @@ class Study extends Model
 
         $completedQcStepsIdsArray = FormStatus::getStepsIdsArrayByStatusAndFormType(1, 'complete', $qcStepsIdsArray);
         if (count($qcStepsIdsArray) > 0 && count($subjectIdsFromActivatedPhasesIdsArray) > 0) {
-            $qc_percentage = round((count($completedQcStepsIdsArray) / count($subjectIdsFromActivatedPhasesIdsArray)) * 100);
+            $qc_percentage = round((count($completedQcStepsIdsArray) / (count($qcStepsIdsArray) * count($subjectIdsFromActivatedPhasesIdsArray))) * 100);
         }
 
 
         /*********************************************************/
 
         $completedGradingStepsIdsArray = FormStatus::getStepsIdsArrayByStatusAndFormType(2, 'complete', $gradingStepsIdsArray);
-        //dd($completedGradingStepsIdsArray);
+        //dd($subjectIdsFromActivatedPhasesIdsArray);
         if (count($gradingStepsIdsArray) > 0) {
             $grading_percentage = round((count($completedGradingStepsIdsArray) / ($countGradingSteps * count($subjectIdsFromActivatedPhasesIdsArray))) * 100);
         }
@@ -104,7 +105,7 @@ class Study extends Model
 
         $completedAdjudicationStepsIdsArray = AdjudicationFormStatus::getStepsIdsArrayByStatus('complete', $gradingStepsIdsArray);
         if (count($gradingStepsIdsArray) > 0) {
-            $adjudication_percentage = round((count($completedAdjudicationStepsIdsArray) / count($gradingStepsIdsArray)) * 100);
+            $adjudication_percentage = round((count($completedAdjudicationStepsIdsArray) / (count($gradingStepsIdsArray) * count($subjectIdsFromActivatedPhasesIdsArray))) * 100);
         }
 
         return '<div class="progress">

@@ -1,5 +1,9 @@
 @extends ('layouts.home')
 @section('content')
+    {{-- {{dd(Session::all())}} --}}
+  {{--   @if(session()->has('filter_step'))
+            {{dd(Session('filter_step'))}}
+    @endif --}}  
     <input type="hidden" name="isStepActiveField" id="isStepActiveField" value="1" />
     <input type="hidden" name="isThisStepHasDataField" id="isThisStepHasDataField" value="1" />
     <div class="container-fluid site-width">
@@ -40,7 +44,7 @@
                         <select id="phases" name="phases" class="form-control" style="background: #fff;">
                             <option value="">---Select Phase---</option>
                             @foreach ($phases as $key => $phase)
-                                <option value="{{ $phase->id }}">{{ $phase->name }}</option>
+                                <option value="{{ $phase->id }}" @if($phase->id ==Session('filter_phase')) selected @endif>{{ $phase->name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -92,11 +96,19 @@
                                             aria-hidden="true"></i>&nbsp;&nbsp;{{ $value->field_type }}</div>
                                 @elseif($value->field_type =='Description')
                                     <div class="border-btm add_discription color-black"
-                                        data-field-type="&nbsp;&nbsp;{{ $value->field_type }}"
-                                        data-field-id="&nbsp;&nbsp;{{ $value->id }}"
+                                        data-field-type="{{ $value->field_type }}"
+                                        data-field-id="{{ $value->id }}"
                                         style="font-size: 12px;padding: 5px;cursor: pointer;"><i
-                                            class="&nbsp;&nbsp;{{ $value->icon }}"
-                                            aria-hidden="true"></i>&nbsp;&nbsp;&nbsp;&nbsp;{{ $value->field_type }}
+                                            class="{{ $value->icon }}"
+                                            aria-hidden="true"></i>&nbsp;&nbsp;{{ $value->field_type }}
+                                    </div>
+                                @elseif($value->field_type =='Calculated')
+                                    <div class="border-btm add_calculated_field color-black"
+                                        data-field-type="{{ $value->field_type }}"
+                                        data-field-id="{{ $value->id }}"
+                                        style="font-size: 12px;padding: 5px;cursor: pointer;"><i
+                                            class="{{ $value->icon }}"
+                                            aria-hidden="true"></i>&nbsp;&nbsp;{{ $value->field_type }}
                                     </div>
                                 @else
                                     <div class="border-btm form-fields color-black"
@@ -169,18 +181,18 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="C-DISC" class="col-sm-2 col-form-label">C-DISC <sup>*</sup></label>
+                                    <label for="C-DISC" class="col-sm-2 col-form-label">C-DISC </label>
                                     <div class="col-sm-4">
                                         <input type="text" class="form-control" name="c_disk" id="c_disk" value="">
                                     </div>
-                                    <label for="label" class="col-sm-2 col-form-label"> Label <sup>*</sup></label>
+                                    <label for="label" class="col-sm-2 col-form-label"> Label </label>
                                     <div class="col-sm-4">
                                         <input type="text" class="form-control" name="question_text" id="question_text"
                                             value="">
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <lable for='variable' class="col-sm-2 col-form-label">Variable name <sup>*</sup></lable>
+                                    <lable for='variable' class="col-sm-2 col-form-label">Variable name </lable>
                                     <div class="col-sm-4">
                                         <p class="space_msg" style="font-size: 9px;color: red;"></p>
                                         <input type="text" class="form-control variable_name_ques" name="variable_name"
@@ -204,7 +216,7 @@
                                 </div>
                                 <div class="form-group row">
                                     <label for="Required" class="col-sm-2 col-form-label view_to_numeric">Lower Limit
-                                        <sup>*</sup></label>
+                                        </label>
                                     <div class="col-sm-2 view_to_numeric">
                                         <input type="number" name="lower_limit" id="lower_limit_num" class="form-control"
                                             placeholder="Minimum limits">
@@ -224,7 +236,7 @@
                                 </div>
                                 <div class="view_to_textbox_and_number">
                                     <div class="form-group row">
-                                        <label class="col-sm-2 col-form-label">Field width <sup>*</sup></label>
+                                        <label class="col-sm-2 col-form-label">Field width </label>
                                         <div class="col-sm-4">
                                             <input type="number" class="form-control" name="field_width"
                                                 id="field_width_text" value="">
@@ -257,13 +269,13 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="Required" class="col-sm-2 col-form-label">Required <sup>*</sup></label>
+                                    <label for="Required" class="col-sm-2 col-form-label">Required </label>
                                     <div class="col-sm-4">
                                         <input type="radio" name="is_required" id="required_yes" value="no"> No
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <input type="radio" name="is_required" id="required_no" value="yes" checked> Yes
                                     </div>
-                                    <div class="col-sm-2">Exports: <sup>*</sup></div>
+                                    <div class="col-sm-2">Exports: </div>
                                     <div class="col-sm-4">
                                         <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_no"
                                             value="no"> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -272,7 +284,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Text/info: <sup>*</sup></label>
+                                    <label class="col-sm-2 col-form-label">Text/info: </label>
                                     <div class="col-sm-10">
                                         <textarea name="text_info" id="text_info_add" cols="2" rows="1" class="summernote"
                                             style="height: 50px;"></textarea>
@@ -288,8 +300,7 @@
                                 </div>
                                 <div class="form-group">
                                     <div class="col-sm-12" style="margin-top: 10px;padding-left: 0px;"><button type="button"
-                                            class="btn btn-outline-primary addvalidations"><i class="fa fa-plus"></i> Add
-                                            Message</button></div>
+                                            class="btn btn-outline-primary addvalidations"><i class="fa fa-plus"></i> Add Validation Rule</button></div>
                                 </div>
                                 <div class="appendDatavalidations">
 
@@ -418,7 +429,7 @@
                                     <span class="text-muted font-w-600">Define If Dependencies on any Question</span><br>
                                 </div>
                                 <div class="form-group row" style="margin-top: 10px;">
-                                    <div class="col-sm-2">Field is dependent: <sup>*</sup></div>
+                                    <div class="col-sm-2">Field is dependent: </div>
                                     <div class="col-sm-10">
                                         <input type="hidden" name="dependency_id" id="dependency_id">
                                         <input type="radio" name="q_d_status" class="field_dependent"
@@ -446,7 +457,7 @@
                                                 <option value=">=">Greater OR Equal</option>
                                                 <option value="<=">Less OR Equal</option>
                                                 <option value="!=">Not Equal</option>
-                                                <option value=">">Greater Then</option>
+                                                <option value=">">Greater Than</option>
                                                 <option value="<">Less</option>
                                             </select>
                                         </div>
@@ -496,8 +507,8 @@
                                         <select class="form-control" name="decision_based_on" id="decision_based_on">
                                             <option value="">---Decision---</option>
                                             <option value="any_change">Any Change</option>
-                                            <option value="custom">Custom Value</option>
-                                            <option value="percentage">Percentage Value</option>
+                                            <option value="custom">Custom</option>
+                                            <option value="percentage">Percentage</option>
                                         </select>
                                     </div>
                                 </div>
@@ -509,8 +520,8 @@
                                                 <option value="">---Select---</option>
                                                 <option value=">=">Greater OR Equal</option>
                                                 <option value="<=">Less OR Equal</option>
-                                                <option value=">">Greater Then</option>
-                                                <option value="<">Less Then</option>
+                                                <option value=">">Greater Than</option>
+                                                <option value="<">Less Than</option>
                                             </select>
                                         </div>
                                         <div class="col-sm-2">Value:</div>
@@ -562,7 +573,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <div class="col-md-3">Option Layout <sup>*</sup></div>
+                                    <div class="col-md-3">Option Layout </div>
                                     <div class="form-group col-md-9">
                                         <input type="radio" name="option_layout" value="vertical"> Vertical
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -648,17 +659,17 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="C-DISC" class="col-sm-2 col-form-label">C-DISC <sup>*</sup></label>
+                                    <label for="C-DISC" class="col-sm-2 col-form-label">C-DISC </label>
                                     <div class="col-sm-4">
                                         <input type="text" class="form-control" name="c_disk" value="">
                                     </div>
-                                    <label for="label" class="col-sm-2 col-form-label"> Label <sup>*</sup></label>
+                                    <label for="label" class="col-sm-2 col-form-label"> Label </label>
                                     <div class="col-sm-4">
                                         <input type="text" class="form-control" name="question_text" value="">
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for='variable' class="col-sm-2 col-form-label">Variable name <sup>*</sup></label>
+                                    <label for='variable' class="col-sm-2 col-form-label">Variable name </label>
                                     <div class="col-sm-4">
                                         <input type="text" class="form-control variable_name" name="variable_name" value="">
                                     </div>
@@ -672,13 +683,13 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="Required" class="col-sm-2 col-form-label">Required <sup>*</sup></label>
+                                    <label for="Required" class="col-sm-2 col-form-label">Required </label>
                                     <div class="col-sm-4">
                                         <input type="radio" name="is_required" value="no"> No
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <input type="radio" name="is_required" value="yes" checked> Yes
                                     </div>
-                                    <div class="col-sm-2">Exports: <sup>*</sup></div>
+                                    <div class="col-sm-2">Exports: </div>
                                     <div class="col-sm-4">
                                         <input type="radio" name="is_exportable_to_xls" value="no"> No
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -731,7 +742,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="label" class="col-sm-2 col-form-label"> Description <sup>*</sup></label>
+                                    <label for="label" class="col-sm-2 col-form-label"> Description </label>
                                     <div class="col-sm-12">
                                         <textarea name="text_info" id="text_info_de" cols="2" rows="1" class="summernote"
                                             style="height: 50px;"></textarea>
@@ -756,6 +767,7 @@
 @endsection
 @include('admin::forms.edit_crf')
 @include('admin::forms.form_checks')
+@include('admin::forms.add_calculated_field')
 @section('styles')
     <style>
         .custom_fields {
@@ -812,10 +824,16 @@
                     return true;
                 }
             })
+            @if(session()->has('filter_phase'))
+                $('#phases').trigger('change');
+            @endif
+            @if(session()->has('filter_step'))
+                $('#steps').trigger('change');
+            @endif
         })
         $('.addOptions').on('click', function() {
             $('.appendDataOptions').append(
-                '<div class="values_row_options"><div class="form-group row"><div class="form-group col-md-6"><input type="text" id="option_name" name="option_name[]" class="form-control" placeholder="Enter option name" style="background:white;"></div><div class="form-group col-md-4"><input type="number" placeholder="Option value" name="option_value[]" id="option_value" class="form-control" style="background:white;"></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove_option" style="margin-top: 3px;"></i></div></div></div>'
+                '<div class="values_row_options"><div class="form-group row"><div class="form-group col-md-6"><input type="text" id="option_name" name="option_name[]" class="form-control" placeholder="Enter option name" style="background:white;" required></div><div class="form-group col-md-4"><input type="number" placeholder="Option value" name="option_value[]" id="option_value" class="form-control" style="background:white;" required></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove_option" style="margin-top: 3px;"></i></div></div></div>'
                 );
             return false;
         });
@@ -967,17 +985,23 @@
             }
         });
         $('#phases').on('change', function() {
-            var phase_id = $(this).val();
-            var step_class = $('select#steps');
+            var phase_id = $(this).val()
+                step_class = $('select#steps');
             get_steps_phase_id(phase_id, step_class);
         })
         $('#steps').on('change', function() {
             var step_id = $(this).val();
+            var check_session_step = '{{Session('filter_step')}}';
+            if(check_session_step != ''){
+            var step_id = '{{Session('filter_step')}}';    
+            }
+            var phase_id = $('#phases').val();
             var sec_class = $('select.decisionSections');
             var sec_class2 = $('select.decisionSections2');
             var basic_section = $('select.basic_section');
             display_sections(step_id);
             section_against_step(step_id, basic_section);
+            make_session(step_id,phase_id);
         });
         $('.decisionSections').on('change', function() {
             var sec_id = $(this).val();
@@ -1250,25 +1274,21 @@
         /// get steps
         function get_steps_phase_id(id, step_class) {
             step_class.html('');
-            var options = '<option value="">---Select Step / Form---</option>';
+            // var options = '<option value="">---Select Step / Form---</option>';
             var url_route = "{{ URL('forms/step_by_phaseId') }}"
             url_route = url_route + "/" + id;
 
             $.ajax({
                 url: url_route,
                 type: 'post',
-                dataType: 'json',
+                dataType: 'html',
                 data: {
                     "_token": "{{ csrf_token() }}",
                     "_method": 'GET',
                     'phase_id': id
                 },
                 success: function(response) {
-                    $.each(response['data'], function(k, v) {
-                        options += '<option value="' + v.step_id + '" >' + v.form_type + '-' + v
-                            .step_name + '</option>';
-                    });
-                    step_class.append(options);
+                    step_class.append(response);
                 }
             });
         }
@@ -1408,7 +1428,22 @@
         }
 
         /**************************************************************/
-
+        function make_session(step_id,phase_id)
+        {
+            $.ajax({
+                url: "{{ route('forms.makeFilterSession') }}",
+                type: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'step_id': step_id,
+                    'phase_id': phase_id,
+                },
+                dataType: 'json',
+                success: function(res) {
+                }
+            });
+        }
     </script>
 
 @endsection

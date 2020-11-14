@@ -37,24 +37,27 @@
                 }
             });
         }
+
         $('.addvalidations').on('click', function() {
 
             var parameter_1 = $('#lower_limit_num').val();
+            var parameter_2 = $('#upper_limit_num').val();
             var htmlStr = `<div class="values_row">
-                                    <div class="form-group row" style="margin-top: 10px;">
+                                    <div class="row">
                                         <div class="col-sm-2"> Rule:</div>
                                         <div class="col-sm-2 validationRuleDivCls">
 
                                         </div>
                                         <div class="col-sm-2"> Parameter-1:</div>
-                                        <div class="col-sm-2"> <input type="number" name="parameter_1" id="parameter_1" class="form-control" required></div>
+                                        <div class="col-sm-2"> <input type="number" name="parameter_1[]" value="`+parameter_1+`" class="form-control" required></div>
                                         <div class="col-sm-2"> Parameter-2:</div>
-                                        <div class="col-sm-2"> <input type="number" name="parameter_2" id="parameter_2" class="form-control" required></div>
+                                        <div class="col-sm-2"> <input type="number" name="parameter_2[]" value="`+parameter_2+`" class="form-control" required></div>
                                     </div>
-                                    <div class="form-group row" style="margin-top: 10px;">
+                                    <div class="row"><div class="col-sm-12">&nbsp;</div></div>
+                                    <div class="row">
                                         <div class="col-sm-2"> Message Type:</div>
                                         <div class="col-sm-2">
-                                            <select name="message_type" class="form-control" required>
+                                            <select name="message_type[]" class="form-control" required>
                                                 <option value="">--Select--</option>
                                                 <option value="warning">Warning</option>
                                                 <option value="error">Error</option>
@@ -62,17 +65,44 @@
                                             </select>
                                         </div>
                                         <div class="col-sm-2"> Message:</div>
-                                        <div class="col-sm-5"> <input type="text" name="message" id="message" class="form-control" required></div>
+                                        <div class="col-sm-4"> <input type="text" name="message[]" class="form-control" required></div>
+                                        <div class="col-sm-1"> <input type="text" name="sort_order[]" value="999" class="form-control" required></div>
                                         <div class="form-group col-md-1" style="text-align: right;!important;">
                                             <i class="btn btn-outline-danger fa fa-trash remove" style="margin-top: 3px;"></i>
                                         </div>
                                     </div>
+                                    <div class="row"><div class="col-sm-12"><hr class="hr"></div></div>
                                 </div>`;
             $('.appendDatavalidations').append(htmlStr);
             updateRulesDropDown();
-            updateParameters();
             return false;
         });
+
+        function getNumParams(selectObject) {
+            ruleId = $(selectObject).val();
+            $.ajax({
+                url: "{{ route('validationRule.getNumParams') }}",
+                type: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'ruleId': ruleId
+                },
+                success: function(numParams) {
+                    if(numParams == 0){
+                        $(selectObject).parent().next().hide();
+                        $(selectObject).parent().next().next().hide();
+                        $(selectObject).parent().next().next().next().hide();
+                        $(selectObject).parent().next().next().next().next().hide();
+                    }
+                    if(numParams == 1 || numParams == 'unlimited'){
+                        $(selectObject).parent().next().next().next().hide();
+                        $(selectObject).parent().next().next().next().next().hide();
+                    }
+                }
+            });
+
+        }
 
         function loadValidationRulesByQuestionId(questionId) {
             $.ajax({
@@ -84,13 +114,14 @@
                     'questionId': questionId,
                 },
                 success: function(responseHtml) {
+                    $('.appendDatavalidations').html('');
                     $('.appendDatavalidations').append(responseHtml);
                 }
             });
         }
 
         function updateRulesDropDown() {
-            var selectStr = '<select name="validation_rules[]" class="form-control validationRuleDdCls">';
+            var selectStr = '<select name="validation_rules[]" class="form-control validationRuleDdCls" onchange="getNumParams(this);">';
             for (var i = 0; i < validationRules.length; i++) {
                 var opt = validationRules[i];
                 selectStr += '<option value="' + opt.id + '">' + opt.title + '</option>';
@@ -380,6 +411,9 @@
             font-size: 16px;
             font-weight: bold;
             padding: 15px;
+        }
+        .hr{
+            border-bottom: 1px #dc3545 dotted;
         }
 
     </style>

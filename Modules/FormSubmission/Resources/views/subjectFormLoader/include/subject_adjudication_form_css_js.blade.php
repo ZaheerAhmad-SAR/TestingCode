@@ -98,7 +98,7 @@
                 })
             }
 
-            function validateAndSubmitAdjudicationForm(stepIdStr, formStatusIdStr) {
+            function validateAndSubmitAdjudicationForm_bk_123(stepIdStr, formStatusIdStr) {
                 if(canSubmitAdjudicationForm(stepIdStr)){
                     if(needToPutAdjudicationFormInEditMode(stepIdStr) == false){
                         const promise = validateAdjudicationForm(stepIdStr);
@@ -119,7 +119,36 @@
                 }
             }
 
-            function validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, field_name, fieldId) {
+            function validateAndSubmitAdjudicationForm(stepIdStr, formStatusIdStr) {
+                if(canSubmitAdjudicationForm(stepIdStr)){
+                    if(needToPutAdjudicationFormInEditMode(stepIdStr) == false){
+                        if(window['validateAdjudicationStep' + stepIdStr]()){
+                            submitAdjudicationForm(stepIdStr, formStatusIdStr);
+                        }
+                    }else{
+                        showPutFormInEditModeError();
+                    }
+                }else{
+                    showPermissionError();
+                }
+            }
+
+            function validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, questionIdStr, field_name, fieldId) {
+                if(canSubmitAdjudicationForm(stepIdStr)){
+                    if(needToPutAdjudicationFormInEditMode(stepIdStr) == false){
+                        checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
+                        if(window['validateAdjudicationQuestion' + questionIdStr](true, stepIdStr)){
+                            submitAdjudicationFormField(stepIdStr, questionId, field_name, fieldId);
+                        }
+                    }else{
+                        showPutFormInEditModeError();
+                    }
+                }else{
+                    showPermissionError();
+                }
+            }
+
+            function validateAndSubmitAdjudicationFormField_bk_123(stepIdStr, sectionIdStr, questionId, field_name, fieldId) {
                 if(canSubmitAdjudicationForm(stepIdStr)){
                     if(needToPutAdjudicationFormInEditMode(stepIdStr) == false){
                         checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
@@ -253,11 +282,11 @@
                 putResponseImage(stepIdStr, 'complete', formTypeId, formStatusIdStr);
             }
 
-            function copyValueToField(stepIdStr, sectionIdStr, questionId, field_name, fieldId, copyToFieldId) {
+            function copyValueToField(stepIdStr, sectionIdStr, questionId, questionIdStr, field_name, fieldId, copyToFieldId) {
                 var fieldVal = $('#' + fieldId).val();
                 $('#' + copyToFieldId).val(fieldVal);
                 var copyToFieldName = $("#" + copyToFieldId).attr("name");
-                validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, copyToFieldName, copyToFieldId);
+                validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, questionIdStr, copyToFieldName, copyToFieldId);
             }
 
             function calculateAverage(stepIdStr, sectionIdStr, questionId, questionIdStr, copyToFieldId, decimalPoint){
@@ -274,7 +303,7 @@
                 var avg = avg.toFixed(decimalPoint);
                 $('#' + copyToFieldId).val(avg);
                 var copyToFieldName = $("#" + copyToFieldId).attr("name");
-                validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, copyToFieldName, copyToFieldId);
+                validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, questionIdStr, copyToFieldName, copyToFieldId);
             }
 
             function showAllQuestions(){

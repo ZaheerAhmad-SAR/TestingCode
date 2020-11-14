@@ -35,6 +35,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     //Validation Rules
     Route::post('validationRule/filterRulesDataValidation/', 'ValidationRuleController@filterRulesDataValidation')->name('validationRule.filterRulesDataValidation');
     Route::post('validationRule/getQuestionValidationRules/', 'ValidationRuleController@getQuestionValidationRules')->name('validationRule.getQuestionValidationRules');
+    Route::post('validationRule/getNumParams/', 'ValidationRuleController@getNumParams')->name('validationRule.getNumParams');
     // Form Validation
     Route::post('subjectFormSubmission/validateSingleQuestion', 'SubjectFormSubmissionController@validateSingleQuestion')->name('subjectFormSubmission.validateSingleQuestion');
     Route::post('subjectFormSubmission/validateSectionQuestionsForm', 'SubjectFormSubmissionController@validateSectionQuestionsForm')->name('subjectFormSubmission.validateSectionQuestionsForm');
