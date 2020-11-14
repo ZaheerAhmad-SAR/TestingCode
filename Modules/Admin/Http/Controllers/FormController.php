@@ -23,7 +23,7 @@ use Modules\Admin\Entities\skipLogic;
 use Illuminate\Support\Facades\DB;
 use Modules\FormSubmission\Entities\FormVersion;
 use Modules\FormSubmission\Traits\Replication\ReplicatePhaseStructure;
-
+use Session;
 class FormController extends Controller
 {
     use ReplicatePhaseStructure;
@@ -55,16 +55,20 @@ class FormController extends Controller
     public function get_steps_by_phaseId($id)
     {
         $PhaseSteps = PhaseSteps::select('*')->where('phase_id', $id)->get();
-        $parentArray = $step = [];
+        // $parentArray = $step = [];
+        $step_id_sess = Session::get('filter_step');
+        $options = '<option value="">---Select Step---</option>';
         foreach ($PhaseSteps as $phaseStep) {
-            $step['step_id'] = $phaseStep->step_id;
-            $step['form_type'] = $phaseStep->formType->form_type;
-            $step['step_name'] = $phaseStep->step_name;
-            $parentArray[] = $step;
+            if($phaseStep->step_id == $step_id_sess){ $selected = 'selected';}else{$selected = '';}
+            // $step['step_id'] = $phaseStep->step_id;
+            // $step['form_type'] = $phaseStep->formType->form_type;
+            // $step['step_name'] = $phaseStep->step_name;
+            // $parentArray[] = $step;
+            $options .= '<option value ="'.$phaseStep->step_id.'" '.$selected.'>'.$phaseStep->formType->form_type.'-'.$phaseStep->step_name.'</option>';
         }
-
-        $stepsData['data'] = $parentArray;
-        echo json_encode($stepsData);
+        // $stepsData['data'] = $parentArray;
+        // echo json_encode($stepsData);
+        return $options;
     }
 
     public function get_sections_against_step($id)
@@ -127,7 +131,12 @@ class FormController extends Controller
             <input type="hidden" class="formFields_id" value="' . $ques_value->formFields->id . '">
             <input type="hidden" class="question_sort" value="' . $ques_value->question_sort . '">
             <input type="hidden" class="question_type_id" value="' . $ques_value->form_field_type->id . '">
-            <input type="hidden" class="section_id" value="' . $id . '">';
+            <input type="hidden" class="section_id" value="' . $id . '">
+            <input type="hidden" class="first_question_id" value="' . $ques_value->first_question_id . '">
+            <input type="hidden" class="operator_calculate" value="' . $ques_value->operator_calculate . '">
+            <input type="hidden" class="second_question_id" value="' . $ques_value->second_question_id . '">
+            <input type="hidden" class="make_decision" value="' . $ques_value->make_decision . '">
+            <input type="hidden" class="calculate_with_costum_val" value="' . $ques_value->calculate_with_costum_val . '">';
             $question_contents .= '<input type="hidden" class="option_group_id" value="' . $ques_value->option_group_id . '">
             <input type="hidden" class="c_disk" value="' . $ques_value->c_disk . '">
             <input type="hidden" class="question_text" value="' . $ques_value->question_text . '">
@@ -202,6 +211,9 @@ class FormController extends Controller
             } elseif ($ques_value->form_field_type->field_type == 'Upload') {
                 $question_contents .=  '<div class="col-sm-6"><input type="file" name="question_' . $ques_value->id .
                     '" value="" class="form-control"></div>';
+            }elseif($ques_value->form_field_type->field_type == 'Calculated'){
+                $question_contents .= '<div class="col-sm-6"><input type="text" name="question_' . $ques_value->id .
+                    '" value="" class="form-control" disabled style="background:lightgray"></div>';
             } elseif ($ques_value->form_field_type->field_type == 'Certification') {
 
                 $question_contents .= '<div class="col-sm-6"><select name="question_list" class="form-control">';
@@ -224,9 +236,12 @@ class FormController extends Controller
             }
             $question_contents .= '<div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right">';
             if ($ques_value->form_field_type->field_type == 'Certification') {
+                $question_contents .='<span>edit in progress</span>';
             } elseif ($ques_value->form_field_type->field_type == 'Description') {
                 $question_contents .= '<span class="dropdown-item edit_desc"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
-            } else {
+            }elseif($ques_value->form_field_type->field_type == 'Calculated'){
+                $question_contents .='<span class="dropdown-item edit_calculated_field"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
+            }else{
                 $question_contents .= '<span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
             }
             $question_contents .= '<span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span>';
@@ -290,6 +305,11 @@ class FormController extends Controller
             'form_field_type_id' => $request->form_field_type_id,
             'section_id' => $request->section_id,
             'option_group_id' => $request->option_group_id,
+            'first_question_id' => $request->first_question_id,
+            'operator_calculate' => $request->operator_calculate,
+            'make_decision' => $request->make_decision,
+            'calculate_with_costum_val' => $request->calculate_with_costum_val,
+            'second_question_id' => $request->second_question_id,
             'question_sort' => $request->question_sort,
             'question_text' => $request->question_text,
             'c_disk' => $request->c_disk,
@@ -321,6 +341,11 @@ class FormController extends Controller
         $questionObj->form_field_type_id = $request->form_field_type_id;
         $questionObj->section_id = $request->section_id;
         $questionObj->option_group_id = $request->option_group_id;
+        $questionObj->first_question_id = $request->first_question_id;
+        $questionObj->operator_calculate = $request->operator_calculate;
+        $questionObj->make_decision = $request->make_decision;
+        $questionObj->calculate_with_costum_val = $request->calculate_with_costum_val;
+        $questionObj->second_question_id = $request->second_question_id;
         $questionObj->question_sort = $request->question_sort;
         $questionObj->question_text = $request->question_text;
         $questionObj->c_disk = $request->c_disk;
@@ -558,5 +583,23 @@ class FormController extends Controller
         $this->deleteQuestionAndItsRelatedValues($questionId);
         $Response['data'] = 'success';
         echo json_encode($Response);
+    }
+    public function get_questions_calculation(Request $request, $id)
+    {
+        $section_ids = Section::where('phase_steps_id', $request->step_id)->pluck('id')->toArray();
+        $questions = Question::whereIn('section_id', $section_ids)->where('form_field_type_id', 1)->with('formFields')->get();
+        $options = '<option value="">select question for auto calculation</option>';
+        foreach ($questions as $key => $value) {
+            $options .= '<option value="'.$value->id.'">'.$value->question_text.'</option>';
+        }
+        return $options;
+    }
+    public function create_filter_session(Request $request)
+    {
+        session()->forget('filter_phase');
+        session()->forget('filter_step');
+        session()->put('filter_phase',$request->phase_id);
+        session()->put('filter_step',$request->step_id);
+                                                                        
     }
 }

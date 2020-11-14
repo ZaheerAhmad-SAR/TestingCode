@@ -105,12 +105,21 @@ class FormFieldTypeSeederTableSeeder extends Seeder
             $form_filed_Upload = FormFieldType::create([
                 'id' => $id,
                 'field_type'    => 'Description',
-                'icon'          => 'fa fa-file-text',
+                'icon'          => 'fas fa-text-width',
                 'support_multiple_values' => 'no',
                 'created_at'        => Carbon::now(),
                 'updated_at'        => Carbon::now()
             ]);
-
+            $id = 12;
+            $form_filed_Upload = FormFieldType::create([
+                'id' => $id,
+                'field_type'    => 'Calculated',
+                'icon'          => 'fas fa-calculator',
+                'support_multiple_values' => 'no',
+                'created_at'        => Carbon::now(),
+                'updated_at'        => Carbon::now()
+            ]);
+            
         }
         // $this->call("OthersTableSeeder");
     }
