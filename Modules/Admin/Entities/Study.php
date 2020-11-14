@@ -5,6 +5,7 @@ namespace Modules\Admin\Entities;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\UserRoles\Entities\StudyRoleUsers;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\Admin\Entities\Annontation;
 use Modules\Admin\Entities\StudyStructure;
@@ -126,5 +127,9 @@ class Study extends Model
             ' . $adjudication_percentage . '%
             </div>
         </div>';
+    }
+
+    public function studyuserroles(){
+        return $this->hasMany(StudyRoleUsers::class);
     }
 }
