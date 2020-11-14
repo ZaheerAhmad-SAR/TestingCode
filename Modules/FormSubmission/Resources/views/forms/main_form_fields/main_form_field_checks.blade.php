@@ -18,15 +18,21 @@ $dataArray = ['question'=> $question, 'field_name'=> $field_name,
     @include('formsubmission::forms.main_form_fields.datetime_field', $dataArray)
 @elseif($fieldType == 'Upload')
     @include('formsubmission::forms.main_form_fields.upload_field', $dataArray)
+@elseif($fieldType == 'Calculated')
+    @include('formsubmission::forms.main_form_fields.text_field', $dataArray)
+@elseif($fieldType == 'Description')
+    {!! $question->formFields->text_info !!}
 @endif
 
 
 @php
 $adjudicationQuestionValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidationForQuestion($question, true);
+$questionDependencyStr = Modules\Admin\Entities\Question::generateQuestionDependencyFunction($question, true);
 @endphp
 
 @push('script')
 <script>
 {!! $adjudicationQuestionValidationStr !!}
+{!! $questionDependencyStr !!}
 </script>
 @endpush

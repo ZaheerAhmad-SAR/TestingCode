@@ -115,10 +115,10 @@ trait ReplicatePhaseStructure
 
     private function deletePhase($phase)
     {
+        $this->deletePhaseToReplicatedVisits($phase);
         foreach ($phase->steps as $step) {
             $this->deleteStep($step);
         }
-        $this->deletePhaseToReplicatedVisits($phase);
         $phase->delete();
     }
 }
