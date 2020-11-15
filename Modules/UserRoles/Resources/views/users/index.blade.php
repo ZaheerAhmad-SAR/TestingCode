@@ -82,6 +82,8 @@
                                         <td>{{ucfirst($user->name)}}</td>
                                         <td>{{$user->email}}</td>
                                         <td>
+    {{--                                        {{ucfirst($user->role_name)}}--}}
+
                                             @foreach($user->user_roles as $role)
                                                 {{ucfirst($role->role->name)}},
                                             @endforeach
