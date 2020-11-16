@@ -73,7 +73,7 @@ class StudyController extends Controller
 
 
             $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
-            $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
+            $userIdsArrayFromUserRole = StudyRoleUsers::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
 
             $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->orderBy('name','asc')->get();
 
@@ -82,7 +82,7 @@ class StudyController extends Controller
 
             foreach ($studies as $study){
                 $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
-                $userIdsArrayFromUserRole = UserRole::where('study_id',$study->id)->whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
+                $userIdsArrayFromUserRole = StudyRoleUsers::where('study_id',$study->id)->whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
                 $admins = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->orderBy('name','asc')->pluck('name')->toArray();
                 $study->admin_name = $admins != Null ? implode(',',$admins) : '';
             }
@@ -90,7 +90,7 @@ class StudyController extends Controller
         } else {
             $user = \auth()->user()->id;
             if (hasPermission(\auth()->user(), 'grading.index')) {
-                $studies  =   UserRole::select('user_roles.*', 'users.*', 'studies.*')
+                $studies  =   StudyRoleUsers::select('user_roles.*', 'users.*', 'studies.*')
                     ->join('users', 'users.id', '=', 'user_roles.user_id')
                     ->join('studies', 'studies.id', '=', 'user_roles.study_id')
                     ->where('users.id', '=', \auth()->user()->id)
@@ -99,7 +99,7 @@ class StudyController extends Controller
                 $study = '';
             }
             if (hasPermission(\auth()->user(), 'adjudication.index')) {
-                $studies  =   UserRole::select('user_roles.*', 'users.*', 'studies.*')
+                $studies  =   StudyRoleUsers::select('user_roles.*', 'users.*', 'studies.*')
                     ->join('users', 'users.id', '=', 'user_roles.user_id')
                     ->join('studies', 'studies.id', '=', 'user_roles.study_id')
                     ->where('users.id', '=', \auth()->user()->id)
@@ -108,7 +108,7 @@ class StudyController extends Controller
                 $study = '';
             }
             if (hasPermission(\auth()->user(), 'qualitycontrol.index')) {
-                $studies  =   UserRole::select('user_roles.*', 'users.*', 'studies.*')
+                $studies  =   StudyRoleUsers::select('user_roles.*', 'users.*', 'studies.*')
                     ->join('users', 'users.id', '=', 'user_roles.user_id')
                     ->join('studies', 'studies.id', '=', 'user_roles.study_id')
                     ->where('users.id', '=', \auth()->user()->id)
@@ -117,7 +117,7 @@ class StudyController extends Controller
                 $study = '';
             }
             if (hasPermission(\auth()->user(), 'studytools.index')) {
-                $studies = UserRole::select('user_roles.*', 'users.*', 'studies.*')
+                $studies = StudyRoleUsers::select('user_roles.*', 'users.*', 'studies.*')
                     ->join('users', 'users.id', '=', 'user_roles.user_id')
                     ->join('studies', 'studies.id', '=', 'user_roles.study_id')
                     ->where('users.id', '=', \auth()->user()->id)
