@@ -82,7 +82,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        dd('user controller');
+
         if($request->ajax()) {
             // make validator
             $validator = Validator::make($request->all(), [
