@@ -12,6 +12,7 @@ use Modules\Admin\Entities\RoleStudyUser;
 use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\RolePermission;
+use Modules\UserRoles\Entities\StudyRoleUsers;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Http\Requests\UserRequest;
 use Session;
@@ -32,8 +33,8 @@ class StudyusersController extends Controller
 
         $currentStudy = session('current_study');
 
-        $enrolledusers = UserRole::where('study_id','=',session('current_study'))->pluck('user_id')->toArray();
-        $studyusers = UserRole::select('users.*','user_roles.study_id','roles.role_type')
+        $enrolledusers = StudyRoleUsers::where('study_id','=',session('current_study'))->pluck('user_id')->toArray();
+        $studyusers = StudyRoleUsers::select('users.*','user_roles.study_id','roles.role_type')
             ->join('users','users.id','=','user_roles.user_id')
             ->join('roles','roles.id','=','user_roles.role_id')
             ->where('roles.role_type','!=','system_role')
@@ -47,7 +48,7 @@ class StudyusersController extends Controller
             ->where('study_id','!=',session('current_study'))->get();
         dd($studyusers, session('current_study'));*/
 
-        $users =  UserRole::select('users.*','user_roles.study_id','roles.role_type', 'roles.name as role_name')
+        $users =  StudyRoleUsers::select('users.*','user_roles.study_id','roles.role_type', 'roles.name as role_name')
             ->join('users','users.id','=','user_roles.user_id')
             ->join('roles','roles.id','=','user_roles.role_id')
             ->where('roles.role_type','!=','system_role')
