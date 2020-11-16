@@ -1,5 +1,4 @@
 @php
-$is_required = ($question->formFields->is_required == 'yes')? 'required':'';
 $dataArray = ['question'=> $question, 'field_name'=> $field_name,
     'questionIdStr'=> $questionIdStr, 'fieldId'=> $fieldId, 'answer'=> $answer, 'is_required'=> $is_required];
 @endphp

@@ -56,7 +56,12 @@ class UserController extends Controller
         $roles  =   Role::where('role_type','=','system_role')->get();
         $currentStudy = session('current_study');
 
-        $users  =  User::orderBY('name','asc')->get();
+        $users  =  User::select('users.*','user_roles.user_id','user_roles.role_id','roles.name as role_name')
+            ->join('user_roles','user_roles.user_id','=','users.id')
+            ->join('roles','roles.id','=','user_roles.role_id')
+            ->orderBY('name','asc')->get();
+        $users  =  User::/*where('user_type','!=', 'super_user')->*/orderBY('name','asc')->get();
+
         $studyusers = User::where('id','!=',\auth()->user()->id)->get();
 
         return view('userroles::users.index',compact('users','roles','studyusers'));
@@ -195,12 +200,12 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user  = User::with('user_roles')
-        ->find($id);
+        $user  = User::with('user_roles')->find($id);
 
         $currentRoles = UserRole::select('user_roles.*','roles.*')
             ->join('roles','roles.id','user_roles.role_id')
             ->where('user_roles.user_id','=',$user->id)
+            ->groupBy('roles.name')
             ->get();
 
         $unassignedRoles = Role::select('roles.*')
@@ -210,11 +215,12 @@ class UserController extends Controller
         foreach ($currentRoles as $currentRole){
             $roleArray[] = $currentRole->role_id;
         }
-        if (!empty($roleArray)){
+        if (!empty($roleArray)) {
             $unassignedRoles = Role::select('roles.*')
+                ->where('role_type','!=','study_role' )
             ->whereNotIn('roles.id', $roleArray)->get();
         }
-        else{
+        else {
             $unassignedRoles = Role::where('role_type','=','system_role' )->get();
         }
 
@@ -277,7 +283,7 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        //dd($request->all());
+        dd($request->all());
         // get old user data for trail log
         $oldUser = User::where('id', $id)->first();
         $data = array('name'=>$oldUser->name);
@@ -291,7 +297,8 @@ class UserController extends Controller
         $user->qr_flag = '0';
         $user->save();
         if ($request->roles){
-            $userroles  = UserRole::where('user_id',$user->id)->get();
+            $userroles  = UserRole::where('user_id',$user->id)->where('user_type','!=','2')->get();
+            dd($userroles);
             foreach ($userroles as $role_id){
                 $role_id->delete();
             }
@@ -410,7 +417,7 @@ class UserController extends Controller
      // log event details
         $logEventDetails = eventDetails($user->id, 'User', 'Update', $request->ip(), $oldUser);
 
-        return redirect()->back()->with('message','user updated');
+        return redirect(route('users.index'))->with('message','user updated');
 
     }
 

@@ -23,13 +23,15 @@
                 $questionIdStr = buildSafeStr($question->id, '');
                 $fieldId = $field_name . '_' . $questionIdStr;
                 $fieldType = $question->form_field_type->field_type;
+                $is_required = ($question->formFields->is_required == 'yes')? 'required':'';
+                $is_required_star = ($question->formFields->is_required == 'yes')? '<span class="text text-danger">*</span>':'';
                 @endphp
                  <div class="form-group">
-                    <label class="">{{ $question->question_text }}</label>
+                 <label class="">{{ $question->question_text }} {!! $is_required_star !!}</label>
                     <div class="row">
                         <div class="col-10">
                             @include('formsubmission::forms.form_fields.form_field_checks', ['fieldType'=>$fieldType, 'question'=> $question, 'field_name'=> $field_name,
-                            'questionIdStr'=> $questionIdStr, 'fieldId'=> $fieldId, 'answer'=> $answer])
+                            'questionIdStr'=> $questionIdStr, 'fieldId'=> $fieldId, 'answer'=> $answer, 'is_required'=> $is_required])
             </div>
             <div class="col-1">@include('formsubmission::forms.form_fields.info_popup', ['question'=>$question])</div>
             @php
