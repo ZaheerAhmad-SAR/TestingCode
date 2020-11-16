@@ -495,7 +495,7 @@ class FormController extends Controller
     {
         //$validationRuleIdsArray = array_unique((array)$request->validation_rules);
 
-        if (count($request->validation_rules) > 0) {
+        if (count((array)$request->validation_rules) > 0) {
             for ($counter = 0; $counter < count($request->validation_rules); $counter++) {
                 $id    = Str::uuid();
                 $validation = [
