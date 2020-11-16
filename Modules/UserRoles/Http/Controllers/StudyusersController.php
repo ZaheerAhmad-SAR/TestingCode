@@ -80,7 +80,6 @@ class StudyusersController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
         if($request->ajax()) {
             // make validator
             $validator = \Validator::make($request->all(), [
@@ -204,7 +203,6 @@ class StudyusersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        dd($request->all());
         $user   =  User::find($id);
         $user->update([
             'name'  =>  $request->name,
@@ -242,7 +240,6 @@ class StudyusersController extends Controller
      */
     public function destroy($id)
     {
-        dd('delete');
         $user = User::find($id);
     }
 }
