@@ -19,7 +19,8 @@ trait JSQuestionDependency
         $functionName = ($isForAdjudication) ? 'showHideAdjudicationQuestion' : 'showHideQuestion';
         $getValueFunctionName = ($isForAdjudication) ? 'getAdjudicationFormFieldValue' : 'getFormFieldValue';
 
-        foreach ($question->questionDependency as $questionDependency) {
+        $questionDependency = $question->questionDependency;
+        if ($questionDependency->dep_on_question_id != 'not_any') {
             $dependentOnQuestion = Question::find($questionDependency->dep_on_question_id);
 
             $dependentOnFieldName = buildFormFieldName($dependentOnQuestion->formFields->variable_name);
@@ -35,7 +36,6 @@ trait JSQuestionDependency
                 }
             }';
         }
-
         return $questionDependencyStr;
     }
 }
