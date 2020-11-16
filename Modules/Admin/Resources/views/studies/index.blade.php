@@ -302,9 +302,8 @@
                                     <label for="study_users" class="col-sm-3"></label>
                                     <div class="{!! ($errors->has('users')) ?'col-sm-9 has-error':'col-sm-9' !!}">
                                         <select class="searchable" id="select-users" multiple="multiple" name="users[]">
-                                            @foreach($users as $user)
-                                                {{$user}}
-                                                <option value="{{$user->id}}">{{$user->name}}</option>
+                                            @foreach($studyAdmins as $user)
+                                                <option value="{{$user->id. '/' . $user->role_id}}">{{$user->name . '-' . $user->role_name}}</option>
                                             @endforeach
                                         </select>
 

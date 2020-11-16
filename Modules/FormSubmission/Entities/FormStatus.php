@@ -8,9 +8,11 @@ use Illuminate\Support\Str;
 use Modules\FormSubmission\Traits\AdjudicationTrait;
 use Modules\FormSubmission\Scopes\FormStatusOrderByScope;
 use Modules\Admin\Entities\PhaseSteps;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FormStatus extends Model
 {
+    use SoftDeletes;
     use AdjudicationTrait;
 
     protected $table = 'form_submit_status';
