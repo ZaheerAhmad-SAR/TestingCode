@@ -133,6 +133,10 @@
         $('select[name="event_study"]').select2();
 
     </script>
+    <script type="text/javascript" id="activate_deactivate_sec">
+    </script>
+    <script type="text/javascript" id="activate_deactivate_ques">
+    </script>
     <script type="text/javascript">
         
         function git_steps_for_checks(id,index,q_id,title){
@@ -141,7 +145,7 @@
             $.ajax({
                 url: url,
                 type: 'post',
-                dataType: 'html',
+                dataType: 'json',
                 data: {
                     "_token": "{{ csrf_token() }}",
                     "index": index,
@@ -151,7 +155,9 @@
                 },
                 success: function(response) {
                     $(append_class).slideDown('600');
-                    $(append_class).html(response);
+                    $(append_class).html(response.html_str);
+                    $('#activate_deactivate_sec').html(response.function_str);
+                    eval(document.getElementById("activate_deactivate_sec").innerHTML);
                 }
             });
         }
@@ -161,7 +167,7 @@
                 $.ajax({
                     url: url,
                     type: 'post',
-                    dataType: 'html',
+                    dataType: 'json',
                     data: {
                         "_token": "{{ csrf_token() }}",
                         "_method": 'GET',
@@ -172,7 +178,9 @@
                         "option_value": option_value
                     },
                     success: function(response) {
-                        $('.'+append_class+id+'_'+index).html(response);
+                        $('.'+append_class+id+'_'+index).html(response.ques_html_str);
+                        $('#activate_deactivate_ques').html(response.ques_function_str);
+                        eval(document.getElementById("activate_deactivate_ques").innerHTML);
                     }
                 });
         }
@@ -182,7 +190,7 @@
             $.ajax({
                 url: url,
                 type: 'post',
-                dataType: 'html',
+                dataType: 'json',
                 data: {
                     "_token": "{{ csrf_token() }}",
                     "_method": 'GET',
@@ -193,7 +201,9 @@
                     "option_value": option_value
                 },
                 success: function(response) {
-                    $('.'+append_class+id+'_'+index).html(response);
+                    $('.'+append_class+id+'_'+index).html(response.ques_html_str);
+                    $('#activate_deactivate_ques').html(response.ques_function_str);
+                    eval(document.getElementById("activate_deactivate_ques").innerHTML);
                 }
             });
         }
@@ -204,7 +214,7 @@
             $.ajax({
                 url: url,
                 type: 'post',
-                dataType: 'html',
+                dataType: 'json',
                 data: {
                     "_token": "{{ csrf_token() }}",
                     "_method": 'GET',
@@ -215,7 +225,9 @@
                     "option_value": option_value
                 },
                 success: function(response) {
-                    $('.'+append_class+id+'_'+index).html(response);
+                    $('.'+append_class+id+'_'+index).html(response,html_str);
+                    $('#activate_deactivate_ques').html(response.function_str);
+                    eval(document.getElementById("activate_deactivate_ques").innerHTML);
                 }
             })
         }
@@ -226,7 +238,7 @@
             $.ajax({
                 url: url,
                 type: 'post',
-                dataType: 'html',
+                dataType: 'json',
                 data: {
                     "_token": "{{ csrf_token() }}",
                     "_method": 'GET',
@@ -238,7 +250,9 @@
                 },
                 success: function(response) {
 
-                    $('.'+append_class+id+'_'+index).html(response);
+                    $('.'+append_class+id+'_'+index).html(response.html_str);
+                    $('#activate_deactivate_ques').html(response.function_str);
+                    eval(document.getElementById("activate_deactivate_ques").innerHTML);
                 }
             })
         }
@@ -259,7 +273,7 @@
                     "option_value": option_value
                 },
                 success: function(response){
-                    $('.'+append_class+q_id+'_'+index).html(response);
+                    $('.'+append_class+q_id+'_'+index).html(response.html_str);
                 }
             })
         }
