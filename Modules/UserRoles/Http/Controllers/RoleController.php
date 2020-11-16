@@ -63,6 +63,7 @@ class RoleController extends Controller
                 'role_type' => $request->role_type_name,
                 'created_by'    => auth()->user()->id,
             ]);
+
             /*--Basic Role Permission */
             if ($request->dashboard_add == 'on'){
                 $permissions = Permission::where('name','=','dashboard.create')
@@ -112,6 +113,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
+
             /*-- Studies Permissions */
             if ($request->study_add == 'on'){
                 $permissions = Permission::where('name','=','studies.create')
@@ -169,6 +171,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
+
             /*-- Subjects Permissions */
             if ($request->subjects_add == 'on'){
                 $permissions = Permission::where('name','=','subjects.create')
@@ -220,6 +223,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
+
             /*-- Grading Permissions */
             if ($request->grading_add == 'on'){
                 $permissions = Permission::where('name','=','grading.create')
@@ -276,6 +280,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
+
             /*-- Quality Control Permissions */
             if ($request->qualityControl_add == 'on'){
                 $permissions = Permission::where('name','=','qualitycontrol.create')
@@ -329,6 +334,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
+
             /*-- Adjudication Permissions --*/
             if ($request->adjudication_add == 'on'){
                 $permissions = Permission::where('name','=','adjudication.create')
@@ -382,6 +388,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
+
             /*-- Eligibility Permissions --*/
             if ($request->eligibility_add == 'on'){
                 $permissions = Permission::where('name','=','eligibility.create')
@@ -433,6 +440,7 @@ class RoleController extends Controller
                     ]);
                 }
             }
+
             /*-- Queries Permissions --*/
             if ($request->queries_add == 'on'){
                 $permissions = Permission::where('name','=','queries.create')
@@ -484,24 +492,63 @@ class RoleController extends Controller
                     ]);
                 }
             }
+
             /*-- System Tools Permissions */
             if ($request->system_tools == 'on') {
-                $permissions = Permission::where('name', '=', 'systemtools.index')
-                    ->orwhere('name', '=', 'devices.index')
-                    ->orwhere('name', '=', 'users.index')
-                    ->orwhere('name', '=', 'roles.index')
-                    ->orwhere('name', '=', 'sites.index')
-                    ->orwhere('name', '=', 'modalities.index')
-                    ->get();
-                foreach ($permissions as $permission) {
-                    $permission_id = $permission->id;
-                    $system_tools = RolePermission::create([
-                        'role_id' => $role->id,
-                        'permission_id' => $permission->id,
-                    ]);
+            $permissions = Permission::where('name', '=', 'systemtools.index')
+                ->orwhere('name', '=', 'users.create')
+                ->orwhere('name', '=', 'users.index')
+                ->orwhere('name', '=', 'users.assignUsers')
+                ->orwhere('name', '=', 'users.update_user')
+                ->orwhere('name', '=', 'users.store')
+                ->orwhere('name', '=', 'users.edit')
+                ->orwhere('name', '=', 'users.update')
+                ->orwhere('name', '=', 'users.destroy')
+                ->orwhere('name', '=', 'users.show')
+                ->orwhere('name', '=', 'studyusers.create')
+                ->orwhere('name', '=', 'studyusers.index')
+                ->orwhere('name', '=', 'studyusers.assignUsers')
+                ->orwhere('name', '=', 'studyusers.update_user')
+                ->orwhere('name', '=', 'studyusers.store')
+                ->orwhere('name', '=', 'studyusers.edit')
+                ->orwhere('name', '=', 'studyusers.update')
+                ->orwhere('name', '=', 'studyusers.destroy')
+                ->orwhere('name', '=', 'studyusers.show')
+                ->orwhere('name', '=', 'devices.index')
+                ->orwhere('name', '=', 'devices.create')
+                ->orwhere('name', '=', 'devices.store')
+                ->orwhere('name', '=', 'devices.edit')
+                ->orwhere('name', '=', 'devices.update')
+                ->orwhere('name', '=', 'devices.destroy')
+                ->orwhere('name', '=', 'roles.index')
+                ->orwhere('name', '=', 'roles.create')
+                ->orwhere('name', '=', 'roles.store')
+                ->orwhere('name', '=', 'roles.edit')
+                ->orwhere('name', '=', 'roles.update')
+                ->orwhere('name', '=', 'roles.destroy')
+                ->orwhere('name', '=', 'sites.index')
+                ->orwhere('name', '=', 'sites.create')
+                ->orwhere('name', '=', 'sites.store')
+                ->orwhere('name', '=', 'sites.edit')
+                ->orwhere('name', '=', 'sites.update')
+                ->orwhere('name', '=', 'sites.destroy')
+                ->orwhere('name', '=', 'modalities.index')
+                ->orwhere('name', '=', 'modalities.create')
+                ->orwhere('name', '=', 'modalities.store')
+                ->orwhere('name', '=', 'modalities.edit')
+                ->orwhere('name', '=', 'modalities.update')
+                ->orwhere('name', '=', 'modalities.destroy')
+                ->get();
+            foreach ($permissions as $permission) {
+                $permission_id = $permission->id;
+                $system_tools = RolePermission::create([
+                    'role_id' => $role->id,
+                    'permission_id' => $permission->id,
+                ]);
 
-                }
             }
+        }
+
             /*-- Study Tools Permissions */
             if ($request->study_tools == 'on') {
                 $permissions = Permission::where('name', '=', 'studytools.index')
@@ -1122,11 +1169,48 @@ class RoleController extends Controller
         /*-- System Tools Permissions */
         if ($request->system_tools == 'on') {
             $permissions = Permission::where('name', '=', 'systemtools.index')
-                ->orwhere('name', '=', 'devices.index')
+                ->orwhere('name', '=', 'users.create')
                 ->orwhere('name', '=', 'users.index')
+                ->orwhere('name', '=', 'users.assignUsers')
+                ->orwhere('name', '=', 'users.update_user')
+                ->orwhere('name', '=', 'users.store')
+                ->orwhere('name', '=', 'users.edit')
+                ->orwhere('name', '=', 'users.update')
+                ->orwhere('name', '=', 'users.destroy')
+                ->orwhere('name', '=', 'users.show')
+                ->orwhere('name', '=', 'studyusers.create')
+                ->orwhere('name', '=', 'studyusers.index')
+                ->orwhere('name', '=', 'studyusers.assignUsers')
+                ->orwhere('name', '=', 'studyusers.update_user')
+                ->orwhere('name', '=', 'studyusers.store')
+                ->orwhere('name', '=', 'studyusers.edit')
+                ->orwhere('name', '=', 'studyusers.update')
+                ->orwhere('name', '=', 'studyusers.destroy')
+                ->orwhere('name', '=', 'studyusers.show')
+                ->orwhere('name', '=', 'devices.index')
+                ->orwhere('name', '=', 'devices.create')
+                ->orwhere('name', '=', 'devices.store')
+                ->orwhere('name', '=', 'devices.edit')
+                ->orwhere('name', '=', 'devices.update')
+                ->orwhere('name', '=', 'devices.destroy')
                 ->orwhere('name', '=', 'roles.index')
+                ->orwhere('name', '=', 'roles.create')
+                ->orwhere('name', '=', 'roles.store')
+                ->orwhere('name', '=', 'roles.edit')
+                ->orwhere('name', '=', 'roles.update')
+                ->orwhere('name', '=', 'roles.destroy')
                 ->orwhere('name', '=', 'sites.index')
+                ->orwhere('name', '=', 'sites.create')
+                ->orwhere('name', '=', 'sites.store')
+                ->orwhere('name', '=', 'sites.edit')
+                ->orwhere('name', '=', 'sites.update')
+                ->orwhere('name', '=', 'sites.destroy')
                 ->orwhere('name', '=', 'modalities.index')
+                ->orwhere('name', '=', 'modalities.create')
+                ->orwhere('name', '=', 'modalities.store')
+                ->orwhere('name', '=', 'modalities.edit')
+                ->orwhere('name', '=', 'modalities.update')
+                ->orwhere('name', '=', 'modalities.destroy')
                 ->get();
             foreach ($permissions as $permission) {
                 $permission_id = $permission->id;

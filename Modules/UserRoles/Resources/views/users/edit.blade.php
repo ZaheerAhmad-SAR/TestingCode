@@ -84,7 +84,7 @@
                                         <div class="{!! ($errors->has('roles')) ?'col-sm-9 has-error':'col-sm-9' !!}">
                                             <select class="searchable" id="select-roles" multiple="multiple" name="roles[]">
                                                 @foreach($currentRoles as $role)
-                                                    <option selected="selected" value="{{$role->id}}">{{$role->name}}</option>
+                                                    <option selected="selected" value="{{$role->id}}">{{ucfirst($role->name)}}</option>
                                                 @endforeach
                                             @if(!empty($unassignedRoles))
                                                     @foreach($unassignedRoles as $unassigned)

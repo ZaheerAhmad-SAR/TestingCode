@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddUserTypeToUsersTable extends Migration
+class CreateStudyRoleUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,11 @@ class AddUserTypeToUsersTable extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->enum('user_type',array('super_user','study_user','system_user'))->default('study_user')->after('password');
+        Schema::create('study_role_users', function (Blueprint $table) {
+            $table->uuid('id')->primary()->unique();
+            $table->uuid('study_id')->nullable();
+            $table->uuid('user_roles_id')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -25,9 +28,6 @@ class AddUserTypeToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('user_type');
-
-        });
+        Schema::dropIfExists('study_role_users');
     }
 }

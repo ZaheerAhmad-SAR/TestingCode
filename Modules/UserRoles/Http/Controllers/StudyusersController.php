@@ -29,6 +29,7 @@ class StudyusersController extends Controller
     {
 
         $roles  =   Role::where('role_type','=','study_role')->get();
+
         $currentStudy = session('current_study');
 
         $enrolledusers = UserRole::where('study_id','=',session('current_study'))->pluck('user_id')->toArray();
@@ -39,6 +40,13 @@ class StudyusersController extends Controller
             ->whereNotIn('user_roles.user_id',$enrolledusers)
             ->where('user_roles.study_id','!=',session('current_study'))->distinct()
             ->get();
+        /*$studyusers = UserRole::select('user_roles.user_id','user_roles.study_id','users.*','roles.role_type')
+            ->join('users','users.id','=','user_roles.user_id')
+            ->join('roles','roles.id','=','user_roles.role_id')
+            ->where('user_roles.user_id','!=',$enrolledusers)
+            ->where('study_id','!=',session('current_study'))->get();
+        dd($studyusers, session('current_study'));*/
+
         $users =  UserRole::select('users.*','user_roles.study_id','roles.role_type', 'roles.name as role_name')
             ->join('users','users.id','=','user_roles.user_id')
             ->join('roles','roles.id','=','user_roles.role_id')
@@ -72,7 +80,7 @@ class StudyusersController extends Controller
      */
     public function store(Request $request)
     {
-
+        dd($request->all());
         if($request->ajax()) {
             // make validator
             $validator = \Validator::make($request->all(), [

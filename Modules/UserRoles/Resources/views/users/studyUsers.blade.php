@@ -13,6 +13,7 @@
                 </div>
             </div>
         </div>
+
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
         <div class="row">
@@ -201,6 +202,7 @@
                                         <select class="form-control dropdown" name="study_user">
                                             <option value="selectuser"> Select User</option>
                                             @foreach($studyusers as $user)
+                                                {{$studyusers}}
                                                 <option value="{{$user->id}}">{{$user->name}}</option>
                                             @endforeach
                                         </select>
@@ -368,10 +370,10 @@
                             $('.user-store-error').slideUp(500);
                         }, 2000);
 
-                    } else {
+                    } /*else {
 
                         location.reload();
-                    }
+                    }*/
                   }
                 }); // ajax ends
             }); // form submit function

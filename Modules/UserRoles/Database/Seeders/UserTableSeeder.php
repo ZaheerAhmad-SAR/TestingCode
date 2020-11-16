@@ -31,7 +31,7 @@ class UserTableSeeder extends Seeder
                  'role_id'  => $role_id,
                  'name' =>  'admin',
                 'email' =>  'admin@admin.com',
-                'user_type' => 'system_user',
+                'user_type' => 'super_user',
                 'password'  =>  Hash::make('12345678'),
                 'created_by' => ''
             ]);
@@ -44,7 +44,8 @@ class UserTableSeeder extends Seeder
             UserRole::create([
                 'id'    => Str::uuid(),
                 'role_id'   =>  $role_id,
-                'user_id'   =>  $user_id
+                'user_id'   =>  $user_id,
+                'user_type' => '2'
             ]);
         }
         else{
