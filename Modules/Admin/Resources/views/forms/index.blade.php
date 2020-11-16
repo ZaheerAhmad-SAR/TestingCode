@@ -1,9 +1,9 @@
 @extends ('layouts.home')
 @section('content')
     {{-- {{dd(Session::all())}} --}}
-  {{--   @if(session()->has('filter_step'))
+   {{--  @if(session()->has('filter_step'))
             {{dd(Session('filter_step'))}}
-    @endif --}}  
+    @endif   --}}
     <input type="hidden" name="isStepActiveField" id="isStepActiveField" value="1" />
     <input type="hidden" name="isThisStepHasDataField" id="isThisStepHasDataField" value="1" />
     <div class="container-fluid site-width">
