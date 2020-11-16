@@ -207,6 +207,9 @@
                         if(needToPutFormInEditMode(stepIdStr) == false){
                             checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
                             if(window['validateQuestion' + questionIdStr](true, stepIdStr)){
+                                if(eval("typeof " + window['showHideQuestion' + questionIdStr])){
+                                    window['showHideQuestion' + questionIdStr](stepIdStr);
+                                }
                                 submitFormField(stepIdStr, questionId, field_name, fieldId);
                             }
                         }else{
@@ -452,6 +455,50 @@
                     }
                 });
 
+            }
+
+            function unAssignPhaseToSubject(subjectId, phaseId){
+                $.confirm({
+                    columnClass: 'col-md-6',
+                    title: 'Confirm to deactivate visit!',
+                    content: 'Are you sure to deactivate visit',
+                    buttons: {
+                        yeDeactivateVisit: {
+                            text: 'Yes deactivate vist',
+                            btnClass: 'btn-green',
+                            keys: ['enter', 'shift'],
+                            action: function() {
+                                confirmation = 'deactivate';
+                                unAssignPhaseToSubjectAjax(subjectId, phaseId);
+                            }
+                        },
+                        cancelDeactivation: {
+                            text: 'Cancel',
+                            btnClass: 'btn-red',
+                            keys: ['enter', 'shift'],
+                            action: function() {
+                                confirmation = 'cancel';
+                            }
+                        }
+                    }
+            });
+
+            }
+
+            function unAssignPhaseToSubjectAjax(subjectId, phaseId){
+                startWait();
+                $.ajax({
+                    url: "{{route('assignPhaseToSubject.unAssignPhaseToSubject')}}",
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        'subjectId': subjectId,
+                        'phaseId': phaseId
+                    },
+                    success: function(response){
+                        reloadPage(0);
+                    }
+                });
             }
             function isFormDataLocked(stepIdStr){
                 var isFormDataLocked = $('#form_master_' + stepIdStr + ' input[name="isFormDataLocked"]').val();
