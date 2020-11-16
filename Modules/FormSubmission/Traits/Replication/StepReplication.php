@@ -6,7 +6,10 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\StudyStructure;
+use Modules\FormSubmission\Entities\AdjudicationFormStatus;
 use Modules\FormSubmission\Entities\Answer;
+use Modules\FormSubmission\Entities\FormRevisionHistory;
+use Modules\FormSubmission\Entities\FormStatus;
 use Modules\FormSubmission\Entities\FormVersion;
 
 trait StepReplication
@@ -71,9 +74,14 @@ trait StepReplication
     {
         $replicatedSteps = PhaseSteps::where('parent_id', 'like', $step->step_id)->get();
         foreach ($replicatedSteps as $replicatedStep) {
+            FormStatus::where('phase_steps_id', $replicatedStep->step_id)->delete();
+            AdjudicationFormStatus::where('phase_steps_id', $replicatedStep->step_id)->delete();
             $replicatedStep->delete();
             $this->deleteFormVersion($replicatedStep);
         }
+
+        FormStatus::where('phase_steps_id', $step->step_id)->delete();
+        AdjudicationFormStatus::where('phase_steps_id', $step->step_id)->delete();
         $step->delete();
         $this->deleteFormVersion($step);
     }

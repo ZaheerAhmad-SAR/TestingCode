@@ -9,6 +9,10 @@ use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\FormSubmission\Entities\SubjectsPhases;
 use Modules\Admin\Entities\Subject;
+use Modules\FormSubmission\Entities\AdjudicationFormStatus;
+use Modules\FormSubmission\Entities\Answer;
+use Modules\FormSubmission\Entities\FinalAnswer;
+use Modules\FormSubmission\Entities\FormStatus;
 use Modules\FormSubmission\Traits\Replication\ReplicatePhaseStructure;
 
 class AssignPhaseToSubjectController extends Controller
@@ -46,6 +50,27 @@ class AssignPhaseToSubjectController extends Controller
             $modalityIdsArray = array_diff($modalityIdsInPhaseSteps, $modalityIdsInSubjectPhasesArray);
             SubjectsPhases::createSubjectPhase($request, $modalityIdsArray);
         }
+        echo 'success';
+    }
+
+
+    public function unAssignPhaseToSubject(Request $request)
+    {
+        $subjectId = $request->subjectId;
+        $phaseId = $request->phaseId;
+        $phase = StudyStructure::where('id', 'like', $phaseId)->withoutGlobalScopes()->first();
+        if ($phase->parent_id != 'no-parent') {
+            $this->deletePhase($phase);
+        }
+
+        SubjectsPhases::where('subject_id', 'like', $subjectId)->where('phase_id', 'like', $phaseId)->delete();
+
+        Answer::where('subject_id', 'like', $subjectId)->where('study_structures_id', 'like', $phaseId)->delete();
+        FinalAnswer::where('subject_id', 'like', $subjectId)->where('study_structures_id', 'like', $phaseId)->delete();
+
+        FormStatus::where('subject_id', 'like', $subjectId)->where('study_structures_id', 'like', $phaseId)->delete();
+        AdjudicationFormStatus::where('subject_id', 'like', $subjectId)->where('study_structures_id', 'like', $phaseId)->delete();
+
         echo 'success';
     }
 }

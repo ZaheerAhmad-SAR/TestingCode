@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\FormSubmission\Entities\Answer;
 use Modules\FormSubmission\Entities\ValidationRule;
+use Modules\FormSubmission\Traits\JSQuestionDependency;
 
 class Question extends Model
 {
     use SoftDeletes;
+    use JSQuestionDependency;
+
     protected $table = 'question';
     protected $fillable = ['id', 'old_id', 'form_field_type_id', 'section_id', 'option_group_id','first_question_id','operator_calculate','second_question_id', 'question_sort', 'question_text', 'c_disk', 'measurement_unit', 'is_dependent', 'dependent_on', 'annotations', 'certification_type', 'deleted_at'];
     protected $keyType = 'string';
@@ -50,7 +53,7 @@ class Question extends Model
     }
     public function questionDependency()
     {
-        return $this->hasOne(QuestionDependency::class, 'question_id', 'id')->withDefault();
+        return $this->hasMany(QuestionDependency::class, 'question_id', 'id');
     }
 
     public function questionAdjudicationStatus()

@@ -56,7 +56,7 @@ $adjudicationRequiredQuestionIdsArray = \Modules\FormSubmission\Entities\Questio
             $is_required = ($question->formFields->is_required == 'yes')? 'required':'';
             $is_required_star = ($question->formFields->is_required == 'yes')? '<span class="text text-danger">*</span>':'';
             @endphp
-            <div class="form-group adjudication-border">
+            <div class="form-group adjudication-border"  id="adjudication_question_row_{{$questionIdStr}}">
                 <label class="">{{ $question->question_text }} {!! $is_required_star !!}</label>
                 <div class="row">
                     <div class="col-10">

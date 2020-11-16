@@ -12,6 +12,8 @@ use Modules\Admin\Entities\QuestionDependency;
 use Modules\Admin\Entities\QuestionValidation;
 use Modules\Admin\Entities\Section;
 use Modules\Admin\Entities\StudyStructure;
+use Modules\FormSubmission\Entities\Answer;
+use Modules\FormSubmission\Entities\FinalAnswer;
 
 trait QuestionReplication
 {
@@ -259,12 +261,17 @@ trait QuestionReplication
         if (null !== $formField) {
             $formField->delete();
         }
+
         if (null !== $questionDependency) {
             $questionDependency->delete();
         }
+
         if (null !== $questionAdjudicationStatus) {
             $questionAdjudicationStatus->delete();
         }
+
+        Answer::where('question_id', $questionId)->delete();
+        FinalAnswer::where('question_id', $questionId)->delete();
 
         $question->delete();
     }

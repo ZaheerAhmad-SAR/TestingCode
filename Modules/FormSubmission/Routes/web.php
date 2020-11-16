@@ -45,4 +45,5 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     //Assign Phase To Subject
     Route::post('assignPhaseToSubject/loadAssignPhaseToSubjectForm', 'AssignPhaseToSubjectController@loadAssignPhaseToSubjectForm')->name('assignPhaseToSubject.loadAssignPhaseToSubjectForm');
     Route::post('assignPhaseToSubject/submitAssignPhaseToSubjectForm', 'AssignPhaseToSubjectController@submitAssignPhaseToSubjectForm')->name('assignPhaseToSubject.submitAssignPhaseToSubjectForm');
+    Route::post('assignPhaseToSubject/unAssignPhaseToSubject', 'AssignPhaseToSubjectController@unAssignPhaseToSubject')->name('assignPhaseToSubject.unAssignPhaseToSubject');
 });

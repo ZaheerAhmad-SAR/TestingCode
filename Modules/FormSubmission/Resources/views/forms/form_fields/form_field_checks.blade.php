@@ -23,10 +23,12 @@ $dataArray = ['question'=> $question, 'field_name'=> $field_name,
 @php
 /*********************************** */
 $questionValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidationForQuestion($question, false);
+$questionDependencyStr = Modules\Admin\Entities\Question::generateQuestionDependencyFunction($question, false);
 @endphp
 
 @push('script')
 <script>
 {!! $questionValidationStr !!}
+{!! $questionDependencyStr !!}
 </script>
 @endpush
