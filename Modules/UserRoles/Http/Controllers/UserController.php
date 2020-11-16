@@ -87,6 +87,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+
         if($request->ajax()) {
             // make validator
             $validator = Validator::make($request->all(), [
@@ -199,9 +200,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user  = User::with('user_roles')
-        ->find($id);
-
+        $user  = User::with('user_roles')->find($id);
 
         $currentRoles = UserRole::select('user_roles.*','roles.*')
             ->join('roles','roles.id','user_roles.role_id')
@@ -216,12 +215,12 @@ class UserController extends Controller
         foreach ($currentRoles as $currentRole){
             $roleArray[] = $currentRole->role_id;
         }
-        if (!empty($roleArray)){
+        if (!empty($roleArray)) {
             $unassignedRoles = Role::select('roles.*')
                 ->where('role_type','!=','study_role' )
             ->whereNotIn('roles.id', $roleArray)->get();
         }
-        else{
+        else {
             $unassignedRoles = Role::where('role_type','=','system_role' )->get();
         }
 
