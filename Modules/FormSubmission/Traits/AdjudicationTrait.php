@@ -54,7 +54,7 @@ trait AdjudicationTrait
                         $returnData =  self::selectMajorityAnswer($questionAdjudicationStatusObj, $answersArray);
                     } elseif ($fieldType == 'Dropdown') {
                         $returnData =  self::selectMajorityAnswer($questionAdjudicationStatusObj, $answersArray);
-                    } elseif ($fieldType == 'Number') {
+                    } elseif ($fieldType == 'Number' || $fieldType == 'Calculated') {
                         $returnData = self::checkAdjudicationForNumber($questionAdjudicationStatusObj, $numberOfAnswers, $answersArray, $question->form_field_type->decimal_point);
                     } elseif ($fieldType == 'Text') {
                         $returnData =  self::selectMajorityAnswer($questionAdjudicationStatusObj, $answersArray);

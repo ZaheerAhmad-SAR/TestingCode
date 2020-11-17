@@ -33,6 +33,9 @@ trait JSQuestionDependency
                 if(' . $getValueFunctionName . '(stepIdStr, \'' . $dependentOnFieldName . '\', \'' . $dependentOnFieldId . '\') ' . $questionDependency->opertaor . ' ' . $questionDependency->custom_value . '){
                     $(\'#' . $questionRowIdStr . '\').hide();
                     $(\'#' . $fieldId . '\').val(-9999);
+                }else{
+                    $(\'#' . $questionRowIdStr . '\').show();
+                    $(\'#' . $fieldId . '\').val(\'\');
                 }
             }';
         }
