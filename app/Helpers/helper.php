@@ -804,6 +804,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             if ($key == 0) {
 
                 $editReason = $data;
+                
             } else if ($key == 1) {
                 //first time loop data
                 $newData['study'] = $studyName->study_title;

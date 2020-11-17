@@ -196,33 +196,32 @@
                                                                 <td> {{$details}} </td>
                                                         </tr>
                                                             
-                                                            @else
-
-                                                                <!-- look for section -->
-                                                                @foreach($details as $sectionKey => $sectionValue)
-                                                                <tr>
-                                                                    <td colspan="2" style="color: #1e3d73;">
-                                                                        <b>
-                                                                            Section:  {{ $sectionKey }}
-                                                                        </b> 
-                                                                    </td>
-                                                                </tr>
-                                                                    <!-- section index -->
-                                                                    @foreach($sectionValue as $section_index => $section_value)
-                                                                        
-                                                                        @foreach($section_value as $section_key => $value )
-                                                                            <tr>
-                                                                                <td> {{ $section_key}} </td>
-                                                                                <td> {{ $value}} </td>
-                                                                            </tr>
-                                                                        @endforeach
-
+                                                        @else
+                                                            
+                                                            <!-- look for section -->
+                                                            @foreach($details as $sectionKey => $sectionValue)
+                                                            <tr>
+                                                                <td colspan="2" style="color: #1e3d73;">
+                                                                    <b>
+                                                                        Section:  {{ $sectionKey }}
+                                                                    </b> 
+                                                                </td>
+                                                            </tr>
+                                                                <!-- section index -->
+                                                                @foreach($sectionValue as $section_index => $section_value)
+                                                                    
+                                                                    @foreach($section_value as $section_key => $value )
+                                                                        <tr>
+                                                                            <td> {{ $section_key}} </td>
+                                                                            <td> {{ $value}} </td>
+                                                                        </tr>
                                                                     @endforeach
 
                                                                 @endforeach
-                                                            @endif
-                                                       
 
+                                                            @endforeach
+                                                        @endif
+                                                       
                                                         @endforeach
                                                     @else
                                                         <!-- for add event -->
