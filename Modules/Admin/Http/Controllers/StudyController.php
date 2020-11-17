@@ -73,7 +73,7 @@ class StudyController extends Controller
 
 
             $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
-            $userIdsArrayFromUserRole = StudyRoleUsers::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
+            $userIdsArrayFromUserRole = UserRole::whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
 
             $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->orderBy('name','asc')->get();
 
@@ -82,7 +82,7 @@ class StudyController extends Controller
 
             foreach ($studies as $study){
                 $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
-                $userIdsArrayFromUserRole = StudyRoleUsers::where('study_id',$study->id)->whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
+                $userIdsArrayFromUserRole = UserRole::where('study_id',$study->id)->whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
                 $admins = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->orderBy('name','asc')->pluck('name')->toArray();
                 $study->admin_name = $admins != Null ? implode(',',$admins) : '';
             }
