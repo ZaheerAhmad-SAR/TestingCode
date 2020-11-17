@@ -207,7 +207,7 @@
                         if(needToPutFormInEditMode(stepIdStr) == false){
                             checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
                             if(window['validateQuestion' + questionIdStr](true, stepIdStr)){
-                                if(eval("typeof " + window['showHideQuestion' + questionIdStr])){
+                                if(eval("typeof " + window['showHideQuestion' + questionIdStr]) != 'undefined'){
                                     window['showHideQuestion' + questionIdStr](stepIdStr);
                                 }
                                 submitFormField(stepIdStr, questionId, field_name, fieldId);
@@ -576,6 +576,41 @@
 
             function showDataLockError(){
                 showAlert('Data lock status', 'Form data is locked, you can not change data!', 'error');
+            }
+
+            function calculateField(firstFieldId, secondFieldId, operator, make_decision, customVal, stepIdStr, sectionIdStr, questionId, questionIdStr, form_type_id, field_name, fieldId) {
+
+                var firstVal = 0;
+                var secondVal = 0;
+                customVal = Number(customVal);
+
+                var firstFieldName = $("#" + firstFieldId).attr("name");
+                var firstFieldVal = getFormFieldValue(stepIdStr, firstFieldName, firstFieldId);
+                firstVal = Number(firstFieldVal);
+
+                if(make_decision == 'question'){
+                    var secondFieldName = $("#" + secondFieldId).attr("name");
+                    var secondFieldVal = getFormFieldValue(stepIdStr, secondFieldName, secondFieldId);
+                    secondVal = Number(secondFieldVal);
+                }
+
+                if(make_decision == 'custom'){
+                    secondVal = customVal;
+                }
+
+                var answer = 0;
+                if(operator == '+'){
+                    answer = firstVal + secondVal;
+                }else if(operator == '-'){
+                    answer = firstVal - secondVal;
+                }else if(operator == '*'){
+                    answer = firstVal * secondVal;
+                }else if(operator == '/'){
+                    answer = firstVal / secondVal;
+                }
+
+                $('#' + fieldId).val(answer);
+                validateAndSubmitField(stepIdStr, sectionIdStr, questionId, questionIdStr, form_type_id, field_name, fieldId);
             }
 
             function reloadPage(waitSeconds) {

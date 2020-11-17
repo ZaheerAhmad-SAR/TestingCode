@@ -31,8 +31,11 @@ class SubjectAdjudicationFormSubmissionController extends Controller
             $sectionIds = $request->sectionId;
             foreach ($sectionIds as $sectionId) {
                 $section = Section::find($sectionId);
-                $questions = $section->questions;
-                foreach ($questions as $question) {
+                foreach ($section->questions as $question) {
+                    if ($question->form_field_type_id == 11) {
+                        //if question is type description then continue
+                        continue;
+                    }
                     $retArray = $this->putFinalAnswer($request, $question);
                     $adjudicationFormRevisionDataArray['adjudication_form_data'][] = $retArray['adjudication_form_data'];
                     $trailLogDataArray['trail_log'][] = $retArray['trail_log'];
