@@ -35,7 +35,9 @@ trait JSQuestionDependency
                     $(\'#' . $fieldId . '\').val(-9999);
                 }else{
                     $(\'#' . $questionRowIdStr . '\').show();
-                    $(\'#' . $fieldId . '\').val(\'\');
+                    if($(\'#' . $fieldId . '\').val() == -9999){
+                        $(\'#' . $fieldId . '\').val(\'\');
+                    }
                 }
             }';
         }
