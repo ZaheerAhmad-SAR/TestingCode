@@ -1,9 +1,9 @@
 @extends ('layouts.home')
 @section('content')
     {{-- {{dd(Session::all())}} --}}
-  {{--   @if(session()->has('filter_step'))
+   {{--  @if(session()->has('filter_step'))
             {{dd(Session('filter_step'))}}
-    @endif --}}  
+    @endif   --}}
     <input type="hidden" name="isStepActiveField" id="isStepActiveField" value="1" />
     <input type="hidden" name="isThisStepHasDataField" id="isThisStepHasDataField" value="1" />
     <div class="container-fluid site-width">
@@ -991,10 +991,9 @@
         })
         $('#steps').on('change', function() {
             var step_id = $(this).val();
+            // fix issue here with out load session
             var check_session_step = '{{Session('filter_step')}}';
-            if(check_session_step != ''){
-            var step_id = '{{Session('filter_step')}}';    
-            }
+            
             var phase_id = $('#phases').val();
             var sec_class = $('select.decisionSections');
             var sec_class2 = $('select.decisionSections2');
