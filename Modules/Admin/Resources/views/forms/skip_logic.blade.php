@@ -116,7 +116,6 @@
         $('.detail-icon').click(function(e){
             $(this).toggleClass("fa-chevron-circle-right fa-chevron-circle-down");
         });
-
         // reset filter form
         $('.reset-filter').click(function(){
             // reset values
@@ -125,21 +124,20 @@
             // submit the filter form
             $('.filter-form').submit();
         });
-
-
         // selct initialize
         $('.user_name').select2();
         $('select[name="event_section"]').select2();
         $('select[name="event_study"]').select2();
-
     </script>
     <script type="text/javascript" id="activate_deactivate_sec">
     </script>
     <script type="text/javascript" id="activate_deactivate_ques">
     </script>
-    <script type="text/javascript">
-        
-        function git_steps_for_checks(id,index,q_id,title){
+    <script type="text/javascript" id="activate_deactivate_options">
+    </script>
+    
+<script type="text/javascript">
+    function git_steps_for_checks(id,index,q_id,title){
            var url = "{{ url('skiplogic/steps_to_skip') }}";
            var append_class = '.append_data_'+id;
             $.ajax({
@@ -160,33 +158,10 @@
                     eval(document.getElementById("activate_deactivate_sec").innerHTML);
                 }
             });
-        }
-        function activate_checks(id,append_class,index,q_id,option_value,option_title){
-            var url = "{{ url('skiplogic/sections_for_skip_logic') }}"
-                url = url+'/'+id;
-                $.ajax({
-                    url: url,
-                    type: 'post',
-                    dataType: 'json',
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        "_method": 'GET',
-                        'step_id': id,
-                        'index': index,
-                        "question_id": q_id,
-                        "option_title": option_title,
-                        "option_value": option_value
-                    },
-                    success: function(response) {
-                        $('.'+append_class+id+'_'+index).html(response.ques_html_str);
-                        $('#activate_deactivate_ques').html(response.ques_function_str);
-                        eval(document.getElementById("activate_deactivate_ques").innerHTML);
-                    }
-                });
-        }
-        function deactivate_checks(id,append_class,index,q_id,option_value,option_title){
-            var url = "{{ url('skiplogic/sections_for_skip_logic_deactivate') }}"
-                url = url+'/'+id;
+    }
+    function activate_checks(id,append_class,index,q_id,option_value,option_title){
+        var url = "{{ url('skiplogic/sections_for_skip_logic') }}"
+            url = url+'/'+id;
             $.ajax({
                 url: url,
                 type: 'post',
@@ -206,99 +181,121 @@
                     eval(document.getElementById("activate_deactivate_ques").innerHTML);
                 }
             });
-        }
-        function question_for_activate(id,append_class,index,q_id,option_value,option_title)
-        {
-            var url = "{{ url('skiplogic/questions_for_skip_logic') }}"
-                url = url+'/'+id;
-            $.ajax({
-                url: url,
-                type: 'post',
-                dataType: 'json',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'GET',
-                    'sec_id': id,
-                    'index': index,
-                    "question_id": q_id,
-                    "option_title": option_title,
-                    "option_value": option_value
-                },
-                success: function(response) {
-                    $('.'+append_class+id+'_'+index).html(response,html_str);
-                    $('#activate_deactivate_ques').html(response.function_str);
-                    eval(document.getElementById("activate_deactivate_ques").innerHTML);
-                }
-            })
-        }
-        function question_for_deactivate(id,append_class,index,q_id,option_value,option_title)
-        {
-            var url = "{{ url('skiplogic/questions_for_skip_logic_deactivate') }}"
-                url = url+'/'+id;
-            $.ajax({
-                url: url,
-                type: 'post',
-                dataType: 'json',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'GET',
-                    'sec_id': id,
-                    'index': index,
-                    "question_id": q_id,
-                    "option_title": option_title,
-                    "option_value": option_value
-                },
-                success: function(response) {
-
-                    $('.'+append_class+id+'_'+index).html(response.html_str);
-                    $('#activate_deactivate_ques').html(response.function_str);
-                    eval(document.getElementById("activate_deactivate_ques").innerHTML);
-                }
-            })
-        }
-        function question_options_activate(id,append_class,index,q_id,option_value,option_title){
-            var url = "{{ url('skiplogic/options_for_skip_logic_activate') }}"
-                url = url+'/'+id;
-            $.ajax({
-                url: url,
-                type: 'post',
-                dataType: 'html',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'GET',
-                    'id': id,
-                    'index': index,
-                    "question_id": q_id,
-                    "option_title": option_title,
-                    "option_value": option_value
-                },
-                success: function(response){
-                    $('.'+append_class+q_id+'_'+index).html(response.html_str);
-                }
-            })
-        }
-        function question_options_deactivate(id,append_class,index,q_id,option_value,option_title){
-           var url = "{{ url('skiplogic/options_for_skip_logic_deactivate') }}"
-                url = url+'/'+id;
-            $.ajax({
-                url: url,
-                type: 'post',
-                dataType: 'html',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'GET',
-                    'id': id,
-                    'index': index,
-                    "question_id": q_id,
-                    "option_title": option_title,
-                    "option_value": option_value
-                },
-                success: function(response){
-                    $('.'+append_class+id+'_'+index).html(response);
-                }
-            })
-        }
-
+    }
+    function deactivate_checks(id,append_class,index,q_id,option_value,option_title){
+        var url = "{{ url('skiplogic/sections_for_skip_logic_deactivate') }}"
+            url = url+'/'+id;
+        $.ajax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'GET',
+                'step_id': id,
+                'index': index,
+                "question_id": q_id,
+                "option_title": option_title,
+                "option_value": option_value
+            },
+            success: function(response) {
+                $('.'+append_class+id+'_'+index).html(response.ques_html_str);
+                $('#activate_deactivate_ques').html(response.ques_function_str);
+                eval(document.getElementById("activate_deactivate_ques").innerHTML);
+            }
+        });
+    }
+    function question_for_activate(id,append_class,index,q_id,option_value,option_title)
+    {
+        var url = "{{ url('skiplogic/questions_for_skip_logic') }}"
+            url = url+'/'+id;
+        $.ajax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'GET',
+                'sec_id': id,
+                'index': index,
+                "question_id": q_id,
+                "option_title": option_title,
+                "option_value": option_value
+            },
+            success: function(response) {
+                $('.'+append_class+id+'_'+index).html(response.html_str);
+                $('#activate_deactivate_options').html(response.function_str);
+                eval(document.getElementById("activate_deactivate_options").innerHTML);
+            }
+        })
+    }
+    function question_for_deactivate(id,append_class,index,q_id,option_value,option_title)
+    {
+        var url = "{{ url('skiplogic/questions_for_skip_logic_deactivate') }}"
+            url = url+'/'+id;
+        $.ajax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'GET',
+                'sec_id': id,
+                'index': index,
+                "question_id": q_id,
+                "option_title": option_title,
+                "option_value": option_value
+            },
+            success: function(response) {
+                alert(response.function_str)
+                $('.'+append_class+id+'_'+index).html(response.html_str);
+                $('#activate_deactivate_options').html(response.function_str);
+                eval(document.getElementById("activate_deactivate_options").innerHTML);
+            }
+        })
+    }
+    function question_options_activate(id,append_class,index,q_id,option_value,option_title){
+        var url = "{{ url('skiplogic/options_for_skip_logic_activate') }}"
+            url = url+'/'+id;
+        $.ajax({
+            url: url,
+            type: 'post',
+            dataType: 'html',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'GET',
+                'id': id,
+                'index': index,
+                "question_id": q_id,
+                "option_title": option_title,
+                "option_value": option_value
+            },
+            success: function(response){
+                $('.'+append_class+q_id+'_'+index).html(response);
+            }
+        })
+    }
+    function question_options_deactivate(id,append_class,index,q_id,option_value,option_title){
+       var url = "{{ url('skiplogic/options_for_skip_logic_deactivate') }}"
+            url = url+'/'+id;
+        $.ajax({
+            url: url,
+            type: 'post',
+            dataType: 'html',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'GET',
+                'id': id,
+                'index': index,
+                "question_id": q_id,
+                "option_title": option_title,
+                "option_value": option_value
+            },
+            success: function(response){
+                $('.'+append_class+id+'_'+index).html(response);
+            }
+        })
+    }
     </script>
     @push('script_last')
 
