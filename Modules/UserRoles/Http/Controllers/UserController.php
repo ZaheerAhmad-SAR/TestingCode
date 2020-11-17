@@ -21,6 +21,7 @@ use Modules\UserRoles\Entities\Invitation;
 use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\RolePermission;
+use Modules\UserRoles\Entities\StudyRoleUsers;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Entities\UserSystemInfo;
 use Modules\UserRoles\Http\Requests\UserRequest;
@@ -159,7 +160,7 @@ class UserController extends Controller
      */
 
     public function assign_users(Request $request){
-        $study_user = UserRole::create([
+        $study_user = StudyRoleUsers::create([
             'id'    => Str::uuid(),
             'user_id' => $request->study_user,
             'role_id'   => $request->user_role,
@@ -283,7 +284,6 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        dd($request->all());
         // get old user data for trail log
         $oldUser = User::where('id', $id)->first();
         $data = array('name'=>$oldUser->name);
@@ -298,7 +298,6 @@ class UserController extends Controller
         $user->save();
         if ($request->roles){
             $userroles  = UserRole::where('user_id',$user->id)->where('user_type','!=','2')->get();
-            dd($userroles);
             foreach ($userroles as $role_id){
                 $role_id->delete();
             }

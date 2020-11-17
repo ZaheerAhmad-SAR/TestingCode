@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\DB;
 use Modules\FormSubmission\Entities\FormVersion;
 use Modules\FormSubmission\Traits\Replication\ReplicatePhaseStructure;
 use Session;
+
 class FormController extends Controller
 {
     use ReplicatePhaseStructure;
@@ -59,12 +60,16 @@ class FormController extends Controller
         $step_id_sess = Session::get('filter_step');
         $options = '<option value="">---Select Step---</option>';
         foreach ($PhaseSteps as $phaseStep) {
-            if($phaseStep->step_id == $step_id_sess){ $selected = 'selected';}else{$selected = '';}
+            if ($phaseStep->step_id == $step_id_sess) {
+                $selected = 'selected';
+            } else {
+                $selected = '';
+            }
             // $step['step_id'] = $phaseStep->step_id;
             // $step['form_type'] = $phaseStep->formType->form_type;
             // $step['step_name'] = $phaseStep->step_name;
             // $parentArray[] = $step;
-            $options .= '<option value ="'.$phaseStep->step_id.'" '.$selected.'>'.$phaseStep->formType->form_type.'-'.$phaseStep->step_name.'</option>';
+            $options .= '<option value ="' . $phaseStep->step_id . '" ' . $selected . '>' . $phaseStep->formType->form_type . '-' . $phaseStep->step_name . '</option>';
         }
         // $stepsData['data'] = $parentArray;
         // echo json_encode($stepsData);
@@ -211,7 +216,7 @@ class FormController extends Controller
             } elseif ($ques_value->form_field_type->field_type == 'Upload') {
                 $question_contents .=  '<div class="col-sm-6"><input type="file" name="question_' . $ques_value->id .
                     '" value="" class="form-control"></div>';
-            }elseif($ques_value->form_field_type->field_type == 'Calculated'){
+            } elseif ($ques_value->form_field_type->field_type == 'Calculated') {
                 $question_contents .= '<div class="col-sm-6"><input type="text" name="question_' . $ques_value->id .
                     '" value="" class="form-control" disabled style="background:lightgray"></div>';
             } elseif ($ques_value->form_field_type->field_type == 'Certification') {
@@ -236,12 +241,12 @@ class FormController extends Controller
             }
             $question_contents .= '<div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right">';
             if ($ques_value->form_field_type->field_type == 'Certification') {
-                $question_contents .='<span>edit in progress</span>';
+                $question_contents .= '<span>edit in progress</span>';
             } elseif ($ques_value->form_field_type->field_type == 'Description') {
                 $question_contents .= '<span class="dropdown-item edit_desc"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
-            }elseif($ques_value->form_field_type->field_type == 'Calculated'){
-                $question_contents .='<span class="dropdown-item edit_calculated_field"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
-            }else{
+            } elseif ($ques_value->form_field_type->field_type == 'Calculated') {
+                $question_contents .= '<span class="dropdown-item edit_calculated_field"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
+            } else {
                 $question_contents .= '<span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
             }
             $question_contents .= '<span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span>';
@@ -490,7 +495,7 @@ class FormController extends Controller
     {
         //$validationRuleIdsArray = array_unique((array)$request->validation_rules);
 
-        if (count($request->validation_rules) > 0) {
+        if (count((array)$request->validation_rules) > 0) {
             for ($counter = 0; $counter < count($request->validation_rules); $counter++) {
                 $id    = Str::uuid();
                 $validation = [
@@ -590,7 +595,7 @@ class FormController extends Controller
         $questions = Question::whereIn('section_id', $section_ids)->where('form_field_type_id', 1)->with('formFields')->get();
         $options = '<option value="">select question for auto calculation</option>';
         foreach ($questions as $key => $value) {
-            $options .= '<option value="'.$value->id.'">'.$value->question_text.'</option>';
+            $options .= '<option value="' . $value->id . '">' . $value->question_text . '</option>';
         }
         return $options;
     }
@@ -598,8 +603,7 @@ class FormController extends Controller
     {
         session()->forget('filter_phase');
         session()->forget('filter_step');
-        session()->put('filter_phase',$request->phase_id);
-        session()->put('filter_step',$request->step_id);
-                                                                        
+        session()->put('filter_phase', $request->phase_id);
+        session()->put('filter_step', $request->step_id);
     }
 }

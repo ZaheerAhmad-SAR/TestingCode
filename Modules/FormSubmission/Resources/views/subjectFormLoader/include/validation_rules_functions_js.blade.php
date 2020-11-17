@@ -3,7 +3,7 @@
             function mustRequired(isFormValid, fieldTitle, fieldValue) {
                 if (isFormValid == true) {
                     if ((fieldValue == "") || (typeof fieldValue === 'undefined')) {
-                        alert(fieldTitle + " is required");
+                        showAlert(fieldTitle, fieldTitle + " : is required", 'error');
                         isFormValid = false;
                     }
                 }
@@ -12,10 +12,12 @@
 
             function in_range(isFormValid, fieldTitle, fieldValue, min, max, messageType, message) {
                 if (isFormValid == true || messageType != 'error') {
-                    if (fieldValue < min || fieldValue > max) {
-                        showAlert(fieldTitle, fieldTitle + " : " + message, messageType);
-                        if (messageType == 'error') {
-                            isFormValid = false;
+                    if (fieldValue != -9999) {
+                        if (fieldValue < min || fieldValue > max) {
+                            showAlert(fieldTitle, fieldTitle + " : " + message, messageType);
+                            if (messageType == 'error') {
+                                isFormValid = false;
+                            }
                         }
                     }
                 }
@@ -24,10 +26,12 @@
 
             function max(isFormValid, fieldTitle, fieldValue, conditionVal, messageType, message) {
                 if (isFormValid == true) {
-                    if (fieldValue > conditionVal) {
-                        showAlert(fieldTitle, fieldTitle + " : " + message, messageType);
-                        if (messageType == 'error') {
-                            isFormValid = false;
+                    if (fieldValue != -9999) {
+                        if (fieldValue > conditionVal) {
+                            showAlert(fieldTitle, fieldTitle + " : " + message, messageType);
+                            if (messageType == 'error') {
+                                isFormValid = false;
+                            }
                         }
                     }
                 }
@@ -36,10 +40,12 @@
 
             function greaterThan(isFormValid, fieldTitle, fieldValue, conditionVal, messageType, message) {
                 if (isFormValid == true) {
-                    if (fieldValue > conditionVal) {
-                        showAlert(fieldTitle, fieldTitle + " : " + message, messageType);
-                        if (messageType == 'error') {
-                            isFormValid = false;
+                    if (fieldValue != -9999) {
+                        if (fieldValue > conditionVal) {
+                            showAlert(fieldTitle, fieldTitle + " : " + message, messageType);
+                            if (messageType == 'error') {
+                                isFormValid = false;
+                            }
                         }
                     }
                 }
@@ -48,10 +54,12 @@
 
             function greaterThanOrEqual(isFormValid, fieldTitle, fieldValue, conditionVal, messageType, message) {
                 if (isFormValid == true) {
-                    if (fieldValue >= conditionVal) {
-                        showAlert(fieldTitle, fieldTitle + " : " + message, messageType);
-                        if (messageType == 'error') {
-                            isFormValid = false;
+                    if (fieldValue != -9999) {
+                        if (fieldValue >= conditionVal) {
+                            showAlert(fieldTitle, fieldTitle + " : " + message, messageType);
+                            if (messageType == 'error') {
+                                isFormValid = false;
+                            }
                         }
                     }
                 }
@@ -60,10 +68,12 @@
 
             function min(isFormValid, fieldTitle, fieldValue, conditionVal, messageType, message) {
                 if (isFormValid == true) {
-                    if (fieldValue < conditionVal) {
-                        showAlert(fieldTitle, fieldTitle + " : " + message, messageType);
-                        if (messageType == 'error') {
-                            isFormValid = false;
+                    if (fieldValue != -9999) {
+                        if (fieldValue < conditionVal) {
+                            showAlert(fieldTitle, fieldTitle + " : " + message, messageType);
+                            if (messageType == 'error') {
+                                isFormValid = false;
+                            }
                         }
                     }
                 }
@@ -72,10 +82,12 @@
 
             function lessThen(isFormValid, fieldTitle, fieldValue, conditionVal, messageType, message) {
                 if (isFormValid == true) {
-                    if (fieldValue < conditionVal) {
-                        showAlert(fieldTitle, fieldTitle + " : " + message, messageType);
-                        if (messageType == 'error') {
-                            isFormValid = false;
+                    if (fieldValue != -9999) {
+                        if (fieldValue < conditionVal) {
+                            showAlert(fieldTitle, fieldTitle + " : " + message, messageType);
+                            if (messageType == 'error') {
+                                isFormValid = false;
+                            }
                         }
                     }
                 }
@@ -84,10 +96,12 @@
 
             function lessThanOrEqual(isFormValid, fieldTitle, fieldValue, conditionVal, messageType, message) {
                 if (isFormValid == true) {
-                    if (fieldValue <= conditionVal) {
-                        showAlert(fieldTitle, fieldTitle + " : " + message, messageType);
-                        if (messageType == 'error') {
-                            isFormValid = false;
+                    if (fieldValue != -9999) {
+                        if (fieldValue <= conditionVal) {
+                            showAlert(fieldTitle, fieldTitle + " : " + message, messageType);
+                            if (messageType == 'error') {
+                                isFormValid = false;
+                            }
                         }
                     }
                 }
@@ -96,10 +110,12 @@
 
             function equalTo(isFormValid, fieldTitle, fieldValue, conditionVal, messageType, message) {
                 if (isFormValid == true) {
-                    if (fieldValue == conditionVal) {
-                        showAlert(fieldTitle, fieldTitle + " : " + message, messageType);
-                        if (messageType == 'error') {
-                            isFormValid = false;
+                    if (fieldValue != -9999) {
+                        if (fieldValue == conditionVal) {
+                            showAlert(fieldTitle, fieldTitle + " : " + message, messageType);
+                            if (messageType == 'error') {
+                                isFormValid = false;
+                            }
                         }
                     }
                 }
