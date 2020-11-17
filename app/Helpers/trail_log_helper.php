@@ -1,5 +1,28 @@
 <?php
 
+use Modules\Admin\Entities\OptionsGroup;
+use Modules\Admin\Entities\Site;
+use Modules\Admin\Entities\PrimaryInvestigator;
+use Modules\Admin\Entities\Coordinator;
+use Modules\Admin\Entities\Photographer;
+use Modules\Admin\Entities\Other;
+use Modules\Admin\Entities\Annotation;
+use Modules\UserRoles\Entities\Role;
+use Modules\Admin\Entities\Modility;
+use Modules\Admin\Entities\ChildModilities;
+use Modules\Admin\Entities\Device;
+use Modules\Admin\Entities\Study;
+use Modules\Admin\Entities\StudySite;
+use Modules\Admin\Entities\Subject;
+use Modules\Admin\Entities\StudyStructure;
+use Modules\Admin\Scopes\StudyStructureWithoutRepeatedScope;
+use Modules\Admin\Entities\PhaseSteps;
+use Modules\Admin\Entities\Question;
+use Modules\Admin\Entities\Section;
+use Modules\Admin\Entities\DiseaseCohort;
+use Modules\Admin\Entities\TrailLog;
+use Modules\Admin\Entities\CrushFtpTransmission;
+
 function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
 {
 
