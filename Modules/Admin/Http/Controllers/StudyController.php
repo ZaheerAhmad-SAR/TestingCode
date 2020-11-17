@@ -90,7 +90,7 @@ class StudyController extends Controller
         } else {
             $user = \auth()->user()->id;
             if (hasPermission(\auth()->user(), 'grading.index')) {
-                $studies  =   UserRole::select('user_roles.*', 'users.*', 'studies.*')
+                $studies  =   StudyRoleUsers::select('user_roles.*', 'users.*', 'studies.*')
                     ->join('users', 'users.id', '=', 'user_roles.user_id')
                     ->join('studies', 'studies.id', '=', 'user_roles.study_id')
                     ->where('users.id', '=', \auth()->user()->id)
@@ -99,7 +99,7 @@ class StudyController extends Controller
                 $study = '';
             }
             if (hasPermission(\auth()->user(), 'adjudication.index')) {
-                $studies  =   UserRole::select('user_roles.*', 'users.*', 'studies.*')
+                $studies  =   StudyRoleUsers::select('user_roles.*', 'users.*', 'studies.*')
                     ->join('users', 'users.id', '=', 'user_roles.user_id')
                     ->join('studies', 'studies.id', '=', 'user_roles.study_id')
                     ->where('users.id', '=', \auth()->user()->id)
@@ -108,7 +108,7 @@ class StudyController extends Controller
                 $study = '';
             }
             if (hasPermission(\auth()->user(), 'qualitycontrol.index')) {
-                $studies  =   UserRole::select('user_roles.*', 'users.*', 'studies.*')
+                $studies  =   StudyRoleUsers::select('user_roles.*', 'users.*', 'studies.*')
                     ->join('users', 'users.id', '=', 'user_roles.user_id')
                     ->join('studies', 'studies.id', '=', 'user_roles.study_id')
                     ->where('users.id', '=', \auth()->user()->id)
@@ -117,7 +117,7 @@ class StudyController extends Controller
                 $study = '';
             }
             if (hasPermission(\auth()->user(), 'studytools.index')) {
-                $studies = UserRole::select('user_roles.*', 'users.*', 'studies.*')
+                $studies = StudyRoleUsers::select('user_roles.*', 'users.*', 'studies.*')
                     ->join('users', 'users.id', '=', 'user_roles.user_id')
                     ->join('studies', 'studies.id', '=', 'user_roles.study_id')
                     ->where('users.id', '=', \auth()->user()->id)
