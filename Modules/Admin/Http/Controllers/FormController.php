@@ -463,27 +463,28 @@ class FormController extends Controller
     {
         if (isset($request->q_d_status) && $request->q_d_status == 'yes') {
             $id    = Str::uuid();
-            $dependencies = QuestionDependency::create([
+            $data = [
                 'id' => $id,
                 'question_id' => $questionObj->id,
                 'q_d_status' => $request->q_d_status,
                 'dep_on_question_id' => $request->dep_on_question_id,
-                'opertaor' => $request->opertaor,
-                'custom_value' => $request->custom_value
-
-            ]);
+                'opertaor' => $request->dependency_opertaor,
+                'custom_value' => $request->dependency_custom_value
+            ];
+            //dd($data);
+            $dependencies = QuestionDependency::create($data);
         }
     }
 
     private function updateQuestionDependency($request, $questionObj)
     {
         // Question dependency update
-        if (!empty($request->dependency_id)) {
+        if (!empty($request->dependency_id) && $request->dependency_id != 'no-id-123') {
             $dependencies = QuestionDependency::where('id', $request->dependency_id)->first();
             $dependencies->q_d_status = $request->q_d_status;
             $dependencies->dep_on_question_id = $request->dep_on_question_id;
-            $dependencies->opertaor = $request->opertaor;
-            $dependencies->custom_value = $request->custom_value;
+            $dependencies->opertaor = $request->dependency_opertaor;
+            $dependencies->custom_value = $request->dependency_custom_value;
             $dependencies->save();
             $this->updateQuestionDependenciesToReplicatedVisits($dependencies);
         } else {
