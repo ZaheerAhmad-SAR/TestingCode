@@ -386,7 +386,6 @@ class SkipLogicController extends Controller
     }
     public function add_skipLogic(Request $request)
     {
-        dd($request->all());
         $skip_ques = [];
         $skip_options = [];
         if (isset($request->option_value) && count($request->option_value) > 0) {
