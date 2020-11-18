@@ -782,7 +782,7 @@
         // run callbacks
         $('#select-users').multiSelect({
             selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
-            selectionHeader: "<label for=''>Assigned Admins</label><input type='text' class='form-control ' autocomplete='off' placeholder='search here'>",
+            selectionHeader: "<label for=''>Assigned Admins</label><input type='text' class='form-control appendusers' autocomplete='off' placeholder='search here'>",
         });
 
     </script>
@@ -850,8 +850,7 @@
                     });
                     $('.appendfields').append(disease_cohort);
 
-
-                    var user_id = [];
+                    var user_id = getAssignedAdminsToStudy(study_id);
 
                     $.each(data.users,function (index, value) {
                         var id = value.id;
