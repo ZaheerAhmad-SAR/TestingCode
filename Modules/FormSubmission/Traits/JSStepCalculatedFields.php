@@ -15,7 +15,7 @@ trait JSStepCalculatedFields
             $questions = Question::where('section_id', 'like', $section->id)->where('form_field_type_id', 12)->get();
             if (count($questions) > 0) {
                 foreach ($questions as $question) {
-
+                    $ifStr = '';
                     $firstQuestion = Question::find($question->first_question_id);
                     $secondQuestion = Question::find($question->second_question_id);
 
