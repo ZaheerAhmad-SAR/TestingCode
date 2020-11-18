@@ -201,18 +201,16 @@ class StudyusersController extends Controller
 
         if($request->roles != null) {
 
-            $userroles  = UserRole::where('study_id', session('current_study'))
+            $userroles  = StudyRoleUsers::where('study_id', session('current_study'))
                                     ->where('user_id', $user->id)
-                                    ->where('user_type', 0)
                                     ->delete();
 
             foreach ($request->roles as $role) {
-                UserRole::create([
+                StudyRoleUsers::create([
                     'id'         => Str::uuid(),
                     'user_id'    =>  $user->id,
                     'role_id'    =>  $role,
                     'study_id'   => session('current_study'),
-                    'user_type'  => '0'
                 ]);
             }
         }
