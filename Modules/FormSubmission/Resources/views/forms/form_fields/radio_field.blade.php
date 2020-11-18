@@ -15,7 +15,7 @@ $showFalseField = true;
 @foreach ($options as $option_name => $option_value)
 @php
 $checked = ($answer->answer == $option_value) ? 'checked' : '';
-if($checked == 'checked'){
+if($checked == 'checked' && $answer->answer != '-9999'){
     $showFalseField = false;
 }
 @endphp
@@ -29,5 +29,5 @@ if($checked == 'checked'){
     </div>
 @endforeach
 @if($showFalseField == true)
-<input type="radio" name="{{ $field_name }}" value="" checked style="display:none;">
+<input type="radio" name="{{ $field_name }}" id="{{ $fieldId }}" value="{{ $answer->answer }}" checked style="display:none;">
 @endif
