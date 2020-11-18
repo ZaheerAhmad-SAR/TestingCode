@@ -256,6 +256,13 @@ class StudyController extends Controller
 
     }
 
+    public  function getAssignedAdminsToStudy(Request $request){
+        $studyId = $request->studyId;
+        $roleId = Permission::getStudyAdminRole();
+        $users = Study::getAssignedStudyAdminsName($studyId);
+        echo $users;
+    }
+
     /**
      * Update the specified resource in storage.
      * @param Request $request
@@ -267,7 +274,7 @@ class StudyController extends Controller
     }
     public function update_studies(Request $request)
     {
-        //dd($request->all(),'update_studies');
+
         // get old data for audit section
         $oldStudy = Study::find($request->study_id);
 

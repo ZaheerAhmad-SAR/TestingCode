@@ -197,7 +197,7 @@ $stepCalculatedFunctionsStr = Modules\Admin\Entities\PhaseSteps::generateCalcula
             return isFormValid;
         }
 
-        function runCalculatedFieldsFunctions{{$stepIdStr}}() {
+        function runCalculatedFieldsFunctions{{$stepIdStr}}(questionIdStr) {
             {!! $stepCalculatedFunctionsStr !!}
         }
     </script>

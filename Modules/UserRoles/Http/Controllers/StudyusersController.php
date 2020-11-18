@@ -37,9 +37,10 @@ class StudyusersController extends Controller
             ->join('users','users.id','=','study_role_users.user_id')
             ->join('roles','roles.id','=','study_role_users.role_id')
             ->where('study_id','=',session('current_study'))->get();
-        $studyusers = [];
+        $studyusers = StudyRoleUsers::where('study_id','!=',session('current_study'))->pluck('user_id')->toArray();
+        $users = User::whereIn('id',$studyusers)->get();
 
-        return view('userroles::users.studyUsers',compact('roles','enrolledusers','studyusers'));
+        return view('userroles::users.studyUsers',compact('roles','enrolledusers','studyusers','users'));
 
     }
 
