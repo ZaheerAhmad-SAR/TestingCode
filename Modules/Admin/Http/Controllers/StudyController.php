@@ -75,6 +75,7 @@ class StudyController extends Controller
             $study = '';
         }
         elseif (hasPermission(\auth()->user(), 'grading.index')) {
+            echo 'grading';
 
                 $studies = Study::getStudiesAganistGrader();
                 $study = '';
@@ -99,7 +100,6 @@ class StudyController extends Controller
                 $studyAdmins = '';
                 $study = '';
             }
-
         return view('admin::studies.index', compact('sites', 'users', 'adminUsers', 'study', 'studyAdminRoleId', 'studies'));
         }
 

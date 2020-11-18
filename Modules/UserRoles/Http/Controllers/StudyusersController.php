@@ -116,7 +116,11 @@ class StudyusersController extends Controller
                                     'role_id'   => $role,
                                     'study_id'  => session('current_study'),
                                 ]);
-
+                                UserRole::create([
+                                    'id'    => Str::uuid(),
+                                    'user_id'   => $user->id,
+                                    'role_id'   => $role
+                                ]);
                             }
                         } // roles
 
@@ -156,16 +160,19 @@ class StudyusersController extends Controller
     public function edit($id) {
         $user  = User::with('user_roles')->find($id);
 
-        $currentRoles = UserRole::select('user_roles.*','roles.*')
-            ->join('roles','roles.id','user_roles.role_id')
-            ->where('user_roles.user_id','=', $user->id)
-            ->where('user_roles.study_id','=', session('current_study'))
+        $currentRoles = StudyRoleUsers::select('study_role_users.*','roles.*')
+            ->join('roles','roles.id','study_role_users.role_id')
+            ->where('study_role_users.user_id','=', $user->id)
+            ->where('study_role_users.study_id','=', session('current_study'))
             ->get();
+       // dd($currentRoles);
 
         $unassignedRoles = Role::select('roles.*')
-            ->join('user_roles','user_roles.role_id','roles.id')
-            ->where('user_roles.user_id','=',$user->id)
+            ->join('study_role_users','study_role_users.role_id','roles.id')
+            ->where('study_role_users.user_id','=',$user->id)
+            ->where('roles.role_type','!=','system_role')
             ->get();
+       // dd($unassignedRoles);
 
         foreach ($currentRoles as $currentRole){
             $roleArray[] = $currentRole->role_id;
@@ -173,10 +180,13 @@ class StudyusersController extends Controller
 
         if (!empty($roleArray)) {
             $unassignedRoles = Role::select('roles.*')
-            ->whereNotIn('roles.id', $roleArray)->get();
+            ->whereNotIn('roles.id', $roleArray)
+            ->where('roles.role_type','study_role')
+                ->get();
+
         }
         else {
-            $unassignedRoles = Role::where('role_type','=','system_role' )->get();
+          //  $unassignedRoles = Role::where('role_type','!=','system_role' )->get();
         }
 
 
@@ -205,6 +215,7 @@ class StudyusersController extends Controller
                                     ->where('user_id', $user->id)
                                     ->delete();
 
+
             foreach ($request->roles as $role) {
                 StudyRoleUsers::create([
                     'id'         => Str::uuid(),
@@ -212,6 +223,14 @@ class StudyusersController extends Controller
                     'role_id'    =>  $role,
                     'study_id'   => session('current_study'),
                 ]);
+                $checkUserRole = UserRole::where('role_id',$role)->where('user_id',$user->id)->first();
+                if (null === $checkUserRole ){
+                    UserRole::create([
+                        'id'    => Str::uuid(),
+                        'user_id'   => $user->id,
+                        'role_id'   => $role
+                    ]);
+                }
             }
         }
 
