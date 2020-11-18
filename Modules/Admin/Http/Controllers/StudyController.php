@@ -274,7 +274,7 @@ class StudyController extends Controller
     }
     public function update_studies(Request $request)
     {
-        dd($request->all());
+
         // get old data for audit section
         $oldStudy = Study::find($request->study_id);
 
