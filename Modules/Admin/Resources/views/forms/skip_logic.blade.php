@@ -129,11 +129,15 @@
         $('select[name="event_section"]').select2();
         $('select[name="event_study"]').select2();
     </script>
-    <script type="text/javascript" id="activate_deactivate_sec">
+    <script type="text/javascript" id="activate_deactivate">
     </script>
-    <script type="text/javascript" id="activate_deactivate_ques">
+    <script type="text/javascript" id="activate_checks">
     </script>
-    <script type="text/javascript" id="activate_deactivate_options">
+    <script type="text/javascript" id="deactivate_checks">
+    </script>
+    <script type="text/javascript" id="question_for_activate">
+    </script>
+     <script type="text/javascript" id="question_for_deactivate">
     </script>
     
 <script type="text/javascript">
@@ -154,8 +158,8 @@
                 success: function(response) {
                     $(append_class).slideDown('600');
                     $(append_class).html(response.html_str);
-                    $('#activate_deactivate_sec').html(response.function_str);
-                    eval(document.getElementById("activate_deactivate_sec").innerHTML);
+                    $('#activate_deactivate').html(response.function_str);
+                    eval(document.getElementById("activate_deactivate").innerHTML);
                 }
             });
     }
@@ -176,9 +180,9 @@
                     "option_value": option_value
                 },
                 success: function(response) {
-                    $('.'+append_class+id+'_'+index).html(response.ques_html_str);
-                    $('#activate_deactivate_ques').html(response.ques_function_str);
-                    eval(document.getElementById("activate_deactivate_ques").innerHTML);
+                    $('.'+append_class+id+'_'+index).html(response.html_str);
+                    $('#activate_checks').html(response.function_str);
+                    eval(document.getElementById("activate_checks").innerHTML);
                 }
             });
     }
@@ -199,9 +203,9 @@
                 "option_value": option_value
             },
             success: function(response) {
-                $('.'+append_class+id+'_'+index).html(response.ques_html_str);
-                $('#activate_deactivate_ques').html(response.ques_function_str);
-                eval(document.getElementById("activate_deactivate_ques").innerHTML);
+                $('.'+append_class+id+'_'+index).html(response.html_str);
+                $('#deactivate_checks').html(response.function_str);
+                eval(document.getElementById("deactivate_checks").innerHTML);
             }
         });
     }
@@ -224,8 +228,8 @@
             },
             success: function(response) {
                 $('.'+append_class+id+'_'+index).html(response.html_str);
-                $('#activate_deactivate_options').html(response.function_str);
-                eval(document.getElementById("activate_deactivate_options").innerHTML);
+                $('#question_for_activate').html(response.function_str);
+                eval(document.getElementById("question_for_activate").innerHTML);
             }
         })
     }
@@ -247,14 +251,14 @@
                 "option_value": option_value
             },
             success: function(response) {
-                alert(response.function_str)
                 $('.'+append_class+id+'_'+index).html(response.html_str);
-                $('#activate_deactivate_options').html(response.function_str);
-                eval(document.getElementById("activate_deactivate_options").innerHTML);
+                $('#question_for_deactivate').html(response.function_str);
+                eval(document.getElementById("question_for_deactivate").innerHTML);
             }
         })
     }
     function question_options_activate(id,append_class,index,q_id,option_value,option_title){
+
         var url = "{{ url('skiplogic/options_for_skip_logic_activate') }}"
             url = url+'/'+id;
         $.ajax({

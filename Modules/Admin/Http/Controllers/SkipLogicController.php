@@ -158,7 +158,7 @@ class SkipLogicController extends Controller
     public function sections_skip_logic(Request $request,$id)
     {
         $activate_sections_array = [];
-        $section_function_ac = '';
+        $function_string = '';
         $where = array(
             "question_id" =>$request->question_id,
             "option_title" =>$request->option_title,
@@ -191,17 +191,17 @@ class SkipLogicController extends Controller
 
                            </div>';
         }
-        $section_function_ac .= 'question_for_activate(\'' . $value->id . '\',\'ac_questions_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
+        $function_string .= 'question_for_activate(\'' . $value->id . '\',\'ac_questions_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
         $section_array = array(
-            'ques_html_str' => $section_contents,
-            'ques_function_str' => $section_function_ac
+            'html_str' => $section_contents,
+            'function_str' => $function_string
         );
         return json_encode($section_array);
     }
     public function sections_skip_logic_deactivate(Request $request,$id)
     {
         $deactivate_sections_array = [];
-        $section_function_de = '';
+        $function_string = '';
         $where = array(
             "question_id" =>$request->question_id,
             "option_title" =>$request->option_title,
@@ -232,17 +232,17 @@ class SkipLogicController extends Controller
                             </div>';
 
         }
-        $section_function_de .= 'question_for_deactivate(\'' . $value->id . '\',\'de_questions_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
+        $function_string .= 'question_for_deactivate(\'' . $value->id . '\',\'de_questions_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
         $section_array = array(
-            'ques_html_str' => $section_contents,
-            'ques_function_str' => $section_function_de
+            'html_str' => $section_contents,
+            'function_str' => $function_string
         );
         return json_encode($section_array);
     }
     public function questions_skip_logic(Request $request, $id)
     {
         $activate_questions_array = [];
-        $options_function_ac = '';
+        $function_string = '';
         $where = array(
             "question_id" =>$request->question_id,
             "option_title" =>$request->option_title,
@@ -270,18 +270,18 @@ class SkipLogicController extends Controller
                                     </tbody>
                                 </table> </div>';
 
-            $options_function_ac .='question_options_activate(\''.$value->id.'\',\'ac_options_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\')';                    
+            $function_string .='question_options_activate(\''.$value->id.'\',\'ac_options_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';                    
         }
         $options_ac_array = array(
             'html_str' => $options_ac_contents,
-            'fuction_str' => $options_function_ac
+            'function_str' => $function_string
         );
         return json_encode($options_ac_array);
     }
     public function questions_skip_logic_deactivate(Request $request, $id)
     {
         $deactivate_questions_array = [];
-        $options_function_de = '';
+        $function_str = '';
         $where = array(
             "question_id" =>$request->question_id,
             "option_title" =>$request->option_title,
@@ -301,7 +301,7 @@ class SkipLogicController extends Controller
             $question_contents .= '<tr><td class="sec_id" style="display: none;">' . $value->id . '</td>
                                     <td style="text-align: center;width:15%;">
                                         <div class="btn-group btn-group-sm" role="group">
-                                            <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" style="font-size: 20px; color: #1e3d73;" onclick="question_options_deactivate(\''.$value->id.'\',\'de_options_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\')" data-target=".row-'.$value->id.'-de-'.$request->index.'">
+                                            <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" style="font-size: 20px; color: #1e3d73;" onclick="question_options_deactivate(\''.$value->id.'\',\'de_options_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');" data-target=".row-'.$value->id.'-de-'.$request->index.'">
                                             </i>
                                       </div>
                                     </td>
@@ -314,9 +314,12 @@ class SkipLogicController extends Controller
 
                                     </tbody>
                                 </table>  </div></div>';
-            $options_function_de .='question_options_deactivate(\''.$value->id.'\',\'de_options_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
+            $function_str .='question_options_deactivate(\''.$value->id.'\',\'de_options_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
         }
-        $question_contents_array = array('html_str' => $question_contents,'function_str' => $options_function_de);
+        $question_contents_array = array(
+            'html_str' => $question_contents,
+            'function_str' => $function_str
+        );
         return json_encode($question_contents_array);
     }
     public function options_skip_logic_activate(Request $request,$id)
