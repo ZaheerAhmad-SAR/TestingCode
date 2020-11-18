@@ -47,7 +47,7 @@ class SkipLogicController extends Controller
     {
         $activate_forms_array = [];
         $deactivate_forms_array = [];
-         $function_string = '';
+        $function_string = '';
         //$view = return view('admin::forms.skip_sections');
         $where = array(
             "question_id" =>$request->question_id,
@@ -158,7 +158,7 @@ class SkipLogicController extends Controller
     public function sections_skip_logic(Request $request,$id)
     {
         $activate_sections_array = [];
-        $section_function_de = '';
+        $section_function_ac = '';
         $where = array(
             "question_id" =>$request->question_id,
             "option_title" =>$request->option_title,
@@ -191,7 +191,7 @@ class SkipLogicController extends Controller
 
                            </div>';
         }
-        $section_function_ac = 'question_for_activate(\'' . $value->id . '\',\'ac_questions_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
+        $section_function_ac .= 'question_for_activate(\'' . $value->id . '\',\'ac_questions_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
         $section_array = array(
             'ques_html_str' => $section_contents,
             'ques_function_str' => $section_function_ac
@@ -232,7 +232,7 @@ class SkipLogicController extends Controller
                             </div>';
 
         }
-        $section_function_de = 'question_for_deactivate(\'' . $value->id . '\',\'de_questions_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
+        $section_function_de .= 'question_for_deactivate(\'' . $value->id . '\',\'de_questions_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
         $section_array = array(
             'ques_html_str' => $section_contents,
             'ques_function_str' => $section_function_de
@@ -316,7 +316,7 @@ class SkipLogicController extends Controller
                                 </table>  </div></div>';
             $options_function_de .='question_options_deactivate(\''.$value->id.'\',\'de_options_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
         }
-        $question_contents_array  = array('html_str' => $question_contents,'function_str' => $options_function_de );
+        $question_contents_array = array('html_str' => $question_contents,'function_str' => $options_function_de);
         return json_encode($question_contents_array);
     }
     public function options_skip_logic_activate(Request $request,$id)

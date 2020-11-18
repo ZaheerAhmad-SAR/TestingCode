@@ -35,7 +35,7 @@ $adjudicationRequiredQuestionIdsArray = \Modules\FormSubmission\Entities\Questio
                 }
             }
             $showAverageIcon = false;
-            if ($fieldType == 'Number'){
+            if ($fieldType == 'Number' || $fieldType == 'Calculated'){
                 $showAverageIcon = true;
             }
 

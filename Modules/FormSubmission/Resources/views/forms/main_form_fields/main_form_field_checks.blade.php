@@ -19,7 +19,7 @@ $dataArray = ['question'=> $question, 'field_name'=> $field_name,
 @elseif($fieldType == 'Upload')
     @include('formsubmission::forms.main_form_fields.upload_field', $dataArray)
 @elseif($fieldType == 'Calculated')
-    @include('formsubmission::forms.main_form_fields.text_field', $dataArray)
+    @include('formsubmission::forms.main_form_fields.number_field', $dataArray)
 @elseif($fieldType == 'Description')
     {!! $question->formFields->text_info !!}
 @endif

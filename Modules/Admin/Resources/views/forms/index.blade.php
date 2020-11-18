@@ -991,10 +991,9 @@
         })
         $('#steps').on('change', function() {
             var step_id = $(this).val();
+            // fix issue here with out load session
             var check_session_step = '{{Session('filter_step')}}';
-            if(check_session_step != ''){
-            var step_id = '{{Session('filter_step')}}';    
-            }
+            
             var phase_id = $('#phases').val();
             var sec_class = $('select.decisionSections');
             var sec_class2 = $('select.decisionSections2');
