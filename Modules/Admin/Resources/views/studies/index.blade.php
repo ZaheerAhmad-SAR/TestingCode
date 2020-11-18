@@ -86,7 +86,7 @@
                                         <td>{{$study->study_status}}</td>
                                         @if(hasPermission(auth()->user(),'systemtools.index'))
                                             <td>
-
+                                                    {{\Modules\Admin\Entities\Study::getstudyAdminsName($study->id)}}
                                             </td>
                                         @endif
                                         @if(hasPermission(auth()->user(),'studies.edit'))
