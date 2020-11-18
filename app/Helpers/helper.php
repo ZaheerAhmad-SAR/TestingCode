@@ -54,7 +54,7 @@ function search_auth($arr, $auth)
 
 function hasPermission($user, $routeName)
 {
-    if (empty(\session('current_study'))){
+   /* if (empty(\session('current_study'))){*/
         $roles = $user->user_roles;
         foreach ($roles as $role) {
             $permission = Permission::where('name', '=', $routeName)->first();
@@ -67,8 +67,10 @@ function hasPermission($user, $routeName)
                 return false;
             }
         }
-    }
-    elseif(!empty(\session('current_study'))){
+   // }
+
+    /* Set Study Role Permissions */
+    /*elseif(!empty(\session('current_study'))){
         $roles = \Modules\UserRoles\Entities\StudyRoleUsers::select('role_id')->where('user_id',\auth()->user()->id)
             ->where('study_id',\session('current_study'))
             ->first();
@@ -83,7 +85,7 @@ function hasPermission($user, $routeName)
                 return false;
             }
         }
-    }
+    }*/
 }
 
 function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
