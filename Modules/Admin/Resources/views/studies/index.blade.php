@@ -881,7 +881,7 @@
                             $.each(opts,function (index,value) {
                                users += '<option selected="selected" value=" '+index+' " >'+value+'</option>';
                         });
-                            alert(users);
+                            /*alert(users);*/
                         $('.appendusers').html(users);
                     }
                 });
