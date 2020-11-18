@@ -16,6 +16,7 @@
     return view('admin::test_transmission_api');
 });*/
 // transmission end point
+Route::post('studies/getAssignedAdminsToStudy','StudyController@getAssignedAdminsToStudy')->name('studies.getAssignedAdminsToStudy');
 Route::post('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
 
 
