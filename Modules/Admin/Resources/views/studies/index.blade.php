@@ -86,9 +86,7 @@
                                         <td>{{$study->study_status}}</td>
                                         @if(hasPermission(auth()->user(),'systemtools.index'))
                                             <td>
-                                                @foreach($adminUsers as $admin)
-                                                    {{$admin->name}}
-                                                @endforeach
+                                                    {{\Modules\Admin\Entities\Study::getstudyAdminsName($study->id)}}
                                             </td>
                                         @endif
                                         @if(hasPermission(auth()->user(),'studies.edit'))
@@ -305,7 +303,7 @@
                                     <div class="{!! ($errors->has('users')) ?'col-sm-9 has-error':'col-sm-9' !!}">
                                         <select class="searchable" id="select-users" multiple="multiple" name="users[]">
                                             @foreach($adminUsers as $user)
-                                                <option value="{{$user->id. '/' . $user->role_id}}">{{$user->name . '-' . $user->role_name}}</option>
+                                                <option value="{{$user->id. '/' . implode(', ', $studyAdminRoleId)}}">{{$user->name }}</option>
                                             @endforeach
                                         </select>
 

@@ -61,7 +61,7 @@
                                         </tr>
                                         </thead>
                                         <tbody id="users-crud">
-                                        @foreach($users as $user)
+                                        @foreach($enrolledusers as $user)
                                             <tr>
                                                 <td>{{ucfirst($user->name)}}</td>
                                                 <td>{{$user->email}}</td>
