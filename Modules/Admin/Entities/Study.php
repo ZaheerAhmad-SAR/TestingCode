@@ -5,6 +5,7 @@ namespace Modules\Admin\Entities;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\StudyRoleUsers;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\Admin\Entities\Annontation;
@@ -133,4 +134,45 @@ class Study extends Model
     public function studyuserroles(){
         return $this->hasMany(StudyRoleUsers::class);
     }
+
+    public static function getstudyAdminsName($id)
+    {
+        $userNames = '';
+       $userIds = RoleStudyUser::where('study_id','LIKE',$id)->where('role_id','LIKE',Permission::getStudyAdminRole())->pluck('user_id')->toArray();
+       foreach ($userIds as $userId){
+           $user = User::find($userId);
+           $userNames .= $user->name . ', ';
+       }
+
+       return $userNames;
+    }
+
+    public static function getStudiesAganistAdmin()
+    {
+        $studyIds = RoleStudyUser::where('user_id','LIKE',auth()->user()->id)->where('role_id','LIKE',Permission::getStudyAdminRole())->pluck('study_id')->toArray();
+        $studies = Study::whereIn('id',$studyIds)->get();
+        return $studies;
+    }
+
+    public static function getStudiesAganistQC()
+    {
+        $studyIds = RoleStudyUser::where('user_id','LIKE',auth()->user()->id)->where('role_id','LIKE',Permission::getStudyQCRole())->pluck('study_id')->toArray();
+        $studies = Study::whereIn('id',$studyIds)->get();
+        return $studies;
+    }
+
+    public static function getStudiesAganistGrader()
+    {
+        $studyIds = RoleStudyUser::where('user_id','LIKE',auth()->user()->id)->where('role_id','LIKE',Permission::getStudyGraderRole())->pluck('study_id')->toArray();
+        $studies = Study::whereIn('id',$studyIds)->get();
+        return $studies;
+    }
+
+    public static function getStudiesAganistAdjudicator()
+    {
+        $studyIds = RoleStudyUser::where('user_id','LIKE',auth()->user()->id)->where('role_id','LIKE',Permission::getStudyAdjudicationRole())->pluck('study_id')->toArray();
+        $studies = Study::whereIn('id',$studyIds)->get();
+        return $studies;
+    }
+
 }
