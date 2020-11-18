@@ -201,8 +201,7 @@
                                     <div class="col-md-8">
                                         <select class="form-control dropdown" name="study_user">
                                             <option value="selectuser"> Select User</option>
-                                            @foreach($studyusers as $user)
-                                                {{$studyusers}}
+                                            @foreach($users as $user)
                                                 <option value="{{$user->id}}">{{$user->name}}</option>
                                             @endforeach
                                         </select>
@@ -250,7 +249,7 @@
                                     <div class="col-md-8">
                                         <select class="form-control dropdown" name="study_user">
                                             <option value="selectuser"> Select User</option>
-                                            @foreach($studyusers as $user)
+                                            @foreach($users as $user)
                                                 <option value="{{$user->id}}">{{$user->name}}</option>
                                             @endforeach
                                         </select>
