@@ -17,7 +17,7 @@ $showFalseField = true;
 @foreach ($options as $option_name => $option_value)
     @php
     $checked = in_array($option_value, $answersArray) ? 'checked' : '';
-    if($checked == 'checked'){
+    if($checked == 'checked' && $answer->answer != '-9999'){
     $showFalseField = false;
     }
     @endphp
@@ -30,5 +30,5 @@ $showFalseField = true;
     </div>
 @endforeach
 @if ($showFalseField == true)
-    <input type="checkbox" name="{{ $field_name }}[]" value="" checked style="display:none;">
+    <input type="checkbox" name="{{ $field_name }}[]"  id="{{ $fieldId }}" value="{{ $answer->answer }}" checked style="display:none;">
 @endif

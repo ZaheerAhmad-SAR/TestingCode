@@ -450,8 +450,7 @@
                                         </div>
                                         <div class="col-sm-2"> field operator:</div>
                                         <div class="col-sm-4">
-                                            <select name="opertaor" id="dependency_operator" class="form-control"
-                                                name="dep_operator">
+                                            <select name="dependency_opertaor" id="dependency_operator" class="form-control">
                                                 <option value="">---Select---</option>
                                                 <option value="=">Equal</option>
                                                 <option value=">=">Greater OR Equal</option>
@@ -465,7 +464,7 @@
                                     <div class="form-group row">
                                         <div class="col-sm-2">Value:</div>
                                         <div class="col-sm-4">
-                                            <input type="text" name="custom_value" id="dependency_custom_value"
+                                            <input type="text" name="dependency_custom_value" id="dependency_custom_value"
                                                 class="form-control">
                                         </div>
                                     </div>
@@ -993,7 +992,7 @@
             var step_id = $(this).val();
             // fix issue here with out load session
             var check_session_step = '{{Session('filter_step')}}';
-            
+
             var phase_id = $('#phases').val();
             var sec_class = $('select.decisionSections');
             var sec_class2 = $('select.decisionSections2');
@@ -1160,7 +1159,7 @@
                     } else {
                         $('#is_exportable_to_xls_no').prop('checked', true);
                     }
-                    //$('#dependency_id').val(dependency_id);
+                    $('#dependency_id').val(dependency_id);
                     if (dependency_status == 'yes') {
                         $('#field_dependent_yes').prop('checked', true);
                         $('.field_dependent').trigger('change');

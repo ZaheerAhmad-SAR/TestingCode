@@ -25,8 +25,9 @@
                 $fieldType = $question->form_field_type->field_type;
                 $is_required = ($question->formFields->is_required == 'yes')? 'required':'';
                 $is_required_star = ($question->formFields->is_required == 'yes')? '<span class="text text-danger">*</span>':'';
+                $showOrHide = ($answer->answer == '-9999')? 'display:none;':'';
                 @endphp
-                 <div class="form-group" id="question_row_{{$questionIdStr}}">
+                 <div class="form-group" id="question_row_{{$questionIdStr}}" style="{{ $showOrHide }}">
                  <label class="">{{ $question->question_text }} {!! $is_required_star !!}</label>
                     <div class="row">
                         <div class="col-10">
