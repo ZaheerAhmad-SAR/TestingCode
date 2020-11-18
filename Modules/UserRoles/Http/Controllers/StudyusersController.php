@@ -33,29 +33,13 @@ class StudyusersController extends Controller
 
         $currentStudy = session('current_study');
 
-        $enrolledusers = StudyRoleUsers::where('study_id','=',session('current_study'))->pluck('user_id')->toArray();
-        $studyusers = StudyRoleUsers::select('users.*','user_roles.study_id','roles.role_type')
-            ->join('users','users.id','=','user_roles.user_id')
-            ->join('roles','roles.id','=','user_roles.role_id')
-            ->where('roles.role_type','!=','system_role')
-            ->whereNotIn('user_roles.user_id',$enrolledusers)
-            ->where('user_roles.study_id','!=',session('current_study'))->distinct()
-            ->get();
-        /*$studyusers = UserRole::select('user_roles.user_id','user_roles.study_id','users.*','roles.role_type')
-            ->join('users','users.id','=','user_roles.user_id')
-            ->join('roles','roles.id','=','user_roles.role_id')
-            ->where('user_roles.user_id','!=',$enrolledusers)
-            ->where('study_id','!=',session('current_study'))->get();
-        dd($studyusers, session('current_study'));*/
+        $enrolledusers = StudyRoleUsers::select('study_role_users.user_id','study_role_users.role_id','users.*','roles.name as role_name')
+            ->join('users','users.id','=','study_role_users.user_id')
+            ->join('roles','roles.id','=','study_role_users.role_id')
+            ->where('study_id','=',session('current_study'))->get();
+        $studyusers = [];
 
-        $users =  StudyRoleUsers::select('users.*','user_roles.study_id','roles.role_type', 'roles.name as role_name')
-            ->join('users','users.id','=','user_roles.user_id')
-            ->join('roles','roles.id','=','user_roles.role_id')
-            ->where('roles.role_type','!=','system_role')
-            ->where('user_roles.study_id','=',session('current_study'))
-            ->get();
-
-        return view('userroles::users.studyUsers',compact('users','roles','studyusers','enrolledusers'));
+        return view('userroles::users.studyUsers',compact('roles','enrolledusers','studyusers'));
 
     }
 
