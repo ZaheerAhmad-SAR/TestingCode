@@ -15,7 +15,7 @@ $dataArray = ['field_name'=> $grader_field_name, 'questionIdStr'=>
 @elseif($fieldType == 'Number')
     @include('formsubmission::forms.adjudication_form_fields.number_field', $dataArray)
 @elseif($fieldType == 'Calculated')
-    @include('formsubmission::forms.adjudication_form_fields.text_field', $dataArray)
+    @include('formsubmission::forms.adjudication_form_fields.number_field', $dataArray)
 @elseif($fieldType == 'Description')
     {!! $question->formFields->text_info !!}
 @endif
