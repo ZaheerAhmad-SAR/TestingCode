@@ -54,7 +54,7 @@ class StudyController extends Controller
         $sites = Site::all();
         $study = '';
         $studies = [];
-
+        $adminUsers = '';
         $studyAdminRoleId = Permission::getStudyAdminRole();
 
         if (!empty($studyAdminRoleId)){
@@ -106,7 +106,7 @@ class StudyController extends Controller
 
         }
 
-        return view('admin::studies.index', compact('sites', 'users', 'study','adminUsers','studyAdminRoleId','studies'));
+        return view('admin::studies.index', compact('sites', 'users','adminUsers', 'study','studyAdminRoleId','studies'));
     }
 
     /**
