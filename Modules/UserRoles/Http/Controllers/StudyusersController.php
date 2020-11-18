@@ -37,8 +37,11 @@ class StudyusersController extends Controller
             ->join('users','users.id','=','study_role_users.user_id')
             ->join('roles','roles.id','=','study_role_users.role_id')
             ->where('study_id','=',session('current_study'))->get();
+
+        $getEnrolledUsersId = StudyRoleUsers::where('study_id','=',session('current_study'))->pluck('user_id')->toArray();
+
         $studyusers = StudyRoleUsers::where('study_id','!=',session('current_study'))->pluck('user_id')->toArray();
-        $users = User::whereIn('id',$studyusers)->get();
+        $users = User::whereNotIn('id',$getEnrolledUsersId)->get();
 
         return view('userroles::users.studyUsers',compact('roles','enrolledusers','studyusers','users'));
 
@@ -107,12 +110,11 @@ class StudyusersController extends Controller
 
                         if (!empty($request->roles)) {
                             foreach ($request->roles as $role){
-                                $roles =UserRole::create([
+                                $roles =StudyRoleUsers::create([
                                     'id'        => Str::uuid(),
                                     'user_id'   => $user->id,
                                     'role_id'   => $role,
                                     'study_id'  => session('current_study'),
-                                    'user_type' => '0'
                                 ]);
 
                             }
