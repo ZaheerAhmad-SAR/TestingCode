@@ -20,15 +20,21 @@ class RoleTableSeeder extends Seeder
     {
         Model::unguard();
 
-        $roles  =   ['admin'];
-        foreach ($roles as $role) {
+        $role  =   'admin';
             $check_role = Role::where('name', $role)->first();
             if (!$check_role) {
                 $check_role = Role::create([
                     'id' => Str::uuid(),
                     'name' => $role,
                     'description' => $role,
-                    'role_type' => 'super',
+                    'role_type' => 'super_admin',
+                    'created_by' => ''
+                ]);
+                $check_role_2 = Role::create([
+                    'id' => Str::uuid(),
+                    'name' => 'basic',
+                    'description' => 'basic',
+                    'role_type' => 'system_role',
                     'created_by' => ''
                 ]);
             }
@@ -61,8 +67,36 @@ class RoleTableSeeder extends Seeder
                     foreach ($all as $rp){
                         dd($rp);*/
                 }
+                if ($role->name == 'basic') {
+                    $permissions = Permission::where('name','=','dashboard.index')
+                        ->orwhere('name','=','dashboard.create')
+                        ->orwhere('name','=','dashboard.store')
+                        ->orwhere('name','=','dashboard.edit')
+                        ->orwhere('name','=','dashboard.update')
+                        ->get();
+                    foreach ($permissions as $permission) {
+                        $permission_id = $permission->id;
+                        $permission_data = RolePermission::where('role_id', '=', $role->id)
+                            ->where('permission_id', '=', $permission->id)->first();
+                        if (!empty($permission_data)) {
+                            $permission_data->update([
+                                'role_id' => $role->id,
+                                'permission_id' => $permission->id
+                            ]);
+                        }
+                        if (($permission_data == Null)) {
+                            //dd($role_id, $permission_id);
+                            $rolepermission = new RolePermission();
+                            /*$rolepermission['id'] = Str::uuid();*/
+                            $rolepermission['role_id'] = $role->id;
+                            $rolepermission['permission_id'] = $permission_id;
+                            $rolepermission->save();
+                        }
+
+//                    dd($rolepermission);
+                    }
+                }
             }
-        }
     }
 }
 
