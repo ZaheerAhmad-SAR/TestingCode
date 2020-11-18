@@ -54,15 +54,18 @@ class StudyController extends Controller
         $sites = Site::all();
         $study = '';
         $studies = [];
-        $adminUsers = '';
-        $studyAdminRoleId = Permission::getStudyAdminRole();
+        $adminUsers = [];
+        $studyAdminRoleId = '';
 
-        if (!empty($studyAdminRoleId)){
-            $userIdsArrayFromUserRole = UserRole::where('role_id', $studyAdminRoleId)->pluck('user_id')->toArray();
-            $adminUsers = User::whereIn('id', $userIdsArrayFromUserRole)->orderBy('name','asc')->get();
-        }
 
         if (hasPermission(\auth()->user(), 'systemtools.index')) {
+            $studyAdminRoleId = Permission::getStudyAdminRole();
+
+
+            if (!empty($studyAdminRoleId)){
+                $userIdsArrayFromUserRole = UserRole::where('role_id', $studyAdminRoleId)->pluck('user_id')->toArray();
+                $adminUsers = User::whereIn('id', $userIdsArrayFromUserRole)->orderBy('name','asc')->get();
+            }
             $sites = Site::all();
             $user = User::with('studies', 'user_roles')->find(Auth::id());
 
