@@ -55,15 +55,18 @@ class StudyController extends Controller
         $study = '';
         $adminUsers = '';
         $studies = [];
+        $adminUsers = [];
+        $studyAdminRoleId = '';
 
-        $studyAdminRoleId = Permission::getStudyAdminRole();
-
-        if (!empty($studyAdminRoleId)) {
-            $userIdsArrayFromUserRole = UserRole::where('role_id', $studyAdminRoleId)->pluck('user_id')->toArray();
-            $adminUsers = User::whereIn('id', $userIdsArrayFromUserRole)->orderBy('name', 'asc')->get();
-        }
 
         if (hasPermission(\auth()->user(), 'systemtools.index')) {
+            $studyAdminRoleId = Permission::getStudyAdminRole();
+
+
+            if (!empty($studyAdminRoleId)) {
+                $userIdsArrayFromUserRole = UserRole::where('role_id', $studyAdminRoleId)->pluck('user_id')->toArray();
+                $adminUsers = User::whereIn('id', $userIdsArrayFromUserRole)->orderBy('name', 'asc')->get();
+            }
             $sites = Site::all();
             $user = User::with('studies', 'user_roles')->find(Auth::id());
 
@@ -107,7 +110,7 @@ class StudyController extends Controller
 
         }
 
-        return view('admin::studies.index', compact('sites', 'users', 'study', 'adminUsers', 'studyAdminRoleId', 'studies'));
+        return view('admin::studies.index', compact('sites', 'users', 'adminUsers', 'study', 'studyAdminRoleId', 'studies'));
     }
 
     /**
@@ -256,6 +259,14 @@ class StudyController extends Controller
         return \response()->json(['study' => $study, 'users' => $users]);
     }
 
+    public  function getAssignedAdminsToStudy(Request $request)
+    {
+        $studyId = $request->studyId;
+        $roleId = Permission::getStudyAdminRole();
+        $users = Study::getAssignedStudyAdminsName($studyId);
+        echo $users;
+    }
+
     /**
      * Update the specified resource in storage.
      * @param Request $request
@@ -267,7 +278,7 @@ class StudyController extends Controller
     }
     public function update_studies(Request $request)
     {
-        //dd($request->all(),'update_studies');
+
         // get old data for audit section
         $oldStudy = Study::find($request->study_id);
 

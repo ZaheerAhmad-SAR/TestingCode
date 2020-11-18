@@ -175,4 +175,16 @@ class Study extends Model
         $studies = Study::whereIn('id', $studyIds)->get();
         return $studies;
     }
+
+    public static function getAssignedStudyAdminsName($id)
+    {
+        $userNames = [];
+        $userIds = RoleStudyUser::where('study_id', 'LIKE', $id)->where('role_id', 'LIKE', Permission::getStudyAdminRole())->pluck('user_id')->toArray();
+        foreach ($userIds as $userId) {
+            $user = User::find($userId);
+            $userNames[$user->id] = $user->name;
+        }
+
+        return json_encode($userNames);
+    }
 }
