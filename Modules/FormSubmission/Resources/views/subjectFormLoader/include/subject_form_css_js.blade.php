@@ -210,6 +210,7 @@
                                 if(eval("typeof " + window['showHideQuestion' + questionIdStr]) != 'undefined'){
                                     window['showHideQuestion' + questionIdStr](stepIdStr);
                                 }
+                                window['runCalculatedFieldsFunctions' + stepIdStr]();
                                 submitFormField(stepIdStr, questionId, field_name, fieldId);
                             }
                         }else{
@@ -598,19 +599,22 @@
                     secondVal = customVal;
                 }
 
-                var answer = 0;
-                if(operator == '+'){
-                    answer = firstVal + secondVal;
-                }else if(operator == '-'){
-                    answer = firstVal - secondVal;
-                }else if(operator == '*'){
-                    answer = firstVal * secondVal;
-                }else if(operator == '/'){
-                    answer = firstVal / secondVal;
-                }
+                //if(firstVal > 0 && secondVal > 0){
 
-                $('#' + fieldId).val(answer);
-                validateAndSubmitField(stepIdStr, sectionIdStr, questionId, questionIdStr, form_type_id, field_name, fieldId);
+                    var answer = 0;
+                    if(operator == '+'){
+                        answer = firstVal + secondVal;
+                    }else if(operator == '-'){
+                        answer = firstVal - secondVal;
+                    }else if(operator == '*'){
+                        answer = firstVal * secondVal;
+                    }else if(operator == '/'){
+                        answer = firstVal / secondVal;
+                    }
+
+                    $('#' + fieldId).val(answer);
+                    validateAndSubmitField(stepIdStr, sectionIdStr, questionId, questionIdStr, form_type_id, field_name, fieldId);
+                //}
             }
 
             function reloadPage(waitSeconds) {

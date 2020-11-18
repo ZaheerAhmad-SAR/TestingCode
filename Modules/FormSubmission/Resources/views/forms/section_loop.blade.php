@@ -187,6 +187,7 @@ if(null !== $formStatusObj){
 
 @php
 $stepValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidationForStep($step, false);
+$stepCalculatedFunctionsStr = Modules\Admin\Entities\PhaseSteps::generateCalculatedFieldsJSFunctions($step);
 @endphp
 @push('script')
     <script>
@@ -194,6 +195,10 @@ $stepValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidation
             var isFormValid = true;
             {!! $stepValidationStr !!}
             return isFormValid;
+        }
+
+        function runCalculatedFieldsFunctions{{$stepIdStr}}() {
+            {!! $stepCalculatedFunctionsStr !!}
         }
     </script>
 @endpush
