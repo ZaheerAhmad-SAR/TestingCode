@@ -13,6 +13,7 @@ use Modules\Admin\Entities\TrailLog;
 use Modules\Admin\Entities\TransmissionUpdateDetail;
 use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\Role;
+use Modules\UserRoles\Entities\StudyRoleUsers;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Entities\UserSystemInfo;
 
