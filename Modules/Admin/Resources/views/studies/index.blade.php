@@ -307,6 +307,9 @@
                                             @endforeach
                                         </select>
 
+                                        <select class="appendusers" id="assignedusers">
+                                        </select>
+
                                         @error('users')
                                         <span class="text-danger small">
                                     {{ $message }}
@@ -779,7 +782,7 @@
         // run callbacks
         $('#select-users').multiSelect({
             selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
-            selectionHeader: "<label for=''>Assigned Admins</label><input type='text' class='form-control appendusers' autocomplete='off' placeholder='search here'>",
+            selectionHeader: "<label for=''>Assigned Admins</label><input type='text' class='form-control ' autocomplete='off' placeholder='search here'>",
         });
 
     </script>
@@ -847,15 +850,6 @@
                     });
                     $('.appendfields').append(disease_cohort);
 
-                    var users = '';
-                    $('.appendusers').html('');
-
-                    $.each(data.users,function (index, value) {
-
-                        users += '<option selected="selected" value=" '+value.id+' " >'+value.name+'</option>';
-
-                    });
-                    $('.appendusers').html(users);
 
                     var user_id = [];
 
@@ -866,9 +860,33 @@
                     $('#select-users').multiSelect('deselect_all');
                     $('#select-users').multiSelect('select',user_id);
                     $('#study-crud-modal').modal('show');
+                    getAssignedAdminsToStudy(study_id);
                 })
                 console.log(edit_study);
             });
+
+            function getAssignedAdminsToStudy(studyId){
+                $.ajax({
+                    url: "{{ route('studies.getAssignedAdminsToStudy')}}",
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        'studyId': studyId
+                },
+                    success: function(response){
+                        var opts = $.parseJSON(response);
+                        var users = '';
+
+                        $('.appendusers').html('');
+
+                            $.each(opts,function (index,value) {
+                               users += '<option selected="selected" value=" '+index+' " >'+value+'</option>';
+                        });
+                            alert(users);
+                        $('.appendusers').html(users);
+                    }
+                });
+            }
 
             $('body').on('click', '#delete-study', function () {
                 var study_id = $(this).data("id");
