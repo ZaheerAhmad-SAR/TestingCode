@@ -156,7 +156,6 @@ class Study extends Model
     public static function getStudiesAganistAdmin()
     {
         $studyIds = RoleStudyUser::where('user_id', 'LIKE', auth()->user()->id)->where('role_id', 'LIKE', Permission::getStudyAdminRole())->pluck('study_id')->toArray();
-        dd(Permission::getStudyAdminRole());
         $studies = Study::whereIn('id', $studyIds)->get();
         return $studies;
     }
