@@ -13,7 +13,7 @@ trait AdjudicationTrait
     public static function runAdjudicationCheckForThisStep($step, $getGradingFormStatusArray)
     {
         $trailLogArray = [];
-        $trailLogArray['edit_reason'] = 'system started adjudication';
+        $trailLogArray[] = 'system started adjudication';
 
         $sections = $step->sections;
         foreach ($sections as $section) {

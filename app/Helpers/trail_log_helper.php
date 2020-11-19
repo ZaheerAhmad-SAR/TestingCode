@@ -1,8 +1,5 @@
 <?php
 
-use App\User;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Auth;
 use Modules\Admin\Entities\OptionsGroup;
 use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\PrimaryInvestigator;
@@ -25,62 +22,6 @@ use Modules\Admin\Entities\Section;
 use Modules\Admin\Entities\DiseaseCohort;
 use Modules\Admin\Entities\TrailLog;
 use Modules\Admin\Entities\CrushFtpTransmission;
-use Modules\UserRoles\Entities\Permission;
-use Modules\UserRoles\Entities\RolePermission;
-use Illuminate\Support\Facades\Route;
-
-function hasrole($role)
-{
-    return auth()->user()->hasRole($role);
-}
-function hasanyrole($roles)
-{
-    return auth()->user()->hasAnyRole($roles);
-}
-function is_active($name)
-{
-    return Route::currentRouteName() == $name;
-    //return Request::route()->getName() == $name;
-}
-function search_auth($arr, $auth)
-{
-    foreach ($arr as $row) {
-        if ($auth == $row) {
-            return true;
-        }
-    }
-    return false;
-}
-
-function hasPermission($user, $routeName)
-{
-    if (empty(\session('current_study'))){
-        $roles = $user->user_roles;
-    }
-
-    /* Set Study Role Permissions */
-
-    else{
-        $roles = \Modules\UserRoles\Entities\StudyRoleUsers::select('role_id')->where('user_id',\auth()->user()->id)
-            ->where('study_id',\session('current_study'))
-            ->get();
-    }
-//    dd($roles);
-    $roleIds = [];
-    foreach ($roles as $role) {
-
-        $roleIds[] = $role->role_id;
-    }
-    $permission = Permission::where('name', '=', $routeName)->first();
-    $rolePermission = RolePermission::whereIn('role_id', $roleIds)
-        ->where('permission_id', $permission->id)->first();
-    if ($rolePermission) {
-        return true;
-    } else {
-        return false;
-    }
-
-}
 
 function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
 {
@@ -95,7 +36,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         // get event data
         $eventData = OptionsGroup::find($eventId);
         // set message for audit
-        $auditMessage = Auth::user()->name . ' added option group ' . $eventData->option_group_name . '.';
+        $auditMessage = \Auth::user()->name . ' added option group ' . $eventData->option_group_name . '.';
         // set audit url
         $auditUrl = url('optionsGroup');
         // store data in event array
@@ -117,7 +58,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
                 'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
             );
 
-            $auditMessage = Auth::user()->name . ' updated option group ' . $eventData->option_group_name . '.';
+            $auditMessage = \Auth::user()->name . ' updated option group ' . $eventData->option_group_name . '.';
         } // update case ends
 
         //////////////////////////////// Site ////////////////////////////////////////////
@@ -125,7 +66,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         // get event data
         $eventData = Site::find($eventId);
         // set message for audit
-        $auditMessage = Auth::user()->name . ' added site ' . $eventData->site_name . '.';
+        $auditMessage = \Auth::user()->name . ' added site ' . $eventData->site_name . '.';
         // set audit url
         $auditUrl = url('sites');
         // store data in event array
@@ -158,7 +99,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             );
 
             // set message for audit
-            $auditMessage = Auth::user()->name . ' updated site ' . $eventData->site_name . '.';
+            $auditMessage = \Auth::user()->name . ' updated site ' . $eventData->site_name . '.';
         }
 
         /////////////////////////////// Primary Investigator /////////////////////////////////////////////
@@ -166,7 +107,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         // get event data
         $eventData = PrimaryInvestigator::find($eventId);
         // set message for audit
-        $auditMessage = Auth::user()->name . ' added primary investigator ' . $eventData->first_name . '.';
+        $auditMessage = \Auth::user()->name . ' added primary investigator ' . $eventData->first_name . '.';
         // set audit url
         $auditUrl = url('sites');
         // store data in event array
@@ -193,7 +134,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             );
 
             // set message for audit
-            $auditMessage = Auth::user()->name . ' updated primary investigator ' . $eventData->first_name . '.';
+            $auditMessage = \Auth::user()->name . ' updated primary investigator ' . $eventData->first_name . '.';
         }
 
         ///////////////////////////////////// Coordinator ///////////////////////////////////////////////////
@@ -201,7 +142,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         // get event data
         $eventData = Coordinator::find($eventId);
         // set message for audit
-        $auditMessage = Auth::user()->name . ' added coordinator ' . $eventData->first_name . '.';
+        $auditMessage = \Auth::user()->name . ' added coordinator ' . $eventData->first_name . '.';
         // set audit url
         $auditUrl = url('sites');
         // store data in event array
@@ -227,7 +168,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             );
 
             // set message for audit
-            $auditMessage = Auth::user()->name . ' updated coordinator ' . $eventData->first_name . '.';
+            $auditMessage = \Auth::user()->name . ' updated coordinator ' . $eventData->first_name . '.';
         }
 
         //////////////////////////////////////// Photographer /////////////////////////////////////////////
@@ -235,7 +176,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         // get event data
         $eventData = Photographer::find($eventId);
         // set message for audit
-        $auditMessage = Auth::user()->name . ' added photographer ' . $eventData->first_name . '.';
+        $auditMessage = \Auth::user()->name . ' added photographer ' . $eventData->first_name . '.';
         // set audit url
         $auditUrl = url('sites');
         // store data in event array
@@ -262,7 +203,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             );
 
             // set message for audit
-            $auditMessage = Auth::user()->name . ' updated photographer ' . $eventData->first_name . '.';
+            $auditMessage = \Auth::user()->name . ' updated photographer ' . $eventData->first_name . '.';
         }
 
         //////////////////////////////////////////// Others ////////////////////////////////////////////////
@@ -270,7 +211,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         // get event data
         $eventData = Other::find($eventId);
         // set message for audit
-        $auditMessage = Auth::user()->name . ' added others ' . $eventData->first_name . '.';
+        $auditMessage = \Auth::user()->name . ' added others ' . $eventData->first_name . '.';
         // set audit url
         $auditUrl = url('sites');
         // store data in event array
@@ -296,7 +237,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             );
 
             // set message for audit
-            $auditMessage = Auth::user()->name . ' updated others ' . $eventData->first_name . '.';
+            $auditMessage = \Auth::user()->name . ' updated others ' . $eventData->first_name . '.';
         }
 
         /////////////////////////////// Others Section ends //////////////////////////////////////
@@ -304,7 +245,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         // get event data
         $eventData = Annotation::find($eventId);
         // set message for audit
-        $auditMessage = Auth::user()->name . ' added annotation ' . $eventData->label . '.';
+        $auditMessage = \Auth::user()->name . ' added annotation ' . $eventData->label . '.';
         // set audit url
         $auditUrl = url('annotation');
         // store data in event array
@@ -323,7 +264,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             );
 
             // set message for audit
-            $auditMessage = Auth::user()->name . ' updated annotation ' . $eventData->label . '.';
+            $auditMessage = \Auth::user()->name . ' updated annotation ' . $eventData->label . '.';
         }
 
         ///////////////////////// Annotaion Sections ends ///////////////////////////////////////////
@@ -331,7 +272,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         // get event data
         $eventData = Role::find($eventId);
         // set message for audit
-        $auditMessage = Auth::user()->name . ' added role ' . $eventData->name . '.';
+        $auditMessage = \Auth::user()->name . ' added role ' . $eventData->name . '.';
         // set audit url
         $auditUrl = url('roles');
         // store data in event array
@@ -339,7 +280,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             'name' => $eventData->name,
             'description' => $eventData->description,
             'role_type' => $eventData->role_type,
-            'created_by' => Auth::user()->name,
+            'created_by' => \Auth::user()->name,
             'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
             'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
         );
@@ -350,13 +291,13 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
                 'name' => $previousData->name,
                 'description' => $previousData->description,
                 'role_type' => $previousData->role_type,
-                'created_by' => Auth::user()->name,
+                'created_by' => \Auth::user()->name,
                 'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
                 'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
             );
 
             // set message for audit
-            $auditMessage = Auth::user()->name . ' updated role ' . $eventData->name . '.';
+            $auditMessage = \Auth::user()->name . ' updated role ' . $eventData->name . '.';
         }
 
         ////////////////////////// Role Ends ///////////////////////////////////////////////////
@@ -364,14 +305,14 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         // get event data
         $eventData = User::find($eventId);
         // set message for audit
-        $auditMessage = Auth::user()->name . ' added system user ' . $eventData->name . '.';
+        $auditMessage = \Auth::user()->name . ' added system user ' . $eventData->name . '.';
         // set audit url
         $auditUrl = url('users');
         // store data in event array
         $newData = array(
             'name' => $eventData->name,
             'email' => $eventData->email,
-            'created_by' => Auth::user()->name,
+            'created_by' => \Auth::user()->name,
             'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
             'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
         );
@@ -381,13 +322,13 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             $oldData = array(
                 'name' => $previousData->name,
                 'email' => $previousData->email,
-                'created_by' => Auth::user()->name,
+                'created_by' => \Auth::user()->name,
                 'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
                 'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
             );
 
             // set message for audit
-            $auditMessage = Auth::user()->name . ' updated system user ' . $eventData->name . '.';
+            $auditMessage = \Auth::user()->name . ' updated system user ' . $eventData->name . '.';
         }
 
         ////////////////////////// System Users Ends ///////////////////////////////////////////////////
@@ -395,7 +336,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         // get event data
         $eventData = Modility::find($eventId);
         // set message for audit
-        $auditMessage = Auth::user()->name . ' added modality ' . $eventData->modility_name . '.';
+        $auditMessage = \Auth::user()->name . ' added modality ' . $eventData->modility_name . '.';
         // set audit url
         $auditUrl = url('modalities');
         // store data in event array
@@ -416,7 +357,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             );
 
             // set message for audit
-            $auditMessage = Auth::user()->name . ' updated modality ' . $eventData->modility_name . '.';
+            $auditMessage = \Auth::user()->name . ' updated modality ' . $eventData->modility_name . '.';
         }
 
         //////////////////////////// Modality Ends /////////////////////////////////////////
@@ -424,7 +365,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         // get event data
         $eventData = ChildModilities::find($eventId);
         // set message for audit
-        $auditMessage = Auth::user()->name . ' added child modality ' . $eventData->modility_name . '.';
+        $auditMessage = \Auth::user()->name . ' added child modality ' . $eventData->modility_name . '.';
         // set audit url
         $auditUrl = url('modalities');
         // get parent modality of this child
@@ -449,7 +390,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             );
 
             // set message for audit
-            $auditMessage = Auth::user()->name . ' updated child modality ' . $eventData->modility_name . '.';
+            $auditMessage = \Auth::user()->name . ' updated child modality ' . $eventData->modility_name . '.';
         }
 
         ////////////////////////// Child Modality Ends /////////////////////////////////////////
@@ -457,7 +398,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         // get event data
         $eventData = Device::find($eventId);
         // set message for audit
-        $auditMessage = Auth::user()->name . ' added device ' . $eventData->device_name . '.';
+        $auditMessage = \Auth::user()->name . ' added device ' . $eventData->device_name . '.';
         // set audit url
         $auditUrl = url('devices');
         // store data in event array
@@ -480,7 +421,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             );
 
             // set message for audit
-            $auditMessage = Auth::user()->name . ' updated device ' . $eventData->device_name . '.';
+            $auditMessage = \Auth::user()->name . ' updated device ' . $eventData->device_name . '.';
         }
 
         //////////////////////////// Device Ends /////////////////////////////////////////
@@ -496,7 +437,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         // get study name
         $getStudyName = Study::where('id', $eventId)->first();
         // set message for audit
-        $auditMessage = Auth::user()->name . ' updated sites of study ' . $getStudyName->study_title . '.';
+        $auditMessage = \Auth::user()->name . ' updated sites of study ' . $getStudyName->study_title . '.';
         // set audit url
         $auditUrl = url('studySite');
         // store data in event array
@@ -525,7 +466,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         $eventData = Study::find($eventId);
 
         // set message for audit
-        $auditMessage = Auth::user()->name . ' added study ' . $eventData->study_title . '.';
+        $auditMessage = \Auth::user()->name . ' added study ' . $eventData->study_title . '.';
 
         // set audit url
         $auditUrl = url('studies');
@@ -565,7 +506,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             );
 
             // set message for audit
-            $auditMessage = Auth::user()->name . ' updated study ' . $eventData->study_title . '.';
+            $auditMessage = \Auth::user()->name . ' updated study ' . $eventData->study_title . '.';
         }
 
         //////////////////////////// Study Ends /////////////////////////////////////////
@@ -596,17 +537,17 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         );
 
         // set message for audit
-        $auditMessage = Auth::user()->name . ' deleted study ' . $eventData->study_title . '.';
+        $auditMessage = \Auth::user()->name . ' deleted study ' . $eventData->study_title . '.';
     } else if ($eventSection == 'Subject' && $eventType != 'Delete') {
         // get event data
         $eventData = Subject::find($eventId);
 
         // set message for audit
-        $auditMessage = Auth::user()->name . ' added subject ' . $eventData->subject_id . '.';
+        $auditMessage = \Auth::user()->name . ' added subject ' . $eventData->subject_id . '.';
         // set audit url
         $auditUrl = url('subjects/' . $eventData->id);
         // get site name
-        $site_study = StudySite::where('study_id', '=', Session::get('current_study'))
+        $site_study = StudySite::where('study_id', '=', \Session::get('current_study'))
             ->where('site_id', $eventData->site_id)
             ->join('sites', 'sites.id', '=', 'site_study.site_id')
             ->select('sites.site_name', 'sites.id')
@@ -615,7 +556,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         $site_study = $site_study != null ? $site_study->site_name : 'N/A';
 
         // get disease cohort
-        $diseaseCohort = DiseaseCohort::where('study_id', '=', Session::get('current_study'))
+        $diseaseCohort = DiseaseCohort::where('study_id', '=', \Session::get('current_study'))
             ->where('id', $eventData->disease_cohort_id)
             ->first();
 
@@ -623,7 +564,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
 
         // store data in event array
         $newData = array(
-            'study_id' => Session::get('current_study'),
+            'study_id' => \Session::get('current_study'),
             'subject_id' => $eventData->subject_id,
             'enrollment_date' => $eventData->enrollment_date,
             'site_name' => $site_study,
@@ -662,7 +603,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             );
 
             // set message for audit
-            $auditMessage = Auth::user()->name . ' updated subject ' . $eventData->subject_id . '.';
+            $auditMessage = \Auth::user()->name . ' updated subject ' . $eventData->subject_id . '.';
         }
 
         //////////////////////////// Subjects Ends /////////////////////////////////////////
@@ -671,11 +612,11 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         $eventData = Subject::find($eventId);
 
         // set message for audit
-        $auditMessage = Auth::user()->name . ' added subject ' . $eventData->subject_id . '.';
+        $auditMessage = \Auth::user()->name . ' added subject ' . $eventData->subject_id . '.';
         // set audit url
         $auditUrl = url('subjects/' . $eventData->id);
         // get site name
-        $site_study = StudySite::where('study_id', '=', Session::get('current_study'))
+        $site_study = StudySite::where('study_id', '=', \Session::get('current_study'))
             ->where('site_id', $eventData->site_id)
             ->join('sites', 'sites.id', '=', 'site_study.site_id')
             ->select('sites.site_name', 'sites.id')
@@ -684,7 +625,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         $site_study = $site_study != null ? $site_study->site_name : 'N/A';
 
         // get disease cohort
-        $diseaseCohort = DiseaseCohort::where('study_id', '=', Session::get('current_study'))
+        $diseaseCohort = DiseaseCohort::where('study_id', '=', \Session::get('current_study'))
             ->where('id', $eventData->disease_cohort_id)
             ->first();
 
@@ -692,7 +633,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
 
         // store data in event array
         $newData = array(
-            'study_id' => Session::get('current_study'),
+            'study_id' => \Session::get('current_study'),
             'subject_id' => $eventData->subject_id,
             'enrollment_date' => $eventData->enrollment_date,
             'site_name' => $site_study,
@@ -707,7 +648,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         // get event data
         $eventData = CrushFtpTransmission::find($eventId);
         // set message for audit
-        $auditMessage = Auth::user()->name . ' updated transmission data of ' . $eventData->Transmission_Number . '.';
+        $auditMessage = \Auth::user()->name . ' updated transmission data of ' . $eventData->Transmission_Number . '.';
         // set audit url
         $auditUrl = url('transmissions');
         // store data in event array
@@ -779,13 +720,14 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
                 'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
             );
 
-            $auditMessage = Auth::user()->name . ' updated transmission data of ' . $eventData->Transmission_Number . '.';
+            $auditMessage = \Auth::user()->name . ' updated transmission data of ' . $eventData->Transmission_Number . '.';
         } // update case ends
 
         ////////////////////////////////// Transmission Data //////////////////////////////////////
-    } else if ($eventSection == 'QC Form' || $eventSection == 'Grading Form' || $eventSection == 'Adjudication Form' || $eventSection == 'System Adjudication Form') {
+    } else if ($eventSection == 'QC Form' || $eventSection == 'Grading Form' || $eventSection == 'Adjudication Form') {
 
         $ip = 'N/A';
+
         // get event data
         $eventData = $eventId;
         // get study name
@@ -803,7 +745,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         $modalityName = Modility::where('id', $eventData[1]['modility_id'])->first();
 
         // set message for audit
-        $auditMessage = Auth::user()->name . ' added ' . $eventSection . ' for Study ' . $studyName->study_title . '.';
+        $auditMessage = \Auth::user()->name . ' added ' . $eventSection . ' for Study ' . $studyName->study_title . '.';
         // set audit url
         $auditUrl = '';
         // store data in event array
@@ -817,7 +759,6 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             if ($key == 0) {
 
                 $editReason = $data;
-                
             } else if ($key == 1) {
                 //first time loop data
                 $newData['study'] = $studyName->study_title;
@@ -826,17 +767,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
                 $newData['steps'] = $stepName->step_name;
                 $newData['modility'] = $modalityName->modility_name;
                 $newData['form_type'] = $data['form_type'];
-                
-                if ($eventSection == 'Adjudication Form' || $eventSection == 'System Adjudication Form') {
-                    
-                    $newData['form_version_num'] = '';
-
-                } else {
-
-                    $newData['form_version_num'] = $data['form_version_num'];
-
-                }
-                
+                $newData['form_version_num'] = $data['form_version_num'];
                 $newData['edit_reason'] = $editReason;
 
                 // get section name
@@ -871,7 +802,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         // check if it is update case
         if ($eventType == 'Update') {
 
-            $auditMessage = Auth::user()->name . ' updated ' . $eventSection . ' for Study ' . $studyName->study_title . '.';
+            $auditMessage = \Auth::user()->name . ' updated ' . $eventSection . ' for Study ' . $studyName->study_title . '.';
         } // update case ends
 
         $eventId = 0;
@@ -885,88 +816,13 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
     $trailLog->event_section = $eventSection;
     $trailLog->event_type = $eventType;
     $trailLog->event_message = $auditMessage;
-    $trailLog->user_id = Auth::user()->id;
-    $trailLog->user_name = Auth::user()->name;
-    $trailLog->role_id = Auth::user()->role_id;
+    $trailLog->user_id = \Auth::user()->id;
+    $trailLog->user_name = \Auth::user()->name;
+    $trailLog->role_id = \Auth::user()->role_id;
     $trailLog->ip_address = $ip;
-    $trailLog->study_id = Session::get('current_study') != null ? Session::get('current_study') : '';
+    $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
     $trailLog->event_url = $auditUrl;
     $trailLog->event_details = json_encode($newData);
     $trailLog->event_old_details = json_encode($oldData);
     $trailLog->save();
 } // trail log function ends
-
-function buildSafeStr($id, $str = '')
-{
-    $safeStr = '';
-    if (!empty($id)) {
-        $safeStr = $str . str_replace('-', '_', $id);
-    }
-    return $safeStr;
-}
-
-function buildFormFieldName($str = '')
-{
-    return str_replace(' ', '', $str);
-}
-
-function buildGradingStatusIdClsStr($id)
-{
-    return buildSafeStr($id, 'img_grading_form_status_');
-}
-
-function buildAdjudicationStatusIdClsStr($id)
-{
-    return buildSafeStr($id, 'img_adjudication_form_status_');
-}
-
-function checkPermission($permissionText, $permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
-{
-    $retVal = true;
-    $user = auth()->user();
-    foreach ($permissionsArray as $permission) {
-        $permissionCheck = $permissionText . $permission;
-        if (!hasPermission($user, $permissionCheck)) {
-            $retVal = false;
-            break;
-        }
-    }
-
-    return $retVal;
-}
-function canQualityControl($permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
-{
-    $permissionText = 'qualitycontrol.';
-    return checkPermission($permissionText, $permissionsArray);
-}
-
-function canGrading($permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
-{
-    $permissionText = 'grading.';
-    return checkPermission($permissionText, $permissionsArray);
-}
-
-function canAdjudication($permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
-{
-    $permissionText = 'adjudication.';
-    return checkPermission($permissionText, $permissionsArray);
-}
-function canEligibility($permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
-{
-    $permissionText = 'eligibility.';
-    return checkPermission($permissionText, $permissionsArray);
-}
-function canManageData($permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
-{
-    $permissionText = 'data_management.';
-    return checkPermission($permissionText, $permissionsArray);
-}
-function printSqlQuery($builder, $dd = true)
-{
-    $query = vsprintf(str_replace(array('?'), array('\'%s\''), $builder->toSql()), $builder->getBindings());
-    if ($dd) {
-        dd($query);
-    } else {
-        echo ($query);
-    }
-}
