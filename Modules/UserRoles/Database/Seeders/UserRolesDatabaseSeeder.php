@@ -15,7 +15,6 @@ class UserRolesDatabaseSeeder extends Seeder
     public function run()
     {
         Model::unguard();
-        $this->call(StudySeederTableSeeder::class);
         $this->call(FormFieldTypeSeederTableSeeder::class);
         $this->call(PermissionTableSeeder::class);
         $this->call(RoleTableSeeder::class);
@@ -23,5 +22,6 @@ class UserRolesDatabaseSeeder extends Seeder
         $this->call(ValidationRulesTableSeeder::class);
         $this->call(PreferencesTableSeeder::class);
         $this->call(UserTableSeeder::class);
+        $this->call(StudySeederTableSeeder::class);
     }
 }

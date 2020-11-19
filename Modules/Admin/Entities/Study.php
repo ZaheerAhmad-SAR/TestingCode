@@ -136,6 +136,11 @@ class Study extends Model
         return $this->hasMany(StudyRoleUsers::class);
     }
 
+    public static function getAllStudies(){
+        $studies = self::all();
+        return $studies;
+    }
+
     public static function getstudyAdminsName($id)
     {
         $userNames = '';
@@ -151,6 +156,7 @@ class Study extends Model
     public static function getStudiesAganistAdmin()
     {
         $studyIds = RoleStudyUser::where('user_id', 'LIKE', auth()->user()->id)->where('role_id', 'LIKE', Permission::getStudyAdminRole())->pluck('study_id')->toArray();
+        dd(Permission::getStudyAdminRole());
         $studies = Study::whereIn('id', $studyIds)->get();
         return $studies;
     }
