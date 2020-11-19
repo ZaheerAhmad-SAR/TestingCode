@@ -57,11 +57,10 @@ class StudyController extends Controller
         $studies = [];
         $adminUsers = [];
         $studyAdminRoleId = '';
-
-
+        $user = \auth()->user()->id;
         if (hasPermission(\auth()->user(), 'systemtools.index')) {
+            echo 'systemtools';
             $studyAdminRoleId = Permission::getStudyAdminRole();
-
 
             if (!empty($studyAdminRoleId)) {
                 $userIdsArrayFromUserRole = UserRole::where('role_id', $studyAdminRoleId)->pluck('user_id')->toArray();
@@ -70,48 +69,41 @@ class StudyController extends Controller
             $sites = Site::all();
             $user = User::with('studies', 'user_roles')->find(Auth::id());
 
-            $studies = Study::with('studyuserroles')->get();
-
-
-            $assignedusers = StudyRoleUsers::select('study_role_users.user_id', 'study_role_users.role_id')
-                ->where('study_role_users.role_id', '=', implode(', ', $studyAdminRoleId))
-                ->get();
-            // dd($assignedusers);
+            $studies = Study::all();
 
 
             $study = '';
-        } else {
-            $user = \auth()->user()->id;
-            if (hasPermission(\auth()->user(), 'grading.index')) {
+        }
+        elseif (hasPermission(\auth()->user(), 'grading.index')) {
+            echo 'grading';
+
                 $studies = Study::getStudiesAganistGrader();
                 $study = '';
                 $studyAdmins = '';
             }
-            if (hasPermission(\auth()->user(), 'adjudication.index')) {
+        elseif (hasPermission(\auth()->user(), 'adjudication.index')) {
+            echo 'adjudication';
                 $studies = Study::getStudiesAganistAdjudicator();
                 $study = '';
                 $studyAdmins = '';
             }
-            if (hasPermission(\auth()->user(), 'qualitycontrol.index')) {
+        elseif (hasPermission(\auth()->user(), 'qualitycontrol.index')) {
+            echo 'QC';
                 $studies = Study::getStudiesAganistQC();
                 $study = '';
 
                 $studyAdmins = '';
             }
-            if (hasPermission(\auth()->user(), 'studytools.index')) {
-
+        elseif (hasPermission(\auth()->user(), 'studytools.index')) {
+            echo 'studytools';
                 $studies = Study::getStudiesAganistAdmin();
                 $studyAdmins = '';
-
                 $study = '';
             }
-            //dd($studies);
-
-
+        return view('admin::studies.index', compact('sites', 'users', 'adminUsers', 'study', 'studyAdminRoleId', 'studies'));
         }
 
-        return view('admin::studies.index', compact('sites', 'users', 'adminUsers', 'study', 'studyAdminRoleId', 'studies'));
-    }
+
 
     /**
      * Show the form for creating a new resource.
