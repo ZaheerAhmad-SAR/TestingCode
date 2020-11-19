@@ -40,7 +40,7 @@ class StudySeederTableSeeder extends Seeder
             ]);
 
 
-            $studyUser = User::first();
+            $studyUser = User::all();
             if ($studyUser->name = 'admin'){
                 StudyRoleUsers::create([
                     'id'    => \Illuminate\Support\Str::uuid(),
