@@ -74,6 +74,7 @@ class StudyController extends Controller
             $studiesIDs = array_merge($studiesIDs, Study::all()->pluck('id')->toArray());
 
             $study = '';
+            return view('admin::studies.index', compact('sites', 'users', 'adminUsers', 'study', 'studyAdminRoleId', 'studies'));
         }
         if (hasPermission(\auth()->user(), 'studytools.index')) {
            // echo 'studytools';
