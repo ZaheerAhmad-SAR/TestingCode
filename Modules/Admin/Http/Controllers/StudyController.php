@@ -59,7 +59,6 @@ class StudyController extends Controller
         $studyAdminRoleId = '';
         $user = \auth()->user()->id;
         if (hasPermission(\auth()->user(), 'systemtools.index')) {
-
             $studyAdminRoleId = Permission::getStudyAdminRole();
 
             if (!empty($studyAdminRoleId)) {
@@ -75,30 +74,31 @@ class StudyController extends Controller
             $study = '';
         }
         elseif (hasPermission(\auth()->user(), 'grading.index')) {
-
+            echo 'grading';
                 $studies = Study::getStudiesAganistGrader();
                 $study = '';
                 $studyAdmins = '';
             }
         elseif (hasPermission(\auth()->user(), 'adjudication.index')) {
-
+            echo 'adjudication';
                 $studies = Study::getStudiesAganistAdjudicator();
                 $study = '';
                 $studyAdmins = '';
             }
         elseif (hasPermission(\auth()->user(), 'qualitycontrol.index')) {
-
+            echo 'QC';
                 $studies = Study::getStudiesAganistQC();
                 $study = '';
 
                 $studyAdmins = '';
             }
         elseif (hasPermission(\auth()->user(), 'studytools.index')) {
-
+            echo 'studytools';
                 $studies = Study::getStudiesAganistAdmin();
                 $studyAdmins = '';
                 $study = '';
             }
+
         return view('admin::studies.index', compact('sites', 'users', 'adminUsers', 'study', 'studyAdminRoleId', 'studies'));
         }
 

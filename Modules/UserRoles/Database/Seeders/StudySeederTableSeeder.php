@@ -2,10 +2,14 @@
 
 namespace Modules\UserRoles\Database\Seeders;
 
+use App\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Date;
 use Modules\Admin\Entities\Study;
+use Modules\UserRoles\Entities\StudyRoleUsers;
+use Modules\UserRoles\Entities\UserRole;
+use Psy\Util\Str;
 
 class StudySeederTableSeeder extends Seeder
 {
@@ -17,7 +21,7 @@ class StudySeederTableSeeder extends Seeder
     public function run()
     {
         Model::unguard();
-        $study = Study::all();
+      /*  $study = Study::all();
         if (count($study) <= 0){
             $study = Study::create([
                 'id'    => \Illuminate\Support\Str::uuid(),
@@ -34,7 +38,18 @@ class StudySeederTableSeeder extends Seeder
                 'description'   =>  'Description will go here',
                 'user_id'       => \Illuminate\Support\Str::uuid()
             ]);
-        }
+
+
+            $studyUser = User::first();
+            if ($studyUser->name = 'admin'){
+                StudyRoleUsers::create([
+                    'id'    => \Illuminate\Support\Str::uuid(),
+                    'user_id'   => $studyUser->id,
+                    'role_id'   => $studyUser->role_id,
+                    'study_id'  => $study->id
+                ]);
+            }
+        }*/
 
     }
 }
