@@ -166,6 +166,14 @@ class UserController extends Controller
             'role_id'   => $request->user_role,
             'study_id'  => session('current_study')
         ]);
+        $checkUserRole = UserRole::where('role_id', $request->user_role)->where('user_id', $request->study_user)->first();
+        if (null === $checkUserRole) {
+            UserRole::create([
+                'id' => Str::uuid(),
+                'user_id' => $request->study_user,
+                'role_id' => $request->user_role
+            ]);
+        }
 
         return redirect()->route('studyusers.index');
     }
