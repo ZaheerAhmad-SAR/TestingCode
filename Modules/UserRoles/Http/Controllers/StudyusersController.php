@@ -109,18 +109,21 @@ class StudyusersController extends Controller
                     ]);
 
                         if (!empty($request->roles)) {
-                            foreach ($request->roles as $role){
-                                $roles =StudyRoleUsers::create([
-                                    'id'        => Str::uuid(),
-                                    'user_id'   => $user->id,
-                                    'role_id'   => $role,
-                                    'study_id'  => session('current_study'),
+                            foreach ($request->roles as $role) {
+                                $roles = StudyRoleUsers::create([
+                                    'id' => Str::uuid(),
+                                    'user_id' => $user->id,
+                                    'role_id' => $role,
+                                    'study_id' => session('current_study'),
                                 ]);
-                                UserRole::create([
-                                    'id'    => Str::uuid(),
-                                    'user_id'   => $user->id,
-                                    'role_id'   => $role
-                                ]);
+                                $checkUserRole = UserRole::where('role_id', $role)->where('user_id', $user->id)->first();
+                                if (null === $checkUserRole) {
+                                    UserRole::create([
+                                        'id' => Str::uuid(),
+                                        'user_id' => $user->id,
+                                        'role_id' => $role
+                                    ]);
+                                }
                             }
                         } // roles
 
