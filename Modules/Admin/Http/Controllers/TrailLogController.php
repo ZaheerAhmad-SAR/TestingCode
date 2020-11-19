@@ -79,7 +79,9 @@ class TrailLogController extends Controller
                 "Subject" => "Subject",
                 "Transmission Data" => "Transmission Data",
                 "QC Form" => "QC Form",
-                "Grading Form" => "Grading Form"
+                "Grading Form" => "Grading Form",
+                "Adjudication Form" => "Adjudication Form",
+                "System Adjudication Form" => "System Adjudication Form"
 
             );
 

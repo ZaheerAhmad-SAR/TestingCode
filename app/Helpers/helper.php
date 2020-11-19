@@ -789,10 +789,9 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         } // update case ends
 
         ////////////////////////////////// Transmission Data //////////////////////////////////////
-    } else if ($eventSection == 'QC Form' || $eventSection == 'Grading Form' || $eventSection == 'Adjudication Form') {
+    } else if ($eventSection == 'QC Form' || $eventSection == 'Grading Form' || $eventSection == 'Adjudication Form' || $eventSection == 'System Adjudication Form') {
 
         $ip = 'N/A';
-
         // get event data
         $eventData = $eventId;
         // get study name
@@ -833,7 +832,17 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
                 $newData['steps'] = $stepName->step_name;
                 $newData['modility'] = $modalityName->modility_name;
                 $newData['form_type'] = $data['form_type'];
-                $newData['form_version_num'] = $data['form_version_num'];
+                
+                if ($eventSection == 'Adjudication Form' || $eventSection == 'System Adjudication Form') {
+                    
+                    $newData['form_version_num'] = '';
+
+                } else {
+
+                    $newData['form_version_num'] = $data['form_version_num'];
+
+                }
+                
                 $newData['edit_reason'] = $editReason;
 
                 // get section name

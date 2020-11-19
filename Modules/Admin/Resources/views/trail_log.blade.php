@@ -186,7 +186,8 @@
                                                     @endphp
 
                                                     <!-- Form Type check for QC and Grading -->
-                                                    @if($log->event_section == 'QC Form' || $log->event_section == 'Grading Form')
+                                                    @if($log->event_section == 'QC Form' || $log->event_section == 'Grading Form' || $log->event_section == 'Adjudication Form' || $log->event_section == 'System Adjudication Form')
+                                                    
                                                         @foreach($newDetails as $key => $details)
                                                         
                                                         @if($key != 'section_id')
