@@ -843,6 +843,7 @@
                     $('#studyID').val(data.study.id);
                     var disease_cohort = '';
                     $('.appendfields').html('');
+                    console.log(data);
 
                     $.each(data.study.disease_cohort,function (index, value) {
                         disease_cohort += '<div class="disease_row" style="margin-top:10px;">' +
@@ -850,9 +851,11 @@
                     });
                     $('.appendfields').append(disease_cohort);
 
-                    var user_id = getAssignedAdminsToStudy(study_id);
+                    var user_id = '';
+
 
                     $.each(data.users,function (index, value) {
+                        alert(data.users)
                         var id = value.id;
                         user_id.push(id);
                     });
