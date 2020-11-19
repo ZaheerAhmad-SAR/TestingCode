@@ -76,25 +76,25 @@ class StudyController extends Controller
             $study = '';
         }
         if (hasPermission(\auth()->user(), 'studytools.index')) {
-            echo 'studytools';
+           // echo 'studytools';
             $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistAdmin());
             $studyAdmins = '';
             $study = '';
         }
         if (hasPermission(\auth()->user(), 'grading.index')) {
-            echo 'grading';
+          //  echo 'grading';
             $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistGrader());
                 $study = '';
                 $studyAdmins = '';
             }
         if (hasPermission(\auth()->user(), 'adjudication.index')) {
-            echo 'adjudication';
+           // echo 'adjudication';
             $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistAdjudicator());
                 $study = '';
                 $studyAdmins = '';
             }
         if (hasPermission(\auth()->user(), 'qualitycontrol.index')) {
-            echo 'QC';
+         //   echo 'QC';
             $studiesIDs = array_merge($studiesIDs,Study::getStudiesAganistQC());
                 $study = '';
                 $studyAdmins = '';
