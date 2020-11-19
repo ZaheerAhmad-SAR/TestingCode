@@ -44,8 +44,11 @@ class Permission extends Model
 
         $studyAdminRoleId = array_intersect($roleIdsArrayFromRolePermission, $roleIdsArray);
 
-        return $studyAdminRoleId;
+        if(!empty($studyAdminRoleId)){
+            return $studyAdminRoleId;
 
+        }
+        return true;
     }
 
     public static function getStudyQCRole(){
