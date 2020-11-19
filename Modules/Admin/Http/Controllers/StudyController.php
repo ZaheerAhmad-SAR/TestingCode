@@ -61,6 +61,7 @@ class StudyController extends Controller
         if (hasPermission(\auth()->user(), 'systemtools.index')) {
             $studyAdminRoleId = Permission::getStudyAdminRole();
 
+
             if (!empty($studyAdminRoleId)) {
                 $userIdsArrayFromUserRole = UserRole::where('role_id', $studyAdminRoleId)->pluck('user_id')->toArray();
                 $adminUsers = User::whereIn('id', $userIdsArrayFromUserRole)->orderBy('name', 'asc')->get();
@@ -69,6 +70,7 @@ class StudyController extends Controller
             $user = User::with('studies', 'user_roles')->find(Auth::id());
 
             $studies = Study::all();
+
 
 
             $study = '';
