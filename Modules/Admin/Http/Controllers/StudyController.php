@@ -233,7 +233,7 @@ class StudyController extends Controller
     public function edit($id)
     {
         $roleId = Permission::getStudyAdminRole();
-        $users = Study::getAssignedStudyAdminsName($id);
+        $users = '';//Study::getAssignedStudyAdminsName($id);
 
         $study  = Study::with('diseaseCohort')
             ->find($id);
