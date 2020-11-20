@@ -7,13 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class skipLogic extends Model
 {
-	// use SoftDeletes;
+    // use SoftDeletes;
     protected $table = 'skip_logics';
-    protected $fillable = ['id','question_id','option_title','option_value','activate_forms','activate_sections','activate_questions','deactivate_forms','deactivate_sections','deactivate_questions','deleted_at'];
-     protected $keyType = 'string';
+    protected $fillable = ['id', 'question_id', 'option_title', 'option_value', 'textbox_value', 'number_value', 'operator', 'activate_forms', 'activate_sections', 'activate_questions', 'deactivate_forms', 'deactivate_sections', 'deactivate_questions', 'deleted_at', 'created_at', 'updated_at'];
+    protected $keyType = 'string';
 
-    public function skiplogic()
+    public function question()
     {
-    	return $this->belongsTo(Question::class,'question_id','id');
+        return $this->belongsTo(Question::class, 'question_id', 'id');
     }
 }
