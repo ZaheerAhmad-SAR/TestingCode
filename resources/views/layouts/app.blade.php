@@ -79,6 +79,7 @@
         @stack('script')
         @stack('script_mid')
         @stack('script_last')
+        @stack('script_skip_logic')
         <script>
             $(document).ready(function(){
                 $('[data-toggle="popover"]').popover();

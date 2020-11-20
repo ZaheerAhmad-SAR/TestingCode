@@ -182,11 +182,17 @@
                                                             $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                                                             $adjStepClsStr = buildSafeStr($step->step_id, 'adj_step_cls_');
                                                             $stepIdStr = buildSafeStr($step->step_id, '');
+                                                            $stepData = [
+                                                                'step' => $step,
+                                                                'stepClsStr' => $stepClsStr,
+                                                                'adjStepClsStr' => $adjStepClsStr,
+                                                                'stepIdStr' => $stepIdStr,
+                                                            ];
                                                             @endphp
 
-                                                            @include('formsubmission::subjectFormLoader.qc_left_bar_nav')
-                                                            @include('formsubmission::subjectFormLoader.grader_left_bar_nav', ['step'=>$step])
-                                                            @include('formsubmission::subjectFormLoader.adjudication_left_bar_nav')
+                                                            @include('formsubmission::subjectFormLoader.qc_left_bar_nav', $stepData)
+                                                            @include('formsubmission::subjectFormLoader.grader_left_bar_nav', $stepData)
+                                                            @include('formsubmission::subjectFormLoader.adjudication_left_bar_nav', $stepData)
                                                             @php
                                                             $firstStep = false;
                                                             $previousStepId = $step->step_id;
@@ -241,6 +247,8 @@
                                                 $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                                                 $adjStepClsStr = buildSafeStr($step->step_id, 'adj_step_cls_');
                                                 $stepIdStr = buildSafeStr($step->step_id, '');
+                                                $skipLogicStepIdStr = buildSafeStr($step->step_id, 'skip_logic_');
+
 
                                                 $sections = $step->sections;
                                                 if(count($sections)){
@@ -256,6 +264,7 @@
                                                 'firstStep' => $firstStep,
                                                 'stepClsStr' => $stepClsStr,
                                                 'stepIdStr' => $stepIdStr,
+                                                'skipLogicStepIdStr' => $skipLogicStepIdStr,
                                                 'stepCounter' => $stepCounter,
                                                 ];
                                                 @endphp

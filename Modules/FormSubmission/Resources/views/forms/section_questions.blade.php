@@ -1,6 +1,6 @@
 @if($step->is_active == 1)
 @if (count($section->questions))
-<fieldset id="fieldset_{{ $stepIdStr }}" class="{{ $studyClsStr }} {{ $stepClsStr }} {{ $sectionClsStr }}">
+<fieldset id="fieldset_{{ $stepIdStr }}" class="{{ $studyClsStr }} {{ $stepClsStr }} {{ $skipLogicStepIdStr }} {{ $skipLogicSectionIdStr }} {{ $sectionClsStr }}">
     <div class="card p-2 mb-1">
         <input type="hidden" name="sectionId[]" value="{{ $section->id }}" />
             @foreach ($section->questions as $question)
@@ -21,6 +21,8 @@
 
                 $field_name = buildFormFieldName($question->formFields->variable_name);
                 $questionIdStr = buildSafeStr($question->id, '');
+                $skipLogicQuestionIdStr = buildSafeStr($question->id, 'skip_logic_');
+
                 $fieldId = $field_name . '_' . $questionIdStr;
                 $fieldType = $question->form_field_type->field_type;
                 $is_required = ($question->formFields->is_required == 'yes')? 'required':'';
@@ -32,7 +34,7 @@
                     <div class="row">
                         <div class="col-10">
                             @include('formsubmission::forms.form_fields.form_field_checks', ['fieldType'=>$fieldType, 'question'=> $question, 'field_name'=> $field_name,
-                            'questionIdStr'=> $questionIdStr, 'fieldId'=> $fieldId, 'answer'=> $answer, 'is_required'=> $is_required])
+                            'questionIdStr'=> $questionIdStr, 'skipLogicQuestionIdStr'=>$skipLogicQuestionIdStr, 'fieldId'=> $fieldId, 'answer'=> $answer, 'is_required'=> $is_required])
             </div>
             <div class="col-1">@include('formsubmission::forms.form_fields.info_popup', ['question'=>$question])</div>
             @php
@@ -49,7 +51,9 @@
                     'module'=>$step->formType->form_type.' Form',
             ];
             @endphp
+            @if($isPreview === false)
             <div class="col-1">@include('formsubmission::forms.form_fields.query_popup', ['queryParams'=>$queryParams])</div>
+            @endif
         </div>
     </div>
             @endforeach

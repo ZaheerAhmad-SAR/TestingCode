@@ -138,6 +138,9 @@
                     if(needToPutAdjudicationFormInEditMode(stepIdStr) == false){
                         checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
                         if(window['validateAdjudicationQuestion' + questionIdStr](true, stepIdStr)){
+                            if(eval("typeof " + window['checkQuestionSkipLogicForAdjudication' + questionIdStr]) != 'undefined'){
+                                window['checkQuestionSkipLogicForAdjudication' + questionIdStr]();
+                            }
                             submitAdjudicationFormField(stepIdStr, questionId, field_name, fieldId);
                         }
                     }else{
