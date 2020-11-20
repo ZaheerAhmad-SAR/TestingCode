@@ -125,7 +125,7 @@ class UserController extends Controller
                         'email' => $request->email,
                         'password' => Hash::make($request->password),
                         'created_by'    => \auth()->user()->id,
-                        'role_id'   =>  !empty($request->roles) ? $request->roles[0] : 2
+                        'role_id'   =>  !empty($request->roles) ? $request->roles[0] : 1
                     ]);
 
                         if (!empty($request->roles)) {
