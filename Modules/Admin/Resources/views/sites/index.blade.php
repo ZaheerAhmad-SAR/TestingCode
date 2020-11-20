@@ -994,10 +994,11 @@
         });
     }
     showPrimaryInvestigator();
+
     // Add New Photographer
-    function addPhotographer()
-    {
+
         $("#photographerForm").submit(function(e) {
+
             var photographer_first_name     = $('#photographer_first_name').val();
             var photographer_mid_name       = $('#photographer_mid_name').val();
             var photographer_last_name      = $('#photographer_last_name').val();
@@ -1005,6 +1006,7 @@
             var photographer_email          = $('#photographer_email').val();
             var photo_id                    = $('#photo_id').val();
             var photographer_submit_actions = $('#photographer_submit_actions').val();
+            console.log(photographer_submit_actions);
             $('#photographerForm').find($('input[name="site_id"]').val($('#site_id').val()));
             if(photographer_submit_actions  == 'Add')
             {
@@ -1062,8 +1064,7 @@
                 }
             });
         });
-    }
-    addPhotographer();
+
     // End of Photographer
     ///////////////////////
 
