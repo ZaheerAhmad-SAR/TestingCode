@@ -14,13 +14,21 @@
                     {{--@endif--}}
                 </ul>
                 <ul class="@if(is_active('studies.index')) {{ 'active' }} @endif">
-                    @if(hasPermission(auth()->user(),'studies.index'))
+                    @if(hasPermission(auth()->user(),'studies.index') && empty(session('current_study')))
                     <li class="nav-item @if(is_active('studies.index')) {{ ' active' }} @endif">
                         <a href="{!! route('studies.index') !!}">
                             <i class="icon-book-open"></i>
                             Studies
                         </a>
                     </li>
+                        @endif
+                       @if(!empty(session('current_study')))
+                            <li class="nav-item @if(is_active('studies.index')) {{ ' active' }} @endif">
+                                <a href="{!! route('studies.index') !!}">
+                                    <i class="icon-book-open"></i>
+                                    Exit {{session('study_short_name')}},<strong>Study:</strong>
+                                </a>
+                            </li>
                         @endif
                 </ul>
             </li>
@@ -215,7 +223,7 @@
                             </li>
                         </ul>
                     </li>
-                @endif    
+                @endif
             @endif
             @if(hasPermission(auth()->user(),'grading.index'))
                 @if(session('current_study'))
@@ -255,7 +263,7 @@
                             </li>
                         </ul>
                     </li>
-                @endif    
+                @endif
             @endif
             @if(session('current_study'))
             <li class="dropdown">
@@ -297,7 +305,7 @@
                             </li>
                         </ul>
                     </li>
-                @endif    
+                @endif
             @endif
             @if(hasPermission(auth()->user(),'queries.index'))
                 @if(session('current_study'))
@@ -322,7 +330,7 @@
                             </li>
                         </ul>
                     </li>
-                @endif    
+                @endif
             @endif
 
                 @if(hasPermission(auth()->user(),'systemtools.index') && hasPermission(auth()->user(),'trail_logs.list'))

@@ -79,8 +79,8 @@
                                     <tbody id="users-crud">
                                         @foreach($users as $user)
                                     <tr>
-                                        <td>{{ucfirst($user->name)}}</td>
-                                        <td>{{$user->email}}</td>
+                                        <td>{{ucfirst(decrypt($user->name))}}</td>
+                                        <td>{{decrypt($user->email)}}</td>
                                         <td>
     {{--                                        {{ucfirst($user->role_name)}}--}}
 
