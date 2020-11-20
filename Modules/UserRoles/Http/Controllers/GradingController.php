@@ -366,6 +366,8 @@ class GradingController extends Controller
             ->orderBy('modilities.modility_name')
             ->get();
 
+            $modalitySteps = [];
+
             // get form types for modality
             foreach($getModilities as $key => $modility) {
 
