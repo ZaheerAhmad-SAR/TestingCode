@@ -78,10 +78,10 @@
                                                     <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                         @if(hasPermission(auth()->user(),'sites.edit'))
-                                                        <span class="dropdown-item"><a data-toggle="modal" data-target="#siteModal" data-id="{{$site->id}}" class="editsiterecord"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
+                                                        <span class="dropdown-item" style="cursor: pointer;"><a data-toggle="modal" data-target="#siteModal" data-id="{{$site->id}}" class="editsiterecord"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
                                                         @endif
                                                         @if(hasPermission(auth()->user(),'sites.destroy'))
-                                                        <span class="dropdown-item"><a data-id="{{$site->id}}" class="deletesiterecord"><i class="fa fa-trash"></i>&nbsp; Delete </a></span>
+                                                        <span class="dropdown-item" style="cursor: pointer;"><a data-id="{{$site->id}}" class="deletesiterecord"><i class="fa fa-trash"></i>&nbsp; Delete </a></span>
                                                             @endif
                                                     </div>
                                                 </div>
@@ -994,10 +994,11 @@
         });
     }
     showPrimaryInvestigator();
+
     // Add New Photographer
-    function addPhotographer()
-    {
+
         $("#photographerForm").submit(function(e) {
+
             var photographer_first_name     = $('#photographer_first_name').val();
             var photographer_mid_name       = $('#photographer_mid_name').val();
             var photographer_last_name      = $('#photographer_last_name').val();
@@ -1005,6 +1006,7 @@
             var photographer_email          = $('#photographer_email').val();
             var photo_id                    = $('#photo_id').val();
             var photographer_submit_actions = $('#photographer_submit_actions').val();
+            console.log(photographer_submit_actions);
             $('#photographerForm').find($('input[name="site_id"]').val($('#site_id').val()));
             if(photographer_submit_actions  == 'Add')
             {
@@ -1062,8 +1064,7 @@
                 }
             });
         });
-    }
-    addPhotographer();
+
     // End of Photographer
     ///////////////////////
 

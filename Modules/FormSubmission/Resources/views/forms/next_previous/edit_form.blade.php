@@ -5,7 +5,8 @@
     @if (
         (bool) $subjectId &&
         ($formStatusObj->form_status == 'complete' || $formStatusObj->form_status == 'resumable') &&
-        ($adjudicationFormStatus != 'complete')
+        ($adjudicationFormStatus != 'complete') &&
+        ($isPreview === false)
     )
         <button type="button" class="btn btn-warning" name="edit_form_button_{{ $stepIdStr }}"
             id="edit_form_button_{{ $stepIdStr }}"
@@ -15,7 +16,7 @@
         </button>
     @endif
 
-    @if(canManageData(['create', 'store', 'edit', 'update']))
+    @if(canManageData(['create', 'store', 'edit', 'update']) && ($isPreview === false))
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button type="button" class="btn btn-danger" name="lock_data_button_{{ $stepIdStr }}"
             id="lock_data_button_{{ $stepIdStr }}"
@@ -32,6 +33,7 @@
     @endif
 
 </div>
+@if($isPreview === false)
 <div class="row">
     <div class="col-md-12" id="edit_form_div_{{ $stepIdStr }}"
         style="display: {{ $formStatusObj->form_status == 'resumable' ? 'block' : 'none' }};">
@@ -43,3 +45,4 @@
         </div>
     </div>
 </div>
+@endif

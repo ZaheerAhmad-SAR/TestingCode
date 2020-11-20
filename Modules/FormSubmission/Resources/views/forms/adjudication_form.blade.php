@@ -28,6 +28,7 @@ $dataArray = [
     'firstStep' => $firstStep,
     'stepClsStr' => $stepClsStr,
     'stepIdStr' => $stepIdStr,
+    'skipLogicStepIdStr'=> $skipLogicStepIdStr,
 ];
 
 @endphp

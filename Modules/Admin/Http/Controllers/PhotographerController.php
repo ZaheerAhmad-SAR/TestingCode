@@ -39,6 +39,7 @@ class PhotographerController extends Controller
      */
     public function store(Request $request)
     {
+
         $id = \Illuminate\Support\Str::uuid();
         $photographer = Photographer::create([
             'id'    => $id,
