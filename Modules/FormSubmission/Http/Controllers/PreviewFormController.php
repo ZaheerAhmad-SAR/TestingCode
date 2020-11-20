@@ -14,6 +14,13 @@ class PreviewFormController extends Controller
         $step = PhaseSteps::find($step_id);
 
         return view('formsubmission::forms.preview_form')
+            ->with('isPreview', true)
+            ->with('studyId', '')
+            ->with('studyClsStr', '')
+            ->with('subjectId', '')
+            ->with('stepClsStr', '')
+            ->with('stepIdStr', '')
+            ->with('skipLogicStepIdStr', '')
             ->with('phase', $phase)
             ->with('step', $step);
     }

@@ -85,6 +85,7 @@
                                         @php
                                         $sectionClsStr = buildSafeStr($section->id, 'sec_cls_');
                                         $sectionIdStr = buildSafeStr($section->id, '');
+                                        $skipLogicSectionIdStr = buildSafeStr($section->id, 'skip_logic_');
                                         $sharedData = [
                                         'studyId' => $studyId,
                                         'studyClsStr' => $studyClsStr,
@@ -97,6 +98,8 @@
                                         'sectionIdStr' => $sectionIdStr,
                                         'sectionClsStr' => $sectionClsStr,
                                         'stepClsStr'=> $stepClsStr,
+                                        'skipLogicSectionIdStr'=> $skipLogicSectionIdStr,
+                                        'skipLogicStepIdStr'=> $skipLogicStepIdStr,
                                         'key' => $key,
                                         'first' => 0,
                                         'last' => $last,

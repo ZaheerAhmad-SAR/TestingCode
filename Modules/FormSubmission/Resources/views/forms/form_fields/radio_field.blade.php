@@ -24,7 +24,7 @@ if($checked == 'checked' && $answer->answer != '-9999'){
         <input type="radio" name="{{ $field_name }}"
             onchange="validateAndSubmitField('{{ $stepIdStr }}', '{{ $sectionIdStr }}', '{{ $question->id }}', '{{ $questionIdStr }}', {{ $step->form_type_id }}, '{{ $field_name }}', '{{ $fieldId }}');"
             value="{{ $option_value }}" {{ $checked }}
-            class="custom-control-input {{ $fieldId }}">
+            class="custom-control-input {{ $skipLogicQuestionIdStr }} {{ $fieldId }}">
         <label class="custom-control-label" for="customCheck1">{{ $option_name }}</label>
     </div>
 @endforeach

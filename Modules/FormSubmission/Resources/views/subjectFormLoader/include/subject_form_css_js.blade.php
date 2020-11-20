@@ -4,6 +4,7 @@
 
     @push('script')
         <script>
+            var isPreview = {{ ($isPreview === true)? 'true':'false' }};
             function showAlert(swalTitle, message, messageType) {
                 swal.fire({
                     title: swalTitle,
@@ -25,6 +26,14 @@
 
             function disableAllFormFields(formId) {
                 $("#" + formId + " input").prop('disabled', true);
+            }
+
+            function makeReadOnly(cls) {
+                $("." + cls + " input").prop('readonly', true);
+            }
+
+            function removeReadOnly(cls) {
+                $("." + cls + " input").prop('readonly', false);
             }
 
             function enableAllFormFields(formId) {
@@ -183,44 +192,50 @@
             }
 
             function validateAndSubmitForm(stepIdStr, formTypeId, formStatusIdStr) {
-                if(isFormDataLocked(stepIdStr) == false){
-                    if(canSubmitForm(formTypeId,stepIdStr)){
-                        if(needToPutFormInEditMode(stepIdStr) == false){
-                            if(window['validateStep' + stepIdStr]()){
-                                submitForm(stepIdStr, formTypeId, formStatusIdStr);
+                if(isPreview === false){
+                    if(isFormDataLocked(stepIdStr) == false){
+                        if(canSubmitForm(formTypeId,stepIdStr)){
+                            if(needToPutFormInEditMode(stepIdStr) == false){
+                                if(window['validateStep' + stepIdStr]()){
+                                    submitForm(stepIdStr, formTypeId, formStatusIdStr);
+                                }
+                            }else{
+                                showPutFormInEditModeError();
                             }
                         }else{
-                            showPutFormInEditModeError();
+                            showPermissionError();
                         }
                     }else{
-                        showPermissionError();
+                        showDataLockError();
                     }
-                }else{
-                    showDataLockError();
                 }
-
             }
 
             function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, questionIdStr, formTypeId, field_name, fieldId) {
-                if(isFormDataLocked(stepIdStr) == false){
-                    if(canSubmitForm(formTypeId,stepIdStr)){
-                        if(needToPutFormInEditMode(stepIdStr) == false){
-                            checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
-                            if(window['validateQuestion' + questionIdStr](true, stepIdStr)){
-                                if(eval("typeof " + window['showHideQuestion' + questionIdStr]) != 'undefined'){
-                                    window['showHideQuestion' + questionIdStr](stepIdStr);
+                if(isPreview === false){
+                    if(isFormDataLocked(stepIdStr) == false){
+                        if(canSubmitForm(formTypeId,stepIdStr)){
+                            if(needToPutFormInEditMode(stepIdStr) == false){
+                                checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
+                                if(window['validateQuestion' + questionIdStr](true, stepIdStr)){
+                                    if(eval("typeof " + window['showHideQuestion' + questionIdStr]) != 'undefined'){
+                                        window['showHideQuestion' + questionIdStr](stepIdStr);
+                                    }
+                                    window['runCalculatedFieldsFunctions' + stepIdStr](questionIdStr);
+                                    if(eval("typeof " + window['checkQuestionSkipLogic' + questionIdStr]) != 'undefined'){
+                                        window['checkQuestionSkipLogic' + questionIdStr]();
+                                    }
+                                    submitFormField(stepIdStr, questionId, field_name, fieldId);
                                 }
-                                window['runCalculatedFieldsFunctions' + stepIdStr](questionIdStr);
-                                submitFormField(stepIdStr, questionId, field_name, fieldId);
+                            }else{
+                                showPutFormInEditModeError();
                             }
                         }else{
-                            showPutFormInEditModeError();
+                            showPermissionError();
                         }
                     }else{
-                        showPermissionError();
+                        showDataLockError();
                     }
-                }else{
-                    showDataLockError();
                 }
             }
 
@@ -338,6 +353,7 @@
                                 data: frmData,
                                 success: function(response) {
                                     showReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr);
+                                    reloadPage(0);
                                 }
                             });
                     }else{
@@ -580,42 +596,43 @@
             }
 
             function calculateField(firstFieldId, secondFieldId, operator, make_decision, customVal, stepIdStr, sectionIdStr, questionId, questionIdStr, form_type_id, field_name, fieldId) {
+                if(isPreview === false){
+                    var firstVal = 0;
+                    var secondVal = 0;
+                    customVal = Number(customVal);
 
-                var firstVal = 0;
-                var secondVal = 0;
-                customVal = Number(customVal);
+                    var firstFieldName = $("#" + firstFieldId).attr("name");
+                    var firstFieldVal = getFormFieldValue(stepIdStr, firstFieldName, firstFieldId);
+                    firstVal = Number(firstFieldVal);
 
-                var firstFieldName = $("#" + firstFieldId).attr("name");
-                var firstFieldVal = getFormFieldValue(stepIdStr, firstFieldName, firstFieldId);
-                firstVal = Number(firstFieldVal);
-
-                if(make_decision == 'question'){
-                    var secondFieldName = $("#" + secondFieldId).attr("name");
-                    var secondFieldVal = getFormFieldValue(stepIdStr, secondFieldName, secondFieldId);
-                    secondVal = Number(secondFieldVal);
-                }
-
-                if(make_decision == 'custom'){
-                    secondVal = customVal;
-                }
-
-                    var answer = 0;
-                    if(operator == '+'){
-                        answer = firstVal + secondVal;
-                    }else if(operator == '-'){
-                        answer = firstVal - secondVal;
-                    }else if(operator == '*'){
-                        answer = firstVal * secondVal;
-                    }else if(operator == '/'){
-                        if(firstVal > 0 && secondVal > 0){
-                            answer = firstVal / secondVal;
-                        }else{
-                            $('#' + fieldId).val(0);
-                        }
+                    if(make_decision == 'question'){
+                        var secondFieldName = $("#" + secondFieldId).attr("name");
+                        var secondFieldVal = getFormFieldValue(stepIdStr, secondFieldName, secondFieldId);
+                        secondVal = Number(secondFieldVal);
                     }
 
-                    $('#' + fieldId).val(answer);
-                    validateAndSubmitField(stepIdStr, sectionIdStr, questionId, questionIdStr, form_type_id, field_name, fieldId);
+                    if(make_decision == 'custom'){
+                        secondVal = customVal;
+                    }
+
+                        var answer = 0;
+                        if(operator == '+'){
+                            answer = firstVal + secondVal;
+                        }else if(operator == '-'){
+                            answer = firstVal - secondVal;
+                        }else if(operator == '*'){
+                            answer = firstVal * secondVal;
+                        }else if(operator == '/'){
+                            if(firstVal > 0 && secondVal > 0){
+                                answer = firstVal / secondVal;
+                            }else{
+                                $('#' + fieldId).val(0);
+                            }
+                        }
+
+                        $('#' + fieldId).val(answer);
+                        validateAndSubmitField(stepIdStr, sectionIdStr, questionId, questionIdStr, form_type_id, field_name, fieldId);
+                }
             }
 
             function reloadPage(waitSeconds) {
