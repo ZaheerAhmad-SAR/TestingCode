@@ -215,7 +215,7 @@
                             </li>
                         </ul>
                     </li>
-                @endif    
+                @endif
             @endif
             @if(hasPermission(auth()->user(),'grading.index'))
                 @if(session('current_study'))
@@ -255,15 +255,15 @@
                             </li>
                         </ul>
                     </li>
-                @endif    
+                @endif
             @endif
             @if(session('current_study'))
             <li class="dropdown">
                 <ul>
                     <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Certification Data</a>
                         <ul class="sub-menu">
-                            <li  class="@if(is_active('photographers.index')) {{ ' active' }} @endif">
-                                <a href="{{route('photographers.index')}}">
+                            <li  class="@if(is_active('photographer.index')) {{ ' active' }} @endif">
+                                <a href="{{route('photographer.index')}}">
                                     <i class="fas fa-list"></i> Photographers List
                                 </a>
                             </li>
@@ -297,7 +297,7 @@
                             </li>
                         </ul>
                     </li>
-                @endif    
+                @endif
             @endif
             @if(hasPermission(auth()->user(),'queries.index'))
                 @if(session('current_study'))
@@ -322,7 +322,7 @@
                             </li>
                         </ul>
                     </li>
-                @endif    
+                @endif
             @endif
 
                 @if(hasPermission(auth()->user(),'systemtools.index') && hasPermission(auth()->user(),'trail_logs.list'))
