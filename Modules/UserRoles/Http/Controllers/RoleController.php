@@ -22,12 +22,12 @@ class RoleController extends Controller
      */
     public function index()
     {
-        if (hasPermission(auth()->user(),'systemtools.index')){
+       /* if (hasPermission(auth()->user(),'systemtools.index')){*/
             $system_roles  =  Role::where('role_type','=','system_role')->orderBY('name','asc')->get();
             $study_roles  =  Role::where('role_type','=','study_role')->orderBY('name','asc')->get();
-        }
+        /*}*/
 
-//        $permissions = Permission::all();
+//
         $permissions = Permission::where('controller_name','=','grading')
             ->orwhere('controller_name','=','qualitycontrol')
             ->orwhere('controller_name','=','studytools')

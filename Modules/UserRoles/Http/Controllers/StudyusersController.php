@@ -38,6 +38,7 @@ class StudyusersController extends Controller
             ->join('roles','roles.id','=','study_role_users.role_id')
             ->where('study_id','=',session('current_study'))->get();
 
+
         $getEnrolledUsersId = StudyRoleUsers::where('study_id','=',session('current_study'))->pluck('user_id')->toArray();
 
         $studyusers = StudyRoleUsers::where('study_id','!=',session('current_study'))->pluck('user_id')->toArray();

@@ -41,12 +41,9 @@ class Permission extends Model
         })->distinct('id')->pluck('id')->toArray();
         $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
         $roleIdsArray = Role::where('role_type', '!=', 'super_admin')->distinct()->pluck('id')->toArray();
-
         $studyAdminRoleId = array_intersect($roleIdsArrayFromRolePermission, $roleIdsArray);
-
         if(!empty($studyAdminRoleId)){
             return $studyAdminRoleId;
-
         }
         return true;
     }

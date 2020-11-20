@@ -50,11 +50,13 @@ class StudyController extends Controller
      */
     public function index()
     {
+        session(['current_study' => '']);
         $users = User::all();
         $sites = Site::all();
         $study = '';
         $adminUsers = '';
         $studies = [];
+        $studiesIDs = [];
         $adminUsers = [];
         $studyAdminRoleId = '';
         $user = \auth()->user()->id;
@@ -69,38 +71,38 @@ class StudyController extends Controller
             $sites = Site::all();
             $user = User::with('studies', 'user_roles')->find(Auth::id());
 
-            $studies = Study::all();
-
-
+            $studiesIDs = array_merge($studiesIDs, Study::all()->pluck('id')->toArray());
 
             $study = '';
+            $studies = Study::whereIn('id',$studiesIDs)->get();
+            return view('admin::studies.index', compact('sites', 'users', 'adminUsers', 'study', 'studyAdminRoleId', 'studies'));
         }
-        elseif (hasPermission(\auth()->user(), 'grading.index')) {
-            echo 'grading';
-                $studies = Study::getStudiesAganistGrader();
+        if (hasPermission(\auth()->user(), 'studytools.index')) {
+           // echo 'studytools';
+            $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistAdmin());
+            $studyAdmins = '';
+            $study = '';
+        }
+        if (hasPermission(\auth()->user(), 'grading.index')) {
+          //  echo 'grading';
+            $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistGrader());
                 $study = '';
                 $studyAdmins = '';
             }
-        elseif (hasPermission(\auth()->user(), 'adjudication.index')) {
-            echo 'adjudication';
-                $studies = Study::getStudiesAganistAdjudicator();
+        if (hasPermission(\auth()->user(), 'adjudication.index')) {
+           // echo 'adjudication';
+            $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistAdjudicator());
                 $study = '';
                 $studyAdmins = '';
             }
-        elseif (hasPermission(\auth()->user(), 'qualitycontrol.index')) {
-            echo 'QC';
-                $studies = Study::getStudiesAganistQC();
+        if (hasPermission(\auth()->user(), 'qualitycontrol.index')) {
+         //   echo 'QC';
+            $studiesIDs = array_merge($studiesIDs,Study::getStudiesAganistQC());
                 $study = '';
-
                 $studyAdmins = '';
             }
-        elseif (hasPermission(\auth()->user(), 'studytools.index')) {
-            echo 'studytools';
-                $studies = Study::getStudiesAganistAdmin();
-                $studyAdmins = '';
-                $study = '';
-            }
-
+            $studies = Study::whereIn('id',$studiesIDs)->get();
+        //exit();
         return view('admin::studies.index', compact('sites', 'users', 'adminUsers', 'study', 'studyAdminRoleId', 'studies'));
         }
 
@@ -230,21 +232,7 @@ class StudyController extends Controller
      */
     public function edit($id)
     {
-        $permissionsIdsArray = Permission::where(function ($query) {
-            $query->where('permissions.name', '=', 'studytools.index')
-                ->orwhere('permissions.name', '=', 'studytools.store')
-                ->orWhere('permissions.name', '=', 'studytools.edit')
-                ->orwhere('permissions.name', '=', 'studytools.update');
-        })->distinct('id')->pluck('id')->toArray();
-
-        $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
-
-        $userIdsArrayFromUserRole = UserRole::where('study_id', $id)->whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
-
-        $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->orderBy('name', 'asc')->get();
-
-        //$study = Study::find($id);
-        //dd($study);
+        $users = '';
 
         $study  = Study::with('diseaseCohort')
             ->find($id);

@@ -156,29 +156,29 @@ class Study extends Model
     public static function getStudiesAganistAdmin()
     {
         $studyIds = RoleStudyUser::where('user_id', 'LIKE', auth()->user()->id)->where('role_id', 'LIKE', Permission::getStudyAdminRole())->pluck('study_id')->toArray();
-        dd(Permission::getStudyAdminRole());
-        $studies = Study::whereIn('id', $studyIds)->get();
+        $studies = Study::whereIn('id', $studyIds)->pluck('id')->toArray();
         return $studies;
     }
 
     public static function getStudiesAganistQC()
     {
         $studyIds = RoleStudyUser::where('user_id', 'LIKE', auth()->user()->id)->where('role_id', 'LIKE', Permission::getStudyQCRole())->pluck('study_id')->toArray();
-        $studies = Study::whereIn('id', $studyIds)->get();
+        $studies = Study::whereIn('id', $studyIds)->pluck('id')->toArray();
         return $studies;
     }
 
     public static function getStudiesAganistGrader()
     {
+        //dd(Permission::getStudyGraderRole());
         $studyIds = RoleStudyUser::where('user_id', 'LIKE', auth()->user()->id)->where('role_id', 'LIKE', Permission::getStudyGraderRole())->pluck('study_id')->toArray();
-        $studies = Study::whereIn('id', $studyIds)->get();
+        $studies = Study::whereIn('id', $studyIds)->pluck('id')->toArray();
         return $studies;
     }
 
     public static function getStudiesAganistAdjudicator()
     {
         $studyIds = RoleStudyUser::where('user_id', 'LIKE', auth()->user()->id)->where('role_id', 'LIKE', Permission::getStudyAdjudicationRole())->pluck('study_id')->toArray();
-        $studies = Study::whereIn('id', $studyIds)->get();
+        $studies = Study::whereIn('id', $studyIds)->pluck('id')->toArray();
         return $studies;
     }
 
