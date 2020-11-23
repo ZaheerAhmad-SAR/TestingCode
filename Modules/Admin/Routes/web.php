@@ -71,15 +71,27 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('skiplogic/questions_for_skip_logic/{id}', 'SkipLogicController@questions_skip_logic')->name('skiplogic.questionsSkip');
     Route::get('skiplogic/questions_for_skip_logic_deactivate/{id}', 'SkipLogicController@questions_skip_logic_deactivate')->name('skiplogic.questionsSkipdeactivate');
     Route::get('skiplogic/options_for_skip_logic_deactivate/{id}', 'SkipLogicController@options_skip_logic_deactivate')->name('skiplogic.optionsSkipdeactivate');
-
     Route::get('skiplogic/options_for_skip_logic_activate/{id}', 'SkipLogicController@options_skip_logic_activate')->name('skiplogic.optionsSkipactivate');
-
-    Route::post('skiplogic/add_skip_logic', 'SkipLogicController@add_skipLogic')->name('skiplogic.apply_skip_logic');
     Route::post('skiplogic/steps_to_skip', 'SkipLogicController@getSteps_toskip')->name('skiplogic.get_steps_skip_logic');
     Route::get('skiplogic/skip_logic/{id}', 'SkipLogicController@skip_question_on_click')->name('skiplogic.skipLogic');
-    Route::get('skiplogic/num_skip_logic/{id}', 'SkipLogicController@skip_question_on_number')->name('skiplogic.numskipLogic');
     Route::get('skiplogic/text_skip_logic/{id}', 'SkipLogicController@skip_question_on_text')->name('skiplogic.textskipLogic');
+    Route::post('skiplogic/add_skip_logic', 'SkipLogicController@add_skipLogic')->name('skiplogic.apply_skip_logic');
     // skip logic
+    // routes for skip logic on Questions with type Number
+    // Start
+    Route::get('skipNumber/num_skip_logic/{id}', 'SkipNumberController@skip_question_on_number')->name('skipNumber.numskipLogic');
+    Route::post('skipNumber/add_skip_logic_num', 'SkipNumberController@add_skipLogic_num')->name('skipNumber.apply_skip_logic_num');
+    Route::get('skipNumber/sections_for_skip_logic/{id}', 'SkipNumberController@sections_skip_logic')->name('skipNumber.sectionsSkip');
+    Route::get('skipNumber/sections_for_skip_logic_deactivate/{id}', 'SkipNumberController@sections_skip_logic_deactivate')->name('skipNumber.sectionsSkipdeactivate');
+    Route::get('skipNumber/questions_for_skip_logic/{id}', 'SkipNumberController@questions_skip_logic')->name('skipNumber.questionsSkip');
+    Route::get('skipNumber/questions_for_skip_logic_deactivate/{id}', 'SkipNumberController@questions_skip_logic_deactivate')->name('skipNumber.questionsSkipdeactivate');
+    Route::get('skipNumber/options_for_skip_logic_deactivate/{id}', 'SkipNumberController@options_skip_logic_deactivate')->name('skipNumber.optionsSkipdeactivate');
+    Route::get('skipNumber/options_for_skip_logic_activate/{id}', 'SkipNumberController@options_skip_logic_activate')->name('skipNumber.optionsSkipactivate');
+    Route::get('skipNumber/update_skip_checks_num/{id}', 'SkipNumberController@update_skip_checks')->name('skipNumber.updateSkipNum');
+    // End
+    // for type text
+    Route::post('skipNumber/add_skip_logic_text', 'SkipNumberController@add_skipLogic_text')->name('skipNumber.apply_skip_logic_text');
+    // routes for skip logic on Questions with type Number 
     Route::get('forms/sections_by_stepId/{id}', 'FormController@get_section_by_stepId')->name('forms.sectionsbystepId');
     Route::post('studyStatus', 'StudyController@studyStatus')->name('study.studyStatus');
     Route::post('changeStatus/{id}', 'StudyController@changeStatus')->name('studies.changeStatus');

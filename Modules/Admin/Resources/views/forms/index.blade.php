@@ -1,6 +1,6 @@
 @extends ('layouts.home')
 @section('content')
-    {{-- {{dd(Session::all())}} --}}
+    {{-- {{dd(Session('current_study'))}} --}}
    {{--  @if(session()->has('filter_step'))
             {{dd(Session('filter_step'))}}
     @endif   --}}
@@ -477,9 +477,15 @@
                                     <span class="text-muted font-w-600">Annotations</span><br>
                                 </div>
                                 <div class="form-group row" style="margin-top: 10px;">
-                                    <div class="col-sm-12"><button type="button"
+                                    <div class="col-sm-12">
+                                        <button type="button"
                                             class="btn btn-outline-primary addannotation"><i class="fa fa-plus"></i> Add
-                                            annotation</button></div>
+                                            annotation
+                                        </button>
+                                        <button type="button"
+                                            class="btn btn-outline-primary add_new_annotation"><i class="fa fa-plus"></i> Add New
+                                        </button>
+                                    </div>
                                 </div>
                                 <div class="appendannotation">
 
@@ -629,87 +635,7 @@
         </div>
     </div>
     <!-- End -->
-    <!-- Modal To add Option Groups -->
-    <div class="modal fade" tabindex="-1" role="dialog" id="listModal">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="min-width: 1130px;">
-            <div class="modal-content">
-                <div class="alert alert-danger" style="display:none"></div>
-                <div class="modal-header">
-                    <p class="modal-title"></p>
-                </div>
-                <form action="{{ route('forms.addQuestions') }}" enctype="multipart/form-data" method="POST"
-                    id="form_certify">
-                    @csrf
-                    <div class="modal-body">
-                        <div id="exTab1">
-                            <div class="tab-content clearfix">
-                                <div class="form-group row" style="margin-top: 10px;">
-                                    <input type="hidden" name="form_field_type_id" value="10">
-                                    <label for="Sorting" class="col-sm-2 col-form-label">Sort Number / Position</label>
-                                    <div class="col-sm-4">
-                                        <input type="Number" name="question_sort" class="form-control"
-                                            placeholder="Sort Number / Placement Place">
-                                    </div>
-                                    <label for="Sections" class="col-sm-2 col-form-label">Sections</label>
-                                    <div class="col-sm-4">
-                                        <select name="section_id" class="form-control basic_section">
-                                            <option value="">Choose Phase/Visit && Step/Form-Type</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="C-DISC" class="col-sm-2 col-form-label">C-DISC </label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control" name="c_disk" value="">
-                                    </div>
-                                    <label for="label" class="col-sm-2 col-form-label"> Label </label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control" name="question_text" value="">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for='variable' class="col-sm-2 col-form-label">Variable name </label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control variable_name" name="variable_name" value="">
-                                    </div>
-                                    <label for="list" class="col-sm-2 col-form-label"> List type </label>
-                                    <div class="col-sm-4">
-                                        <select class="form-control" name="certification_type">
-                                            <option value="">---Select---</option>
-                                            <option value="photographers">Photographer List</option>
-                                            <option value="devices">Device List</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="Required" class="col-sm-2 col-form-label">Required </label>
-                                    <div class="col-sm-4">
-                                        <input type="radio" name="is_required" value="no"> No
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <input type="radio" name="is_required" value="yes" checked> Yes
-                                    </div>
-                                    <div class="col-sm-2">Exports: </div>
-                                    <div class="col-sm-4">
-                                        <input type="radio" name="is_exportable_to_xls" value="no"> No
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <input type="radio" name="is_exportable_to_xls" value="yes" checked> Yes
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button id="question-sort-close" class="btn btn-outline-danger" data-dismiss="modal"><i
-                                class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                        <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save
-                            Changes</button>
-                    </div>
-            </div>
-            </form>
-        </div>
-    </div>
-    </div>
-    <!-- End -->
+   
     <!-- Modal To add Option Groups -->
     <div class="modal fade" tabindex="-1" role="dialog" id="descriptionModal">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="min-width: 1130px;">
@@ -767,6 +693,8 @@
 @include('admin::forms.edit_crf')
 @include('admin::forms.form_checks')
 @include('admin::forms.add_calculated_field')
+@include('admin::forms.add_certification_field')
+@include('admin::forms.form_models')
 @section('styles')
     <style>
         .custom_fields {
@@ -809,6 +737,7 @@
 
         $(document).ready(function() {
             var tId;
+            var step_change;
             tId = setTimeout(function() {
                 $(".success-alert").slideUp('slow');
             }, 4000);
@@ -823,12 +752,15 @@
                     return true;
                 }
             })
-            @if(session()->has('filter_phase'))
+            @if(session('filter_phase') !='')
                 $('#phases').trigger('change');
             @endif
-            @if(session()->has('filter_step'))
-                $('#steps').trigger('change');
-            @endif
+
+            //if //(session('filter_step') !='')
+                //step_change = setTimeout(function() {
+                   // $('#steps').trigger('change');
+                //}, 2000);  
+            //endif
         })
         $('.addOptions').on('click', function() {
             $('.appendDataOptions').append(
@@ -857,8 +789,7 @@
             row.remove();
         })
         $('body').on('click', '.fetch_annotation', function() {
-            var study_id = '{{ session('
-            current_study ') }}';
+            var study_id = '{{ Session('current_study') }}';
             var row = $(this).closest('div.anno_values_row');
             var anno_class = row.find('select.terminology_value');
             get_all_annotations(study_id, anno_class);
@@ -893,19 +824,7 @@
             $('#question_type').val(id);
             $('#descriptionModal').modal('show');
         })
-        $('.add_certify_list').on('click', function() {
-            checkIsStepHasData();
-            if (checkIsStepActive() == false) {
-                $('#form_certify').trigger('reset');
-                $('.modal-title').html('Add Certification list');
-                $('#form_certify').attr('action', "{{ route('forms.addQuestions') }}");
-                var id = $(this).attr("data-field-id");
-                $('#question_type').val(id);
-                $('#listModal').modal('show');
-            } else {
-                showStepDeActivationAlert();
-            }
-        })
+        
         $('body').on('click', '.fetch_phases', function() {
             var phase_id = '1';
             var row = $(this).closest('div.values_row');
@@ -990,16 +909,13 @@
         })
         $('#steps').on('change', function() {
             var step_id = $(this).val();
-            // fix issue here with out load session
-            var check_session_step = '{{Session('filter_step')}}';
-
             var phase_id = $('#phases').val();
             var sec_class = $('select.decisionSections');
             var sec_class2 = $('select.decisionSections2');
             var basic_section = $('select.basic_section');
+            //make_session(step_id,phase_id);
             display_sections(step_id);
             section_against_step(step_id, basic_section);
-            make_session(step_id,phase_id);
         });
         $('.decisionSections').on('change', function() {
             var sec_id = $(this).val();
@@ -1426,22 +1342,22 @@
         }
 
         /**************************************************************/
-        function make_session(step_id,phase_id)
-        {
-            $.ajax({
-                url: "{{ route('forms.makeFilterSession') }}",
-                type: 'post',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'POST',
-                    'step_id': step_id,
-                    'phase_id': phase_id,
-                },
-                dataType: 'json',
-                success: function(res) {
-                }
-            });
-        }
+        // function make_session(step_id,phase_id)
+        // {
+        //     $.ajax({
+        //         url: "{{ route('forms.makeFilterSession') }}",
+        //         type: 'post',
+        //         data: {
+        //             "_token": "{{ csrf_token() }}",
+        //             "_method": 'POST',
+        //             'step_id': step_id,
+        //             'phase_id': phase_id,
+        //         },
+        //         dataType: 'json',
+        //         success: function(res) {
+        //         }
+        //     });
+        // }
     </script>
 
 @endsection
