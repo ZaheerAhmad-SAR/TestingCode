@@ -13,7 +13,7 @@ use Modules\Admin\Entities\TrailLog;
 use Modules\Admin\Entities\TransmissionUpdateDetail;
 use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\Role;
-use Modules\UserRoles\Entities\StudyRoleUsers;
+use Modules\Admin\Entities\RoleStudyUser;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Entities\UserSystemInfo;
 
@@ -57,7 +57,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-         'remember_token','google2fa_secret',
+        'remember_token', 'google2fa_secret',
     ];
 
     /**
@@ -193,7 +193,8 @@ class User extends Authenticatable
     }
 
 
-    public function systemInfo(){
+    public function systemInfo()
+    {
         return $this->hasMany(UserSystemInfo::class);
     }
 
@@ -205,7 +206,8 @@ class User extends Authenticatable
         }
     }
 
-    public function transmissionDetails() {
+    public function transmissionDetails()
+    {
         return $this->hasMany(TransmissionUpdateDetail::class);
     }
 }

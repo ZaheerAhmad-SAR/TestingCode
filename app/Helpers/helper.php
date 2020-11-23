@@ -61,7 +61,7 @@ function hasPermission($user, $routeName)
     /* Set Study Role Permissions */
 
     else{
-        $roles = \Modules\UserRoles\Entities\StudyRoleUsers::select('role_id')->where('user_id',\auth()->user()->id)
+        $roles = \Modules\Admin\Entities\RoleStudyUser::select('role_id')->where('user_id',\auth()->user()->id)
             ->where('study_id',\session('current_study'))
             ->get();
     }
@@ -817,7 +817,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             if ($key == 0) {
 
                 $editReason = $data;
-                
+
             } else if ($key == 1) {
                 //first time loop data
                 $newData['study'] = $studyName->study_title;
@@ -826,9 +826,9 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
                 $newData['steps'] = $stepName->step_name;
                 $newData['modility'] = $modalityName->modility_name;
                 $newData['form_type'] = $data['form_type'];
-                
+
                 if ($eventSection == 'Adjudication Form' || $eventSection == 'System Adjudication Form') {
-                    
+
                     $newData['form_version_num'] = '';
 
                 } else {
@@ -836,7 +836,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
                     $newData['form_version_num'] = $data['form_version_num'];
 
                 }
-                
+
                 $newData['edit_reason'] = $editReason;
 
                 // get section name
