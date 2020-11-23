@@ -163,6 +163,7 @@ class Study extends Model
     public static function getStudiesAganistQC()
     {
         $studyIds = RoleStudyUser::where('user_id', 'LIKE', auth()->user()->id)->where('role_id', 'LIKE', Permission::getStudyQCRole())->pluck('study_id')->toArray();
+
         $studies = Study::whereIn('id', $studyIds)->pluck('id')->toArray();
         return $studies;
     }
