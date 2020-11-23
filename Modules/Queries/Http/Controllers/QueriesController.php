@@ -356,7 +356,7 @@ class QueriesController extends Controller
     }
 
     public function storeFormQueries(Request $request){
-        dd($request->all());
+        //dd($request->all());
         $study_id            = $request->post('form_study_id');
         $question_id         = $request->post('form_question_id');
         $phase_steps_id      = $request->post('form_phase_steps_id');
