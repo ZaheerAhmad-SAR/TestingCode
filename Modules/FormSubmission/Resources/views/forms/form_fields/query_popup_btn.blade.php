@@ -9,7 +9,7 @@ if(isset($queryParams)){
 </div>
 <div class="row">
     <div class="col-md-6"></div>
-    <div class="col-md-6 text-right btn-group mb-3">
+    <div class="col-md-6 text-right">
         @if(\Modules\Queries\Entities\Query::questionHasQuery($queryParams))
             <div class="formQueries">
         <span class="ml-3" style="cursor: pointer;">
