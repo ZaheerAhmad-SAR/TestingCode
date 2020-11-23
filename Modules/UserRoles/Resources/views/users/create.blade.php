@@ -3,7 +3,7 @@
     <title> Create User | {{ config('app.name', 'Laravel') }}</title>
 @stop
 @section('content')
-    <form action="{{route('users.store')}}" enctype="multipart/form-data" method="POST">
+    <form action="{{route('users.store')}}" enctype="multipart/form-data" method="POST" id="user-store-form-1">
         @csrf
         <div class="row">
             <div class="col-lg-12">
@@ -75,19 +75,7 @@
                             </div>
                         </div>
                         <div class="form-row pull-left">
-                            <div class="{!! ($errors->has('roles')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
-                                <label>Select Roles</label>
-                                <select class="form-control" id="select-roles" multiple="multiple" name="roles[]">
-                                    @foreach($roles as $role)
-                                        <option value="{{$role->id}}">{{$role->name}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            @error('roles')
-                            <span class="text-danger small">
-                                    {{ $message }}
-                            </span>
-                            @enderror
+                            @include('admin::assignRoles.assign_roles', ['roles'=>$roles, 'assigned_roles'=>[], 'errors'=>$errors ])
                         </div>
 
                         <div class="pull-right">
@@ -102,8 +90,19 @@
 @endsection
 @section('scripts')
     <script type="text/javascript">
+    $('#user-store-form-1').submit(function(e){
+        $('#select_roles_to option').prop('selected', true);
+    });
         $(document).ready(function() {
-            $('#select-roles').multiselect({ keepOrder: true});
-        });
+		        $('#select_roles').multiselect({
+                    search: {
+                        left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+                        right: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+                    },
+                    fireSearch: function(value) {
+                        return value.length > 1;
+                    }
+                });
+	        });
     </script>
 @endsection

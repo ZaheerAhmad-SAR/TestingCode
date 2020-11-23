@@ -22,7 +22,7 @@
         <div class="row">
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
-                    <form action="{{route('studyusers.update',$user->id)}}" enctype="multipart/form-data" method="POST">
+                    <form action="{{route('studyusers.update',$user->id)}}" enctype="multipart/form-data" method="POST" id="user-store-form-2">
                         @csrf
                         @method('PATCH')
                         <div class="modal-body">
@@ -73,25 +73,7 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="nav-Modalities" role="tabpanel" aria-labelledby="nav-Validation-tab">
-                                    <div class="form-group row" style="margin-top: 10px;">
-                                        <div class="{!! ($errors->has('roles')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                            <select class="searchable" id="select-roles" multiple="multiple" name="roles[]">
-                                                @foreach($currentRoles as $role)
-                                                    <option selected="selected" value="{{$role->id}}">{{$role->name}}</option>
-                                                @endforeach
-                                            @if(!empty($unassignedRoles))
-                                                    @foreach($unassignedRoles as $unassigned)
-                                                        <option name="to_be_selected"   class="assignRoles" value="{{$unassigned->id}}">{{$unassigned->name}}</option>
-                                                     @endforeach
-                                                @endif
-                                            </select>
-                                        </div>
-                                        @error('roles')
-                                        <span class="text-danger small">
-                                    {{ $message }}
-                                    </span>
-                                        @enderror
-                                    </div>
+                                    @include('admin::assignRoles.assign_roles', ['roles'=>$unassignedRoles, 'assigned_roles'=>$currentRoles, 'errors'=>$errors ])
                                 </div>
                                 <div class="tab-pane fade" id="nav-2fa" role="tabpanel" aria-labelledby="nav-Validation-tab">
                                     <div class="form-group row" style="margin-top: 10px;">
@@ -144,43 +126,20 @@
 @endsection
 @section('script')
     <script type="text/javascript">
-        $(document).ready(function() {
-            $('#select-roles').multiSelect({
-                selectableHeader: "<label for=''>All Roles</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
-                selectionHeader: "<label for=''>Assigned Roles</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
-                afterInit: function(ms){
-                    var that = this,
-                        $selectableSearch = that.$selectableUl.prev(),
-                        $selectionSearch = that.$selectionUl.prev(),
-                        selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
-                        selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
-
-                    that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-                        .on('keydown', function(e){
-                            if (e.which === 40){
-                                that.$selectableUl.focus();
-                                return false;
-                            }
-                        });
-
-                    that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-                        .on('keydown', function(e){
-                            if (e.which == 40){
-                                that.$selectionUl.focus();
-                                return false;
-                            }
-                        });
-                },
-                afterSelect: function(){
-                    this.qs1.cache();
-                    this.qs2.cache();
-                },
-                afterDeselect: function(){
-                    this.qs1.cache();
-                    this.qs2.cache();
-                }
-            });
-        });
+    $('#user-store-form-2').submit(function(e){
+        $('#select_roles_to option').prop('selected', true);
+    });
+    $(document).ready(function() {
+		        $('#select_roles').multiselect({
+                    search: {
+                        left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+                        right: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+                    },
+                    fireSearch: function(value) {
+                        return value.length > 1;
+                    }
+                });
+	        });
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
