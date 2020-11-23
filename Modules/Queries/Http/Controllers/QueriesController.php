@@ -32,24 +32,38 @@ class QueriesController extends Controller
     }
     public function loadHtml(Request $request)
     {
-        $studyusers =  UserRole::select('users.*','user_roles.study_id','roles.role_type', 'roles.name as role_name')
+        $studyusers = UserRole::select('users.*','user_roles.study_id','roles.role_type', 'roles.name as role_name','study_role_users.study_id','study_role_users.user_id')
             ->join('users','users.id','=','user_roles.user_id')
             ->join('roles','roles.id','=','user_roles.role_id')
+            ->join('study_role_users','study_role_users.user_id','=','user_roles.user_id')
             ->where('roles.role_type','!=','system_role')
-            ->where('user_roles.study_id','=',$request->study_id)
+            ->where('study_role_users.study_id','=',$request->study_id)
             ->get();
         echo  view('queries::queries.usersdropdown',compact('studyusers'));
     }
 
     public function usersDropDownListForm(Request $request)
     {
-        $studyusers =  UserRole::select('users.*','user_roles.study_id','roles.role_type', 'roles.name as role_name')
+        $studyusers =  UserRole::select('users.*','user_roles.study_id','roles.role_type', 'roles.name as role_name','study_role_users.study_id','study_role_users.user_id')
             ->join('users','users.id','=','user_roles.user_id')
             ->join('roles','roles.id','=','user_roles.role_id')
+            ->join('study_role_users','study_role_users.user_id','=','user_roles.user_id')
             ->where('roles.role_type','!=','system_role')
-            ->where('user_roles.study_id','=',$request->study_id)
+            ->where('study_role_users.study_id','=',$request->study_id)
             ->get();
         echo  view('queries::queries.form.usersdropdownform',compact('studyusers'));
+    }
+
+    public function usersDropDownListQuestion(Request $request)
+    {
+        $studyusers =  UserRole::select('users.*','user_roles.study_id','roles.role_type', 'roles.name as role_name','study_role_users.study_id','study_role_users.user_id')
+            ->join('users','users.id','=','user_roles.user_id')
+            ->join('roles','roles.id','=','user_roles.role_id')
+            ->join('study_role_users','study_role_users.user_id','=','user_roles.user_id')
+            ->where('roles.role_type','!=','system_role')
+            ->where('study_role_users.study_id','=',$request->study_id)
+            ->get();
+        echo  view('queries::queries.question.usersdropdownquestions',compact('studyusers'));
     }
 
 
@@ -76,9 +90,6 @@ class QueriesController extends Controller
         echo  view('queries::queries.question.queries_questions_table_view',compact('records'));
 
     }
-
-
-
 
     public function queryReply(Request $request)
     {
@@ -278,6 +289,7 @@ class QueriesController extends Controller
     }
 
     public function storeQuestionQueries(Request $request){
+        ///dd($request->all());
         $study_id            = $request->post('study_id');
         $question_id         = $request->post('question_id');
         $phase_steps_id      = $request->post('phase_steps_id');
@@ -356,7 +368,6 @@ class QueriesController extends Controller
     }
 
     public function storeFormQueries(Request $request){
-        //dd($request->all());
         $study_id            = $request->post('form_study_id');
         $question_id         = $request->post('form_question_id');
         $phase_steps_id      = $request->post('form_phase_steps_id');
