@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Date;
 use Modules\Admin\Entities\Study;
-use Modules\UserRoles\Entities\StudyRoleUsers;
+use Modules\Admin\Entities\RoleStudyUser;
 use Modules\UserRoles\Entities\UserRole;
 use Psy\Util\Str;
 
@@ -42,7 +42,7 @@ class StudySeederTableSeeder extends Seeder
 
             $studyUser = User::all();
             if ($studyUser->name = 'admin'){
-                StudyRoleUsers::create([
+                RoleStudyUser::create([
                     'id'    => \Illuminate\Support\Str::uuid(),
                     'user_id'   => $studyUser->id,
                     'role_id'   => $studyUser->role_id,
