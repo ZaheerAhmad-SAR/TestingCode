@@ -296,22 +296,7 @@
 
                             {{-- Assign Users --}}
                             <div class="tab-pane fade" id="nav-users" role="tabpanel" aria-labelledby="nav-Validation-tab">
-                                <div class="form-group row" style="margin-top: 10px;">
-                                    <label for="study_users" class="col-sm-3"></label>
-                                    <div class="{!! ($errors->has('users')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                        <select class="searchable" id="select-users" multiple="multiple" name="users[]">
-                                            @foreach($users as $user)
-                                                <option value="{{$user->id}}">{{$user->name}}</option>
-                                            @endforeach
-                                        </select>
-
-                                        @error('users')
-                                        <span class="text-danger small">
-                                    {{ $message }}
-                                    </span>
-                                        @enderror
-                                    </div>
-                                </div>
+                                @include('admin::assignRoles.assign_users', ['users'=>$users, 'assigned_users'=>[], 'errors'=>$errors ])
                             </div>
                             <div class="modal-footer">
                                 <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
@@ -769,15 +754,7 @@
             })
         })
     </script>
-    <script type="text/javascript">
 
-        // run callbacks
-        $('#select-users').multiSelect({
-            selectableHeader: "<label for=''>All Admins</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
-            selectionHeader: "<label for=''>Assigned Admins</label><input type='text' class='form-control appendusers' autocomplete='off' placeholder='search here'>",
-        });
-
-    </script>
     <script src="{{ asset("dist/vendors/fancybox/jquery.fancybox.min.js") }}"></script>
     <script src="{{ asset("dist/js/gallery.script.js") }}"></script>
 
@@ -1020,4 +997,21 @@
         });
     </script>
 
-@endsection
+<script type="text/javascript">
+    $('#studyForm').submit(function(e){
+        $('#select_users_to option').prop('selected', true);
+    });
+        $(document).ready(function() {
+		        $('#select_users').multiselect({
+                    search: {
+                        left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+                        right: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+                    },
+                    fireSearch: function(value) {
+                        return value.length > 1;
+                    }
+                });
+	        });
+        </script>
+        @endsection
+

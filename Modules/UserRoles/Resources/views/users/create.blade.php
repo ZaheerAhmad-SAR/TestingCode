@@ -88,7 +88,7 @@
         </div>
     </form>
 @endsection
-@section('scripts')
+@section('script')
     <script type="text/javascript">
     $('#user-store-form-1').submit(function(e){
         $('#select_roles_to option').prop('selected', true);

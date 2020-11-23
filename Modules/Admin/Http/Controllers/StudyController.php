@@ -3,6 +3,7 @@
 namespace Modules\Admin\Http\Controllers;
 
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
@@ -37,6 +38,8 @@ use Modules\UserRoles\Entities\RolePermission;
 use Modules\Admin\Entities\RoleStudyUser;
 use Modules\UserRoles\Entities\UserRole;
 use Illuminate\Support\Str;
+use Modules\UserRoles\Entities\StudyRoleUsers;
+
 use function GuzzleHttp\Promise\all;
 use function Symfony\Component\String\s;
 
@@ -51,7 +54,10 @@ class StudyController extends Controller
     public function index()
     {
         session(['current_study' => '']);
-        $users = User::all();
+        $systemRoleIds = Role::where('role_type', 'system_role')->pluck('id')->toArray();
+        $userIdsWithSystemRole = UserRole::whereIn('role_id', $systemRoleIds)->pluck('user_id')->toArray();
+        $users = User::whereIn('id', $userIdsWithSystemRole)->get();
+
         $sites = Site::all();
         $study = '';
         $adminUsers = '';
@@ -127,7 +133,11 @@ class StudyController extends Controller
     public function create()
     {
         if (Auth::user()->can('users.create')) {
-            $users = User::all();
+
+            $systemRoleIds = Role::where('role_type', 'system_role')->pluck('id')->toArray();
+            $userIdsWithSystemRole = UserRole::whereIn('role_id', $systemRoleIds)->pluck('user_id')->toArray();
+            $users = User::whereIn('id', $userIdsWithSystemRole)->get();
+
             $sites = Site::get();
             return view('admin::studies.create', compact('users', 'sites')); //->with(compact('permissions'));
         }
@@ -142,7 +152,7 @@ class StudyController extends Controller
     public function store(Request $request)
     {
         $id    = Str::uuid();
-        $study = Study::create([
+        Study::create([
             'id'    => $id,
             'study_short_name'  =>  $request->study_short_name,
             'study_title' => $request->study_title,
@@ -157,10 +167,8 @@ class StudyController extends Controller
             'description'   =>  $request->description,
             'user_id'       => $request->user()->id
         ]);
-        //$last_id = $id;
-        // Disease cohort insertion here
-        //$id    = Str::uuid();
-        //$disease = [];
+        $study = Study::find($id);
+
         if ($request->disease_cohort_name != null) {
             for ($i = 0; $i < count($request->disease_cohort_name); $i++) {
                 $disease = [
@@ -173,18 +181,24 @@ class StudyController extends Controller
         }
 
         if ($request->users != null) {
-            foreach ($request->users as $user) {
-                $user_info = explode('/', $user);
-                $user_id = $user_info[0];
-                $role_id = $user_info[1];
+            $studyAdminRoleId = Permission::getStudyAdminRole();
+            foreach ($request->users as $user_id) {
                 RoleStudyUser::create([
                     'id' => Str::uuid(),
                     'study_id'   => $study->id,
                     'user_id'   => $user_id,
-                    'role_id'   => $role_id
+                    'role_id'   => $studyAdminRoleId[1]
                 ]);
             }
         }
+
+        /*************************** */
+        /*************************** */
+        // Preferences
+        $this->updatePreferences($study);
+        /*************************** */
+        /*************************** */
+
 
 
 
@@ -193,6 +207,60 @@ class StudyController extends Controller
         $logEventDetails = eventDetails($study->id, 'Study', 'Add', $request->ip(), $oldStudy);
 
         return redirect()->route('studies.index')->with('message', 'Study created successfully');
+    }
+
+    private function updatePreferences($study)
+    {
+        $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'VISIT_ACTIVATION')->first();
+        if (null === $preference) {
+            Preference::create([
+                'study_id' => $study->id,
+                'preference_title'    => 'VISIT_ACTIVATION',
+                'preference_value'    => 'Manual',
+                'is_selectable'       => 'yes', //yes/no
+                'preference_options'  => 'Transmission|Manual', //Pipe sign seperated options
+                'created_at'        => Carbon::now(),
+                'updated_at'        => Carbon::now()
+            ]);
+        }
+        $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'STUDY_EMAIL')->first();
+        if (null === $preference) {
+            Preference::create([
+                'study_id' => $study->id,
+                'preference_title'    => 'STUDY_EMAIL',
+                'preference_value'    => 'study_email@study.com',
+                'is_selectable'       => 'no', //yes/no
+                'preference_options'  => '', //Pipe sign seperated options
+                'created_at'        => Carbon::now(),
+                'updated_at'        => Carbon::now()
+            ]);
+        }
+
+        $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'STUDY_CC_EMAILS')->first();
+        if (null === $preference) {
+            Preference::create([
+                'study_id' => $study->id,
+                'preference_title'    => 'STUDY_CC_EMAILS',
+                'preference_value'    => 'studyEmail1@study.com,studyEmail2@study.com,studyEmail3@study.com',
+                'is_selectable'       => 'no', //yes/no
+                'preference_options'  => '', //Pipe sign seperated options
+                'created_at'        => Carbon::now(),
+                'updated_at'        => Carbon::now()
+            ]);
+        }
+
+        $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'PER_PAGE_PAGINATION')->first();
+        if (null === $preference) {
+            Preference::create([
+                'study_id' => $study->id,
+                'preference_title'    => 'PER_PAGE_PAGINATION',
+                'preference_value'    => '25',
+                'is_selectable'       => 'yes', //yes/no
+                'preference_options'  => '15|25|50|100|200|500|1000|5000', //Pipe sign seperated options
+                'created_at'        => Carbon::now(),
+                'updated_at'        => Carbon::now()
+            ]);
+        }
     }
 
     /**
@@ -233,12 +301,25 @@ class StudyController extends Controller
      */
     public function edit($id)
     {
-        $users = '';
+        $systemRoleIds = Role::where('role_type', 'system_role')->pluck('id')->toArray();
+
+        $assignedUserIds = RoleStudyUser::where('study_id', 'LIKE', $id)->whereIn('role_id', Permission::getStudyAdminRole())->pluck('user_id')->toArray();
+
+        $userIdsWithSystemRole = UserRole::whereIn('role_id', $systemRoleIds)
+            ->whereNotIn('user_id', $assignedUserIds)
+            ->pluck('user_id')
+            ->toArray();
+        $users = User::whereIn('id', $userIdsWithSystemRole)->get();
+
+        $userNames = [];
+        foreach ($users as $user) {
+            $userNames[$user->id] = $user->name;
+        }
 
         $study  = Study::with('diseaseCohort')
             ->find($id);
 
-        return \response()->json(['study' => $study, 'users' => $users]);
+        return \response()->json(['study' => $study, 'users' => $userNames]);
     }
 
     public  function getAssignedAdminsToStudy(Request $request)
@@ -291,36 +372,31 @@ class StudyController extends Controller
             }
         }
         // update multi users here
-
-        $users = [];
         if ($request->users != null) {
-            $permissionsIdsArray = Permission::where(function ($query) {
-                $query->where('permissions.name', '=', 'studytools.index')
-                    ->orwhere('permissions.name', '=', 'studytools.store')
-                    ->orWhere('permissions.name', '=', 'studytools.edit')
-                    ->orwhere('permissions.name', '=', 'studytools.update');
-            })->distinct('id')->pluck('id')->toArray();
-            $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
-            $roleIdsArray = Role::where('role_type', '!=', 'super_admin')->distinct()->pluck('id')->toArray();
-
-            $studyAdminRoleId = array_intersect($roleIdsArrayFromRolePermission, $roleIdsArray);
-
-            $userIdsArrayFromUserRole = UserRole::where('role_id', $studyAdminRoleId)->pluck('user_id')->toArray();
-
-            $adminUsers = RoleStudyUser::where('study_id', '=', $request->study_id)->whereIn('user_id', $userIdsArrayFromUserRole)->delete();
-
-            foreach ($request->users as $user) {
-                $user_info = explode('/', $user);
-                $user_id = $user_info[0];
-                $role_id = $user_info[1];
-                RoleStudyUser::create([
-                    'id' => Str::uuid(),
-                    'study_id'   => $request->study_id,
-                    'user_id'   => $user_id,
-                    'role_id'   => $role_id
-                ]);
+            $studyAdminRoleId = Permission::getStudyAdminRole();
+            foreach ($request->users as $user_id) {
+                $recordExist = RoleStudyUser::where('study_id', 'like', $request->study_id)
+                    ->where('user_id', 'like', $user_id)
+                    ->where('role_id', 'like', $studyAdminRoleId[1])
+                    ->first();
+                if (null === $recordExist) {
+                    RoleStudyUser::create([
+                        'id' => Str::uuid(),
+                        'study_id'   => $request->study_id,
+                        'user_id'   => $user_id,
+                        'role_id'   => $studyAdminRoleId[1]
+                    ]);
+                }
             }
         } // if end
+
+        /*************************** */
+        /*************************** */
+        // Preferences
+        $this->updatePreferences($study);
+        /*************************** */
+        /*************************** */
+
 
         // log event details
         $logEventDetails = eventDetails($study->id, 'Study', 'Update', $request->ip(), $oldStudy);
