@@ -14,6 +14,8 @@ Route::post('/users/invite', 'UserController@process_invites')->name('process_in
 Route::get('/registration/{token}', 'UserController@registration_view')->name('registration');
 
 
+Route::get('assign-work','GradingController@assignWork')->name('assign-work');
+
 
 Route::prefix('userroles')->group(function() {
     Route::get('/', 'UserRolesController@index');

@@ -6,7 +6,7 @@ use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\UserRoles\Entities\Permission;
-use Modules\UserRoles\Entities\StudyRoleUsers;
+use Modules\Admin\Entities\RoleStudyUser;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\Admin\Entities\Annontation;
 use Modules\Admin\Entities\StudyStructure;
@@ -133,13 +133,19 @@ class Study extends Model
 
     public function studyuserroles()
     {
-        return $this->hasMany(StudyRoleUsers::class);
+        return $this->hasMany(RoleStudyUser::class);
+    }
+
+    public static function getAllStudies()
+    {
+        $studies = self::all();
+        return $studies;
     }
 
     public static function getstudyAdminsName($id)
     {
         $userNames = '';
-        $userIds = RoleStudyUser::where('study_id', 'LIKE', $id)->where('role_id', 'LIKE', Permission::getStudyAdminRole())->pluck('user_id')->toArray();
+        $userIds = RoleStudyUser::where('study_id', 'LIKE', $id)->whereIn('role_id', Permission::getStudyAdminRole())->pluck('user_id')->toArray();
         foreach ($userIds as $userId) {
             $user = User::find($userId);
             $userNames .= $user->name . ', ';
@@ -150,36 +156,32 @@ class Study extends Model
 
     public static function getStudiesAganistAdmin()
     {
-        $studyIds = RoleStudyUser::where('user_id', 'LIKE', auth()->user()->id)->where('role_id', 'LIKE', Permission::getStudyAdminRole())->pluck('study_id')->toArray();
-        $studies = Study::whereIn('id', $studyIds)->get();
-        return $studies;
+        $studyIds = RoleStudyUser::where('user_id', 'LIKE', auth()->user()->id)->whereIn('role_id', Permission::getStudyAdminRole())->pluck('study_id')->toArray();
+        return $studyIds;
     }
 
     public static function getStudiesAganistQC()
     {
-        $studyIds = RoleStudyUser::where('user_id', 'LIKE', auth()->user()->id)->where('role_id', 'LIKE', Permission::getStudyQCRole())->pluck('study_id')->toArray();
-        $studies = Study::whereIn('id', $studyIds)->get();
-        return $studies;
+        $studyIds = RoleStudyUser::where('user_id', 'LIKE', auth()->user()->id)->whereIn('role_id', Permission::getStudyQCRole())->pluck('study_id')->toArray();
+        return $studyIds;
     }
 
     public static function getStudiesAganistGrader()
     {
-        $studyIds = RoleStudyUser::where('user_id', 'LIKE', auth()->user()->id)->where('role_id', 'LIKE', Permission::getStudyGraderRole())->pluck('study_id')->toArray();
-        $studies = Study::whereIn('id', $studyIds)->get();
-        return $studies;
+        $studyIds = RoleStudyUser::where('user_id', 'LIKE', auth()->user()->id)->whereIn('role_id', Permission::getStudyGraderRole())->pluck('study_id')->toArray();
+        return $studyIds;
     }
 
     public static function getStudiesAganistAdjudicator()
     {
-        $studyIds = RoleStudyUser::where('user_id', 'LIKE', auth()->user()->id)->where('role_id', 'LIKE', Permission::getStudyAdjudicationRole())->pluck('study_id')->toArray();
-        $studies = Study::whereIn('id', $studyIds)->get();
-        return $studies;
+        $studyIds = RoleStudyUser::where('user_id', 'LIKE', auth()->user()->id)->whereIn('role_id', Permission::getStudyAdjudicationRole())->pluck('study_id')->toArray();
+        return $studyIds;
     }
 
     public static function getAssignedStudyAdminsName($id)
     {
         $userNames = [];
-        $userIds = RoleStudyUser::where('study_id', 'LIKE', $id)->where('role_id', 'LIKE', Permission::getStudyAdminRole())->pluck('user_id')->toArray();
+        $userIds = RoleStudyUser::where('study_id', 'LIKE', $id)->whereIn('role_id', Permission::getStudyAdminRole())->pluck('user_id')->toArray();
         foreach ($userIds as $userId) {
             $user = User::find($userId);
             $userNames[$user->id] = $user->name;

@@ -8,11 +8,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\FormSubmission\Entities\Answer;
 use Modules\FormSubmission\Entities\ValidationRule;
 use Modules\FormSubmission\Traits\JSQuestionDependency;
+use Modules\FormSubmission\Traits\JSQuestionSkipLogic;
 
 class Question extends Model
 {
     use SoftDeletes;
     use JSQuestionDependency;
+    use JSQuestionSkipLogic;
 
     protected $table = 'question';
     protected $fillable = ['id', 'old_id', 'form_field_type_id', 'section_id', 'option_group_id', 'first_question_id', 'operator_calculate', 'second_question_id', 'make_decision', 'calculate_with_costum_val', 'question_sort', 'question_text', 'c_disk', 'measurement_unit', 'is_dependent', 'dependent_on', 'annotations', 'certification_type', 'deleted_at'];

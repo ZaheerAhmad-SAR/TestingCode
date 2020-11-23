@@ -369,10 +369,10 @@
                             $('.user-store-error').slideUp(500);
                         }, 2000);
 
-                    } /*else {
+                    }  {
 
                         location.reload();
-                    }*/
+                    }
                   }
                 }); // ajax ends
             }); // form submit function

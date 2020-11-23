@@ -327,7 +327,7 @@
         }
     function loadUserDropDownList(study_id) {
         $.ajax({
-            url:"{{route('queries.loadHtml')}}",
+            url:"{{route('queries.usersDropDownListQuestion')}}",
             type: 'POST',
             data: {
                 "_token": "{{ csrf_token() }}",
@@ -551,7 +551,8 @@
         var query_subject_form  = $("#query_subject_form").val();
         if (queryAssignedTo == 'user')
         {
-            var assignedUsers = $('#users').val();
+            var assignedUsers = $('#question_users').val();
+            console.log(assignedUsers);
         }
         if(queryAssignedTo =='role')
         {
@@ -629,7 +630,8 @@
         var form_subject        = $("#form_subject").val();
         if (queryAssignedTo == 'user')
         {
-            var assignedUsers = $('#input_users').val();
+            var assignedUsers = $('#form_users').val();
+            console.log(assignedUsers);
         }
         if(queryAssignedTo =='role')
         {

@@ -2,11 +2,6 @@
 /**************************************/
 /**************************************/
 /**************************************/
-$stepIdStr = (isset($stepIdStr) && !empty($stepIdStr))? $stepIdStr:'';
-$subjectId = (isset($subjectId) && !empty($subjectId))? $subjectId:'';
-$studyId = (isset($studyId) && !empty($studyId))? $studyId:'';
-$stepCounter = (isset($stepCounter) && !empty($stepCounter))? $stepCounter:0;
-$form_filled_by_user_id = (isset($form_filled_by_user_id) && !empty($form_filled_by_user_id))? $form_filled_by_user_id:0;
 $transmissionNumber = \Modules\FormSubmission\Entities\SubjectsPhases::getTransmissionNumber($subjectId, $phase->id);
 /**************************************/
 /**************************************/
@@ -71,8 +66,6 @@ if(null !== $formStatusObj){
                                 $studyId = ($studyId ?? '');
                                 $studyClsStr = ($studyClsStr ?? '');
 
-                                $stepIdStr = buildSafeStr($step->step_id, '');
-                                $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                                 $firstSection = true;
                                 @endphp
                                 @foreach ($sections as $section)
@@ -81,7 +74,7 @@ if(null !== $formStatusObj){
                                 @endphp
                                     <li class="nav-item mr-auto mb-4">
                                         <a class="nav-link p-0
-                                    {{ $studyClsStr ?? '' }}
+                                    {{ $studyClsStr }}
                                     {{ $stepClsStr }}
                                     {{ $sectionClsStr }}
                                     {{ $firstSection ? 'active' : '' }}
@@ -116,6 +109,7 @@ if(null !== $formStatusObj){
                                 @foreach ($sections as $key => $section)
                                     @php
                                     $sectionClsStr = buildSafeStr($section->id, 'sec_cls_');
+                                    $skipLogicSectionIdStr = buildSafeStr($section->id, 'skip_logic_');
                                     $sectionIdStr = buildSafeStr($section->id, '');
                                     $sharedData = [
                                     'studyId' => $studyId,
@@ -128,7 +122,9 @@ if(null !== $formStatusObj){
                                     'formStatus' => $formStatus,
                                     'sectionIdStr' => $sectionIdStr,
                                     'sectionClsStr' => $sectionClsStr,
+                                    'skipLogicSectionIdStr' => $skipLogicSectionIdStr,
                                     'stepClsStr'=> $stepClsStr,
+                                    'skipLogicStepIdStr'=> $skipLogicStepIdStr,
                                     'key' => $key,
                                     'first' => 0,
                                     'last' => $last,

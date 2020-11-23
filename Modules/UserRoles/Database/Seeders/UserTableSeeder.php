@@ -32,7 +32,7 @@ class UserTableSeeder extends Seeder
                  'name' =>  'admin',
                 'email' =>  'admin@admin.com',
                 'user_type' => 'super_user',
-                'password'  =>  Hash::make('12345678'),
+                'password'  =>  Hash::make('Cyb#rG@tE@1234'),
                 'created_by' => ''
             ]);
 //            dd($user);

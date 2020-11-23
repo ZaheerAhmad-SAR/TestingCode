@@ -34,7 +34,7 @@ use Modules\Queries\Entities\Query;
 use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\RolePermission;
-use Modules\UserRoles\Entities\StudyRoleUsers;
+use Modules\Admin\Entities\RoleStudyUser;
 use Modules\UserRoles\Entities\UserRole;
 use Illuminate\Support\Str;
 use function GuzzleHttp\Promise\all;
@@ -50,15 +50,16 @@ class StudyController extends Controller
      */
     public function index()
     {
+        session(['current_study' => '']);
         $users = User::all();
         $sites = Site::all();
         $study = '';
         $adminUsers = '';
         $studies = [];
+        $studiesIDs = [];
         $adminUsers = [];
         $studyAdminRoleId = '';
-
-
+        $user = \auth()->user()->id;
         if (hasPermission(\auth()->user(), 'systemtools.index')) {
             $studyAdminRoleId = Permission::getStudyAdminRole();
 
@@ -70,48 +71,43 @@ class StudyController extends Controller
             $sites = Site::all();
             $user = User::with('studies', 'user_roles')->find(Auth::id());
 
-            $studies = Study::with('studyuserroles')->get();
-
-
-            $assignedusers = StudyRoleUsers::select('study_role_users.user_id', 'study_role_users.role_id')
-                ->where('study_role_users.role_id', '=', implode(', ', $studyAdminRoleId))
-                ->get();
-            // dd($assignedusers);
-
+            $studiesIDs = array_merge($studiesIDs, Study::all()->pluck('id')->toArray());
 
             $study = '';
-        } else {
-            $user = \auth()->user()->id;
-            if (hasPermission(\auth()->user(), 'grading.index')) {
-                $studies = Study::getStudiesAganistGrader();
-                $study = '';
-                $studyAdmins = '';
-            }
-            if (hasPermission(\auth()->user(), 'adjudication.index')) {
-                $studies = Study::getStudiesAganistAdjudicator();
-                $study = '';
-                $studyAdmins = '';
-            }
-            if (hasPermission(\auth()->user(), 'qualitycontrol.index')) {
-                $studies = Study::getStudiesAganistQC();
-                $study = '';
-
-                $studyAdmins = '';
-            }
-            if (hasPermission(\auth()->user(), 'studytools.index')) {
-
-                $studies = Study::getStudiesAganistAdmin();
-                $studyAdmins = '';
-
-                $study = '';
-            }
-            //dd($studies);
-
-
+            $studies = Study::whereIn('id', $studiesIDs)->get();
+            return view('admin::studies.index', compact('sites', 'users', 'adminUsers', 'study', 'studyAdminRoleId', 'studies'));
         }
-
+        if (hasPermission(\auth()->user(), 'studytools.index')) {
+            // echo 'studytools';
+            $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistAdmin());
+            $studyAdmins = '';
+            $study = '';
+        }
+        if (hasPermission(\auth()->user(), 'grading.index')) {
+            //  echo 'grading';
+            $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistGrader());
+            $study = '';
+            $studyAdmins = '';
+        }
+        if (hasPermission(\auth()->user(), 'adjudication.index')) {
+            // echo 'adjudication';
+            $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistAdjudicator());
+            $study = '';
+            $studyAdmins = '';
+        }
+        if (hasPermission(\auth()->user(), 'qualitycontrol.index')) {
+            //echo 'QC';
+            $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistQC());
+            $study = '';
+            $studyAdmins = '';
+        }
+        $studies = Study::whereIn('id', $studiesIDs)->get();
+        //dd($studies);
+        //exit();
         return view('admin::studies.index', compact('sites', 'users', 'adminUsers', 'study', 'studyAdminRoleId', 'studies'));
     }
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -181,7 +177,7 @@ class StudyController extends Controller
                 $user_info = explode('/', $user);
                 $user_id = $user_info[0];
                 $role_id = $user_info[1];
-                StudyRoleUsers::create([
+                RoleStudyUser::create([
                     'id' => Str::uuid(),
                     'study_id'   => $study->id,
                     'user_id'   => $user_id,
@@ -237,21 +233,7 @@ class StudyController extends Controller
      */
     public function edit($id)
     {
-        $permissionsIdsArray = Permission::where(function ($query) {
-            $query->where('permissions.name', '=', 'studytools.index')
-                ->orwhere('permissions.name', '=', 'studytools.store')
-                ->orWhere('permissions.name', '=', 'studytools.edit')
-                ->orwhere('permissions.name', '=', 'studytools.update');
-        })->distinct('id')->pluck('id')->toArray();
-
-        $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
-
-        $userIdsArrayFromUserRole = UserRole::where('study_id', $id)->whereIn('role_id', $roleIdsArrayFromRolePermission)->distinct()->pluck('user_id')->toArray();
-
-        $users = User::whereIn('id', $userIdsArrayFromUserRole)->distinct()->orderBy('name', 'asc')->get();
-
-        //$study = Study::find($id);
-        //dd($study);
+        $users = '';
 
         $study  = Study::with('diseaseCohort')
             ->find($id);
@@ -278,7 +260,6 @@ class StudyController extends Controller
     }
     public function update_studies(Request $request)
     {
-
         // get old data for audit section
         $oldStudy = Study::find($request->study_id);
 
@@ -326,13 +307,13 @@ class StudyController extends Controller
 
             $userIdsArrayFromUserRole = UserRole::where('role_id', $studyAdminRoleId)->pluck('user_id')->toArray();
 
-            $adminUsers = StudyRoleUsers::where('study_id', '=', $request->study_id)->whereIn('user_id', $userIdsArrayFromUserRole)->delete();
+            $adminUsers = RoleStudyUser::where('study_id', '=', $request->study_id)->whereIn('user_id', $userIdsArrayFromUserRole)->delete();
 
             foreach ($request->users as $user) {
                 $user_info = explode('/', $user);
                 $user_id = $user_info[0];
                 $role_id = $user_info[1];
-                StudyRoleUsers::create([
+                RoleStudyUser::create([
                     'id' => Str::uuid(),
                     'study_id'   => $request->study_id,
                     'user_id'   => $user_id,

@@ -14,13 +14,21 @@
                     {{--@endif--}}
                 </ul>
                 <ul class="@if(is_active('studies.index')) {{ 'active' }} @endif">
-                    @if(hasPermission(auth()->user(),'studies.index'))
+                    @if(hasPermission(auth()->user(),'studies.index') && empty(session('current_study')))
                     <li class="nav-item @if(is_active('studies.index')) {{ ' active' }} @endif">
                         <a href="{!! route('studies.index') !!}">
                             <i class="icon-book-open"></i>
                             Studies
                         </a>
                     </li>
+                        @endif
+                       @if(!empty(session('current_study')))
+                            <li class="nav-item @if(is_active('studies.index')) {{ ' active' }} @endif">
+                                <a href="{!! route('studies.index') !!}">
+                                    <i class="icon-book-open"></i>
+                                    Exit {{session('study_short_name')}},<strong>Study:</strong>
+                                </a>
+                            </li>
                         @endif
                 </ul>
             </li>
@@ -177,7 +185,7 @@
 
             <!-- //////////////////////////////// Transmissions ////////////////// -->
             @if(hasPermission(auth()->user(),'subjects.index'))
-                <li class=""><!-- <a href="#"><i class="fas fa-laptop-medical mr-1"></i>Subject Management</a> -->
+            <li class=""><!-- <a href="#"><i class="fas fa-laptop-medical mr-1"></i>Subject Management</a> -->
                     @if(!empty(session('current_study')))
                         <ul class="@if(is_active('studies.show')) {{ 'active' }} @endif">
                             <li class="nav-item @if(is_active('studies.show')) {{ ' active' }} @endif">
@@ -189,6 +197,17 @@
                 @endif
             </li>
             @endif
+
+            <li class="">
+                <ul class="@if(is_active('assign-work')) {{ 'active' }} @endif">
+                    <li class="nav-item @if(is_active('assign-work')) {{ ' active' }} @endif">
+                        <a href="{!! route('assign-work') !!}">
+                            <i class="fas fa-hospital"></i>Assign Work
+                        </a>
+                    </li>
+                </ul>
+            </li>
+
             @if(hasPermission(auth()->user(),'qualitycontrol.index'))
                 @if(session('current_study'))
                     <li class="dropdown">
@@ -204,7 +223,7 @@
                             </li>
                         </ul>
                     </li>
-                @endif    
+                @endif
             @endif
             @if(hasPermission(auth()->user(),'grading.index'))
                 @if(session('current_study'))
@@ -222,6 +241,7 @@
                                             <i class="fas fa-chart-line"></i> Grading Status
                                         </a>
                                     </li>
+
                                 </ul>
                             </li>
                         </ul>
@@ -243,15 +263,15 @@
                             </li>
                         </ul>
                     </li>
-                @endif    
+                @endif
             @endif
             @if(session('current_study'))
             <li class="dropdown">
                 <ul>
                     <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Certification Data</a>
                         <ul class="sub-menu">
-                            <li  class="@if(is_active('photographers.index')) {{ ' active' }} @endif">
-                                <a href="{{route('photographers.index')}}">
+                            <li  class="@if(is_active('photographer.index')) {{ ' active' }} @endif">
+                                <a href="{{route('photographer.index')}}">
                                     <i class="fas fa-list"></i> Photographers List
                                 </a>
                             </li>
@@ -285,7 +305,7 @@
                             </li>
                         </ul>
                     </li>
-                @endif    
+                @endif
             @endif
             @if(hasPermission(auth()->user(),'queries.index'))
                 @if(session('current_study'))
@@ -310,7 +330,7 @@
                             </li>
                         </ul>
                     </li>
-                @endif    
+                @endif
             @endif
 
                 @if(hasPermission(auth()->user(),'systemtools.index') && hasPermission(auth()->user(),'trail_logs.list'))

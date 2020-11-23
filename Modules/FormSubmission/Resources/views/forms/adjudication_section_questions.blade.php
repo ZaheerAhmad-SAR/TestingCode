@@ -1,4 +1,4 @@
-@if($step->is_active == 1)
+@if($step->is_active == 1 || $isPreview == true)
 @if (count($section->questions))
 @php
 $showAllQuestions = request('showAllQuestions', 'no');
@@ -20,7 +20,7 @@ $getAdjudicationRequiredQuestionIdsArray = [
 ];
 $adjudicationRequiredQuestionIdsArray = \Modules\FormSubmission\Entities\QuestionAdjudicationRequired::getAdjudicationRequiredQuestionsArray($getAdjudicationRequiredQuestionIdsArray);
 @endphp
-<fieldset id="fieldset_adjudication_{{ $stepIdStr }}" class="{{ $studyClsStr }} {{ $adjStepClsStr }} {{ $sectionClsStr }}">
+<fieldset id="fieldset_adjudication_{{ $stepIdStr }}" class="{{ $studyClsStr }} {{ $adjStepClsStr }}  {{ $skipLogicStepIdStr }} {{ $skipLogicSectionIdStr }} {{ $sectionClsStr }}">
     <div class="card p-2 mb-1">
         <input type="hidden" name="sectionId[]" value="{{ $section->id }}" />
             @foreach ($section->questions as $question)
@@ -41,6 +41,7 @@ $adjudicationRequiredQuestionIdsArray = \Modules\FormSubmission\Entities\Questio
 
             $field_name = buildFormFieldName($question->formFields->variable_name);
             $questionIdStr = buildSafeStr($question->id, '');
+            $skipLogicQuestionIdStr = buildSafeStr($question->id, 'skip_logic_');
             $fieldId = $field_name . '_' . $questionIdStr;
             $getFinalAnswerArray = [
                 'study_id'=>$studyId,

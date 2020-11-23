@@ -54,38 +54,32 @@ function search_auth($arr, $auth)
 
 function hasPermission($user, $routeName)
 {
-   /* if (empty(\session('current_study'))){*/
+    if (empty(\session('current_study'))){
         $roles = $user->user_roles;
-        foreach ($roles as $role) {
-            $permission = Permission::where('name', '=', $routeName)->first();
-            $rolePermission = RolePermission::where('role_id', $role->role_id)
-                ->where('permission_id', $permission->id)->first();
-            if ($rolePermission) {
-                return true;
-                break;
-            } else {
-                return false;
-            }
-        }
-   // }
+    }
 
     /* Set Study Role Permissions */
-    /*elseif(!empty(\session('current_study'))){
-        $roles = \Modules\UserRoles\Entities\StudyRoleUsers::select('role_id')->where('user_id',\auth()->user()->id)
+
+    else{
+        $roles = \Modules\Admin\Entities\RoleStudyUser::select('role_id')->where('user_id',\auth()->user()->id)
             ->where('study_id',\session('current_study'))
-            ->first();
-        foreach ($roles as $role) {
-            $permission = Permission::where('name', '=', $routeName)->first();
-            $rolePermission = RolePermission::where('role_id', $role->role_id)
-                ->where('permission_id', $permission->id)->first();
-            if ($rolePermission) {
-                return true;
-                break;
-            } else {
-                return false;
-            }
-        }
-    }*/
+            ->get();
+    }
+//    dd($roles);
+    $roleIds = [];
+    foreach ($roles as $role) {
+
+        $roleIds[] = $role->role_id;
+    }
+    $permission = Permission::where('name', '=', $routeName)->first();
+    $rolePermission = RolePermission::whereIn('role_id', $roleIds)
+        ->where('permission_id', $permission->id)->first();
+    if ($rolePermission) {
+        return true;
+    } else {
+        return false;
+    }
+
 }
 
 function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
@@ -789,10 +783,9 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         } // update case ends
 
         ////////////////////////////////// Transmission Data //////////////////////////////////////
-    } else if ($eventSection == 'QC Form' || $eventSection == 'Grading Form' || $eventSection == 'Adjudication Form') {
+    } else if ($eventSection == 'QC Form' || $eventSection == 'Grading Form' || $eventSection == 'Adjudication Form' || $eventSection == 'System Adjudication Form') {
 
         $ip = 'N/A';
-
         // get event data
         $eventData = $eventId;
         // get study name
@@ -824,6 +817,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             if ($key == 0) {
 
                 $editReason = $data;
+
             } else if ($key == 1) {
                 //first time loop data
                 $newData['study'] = $studyName->study_title;
@@ -832,7 +826,17 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
                 $newData['steps'] = $stepName->step_name;
                 $newData['modility'] = $modalityName->modility_name;
                 $newData['form_type'] = $data['form_type'];
-                $newData['form_version_num'] = $data['form_version_num'];
+
+                if ($eventSection == 'Adjudication Form' || $eventSection == 'System Adjudication Form') {
+
+                    $newData['form_version_num'] = '';
+
+                } else {
+
+                    $newData['form_version_num'] = $data['form_version_num'];
+
+                }
+
                 $newData['edit_reason'] = $editReason;
 
                 // get section name

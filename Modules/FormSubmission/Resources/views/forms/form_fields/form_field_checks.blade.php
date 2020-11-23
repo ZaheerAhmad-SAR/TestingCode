@@ -1,6 +1,6 @@
 @php
 $dataArray = ['question'=> $question, 'field_name'=> $field_name,
-    'questionIdStr'=> $questionIdStr, 'fieldId'=> $fieldId, 'answer'=> $answer, 'is_required'=> $is_required];
+    'questionIdStr'=> $questionIdStr, 'skipLogicQuestionIdStr'=> $skipLogicQuestionIdStr, 'fieldId'=> $fieldId, 'answer'=> $answer, 'is_required'=> $is_required];
 @endphp
 @if ($fieldType == 'Radio')
     @include('formsubmission::forms.form_fields.radio_field', $dataArray)
@@ -28,11 +28,22 @@ $dataArray = ['question'=> $question, 'field_name'=> $field_name,
 /*********************************** */
 $questionValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidationForQuestion($question, false);
 $questionDependencyStr = Modules\Admin\Entities\Question::generateQuestionDependencyFunction($question, false);
+$questionSkipLogicStr = Modules\Admin\Entities\Question::generateQuestionSkipLogicFunction($question, false);
+$checkQuestionSkipLogicStr = Modules\Admin\Entities\Question::generateCheckQuestionSkipLogicFunction($question, false);
+$checkQuestionSkipLogicStrPageLoad = Modules\Admin\Entities\Question::generateCheckQuestionSkipLogicFunctionForPageLoad($question, false);
 @endphp
 
 @push('script')
 <script>
 {!! $questionValidationStr !!}
 {!! $questionDependencyStr !!}
+</script>
+@endpush
+
+@push('script_skip_logic')
+<script>
+{!! $questionSkipLogicStr !!}
+{!! $checkQuestionSkipLogicStr !!}
+{!! $checkQuestionSkipLogicStrPageLoad !!}
 </script>
 @endpush
