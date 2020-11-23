@@ -211,7 +211,7 @@ class StudyController extends Controller
 
     private function updatePreferences($study)
     {
-        $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'VISIT_ACTIVATION')->first();
+        $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'VISIT_ACTIVATION')->withOutGlobalScopes()->first();
         if (null === $preference) {
             Preference::create([
                 'study_id' => $study->id,
@@ -223,7 +223,8 @@ class StudyController extends Controller
                 'updated_at'        => Carbon::now()
             ]);
         }
-        $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'STUDY_EMAIL')->first();
+
+        $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'STUDY_EMAIL')->withOutGlobalScopes()->first();
         if (null === $preference) {
             Preference::create([
                 'study_id' => $study->id,
@@ -236,7 +237,7 @@ class StudyController extends Controller
             ]);
         }
 
-        $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'STUDY_CC_EMAILS')->first();
+        $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'STUDY_CC_EMAILS')->withOutGlobalScopes()->first();
         if (null === $preference) {
             Preference::create([
                 'study_id' => $study->id,
@@ -249,7 +250,7 @@ class StudyController extends Controller
             ]);
         }
 
-        $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'PER_PAGE_PAGINATION')->first();
+        $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'PER_PAGE_PAGINATION')->withOutGlobalScopes()->first();
         if (null === $preference) {
             Preference::create([
                 'study_id' => $study->id,
@@ -393,7 +394,7 @@ class StudyController extends Controller
         /*************************** */
         /*************************** */
         // Preferences
-        $this->updatePreferences($study);
+        $this->updatePreferences($oldStudy);
         /*************************** */
         /*************************** */
 
