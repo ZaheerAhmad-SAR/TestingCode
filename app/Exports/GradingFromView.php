@@ -21,12 +21,15 @@ class GradingFromView implements FromView
 
     public function view(): View {
 
+        $modalitySteps = [];
+
      	$subjects = Subject::query();
 
         $subjects = $subjects->select('subjects.*', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'subjects_phases.visit_date', 'sites.site_name')
         ->rightJoin('subjects_phases', 'subjects_phases.subject_id', '=', 'subjects.id')
         ->leftJoin('study_structures', 'study_structures.id', '=', 'subjects_phases.phase_id')
         ->leftJoin('sites', 'sites.id', 'subjects.site_id')
+        ->where('subjects.study_id', \Session::get('current_study'))
         ->orderBy('subjects.subject_id')
         ->orderBy('study_structures.position')
         ->get();

@@ -39,7 +39,8 @@ class AdjudicationController extends Controller
             $subjects = $subjects->select('subjects.*', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'subjects_phases.visit_date', 'sites.site_name')
             ->rightJoin('subjects_phases', 'subjects_phases.subject_id', '=', 'subjects.id')
             ->leftJoin('study_structures', 'study_structures.id', '=', 'subjects_phases.phase_id')
-            ->leftJoin('sites', 'sites.id', 'subjects.site_id');
+            ->leftJoin('sites', 'sites.id', 'subjects.site_id')
+            ->where('subjects.study_id', \Session::get('current_study'));
             //->leftJoin('form_submit_status', 'form_submit_status.subject_id', 'subjects.id');
 
             if ($request->subject != '') {
@@ -195,7 +196,8 @@ class AdjudicationController extends Controller
                 ->leftJoin('study_structures', 'study_structures.id', '=', 'adjudication_form_status.study_structures_id')
                 ->leftJoin('sites', 'sites.id', '=', 'subjects.site_id')
                 ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'adjudication_form_status.phase_steps_id')
-                ->leftJoin('subjects_phases', 'subjects_phases.phase_id', 'adjudication_form_status.study_structures_id');
+                ->leftJoin('subjects_phases', 'subjects_phases.phase_id', 'adjudication_form_status.study_structures_id')
+                ->where('adjudication_form_status.study_id', \Session::get('current_study'));
 
                 if ($request->subject != '') {
                     $subjects = $subjects->where('adjudication_form_status.subject_id', $request->subject);

@@ -19,6 +19,8 @@ class GradingFromView2 implements FromView
     // }
     public function view(): View {
 
+        $modalitySteps = [];
+
     	$subjects = FormStatus::query();
 
         $subjects = $subjects->select('form_submit_status.subject_id as subj_id', 'form_submit_status.study_id', 'form_submit_status.study_structures_id', 'form_submit_status.phase_steps_id', 'form_submit_status.form_type_id', 'form_submit_status.form_status', 'form_submit_status.modility_id','subjects.subject_id', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'phase_steps.graders_number', 'subjects_phases.visit_date', 'sites.site_name')
@@ -27,6 +29,7 @@ class GradingFromView2 implements FromView
             ->leftJoin('sites', 'sites.id', '=', 'subjects.site_id')
             ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id')
             ->leftJoin('subjects_phases', 'subjects_phases.phase_id', 'form_submit_status.study_structures_id')
+            ->where('form_submit_status.study_id', \Session::get('current_study'))
             ->groupBy(['form_submit_status.subject_id', 'form_submit_status.study_structures_id'])
             ->get();
 
