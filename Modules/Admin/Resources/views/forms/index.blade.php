@@ -175,7 +175,7 @@
                                     </div>
                                     <label for="Sections" class="col-sm-2 col-form-label">Sections</label>
                                     <div class="col-sm-4">
-                                        <select name="section_id" id="section_id" class="form-control basic_section">
+                                        <select name="section_id" id="section_id" class="form-control basic_section" required>
                                             <option value="">Choose Phase/Visit && Step/Form-Type</option>
                                         </select>
                                     </div>
@@ -196,8 +196,8 @@
                                     <div class="col-sm-4">
                                         <p class="space_msg" style="font-size: 9px;color: red;"></p>
                                         <input type="text" class="form-control variable_name_ques" name="variable_name"
-                                            id="variable_name" onchange="check_if_name_exists()" onpaste="return false"
-                                            oncut="return false" oncopy="return false">
+                                            id="variable_name" onchange="check_if_name_exists(this)" onpaste="return false"
+                                            oncut="return false" oncopy="return false" required>
                                     </div>
                                     <label for="field" class="col-sm-2 col-form-label">Choose field type:</label>
                                     <div class="col-sm-4">
@@ -211,7 +211,6 @@
                                                 @endif
                                             @endforeach
                                         </select>
-
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -661,7 +660,7 @@
                                     </div>
                                     <label for="Sections" class="col-sm-2 col-form-label">Sections</label>
                                     <div class="col-sm-4">
-                                        <select name="section_id" id="section_id_de" class="form-control basic_section">
+                                        <select name="section_id" id="section_id_de" class="form-control basic_section" required>
                                             <option value="">Choose Phase/Visit && Step/Form-Type</option>
                                         </select>
                                     </div>
@@ -695,6 +694,7 @@
 @include('admin::forms.add_calculated_field')
 @include('admin::forms.add_certification_field')
 @include('admin::forms.form_models')
+@include('admin::forms.add_annotation')
 @section('styles')
     <style>
         .custom_fields {
@@ -784,16 +784,7 @@
                 );
             return false;
         });
-        $('body').on('click', '.remove_anno', function() {
-            var row = $(this).closest('div.anno_values_row');
-            row.remove();
-        })
-        $('body').on('click', '.fetch_annotation', function() {
-            var study_id = '{{ Session('current_study') }}';
-            var row = $(this).closest('div.anno_values_row');
-            var anno_class = row.find('select.terminology_value');
-            get_all_annotations(study_id, anno_class);
-        })
+      
         $('#section_id').on('change', function() {
             $('.field_dependent').trigger('change');
         })
@@ -1270,27 +1261,7 @@
                 }
             });
         }
-        // get all annotations
-        function get_all_annotations(id, div_class) {
-            div_class.html('');
-            var options = '<option value="">---Select Annotation---</option>';
-            $.ajax({
-                url: 'annotation/get_allAnnotations/' + id,
-                type: 'post',
-                dataType: 'json',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'GET',
-                    'id': id
-                },
-                success: function(response) {
-                    $.each(response['data'], function(k, v) {
-                        options += '<option value="' + v.id + '" >' + v.label + '</option>';
-                    });
-                    div_class.append(options);
-                }
-            });
-        }
+       
 
         // get sections for dropdown
         function section_against_step(id, section_class) {
@@ -1314,32 +1285,6 @@
             });
         }
         // for new route end
-
-
-        function check_if_name_exists() {
-            var value = $('.variable_name_ques').val()
-            step_id = $('#steps').val()
-            url_route = "{{ URL('forms/check_variable') }}"
-            url_route = url_route;
-            $.ajax({
-                url: url_route,
-                type: 'post',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'POST',
-                    'step_id': step_id,
-                    'name': value
-                },
-                success: function(response) {
-                    if (response == 'field_found') {
-                        $('.space_msg').html('Variable Name already exists!');
-                    } else {
-                        $('.space_msg').html('');
-                    }
-                }
-            });
-
-        }
 
         /**************************************************************/
         // function make_session(step_id,phase_id)

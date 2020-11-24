@@ -999,10 +999,13 @@
                 "validation",
                 "validator"
             ],
+<<<<<<< HEAD
             "support": {
                 "issues": "https://github.com/egulias/EmailValidator/issues",
                 "source": "https://github.com/egulias/EmailValidator/tree/2.1.24"
             },
+=======
+>>>>>>> bd441066d1fd240614978c1efa2f1aed91023de2
             "funding": [
                 {
                     "url": "https://github.com/egulias",
@@ -1627,10 +1630,13 @@
                 "framework",
                 "laravel"
             ],
+<<<<<<< HEAD
             "support": {
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
+=======
+>>>>>>> bd441066d1fd240614978c1efa2f1aed91023de2
             "time": "2020-11-03T14:12:58+00:00"
         },
         {
@@ -1750,10 +1756,13 @@
                 "laravel",
                 "ui"
             ],
+<<<<<<< HEAD
             "support": {
                 "issues": "https://github.com/laravel/ui/issues",
                 "source": "https://github.com/laravel/ui/tree/v2.5.0"
             },
+=======
+>>>>>>> bd441066d1fd240614978c1efa2f1aed91023de2
             "time": "2020-11-03T19:45:19+00:00"
         },
         {
@@ -2468,10 +2477,13 @@
             "keywords": [
                 "enum"
             ],
+<<<<<<< HEAD
             "support": {
                 "issues": "https://github.com/myclabs/php-enum/issues",
                 "source": "https://github.com/myclabs/php-enum/tree/1.7.7"
             },
+=======
+>>>>>>> bd441066d1fd240614978c1efa2f1aed91023de2
             "funding": [
                 {
                     "url": "https://github.com/mnapoli",
@@ -2773,10 +2785,13 @@
                 "serialization",
                 "serialize"
             ],
+<<<<<<< HEAD
             "support": {
                 "issues": "https://github.com/opis/closure/issues",
                 "source": "https://github.com/opis/closure/tree/3.6.1"
             },
+=======
+>>>>>>> bd441066d1fd240614978c1efa2f1aed91023de2
             "time": "2020-11-07T02:01:34+00:00"
         },
         {
@@ -7026,12 +7041,15 @@
                 "laravel",
                 "page"
             ],
+<<<<<<< HEAD
             "support": {
                 "docs": "https://flareapp.io/docs/ignition-for-laravel/introduction",
                 "forum": "https://twitter.com/flareappio",
                 "issues": "https://github.com/facade/ignition/issues",
                 "source": "https://github.com/facade/ignition"
             },
+=======
+>>>>>>> bd441066d1fd240614978c1efa2f1aed91023de2
             "time": "2020-11-17T09:18:51+00:00"
         },
         {

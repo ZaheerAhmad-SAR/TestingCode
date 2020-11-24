@@ -112,6 +112,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('annotation/updateAnnotation', 'AnnotationController@update_annotation')->name('annotation.updateAnnotation');
     Route::DELETE('annotation/delete/{id}', 'AnnotationController@deleteAnnotation')->name('annotation.delete');
     Route::get('annotation/get_allAnnotations/{id}', 'AnnotationController@get_allAnnotations')->name('annotation.get_allAnnotations');
+    Route::post('annotation/add_annotation', 'AnnotationController@store_new_annotation')->name('annotation.addAnnotation');
 });
 Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], function () {
 
