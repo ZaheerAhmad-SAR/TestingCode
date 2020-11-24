@@ -71,6 +71,7 @@
         <script src="{{ asset('public/js/sweetalert.min.js') }}"></script>
         <script src="{{ asset('public/js/jquery.validate.min.js') }}"></script>
         <script src="{{ asset('public/js/jquery-confirm.min.js') }}"></script>
+        <script src="{{ asset('public/js/multiselect.js') }}"></script>
 
         <!-- END: APP JS-->
 
