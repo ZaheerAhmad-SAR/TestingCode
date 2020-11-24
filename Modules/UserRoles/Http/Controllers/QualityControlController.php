@@ -38,7 +38,8 @@ class QualityControlController extends Controller
             $subjects = $subjects->select('subjects.*', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'subjects_phases.visit_date', 'sites.site_name')
             ->rightJoin('subjects_phases', 'subjects_phases.subject_id', '=', 'subjects.id')
             ->leftJoin('study_structures', 'study_structures.id', '=', 'subjects_phases.phase_id')
-            ->leftJoin('sites', 'sites.id', 'subjects.site_id');
+            ->leftJoin('sites', 'sites.id', 'subjects.site_id')
+            ->where('subjects.study_id', \Session::get('current_study'));
             //->leftJoin('form_submit_status', 'form_submit_status.subject_id', 'subjects.id');
 
             if ($request->subject != '') {
@@ -154,7 +155,8 @@ class QualityControlController extends Controller
                 ->leftJoin('sites', 'sites.id', '=', 'subjects.site_id')
                 ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id')
                 ->leftJoin('subjects_phases', 'subjects_phases.phase_id', 'form_submit_status.study_structures_id')
-                ->where('form_submit_status.form_type_id', 1);
+                ->where('form_submit_status.form_type_id', 1)
+                ->where('form_submit_status.study_id', \Session::get('current_study'));
 
                 if ($request->subject != '') {
                     $subjects = $subjects->where('form_submit_status.subject_id', $request->subject);
@@ -229,7 +231,7 @@ class QualityControlController extends Controller
             } // loop ends modility
 
             }// subject empty check
-            //dd($modalitySteps);
+
             //get form status depending upon subject, phase and modality
             if ($modalitySteps != null) {
                 foreach($subjects as $subject) {

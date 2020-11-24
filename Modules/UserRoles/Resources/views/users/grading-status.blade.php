@@ -363,7 +363,13 @@
                                         @endforeach
                                     @else
                                     <tr>
-                                        <td colspan="{{$count}}" style="text-align: center;"> No record found.</td>
+                                        <td colspan="{{$count}}" style="text-align: center;">
+                                            @if (request()->has('form_1') || request()->has('form_2'))
+                                                No record found.
+                                            @else
+                                                Apply filter to see data.
+                                            @endif
+                                        </td>
                                     </tr>
                                     @endif
                                 </tbody>
