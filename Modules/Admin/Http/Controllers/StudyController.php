@@ -180,17 +180,8 @@ class StudyController extends Controller
             }
         }
 
-        if ($request->users != null) {
-            $studyAdminRoleId = Permission::getStudyAdminRole();
-            foreach ($request->users as $user_id) {
-                RoleStudyUser::create([
-                    'id' => Str::uuid(),
-                    'study_id'   => $study->id,
-                    'user_id'   => $user_id,
-                    'role_id'   => $studyAdminRoleId[1]
-                ]);
-            }
-        }
+        $this->updateStudyAdmin($request, $study);
+
 
         /*************************** */
         /*************************** */
@@ -372,24 +363,8 @@ class StudyController extends Controller
                 DiseaseCohort::insert($disease);
             }
         }
-        // update multi users here
-        if ($request->users != null) {
-            $studyAdminRoleId = Permission::getStudyAdminRole();
-            foreach ($request->users as $user_id) {
-                $recordExist = RoleStudyUser::where('study_id', 'like', $request->study_id)
-                    ->where('user_id', 'like', $user_id)
-                    ->where('role_id', 'like', $studyAdminRoleId[1])
-                    ->first();
-                if (null === $recordExist) {
-                    RoleStudyUser::create([
-                        'id' => Str::uuid(),
-                        'study_id'   => $request->study_id,
-                        'user_id'   => $user_id,
-                        'role_id'   => $studyAdminRoleId[1]
-                    ]);
-                }
-            }
-        } // if end
+
+        $this->updateStudyAdmin($request, $study);
 
         /*************************** */
         /*************************** */
@@ -403,6 +378,22 @@ class StudyController extends Controller
         $logEventDetails = eventDetails($study->id, 'Study', 'Update', $request->ip(), $oldStudy);
 
         return redirect()->route('studies.index')->with('message', 'Study updated successfully');
+    }
+
+    private function updateStudyAdmin($request, $study)
+    {
+        if ($request->users != null) {
+            $studyAdminRoleId = Permission::getStudyAdminRole();
+            RoleStudyUser::where('study_id', 'like', $study->id)->where('role_id', 'like', $studyAdminRoleId[1])->delete();
+            foreach ($request->users as $user_id) {
+                RoleStudyUser::create([
+                    'id' => Str::uuid(),
+                    'study_id'   => $study->id,
+                    'user_id'   => $user_id,
+                    'role_id'   => $studyAdminRoleId[1]
+                ]);
+            }
+        }
     }
 
 
