@@ -59,7 +59,7 @@
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
                     <div class="card-header  justify-content-between align-items-center">
-                        <h4 class="card-title">Grading legend</h4>
+                        <h4 class="card-title">Status legend</h4>
                     </div>
                     <div class="card-body">
                         <div class="row">
@@ -106,7 +106,8 @@
                     <div class="card-body">
 
                         <div class="table-responsive">
-                        <form>
+                        <form method="POST" action="{{ route('save-assign-work') }}">
+                            @csrf
                             <table class="table table-bordered" id="laravel_crud">
                                 <thead>
                                     <tr class="table-secondary">
@@ -156,15 +157,15 @@
                                         @foreach($subjects as $key => $subject)
                                         <tr>
                                             <td>
-                                                <input type="checkbox" class="check_subject" name="check_subject[{{ $subject->id }}]" >
+                                                <input type="checkbox" @if ($subject->assign_work == '0') class="check_subject" @else checked disabled @endif name="check_subject[{{ $subject->id.'_'.$subject->phase_id }}]" >
                                             </td>
                                             <td>
                                                <a href="{{route('subjectFormLoader.showSubjectForm',['study_id' => $subject->study_id, 'subject_id' => $subject->id])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
-                                               <input type="hidden" name="subject_id[{{ $subject->id }}]" value="{{ $subject->id }}">
+                                               <input type="hidden" name="subject_id[]" value="{{ $subject->id }}">
                                             </td>
                                             <td>
                                                 {{$subject->phase_name}}
-                                                <input type="hidden" name="phase_id[{{ $subject->id }}]" value="{{ $subject->phase_id }}">
+                                                <input type="hidden" name="phase_id[]" value="{{ $subject->phase_id }}">
                                             </td>
                                             <td>{{ date('d-M-Y', strtotime($subject->visit_date))}}</td>
                                             <td>{{$subject->site_name}}</td>
