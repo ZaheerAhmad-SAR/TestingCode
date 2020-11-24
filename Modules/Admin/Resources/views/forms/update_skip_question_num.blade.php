@@ -28,9 +28,9 @@
         </div>
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
+        {{-- {{dd($num_values->number_value)}} --}}
         <form action="{{route('skipNumber.apply_skip_logic_num')}}" enctype="multipart/form-data" method="POST">
             @csrf
-            {{-- {{dd(request('id'))}} --}}
             <input type="hidden" name="question_id" value="{{request('id')}}">
             <div class="row">
                <div class="col-12 col-sm-12 mt-3">
@@ -38,7 +38,7 @@
                        <div class="card-body">
                             <div class="col-md-6" style="display: inline-block;">
                                 <div class="">
-                                    <input type="text" class="form-control" name="number_value" placeholder="Enter Number values " value="">
+                                    <input type="text" class="form-control" name="number_value" placeholder="Enter Number values " value="{{$num_values->number_value}}">
                                 </div>
                             </div>
                             <div class="col-md-5" style="display: inline-block;">    
