@@ -15,6 +15,8 @@
 
 
     Route::get('assign-work','GradingController@assignWork')->name('assign-work');
+    Route::post('save-assign-work','GradingController@saveAssignWork')->name('save-assign-work');
+
 
 // get users for form type, assign work section
     Route::get('get-form-type-users', 'GradingController@getFormTypeUsers')->name('get-form-type-users');

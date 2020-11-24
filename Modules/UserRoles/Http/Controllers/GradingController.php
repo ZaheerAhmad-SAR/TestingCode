@@ -17,6 +17,7 @@ use Modules\FormSubmission\Entities\AdjudicationFormStatus;
 use DB;
 use Excel;
 
+use Modules\Admin\Entities\AssignWork;
 use App\User;
 use Modules\UserRoles\Entities\Role;
 
@@ -327,7 +328,7 @@ class GradingController extends Controller
     public function assignWork(Request $request) {
 
         $subjects = Subject::query();
-            $subjects = $subjects->select('subjects.*', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'subjects_phases.visit_date', 'sites.site_name')
+            $subjects = $subjects->select('subjects.*', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'subjects_phases.visit_date', 'subjects_phases.assign_work', 'sites.site_name')
             ->rightJoin('subjects_phases', 'subjects_phases.subject_id', '=', 'subjects.id')
             ->leftJoin('study_structures', 'study_structures.id', '=', 'subjects_phases.phase_id')
             ->leftJoin('sites', 'sites.id', 'subjects.site_id');
@@ -439,6 +440,50 @@ class GradingController extends Controller
                                 ->get();
 
         return view('userroles::users.assign-work', compact('subjects', 'modalitySteps', 'getModilities', 'getFormType'));
+    }
+
+    public function saveAssignWork(Request $request) {
+
+        $input = $request->all();
+        // loop dubject
+        foreach($input['subject_id'] as $key => $subject) {
+            // check if check box is checked
+            if(isset($input['check_subject'][$subject.'_'.$input['phase_id'][$key]])) {
+                // find this phase assign work status
+                $updatePhaseAssignStatus = SubjectsPhases::where('subject_id', $subject)
+                                                          ->where('phase_id', ($input['phase_id'][$key]))
+                                                          ->first();
+
+                if ($updatePhaseAssignStatus->assign_work == '0') {
+                    // loop user ids
+                    foreach($input['users_id'] as $userId) {
+                        // assign work object
+                        $assignWork = new AssignWork;
+                        $assignWork->subject_id = $subject;
+                        $assignWork->phase_id = $input['phase_id'][$key];
+                        $assignWork->modility_id = $input['modility_id'];
+                        $assignWork->form_type_id = $input['form_type_id'];
+                        $assignWork->user_id = $userId;
+                        $assignWork->assign_date = $input['assign_date'];
+                        $assignWork->save();
+
+                        // update phase table for being assigned
+                        $updatePhaseAssignStatus->assign_work = '1';
+                        $updatePhaseAssignStatus->save();
+
+                    } // user ends
+
+                } // assign work ends
+
+            } // check subject ends
+
+        } // subject ends
+
+        // success msg
+        \Session::flash('success', 'Work assigned successfully.');
+
+        //redirect
+        return redirect(route('assign-work'));
     }
 
     public function getFormTypeUsers(Request $request) {
