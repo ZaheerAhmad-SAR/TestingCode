@@ -26,6 +26,10 @@ $getFormStatusArray = [
     'form_type_id' => $step->form_type_id,
     'modility_id' => $step->modility_id,
 ];
+
+$formStatusObjects = \Modules\FormSubmission\Entities\FormStatus::getFormStatusObjArray($getFormStatusArray);
+$numberOfAlreadyGradedPersons = count($formStatusObjects);
+
 if($step->form_type_id == 2){
     $getFormStatusArray['form_filled_by_user_id'] = $form_filled_by_user_id;
 }
@@ -50,6 +54,8 @@ if(null !== $formStatusObj){
                     <input type="hidden" name="phaseId" value="{{ $phase->id }}" />
                     <input type="hidden" name="stepId" value="{{ $step->step_id }}" />
                     <input type="hidden" name="formTypeId" value="{{ $step->form_type_id }}" />
+                    <input type="hidden" name="numberOfGraders" value="{{ $step->graders_number }}" />
+                    <input type="hidden" name="numberOfAlreadyGradedPersons" value="{{ $numberOfAlreadyGradedPersons }}" />
                     <input type="hidden" name="modilityId" value="{{ $step->modility_id }}" />
                     <input type="hidden" name="formFilledByUserId" value="{{ $formFilledByUserId }}" />
                     <input type="hidden" name="isFormDataLocked" value="{{ $isFormDataLocked }}" />

@@ -148,7 +148,7 @@
                 <div class="custom-modal-header gray-background color-black">
                     <p class="modal-title">Add New Study</p>
                 </div>
-                <form action="{{route('studies.store')}}" enctype="multipart/form-data" method="POST">
+                <form action="{{route('studies.store')}}" enctype="multipart/form-data" method="POST" id="add_study_2">
                     <div class="custom-modal-body">
                         <ul  class="nav nav-pills btn">
                             <li>
@@ -253,20 +253,7 @@
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="2a">
-                                    <div class="form-group">
-                                        <div class="{!! ($errors->has('users')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
-                                            <select class="searchable" id="select-users" multiple="multiple" name="users[]">
-                                                @foreach($users as $user)
-                                                    <option value="{{$user->id}}">{{$user->name}}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        @error('users')
-                                        <span class="text-danger small">
-                                    {{ $message }}
-                            </span>
-                                        @enderror
-                                    </div>
+                                    @include('admin::assignRoles.assign_users', ['users'=>$users, 'assigned_users'=>[], 'errors'=>$errors ])
                                 </div>
                                 <div class="tab-pane" id="3a">
                                     <div class="form-group">
@@ -313,3 +300,21 @@
         </div>
     </div>
 @endsection
+@section('script')
+<script type="text/javascript">
+    $('#study_add_2').submit(function(e){
+        $('#select_users_to option').prop('selected', true);
+    });
+        $(document).ready(function() {
+		        $('#select_users').multiselect({
+                    search: {
+                        left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+                        right: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+                    },
+                    fireSearch: function(value) {
+                        return value.length > 1;
+                    }
+                });
+	        });
+        </script>
+        @endsection

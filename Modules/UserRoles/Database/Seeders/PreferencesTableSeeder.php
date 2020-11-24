@@ -19,11 +19,14 @@ class PreferencesTableSeeder extends Seeder
      */
     public function run()
     {
+    }
+    public function run123()
+    {
         Model::unguard();
         /*********************************/
         $studies = Study::all();
         foreach ($studies as $study) {
-            $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'VISIT_ACTIVATION')->first();
+            $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'VISIT_ACTIVATION')->withOutGlobalScopes()->first();
             if (null === $preference) {
                 Preference::create([
                     'study_id' => $study->id,
@@ -35,7 +38,7 @@ class PreferencesTableSeeder extends Seeder
                     'updated_at'        => Carbon::now()
                 ]);
             }
-            $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'STUDY_EMAIL')->first();
+            $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'STUDY_EMAIL')->withOutGlobalScopes()->first();
             if (null === $preference) {
                 Preference::create([
                     'study_id' => $study->id,
@@ -48,7 +51,7 @@ class PreferencesTableSeeder extends Seeder
                 ]);
             }
 
-            $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'STUDY_CC_EMAILS')->first();
+            $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'STUDY_CC_EMAILS')->withOutGlobalScopes()->first();
             if (null === $preference) {
                 Preference::create([
                     'study_id' => $study->id,
@@ -61,7 +64,7 @@ class PreferencesTableSeeder extends Seeder
                 ]);
             }
 
-            $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'PER_PAGE_PAGINATION')->first();
+            $preference = Preference::where('study_id', 'like', $study->id)->where('preference_title', 'like', 'PER_PAGE_PAGINATION')->withOutGlobalScopes()->first();
             if (null === $preference) {
                 Preference::create([
                     'study_id' => $study->id,

@@ -55,13 +55,11 @@ class UserController extends Controller
     {
 
         $roles  =   Role::where('role_type', '=', 'system_role')->get();
+        $systemRoleIds = Role::where('role_type', 'system_role')->pluck('id')->toArray();
         $currentStudy = session('current_study');
 
-        $users  =  User::select('users.*', 'user_roles.user_id', 'user_roles.role_id', 'roles.name as role_name')
-            ->join('user_roles', 'user_roles.user_id', '=', 'users.id')
-            ->join('roles', 'roles.id', '=', 'user_roles.role_id')
-            ->orderBY('name', 'asc')->get();
-        $users  =  User::/*where('user_type','!=', 'super_user')->*/orderBY('name', 'asc')->get();
+        $userIdsOfSystemRoles = UserRole::whereIn('role_id', $systemRoleIds)->pluck('user_id')->toArray();
+        $users = User::whereIn('id', $userIdsOfSystemRoles)->orderBy('name', 'asc')->get();
 
         $studyusers = User::where('id', '!=', \auth()->user()->id)->get();
 

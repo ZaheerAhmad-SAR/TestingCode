@@ -57,7 +57,7 @@ class FormController extends Controller
     {
         $PhaseSteps = PhaseSteps::select('*')->where('phase_id', $id)->get();
         // $parentArray = $step = [];
-        $step_id_sess = Session::get('filter_step');
+        $step_id_sess = session('filter_step');
         $options = '<option value="">---Select Step---</option>';
         foreach ($PhaseSteps as $phaseStep) {
             if ($phaseStep->step_id == $step_id_sess) {
@@ -141,12 +141,13 @@ class FormController extends Controller
             <input type="hidden" class="operator_calculate" value="' . $ques_value->operator_calculate . '">
             <input type="hidden" class="second_question_id" value="' . $ques_value->second_question_id . '">
             <input type="hidden" class="make_decision" value="' . $ques_value->make_decision . '">
+            <input type="hidden" class="certification_type" value="'.$ques_value->certification_type.'">
             <input type="hidden" class="calculate_with_costum_val" value="' . $ques_value->calculate_with_costum_val . '">';
             $question_contents .= '<input type="hidden" class="option_group_id" value="' . $ques_value->option_group_id . '">
             <input type="hidden" class="c_disk" value="' . $ques_value->c_disk . '">
             <input type="hidden" class="question_text" value="' . $ques_value->question_text . '">
             <input type="hidden" class="variable_name" value="' . $ques_value->formFields->variable_name . '">
-            <input type="hidden" class="text_info" value="' . $ques_value->formFields->text_info . '">
+            <input type="hidden" class="text_info" value="' . strip_tags($ques_value->formFields->text_info) . '">
             <input type="hidden" class="is_required" value="' . $ques_value->formFields->is_required . '">
             <input type="hidden" class="is_exportable_to_xls" value="' . $ques_value->formFields->is_exportable_to_xls . '">
             <input type="hidden" class="field_width" value="' . $ques_value->formFields->field_width . '">
@@ -237,23 +238,23 @@ class FormController extends Controller
                 }
                 $question_contents .= '</select></div>';
             } elseif ($ques_value->form_field_type->field_type == 'Description') {
-                $question_contents .= '<div class="col-sm-6">' . $ques_value->formFields->text_info . '</div>';
+                $question_contents .= '<div class="col-sm-6">' . strip_tags($ques_value->formFields->text_info) . '</div>';
             }
-            $question_contents .= '<div class="col-sm-2"><div class="d-flex mt-3 mt-md-0 ml-auto float-right"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right">';
+            $question_contents .= '<div class="col-sm-2"><span class="d-flex mt-3 mt-md-0 ml-auto float-right"><i type="button" class="far fa-eye" data-toggle="tooltip" data-placement="top" title="'.strip_tags($ques_value->formFields->text_info).'"  style="margin-top:6px;"></i></span><div class="d-flex mt-3 mt-md-0 ml-auto" style="width:50%;display:inline-block !important;"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 6px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right">';
             if ($ques_value->form_field_type->field_type == 'Certification') {
-                $question_contents .= '<span>edit in progress</span>';
-            } elseif ($ques_value->form_field_type->field_type == 'Description') {
+                $question_contents .= '<span class="dropdown-item edit_certify"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
+            }elseif($ques_value->form_field_type->field_type == 'Description') {
                 $question_contents .= '<span class="dropdown-item edit_desc"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
-            } elseif ($ques_value->form_field_type->field_type == 'Calculated') {
+            }elseif($ques_value->form_field_type->field_type == 'Calculated') {
                 $question_contents .= '<span class="dropdown-item edit_calculated_field"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
-            } else {
+            }else{
                 $question_contents .= '<span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
             }
             $question_contents .= '<span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span>';
             if ($ques_value->form_field_type->field_type == 'Radio') {
                 $question_contents .= '<span class="dropdown-item add_checks"><a href="' . url("skiplogic/skip_logic", $ques_value->id) . '" style="cursor:pointer;"><i class="fas fa-crop-alt"></i>&nbsp; Skip Logic </a></span>';
             } elseif ($ques_value->form_field_type->field_type == 'Number') {
-                $question_contents .= '<span class="dropdown-item add_checks"><a href="' . url("skiplogic/num_skip_logic", $ques_value->id) . '" style="cursor:pointer;"><i class="fas fa-crop-alt"></i>&nbsp; Skip Logic </a></span>';
+                $question_contents .= '<span class="dropdown-item add_checks"><a href="' . url("skipNumber/num_skip_logic", $ques_value->id) . '" style="cursor:pointer;"><i class="fas fa-crop-alt"></i>&nbsp; Skip Logic </a></span>';
             } elseif ($ques_value->form_field_type->field_type == 'Text') {
                 $question_contents .= '<span class="dropdown-item add_checks"><a href="' . url("skiplogic/text_skip_logic", $ques_value->id) . '" style="cursor:pointer;"><i class="fas fa-crop-alt"></i>&nbsp; Skip Logic </a></span>';
             } else {
@@ -358,6 +359,7 @@ class FormController extends Controller
         $questionObj->is_dependent = $request->field_dependent;
         $questionObj->dependent_on = $request->dependent_on;
         $questionObj->annotations = $request->dependent_on;
+        $questionObj->certification_type = $request->certification_type;
         $questionObj->save();
 
         $this->updateQuestionToReplicatedVisits($questionObj);
@@ -602,9 +604,9 @@ class FormController extends Controller
     }
     public function create_filter_session(Request $request)
     {
-        session()->forget('filter_phase');
-        session()->forget('filter_step');
-        session()->put('filter_phase', $request->phase_id);
-        session()->put('filter_step', $request->step_id);
+        // Make new session 
+        session(['filter_phase' => $request->phase_id, 'filter_step' => $request->step_id]);
+        // session()->put('filter_phase', $request->phase_id);
+        // session()->put('filter_step', $request->step_id);
     }
 }

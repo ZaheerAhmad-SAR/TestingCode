@@ -101,7 +101,7 @@
                 <div class="modal-header">
                     <p class="modal-title">Add User</p>
                 </div>
-                <form action="{{route('studyusers.store')}}" enctype="multipart/form-data" method="POST" class="user-store-form">
+                <form action="{{route('studyusers.store')}}" id="user-store-form" enctype="multipart/form-data" method="POST" class="user-store-form">
                     <div class="modal-body">
 
                         <p class="alert alert-danger user-store-error" style="display: none;"></p>
@@ -155,21 +155,7 @@
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="nav-Modalities" role="tabpanel" aria-labelledby="nav-Validation-tab">
-                                <div class="form-group row" style="margin-top: 10px;">
-                                    <label for="device_manufacturer" class="col-sm-3">Select Roles</label>
-                                    <div class="{!! ($errors->has('roles')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                        <select class="searchable" id="select-roles" multiple="multiple" name="roles[]" required>
-                                            @foreach($roles as $role)
-                                                <option value="{{$role->id}}">{{$role->name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    @error('roles')
-                                    <span class="text-danger small">
-                                    {{ $message }}
-                                    </span>
-                                    @enderror
-                                </div>
+                                @include('admin::assignRoles.assign_roles', ['roles'=>$roles, 'assigned_roles'=>[], 'errors'=>$errors ])
                             </div>
                         </div>
                     </div>
@@ -340,7 +326,17 @@
 @section('script')
     <script src="{{ asset('public/dist/js/jquery.validate.min.js') }}"></script>
     <script type="text/javascript">
-
+    $(document).ready(function() {
+		        $('#select_roles').multiselect({
+                    search: {
+                        left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+                        right: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+                    },
+                    fireSearch: function(value) {
+                        return value.length > 1;
+                    }
+                });
+	        });
         $(document).ready(function(){
             $('#2fa').on('show.bs.modal',function (e) {
                 var id = $(e.relatedTarget).data('target-id');
@@ -348,10 +344,13 @@
             });
 
             // form submit create user
-            $('.user-store-form').submit(function(e){
+            $('#user-store-form').submit(function(e){
                 e.preventDefault();
+                $('#select_roles_to option').prop('selected', true);
                 // get form data
                 var formData = new FormData($(this)[0]);
+                //var formData = $("#user-store-form").serialize();
+
                 $.ajax({
                   url: $(this).attr('action'),
                   data: formData,
@@ -369,7 +368,7 @@
                             $('.user-store-error').slideUp(500);
                         }, 2000);
 
-                    }  {
+                    } else {
 
                         location.reload();
                     }
@@ -391,44 +390,6 @@
         @if (count($errors) > 0)
         $('#inviteuser').modal('show');
         @endif
-
-        $(document).ready(function() {
-            $('#select-roles').multiSelect({
-                selectableHeader: "<label for=''>All Roles</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
-                selectionHeader: "<label for=''>Assigned Roles</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
-                afterInit: function(ms){
-                    var that = this,
-                        $selectableSearch = that.$selectableUl.prev(),
-                        $selectionSearch = that.$selectionUl.prev(),
-                        selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
-                        selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
-
-                    that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-                        .on('keydown', function(e){
-                            if (e.which === 40){
-                                that.$selectableUl.focus();
-                                return false;
-                            }
-                        });
-
-                    that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-                        .on('keydown', function(e){
-                            if (e.which == 40){
-                                that.$selectionUl.focus();
-                                return false;
-                            }
-                        });
-                },
-                afterSelect: function(){
-                    this.qs1.cache();
-                    this.qs2.cache();
-                },
-                afterDeselect: function(){
-                    this.qs1.cache();
-                    this.qs2.cache();
-                }
-            });
-        });
     </script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>

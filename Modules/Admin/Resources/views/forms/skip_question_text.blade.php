@@ -28,7 +28,7 @@
         </div>
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
-        <form action="{{route('skiplogic.apply_skip_logic')}}" enctype="multipart/form-data" method="POST">
+        <form action="{{route('skipNumber.apply_skip_logic_text')}}" enctype="multipart/form-data" method="POST">
             @csrf
             {{-- {{dd(request('id'))}} --}}
            
@@ -145,10 +145,43 @@
             </div>
         </form>
         <!-- END: Card DATA-->
+         {{-- listing here for logics --}}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <tr>
+                                <th>Value</th>
+                                <th style="width: 5%;">Action</th>
+                            </tr>
+                          @foreach($num_values->skiplogic as $key => $value)
+                            <tr>
+                                <td>{{$value->textbox_value}}</td>
+                                <td>
+                                   <div class="d-flex mt-3 mt-md-0 ml-auto">
+                                        <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                        <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
+                                            <span class="dropdown-item"><a href="{{route('skipNumber.updateSkipNum',$value['id'])}}"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
+                                            <span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
+ {{-- listing here for logics --}}
 @endsection
 @include('admin::forms.edit_crf')
-@include('admin::forms.script_skip_logic')
+@include('admin::forms.script_skip_logic_num')
     @section('styles')
     <style type="text/css">
             /*.table{table-layout: fixed;}*/
