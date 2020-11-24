@@ -7,23 +7,16 @@
 @section('styles')
 
     <style type="text/css">
-        /*.table{table-layout: fixed;}*/
 
-        .select2-container--default
-        .select2-selection--single {
-            background-color: #fff;
-             border: transparent !important;
-            border-radius: 4px;
+        .select2-container--default.select2-container--focus .select2-selection--multiple {
+            border: solid #485e9029 1px !important;
+            outline: 0;
         }
-        .select2-selection__rendered {
-            font-weight: 400;
-            line-height: 1.5;
-            color: #495057 !important;
-            background-color: #fff;
-            background-clip: padding-box;
-            border: 1px solid #ced4da;
-            border-radius: .25rem;
-            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        .select2-container--default .select2-selection--multiple {
+            background-color: white;
+            border: 1px solid #485e9029 !important;
+            border-radius: 4px;
+            cursor: text;
         }
 
         legend {
@@ -31,6 +24,7 @@
           color: white;*/
           padding: 5px 10px;
         }
+
     </style>
     
 
@@ -112,17 +106,20 @@
                     <div class="card-body">
 
                         <div class="table-responsive">
-
+                        <form>
                             <table class="table table-bordered" id="laravel_crud">
                                 <thead>
                                     <tr class="table-secondary">
+                                        <th>Select All 
+                                            <input type="checkbox" class="select_all" name="select_all" id="select_all">
+                                        </th>
                                         <th>Subject ID</th>
                                         <th>Phase</th>
                                         <th>Visit Date</th>
                                         <th>Site Name</th>
 
                                         @php
-                                            $count = 4;
+                                            $count = 5;
                                         @endphp
 
                                         @if ($modalitySteps != null)
@@ -139,7 +136,7 @@
 
                                     @if ($modalitySteps != null)
                                     <tr class="table-secondary">
-                                        <th scope="col" colspan="4" class="border-top-0"> </th>
+                                        <th scope="col" colspan="5" class="border-top-0"> </th>
                                         @foreach($modalitySteps as $steps)
                                         
                                             @foreach($steps as $value)
@@ -159,9 +156,16 @@
                                         @foreach($subjects as $key => $subject)
                                         <tr>
                                             <td>
-                                               <a href="{{route('subjectFormLoader.showSubjectForm',['study_id' => $subject->study_id, 'subject_id' => $subject->id])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
+                                                <input type="checkbox" class="check_subject" name="check_subject[{{ $subject->id }}]" >
                                             </td>
-                                            <td>{{$subject->phase_name}}</td>
+                                            <td>
+                                               <a href="{{route('subjectFormLoader.showSubjectForm',['study_id' => $subject->study_id, 'subject_id' => $subject->id])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
+                                               <input type="hidden" name="subject_id[{{ $subject->id }}]" value="{{ $subject->id }}">
+                                            </td>
+                                            <td>
+                                                {{$subject->phase_name}}
+                                                <input type="hidden" name="phase_id[{{ $subject->id }}]" value="{{ $subject->phase_id }}">
+                                            </td>
                                             <td>{{ date('d-M-Y', strtotime($subject->visit_date))}}</td>
                                             <td>{{$subject->site_name}}</td>
                                             
@@ -207,17 +211,50 @@
                                     </button>
                                   </div>
                                   <div class="modal-body">
-                                    ...
+                                    <div class="form-group">
+                                        <label class="modility">Modality</label>
+                                        <select class="form-control modility_id" name="modility_id" id="modility_id" required>
+                                            <option value="">Select Modality</option>
+                                            @foreach($getModilities as $modility)
+                                                <option value="{{$modility->id}}">{{$modility->modility_name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form_type">Form Type</label>
+                                        <select class="form-control form_type_id" name="form_type_id" id="form_type_id" required>
+                                            <option value="">Select Form Type</option>
+                                            @foreach($getFormType as $formType)
+                                                <option value="{{$formType->id}}">{{$formType->form_type}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="users">Users</label>
+                                        <Select class="form-control users_id" name="users_id[]" id="users_id" multiple required>
+
+                                        </Select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="users">Assign Date</label>
+                                        <input type="date" class="form-control" id="assign_date" name="assign_date" value="" required>
+                                    </div>
+
                                   </div>
+                                  <!-- modal body ends -->
                                   <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary">Assign Work</button>
+                                    <button type="submit" class="btn btn-primary">Assign Work</button>
                                   </div>
                                 </div>
                               </div>
                             </div>
                             <!-- Model ends -->
-
+                        </form>
+                        <!-- form ends -->
                         </div>
                         <!-- table responsive -->
                     </div>
@@ -240,9 +277,98 @@
 <script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
 
 <script type="text/javascript">
-    $('.assign-work').click(function(){
-        // show model
-        $('#assign-work-model').modal('show');
+
+    // initialize select2
+    $('.users_id').select2({
+        dropdownPosition: 'below'
+      
+    });
+    //form type on change
+    $('.form_type_id').change(function(){
+
+        $.ajax({
+            url: '{{ route("get-form-type-users") }}',
+            type: 'GET',
+            data: {
+                'form_type_id': $(this).val(),
+            },
+            success:function(data) {
+                
+                if (data.success) {
+
+                    // empty select2
+                    $('.users_id').empty().trigger('change');
+
+                    if(data.getUsers != null) {
+
+                        var row;
+                        //row += '<option value="">Select User</option>';
+                        // get users
+                        $.each(data.getUsers, function(key, value) {
+                          row += '<option value="'+value.id+'">'+value.name+'</option>';
+                        });
+
+                        // append users to drop select2
+                        $('.users_id').append(row);
+                    } // user check ends
+                    else {
+
+                        var row;
+                        //row += '<option value="">Select User</option>';
+                        // append users to drop select2
+                        $('.users_id').append(row);
+                    }
+
+                } // success
+            }
+        })
+    });
+
+    $('.assign-work').click(function() {
+        // any checkbox is checked
+        if ($(".check_subject:checked").length > 0) {
+            
+            // show model
+            $('#assign-work-model').modal('show');
+
+        } else {
+           // alert msg
+           alert('No subject selected.');
+        }
+       
+    });
+
+    // select all change function
+    $('.select_all').change(function(){
+        
+        if($(this).is(":checked")) {
+            // check all checkboxes
+            $(".check_subject").each(function() {
+                $(this).prop('checked', true);
+            });
+
+        } else {
+
+            // un-check all checkboxes
+            $(".check_subject").each(function() {
+                $(this).prop('checked', false);
+            });
+
+        }
+    });
+
+    // select/ unselect select all on checkbox event
+    $('.check_subject').change(function () {
+
+        if ($('.check_subject:checked').length == $('.check_subject').length) {
+            // CHECK SELECT ALL
+            $('.select_all').prop('checked',true);
+
+        } else {
+            // uncheck select all
+            $('.select_all').prop('checked',false);
+
+        }
     });
 </script>
 @endsection

@@ -10,11 +10,14 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::post('/users/invite', 'UserController@process_invites')->name('process_invite');
-Route::get('/registration/{token}', 'UserController@registration_view')->name('registration');
+    Route::post('/users/invite', 'UserController@process_invites')->name('process_invite');
+    Route::get('/registration/{token}', 'UserController@registration_view')->name('registration');
 
 
-Route::get('assign-work','GradingController@assignWork')->name('assign-work');
+    Route::get('assign-work','GradingController@assignWork')->name('assign-work');
+
+// get users for form type, assign work section
+    Route::get('get-form-type-users', 'GradingController@getFormTypeUsers')->name('get-form-type-users');
 
 
 Route::prefix('userroles')->group(function() {
@@ -25,10 +28,11 @@ Route::prefix('userroles')->group(function() {
 Route::group(['middleware' => ['auth','web']],function (){
     Route::get('update_profile', 'UserController@update_profile')->name('users.updateProfile');
 });
+
 Route::group(['middleware' => ['auth','web','roles']],function(){
 
-    //Amir
-    // form 1 grading
+//Amir Khan route
+// form 1 grading
     Route::get('excel-grading','GradingController@excelGrading')->name('excel-grading');
 // form 2 grading
     Route::get('excel-grading2','GradingController@excelGrading2')->name('excel-grading2');
@@ -49,11 +53,8 @@ Route::group(['middleware' => ['auth','web','roles']],function(){
 // grading status
     Route::get('grading-status','GradingController@gradingStatus')->name('grading.status');
 
-
-    //Invitation_Routes
+//Invitation_Routes
     Route::get('/users/invite', 'UserController@invite_view')->name('invite_view');
-
-
 
     Route::resource('roles','RoleController');
     // Permissions

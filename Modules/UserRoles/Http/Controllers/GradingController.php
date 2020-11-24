@@ -16,6 +16,10 @@ use Modules\Admin\Entities\FormType;
 use Modules\FormSubmission\Entities\AdjudicationFormStatus;
 use DB;
 use Excel;
+
+use App\User;
+use Modules\UserRoles\Entities\Role;
+
 use Carbon\Carbon;
 use App\Exports\GradingFromView;
 use App\Exports\GradingFromView2;
@@ -322,8 +326,7 @@ class GradingController extends Controller
 
     public function assignWork(Request $request) {
 
-
-         $subjects = Subject::query();
+        $subjects = Subject::query();
             $subjects = $subjects->select('subjects.*', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'subjects_phases.visit_date', 'sites.site_name')
             ->rightJoin('subjects_phases', 'subjects_phases.subject_id', '=', 'subjects.id')
             ->leftJoin('study_structures', 'study_structures.id', '=', 'subjects_phases.phase_id')
@@ -428,8 +431,74 @@ class GradingController extends Controller
                 }// subject loop ends
             } // modality step null check
 
+        // get modilities
+        $getModilities = Modility::select('id', 'modility_name')
+                                        ->get();
+        // get form types
+        $getFormType = FormType::select('id', 'form_type')
+                                ->get();
 
-        return view('userroles::users.assign-work', compact('subjects', 'modalitySteps'));
+        return view('userroles::users.assign-work', compact('subjects', 'modalitySteps', 'getModilities', 'getFormType'));
+    }
+
+    public function getFormTypeUsers(Request $request) {
+        //$request->form_type_id;
+        if($request->ajax()) {
+
+            // get form type
+            $getFormType = FormType::find($request->form_type_id);
+
+            $roleIds = [];
+
+            if($getFormType->form_type == 'QC') {
+
+                // get QC Role IDs
+                $roleIds = Role::leftJoin('permission_role','permission_role.role_id', '=', 'roles.id')
+                                    ->leftJoin('permissions', 'permissions.id', '=', 'permission_role.permission_id')
+                                    ->where('permissions.name', '=', 'qualitycontrol.index')
+                                    ->where('roles.role_type', '!=', 'super_admin')
+                                    ->groupBy('permission_role.role_id')
+                                    ->pluck('permission_role.role_id')
+                                    ->toArray();
+                
+            } elseif ($getFormType->form_type == 'Grading') {
+                // get GRADING Role IDs
+                $roleIds = Role::leftJoin('permission_role','permission_role.role_id', '=', 'roles.id')
+                                    ->leftJoin('permissions', 'permissions.id', '=', 'permission_role.permission_id')
+                                    ->where('roles.role_type', '!=', 'super_admin')
+                                    ->where(function ($query) {
+                                        $query->where('permissions.name', '=', 'grading.index')
+                                              ->orWhere('permissions.name', '=', 'adjudication.index');
+                                    })
+                                    ->groupBy('permission_role.role_id')
+                                    ->pluck('permission_role.role_id')
+                                    ->toArray();
+                
+            } elseif ($getFormType->form_type == 'Eligibility') {
+                // get Eligibility Role IDs
+                $roleIds = Role::leftJoin('permission_role','permission_role.role_id', '=', 'roles.id')
+                                    ->leftJoin('permissions', 'permissions.id', '=', 'permission_role.permission_id')
+                                    ->where('permissions.name','=','eligibility.index')
+                                    ->where('roles.role_type', '!=', 'super_admin')
+                                    ->groupBy('permission_role.role_id')
+                                    ->pluck('permission_role.role_id')
+                                    ->toArray();
+
+            }
+
+            // get user on the basis of the role ids
+            $getUsers = User::select('users.id', 'users.name')
+                              ->leftJoin('user_roles', 'user_roles.user_id', '=', 'users.id')
+                              ->leftJoin('roles', 'roles.id', '=', 'user_roles.role_id')
+                              ->whereIn('user_roles.role_id', $roleIds)
+                              ->groupBy('users.id')
+                              ->orderBy('users.name', 'asc')
+                              ->get();
+
+            return response()->json(['success' => 'Users find.', 'getUsers' => $getUsers]);
+
+
+        } // ajax ends
     }
 
     /**
