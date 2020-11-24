@@ -49,5 +49,31 @@ function setFieldType(type){
             $('.view_to_textbox_and_number').css('display', 'none');
         }
 }
+// validation on variable name
+function check_if_name_exists(selectObject) {
+    var value = selectObject.value;
+        step_id = $('#steps').val()
+        url_route = "{{ URL('forms/check_variable') }}"
+        url_route = url_route;
+    $.ajax({
+        url: url_route,
+        type: 'post',
+        data: {
+            "_token": "{{ csrf_token() }}",
+            "_method": 'POST',
+            'step_id': step_id,
+            'name': value
+        },
+        success: function(response) {
+            if (response == 'field_found') {
+                $('.space_msg').html('Variable Name already exists!');
+                $('.variable_name_ques').val('');
+            } else {
+                $('.space_msg').html('');
+            }
+        }
+    });
+
+}
 </script>
 @endpush

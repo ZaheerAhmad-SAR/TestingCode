@@ -20,6 +20,8 @@ class QCFromView2 implements FromView
 
     public function view(): View {
 
+        $modalitySteps = [];
+
     	// get subjects
         $subjects = FormStatus::query();
 
@@ -30,6 +32,7 @@ class QCFromView2 implements FromView
             ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id')
             ->leftJoin('subjects_phases', 'subjects_phases.phase_id', 'form_submit_status.study_structures_id')
             ->where('form_submit_status.form_type_id', 1)
+            ->where('form_submit_status.study_id', \Session::get('current_study'))
             ->groupBy(['form_submit_status.subject_id', 'form_submit_status.study_structures_id'])
             ->get();
 

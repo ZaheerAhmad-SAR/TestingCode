@@ -251,6 +251,34 @@
         </div>
     </div>
 </div>
+<div class="modal fade" tabindex="-1" role="dialog" id="show-form-table-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
+    <div class="modal-dialog  modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="alert alert-danger" style="display:none"></div>
+            <div class="modal-header ">
+                <p class="modal-title">All Form Queries</p>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table id="example" class="display table dataTable table-striped table-bordered" >
+                        <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>Query Subject</th>
+                            <th>Submited By</th>
+                            <th>Assigned To</th>
+                            <th>Created Date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody class="queriesFormList"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="modal fade" tabindex="-1" role="dialog" id="reply-question-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" style="max-width: 1000px;" role="document">
@@ -276,6 +304,36 @@
                     <div class="modal-footer">
                         <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                         <button type="button" class="btn btn-outline-primary" id="replyquestion"><i class="fa fa-save"></i> Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" tabindex="-1" role="dialog" id="reply-form-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" style="max-width: 1000px;" role="document">
+        <div class="modal-content">
+            <div class="alert alert-danger" style="display:none"></div>
+            <div class="modal-header">
+                <p class="modal-title"> Form Details</p>
+                <span class="queryCurrentStatus text-center"></span>
+            </div>
+            <div class="modal-body">
+                <form id="replyFormQueryForm" name="replyFormQueryForm">
+                    <div class="tab-content clearfix">
+                        @csrf
+                        <div class="formInput"></div>
+                        <div class="col-sm-12">
+                            <div class="replyClick" style="text-align: right;">
+                                    <span style="cursor: pointer;">
+                                        <i class="fa fa-reply"></i> &nbsp; reply
+                                        </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                        <button type="submit"  name="submit" class="btn btn-outline-primary" id="submit"><i class="fa fa-save"></i> Send</button>
                     </div>
                 </form>
             </div>
@@ -399,8 +457,32 @@
             openQuestionTableView(question_id);
         }
 
+
+        function getAllFormQueryData(study_id, subject_id,
+          study_structures_id, phase_steps_id,
+          section_id, question_id, field_id,
+          form_type_id, modility_id, module){
+            console.log(phase_steps_id);
+            $('#study_id').val(study_id);
+            $('#question_id').val(question_id);
+            $('#phase_steps_id').val(phase_steps_id);
+            $('#section_id').val(section_id);
+            $('#subject_id').val(subject_id);
+            $('#study_structures_id').val(study_structures_id);
+            $('#field_id').val(field_id);
+            $('#modility_id').val(modility_id);
+            $('#module').val(module);
+            $('#form_type_id').val(form_type_id);
+            openFormTableView(phase_steps_id);
+        }
+
+
     $('.showAllQuestionQueries').click(function () {
         $('#show-question-table-modal').modal('show');
+    });
+
+    $('.showAllFormQueries').click(function () {
+        $('#show-form-table-modal').modal('show');
     });
 
 
@@ -421,7 +503,51 @@
         });
     }
 
+    function openFormTableView(phase_steps_id) {
+        $.ajax({
+            url:"{{route('queries.loadFormByPhaseId')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'POST',
+                'phase_steps_id' :phase_steps_id,
+            },
+            success: function(response)
+            {
+                $('.queriesFormList').html('');
+                $('.queriesFormList').html(response);
+            }
+        });
+    }
 
+
+
+    $('body').on('click', '.replyFormQuery', function () {
+        var query_id = $(this).attr('data-id');
+        $('#reply-form-modal').modal('show');
+        showForm(query_id);
+        $('#show-form-table-modal').modal('hide');
+    });
+
+    function showForm(query_id) {
+        $.ajax({
+            url:"{{route('queries.showFormByQueryId')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'POST',
+                'query_id'      :query_id,
+            },
+            success: function(response)
+            {
+                $('.formInput').html('');
+                $('.formInput').html(response);
+                var formStatusInput = $( "#formStatusInput option:selected" ).text();
+                $('.queryCurrentStatus').text('Status: '+formStatusInput);
+                $('.replyClick').css('display','');
+            }
+        });
+    }
 
     $('body').on('click', '.replyQuestionQuery', function () {
         var query_id     = $(this).attr('data-id');
@@ -518,7 +644,6 @@
             }
         });
     });
-
 
     $('body').on('click', '.replyClick', function () {
         $('.commentsInput').css('display','');
@@ -682,6 +807,69 @@
         });
 
     });
+
+    $("#replyFormQueryForm").on('submit', function(e) {
+        e.preventDefault();
+        $.ajaxSetup({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+        });
+        var studyStructuresIdInput = $("#studyStructuresIdInput").val();
+        var studyIdInput           = $("#studyIdInput").val();
+        var subjectIdInput         = $("#subjectIdInput").val();
+        var phaseStepsIdInput      = $("#phaseStepsIdInput").val();
+        var sectionIdInput         = $("#sectionIdInput").val();
+        var questionIdInput        = $("#questionIdInput").val();
+        var fieldIdInput           = $("#fieldIdInput").val();
+        var formTypeIdInput        = $("#formTypeIdInput").val();
+        var modilityIdInput        = $("#modilityIdInput").val();
+        var moduleNameInput        = $("#moduleNameInput").val();
+        var queryTypeInput         = $("#queryTypeInput").val();
+        var queryIdInput           = $("#queryIdInput").val();
+        var queryUrlInput          = $("#queryUrlInput").val();
+        var subjectFormInput       = $("#subjectFormInput").val();
+        var formReply              = $("#formReply").val();
+        var formStatusInput        = $("#formStatusInput").val();
+
+        var formData = new FormData();
+
+        formData.append('studyStructuresIdInput', studyStructuresIdInput);
+        formData.append('studyIdInput', studyIdInput);
+        formData.append('subjectIdInput', subjectIdInput);
+        formData.append('phaseStepsIdInput', phaseStepsIdInput);
+        formData.append('sectionIdInput', sectionIdInput);
+        formData.append('questionIdInput', questionIdInput);
+        formData.append('fieldIdInput', fieldIdInput);
+        formData.append('formTypeIdInput', formTypeIdInput);
+        formData.append('modilityIdInput', modilityIdInput);
+        formData.append('moduleNameInput', moduleNameInput);
+        formData.append('queryTypeInput',  queryTypeInput);
+        formData.append('queryIdInput',    queryIdInput);
+        formData.append('queryUrlInput',    queryUrlInput);
+        formData.append('subjectFormInput', subjectFormInput);
+        formData.append('formReply',formReply);
+        formData.append('formStatusInput', formStatusInput);
+
+        // Attach file name = form_file
+        formData.append("formFileInput", $("#formFileInput")[0].files[0]);
+        $.ajax({
+            type: 'POST',
+            url:"{{route('queries.replyFormQueries')}}",
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(results)
+            {
+                console.log(results);
+                $('.replyClick').css('display','');
+                var query_id = results[0].parent_query_id;
+                showForm(query_id);
+            }
+        });
+
+    });
+
 
 
     $('#queries-modal-question').on('hidden.bs.modal', function () {

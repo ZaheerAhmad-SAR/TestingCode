@@ -21,6 +21,8 @@ class GradingStatusFromView2 implements FromView
 
     public function view(): View {
 
+        $modalitySteps = [];
+
     	// get subjects
         $subjects = AdjudicationFormStatus::query();
         $subjects = $subjects->select('adjudication_form_status.subject_id as subj_id', 'adjudication_form_status.study_id', 'adjudication_form_status.study_structures_id', 'adjudication_form_status.phase_steps_id', 'adjudication_form_status.adjudication_status', 'adjudication_form_status.modility_id','subjects.subject_id', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'phase_steps.graders_number', 'subjects_phases.visit_date', 'sites.site_name')
@@ -29,6 +31,7 @@ class GradingStatusFromView2 implements FromView
             ->leftJoin('sites', 'sites.id', '=', 'subjects.site_id')
             ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'adjudication_form_status.phase_steps_id')
             ->leftJoin('subjects_phases', 'subjects_phases.phase_id', 'adjudication_form_status.study_structures_id')
+            ->where('adjudication_form_status.study_id', \Session::get('current_study'))
             ->groupBy(['adjudication_form_status.subject_id', 'adjudication_form_status.study_structures_id'])
             ->get();
 
@@ -86,7 +89,11 @@ class GradingStatusFromView2 implements FromView
 
                                 $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, true, true);
 
-                            } // step check ends
+                            } else {
+
+                                $formStatus[$key.'_'.$type['form_type']] = 'NoName-Not Initiated|';
+
+                            }// step check ends
 
                         } // step lopp ends
 
