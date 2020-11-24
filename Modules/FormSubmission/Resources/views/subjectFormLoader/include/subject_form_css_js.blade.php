@@ -536,6 +536,9 @@
             }
             function canSubmitForm(formTypeId, stepIdStr){
 
+                var numberOfGraders = $('#form_master_' + stepIdStr + ' input[name="numberOfGraders"]').val();;
+                var numberOfAlreadyGradedPersons = $('#form_master_' + stepIdStr + ' input[name="numberOfAlreadyGradedPersons"]').val();;
+
                 var canQualityControl = {{ (canQualityControl(['create', 'store', 'edit', 'update']))? 'true':'false' }};
                 var canGrading = {{ (canGrading(['create', 'store', 'edit', 'update']))? 'true':'false' }};
                 var canAdjudication = {{ (canAdjudication(['create', 'store', 'edit', 'update']))? 'true':'false' }};
@@ -558,6 +561,7 @@
                         canSubmit = false;
                     }
                 }
+
                 if(
                     (formTypeId == 2) &&
                     (canGrading == true)
@@ -569,6 +573,14 @@
                         canSubmit = true;
                     }
                 }
+
+                if(
+                    (numberOfGraders == numberOfAlreadyGradedPersons) &&
+                    (formFilledByUserId != current_user_id)
+                ){
+                    canSubmit = false;
+                }
+
                 return canSubmit;
             }
 
