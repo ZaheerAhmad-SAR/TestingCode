@@ -121,7 +121,7 @@ class Query extends Model
     {
         $query = new Query();
 
-        $questionQueryArray = array_intersect_key($questionQueryArray, array_flip($query->getFillable()));
+        $questionQueryArray = array_intersect_key(array_filter($questionQueryArray), array_flip($query->getFillable()));
         $sqlQuery = self::getFormQueryObjQuery($questionQueryArray);
         //printSqlQuery($sqlQuery, false);
         $queryCheck   = false;

@@ -91,6 +91,19 @@ class QueriesController extends Controller
 
     }
 
+    public function loadFormByPhaseId(Request $request)
+    {
+        $phase_steps_id = $request->phase_steps_id;
+        $records = Query::where('query_status','!=','close')
+            ->where('phase_steps_id','like',$phase_steps_id)
+            ->whereNull('section_id')
+            ->whereNull('question_id')
+            ->where('parent_query_id','like',0)
+            ->get();
+        echo  view('queries::queries.form.queries_form_table_view',compact('records'));
+
+    }
+
     public function queryReply(Request $request)
     {
         $parentQueryId    = $request->post('parent_query_id'); // return 0
@@ -206,6 +219,14 @@ class QueriesController extends Controller
     $query    = Query::where('id',$query_id)->orderBy('created_at','asc')->first();
     $answers  = Query::where('parent_query_id',$query_id)->orderBy('created_at','asc')->get();
     echo  view('queries::queries.question.question_reply_view',compact('answers','query'));
+    }
+
+    public function showFormByQueryId (Request $request)
+    {
+    $query_id = $request->query_id;
+    $query    = Query::where('id',$query_id)->orderBy('created_at','asc')->first();
+    $answers  = Query::where('parent_query_id',$query_id)->orderBy('created_at','asc')->get();
+    echo  view('queries::queries.form.form_reply_view',compact('answers','query'));
     }
 
 
@@ -441,6 +462,67 @@ class QueriesController extends Controller
                 ]);
             }
         }
+        return response()->json([$query,'success'=>'Queries is generate successfully!!!!']);
+
+    }
+
+    public function replyFormQueries(Request $request)
+    {
+        $query_status     = $request->post('formStatusInput'); // return the status value
+
+        $query_id         = $request->post('queryIdInput');
+        $find             = Query::find($query_id);
+        $queryStatusArray = array('query_status'=>$query_status);
+        Query::where('id',$find['id'])->update($queryStatusArray);
+        $study_id            = $request->post('studyIdInput');
+        $question_id         = $request->post('questionIdInput');
+        $phase_steps_id      = $request->post('phaseStepsIdInput');
+        $section_id          = $request->post('sectionIdInput');
+        $subject_id          = $request->post('subjectIdInput');
+        $study_structures_id = $request->post('studyStructuresIdInput');
+        $field_id            = $request->post('fieldIdInput');
+        $form_type_id        = $request->post('formTypeIdInput');
+        $module              = $request->post('moduleNameInput');
+        $modility_id         = $request->post('modilityIdInput');
+        $queryId             = $request->post('queryIdInput');
+
+        $message             = $request->post('formReply');
+        $query_subject       = $request->post('subjectFormInput');
+        $query_url           = $request->post('queryUrlInput');
+        $queryAssignedTo     = $request->post('queryTypeInput');
+        $filePath            = '';
+
+        if (!empty($request->file('formFileInput'))) {
+            $image = $request->file('formFileInput');
+            $name = Str::slug($request->input('name')).'_'.time();
+            $folder = '/query_attachments/';
+            $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
+            $this->uploadOne($image, $folder, 'public', $name);
+        }
+
+        $id              = Str::uuid();
+        $query           = Query::create([
+            'id'=>$id,
+            'queried_remarked_by_id'=>\auth()->user()->id,
+            'parent_query_id'=> $queryId,
+            'messages'=>$message,
+            'module_name'=>$module,
+            'study_id'=>$study_id,
+            'query_status'=> 'open',
+            'query_type' =>$queryAssignedTo,
+            'query_url'=>$query_url,
+            'query_subject'=>$query_subject,
+            'question_id'=>$question_id,
+            'subject_id'=>$subject_id,
+            'study_structures_id'=>$study_structures_id,
+            'phase_steps_id'=>$phase_steps_id,
+            'section_id'=>$section_id,
+            'field_id'=>$field_id,
+            'form_type_id'=>$form_type_id,
+            'modility_id'=>$modility_id,
+            'query_attachments'=>$filePath
+        ]);
+
         return response()->json([$query,'success'=>'Queries is generate successfully!!!!']);
 
     }

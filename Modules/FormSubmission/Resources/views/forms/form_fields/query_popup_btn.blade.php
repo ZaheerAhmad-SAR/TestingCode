@@ -10,7 +10,9 @@ if(isset($queryParams)){
 <div class="row">
     <div class="col-md-6"></div>
     <div class="col-md-6 text-right">
+
         @if(\Modules\Queries\Entities\Query::questionHasQuery($queryParams))
+
             <div class="formQueries">
         <span class="ml-3" style="cursor: pointer;">
 
@@ -18,10 +20,11 @@ if(isset($queryParams)){
                  $dataStr = '';
                  if(isset($queryParams)){
                      $dataStr = "'" . implode("', '", $queryParams)."'";
+
                  }
              @endphp
 
-            <i class="fas fa-question-circle showAllFormQueries"   style="margin-top: 12px;"></i>
+            <i class="fas fa-question-circle showAllFormQueries"  onclick="getAllFormQueryData({{$dataStr}});"  style="margin-top: 12px;"></i>
         </span>
             </div>
 
