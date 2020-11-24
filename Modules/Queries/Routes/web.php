@@ -22,12 +22,15 @@ Route::group(['middleware' => ['auth','web']],function(){
     Route::post('queries/usersDropDownListQuestion', 'QueriesController@usersDropDownListQuestion')->name('queries.usersDropDownListQuestion');
     Route::post('queries/loadAllQueriesByStudyId', 'QueriesController@loadAllQueriesByStudyId')->name('queries.loadAllQueriesByStudyId');
     Route::post('queries/loadAllQuestionById', 'QueriesController@loadAllQuestionById')->name('queries.loadAllQuestionById');
+    Route::post('queries/loadFormByPhaseId', 'QueriesController@loadFormByPhaseId')->name('queries.loadFormByPhaseId');
     Route::post('queries/showCommentsById', 'QueriesController@showCommentsById')->name('queries.showCommentsById');
     Route::post('queries/showQuestionsById', 'QueriesController@showQuestionsById')->name('queries.showQuestionsById');
+    Route::post('queries/showFormByQueryId', 'QueriesController@showFormByQueryId')->name('queries.showFormByQueryId');
     Route::post('queries/queryReply', 'QueriesController@queryReply')->name('queries.queryReply');
     Route::post('queries/queryQuestionReply', 'QueriesController@queryQuestionReply')->name('queries.queryQuestionReply');
     Route::post('queries/getStudyDataByStudyId', 'QueriesController@getStudyDataByStudyId')->name('queries.getStudyDataByStudyId');
     Route::post('queries/storeFormQueries', 'QueriesController@storeFormQueries')->name('queries.storeFormQueries');
+    Route::post('queries/replyFormQueries', 'QueriesController@replyFormQueries')->name('queries.replyFormQueries');
     Route::post('queries/storeQuestionQueries', 'QueriesController@storeQuestionQueries')->name('queries.storeQuestionQueries');
     Route::post('queries/usersDropDownListForm', 'QueriesController@usersDropDownListForm')->name('queries.usersDropDownListForm');
 
