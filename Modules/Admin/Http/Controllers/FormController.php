@@ -514,26 +514,7 @@ class FormController extends Controller
                 QuestionValidation::insert($validation);
             }
         }
-        /*
-        if (isset($request->decision_one) && count($request->decision_one) > 0) {
-            for ($i = 0; $i < count($request->decision_one); $i++) {
-                $id    = Str::uuid();
-                $Question_validation[] = [
-                    'id' => $id,
-                    'question_id' => $questionObj->id,
-                    'decision_one' => $request->decision_one[$i],
-                    'opertaor_one' => $request->opertaor_one[$i],
-                    'dep_on_question_one_id' => $request->dep_on_question_one_id[$i],
-                    'condition' => $request->operator[$i],
-                    'decision_two' => $request->decision_two[$i],
-                    'opertaor_two' => $request->opertaor_two[$i],
-                    'error_type' => $request->error_type[$i],
-                    'error_message' => $request->error_message[$i]
-                ];
-            }
-            QuestionValidation::insert($Question_validation);
-        }
-        */
+  
     }
 
     private function updateQuestionValidation($request, $questionObj, $isReplicating = true)
@@ -557,35 +538,7 @@ class FormController extends Controller
             ->with('step', $step);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        return view('admin::edit');
-    }
 
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Response
-     */
-    public function destroy($id = '')
-    {
-    }
     function deleteQuestion($questionId)
     {
         $this->deleteQuestionAndItsRelatedValues($questionId);

@@ -22,7 +22,7 @@
                                     </div>
                                     <label for="Sections" class="col-sm-1 col-form-label">Sections</label>
                                     <div class="col-sm-5">
-                                        <select name="section_id" id="section_id_calc" class="form-control basic_section">
+                                        <select name="section_id" id="section_id_calc" class="form-control basic_section" required>
                                             <option value="">Choose Phase/Visit && Step/Form-Type</option>
                                         </select>
                                     </div>
@@ -40,7 +40,7 @@
                                 <div class="form-group row">
                                     <label for='variable' class="col-sm-2 col-form-label">Variable name </label>
                                     <div class="col-sm-4">
-                                        <input type="text" class="form-control variable_name" name="variable_name" id="variable_name_calc" value="">
+                                        <input type="text" class="form-control variable_name variable_name_ques" name="variable_name" id="variable_name_calc" value="" onchange="check_if_name_exists(this)" required>
                                     </div>
                                     <label for="list" class="col-sm-1 col-form-label">Question</label>
                                     <div class="col-sm-5">
