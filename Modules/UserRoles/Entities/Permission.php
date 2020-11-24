@@ -48,7 +48,8 @@ class Permission extends Model
         return true;
     }
 
-    public static function getStudyQCRole(){
+    public static function getStudyQCRole() {
+
         $permissionsIdsArray = self::where(function ($query) {
             $query->where('permissions.name', '=', 'qualitycontrol.index');
         })->distinct('id')->pluck('id')->toArray();
@@ -60,7 +61,7 @@ class Permission extends Model
         return $studyAdminRoleId;
     }
 
-    public static function getStudyGraderRole(){
+    public static function getStudyGraderRole() {
         $permissionsIdsArray = self::where(function ($query) {
             $query->where('permissions.name', '=', 'grading.index');
         })->distinct('id')->pluck('id')->toArray();

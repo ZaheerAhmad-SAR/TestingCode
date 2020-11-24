@@ -102,14 +102,14 @@ class StudyController extends Controller
             $studyAdmins = '';
         }
         if (hasPermission(\auth()->user(), 'qualitycontrol.index')) {
-            //echo 'QC';
+
             $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistQC());
             $study = '';
             $studyAdmins = '';
         }
+
         $studies = Study::whereIn('id', $studiesIDs)->get();
-        //dd($studies);
-        //exit();
+
         return view('admin::studies.index', compact('sites', 'users', 'adminUsers', 'study', 'studyAdminRoleId', 'studies'));
     }
 
