@@ -54,8 +54,8 @@ class UserController extends Controller
     public function index()
     {
 
-        $roles  =   Role::where('role_type', '=', 'system_role')->get();
-        $systemRoleIds = Role::where('role_type', 'system_role')->pluck('id')->toArray();
+        $roles  =   Role::where('role_type', '!=', 'study_role')->get();
+        $systemRoleIds = Role::where('role_type', '!=', 'study_role')->pluck('id')->toArray();
         $currentStudy = session('current_study');
 
         $userIdsOfSystemRoles = UserRole::whereIn('role_id', $systemRoleIds)->pluck('user_id')->toArray();
@@ -181,16 +181,9 @@ class UserController extends Controller
     }
     public function show($id)
     {
-        if (!empty(session('current_study'))) {
-            $user = UserRole::where('user_id', '=', $id)->where('study_id', '=', session('current_study'))->get();
-            foreach ($user as $studyuser) {
-                // dd('study admin has got permission',$studyuser);
-                $studyuser->delete();
-            }
-        } else {
-            $user = User::find($id);
-            $user->delete();
-        }
+        RoleStudyUser::where('user_id', 'like', $id)->delete();
+        UserRole::where('user_id', 'like', $id)->delete();
+        User::where('id', 'like', $id)->delete();
         return redirect()->route('users.index')->with('success', 'User deleted');
     }
     /**
