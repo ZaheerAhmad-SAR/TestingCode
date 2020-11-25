@@ -106,7 +106,7 @@
                     <div class="card-body">
 
                         <div class="table-responsive">
-                        <form method="POST" action="{{ route('save-assign-work') }}">
+                        <form method="POST" action="{{ route('save-assign-work') }}" class="subject-form">
                             @csrf
                             <table class="table table-bordered" id="laravel_crud">
                                 <thead>
@@ -160,7 +160,11 @@
                                                 <input type="checkbox" @if ($subject->assign_work == '0') class="check_subject" @else checked disabled @endif name="check_subject[{{ $subject->id.'_'.$subject->phase_id }}]" >
                                             </td>
                                             <td>
-                                               <a href="{{route('subjectFormLoader.showSubjectForm',['study_id' => $subject->study_id, 'subject_id' => $subject->id])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
+                                               <span @if ($subject->assign_work == '1') class="text-primary font-weight-bold" onClick="updateSubject('{{$subject->id}}','{{$subject->phase_id}}')" @endif>
+                                                    
+                                                    {{$subject->subject_id}}
+                                                    
+                                                </span>
                                                <input type="hidden" name="subject_id[]" value="{{ $subject->id }}">
                                             </td>
                                             <td>
@@ -201,7 +205,7 @@
                             
                             @endif
 
-                            <!-- Modal -->
+                            <!--Add  Modal -->
                             <div class="modal fade" id="assign-work-model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                               <div class="modal-dialog modal-dialog-centered" role="document">
                                 <div class="modal-content">
@@ -266,6 +270,68 @@
         <!-- END: Card DATA-->
     </div>
 
+<!--Edit Modal -->
+    <div class="modal fade" id="edit-assign-work-model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Update Assign Work</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        <form method="POST" action="{{ route('update-assign-work') }}">
+            @csrf
+              <div class="modal-body">
+
+                <input type="hidden" name="edit_subject_id" class="edit_subject_id" id="edit_subject_id" value="">
+                <input type="hidden" name="edit_phase_id" class="edit_phase_id" id="edit_phase_id" value="">
+
+                <div class="form-group">
+                    <label class="edit-modility">Modality</label>
+                    <select class="form-control edit_modility_id" name="edit_modility_id" id="edit_modility_id" required>
+                        <option value="">Select Modality</option>
+                        @foreach($getModilities as $modility)
+                            <option value="{{$modility->id}}">{{$modility->modility_name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="edit_form_type">Form Type</label>
+                    <select class="form-control edit_form_type_id" name="edit_form_type_id" id="edit_form_type_id" required>
+                        <option value="">Select Form Type</option>
+                        @foreach($getFormType as $formType)
+                            <option value="{{$formType->id}}">{{$formType->form_type}}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="edit_users">Users</label>
+                    <Select class="form-control edit_users_id" name="edit_users_id[]" id="edit_users_id" multiple required>
+
+                    </Select>
+                </div>
+
+                <div class="form-group">
+                    <label class="users">Assign Date</label>
+                    <input type="date" class="form-control" id="edit_assign_date" name="edit_assign_date" value="" required>
+                </div>
+
+              </div>
+              <!-- modal body ends -->
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Update Assign Work</button>
+              </div>
+              <!-- footer ends -->
+        </form>
+        </div>
+      </div>
+    </div> 
+    <!-- Model ends -->
+
 @endsection
 @section('script')
 
@@ -284,6 +350,12 @@
         dropdownPosition: 'below'
       
     });
+
+    $('#edit_users_id').select2({
+        dropdownPosition: 'below'
+      
+    });
+
     //form type on change
     $('.form_type_id').change(function(){
 
@@ -321,13 +393,20 @@
                     }
 
                 } // success
-            }
-        })
+
+            } // success call back
+
+        }); // ajax ends
     });
 
     $('.assign-work').click(function() {
         // any checkbox is checked
         if ($(".check_subject:checked").length > 0) {
+
+            // clear form fields
+            $('.subject-form').find("input[type=text], input[type=date], select").val("");
+            // empty select2
+            $('.users_id').empty().trigger('change');
             
             // show model
             $('#assign-work-model').modal('show');
@@ -370,6 +449,100 @@
             $('.select_all').prop('checked',false);
 
         }
+    });
+
+    function updateSubject(subjectId, phaseId) {
+
+        $.ajax({
+            url: '{{ route("edit-assign-work") }}',
+            type: 'GET',
+            data: {
+                'subject_id': subjectId,
+                'phase_id' : phaseId
+            },
+            success:function(data) {
+
+                // clear form fields
+                $('.subject-form').find("input[type=text], input[type=date], select").val("");
+                // empty select2
+                $('.edit_users_id').empty().trigger('change');
+                // append data to fields
+                $('#edit_modility_id').val(data.editAssignWork.modility_id);
+                $('#edit_form_type_id').val(data.editAssignWork.form_type_id);
+
+                var formattedDate = new Date(data.editAssignWork.assign_date);
+                var d = formattedDate.getDate();
+                var m =  formattedDate.getMonth();
+                m += 1;  // JavaScript months are 0-11
+                var y = formattedDate.getFullYear();
+
+                $('#edit_assign_date').val(y + "-" + m + "-" + d);
+
+                // assign subject/phase_id
+                $('#edit_subject_id').val(subjectId);
+                $('#edit_phase_id').val(phaseId);
+
+                // append users
+                var row;
+                //row += '<option value="">Select User</option>';
+                // get users
+                $.each(data.getUsers, function(key, value) {
+                    row += '<option value="'+value.user_id+'" selected>'+value.name+'</option>';
+
+                });
+
+                $('.edit_users_id').append(row);
+
+
+                // show model
+                $('#edit-assign-work-model').modal('show');
+
+            } // success call back function
+
+        }); // ajax ends
+    }
+
+     //form type on change
+    $('.edit_form_type_id').change(function(){
+
+        $.ajax({
+            url: '{{ route("get-form-type-users") }}',
+            type: 'GET',
+            data: {
+                'form_type_id': $(this).val(),
+            },
+            success:function(data) {
+                
+                if (data.success) {
+
+                    // empty select2
+                    $('.edit_users_id').empty().trigger('change');
+
+                    if(data.getUsers != null) {
+
+                        var row;
+                        //row += '<option value="">Select User</option>';
+                        // get users
+                        $.each(data.getUsers, function(key, value) {
+                          row += '<option value="'+value.id+'">'+value.name+'</option>';
+                        });
+
+                        // append users to drop select2
+                        $('.edit_users_id').append(row);
+                    } // user check ends
+                    else {
+
+                        var row;
+                        //row += '<option value="">Select User</option>';
+                        // append users to drop select2
+                        $('.edit_users_id').append(row);
+                    }
+
+                } // success
+
+            } // success call back
+
+        }); // ajax ends
     });
 </script>
 @endsection
