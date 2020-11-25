@@ -157,20 +157,21 @@
             @endif
 
             <!-- //////////////////////////////// Transmission //////////////////////// -->
-            @if(hasPermission(auth()->user(),'systemtools.index'))
+            
+            @if(!empty(session('current_study')))
             <li class="dropdown">
                 <ul>
                     <li class="dropdown"><a href="#"><i class="icon-grid"></i>Transmissions</a>
                         <ul class="sub-menu">
 
-                                @if(!empty(session('current_study')))
-                                    <li class="@if(is_active('transmissions.study-transmissions')) {{ ' active' }} @endif">
-                                        <a href="{!! route('transmissions.study-transmissions') !!}">
-                                            Study Transmissions
-                                        </a>
-                                    </li>
-                                @endif
-                            @if(hasPermission(auth()->user(),'studytools.index'))
+                            
+                            <li class="@if(is_active('transmissions.study-transmissions')) {{ ' active' }} @endif">
+                                <a href="{!! route('transmissions.study-transmissions') !!}">
+                                    Study Transmissions
+                                </a>
+                            </li>
+
+                            @if(hasPermission(auth()->user(),'systemtools.index'))
                                 <li class="@if(is_active('transmissions.index')) {{ ' active' }} @endif">
                                     <a href="{!! route('transmissions.index') !!}">
                                         System Transmissions
@@ -182,7 +183,6 @@
                 </ul>
             </li>
             @endif
-
             <!-- //////////////////////////////// Transmissions ////////////////// -->
             @if(hasPermission(auth()->user(),'subjects.index'))
             <li class=""><!-- <a href="#"><i class="fas fa-laptop-medical mr-1"></i>Subject Management</a> -->
