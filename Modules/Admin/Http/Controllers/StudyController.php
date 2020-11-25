@@ -66,12 +66,12 @@ class StudyController extends Controller
         $user = \auth()->user()->id;
         if (hasPermission(\auth()->user(), 'systemtools.index')) {
             $studyAdminRoleId = Permission::getStudyAdminRole();
-            if (!empty($studyAdminRoleId[1])) {
+            if (!empty($studyAdminRoleId)) {
                 $userIdsArrayFromUserRole = UserRole::where('role_id', $studyAdminRoleId[1])->pluck('user_id')->toArray();
                 $adminUsers = User::whereIn('id', $userIdsArrayFromUserRole)->orderBy('name', 'asc')->get();
             }
             $userRole = UserRole::where('user_id', \auth()->user()->id)->first();
-            if ($userRole->role_id == $studyAdminRoleId[1]) {
+            if (!empty($studyAdminRoleId) && $userRole->role_id == $studyAdminRoleId[1]) {
                 $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistAdmin());
             } else {
                 $studiesIDs = array_merge($studiesIDs, Study::all()->pluck('id')->toArray());
