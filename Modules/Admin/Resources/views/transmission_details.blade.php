@@ -392,8 +392,7 @@
         });
     }
 
-    $("#queriesTransmissionForm").on('submit', function(e)
-    {
+    $("#queriesTransmissionForm").on('submit', function(e) {
         e.preventDefault();
         $.ajaxSetup({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
