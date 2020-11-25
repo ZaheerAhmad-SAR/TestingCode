@@ -52,20 +52,30 @@ function search_auth($arr, $auth)
     return false;
 }
 
+function isThisUserSuperAdmin($user)
+{
+    $roles = $user->user_roles;
+    $isSuperAdmin = false;
+    foreach ($roles as $userRole) {
+        $role = Role::find($userRole->role_id);
+        if ($role->role_type == 'super_admin') {
+            $isSuperAdmin = true;
+            break;
+        }
+    }
+    return $isSuperAdmin;
+}
+
 function hasPermission($user, $routeName)
 {
-    if (empty(\session('current_study'))){
+    if (empty(\session('current_study')) || isThisUserSuperAdmin($user)) {
         $roles = $user->user_roles;
-    }
-
-    /* Set Study Role Permissions */
-
-    else{
-        $roles = \Modules\Admin\Entities\RoleStudyUser::select('role_id')->where('user_id',\auth()->user()->id)
-            ->where('study_id',\session('current_study'))
+    } else {
+        $roles = \Modules\Admin\Entities\RoleStudyUser::select('role_id')->where('user_id', \auth()->user()->id)
+            ->where('study_id', \session('current_study'))
             ->get();
     }
-//    dd($roles);
+    //    dd($roles);
     $roleIds = [];
     foreach ($roles as $role) {
 
@@ -79,7 +89,6 @@ function hasPermission($user, $routeName)
     } else {
         return false;
     }
-
 }
 
 function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
@@ -817,7 +826,6 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             if ($key == 0) {
 
                 $editReason = $data;
-
             } else if ($key == 1) {
                 //first time loop data
                 $newData['study'] = $studyName->study_title;
@@ -830,11 +838,9 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
                 if ($eventSection == 'Adjudication Form' || $eventSection == 'System Adjudication Form') {
 
                     $newData['form_version_num'] = '';
-
                 } else {
 
                     $newData['form_version_num'] = $data['form_version_num'];
-
                 }
 
                 $newData['edit_reason'] = $editReason;

@@ -549,6 +549,52 @@ class GradingController extends Controller
         } // ajax ends
     }
 
+    public function editAssignWork(Request $request) {
+        // get data 
+        $editAssignWork = AssignWork::where('subject_id', $request->subject_id)
+                                    ->where('phase_id', $request->phase_id)
+                                    ->first();
+
+        // get users for this subject and phase
+        $getUsers = AssignWork::select('users.id as user_id', 'users.name')
+                                ->leftJoin('users', 'users.id', '=', 'assign_work.user_id')
+                                ->where('assign_work.subject_id', $request->subject_id)
+                                ->where('assign_work.phase_id', $request->phase_id)
+                                ->get();                           
+
+        return response()->json(['editAssignWork' => $editAssignWork, 'getUsers' => $getUsers]);
+    }
+
+    public function updateAssignWork(Request $request) {
+        
+        $input = $request->all();
+
+        // delete old record for this subject and phase
+        $deleteSubjectPhase = AssignWork::where('subject_id', $input['edit_subject_id'])
+                                          ->where('phase_id', $input['edit_phase_id'])
+                                          ->delete();
+
+        // loop user ids
+        foreach($input['edit_users_id'] as $userId) {
+            // assign work object
+            $assignWork = new AssignWork;
+            $assignWork->subject_id     = $input['edit_subject_id'];
+            $assignWork->phase_id       = $input['edit_phase_id'];
+            $assignWork->modility_id    = $input['edit_modility_id'];
+            $assignWork->form_type_id   = $input['edit_form_type_id'];
+            $assignWork->user_id        = $userId;
+            $assignWork->assign_date    = $input['edit_assign_date'];
+            $assignWork->save();
+
+        } // user ends
+
+         // success msg
+        \Session::flash('success', 'Work assigned updated successfully.');
+
+        //redirect
+        return redirect(route('assign-work'));
+    }
+
     /**
      * Store a newly created resource in storage.
      * @param Request $request
