@@ -14,15 +14,18 @@
                     {{--@endif--}}
                 </ul>
                 <ul class="@if(is_active('studies.index')) {{ 'active' }} @endif">
-                    @if(hasPermission(auth()->user(),'studies.index') && empty(session('current_study')))
+                    @if(
+                        (hasPermission(auth()->user(),'studies.index') &&
+                        empty(session('current_study'))) ||
+                        isThisUserSuperAdmin(auth()->user(),'studies.index')
+                        )
                     <li class="nav-item @if(is_active('studies.index')) {{ ' active' }} @endif">
                         <a href="{!! route('studies.index') !!}">
                             <i class="icon-book-open"></i>
                             Studies
                         </a>
                     </li>
-                        @endif
-                       @if(!empty(session('current_study')))
+                       @else
                             <li class="nav-item @if(is_active('studies.index')) {{ ' active' }} @endif">
                                 <a href="{!! route('studies.index') !!}">
                                     <i class="icon-book-open"></i>

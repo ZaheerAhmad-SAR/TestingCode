@@ -144,10 +144,10 @@ class StudyusersController extends Controller
      */
     public function show($id)
     {
-        $user = User::find($id);
-        $user->delete();
-
-        return redirect()->route('users.index')->with('success', 'User deleted');
+        if (!empty(session('current_study'))) {
+            RoleStudyUser::where('user_id', 'like', $id)->where('study_id', 'like', session('current_study'))->delete();
+        }
+        return redirect()->route('studyusers.index')->with('success', 'User romoved from study');
     }
 
     /**
@@ -208,12 +208,9 @@ class StudyusersController extends Controller
         ]);
 
         if ($request->roles != null) {
-
-            $userroles  = RoleStudyUser::where('study_id', session('current_study'))
+            RoleStudyUser::where('study_id', 'like', session('current_study'))
                 ->where('user_id', $user->id)
                 ->delete();
-
-
             foreach ($request->roles as $role) {
                 RoleStudyUser::create([
                     'id'         => Str::uuid(),
@@ -243,5 +240,6 @@ class StudyusersController extends Controller
     public function destroy($id)
     {
         $user = User::find($id);
+        dd($user);
     }
 }
