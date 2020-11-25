@@ -76,7 +76,7 @@
                                                     </a>
                                                 </span>
                                                             <span class="dropdown-item">
-                                                    <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
+                                                    <a href="{{route('studyusers.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
                                                         <i class="far fa-edit"></i>&nbsp; Delete </a>
                                                     </span>
                                                         </div>
