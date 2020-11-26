@@ -462,6 +462,7 @@ class GradingController extends Controller
                     foreach($input['users_id'] as $userId) {
                         // assign work object
                         $assignWork = new AssignWork;
+                        $assignWork->study_id = \Session::get('current_study');
                         $assignWork->subject_id = $subject;
                         $assignWork->phase_id = $input['phase_id'][$key];
                         $assignWork->modility_id = $input['modility_id'];
@@ -578,6 +579,7 @@ class GradingController extends Controller
         foreach($input['edit_users_id'] as $userId) {
             // assign work object
             $assignWork = new AssignWork;
+            $assignWork->study_id = \Session::get('current_study');
             $assignWork->subject_id     = $input['edit_subject_id'];
             $assignWork->phase_id       = $input['edit_phase_id'];
             $assignWork->modility_id    = $input['edit_modility_id'];
