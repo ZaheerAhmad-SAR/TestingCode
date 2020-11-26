@@ -79,7 +79,7 @@
             <div class="col-lg-2 col-xl-2">
                 <label for="username" class="col-form-label">Fields Types</label>
             </div>
-            <div class="col-lg-10 col-xl-10 mb-4 mt-3 pr-lg-0 flip-menu">
+            <div class="col-lg-10 col-xl-10 mb-4 mt-3 pr-lg-0 flip-menu" style="width:calc(100vh - 140px);">
                 <div class="card border h-100 mail-menu-section display-sections">
 
                 </div>
