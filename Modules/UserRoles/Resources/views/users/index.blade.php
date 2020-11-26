@@ -81,13 +81,7 @@
                                     <tr>
                                         <td>{{ucfirst(($user->name))}}</td>
                                         <td>{{($user->email)}}</td>
-                                        <td>
-    {{--                                        {{ucfirst($user->role_name)}}--}}
-
-                                            @foreach($user->user_roles as $role)
-                                                {{ucfirst($role->role->name)}},
-                                            @endforeach
-                                        </td>
+                                        <td>{{ \App\User::getUserRolesString($user) }}</td>
                                         <td>{{!empty($user->google2fa_secret)?'Enabled':'Disabled'}}</td>
                                         <td>
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
@@ -108,7 +102,6 @@
                                     </tr>
                                 @endforeach
                                     </tbody>
-
                             </table>
                         </div>
                     </div>
@@ -202,8 +195,9 @@
                 <div class="modal-header">
                     <p class="modal-title">Add User</p>
                 </div>
-                <form action="{{route('users.assignUsers')}}" enctype="multipart/form-data" method="POST">
+                <form action="{{route('users.assignUsers')}}" enctype="multipart/form-data" method="POST" id="assignuser_form_1">
                     <div class="modal-body">
+                        <p class="alert alert-danger assignuser_error" style="display: none;"></p>
                         <div class="tab-content" id="nav-tabContent">
                             <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
                                 @csrf
@@ -211,7 +205,7 @@
                                     <div class="col-md-4">Select User</div>
                                     <div class="col-md-8">
                                         <select class="form-control dropdown" name="study_user">
-                                            <option value="selectuser"> Select User</option>
+                                            <option value=""> Select User</option>
                                             @foreach($studyusers as $user)
                                             <option value="{{$user->id}}">{{$user->name}}</option>
                                             @endforeach
@@ -222,7 +216,7 @@
                                     <div class="col-md-4">Select Role</div>
                                     <div class="col-md-8">
                                         <select class="form-control dropdown" name="user_role">
-                                            <option value="1">Select Role</option>
+                                            <option value="">Select Role</option>
                                             @foreach($roles as $role)
                                                 <option value="{{$role->id}}">{{$role->name}}</option>
                                             @endforeach
@@ -235,7 +229,7 @@
                     <div class="modal-footer">
                         <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                         @if(hasPermission(auth()->user(),'users.store'))
-                            <button type="submit" class="btn btn-outline-primary" id="btn-save" onclick="checkuser()" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                            <button type="submit" class="btn btn-outline-primary" id="btn-save" value="create"><i class="fa fa-save"></i> Save Changes</button>
                         @endif
                     </div>
                 </form>
@@ -283,7 +277,7 @@
                     <div class="modal-footer">
                         <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                         @if(hasPermission(auth()->user(),'users.store'))
-                            <button type="submit" class="btn btn-outline-primary" id="btn-save" onclick="checkuser()" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                            <button type="submit" class="btn btn-outline-primary" id="btn-save" value="create"><i class="fa fa-save"></i> Save Changes</button>
                         @endif
                     </div>
                 </form>
@@ -297,9 +291,10 @@
                 <div class="modal-header">
                     <p class="modal-title">Invite User</p>
                 </div>
-                <form action="{{route('process_invite')}}" enctype="multipart/form-data" method="POST">
+                <form action="{{route('process_invite')}}" enctype="multipart/form-data" method="POST" id="inviteuser_form_1">
                     @csrf
                     <div class="modal-body">
+                        <p class="alert alert-danger inviteuser_error" style="display: none;"></p>
 
                         <div class="tab-content" id="nav-tabContent">
                             <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
@@ -307,7 +302,7 @@
                                 <div class="form-group row" style="margin-top: 10px;">
                                     <div class="col-md-4">Email address</div>
                                     <div class="col-md-8">
-                                        <input type="email" class="form-control" id="exampleInputEmail1" name="email" aria-describedby="emailHelp" placeholder="Enter email">
+                                        <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email">
                                         <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                                     </div>
                                 </div>
@@ -380,40 +375,68 @@ $(document).ready(function() {
                   contentType: false,
                   type: 'POST',
                   success: function(data) {
-
                     if (data.errors) {
-
                         $('.user-store-error').text(data.errors);
                         $('.user-store-error').css('display', 'block');
-
                         setTimeout(function() {
                             $('.user-store-error').slideUp(500);
                         }, 5000);
-
                     } else {
-
                         location.reload();
                     }
                   }
                 }); // ajax ends
             }); // form submit function
 
+
+            $('#inviteuser_form_1').submit(function(e){
+                e.preventDefault();
+                var formData = new FormData($(this)[0]);
+                $.ajax({
+                  url: $(this).attr('action'),
+                  data: formData,
+                  processData: false,
+                  contentType: false,
+                  type: 'POST',
+                  success: function(data) {
+                    if (data.errors) {
+                        $('.inviteuser_error').text(data.errors);
+                        $('.inviteuser_error').css('display', 'block');
+                        setTimeout(function() {
+                            $('.inviteuser_error').slideUp(500);
+                        }, 5000);
+                    } else {
+                        location.reload();
+                    }
+                  }
+                }); // ajax ends
+            });
+
+            $('#assignuser_form_1').submit(function(e){
+                e.preventDefault();
+                var formData = new FormData($(this)[0]);
+                $.ajax({
+                  url: $(this).attr('action'),
+                  data: formData,
+                  processData: false,
+                  contentType: false,
+                  type: 'POST',
+                  success: function(data) {
+                    if (data.errors) {
+                        $('.assignuser_error').text(data.errors);
+                        $('.assignuser_error').css('display', 'block');
+                        setTimeout(function() {
+                            $('.assignuser_error').slideUp(500);
+                        }, 5000);
+                    } else {
+                        //location.reload();
+                    }
+                  }
+                }); // ajax ends
+            });
+
         });
     </script>
-
-    <script type="text/javascript">
-        function checkuser() {
-            var user = document.getElementByName("users")[0].value;
-            if (user.value == "selectuser") {
-                alert("Please select a user");
-            }
-        }
-
-            @if (count($errors) > 0)
-            $('#inviteuser').modal('show');
-        @endif
-    </script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
 @stop

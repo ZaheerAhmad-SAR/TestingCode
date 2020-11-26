@@ -27,21 +27,15 @@ class StudyusersController extends Controller
      */
     public function index()
     {
-
+        $currentStudy = session('current_study');
+        $studyRoleIds = Role::where('role_type', '=', 'study_role')->pluck('id')->toArray();
+        $idsOfUsersWithStudyRole = UserRole::whereIn('role_id', $studyRoleIds)->pluck('user_id')->toArray();
         $roles  =   Role::where('role_type', '=', 'study_role')->get();
 
-        $currentStudy = session('current_study');
+        $enrolledUserIds = RoleStudyUser::where('study_id', '=', session('current_study'))->pluck('user_id')->toArray();
+        $studyusers = $enrolledusers = User::whereIn('id', $enrolledUserIds)->get();
 
-        $enrolledusers = RoleStudyUser::select('study_role_users.user_id', 'study_role_users.role_id', 'users.*', 'roles.name as role_name')
-            ->join('users', 'users.id', '=', 'study_role_users.user_id')
-            ->join('roles', 'roles.id', '=', 'study_role_users.role_id')
-            ->where('study_id', '=', session('current_study'))->get();
-
-
-        $getEnrolledUsersId = RoleStudyUser::where('study_id', '=', session('current_study'))->pluck('user_id')->toArray();
-
-        $studyusers = RoleStudyUser::where('study_id', '!=', session('current_study'))->pluck('user_id')->toArray();
-        $users = User::whereNotIn('id', $getEnrolledUsersId)->get();
+        $users = User::whereIn('id', $idsOfUsersWithStudyRole)->whereNotIn('id', $enrolledUserIds)->get();
 
         return view('userroles::users.studyUsers', compact('roles', 'enrolledusers', 'studyusers', 'users'));
     }
@@ -73,9 +67,18 @@ class StudyusersController extends Controller
             $validator = \Validator::make($request->all(), [
                 'name'      => 'required',
                 'email'     => 'required|email',
-                'password'  => 'required|string|min:8|nullable|confirmed|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
-                'roles'    => "required|array|min:1",
-                'roles.*'  => "required|min:1",
+                'password' => [
+                    'required',
+                    'string',
+                    'min:8',             // must be at least 10 characters in length
+                    'regex:/[a-z]/',      // must contain at least one lowercase letter
+                    'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                    'regex:/[0-9]/',      // must contain at least one digit
+                    'regex:/[@$!%*#?&]/', // must contain a special character
+                    'confirmed',
+                ],
+                'roles'    => 'required|array|min:1',
+                'roles.*'  => 'required|min:1',
             ]);
 
             if ($validator->fails()) {
