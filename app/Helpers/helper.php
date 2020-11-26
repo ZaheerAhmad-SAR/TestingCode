@@ -68,14 +68,17 @@ function isThisUserSuperAdmin($user)
 
 function hasPermission($user, $routeName)
 {
-    if (empty(\session('current_study')) || isThisUserSuperAdmin($user)) {
+    if (isThisUserSuperAdmin($user)) {
+        return true;
+    }
+
+    if (empty(\session('current_study'))) {
         $roles = $user->user_roles;
     } else {
-        $roles = \Modules\Admin\Entities\RoleStudyUser::select('role_id')->where('user_id', \auth()->user()->id)
+        $roles = \Modules\Admin\Entities\RoleStudyUser::select('role_id')->where('user_id', $user->id)
             ->where('study_id', \session('current_study'))
             ->get();
     }
-    //    dd($roles);
     $roleIds = [];
     foreach ($roles as $role) {
 
