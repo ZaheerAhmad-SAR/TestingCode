@@ -24,7 +24,7 @@
                     <p><strong>Subject ID:</strong> {{$data['Subject_ID']}}</p>
                     <p><strong>Remarks</strong> <br> {{$data['remarks']}}</p>
 
-
+                    <p>Click Here to Reply : {{$data['replyToken']}}</p>
 {{--                    <div class="table-responsive">--}}
 {{--                        <table id="example" class="display table dataTable table-striped table-bordered" >--}}
 {{--                            <thead>--}}

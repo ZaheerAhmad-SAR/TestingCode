@@ -24,8 +24,10 @@ Route::post('transmissions/getAllPIBySiteId', 'TransmissionController@getAllPIBy
 
 
 Route::post('transmissions/queryTransmissionMail', 'TransmissionController@queryTransmissionMail')->name('transmissions.queryTransmissionMail');
+Route::post('transmissions/getQueryByTransmissionId', 'TransmissionController@getQueryByTransmissionId')->name('transmissions.getQueryByTransmissionId');
 
 Route::post('transmissions-status', 'TransmissionController@transmissionStatus')->name('transmissions-status');
+
 
 Route::prefix('admin')->group(function () {
     Route::get('/', 'AdminController@index');

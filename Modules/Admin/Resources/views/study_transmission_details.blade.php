@@ -199,6 +199,17 @@
                                                     </span>
                                                         @endif
                                                     </div>
+                                                    @php
+                                                        $studyHaveTransimision = Modules\Queries\Entities\QueryNotification::where('transmission_number','=',$transmission->Transmission_Number)->where('notifications_status','=','open')->first();
+
+                                                    @endphp
+                                                    @if(null !== $studyHaveTransimision)
+                                                        <div class="transmissionQuery">
+                                                    <span class="ml-3" style="cursor: pointer;">
+                                                        <i class="fas fa-question-circle showAlltransmissionQuery" data-id="{{$studyHaveTransimision->id}}"  style="margin-top: 3px;"></i></span>
+                                                        </div>
+                                                    @endif
+
                                             </div>
                                                  <!-- gear dropdown -->
                                             </td>
@@ -341,6 +352,34 @@
     </div>
     <!-- transmission query model start-->
 
+    <div class="modal fade" tabindex="-1" role="dialog" id="transmissonQueryTableView" aria-labelledby="exampleModalQueries" aria-hidden="true">
+        <div class="modal-dialog  modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header ">
+                    <p class="modal-title">Transmission Table View</p>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table id="example" class="display table dataTable table-striped table-bordered" >
+                            <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Submited By</th>
+                                <th>Assigned To</th>
+                                <th>CC Email</th>
+                                <th>Created Date</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody class="queriesList"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 @endsection
 @section('script')
 
@@ -358,6 +397,31 @@
     $('.creatNewTransmissionsForQueries').click(function () {
         $('#transmissonQueryModal').modal('show');
     });
+
+    $('.showAlltransmissionQuery').click(function () {
+        var transmission_Id = $(this).attr('data-id');
+        console.log(transmission_Id);
+        $('#transmissonQueryTableView').modal('show');
+        loadQueryByTransmissionId(transmission_Id);
+    });
+
+    function loadQueryByTransmissionId(transmission_Id) {
+        $.ajax({
+            url:"{{route('transmissions.getQueryByTransmissionId')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'POST',
+                'transmission_Id'      :transmission_Id,
+            },
+            success: function(response)
+            {
+                $('.queriesList').html('');
+                $('.queriesList').html(response);
+            }
+        });
+    }
+
 
     $(".sitesChange").change(function () {
         var selectedText = $(this).find("option:selected").text();
