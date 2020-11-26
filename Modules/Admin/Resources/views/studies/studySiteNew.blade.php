@@ -295,10 +295,10 @@
 
                                             </div>
                                             <div class="modal-footer">
-                                                @if(hasPermission(auth()->user(),'sites.store'))
+{{--                                                @if(hasPermission(auth()->user(),'sites.store'))--}}
                                                     <button type="submit" id="btn_site_info" class="btn btn-outline-primary"><i class="fa fa-save changeText"></i> Save</button>
                                                     <input type="hidden" name="sites_submit_actions" id="sites_submit_actions" value="Add">
-                                                @endif
+{{--                                                @endif--}}
                                                 <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close redirectPage" aria-hidden="true"></i> Close</button>
                                             </div>
                                         </div>
@@ -820,7 +820,7 @@
                         type: "POST",
                         dataType: 'json',
                         success: function (results) {
-                    
+
                             $('#select-sites').html('');
                             html +='<ul class="ms-list" tabindex="-1">';
                             $.each(results,function(i,v){
