@@ -801,8 +801,13 @@ class TransmissionController extends Controller
         ]);
         foreach ($usersArray as $user)
         {
-
             Mail::to($user)->send(new TransmissonQuery($data));
+            QueryNotificationUser::create([
+             'id'=>Str::uuid(),
+              'query_notification_id'=>$id,
+              'query_notification_user_id'=>$user
+            ]);
+
 //            QueryNotificationUser::create([
 //                'id' => Str::uuid(),
 //               'query_notification_user_id'=>$user
