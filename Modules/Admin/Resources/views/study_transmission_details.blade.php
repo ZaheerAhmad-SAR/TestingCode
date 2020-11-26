@@ -272,9 +272,7 @@
                 <div class="modal-header ">
                     <p class="modal-title">Transmisson Query</p>
                 </div>
-
-
-                <form id="queriesTransmissionForm" name="queriesTransmissionForm" >
+                <form id="queriesTransmissionForm" name="queriesTransmissionForm">
                     <div class="modal-body">
                         <div id="exTab1">
                             <div class="tab-content clearfix">
@@ -284,14 +282,15 @@
                                     <div class="col-sm-4">
                                         <select class="form-control sitesChange" name="site_name" id="site_name">
                                             <option value="">--Select Sites--</option>
+
                                             @foreach($getTransmissions as $transmission)
                                                 <option value="{{$transmission->Transmission_Number}}">{{$transmission->Site_Name}}</option>
+
                                             @endforeach
                                         </select>
                                     </div>
-                                    <label for="Name" class="col-sm-2 col-form-label"> Select Users :</label>
+                                    <label for="Name" id="usersList" class="col-sm-2 col-form-label" style="display: none;"> Select Users :</label>
                                     <div class="col-sm-4 primaryList">
-
                                     </div>
 
                                 </div>
@@ -307,7 +306,7 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label for="Name" class="col-sm-2 col-form-label">Query Subject:</label>
+                                    <label for="Name" class="col-sm-2 col-form-label">Subject:</label>
                                     <div class="col-sm-10">
                                         <input class="form-control" type="text" name="query_subject" minlength="6" maxlength="50" id="query_subject">
                                     </div>
@@ -317,6 +316,13 @@
                                     <label for="Name" class="col-sm-2 col-form-label">Email Body</label>
                                     <div class="col-sm-10">
                                         <textarea class="form-control"  name="remarks"  id="remarks"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row queryAttachments">
+                                    <label for="Attachment" class="col-sm-2 col-form-label">Attachment:</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="file" name="query_file"  id="query_file">
                                     </div>
                                 </div>
                             </div>
@@ -381,27 +387,52 @@
 
 
     $("#queriesTransmissionForm").on('submit', function(e) {
-
         e.preventDefault();
         $.ajaxSetup({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         });
-        var users    = $('#users').val();
-        var remarks  = $('#remarks').val();
-        var cc_email = $('#cc_email').val();
-        var query_subject = $('#query_subject').val();
+        var users               = $('#users').val();
+        var StudyI_ID           = $('#StudyI_ID').val();
+        var remarks             = $('#remarks').val();
+        var cc_email            = $('#cc_email').val();
+        var visitName           = $('#visitName').val();
+        var Subject_ID          = $('#Subject_ID').val();
+        var Transmission_Number = $('#Transmission_Number').val();
+        var query_subject       = $('#query_subject').val();
+        var studyShortName      = $('#studyShortName').val();
+
+        var formData      = new FormData();
+        formData.append('users', users);
+        formData.append('StudyI_ID', StudyI_ID);
+        formData.append('remarks', remarks);
+        formData.append('cc_email', cc_email);
+        formData.append('visitName', visitName);
+        formData.append('Subject_ID', Subject_ID);
+        formData.append('Transmission_Number', Transmission_Number);
+        formData.append('query_subject', query_subject);
+        formData.append('studyShortName', studyShortName);
+        // Attach file
+        formData.append('query_file', $('input[type=file]')[0].files[0]);
 
         $.ajax({
-            type: 'POST',
+
             url:"{{route('transmissions.queryTransmissionMail')}}",
-            data: {
-                'users':users,'remarks':remarks,
-                'cc_email':cc_email,'query_subject':query_subject
-            },
+            type: "POST",
+            data: formData,
             dataType: 'json',
+            contentType: false,
+            cache: false,
+            processData:false,
+            // data: {
+            //     'users':users,'remarks':remarks,
+            //     'cc_email':cc_email,'querySubject':querySubject,'studyID':studyID,
+            //     'subjectID':subjectID,'transNumber':transNumber,'visitName':visitName
+            // },
+            // dataType: 'json',
             success: function(response)
             {
                 console.log(response);
+                //$("#queriesTransmissionForm")[0].reset();
             }
         });
     });

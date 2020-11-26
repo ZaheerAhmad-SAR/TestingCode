@@ -94,7 +94,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     // End
     // for type text
     Route::post('skipNumber/add_skip_logic_text', 'SkipNumberController@add_skipLogic_text')->name('skipNumber.apply_skip_logic_text');
-    // routes for skip logic on Questions with type Number 
+    // routes for skip logic on Questions with type Number
     Route::get('forms/sections_by_stepId/{id}', 'FormController@get_section_by_stepId')->name('forms.sectionsbystepId');
     Route::post('studyStatus', 'StudyController@studyStatus')->name('study.studyStatus');
     Route::post('changeStatus/{id}', 'StudyController@changeStatus')->name('studies.changeStatus');
