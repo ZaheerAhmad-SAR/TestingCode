@@ -271,7 +271,6 @@ class SkipNumberController extends Controller
             $where = array('question_id' =>$num_values->question_id);
             $remove_checks_if_already_exists = skipLogic::where($where)->delete();
             $remove_options_checks_if_exists = QuestionOption::where($where)->delete();
-
             for ($i = 0; $i < count($request->number_value); $i++) {
                 $skip_ques = [
                     'id' => Str::uuid(),
@@ -319,6 +318,8 @@ class SkipNumberController extends Controller
         return redirect()->route('skipNumber.numskipLogic', $num_values->question_id)->with('message', 'Checks Applied Successfully!'); 
     }
     public function add_skipLogic_text(Request $request){
+        $skip_ques = [];
+        $skip_options = [];
         if (isset($request->textbox_value) && count($request->textbox_value) > 0) {
             $where = array('question_id' =>$request->question_id);
             $remove_checks_if_already_exists = skipLogic::where($where)->delete();
@@ -366,5 +367,67 @@ class SkipNumberController extends Controller
             }
         }
         return redirect()->route('skiplogic.textskipLogic', $request->question_id)->with('message', 'Checks Applied Successfully!');
+    }
+    // update logic on Question have type Text
+    public function update_skip_checks_text($id)
+    {
+        $num_values = skipLogic::where('id', $id)->first();
+        $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->get();
+        return view('admin::forms.update_skip_question_text', compact('num_values','all_study_steps'));
+    }
+    // insert updated checks and deleted previous logic
+    public function update_skip_checks_on_textbox(Request $request)
+    {
+        $skip_ques = [];
+        $skip_options = [];
+        $num_values = skipLogic::where('id', $request->question_id)->first();
+        if (isset($request->textbox_value) && count($request->textbox_value) > 0) {
+            $where = array('question_id' =>$num_values->question_id);
+            $remove_checks_if_already_exists = skipLogic::where($where)->delete();
+            $remove_options_checks_if_exists = QuestionOption::where($where)->delete();
+            for ($i = 0; $i < count($request->textbox_value); $i++) {
+                $skip_ques = [
+                    'id' => Str::uuid(),
+                    'question_id' => $num_values->question_id,
+                    'textbox_value' => (isset($request->textbox_value) && $request->textbox_value != '') ? implode(',', $request->textbox_value) : '',
+                    'activate_forms' => (isset($request->activate_forms[$i]) && $request->activate_forms[$i] != '') ? implode(',', $request->activate_forms[$i]) : '',
+                    'activate_sections' => (isset($request->activate_sections[$i]) && $request->activate_sections[$i] != '') ? implode(',', $request->activate_sections[$i]) : '',
+                    'activate_questions' => (isset($request->activate_questions[$i]) && $request->activate_questions[$i] != '') ? implode(',', $request->activate_questions[$i]) : '',
+                    'deactivate_forms' => (isset($request->deactivate_forms[$i]) && $request->deactivate_forms[$i] != '') ? implode(',', $request->deactivate_forms[$i]) : '',
+                    'deactivate_sections' => (isset($request->deactivate_sections[$i]) && $request->deactivate_sections[$i] != '') ? implode(',', $request->deactivate_sections[$i]) : '',
+                    'deactivate_questions' => (isset($request->deactivate_questions[$i]) && $request->deactivate_questions[$i] != '') ? implode(',', $request->deactivate_questions[$i]) : ''
+                ];
+                // Deactivate Questions options
+                if(isset($request->deactivate_options[$i]) && count($request->deactivate_options[$i]) > 0){
+                  for($j = 0; $j < count($request->deactivate_options[$i]); $j++) {
+                    $op_content = explode('_', $request->deactivate_options[$i][$j]);
+                    $skip_options = [
+                        'id' => Str::uuid(),
+                        'question_id' => $num_values->question_id,
+                        'value' => $op_content[0], 
+                        'title' => $op_content[1],
+                        'option_question_id' => $op_content[2]
+                        ];
+                    QuestionOption::insert($skip_options);
+                  }  
+                }
+                // Activate Questions options
+                if(isset($request->activate_options[$i]) && count($request->activate_options[$i]) > 0){
+                   for($j = 0; $j < count($request->activate_options[$i]); $j++) {
+                    $op_content = explode('_', $request->activate_options[$i][$j]);
+                    $skip_options = [
+                        'id' => Str::uuid(),
+                        'question_id' => $num_values->question_id,
+                        'value' => $op_content[0], 
+                        'title' => $op_content[1],
+                        'option_question_id' => $op_content[2]
+                        ];
+                    QuestionOption::insert($skip_options);
+                  } 
+                }
+                skipLogic::insert($skip_ques);
+            }
+        }
+        return redirect()->route('skiplogic.textskipLogic', $num_values->question_id)->with('message', 'Checks Applied Successfully!');
     }
 }
