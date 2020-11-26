@@ -743,7 +743,7 @@ class TransmissionController extends Controller
     {
         $transmissionNumber = $request->transmissionNumber;
         $records = CrushFtpTransmission::where('Transmission_Number',$transmissionNumber)->get();
-        //dd($records);
+
         echo  view('admin::transmissions.users_dropdown',compact('records'));
     }
 
@@ -772,6 +772,7 @@ class TransmissionController extends Controller
             $this->uploadOne($image, $folder, 'public', $name);
         }
 
+
         $data = array(
          'Transmission_Number'=>$transNumber,
          'query_subject'=>$query_subject,
@@ -792,7 +793,7 @@ class TransmissionController extends Controller
             'email_body'=>$remarks,
             'email_attachment'=>$filePath,
             'parent_notification_id'=> 0,
-            'notification_remarked_id'=>\auth()->user()->id,
+            'notification_remarked_id'=>\auth()->user()->email,
             'study_id'=>$studyID,
             'subject_id'=>$subjectID,
             'transmission_number'=>$transNumber,
@@ -800,8 +801,13 @@ class TransmissionController extends Controller
         ]);
         foreach ($usersArray as $user)
         {
-
             Mail::to($user)->send(new TransmissonQuery($data));
+            QueryNotificationUser::create([
+             'id'=>Str::uuid(),
+              'query_notification_id'=>$id,
+              'query_notification_user_id'=>$user
+            ]);
+
 //            QueryNotificationUser::create([
 //                'id' => Str::uuid(),
 //               'query_notification_user_id'=>$user

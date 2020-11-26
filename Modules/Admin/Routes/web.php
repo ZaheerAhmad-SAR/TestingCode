@@ -88,10 +88,13 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('skipNumber/options_for_skip_logic_deactivate/{id}', 'SkipNumberController@options_skip_logic_deactivate')->name('skipNumber.optionsSkipdeactivate');
     Route::get('skipNumber/options_for_skip_logic_activate/{id}', 'SkipNumberController@options_skip_logic_activate')->name('skipNumber.optionsSkipactivate');
     Route::get('skipNumber/update_skip_checks_num/{id}', 'SkipNumberController@update_skip_checks')->name('skipNumber.updateSkipNum');
+    Route::post('skipNumber/update_skip_checks_number', 'SkipNumberController@update_skip_checks_on_number')->name('skipNumber.updateSkipNumberChecks');
+    Route::get('skipNumber/update_skip_checks_text/{id}', 'SkipNumberController@update_skip_checks_text')->name('skipNumber.updateSkipText');
+    Route::post('skipNumber/update_skip_checks_textbox', 'SkipNumberController@update_skip_checks_on_textbox')->name('skipNumber.updateSkipTextboxChecks');
     // End
     // for type text
     Route::post('skipNumber/add_skip_logic_text', 'SkipNumberController@add_skipLogic_text')->name('skipNumber.apply_skip_logic_text');
-    // routes for skip logic on Questions with type Number 
+    // routes for skip logic on Questions with type Number
     Route::get('forms/sections_by_stepId/{id}', 'FormController@get_section_by_stepId')->name('forms.sectionsbystepId');
     Route::post('studyStatus', 'StudyController@studyStatus')->name('study.studyStatus');
     Route::post('changeStatus/{id}', 'StudyController@changeStatus')->name('studies.changeStatus');
