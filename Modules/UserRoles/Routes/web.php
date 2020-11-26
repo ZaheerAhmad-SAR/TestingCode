@@ -24,6 +24,9 @@
 // edit assign work
     Route::get('edit-assign-work', 'GradingController@editAssignWork')->name('edit-assign-work');
 
+// QC Work List
+    Route::get('qc-work-list','QualityControlController@qcWorkList')->name('qualitycontrol.qc-work-list');
+
 
 Route::prefix('userroles')->group(function() {
     Route::get('/', 'UserRolesController@index');

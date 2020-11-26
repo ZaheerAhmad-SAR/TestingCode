@@ -126,7 +126,7 @@ class SkipLogicController extends Controller
                                 <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-'.$value->step_id.'-de-'.$request->index.'" onclick="deactivate_checks(\'' . $value->step_id . '\',\'de_sections_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');" style="font-size: 20px; color: #1e3d73;"></i>
                                                   </div>
                                                 </td>
-                                                <td colspan="5"><input type="checkbox" name="deactivate_forms[' .$request->index. '][]" value="' . $value->step_id . '" '.$checked.'> &nbsp;&nbsp; ' . $value->step_name . '</td>
+                                                <td colspan="5"><input type="checkbox" name="deactivate_forms[' .$request->index. '][]" value="'.$value->step_id.'" '.$checked.'> &nbsp;&nbsp; ' . $value->step_name . '</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -153,13 +153,18 @@ class SkipLogicController extends Controller
     {
         $activate_sections_array = [];
         $function_string = '';
-        $where = array(
-            "question_id" =>$request->question_id,
-            "option_title" =>$request->option_title,
-            "option_value" =>$request->option_value
-        );
+        if($request->option_value != 'q_type_num'){
+           $where = array(
+                "question_id" =>$request->question_id,
+                "option_title" =>$request->option_title,
+                "option_value" =>$request->option_value
+            );
+        }else{
+           $where = array(
+                "id" =>$request->question_id,
+            ); 
+        }
         $if_exists_record = skipLogic::where($where)->first();
-        
         if(null !== $if_exists_record){
             $activate_sections_array = explode(',', $if_exists_record->activate_sections);
         }
@@ -184,8 +189,9 @@ class SkipLogicController extends Controller
                             <div class="card-body collapse row-'.$value->id.'-ac-'.$request->index.' ac_questions_list_'.$value->id.'_'.$request->index.'" style="padding: 0;">
 
                            </div>';
+            $function_string .= 'question_for_activate(\'' . $value->id . '\',\'ac_questions_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
         }
-        $function_string .= 'question_for_activate(\'' . $value->id . '\',\'ac_questions_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
+        
         $section_array = array(
             'html_str' => $section_contents,
             'function_str' => $function_string
@@ -196,11 +202,17 @@ class SkipLogicController extends Controller
     {
         $deactivate_sections_array = [];
         $function_string = '';
-        $where = array(
-            "question_id" =>$request->question_id,
-            "option_title" =>$request->option_title,
-            "option_value" =>$request->option_value
-        );
+        if($request->option_value != 'q_type_num'){
+           $where = array(
+                "question_id" =>$request->question_id,
+                "option_title" =>$request->option_title,
+                "option_value" =>$request->option_value
+            );
+        }else{
+           $where = array(
+                "id" =>$request->question_id,
+            ); 
+        }    
         $if_exists_record = skipLogic::where($where)->first();
         if(null !==$if_exists_record){
             $deactivate_sections_array = explode(',', $if_exists_record->deactivate_sections);
@@ -224,9 +236,10 @@ class SkipLogicController extends Controller
                             </div>
                             <div class="card-body collapse row-'.$value->id.'-de-'.$request->index.' de_questions_list_'.$value->id.'_'.$request->index.'" style="padding: 0;">
                             </div>';
+            $function_string .= 'question_for_deactivate(\'' . $value->id . '\',\'de_questions_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
 
         }
-        $function_string .= 'question_for_deactivate(\'' . $value->id . '\',\'de_questions_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
+        
         $section_array = array(
             'html_str' => $section_contents,
             'function_str' => $function_string
@@ -237,11 +250,17 @@ class SkipLogicController extends Controller
     {
         $activate_questions_array = [];
         $function_string = '';
-        $where = array(
-            "question_id" =>$request->question_id,
-            "option_title" =>$request->option_title,
-            "option_value" =>$request->option_value
-        );
+        if($request->option_value != 'q_type_num'){
+           $where = array(
+                "question_id" =>$request->question_id,
+                "option_title" =>$request->option_title,
+                "option_value" =>$request->option_value
+            );
+        }else{
+           $where = array(
+                "id" =>$request->question_id,
+            ); 
+        }
         $if_exists_record = skipLogic::where($where)->first();
         if(null !==$if_exists_record){
             $activate_questions_array = explode(',', $if_exists_record->activate_questions);
@@ -276,11 +295,17 @@ class SkipLogicController extends Controller
     {
         $deactivate_questions_array = [];
         $function_str = '';
-        $where = array(
-            "question_id" =>$request->question_id,
-            "option_title" =>$request->option_title,
-            "option_value" =>$request->option_value
-        );
+        if($request->option_value != 'q_type_num'){
+           $where = array(
+                "question_id" =>$request->question_id,
+                "option_title" =>$request->option_title,
+                "option_value" =>$request->option_value
+            );
+        }else{
+           $where = array(
+                "id" =>$request->question_id,
+            ); 
+        }
         $if_exists_record = skipLogic::where($where)->first();
         if(null !==$if_exists_record){
             $deactivate_questions_array = explode(',', $if_exists_record->deactivate_questions);
@@ -325,11 +350,19 @@ class SkipLogicController extends Controller
         $options_name = explode(',', $questions->optionsGroup->option_name);
         if(null !== $questions->optionsGroup){
             foreach ($options_name as $key => $value) {
-                $where = array(
-                    "question_id" =>$request->question_id,
-                    "title" =>$value,
-                    "value" =>$options_value[$key]
-                );
+                if($request->option_value != 'q_type_num'){
+                    $where = array(
+                        "question_id" =>$request->question_id,
+                        "title" =>$value,
+                        "value" =>$options_value[$key]
+                    );
+                }else{
+                    $where = array(
+                        "option_question_id" =>$request->id,
+                        "title" =>$value,
+                        "value" =>$options_value[$key]
+                    );
+                }
                 $if_exists_record = QuestionOption::where($where)->first();
                 if(null !==$if_exists_record && ($if_exists_record->value == $options_value[$key])){ 
                     $checked = "checked"; 
@@ -357,11 +390,19 @@ class SkipLogicController extends Controller
         $options_name = explode(',', $questions->optionsGroup->option_name);
         if(null !== $questions->optionsGroup){
             foreach ($options_name as $key => $value) {
-                $where = array(
-                    "question_id" =>$request->question_id,
-                    "title" =>$value,
-                    "value" =>$options_value[$key]
-                );
+                if($request->option_value != 'q_type_num'){
+                    $where = array(
+                        "question_id" =>$request->question_id,
+                        "title" =>$value,
+                        "value" =>$options_value[$key]
+                    );
+                }else{
+                    $where = array(
+                        "option_question_id" =>$request->id,
+                        "title" =>$value,
+                        "value" =>$options_value[$key]
+                    );
+                }
                 $if_exists_record = QuestionOption::where($where)->first();
                 if(null !==$if_exists_record && ($if_exists_record->value == $options_value[$key])){ 
                     $checked = "checked"; 
