@@ -16,53 +16,15 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        $roles = $this->getRequiredRoleForRoute($request->route());
-       //$user_role = $request->user()->user_roles;
-
-        $roles  =   $request->user()->role->name;
-
-        if(!empty($request->user())){
-            /*if($request->user()->hasRole($roles) || !$roles)
-            {
-                return $next($request);
-            }*/
+        if (!empty($request->user())) {
             $routeName  =   $request->route()->getName();
-            $returnData =   $request->user()->hasPermission($roles,$routeName);
-            $this->setDataToUser($request,$request->user(),$returnData,$route_valid=true);
-            if(!empty($returnData) && $returnData['success'])
-            {
+            if (hasPermission($request->user(), $routeName)) {
                 return $next($request);
+            } else {
+                return redirect()->route('dashboard.index');
             }
-            else{
-                $this->setDataToUser($request,$request->user(),$returnData,$route_valid=false);
-                return response()->view('userroles::dashboard');
-            }
-        }else{
+        } else {
             return redirect()->to('login');
         }
-
-        return response()->view('errors.401');
-    }
-
-    private function getRequiredRoleForRoute($route)
-    {
-        $actions = $route->getAction();
-        return isset($actions['roles']) ? $actions['roles'] : null;
-    }
-    function setDataToUser($request,$user,$returnData,$route_valid=false)
-    {
-
-        $user->access    =   [
-            'role'          =>  $returnData['role'],
-            'permission'    =>  $returnData['permission'],
-            'currentRoute'  =>  $returnData['routeName'],
-            'route_valid'   =>  $route_valid,
-        ];
-        $request->merge([
-            'user' => $user
-        ]);
-        $request->setUserResolver(function () use ($user) {
-            return $user;
-        });
     }
 }

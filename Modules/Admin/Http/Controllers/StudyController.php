@@ -53,6 +53,11 @@ class StudyController extends Controller
      */
     public function index()
     {
+        $countStudies = Study::count();
+        if ($countStudies == 0) {
+            return redirect()->route('dashboard.index');
+        }
+
         session(['current_study' => '']);
         $systemRoleIds = Role::where('role_type', 'system_role')->pluck('id')->toArray();
         $userIdsWithSystemRole = UserRole::whereIn('role_id', $systemRoleIds)->pluck('user_id')->toArray();
