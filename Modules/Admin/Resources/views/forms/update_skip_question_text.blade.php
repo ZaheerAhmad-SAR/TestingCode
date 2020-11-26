@@ -6,7 +6,7 @@
             <div class="col-12 align-self-center">
                 <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
                     <div class="w-sm-100 mr-auto">
-                        <h4 class="mb-0">Validations ON Box</h4>
+                        <h4 class="mb-0">Validations ON Number</h4>
                     </div>
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                         <li class="breadcrumb-item">Dashboard</li>
@@ -28,25 +28,22 @@
         </div>
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
-        <form action="{{route('skipNumber.apply_skip_logic_text')}}" enctype="multipart/form-data" method="POST">
+        {{-- {{dd($num_values->number_value)}} --}}
+        <form action="{{route('skipNumber.updateSkipTextboxChecks')}}" enctype="multipart/form-data" method="POST">
             @csrf
-            {{-- {{dd(request('id'))}} --}}
-           
             <input type="hidden" name="question_id" value="{{request('id')}}">
             <div class="row">
-                {{-- @foreach($num_values->skiplogic as $key => $value)  {{$value->textbox_value}}--}}
-                   <div class="col-12 col-sm-12 mt-3">
-                       <div class="card">
-                           <div class="card-body">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <input type="text" class="form-control" name="textbox_value[]" placeholder="Enter Text" value="">
-                                    </div>
-                                </div>                           
-                           </div>
+               <div class="col-12 col-sm-12 mt-3">
+                   <div class="card">
+                       <div class="card-body">
+                            <div class="col-md-6" style="display: inline-block;">
+                                <div class="">
+                                    <input type="text" class="form-control" name="textbox_value[]" placeholder="Enter Text" value="{{$num_values->textbox_value}}">
+                                </div>
+                            </div>
                        </div>
                    </div>
-                {{-- @endforeach    --}}
+               </div>
             </div>
             <div class="row">
                 <div class="col-12 col-sm-6 mt-3 current_div_ac">
@@ -63,9 +60,14 @@
                                 </table>
                             </div>
                         </div>
-                    </div>
+                    </div>           
         @foreach ($all_study_steps as $value)
         @foreach($value->studySteps as $key => $value)
+        @php 
+            $q_id = request('id');
+            $activate_forms_array = explode(',', $num_values->activate_forms);
+            if(in_array($value->step_id, $activate_forms_array)){ $checked = 'checked'; }else{ $checked = ''; }
+        @endphp
             {{-- @if(in_array($value->step_id, $activate_forms_array)){ $checked = 'checked'; }@else{ $checked = ''; }@endif --}}
                     <div class="card">
                         <div class="card-body" style="padding: 0;">
@@ -76,10 +78,10 @@
                                         <td class="step_id" style="display: none;">{{$value->step_id}}</td>
                                         <td style="text-align: center;width: 15%">
                                           <div class="btn-group btn-group-sm" role="group">
-                                            <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" onclick="activate_checks('{{$value->step_id}}','sections_list_','{{$key}}','{{request('id')}}');" data-target=".row-{{$value->step_id}}-ac-{{$key}}" style="font-size: 20px; color: #1e3d73;"></i>
+                                            <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" onclick="activate_checks('{{$value->step_id}}','sections_list_','{{$key}}','{{request('id')}}','q_type_num');" data-target=".row-{{$value->step_id}}-ac-{{$key}}" style="font-size: 20px; color: #1e3d73;"></i>
                                           </div>
                                         </td>
-                                        <td colspan="5"> <input type="checkbox" name="activate_forms[{{$key}}][]" value="{{$value->step_id}}"> &nbsp;&nbsp;{{$value->step_name}}</td>
+                                        <td colspan="5"> <input type="checkbox" name="activate_forms[{{$key}}][]" value="{{$value->step_id}}" {{$checked}}> &nbsp;&nbsp;{{$value->step_name}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -88,6 +90,15 @@
                 </div>
                 <div class="card collapse row-{{$value->step_id}}-ac-{{$key}} sections_list_{{$value->step_id}}_{{$key}}">
                 </div>
+                 @push('script_last')
+                    <script>
+                     $(document).ready(function() {
+                     @php
+                         echo "activate_checks('$value->step_id','sections_list_','$key','$q_id','q_type_num','');";
+                     @endphp
+                     })
+                 </script>
+                @endpush
         @endforeach
         @endforeach
         </div>
@@ -108,7 +119,11 @@
                     </div>
         @foreach ($all_study_steps as $value)
         @foreach($value->studySteps as $key => $value)
-            {{-- if(in_array($value->step_id, $deactivate_forms_array)){ $checked = 'checked'; }else{ $checked = ''; } --}}
+         @php 
+            $q_id = request('id');
+            $deactivate_forms_array = explode(',', $num_values->deactivate_forms);
+            if(in_array($value->step_id, $deactivate_forms_array)){ $checked = 'checked'; }else{ $checked = ''; }
+        @endphp
             <div class="card">
                 <div class="card-body" style="padding: 0;">
                     <div class="table-responsive">
@@ -118,10 +133,10 @@
                                 <td class="step_id" style="display: none;">{{$value->step_id}}</td>
                                 <td style="text-align: center;width: 15%">
                                   <div class="btn-group btn-group-sm" role="group">
-                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-de-{{$key}}" onclick="deactivate_checks('{{$value->step_id}}','de_sections_list_','{{$key}}','{{request('id')}}');" style="font-size: 20px; color: #1e3d73;"></i>
+                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-de-{{$key}}" onclick="deactivate_checks('{{$value->step_id}}','de_sections_list_','{{$key}}','{{request('id')}}','q_type_num');" style="font-size: 20px; color: #1e3d73;"></i>
                                   </div>
                                 </td>
-                                <td colspan="5"><input type="checkbox" name="deactivate_forms[{{$key}}][]" value="{{$value->step_id}}"> &nbsp;&nbsp;{{$value->step_name}}</td>
+                                <td colspan="5"><input type="checkbox" name="deactivate_forms[{{$key}}][]" value="{{$value->step_id}}" {{$checked}}> &nbsp;&nbsp;{{$value->step_name}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -130,58 +145,29 @@
         </div>
         <div class="card collapse row-{{$value->step_id}}-de-{{$key}} de_sections_list_{{$value->step_id}}_{{$key}}">
         </div>
+            @push('script_last')
+             <script>
+                 $(document).ready(function() {
+                 @php
+                     echo "deactivate_checks('$value->step_id','de_sections_list_','$key','$q_id','q_type_num','');";
+                 @endphp
+                 })
+             </script>
+            @endpush
         @endforeach
         @endforeach
         </div>
             </div>
-            @push('script_last')
-             <script>
-                
-             </script>
-            @endpush
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
             </div>
         </form>
         <!-- END: Card DATA-->
-         {{-- listing here for logics --}}
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <tr>
-                                <th>Value</th>
-                                <th style="width: 5%;">Action</th>
-                            </tr>
-                          @foreach($num_values->skiplogic as $key => $value)
-                            <tr>
-                                <td>{{$value->textbox_value}}</td>
-                                <td>
-                                   <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                        <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
-                                        <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                            <span class="dropdown-item"><a href="{{route('skipNumber.updateSkipText',$value['id'])}}"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
-                                            <span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
- {{-- listing here for logics --}}
+
 @endsection
 @include('admin::forms.edit_crf')
-@include('admin::forms.script_skip_logic_num')
+@include('admin::forms.script_skip_logic')
     @section('styles')
     <style type="text/css">
             /*.table{table-layout: fixed;}*/
