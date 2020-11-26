@@ -1,7 +1,7 @@
 @extends ('layouts.home')
 
 @section('title')
-    <title> QC Work List | {{ config('app.name', 'Laravel') }}</title>
+    <title> Grading Work List | {{ config('app.name', 'Laravel') }}</title>
 @stop
 
 @section('styles')
@@ -69,10 +69,10 @@
         <div class="row ">
             <div class="col-12  align-self-center">
                 <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
-                    <div class="w-sm-100 mr-auto"><h4 class="mb-0">QC Work List</h4></div>
+                    <div class="w-sm-100 mr-auto"><h4 class="mb-0">Grading Work List</h4></div>
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                         <li class="breadcrumb-item">Dashboard</li>
-                        <li class="breadcrumb-item">QC Work List</li>
+                        <li class="breadcrumb-item">Grading Work List</li>
                     </ol>
                 </div>
             </div>
@@ -116,17 +116,18 @@
                 <div class="card">
 
                     <div class="form-group col-md-12 mt-3">        
-
+                       
                         @if (!$subjects->isEmpty())
                         <span style="float: right; margin-top: 3px;" class="badge badge-pill badge-primary">
                             {{ $subjects->count().' out of '.$subjects->total() }}
                         </span>
                         @endif
+                      
 
                     </div>
                     <hr>
-
-                      <form action="{{route('qualitycontrol.qc-work-list')}}" method="get" class="form-1 filter-form">
+                    
+                      <form action="{{route('gradingcontrol.grading-work-list')}}" method="get" class="form-1 filter-form">
                         <div class="form-row" style="padding: 10px;">
 
                             <input type="hidden" name="form_1" value="1" class="form-control">
@@ -189,7 +190,7 @@
                         </div>
                         <!-- row ends -->
                     </form>
-
+                  
                     <div class="card-body">
 
                         <div class="table-responsive">
@@ -201,7 +202,7 @@
                                         <th>Phase</th>
                                         <th>Assign Date</th>
                                         <th>Site Name</th>
-                                        
+                                      
                                         @php
                                             $count = 4;
                                         @endphp
@@ -237,10 +238,11 @@
                                         @endforeach
                                     </tr>
                                     @endif
-                                    
+                               
                                 </thead>
 
                                 <tbody>
+                                    
                                     @if(!$subjects->isEmpty())
                                         @foreach($subjects as $key => $subject)
                                         <tr>
@@ -281,6 +283,7 @@
 
                                     </tr>
                                     @endif
+                                   
                                 </tbody>
                             </table>
                            
