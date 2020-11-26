@@ -33,10 +33,11 @@ class CloneStepsController extends Controller
         $phase = StudyStructure::create([
             'id'    => $id,
             'study_id'    => session('current_study'),
-            'position'  =>  $phase->position,
+            'position'  =>  $request->position,
             'name' =>  $request->name,
             'duration' =>  $phase->duration,
             'is_repeatable' =>  $phase->is_repeatable,
+            'count' =>  $phase->count,
         ]);
         $new_phase = StudyStructure::find($id);
         $new_phase_id = $new_phase->id;
@@ -71,7 +72,8 @@ class CloneStepsController extends Controller
             'step_description' =>  $step->step_description,
             'graders_number' =>  $step->graders_number,
             'q_c' =>  $step->q_c,
-            'eligibility' =>  $step->eligibility
+            'eligibility' =>  $step->eligibility,
+            'form_version_num' =>  $step->form_version_num
         ]);
         foreach ($step->sections as $section) {
             $isReplicating = false;
@@ -94,7 +96,7 @@ class CloneStepsController extends Controller
                 /* Replicate Question Data Validation */
                 /******************************* */
 
-                $this->$this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId);
+                $this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId);
 
                 /******************************* */
                 /* Replicate Question Dependency */

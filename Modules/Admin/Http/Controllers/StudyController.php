@@ -53,6 +53,11 @@ class StudyController extends Controller
      */
     public function index()
     {
+        $countStudies = Study::count();
+        if ($countStudies == 0) {
+            return redirect()->route('dashboard.index');
+        }
+
         session(['current_study' => '']);
         $systemRoleIds = Role::where('role_type', 'system_role')->pluck('id')->toArray();
         $userIdsWithSystemRole = UserRole::whereIn('role_id', $systemRoleIds)->pluck('user_id')->toArray();
@@ -70,11 +75,15 @@ class StudyController extends Controller
                 $userIdsArrayFromUserRole = UserRole::where('role_id', $studyAdminRoleId[1])->pluck('user_id')->toArray();
                 $adminUsers = User::whereIn('id', $userIdsArrayFromUserRole)->orderBy('name', 'asc')->get();
             }
-            $userRole = UserRole::where('user_id', \auth()->user()->id)->first();
-            if (!empty($studyAdminRoleId) && $userRole->role_id == $studyAdminRoleId[1]) {
-                $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistAdmin());
-            } else {
+            if (isThisUserSuperAdmin(\auth()->user())) {
                 $studiesIDs = array_merge($studiesIDs, Study::all()->pluck('id')->toArray());
+            } else {
+                $userRole = UserRole::where('user_id', \auth()->user()->id)->first();
+                if (!empty($studyAdminRoleId) && $userRole->role_id == $studyAdminRoleId[1]) {
+                    $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistAdmin());
+                } else {
+                    $studiesIDs = array_merge($studiesIDs, Study::all()->pluck('id')->toArray());
+                }
             }
             $user = User::with('studies', 'user_roles')->find(Auth::id());
         }

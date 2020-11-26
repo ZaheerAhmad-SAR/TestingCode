@@ -49,6 +49,12 @@
                             @csrf
                             <input type="hidden" name="phase_id" id="phase_id_for_clone">
                             <div class="form-group row">
+                                <label for="Name" class="col-sm-3 col-form-label">Position</label>
+                                <div class="col-sm-9">
+                                    <input type="text" name="position" value="" class="form-control">
+                                </div>
+                            </div>
+                            <div class="from-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Name</label>
                                 <div class="col-sm-9">
                                     <input type="text" name="name" id="phase_name_clone" value="" class="form-control">
