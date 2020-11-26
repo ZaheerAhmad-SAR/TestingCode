@@ -201,16 +201,18 @@
             </li>
             @endif
 
-            @if(!empty(session('current_study')))
-            <li class="">
-                <ul class="@if(is_active('assign-work')) {{ 'active' }} @endif">
-                    <li class="nav-item @if(is_active('assign-work')) {{ ' active' }} @endif">
-                        <a href="{!! route('assign-work') !!}">
-                            <i class="fas fa-hospital"></i>Assign Work
-                        </a>
-                    </li>
-                </ul>
-            </li>
+            @if(hasPermission(auth()->user(),'studytools.index'))
+                @if(!empty(session('current_study')))
+                <li class="">
+                    <ul class="@if(is_active('assign-work')) {{ 'active' }} @endif">
+                        <li class="nav-item @if(is_active('assign-work')) {{ ' active' }} @endif">
+                            <a href="{!! route('assign-work') !!}">
+                                <i class="fas fa-hospital"></i>Assign Work
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                @endif
             @endif
 
             @if(hasPermission(auth()->user(),'qualitycontrol.index'))
@@ -247,6 +249,13 @@
                                             <i class="fas fa-list"></i> Grading List
                                         </a>
                                     </li>
+
+                                    <li>
+                                        <a href="{{ route('gradingcontrol.grading-work-list')}}">
+                                            <i class="fas fa-list"></i> Grading Work List
+                                        </a>
+                                    </li>
+
                                     <li>
                                         <a href="{{route('grading.status')}}">
                                             <i class="fas fa-chart-line"></i> Grading Status
@@ -270,6 +279,13 @@
                                             <i class="fas fa-list"></i> Adjudication List
                                         </a>
                                     </li>
+
+                                    <li>
+                                        <a href="{{ route('adjudicationcontroller.adjudication-work-list')}}">
+                                            <i class="fas fa-list"></i> Adjudication Work List
+                                        </a>
+                                    </li>
+
                                 </ul>
                             </li>
                         </ul>

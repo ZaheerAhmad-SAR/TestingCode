@@ -320,7 +320,7 @@ class QualityControlController extends Controller
         $modalitySteps = [];
 
         $subjects = AssignWork::query();
-
+        // get subjects for assign work
         $subjects = $subjects->select('assign_work.subject_id as subj_id', 'assign_work.study_id', 'assign_work.phase_id', 'assign_work.form_type_id', 'assign_work.modility_id', 'assign_work.assign_date', 'subjects.subject_id', 'study_structures.name as phase_name', 'study_structures.position', 'sites.site_name')
         ->leftJoin('subjects', 'subjects.id', '=', 'assign_work.subject_id')
         ->leftJoin('study_structures', 'study_structures.id', '=', 'assign_work.phase_id')
@@ -328,7 +328,7 @@ class QualityControlController extends Controller
         ->where('assign_work.user_id', \Auth::user()->id)
         ->where('assign_work.form_type_id', 1)
         ->where('assign_work.study_id', \Session::get('current_study'));
-
+        // apply filters
         if ($request->subject != '') {
             $subjects = $subjects->where('assign_work.subject_id', $request->subject);
         }
@@ -363,7 +363,6 @@ class QualityControlController extends Controller
                              ->orderBy('study_structures.position')
                              ->paginate(15);
 
-        //dd($subjects);
 
         // get modalities
         $getModilities = AssignWork::query();
@@ -397,8 +396,6 @@ class QualityControlController extends Controller
             $modalitySteps[$modility->modility_name] = $getSteps;
         }
 
-        //dd($modalitySteps);
-
         //get form status depending upon subject, phase and modality
         if ($modalitySteps != null) {
             foreach($subjects as $subject) {
@@ -411,34 +408,51 @@ class QualityControlController extends Controller
                     // form type loop
                     foreach($formType as $type) {
 
-                        $step = PhaseSteps::where('phase_id', $subject->phase_id)
-                                            ->where('modility_id', $type['modility_id'])
-                                            ->where('form_type_id', $type['form_type_id'])
-                                            ->first();
-                        
-                        if ($step != null) {
+                        // comparing assign modality with the array modality
+                        // $checkModality = AssignWork::where('subject_id', $subject->subj_id)
+                        //                             ->where('phase_id', $subject->phase_id)
+                        //                             ->where('modility_id', $type['modility_id'])
+                        //                             ->where('form_type_id', $type['form_type_id'])
+                        //                             ->where('user_id', \Auth::user()->id)
+                        //                             ->first();
 
-                            $getFormStatusArray = array(
-                                'subject_id' => $subject->subj_id,
-                                'study_structures_id' => $subject->phase_id,
-                                'modility_id'=> $type['modility_id'],
-                                'form_type_id' => $type['form_type_id']
-                            );
+                        // if($checkModality != null) {
+                        if ($subject->modility_id == $type['modility_id']) {
 
-                            if ($step->form_type_id == 2) {
+                            // check step
+                            $step = PhaseSteps::where('phase_id', $subject->phase_id)
+                                                ->where('modility_id', $type['modility_id'])
+                                                ->where('form_type_id', $type['form_type_id'])
+                                                ->first();
+                            
+                            if ($step != null) {
 
-                                $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $step->graders_number, false);
+                                $getFormStatusArray = array(
+                                    'subject_id' => $subject->subj_id,
+                                    'study_structures_id' => $subject->phase_id,
+                                    'modility_id'=> $type['modility_id'],
+                                    'form_type_id' => $type['form_type_id']
+                                );
+
+                                if ($step->form_type_id == 2) {
+
+                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $step->graders_number, false);
+                                } else {
+
+                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
+
+                                }
+
                             } else {
 
-                                $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
-
-
-                            }
+                                $formStatus[$key.'_'.$type['form_type']] = '<img src="' . url('images/no_status.png') . '"/>';
+                            } // step check ends
 
                         } else {
 
-                            $formStatus[$key.'_'.$type['form_type']] = '<img src="' . url('images/no_status.png') . '"/>';
-                        } // step check ends
+                            $formStatus[$key.'_'.$type['form_type']] = '';
+
+                        } // modility check ends
 
                     } // step lopp ends
 
@@ -447,9 +461,6 @@ class QualityControlController extends Controller
                 $subject->form_status = $formStatus;
             }// subject loop ends
         } // modality step null check
-
-        
-        //dd($subjects);
 
         // get subjects
         $getFilterSubjects = Subject::select('id', 'subject_id')

@@ -535,11 +535,12 @@ class GradingController extends Controller
 
             }
 
-            // get user on the basis of the role ids
+            // get user on the basis of the role ids per current session study
             $getUsers = User::select('users.id', 'users.name')
-                              ->leftJoin('user_roles', 'user_roles.user_id', '=', 'users.id')
-                              ->leftJoin('roles', 'roles.id', '=', 'user_roles.role_id')
-                              ->whereIn('user_roles.role_id', $roleIds)
+                              ->leftJoin('study_role_users', 'study_role_users.user_id', '=', 'users.id')
+                              ->leftJoin('roles', 'roles.id', '=', 'study_role_users.role_id')
+                              ->where('study_role_users.study_id', \Session::get('current_study'))
+                              ->whereIn('study_role_users.role_id', $roleIds)
                               ->groupBy('users.id')
                               ->orderBy('users.name', 'asc')
                               ->get();
@@ -575,8 +576,10 @@ class GradingController extends Controller
                                           ->where('phase_id', $input['edit_phase_id'])
                                           ->delete();
 
+
         // loop user ids
         foreach($input['edit_users_id'] as $userId) {
+
             // assign work object
             $assignWork = new AssignWork;
             $assignWork->study_id = \Session::get('current_study');
@@ -750,7 +753,10 @@ class GradingController extends Controller
 
             }
 
-            $modalitySteps['Adjudication'] = $adjudicationArray;
+            // if array is not null assign it to modalitySteps
+            if ($adjudicationArray != null) {
+                $modalitySteps['Adjudication'] = $adjudicationArray;
+            }
 
             //get form status depending upon subject, phase and modality
             if ($modalitySteps != null) {
@@ -982,5 +988,160 @@ class GradingController extends Controller
         );
 
         return view('userroles::users.grading-status', compact('subjects', 'modalitySteps', 'getFilterSubjects', 'getFilterPhases', 'getFilterSites', 'getFilterModilities', 'getFilterFormStatus'));
+    }
+
+    public function gradingWorkList(Request $request) {
+
+        $modalitySteps = [];
+        
+        // get subjects
+            $subjects = AssignWork::query();
+            $subjects = $subjects->select('assign_work.subject_id as subj_id', 'assign_work.study_id', 'assign_work.phase_id', 'assign_work.form_type_id', 'assign_work.modility_id', 'assign_work.assign_date', 'subjects.subject_id', 'study_structures.name as phase_name', 'study_structures.position', 'sites.site_name')
+                ->leftJoin('subjects', 'subjects.id', '=', 'assign_work.subject_id')
+                ->leftJoin('study_structures', 'study_structures.id', '=', 'assign_work.phase_id')
+                ->leftJoin('sites', 'sites.id', '=', 'subjects.site_id')
+                ->where('assign_work.user_id', \Auth::user()->id)
+                ->where('assign_work.form_type_id', 2)
+                ->where('assign_work.study_id', \Session::get('current_study'));
+
+                if ($request->subject != '') {
+                    $subjects = $subjects->where('assign_work.subject_id', $request->subject);
+                }
+
+                if ($request->phase != '') {
+                    $subjects = $subjects->where('assign_work.phase_id', $request->phase);
+                }
+
+                if ($request->site != '') {
+                    $subjects = $subjects->where('sites.id', $request->site);
+                }
+
+                if ($request->assign_date != '') {
+                    $visitDate = explode('-', $request->assign_date);
+                        $from   = Carbon::parse($visitDate[0])
+                                            ->startOfDay()        // 2018-09-29 00:00:00.000000
+                                            ->toDateTimeString(); // 2018-09-29 00:00:00
+
+                        $to     = Carbon::parse($visitDate[1])
+                                            ->endOfDay()          // 2018-09-29 23:59:59.000000
+                                            ->toDateTimeString(); // 2018-09-29 23:59:59
+
+                    $subjects =  $subjects->whereBetween('assign_work.assign_date', [$from, $to]);
+                }
+
+                if ($request->modility != '') {
+
+                    $subjects = $subjects->where('assign_work.modility_id', $request->modility);
+                }
+
+                $subjects = $subjects->orderBy('subjects.subject_id')
+                                     ->orderBy('study_structures.position')
+                                     ->paginate(15);
+
+
+            // get modalities
+            $getModilities = AssignWork::query();
+            $getModilities = $getModilities->select('assign_work.modility_id', 'modilities.modility_name')
+            ->leftJoin('modilities', 'modilities.id', '=', 'assign_work.modility_id')
+            ->where('assign_work.user_id', \Auth::user()->id)
+            ->where('assign_work.form_type_id', 2)
+            ->where('assign_work.study_id', \Session::get('current_study'));
+
+            if ($request->modility != '') {
+
+                $getModilities = $getModilities->where('assign_work.modility_id', $request->modility);
+            }
+
+            $getModilities = $getModilities
+            ->groupBy('assign_work.modility_id')
+            ->orderBy('modilities.modility_name')
+            ->get();
+
+            // get form types for modality
+            foreach($getModilities as $key => $modility) {
+
+                $getSteps = AssignWork::select('assign_work.modility_id','form_types.id as form_type_id', 'form_types.form_type')
+                                        ->leftJoin('form_types', 'form_types.id', '=', 'assign_work.form_type_id')
+                                        ->where('modility_id', $modility->modility_id)
+                                        ->where('form_types.form_type', 'Grading')
+                                        ->orderBy('form_types.sort_order')
+                                        ->groupBy('assign_work.form_type_id')
+                                        ->get()->toArray();
+
+                $modalitySteps[$modility->modility_name] = $getSteps;
+            }
+
+            //get form status depending upon subject, phase and modality
+            if ($modalitySteps != null) {
+                foreach($subjects as $subject) {
+                    //get status
+                    $formStatus = [];
+
+                    // modality loop
+                    foreach($modalitySteps as $key => $formType) {
+
+                        // form type loop
+                        foreach($formType as $type) {
+
+                            // comparing assign modality with the array modality
+                            if($subject->modility_id == $type['modility_id']) {
+
+                                // check step
+                                $step = PhaseSteps::where('phase_id', $subject->phase_id)
+                                                    ->where('modility_id', $type['modility_id'])
+                                                    ->where('form_type_id', $type['form_type_id'])
+                                                    ->first();
+                                
+                                if ($step != null) {
+
+                                    $getFormStatusArray = array(
+                                        'subject_id' => $subject->subj_id,
+                                        'study_structures_id' => $subject->phase_id,
+                                        'modility_id'=> $type['modility_id'],
+                                        'form_type_id' => $type['form_type_id']
+                                    );
+
+                                    if ($step->form_type_id == 2) {
+
+                                        $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $step->graders_number, false);
+                                    } else {
+
+                                        $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
+                                    }
+
+                                } else {
+
+                                    $formStatus[$key.'_'.$type['form_type']] = '<img src="' . url('images/no_status.png') . '"/>';
+                                } // step check ends
+
+                            } else {
+
+                                $formStatus[$key.'_'.$type['form_type']] = '';
+
+                            } // modility check ends
+
+                        } // step lopp ends
+
+                    } // modality loop ends
+                    // assign the array to the key
+                    $subject->form_status = $formStatus;
+                }// subject loop ends
+            } // modality step null check
+
+            // get subjects
+            $getFilterSubjects = Subject::select('id', 'subject_id')
+                                          ->get();
+            //get phases
+            $getFilterPhases = StudyStructure::select('id', 'name')
+                                               ->orderBy('position')
+                                               ->get();
+            // get sites
+            $getFilterSites = Site::select('id', 'site_name')
+                                    ->get();
+            // get modilities
+            $getFilterModilities = Modility::select('id', 'modility_name')
+                                            ->get();
+
+        return view('userroles::users.grading-work-list',  compact('subjects', 'modalitySteps', 'getFilterSubjects', 'getFilterPhases', 'getFilterSites', 'getFilterModilities'));
     }
 }
