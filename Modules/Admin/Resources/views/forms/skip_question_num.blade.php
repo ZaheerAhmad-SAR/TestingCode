@@ -30,7 +30,6 @@
         <!-- START: Card Data-->
         <form action="{{route('skipNumber.apply_skip_logic_num')}}" enctype="multipart/form-data" method="POST">
             @csrf
-            {{-- {{dd(request('id'))}} --}}
             <input type="hidden" name="question_id" value="{{request('id')}}">
             <div class="row">
                <div class="col-12 col-sm-12 mt-3">
@@ -38,13 +37,13 @@
                        <div class="card-body">
                             <div class="col-md-6" style="display: inline-block;">
                                 <div class="">
-                                    <input type="text" class="form-control" name="number_value" placeholder="Enter Number values " value="">
+                                    <input type="text" class="form-control" name="number_value[]" placeholder="Enter Number values " value="">
                                 </div>
                             </div>
                             <div class="col-md-5" style="display: inline-block;">    
                                 <select class="form-control" name="operator[]">
                                     <option value="">---Select---</option>
-                                    <option value="=">Equal</option>
+                                    <option value="==">Equal</option>
                                     <option value=">=">Greater OR Equal</option>
                                     <option value="<=">Less OR Equal</option>
                                     <option value=">">Greater Than</option>
@@ -128,7 +127,7 @@
                 <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-de-{{$key}}" onclick="deactivate_checks('{{$value->step_id}}','de_sections_list_','{{$key}}','{{request('id')}}');" style="font-size: 20px; color: #1e3d73;"></i>
                                   </div>
                                 </td>
-                                <td colspan="5"><input type="checkbox" name="deactivate_forms[{{$key}}][]" value="'{{$value->step_id}}"> &nbsp;&nbsp;{{$value->step_name}}</td>
+                                <td colspan="5"><input type="checkbox" name="deactivate_forms[{{$key}}][]" value="{{$value->step_id}}"> &nbsp;&nbsp;{{$value->step_name}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -165,20 +164,23 @@
                                 <th>Operator</th>
                                 <th style="width: 5%;">Action</th>
                             </tr>
-                          @foreach($num_values->skiplogic as $key => $value)
+                          @foreach($num_values as  $num_value)
+                          @foreach($num_value->skiplogic as  $skip_logic)
+
                             <tr>
-                                <td>{{$value->number_value}}</td>
-                                <td>{{$value->operator}}</td>
+                                <td>{{$skip_logic->number_value}}</td>
+                                <td>{{$skip_logic->operator}}</td>
                                 <td>
                                    <div class="d-flex mt-3 mt-md-0 ml-auto">
                                         <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                         <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                            <span class="dropdown-item"><a href="{{route('skipNumber.updateSkipNum',$value['id'])}}"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
+                                            <span class="dropdown-item"><a href="{{route('skipNumber.updateSkipNum',$skip_logic['id'])}}"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
                                             <span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
+                            @endforeach
                             @endforeach
                         </table>
                     </div>
