@@ -146,7 +146,6 @@
         })
     }
     function question_options_activate(id,append_class,index,q_id,option_value,option_title){
-
         var url = "{{ url('skiplogic/options_for_skip_logic_activate') }}"
             url = url+'/'+id;
         $.ajax({

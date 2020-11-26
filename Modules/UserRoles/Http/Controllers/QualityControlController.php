@@ -13,6 +13,9 @@ use Modules\Admin\Entities\PhaseSteps;
 use Modules\FormSubmission\Entities\SubjectsPhases;
 use Modules\FormSubmission\Entities\FormStatus;
 use Modules\Admin\Entities\FormType;
+
+use Modules\Admin\Entities\AssignWork;
+
 use DB;
 use Carbon\Carbon;
 use Excel;
@@ -55,17 +58,17 @@ class QualityControlController extends Controller
             }
 
             if ($request->visit_date != '') {
-                    $visitDate = explode('-', $request->visit_date);
-                        $from   = Carbon::parse($visitDate[0])
-                                            ->startOfDay()        // 2018-09-29 00:00:00.000000
-                                            ->toDateTimeString(); // 2018-09-29 00:00:00
+                $visitDate = explode('-', $request->visit_date);
+                    $from   = Carbon::parse($visitDate[0])
+                                        ->startOfDay()        // 2018-09-29 00:00:00.000000
+                                        ->toDateTimeString(); // 2018-09-29 00:00:00
 
-                        $to     = Carbon::parse($visitDate[1])
-                                            ->endOfDay()          // 2018-09-29 23:59:59.000000
-                                            ->toDateTimeString(); // 2018-09-29 23:59:59
+                    $to     = Carbon::parse($visitDate[1])
+                                        ->endOfDay()          // 2018-09-29 23:59:59.000000
+                                        ->toDateTimeString(); // 2018-09-29 23:59:59
 
-                    $subjects =  $subjects->whereBetween('subjects_phases.visit_date', [$from, $to]);
-                }
+                $subjects =  $subjects->whereBetween('subjects_phases.visit_date', [$from, $to]);
+            }
 
             $subjects = $subjects->orderBy('subjects.subject_id')
             ->orderBy('study_structures.position')
@@ -258,7 +261,6 @@ class QualityControlController extends Controller
                                     'form_type_id' => $type['form_type_id']
                                 ];
 
-
                                 if ($step->form_type_id == 2) {
 
                                     $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $step->graders_number, false);
@@ -284,8 +286,6 @@ class QualityControlController extends Controller
             } // modality step null check
 
         } // form 2 if ends
-
-        //dd($subjects[0]['form_status']);
 
         /////////////////////////////// get filters ///////////////////////////////////////
 
@@ -313,6 +313,160 @@ class QualityControlController extends Controller
         );
 
         return view('userroles::users.qc-list', compact('subjects', 'modalitySteps', 'getFilterSubjects', 'getFilterPhases', 'getFilterSites', 'getFilterModilities', 'getFilterFormType', 'getFilterFormStatus'));
+    }
+
+    public function qcWorkList(Request $request) {
+
+        $modalitySteps = [];
+
+        $subjects = AssignWork::query();
+
+        $subjects = $subjects->select('assign_work.subject_id as subj_id', 'assign_work.study_id', 'assign_work.phase_id', 'assign_work.form_type_id', 'assign_work.modility_id', 'assign_work.assign_date', 'subjects.subject_id', 'study_structures.name as phase_name', 'study_structures.position', 'sites.site_name')
+        ->leftJoin('subjects', 'subjects.id', '=', 'assign_work.subject_id')
+        ->leftJoin('study_structures', 'study_structures.id', '=', 'assign_work.phase_id')
+        ->leftJoin('sites', 'sites.id', '=', 'subjects.site_id')
+        ->where('assign_work.user_id', \Auth::user()->id)
+        ->where('assign_work.form_type_id', 1)
+        ->where('assign_work.study_id', \Session::get('current_study'));
+
+        if ($request->subject != '') {
+            $subjects = $subjects->where('assign_work.subject_id', $request->subject);
+        }
+
+        if ($request->phase != '') {
+            $subjects = $subjects->where('assign_work.phase_id', $request->phase);
+        }
+
+        if ($request->site != '') {
+            $subjects = $subjects->where('sites.id', $request->site);
+        }
+
+        if ($request->assign_date != '') {
+            $visitDate = explode('-', $request->assign_date);
+                $from   = Carbon::parse($visitDate[0])
+                                    ->startOfDay()        // 2018-09-29 00:00:00.000000
+                                    ->toDateTimeString(); // 2018-09-29 00:00:00
+
+                $to     = Carbon::parse($visitDate[1])
+                                    ->endOfDay()          // 2018-09-29 23:59:59.000000
+                                    ->toDateTimeString(); // 2018-09-29 23:59:59
+
+            $subjects =  $subjects->whereBetween('assign_work.assign_date', [$from, $to]);
+        }
+
+        if ($request->modility != '') {
+
+            $subjects = $subjects->where('assign_work.modility_id', $request->modility);
+        }
+
+        $subjects = $subjects->orderBy('subjects.subject_id')
+                             ->orderBy('study_structures.position')
+                             ->paginate(15);
+
+        //dd($subjects);
+
+        // get modalities
+        $getModilities = AssignWork::query();
+        $getModilities = $getModilities->select('assign_work.modility_id', 'modilities.modility_name')
+        ->leftJoin('modilities', 'modilities.id', '=', 'assign_work.modility_id')
+        ->where('assign_work.user_id', \Auth::user()->id)
+        ->where('assign_work.form_type_id', 1)
+        ->where('assign_work.study_id', \Session::get('current_study'));
+
+        if ($request->modility != '') {
+
+            $getModilities = $getModilities->where('assign_work.modility_id', $request->modility);
+        }
+
+        $getModilities = $getModilities
+        ->groupBy('assign_work.modility_id')
+        ->orderBy('modilities.modility_name')
+        ->get();
+
+        // get form types for modality
+        foreach($getModilities as $key => $modility) {
+
+            $getSteps = AssignWork::select('assign_work.modility_id','form_types.id as form_type_id', 'form_types.form_type')
+                                    ->leftJoin('form_types', 'form_types.id', '=', 'assign_work.form_type_id')
+                                    ->where('modility_id', $modility->modility_id)
+                                    ->where('form_types.form_type', 'QC')
+                                    ->orderBy('form_types.sort_order')
+                                    ->groupBy('assign_work.form_type_id')
+                                    ->get()->toArray();
+
+            $modalitySteps[$modility->modility_name] = $getSteps;
+        }
+
+        //dd($modalitySteps);
+
+        //get form status depending upon subject, phase and modality
+        if ($modalitySteps != null) {
+            foreach($subjects as $subject) {
+                //get status
+                $formStatus = [];
+
+                // modality loop
+                foreach($modalitySteps as $key => $formType) {
+
+                    // form type loop
+                    foreach($formType as $type) {
+
+                        $step = PhaseSteps::where('phase_id', $subject->phase_id)
+                                            ->where('modility_id', $type['modility_id'])
+                                            ->where('form_type_id', $type['form_type_id'])
+                                            ->first();
+                        
+                        if ($step != null) {
+
+                            $getFormStatusArray = array(
+                                'subject_id' => $subject->subj_id,
+                                'study_structures_id' => $subject->phase_id,
+                                'modility_id'=> $type['modility_id'],
+                                'form_type_id' => $type['form_type_id']
+                            );
+
+                            if ($step->form_type_id == 2) {
+
+                                $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $step->graders_number, false);
+                            } else {
+
+                                $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
+
+
+                            }
+
+                        } else {
+
+                            $formStatus[$key.'_'.$type['form_type']] = '<img src="' . url('images/no_status.png') . '"/>';
+                        } // step check ends
+
+                    } // step lopp ends
+
+                } // modality loop ends
+                // assign the array to the key
+                $subject->form_status = $formStatus;
+            }// subject loop ends
+        } // modality step null check
+
+        
+        //dd($subjects);
+
+        // get subjects
+        $getFilterSubjects = Subject::select('id', 'subject_id')
+                                      ->get();
+        //get phases
+        $getFilterPhases = StudyStructure::select('id', 'name')
+                                           ->orderBy('position')
+                                           ->get();
+        // get sites
+        $getFilterSites = Site::select('id', 'site_name')
+                                ->get();
+        // get modilities
+        $getFilterModilities = Modility::select('id', 'modility_name')
+                                        ->get();
+
+
+       return view('userroles::users.qc-work-list', compact('subjects', 'modalitySteps', 'getFilterSubjects', 'getFilterPhases', 'getFilterSites', 'getFilterModilities'));
     }
 
     /**

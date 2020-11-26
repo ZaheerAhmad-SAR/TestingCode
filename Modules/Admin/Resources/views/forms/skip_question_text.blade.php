@@ -121,7 +121,7 @@
                 <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-de-{{$key}}" onclick="deactivate_checks('{{$value->step_id}}','de_sections_list_','{{$key}}','{{request('id')}}');" style="font-size: 20px; color: #1e3d73;"></i>
                                   </div>
                                 </td>
-                                <td colspan="5"><input type="checkbox" name="deactivate_forms[{{$key}}][]" value="'{{$value->step_id}}"> &nbsp;&nbsp;{{$value->step_name}}</td>
+                                <td colspan="5"><input type="checkbox" name="deactivate_forms[{{$key}}][]" value="{{$value->step_id}}"> &nbsp;&nbsp;{{$value->step_name}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -164,7 +164,7 @@
                                    <div class="d-flex mt-3 mt-md-0 ml-auto">
                                         <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                         <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                            <span class="dropdown-item"><a href="{{route('skipNumber.updateSkipNum',$value['id'])}}"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
+                                            <span class="dropdown-item"><a href="{{route('skipNumber.updateSkipText',$value['id'])}}"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
                                             <span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span>
                                         </div>
                                     </div>

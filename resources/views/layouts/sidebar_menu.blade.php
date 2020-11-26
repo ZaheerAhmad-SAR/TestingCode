@@ -201,6 +201,7 @@
             </li>
             @endif
 
+            @if(!empty(session('current_study')))
             <li class="">
                 <ul class="@if(is_active('assign-work')) {{ 'active' }} @endif">
                     <li class="nav-item @if(is_active('assign-work')) {{ ' active' }} @endif">
@@ -210,6 +211,7 @@
                     </li>
                 </ul>
             </li>
+            @endif
 
             @if(hasPermission(auth()->user(),'qualitycontrol.index'))
                 @if(session('current_study'))
@@ -220,6 +222,12 @@
                                     <li>
                                         <a href="{{ route('qualitycontrol.index')}}">
                                             <i class="fas fa-list"></i> QC List
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <a href="{{ route('qualitycontrol.qc-work-list')}}">
+                                            <i class="fas fa-list"></i> QC Work List
                                         </a>
                                     </li>
                                 </ul>
