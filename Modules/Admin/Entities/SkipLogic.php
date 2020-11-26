@@ -5,7 +5,7 @@ namespace Modules\Admin\Entities;
 use Illuminate\Database\Eloquent\Model;
 // use Illuminate\Database\Eloquent\SoftDeletes;
 
-class skipLogic extends Model
+class SkipLogic extends Model
 {
     // use SoftDeletes;
     protected $table = 'skip_logics';
