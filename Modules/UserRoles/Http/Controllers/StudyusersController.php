@@ -14,6 +14,7 @@ use Modules\UserRoles\Entities\RolePermission;
 use Modules\Admin\Entities\RoleStudyUser;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Http\Requests\UserRequest;
+use Illuminate\Support\Facades\Validator;
 use Session;
 use Illuminate\Support\Str;
 
@@ -64,7 +65,16 @@ class StudyusersController extends Controller
     {
         if ($request->ajax()) {
             // make validator
-            $validator = \Validator::make($request->all(), [
+            $messages = [
+                'name.required' => 'Please provide name!',
+                'email.required' => 'Please provide e-mail address!',
+                'email.email' => 'Please provide valid e-mail address!',
+                'password.required' => 'Please provide password!',
+                'password.confirmed' => 'Passwords must match...',
+                'password.regex' => 'Password must be 8 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character',
+                'roles.required' => 'Please select role!',
+            ];
+            $rules = [
                 'name'      => 'required',
                 'email'     => 'required|email',
                 'password' => [
@@ -79,7 +89,8 @@ class StudyusersController extends Controller
                 ],
                 'roles'    => 'required|array|min:1',
                 'roles.*'  => 'required|min:1',
-            ]);
+            ];
+            $validator = Validator::make($request->all(), $rules, $messages);
 
             if ($validator->fails()) {
 

@@ -85,10 +85,18 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-
         if ($request->ajax()) {
             // make validator
-            $validator = Validator::make($request->all(), [
+            $messages = [
+                'name.required' => 'Please provide name!',
+                'email.required' => 'Please provide e-mail address!',
+                'email.email' => 'Please provide valid e-mail address!',
+                'password.required' => 'Please provide password!',
+                'password.confirmed' => 'Passwords must match...',
+                'password.regex' => 'Password must be 8 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character',
+                'roles.required' => 'Please select role!',
+            ];
+            $rules = [
                 'name'      => 'required',
                 'email'     => 'required|email',
                 'password' => [
@@ -103,13 +111,12 @@ class UserController extends Controller
                 ],
                 'roles'    => 'required|array|min:1',
                 'roles.*'  => 'required|min:1',
-            ]);
+            ];
+            $validator = Validator::make($request->all(), $rules, $messages);
 
             if ($validator->fails()) {
-
                 return response()->json(['errors' => $validator->errors()->first()]);
             } else {
-
                 //CHECK FOR DUPLICATE EMAIL
                 $checkEmail = User::where('email', $request->email)
                     ->where('deleted_at', NULL)
