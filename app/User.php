@@ -78,6 +78,17 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserRole::class);
     }
+
+    public static function getUserRolesString($user)
+    {
+        $roleNamesArray = [];
+        foreach ($user->user_roles as $userRole) {
+            $role = Role::find($userRole->role_id);
+            $roleNamesArray[] = ucfirst($role->name);
+        }
+        return implode(', ', $roleNamesArray);
+    }
+
     public function role()
     {
         return $this->hasOne(Role::class, 'id', 'role_id');
