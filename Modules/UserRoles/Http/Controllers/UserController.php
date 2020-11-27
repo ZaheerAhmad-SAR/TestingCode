@@ -53,9 +53,14 @@ class UserController extends Controller
     }
     public function index()
     {
+        if (isThisUserSuperAdmin(\auth()->user())) {
+            $roles  =   Role::where('role_type', '!=', 'study_role')->get();
+            $systemRoleIds = Role::where('role_type', '!=', 'study_role')->pluck('id')->toArray();
+        } else {
+            $roles  =   Role::where('role_type', '=', 'system_role')->get();
+            $systemRoleIds = Role::where('role_type', '=', 'system_role')->pluck('id')->toArray();
+        }
 
-        $roles  =   Role::where('role_type', '!=', 'study_role')->get();
-        $systemRoleIds = Role::where('role_type', '!=', 'study_role')->pluck('id')->toArray();
         $currentStudy = session('current_study');
 
         $userIdsOfSystemRoles = UserRole::whereIn('role_id', $systemRoleIds)->pluck('user_id')->toArray();
@@ -72,10 +77,20 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles  =   Role::where('role_type', '=', 'system_role')->get();
-        return view('userroles::users.create', compact('roles'));
+        $user = new User();
 
-        return redirect('dashboard');
+        if (isThisUserSuperAdmin(\auth()->user())) {
+            $unassigned_roles  =   Role::where('role_type', '!=', 'study_role')->get();
+        } else {
+            $unassigned_roles  =   Role::where('role_type', '=', 'system_role')->get();
+        }
+        $assigned_roles = [];
+        $add_or_edit = 'Add';
+        $route = route('users.store');
+        $method = 'POST';
+        $submitFunction = 'submitAddUserForm();';
+
+        return view('userroles::users.popups.userform', compact('user', 'unassigned_roles', 'assigned_roles', 'add_or_edit', 'route', 'method', 'submitFunction'));
     }
 
     /**
@@ -85,22 +100,38 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-
         if ($request->ajax()) {
             // make validator
-            $validator = Validator::make($request->all(), [
+            $messages = [
+                'name.required' => 'Please provide name!',
+                'email.required' => 'Please provide e-mail address!',
+                'email.email' => 'Please provide valid e-mail address!',
+                'password.required' => 'Please provide password!',
+                'password.confirmed' => 'Passwords must match...',
+                'password.regex' => 'Password must be 8 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character',
+                'roles.required' => 'Please select role!',
+            ];
+            $rules = [
                 'name'      => 'required',
                 'email'     => 'required|email',
-                'password'  => 'required|string|min:8|confirmed|regex:/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/',
-                'roles'    => "required|array|min:1",
-                'roles.*'  => "required|min:1",
-            ]);
+                'password' => [
+                    'required',
+                    'string',
+                    'min:8',             // must be at least 10 characters in length
+                    'regex:/[a-z]/',      // must contain at least one lowercase letter
+                    'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                    'regex:/[0-9]/',      // must contain at least one digit
+                    'regex:/[@$!%*#?&]/', // must contain a special character
+                    'confirmed',
+                ],
+                'roles'    => 'required|array|min:1',
+                'roles.*'  => 'required|min:1',
+            ];
+            $validator = Validator::make($request->all(), $rules, $messages);
 
             if ($validator->fails()) {
-
                 return response()->json(['errors' => $validator->errors()->first()]);
             } else {
-
                 //CHECK FOR DUPLICATE EMAIL
                 $checkEmail = User::where('email', $request->email)
                     ->where('deleted_at', NULL)
@@ -154,22 +185,31 @@ class UserController extends Controller
 
     public function assign_users(Request $request)
     {
-        $study_user = RoleStudyUser::create([
-            'id'    => Str::uuid(),
-            'user_id' => $request->study_user,
-            'role_id'   => $request->user_role,
-            'study_id'  => session('current_study')
+        $validator = Validator::make($request->all(), [
+            'study_user' => 'required',
+            'user_role' => 'required'
         ]);
-        $checkUserRole = UserRole::where('role_id', $request->user_role)->where('user_id', $request->study_user)->first();
-        if (null === $checkUserRole) {
-            UserRole::create([
-                'id' => Str::uuid(),
-                'user_id' => $request->study_user,
-                'role_id' => $request->user_role
-            ]);
-        }
 
-        return redirect()->route('studyusers.index');
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->first()]);
+        } else {
+
+            $study_user = RoleStudyUser::create([
+                'id'    => Str::uuid(),
+                'user_id' => $request->study_user,
+                'role_id'   => $request->user_role,
+                'study_id'  => session('current_study')
+            ]);
+            $checkUserRole = UserRole::where('role_id', $request->user_role)->where('user_id', $request->study_user)->first();
+            if (null === $checkUserRole) {
+                UserRole::create([
+                    'id' => Str::uuid(),
+                    'user_id' => $request->study_user,
+                    'role_id' => $request->user_role
+                ]);
+            }
+            return response()->json(['success' => 'User assigned successfully.']);
+        }
     }
 
     public function update_profile()
@@ -193,31 +233,33 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user  = User::with('user_roles')->find($id);
+        $user = User::find($id);
 
-        $currentRoles = UserRole::select('user_roles.*', 'roles.*')
-            ->join('roles', 'roles.id', 'user_roles.role_id')
-            ->where('user_roles.user_id', '=', $user->id)
-            ->groupBy('roles.name')
-            ->get();
+        $assigned_roles = [];
+        $unassigned_roles = [];
 
-        $unassignedRoles = Role::select('roles.*')
-            ->join('user_roles', 'user_roles.role_id', 'roles.id')
-            ->where('user_roles.user_id', '=', $user->id)
-            ->get();
-        foreach ($currentRoles as $currentRole) {
-            $roleArray[] = $currentRole->role_id;
-        }
-        if (!empty($roleArray)) {
-            $unassignedRoles = Role::select('roles.*')
-                ->where('role_type', '!=', 'study_role')
-                ->whereNotIn('roles.id', $roleArray)->get();
+        $currentRoleIds = UserRole::where('user_id', 'like', $id)->pluck('role_id')->toArray();
+        $assigned_roles = Role::whereIn('id', $currentRoleIds)->get();
+
+        if (!empty($currentRoleIds)) {
+            if (isThisUserSuperAdmin(\auth()->user())) {
+                $unassigned_roles = Role::where('role_type', '!=', 'study_role')->whereNotIn('id', $currentRoleIds)->get();
+            } else {
+                $unassigned_roles = Role::where('role_type', '=', 'system_role')->whereNotIn('id', $currentRoleIds)->get();
+            }
         } else {
-            $unassignedRoles = Role::where('role_type', '=', 'system_role')->get();
+            if (isThisUserSuperAdmin(\auth()->user())) {
+                $unassigned_roles = Role::where('role_type', '!=', 'study_role')->get();
+            } else {
+                $unassigned_roles = Role::where('role_type', '=', 'system_role')->get();
+            }
         }
+        $add_or_edit = 'Edit';
+        $route = route('users.update', $id);
+        $method = 'PUT';
+        $submitFunction = 'submitEditUserForm();';
 
-
-        return view('userroles::users.edit', compact('user', 'unassignedRoles', 'currentRoles'));
+        return view('userroles::users.popups.userform', compact('user', 'unassigned_roles', 'assigned_roles', 'add_or_edit', 'route', 'method', 'submitFunction'));
     }
 
     /**
@@ -432,29 +474,27 @@ class UserController extends Controller
             }
         });
         if ($validator->fails()) {
-            return redirect(route('users.index'))
-                ->withErrors($validator)
-                ->withInput();
+            return response()->json(['errors' => $validator->errors()->first()]);
+        } else {
+            do {
+                $token = Str::random(15);
+            } while (Invitation::where('token', $token)->first());
+            Invitation::create([
+                'id'    => Str::uuid(),
+                'token' => $token,
+                'role_id'   => $request->roles,
+                'email' => $request->input('email')
+            ]);
+            $url = URL::temporarySignedRoute(
+
+                'registration',
+                now()->addMinutes(300),
+                ['token' => $token]
+            );
+
+            Notification::route('mail', $request->input('email'))->notify(new InviteNotification($url));
+            return response()->json(['success' => 'The Invite has been sent successfully.']);
         }
-        do {
-            $token = Str::random(15);
-        } while (Invitation::where('token', $token)->first());
-        Invitation::create([
-            'id'    => Str::uuid(),
-            'token' => $token,
-            'role_id'   => $request->roles,
-            'email' => $request->input('email')
-        ]);
-        $url = URL::temporarySignedRoute(
-
-            'registration',
-            now()->addMinutes(300),
-            ['token' => $token]
-        );
-
-        Notification::route('mail', $request->input('email'))->notify(new InviteNotification($url));
-
-        return redirect('/users')->with('message', 'The Invite has been sent successfully');
     }
 
     public function registration_view($token)

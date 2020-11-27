@@ -24,31 +24,9 @@
                     <p><strong>Subject ID:</strong> {{$data['Subject_ID']}}</p>
                     <p><strong>Remarks</strong> <br> {{$data['remarks']}}</p>
 
+{{--                    <p > {{$data['replyToken']}}</p>--}}
 
-{{--                    <div class="table-responsive">--}}
-{{--                        <table id="example" class="display table dataTable table-striped table-bordered" >--}}
-{{--                            <thead>--}}
-{{--                            <tr>--}}
-{{--                                <th>Study Short Name</th>--}}
-{{--                                <th>Transmission Number</th>--}}
-{{--                                <th>Visit Name</th>--}}
-{{--                                <th>Study ID</th>--}}
-{{--                                <th>Subject ID</th>--}}
-{{--                            </tr>--}}
-{{--                            </thead>--}}
-{{--                            <tbody>--}}
-{{--                                <tr>--}}
-{{--                                    <td>{{$data['studyShortName']}}</td>--}}
-{{--                                    <td>{{$data['Transmission_Number']}}</td>--}}
-{{--                                    <td>{{$data['visit_name']}}</td>--}}
-{{--                                    <td>{{$data['StudyI_ID']}}</td>--}}
-{{--                                    <td>{{$data['Subject_ID']}}</td>--}}
-{{--                                </tr>--}}
-
-{{--                            </tbody>--}}
-{{--                        </table>--}}
-{{--                    </div>--}}
-{{--                    <p><strong>Remarks</strong> <br> {{$data['remarks']}}</p>--}}
+                    <p style="cursor: pointer;"><a href="{{ url('transmissions/verifiedToken',$data['replyToken']) }}">Click Here to Reply :</a></p>
                 </div>
             </div>
         </div>
