@@ -81,7 +81,8 @@ class TrailLogController extends Controller
                 "QC Form" => "QC Form",
                 "Grading Form" => "Grading Form",
                 "Adjudication Form" => "Adjudication Form",
-                "System Adjudication Form" => "System Adjudication Form"
+                "System Adjudication Form" => "System Adjudication Form",
+                "Assign Work" => "Assign Work"
 
             );
 

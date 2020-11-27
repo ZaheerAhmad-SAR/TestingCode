@@ -386,7 +386,7 @@ class AdjudicationController extends Controller
                     $subjects = $subjects->where('assign_work.modility_id', $request->modility);
                 }
 
-                $subjects = $subjects->orderBy('subjects.subject_id')
+                $subjects = $subjects->groupBy(['assign_work.subject_id', 'assign_work.phase_id'])
                                      ->orderBy('study_structures.position')
                                      ->paginate(15);
 

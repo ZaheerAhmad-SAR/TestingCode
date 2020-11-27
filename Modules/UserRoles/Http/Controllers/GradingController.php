@@ -21,11 +21,16 @@ use Modules\Admin\Entities\AssignWork;
 use App\User;
 use Modules\UserRoles\Entities\Role;
 
+use Modules\Admin\Entities\TrailLog;
+
 use Carbon\Carbon;
 use App\Exports\GradingFromView;
 use App\Exports\GradingFromView2;
 use App\Exports\GradingStatusFromView;
 use App\Exports\GradingStatusFromView2;
+
+use Session;
+use Auth;
 
 class GradingController extends Controller
 {
@@ -400,6 +405,38 @@ class GradingController extends Controller
                         // form type loop
                         foreach($formType as $type) {
 
+                            // assign order color
+                            $getAssignWork = AssignWork::where('subject_id', $subject->id)
+                                                    ->where('phase_id', $subject->phase_id)
+                                                    ->where('modility_id', $type['modility_id'])
+                                                    ->where('form_type_id', $type['form_type_id'])
+                                                    ->first();
+
+                            if ($getAssignWork != null) {
+
+                                $formStatus[$key.'_'.$type['form_type']]['color'] = '#28a745';
+
+                                // check if form is not initialize and assign date is passed
+                                $getFormStatus = FormStatus::where('subject_id', $subject->id)
+                                                        ->where('study_structures_id', $subject->phase_id)
+                                                        ->where('modility_id', $type['modility_id'])
+                                                        ->where('form_type_id', $type['form_type_id'])
+                                                        ->first();
+
+                                if($getFormStatus == null) {
+                                    // check date
+                                    if (Carbon::now()->gt(Carbon::parse($getAssignWork->assign_date))) {
+                                        $formStatus[$key.'_'.$type['form_type']]['color'] = 'red';
+                                    }
+
+                                } // form status null check ends
+
+                            } else {
+
+                                $formStatus[$key.'_'.$type['form_type']]['color'] = '#dee2e6';
+
+                            } // assignwork check ends
+
                             $step = PhaseSteps::where('phase_id', $subject->phase_id)
                                                 ->where('modility_id', $type['modility_id'])
                                                 ->where('form_type_id', $type['form_type_id'])
@@ -416,15 +453,15 @@ class GradingController extends Controller
 
                                 if ($step->form_type_id == 2) {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $step->graders_number, false);
+                                    $formStatus[$key.'_'.$type['form_type']]['status'] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $step->graders_number, false);
                                 } else {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
+                                    $formStatus[$key.'_'.$type['form_type']]['status'] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
                                 }
 
                             } else {
 
-                                $formStatus[$key.'_'.$type['form_type']] = '<img src="' . url('images/no_status.png') . '"/>';
+                                $formStatus[$key.'_'.$type['form_type']]['status'] = '<img src="' . url('images/no_status.png') . '"/>';
                             } // step null check ends
 
                         } // step lopp ends
@@ -445,19 +482,61 @@ class GradingController extends Controller
         return view('userroles::users.assign-work', compact('subjects', 'modalitySteps', 'getModilities', 'getFormType'));
     }
 
-    public function saveAssignWork(Request $request) {
+    public function checkAssignWork(Request $request) {
 
         $input = $request->all();
+
+        $count = 0;
         // loop dubject
         foreach($input['subject_id'] as $key => $subject) {
             // check if check box is checked
             if(isset($input['check_subject'][$subject.'_'.$input['phase_id'][$key]])) {
-                // find this phase assign work status
-                $updatePhaseAssignStatus = SubjectsPhases::where('subject_id', $subject)
-                                                          ->where('phase_id', ($input['phase_id'][$key]))
-                                                          ->first();
 
-                if ($updatePhaseAssignStatus->assign_work == '0') {
+                $checkSubjectPhase = AssignWork::where('subject_id', $subject)
+                                              ->where('phase_id', $input['phase_id'][$key])
+                                              ->where('modility_id', $input['modility_id'])
+                                              ->where('form_type_id', $input['form_type_id'])
+                                              ->first();
+
+                if ($checkSubjectPhase != null ) {
+
+                    $count++;
+                }
+                
+            } // check subject ends
+
+            // return response
+            if ($count == 0) {
+
+                return response()->json(['success' => 'No data found.']);
+
+            } else {
+
+                return response()->json(['error' => 'Data found.']);
+
+            }
+
+        } // subject ends
+    }
+
+    public function saveAssignWork(Request $request) {
+
+        $input = $request->all();
+
+        // loop dubject
+        foreach($input['subject_id'] as $key => $subject) {
+
+            // check if check box is checked
+            if(isset($input['check_subject'][$subject.'_'.$input['phase_id'][$key]])) {
+                
+                // delete old subject/phase on the basis of this modility and form type
+                $deleteSubjectPhase = AssignWork::where('subject_id', $subject)
+                                              ->where('phase_id', $input['phase_id'][$key])
+                                              ->where('modility_id', $input['modility_id'])
+                                              ->where('form_type_id', $input['form_type_id'])
+                                              ->delete();
+
+                if (isset($input['users_id'])) {
                     // loop user ids
                     foreach($input['users_id'] as $userId) {
                         // assign work object
@@ -471,13 +550,49 @@ class GradingController extends Controller
                         $assignWork->assign_date = $input['assign_date'];
                         $assignWork->save();
 
-                        // update phase table for being assigned
-                        $updatePhaseAssignStatus->assign_work = '1';
-                        $updatePhaseAssignStatus->save();
-
                     } // user ends
 
-                } // assign work ends
+                    // get all users name
+                    $userName = User::whereIn('id', $input['users_id'])->pluck('name')->toArray();
+                    // get subject name
+                    $getSubjectName = Subject::where('id', $subject)->first();
+                    //get phase name
+                    $getPhaseName = StudyStructure::where('id', $input['phase_id'][$key])->first();
+                    //get modality name
+                    $getModilityName = Modility::where('id', $input['modility_id'])->first();
+                    //get Form name
+                    $getFormName = FormType::where('id', $input['form_type_id'])->first();
+
+                    $oldData = [];
+
+                    $newData = array(
+                        'study_name' => \Session::get('study_short_name'),
+                        'subject_name' => $getSubjectName->subject_id,
+                        'phase_name' => $getPhaseName->name,
+                        'modility_name' => $getModilityName->modility_name,
+                        'form_type' => $getFormName->form_type,
+                        'users' => $userName != null ? implode(',', $userName) : '',
+                        'assign_date' => date('d-M-Y', strtotime($input['assign_date']))
+                    );
+
+                    // Log the event
+                    $trailLog = new TrailLog;
+                    $trailLog->event_id = $assignWork->id;
+                    $trailLog->event_section = 'Assign Work';
+                    $trailLog->event_type = 'Add';
+                    $trailLog->event_message = \Auth::user()->name.' assigned work for study '.Session::get('study_short_name');
+                    $trailLog->user_id = Auth::user()->id;
+                    $trailLog->user_name = Auth::user()->name;
+                    $trailLog->role_id = Auth::user()->role_id;
+                    $trailLog->ip_address = $request->ip();
+                    $trailLog->study_id = \Session::get('current_study') != null ? \Session::get('current_study') : '';
+                    $trailLog->event_url = route('assign-work');
+                    $trailLog->event_details = json_encode($newData);
+                    $trailLog->event_old_details = json_encode($oldData);
+                    $trailLog->save();
+
+                } // user null ends
+
 
             } // check subject ends
 
@@ -546,7 +661,6 @@ class GradingController extends Controller
                               ->get();
 
             return response()->json(['success' => 'Users find.', 'getUsers' => $getUsers]);
-
 
         } // ajax ends
     }
@@ -1034,7 +1148,7 @@ class GradingController extends Controller
                     $subjects = $subjects->where('assign_work.modility_id', $request->modility);
                 }
 
-                $subjects = $subjects->orderBy('subjects.subject_id')
+                $subjects = $subjects->groupBy(['assign_work.subject_id', 'assign_work.phase_id'])
                                      ->orderBy('study_structures.position')
                                      ->paginate(15);
 

@@ -34,6 +34,9 @@
     <!-- select2 -->
     <link rel="stylesheet" href="{{ asset('public/dist/vendors/select2/css/select2.min.css') }}"/>
     <link rel="stylesheet" href="{{ asset('public/dist/vendors/select2/css/select2-bootstrap.min.css') }}"/>
+    <!-- sweet alerts -->
+    <link rel="stylesheet" href="{{ asset('public/dist/vendors/sweetalert/sweetalert.css') }}"/>
+
 @endsection
 
 @section('content')
@@ -157,10 +160,10 @@
                                         @foreach($subjects as $key => $subject)
                                         <tr>
                                             <td>
-                                                <input type="checkbox" @if ($subject->assign_work == '0') class="check_subject" @else checked disabled @endif name="check_subject[{{ $subject->id.'_'.$subject->phase_id }}]" >
+                                                <input type="checkbox" class="check_subject" name="check_subject[{{ $subject->id.'_'.$subject->phase_id }}]" >
                                             </td>
                                             <td>
-                                               <span @if ($subject->assign_work == '1') class="text-primary font-weight-bold" onClick="updateSubject('{{$subject->id}}','{{$subject->phase_id}}')" @endif>
+                                               <span class="text-primary font-weight-bold">
                                                     
                                                     {{$subject->subject_id}}
                                                     
@@ -176,12 +179,13 @@
                                             
                                             @if($subject->form_status != null)
                                                 @foreach($subject->form_status as $status)
+
                                                    
-                                                    <td style="text-align: center;">
+                                                    <td style="text-align: center; border-bottom: 2px solid {{$status['color']}} !important;">
 
                                                         <a href="{{route('subjectFormLoader.showSubjectForm',['study_id' => $subject->study_id, 'subject_id' => $subject->id])}}" class="text-primary font-weight-bold">
                                                             
-                                                            <?php echo $status; ?>
+                                                            <?php echo $status['status']; ?>
                                                         
                                                         </a>
                                                          
@@ -238,7 +242,7 @@
 
                                     <div class="form-group">
                                         <label class="users">Users</label>
-                                        <Select class="form-control users_id" name="users_id[]" id="users_id" multiple required>
+                                        <Select class="form-control users_id" name="users_id[]" id="users_id" multiple>
 
                                         </Select>
                                     </div>
@@ -280,7 +284,9 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
+        {{--  
         <form method="POST" action="{{ route('update-assign-work') }}">
+        --}}
             @csrf
               <div class="modal-body">
 
@@ -320,7 +326,7 @@
                 </div>
 
               </div>
-              <!-- modal body ends -->
+              modal body ends
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="submit" class="btn btn-primary">Update Assign Work</button>
@@ -342,6 +348,10 @@
 <!-- select2 -->
 <script src="{{ asset('public/dist/vendors/select2/js/select2.full.min.js') }}"></script>
 <script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
+
+<!-- sweet alert -->
+<script src="{{ asset('public/dist/vendors/sweetalert/sweetalert.min.js') }}"></script>       
+<!-- <script src="{{ asset('public/dist/js/sweetalert.script.js') }}"></script> -->
 
 <script type="text/javascript">
 
@@ -451,56 +461,186 @@
         }
     });
 
-    function updateSubject(subjectId, phaseId) {
 
-        $.ajax({
-            url: '{{ route("edit-assign-work") }}',
-            type: 'GET',
-            data: {
-                'subject_id': subjectId,
-                'phase_id' : phaseId
+    // save assign work form
+    $('.subject-form').submit(function(e) {
+
+        e.preventDefault();
+        // form data
+        var fd = new FormData($(this)[0]);
+
+        if($('#users_id').val() == '') {
+
+            // show message
+            swal({
+              title: "Are you sure?",
+              text: "No user selected for assigning work!",
+              type: "warning",
+              showCancelButton: true,
+              confirmButtonClass: 'btn-danger',
+              confirmButtonText: 'Yes, please proceed!',
+              cancelButtonText: "No, please cancel!",
+              closeOnConfirm: true,
+              closeOnCancel: true
             },
-            success:function(data) {
+            function(isConfirm) {
+                if (isConfirm) {
 
-                // clear form fields
-                $('.subject-form').find("input[type=text], input[type=date], select").val("");
-                // empty select2
-                $('.edit_users_id').empty().trigger('change');
-                // append data to fields
-                $('#edit_modility_id').val(data.editAssignWork.modility_id);
-                $('#edit_form_type_id').val(data.editAssignWork.form_type_id);
+                    // check from ajax request modality/form_type/subject/phase
+                    $.ajax({
+                        url: '{{ route("check-assign-work") }}',
+                        type: 'POST',
+                        data: fd,
+                        cache: false,
+                        processData: false,
+                        contentType: false,
+                        success:function(data) {
+                            
+                            if (data.success) {
 
-                var formattedDate = new Date(data.editAssignWork.assign_date);
-                var d = formattedDate.getDate();
-                var m =  formattedDate.getMonth();
-                m += 1;  // JavaScript months are 0-11
-                var y = formattedDate.getFullYear();
+                                // submit the form
+                                e.currentTarget.submit();
 
-                $('#edit_assign_date').val(y + "-" + m + "-" + d);
+                            } else {
 
-                // assign subject/phase_id
-                $('#edit_subject_id').val(subjectId);
-                $('#edit_phase_id').val(phaseId);
+                                swal({
+                                      title: "Are you sure?",
+                                      text: "Do you want to overright the existing data?",
+                                      type: "warning",
+                                      showCancelButton: true,
+                                      confirmButtonClass: 'btn-danger',
+                                      confirmButtonText: 'Yes, please proceed!',
+                                      cancelButtonText: "No, please cancel!",
+                                      closeOnConfirm: true,
+                                      closeOnCancel: true
+                                    },
+                                    function(isConfirm) {
+                                        if (isConfirm) {
 
-                // append users
-                var row;
-                //row += '<option value="">Select User</option>';
-                // get users
-                $.each(data.getUsers, function(key, value) {
-                    row += '<option value="'+value.user_id+'" selected>'+value.name+'</option>';
+                                            // submit the form
+                                            e.currentTarget.submit();
 
-                });
+                                        } else {
 
-                $('.edit_users_id').append(row);
+                                            // close the model
+                                            $('#assign-work-model').modal('hide');
+
+                                        }
+                                    });
+                            } // if/else ends
+
+                        } // success call back function
+
+                    }); // ajax ends
+                    
+                } else {
+
+                    // close model
+                    $('#assign-work-model').modal('hide');
+                    
+                }
+            }); // confirm function ends    
+            
+        } else {
+
+            // check from ajax request modality/form_type/subject/phase
+            $.ajax({
+                url: '{{ route("check-assign-work") }}',
+                type: 'POST',
+                data: fd,
+                cache: false,
+                processData: false,
+                contentType: false,
+                success:function(data) {
+
+                    if (data.success) {
+
+                        // submit the form
+                        e.currentTarget.submit();
+
+                    } else {
+
+                        swal({
+                              title: "Are you sure?",
+                              text: "Do you want to overright the existing data?",
+                              type: "warning",
+                              showCancelButton: true,
+                              confirmButtonClass: 'btn-danger',
+                              confirmButtonText: 'Yes, please proceed!',
+                              cancelButtonText: "No, please cancel!",
+                              closeOnConfirm: true,
+                              closeOnCancel: true
+                            },
+                            function(isConfirm) {
+                                if (isConfirm) {
+
+                                    // submit the form
+                                    e.currentTarget.submit();
+
+                                } else {
+                                    // close the model
+                                    $('#assign-work-model').modal('hide');
+                                }
+                            });
+                    } // if/else ends
+                    
+                } // success call back function
+
+            }); // ajax ends
+        } // user null
+
+    }); //save form
+
+    // function updateSubject(subjectId, phaseId) {
+
+    //     $.ajax({
+    //         url: 'put edit url here',
+    //         type: 'GET',
+    //         data: {
+    //             'subject_id': subjectId,
+    //             'phase_id' : phaseId
+    //         },
+    //         success:function(data) {
+
+    //             // clear form fields
+    //             $('.subject-form').find("input[type=text], input[type=date], select").val("");
+    //             // empty select2
+    //             $('.edit_users_id').empty().trigger('change');
+    //             // append data to fields
+    //             $('#edit_modility_id').val(data.editAssignWork.modility_id);
+    //             $('#edit_form_type_id').val(data.editAssignWork.form_type_id);
+
+    //             var formattedDate = new Date(data.editAssignWork.assign_date);
+    //             var d = formattedDate.getDate();
+    //             var m =  formattedDate.getMonth();
+    //             m += 1;  // JavaScript months are 0-11
+    //             var y = formattedDate.getFullYear();
+
+    //             $('#edit_assign_date').val(y + "-" + m + "-" + d);
+
+    //             // assign subject/phase_id
+    //             $('#edit_subject_id').val(subjectId);
+    //             $('#edit_phase_id').val(phaseId);
+
+    //             // append users
+    //             var row;
+    //             //row += '<option value="">Select User</option>';
+    //             // get users
+    //             $.each(data.getUsers, function(key, value) {
+    //                 row += '<option value="'+value.user_id+'" selected>'+value.name+'</option>';
+
+    //             });
+
+    //             $('.edit_users_id').append(row);
 
 
-                // show model
-                $('#edit-assign-work-model').modal('show');
+    //             // show model
+    //             $('#edit-assign-work-model').modal('show');
 
-            } // success call back function
+    //         } // success call back function
 
-        }); // ajax ends
-    }
+    //     }); // ajax ends
+    // }
 
      //form type on change
     $('.edit_form_type_id').change(function(){
@@ -544,6 +684,8 @@
 
         }); // ajax ends
     });
+
+   
 </script>
 @endsection
 

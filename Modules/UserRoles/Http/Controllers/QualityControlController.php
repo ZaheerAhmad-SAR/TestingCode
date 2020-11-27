@@ -359,7 +359,8 @@ class QualityControlController extends Controller
             $subjects = $subjects->where('assign_work.modility_id', $request->modility);
         }
 
-        $subjects = $subjects->orderBy('subjects.subject_id')
+        $subjects = $subjects->groupBy(['assign_work.subject_id', 'assign_work.phase_id'])
+                             ->orderBy('subjects.subject_id')
                              ->orderBy('study_structures.position')
                              ->paginate(15);
 
@@ -409,15 +410,15 @@ class QualityControlController extends Controller
                     foreach($formType as $type) {
 
                         // comparing assign modality with the array modality
-                        // $checkModality = AssignWork::where('subject_id', $subject->subj_id)
-                        //                             ->where('phase_id', $subject->phase_id)
-                        //                             ->where('modility_id', $type['modility_id'])
-                        //                             ->where('form_type_id', $type['form_type_id'])
-                        //                             ->where('user_id', \Auth::user()->id)
-                        //                             ->first();
+                        $checkModality = AssignWork::where('subject_id', $subject->subj_id)
+                                                    ->where('phase_id', $subject->phase_id)
+                                                    ->where('modility_id', $type['modility_id'])
+                                                    ->where('form_type_id', $type['form_type_id'])
+                                                    ->where('user_id', \Auth::user()->id)
+                                                    ->first();
 
-                        // if($checkModality != null) {
-                        if ($subject->modility_id == $type['modility_id']) {
+                        if($checkModality != null) {
+                        //if ($subject->modility_id == $type['modility_id']) {
 
                             // check step
                             $step = PhaseSteps::where('phase_id', $subject->phase_id)
