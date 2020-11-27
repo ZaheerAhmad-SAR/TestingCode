@@ -1,11 +1,5 @@
 <div class="form-group row" style="margin-top: 10px;">
     <label for="device_manufacturer" class="col-sm-3">Select Roles</label>
-    <div class="{!! ($errors->has('roles')) ?'col-sm-9 has-error':'col-sm-9' !!}"></div>
-    @error('roles')
-    <span class="text-danger small">
-        {{ $message }}
-    </span>
-    @enderror
 </div>
 <div class="form-group row">
     <div class="col-md-5">

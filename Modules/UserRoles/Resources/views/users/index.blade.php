@@ -22,13 +22,7 @@
                 </ul>
             </div>
     @endif
-        @if (count($errors) > 0)
-            <script>
-                $( document ).ready(function() {
-                    $('#createUser').modal('show');
-                });
-            </script>
-    @endif
+
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
         <div class="row">
@@ -44,7 +38,7 @@
                 <div class="card">
                     <div class="card-header d-flex align-items-center">
                             @if(hasPermission(auth()->user(),'users.create'))
-                                <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#createUser">
+                                <button type="button" class="btn btn-outline-primary" onclick="openAddUserPopup();">
                                     <i class="fa fa-plus"></i> Add User
                                 </button>
                             @endif
@@ -86,7 +80,7 @@
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                 <span class="dropdown-item">
-                                                    <a href="{!! route('users.edit',$user->id) !!}">
+                                                <a href="javascript:void(0);" onclick="openEditUserPopup('{{ $user->id }}');">
                                                         <i class="far fa-edit"></i>&nbsp; Edit
                                                     </a>
                                                 </span>
@@ -107,8 +101,7 @@
             </div>
         </div>
     </div>
-    @include('userroles::users.popups.createuser', ['roles'=>$roles, 'assigned_roles'=>[], 'errors'=>$errors ])
-    @include('userroles::users.popups.edituser', ['roles'=>$roles, 'assigned_roles'=>[], 'errors'=>$errors ])
+    @include('userroles::users.popups.createuser')
     @include('userroles::users.popups.assignuser', ['roles'=>$roles, 'studyusers'=>$studyusers])
     @include('userroles::users.popups.inviteuser', ['roles'=>$roles])
 
@@ -126,7 +119,7 @@
 @section('script')
     <script src="{{ asset('public/dist/js/jquery.validate.min.js') }}"></script>
     <script type="text/javascript">
-$(document).ready(function() {
+function setMultiselect() {
 		        $('#select_roles').multiselect({
                     search: {
                         left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
@@ -136,7 +129,7 @@ $(document).ready(function() {
                         return value.length > 1;
                     }
                 });
-	        });
+	        }
         $(document).ready(function(){
             $('#2fa').on('show.bs.modal',function (e) {
                 var id = $(e.relatedTarget).data('target-id');
@@ -217,6 +210,79 @@ $(document).ready(function() {
             });
 
         });
+            function openAddUserPopup(){
+                $("#createUser").modal('show');
+                loadUserForm();
+            }
+            function openEditUserPopup(userId){
+                $("#createUser").modal('show');
+                loadUserEditForm(userId);
+            }
+            function loadUserForm(){
+                $.ajax({
+                    url: "{{route('users.create')}}",
+                    type: 'GET',
+                    success: function(response){
+                        $('#userFormInner').empty();
+                        $("#userFormInner").html(response);
+                        setMultiselect();
+                    }
+                });
+            }
+            function loadUserEditForm(userId){
+                $.ajax({
+                    url: "{{ url('/')}}" + '/users/'+ userId +'/edit',
+                    type: 'GET',
+                    success: function(response){
+                        $('#userFormInner').empty();
+                        $("#userFormInner").html(response);
+                        setMultiselect();
+                    }
+                });
+            }
+
+            function submitAddUserForm(){
+                $('#select_roles_to option').prop('selected', true);
+                $.ajax({
+                    url: $("#user-store-form-5").attr('action'),
+                    type: 'POST',
+                    data: $("#user-store-form-5").serialize(),
+                    success: function(data){
+                        if (data.errors) {
+                            $('.user-store-error').text(data.errors);
+                            $('.user-store-error').css('display', 'block');
+                            setTimeout(function() {
+                                $('.user-store-error').slideUp(500);
+                            }, 5000);
+                        } else {
+                            $('#userFormInner').empty();
+                            location.reload();
+                        }
+                    }
+                });
+            }
+
+            function submitEditUserForm(){
+                $('#select_roles_to option').prop('selected', true);
+                $.ajax({
+                    url: $("#user-store-form-5").attr('action'),
+                    type: 'POST',
+                    data: $("#user-store-form-5").serialize(),
+                    success: function(data){
+                        if (data.errors) {
+                            $('.user-store-error').text(data.errors);
+                            $('.user-store-error').css('display', 'block');
+                            setTimeout(function() {
+                                $('.user-store-error').slideUp(500);
+                            }, 5000);
+                        } else {
+                            $('#userFormInner').empty();
+                            location.reload();
+                        }
+                    }
+                });
+
+            }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
