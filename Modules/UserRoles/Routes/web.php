@@ -16,13 +16,17 @@
 
     Route::get('assign-work','GradingController@assignWork')->name('assign-work');
     Route::post('save-assign-work','GradingController@saveAssignWork')->name('save-assign-work');
-    Route::post('update-assign-work','GradingController@updateAssignWork')->name('update-assign-work');
+    
+    //Route::post('update-assign-work','GradingController@updateAssignWork')->name('update-assign-work');
 
 
 // get users for form type, assign work section
     Route::get('get-form-type-users', 'GradingController@getFormTypeUsers')->name('get-form-type-users');
 // edit assign work
-    Route::get('edit-assign-work', 'GradingController@editAssignWork')->name('edit-assign-work');
+    //Route::get('edit-assign-work', 'GradingController@editAssignWork')->name('edit-assign-work');
+// check assign work
+    Route::post('check-assign-work','GradingController@checkAssignWork')->name('check-assign-work');
+
 
 // QC Work List
     Route::get('qc-work-list','QualityControlController@qcWorkList')->name('qualitycontrol.qc-work-list');

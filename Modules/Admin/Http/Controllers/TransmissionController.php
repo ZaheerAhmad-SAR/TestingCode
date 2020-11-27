@@ -774,7 +774,7 @@ class TransmissionController extends Controller
         }
         $id    = Str::uuid();
         $token = Str::uuid();
-        $data = array(
+        $dataInt = array(
          'Transmission_Number'=>$transNumber,
          'query_subject'=>$query_subject,
          'remarks'=>$remarks,
@@ -803,8 +803,16 @@ class TransmissionController extends Controller
             'vist_name'=>$visit_name,
             'notifications_token'=>$token
         ]);
+
+
+
+
+
         foreach ($usersArray as $user)
         {
+            $new_array = array('receiverEmail'=>$user);
+            $data=array_merge($dataInt, $new_array);
+
             Mail::to($user)->send(new TransmissonQuery($data));
             QueryNotificationUser::create([
              'id'=>Str::uuid(),
@@ -847,7 +855,10 @@ class TransmissionController extends Controller
 
     public function verifiedToken(Request $request,$id)
     {
-        dd($id,'Happy forgiving');
+
+        $record = QueryNotification::where('notifications_token',$id)->where('notifications_status','open')->first();
+        //dd($record);
+        echo  view('admin::transmissions.queries_reply_view',compact('record'));
     }
 }
 
