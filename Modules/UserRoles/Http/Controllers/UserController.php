@@ -77,10 +77,20 @@ class UserController extends Controller
      */
     public function create()
     {
-        $roles  =   Role::where('role_type', '=', 'system_role')->get();
-        return view('userroles::users.create', compact('roles'));
+        $user = new User();
 
-        return redirect('dashboard');
+        if (isThisUserSuperAdmin(\auth()->user())) {
+            $unassigned_roles  =   Role::where('role_type', '!=', 'study_role')->get();
+        } else {
+            $unassigned_roles  =   Role::where('role_type', '=', 'system_role')->get();
+        }
+        $assigned_roles = [];
+        $add_or_edit = 'Add';
+        $route = route('users.store');
+        $method = 'POST';
+        $submitFunction = 'submitAddUserForm();';
+
+        return view('userroles::users.popups.userform', compact('user', 'unassigned_roles', 'assigned_roles', 'add_or_edit', 'route', 'method', 'submitFunction'));
     }
 
     /**
@@ -223,25 +233,33 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $user  = User::with('user_roles')->find($id);
+        $user = User::find($id);
 
-        $currentRoleIds = UserRole::where('user_id', 'like', $user->id)->pluck('role_id')->toArray();
-        $currentRoles = Role::whereIn('id', $currentRoleIds)->get();
+        $assigned_roles = [];
+        $unassigned_roles = [];
+
+        $currentRoleIds = UserRole::where('user_id', 'like', $id)->pluck('role_id')->toArray();
+        $assigned_roles = Role::whereIn('id', $currentRoleIds)->get();
 
         if (!empty($currentRoleIds)) {
             if (isThisUserSuperAdmin(\auth()->user())) {
-                $unassignedRoles = Role::where('role_type', '!=', 'study_role')->whereNotIn('id', $currentRoleIds)->get();
+                $unassigned_roles = Role::where('role_type', '!=', 'study_role')->whereNotIn('id', $currentRoleIds)->get();
             } else {
-                $unassignedRoles = Role::where('role_type', '=', 'system_role')->whereNotIn('id', $currentRoleIds)->get();
+                $unassigned_roles = Role::where('role_type', '=', 'system_role')->whereNotIn('id', $currentRoleIds)->get();
             }
         } else {
             if (isThisUserSuperAdmin(\auth()->user())) {
-                $unassignedRoles = Role::where('role_type', '!=', 'study_role')->get();
+                $unassigned_roles = Role::where('role_type', '!=', 'study_role')->get();
             } else {
-                $unassignedRoles = Role::where('role_type', '=', 'system_role')->get();
+                $unassigned_roles = Role::where('role_type', '=', 'system_role')->get();
             }
         }
-        return view('userroles::users.edit', compact('user', 'unassignedRoles', 'currentRoles'));
+        $add_or_edit = 'Edit';
+        $route = route('users.update', $id);
+        $method = 'PUT';
+        $submitFunction = 'submitEditUserForm();';
+
+        return view('userroles::users.popups.userform', compact('user', 'unassigned_roles', 'assigned_roles', 'add_or_edit', 'route', 'method', 'submitFunction'));
     }
 
     /**
