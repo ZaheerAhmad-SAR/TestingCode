@@ -47,13 +47,17 @@ class StudyusersController extends Controller
      */
     public function create()
     {
-        if (Auth::user()->can('users.create')) {
-            $roles  =   Role::where('created_by', '=', \auth()->user()->id)->get();
+        $user = new User();
 
-            return view('userroles::users.create', compact('roles'));
-        }
+        $unassigned_roles  =   Role::where('role_type', '=', 'study_role')->get();
 
-        return redirect('dashboard');
+        $assigned_roles = [];
+        $add_or_edit = 'Add';
+        $route = route('studyusers.store');
+        $method = 'POST';
+        $submitFunction = 'submitAddUserForm();';
+
+        return view('userroles::users.popups.userform', compact('user', 'unassigned_roles', 'assigned_roles', 'add_or_edit', 'route', 'method', 'submitFunction'));
     }
 
     /**
@@ -172,37 +176,26 @@ class StudyusersController extends Controller
 
     public function edit($id)
     {
-        $user  = User::with('user_roles')->find($id);
+        $user = User::find($id);
 
-        $currentRoles = RoleStudyUser::select('study_role_users.*', 'roles.*')
-            ->join('roles', 'roles.id', 'study_role_users.role_id')
-            ->where('study_role_users.user_id', '=', $user->id)
-            ->where('study_role_users.study_id', '=', session('current_study'))
-            ->get();
-        // dd($currentRoles);
+        $assigned_roles = [];
+        $unassigned_roles = [];
 
-        $unassignedRoles = Role::select('roles.*')
-            ->join('study_role_users', 'study_role_users.role_id', 'roles.id')
-            ->where('study_role_users.user_id', '=', $user->id)
-            ->where('roles.role_type', '!=', 'system_role')
-            ->get();
-        // dd($unassignedRoles);
+        $currentRoleIds = UserRole::where('user_id', 'like', $id)->pluck('role_id')->toArray();
+        $assigned_roles = Role::whereIn('id', $currentRoleIds)->get();
 
-        foreach ($currentRoles as $currentRole) {
-            $roleArray[] = $currentRole->role_id;
-        }
-
-        if (!empty($roleArray)) {
-            $unassignedRoles = Role::select('roles.*')
-                ->whereNotIn('roles.id', $roleArray)
-                ->where('roles.role_type', 'study_role')
-                ->get();
+        if (!empty($currentRoleIds)) {
+            $unassigned_roles = Role::where('role_type', '=', 'study_role')->whereNotIn('id', $currentRoleIds)->get();
         } else {
-            //  $unassignedRoles = Role::where('role_type','!=','system_role' )->get();
+            $unassigned_roles = Role::where('role_type', '=', 'study_role')->get();
         }
 
+        $add_or_edit = 'Edit';
+        $route = route('studyusers.update', $id);
+        $method = 'PUT';
+        $submitFunction = 'submitEditUserForm();';
 
-        return view('userroles::users.edit-study-user', compact('user', 'unassignedRoles', 'currentRoles'));
+        return view('userroles::users.popups.userform', compact('user', 'unassigned_roles', 'assigned_roles', 'add_or_edit', 'route', 'method', 'submitFunction'));
     }
 
     /**

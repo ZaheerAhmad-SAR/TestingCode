@@ -61,12 +61,14 @@ class UserController extends Controller
             $systemRoleIds = Role::where('role_type', '=', 'system_role')->pluck('id')->toArray();
         }
 
-        $currentStudy = session('current_study');
+        $currentStudyId = session('current_study');
 
         $userIdsOfSystemRoles = UserRole::whereIn('role_id', $systemRoleIds)->pluck('user_id')->toArray();
         $users = User::whereIn('id', $userIdsOfSystemRoles)->orderBy('name', 'asc')->get();
 
-        $studyusers = User::where('id', '!=', \auth()->user()->id)->get();
+        $studyRoleIds = Role::where('role_type', '=', 'study_role')->pluck('id')->toArray();
+        $userIdsOfStudyRoles = UserRole::whereIn('role_id', $studyRoleIds)->pluck('user_id')->toArray();
+        $studyusers = User::whereIn('id', $userIdsOfStudyRoles)->where('id', '!=', \auth()->user()->id)->get();
 
         return view('userroles::users.index', compact('users', 'roles', 'studyusers'));
     }
@@ -241,19 +243,15 @@ class UserController extends Controller
         $currentRoleIds = UserRole::where('user_id', 'like', $id)->pluck('role_id')->toArray();
         $assigned_roles = Role::whereIn('id', $currentRoleIds)->get();
 
-        if (!empty($currentRoleIds)) {
-            if (isThisUserSuperAdmin(\auth()->user())) {
-                $unassigned_roles = Role::where('role_type', '!=', 'study_role')->whereNotIn('id', $currentRoleIds)->get();
-            } else {
-                $unassigned_roles = Role::where('role_type', '=', 'system_role')->whereNotIn('id', $currentRoleIds)->get();
-            }
+        if (isThisUserSuperAdmin(\auth()->user())) {
+            $allRoleIds = Role::where('role_type', '!=', 'study_role')->pluck('id')->toArray();
         } else {
-            if (isThisUserSuperAdmin(\auth()->user())) {
-                $unassigned_roles = Role::where('role_type', '!=', 'study_role')->get();
-            } else {
-                $unassigned_roles = Role::where('role_type', '=', 'system_role')->get();
-            }
+            $allRoleIds = Role::where('role_type', '=', 'system_role')->pluck('id')->toArray();
         }
+
+        $unassignedRoleIds = array_diff($allRoleIds, $currentRoleIds);
+        $unassigned_roles = Role::whereIn('id', $unassignedRoleIds)->get();
+
         $add_or_edit = 'Edit';
         $route = route('users.update', $id);
         $method = 'PUT';
@@ -413,6 +411,32 @@ class UserController extends Controller
             }
         } elseif ($request->fa == 'disabled' && empty($request->password)) {
             //dd('fa disabled and empty password');
+            $user->name  =  $request->name;
+            $user->email =  $request->email;
+            $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
+            $user->qr_flag = '0';
+            $user->google2fa_secret = NULL;
+            $user->google_auth = NULL;
+            $user->save();
+            if ($request->roles) {
+                $userroles  = UserRole::where('user_id', $user->id)->get();
+                foreach ($userroles as $role_id) {
+                    $role_id->delete();
+                }
+                foreach ($request->roles as $role) {
+                    $new = UserRole::create([
+                        'id'    => Str::uuid(),
+                        'user_id'    =>  $user->id,
+                        'role_id'    =>  $role,
+                    ]);
+                }
+            }
+            $system_infos = UserSystemInfo::where('user_id', '=', $oldUser->id)->get();
+            foreach ($system_infos as $system_info) {
+                $system_info->delete();
+            }
+        } else {
+
             $user->name  =  $request->name;
             $user->email =  $request->email;
             $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
