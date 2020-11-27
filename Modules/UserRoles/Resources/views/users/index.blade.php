@@ -60,7 +60,10 @@
                         <div class="table-responsive list">
                             <table class="table table-bordered editable-table" id="laravel_crud">
                                     <thead>
-                                    <tr>
+                                        <tr>
+                                            <th scope="col" colspan="5">System Users</th>
+                                        </tr>
+                                        <tr>
                                         <th scope="col">Name</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Roles</th>
@@ -70,6 +73,50 @@
                                     </thead>
                                     <tbody id="users-crud">
                                         @foreach($users as $user)
+                                    <tr>
+                                        <td>{{ucfirst(($user->name))}}</td>
+                                        <td>{{($user->email)}}</td>
+                                        <td>{{ \App\User::getUserRolesString($user) }}</td>
+                                        <td>{{!empty($user->google2fa_secret)?'Enabled':'Disabled'}}</td>
+                                        <td>
+                                            <div class="d-flex mt-3 mt-md-0 ml-auto">
+                                                <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                                <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
+                                                <span class="dropdown-item">
+                                                <a href="javascript:void(0);" onclick="openEditUserPopup('{{ $user->id }}');">
+                                                        <i class="far fa-edit"></i>&nbsp; Edit
+                                                    </a>
+                                                </span>
+                                                    <span class="dropdown-item">
+                                                    <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
+                                                        <i class="fa fa-trash"></i>&nbsp; Delete </a>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                    </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive list">
+                            <table class="table table-bordered editable-table" id="laravel_crud">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" colspan="5">Study Users</th>
+                                        </tr>
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Email</th>
+                                        <th scope="col">Roles</th>
+                                        <th scope="col">2 Factor Auth</th>
+                                        <th scope="col">Actions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="users-crud">
+                                @foreach($studyusers as $user)
                                     <tr>
                                         <td>{{ucfirst(($user->name))}}</td>
                                         <td>{{($user->email)}}</td>
@@ -135,33 +182,6 @@ function setMultiselect() {
                 var id = $(e.relatedTarget).data('target-id');
                 $('#user_id').val(id);
             });
-
-            // form submit create user
-            $('#user-store-form-5').submit(function(e){
-                e.preventDefault();
-                $('#select_roles_to option').prop('selected', true);
-                // get form data
-                var formData = new FormData($(this)[0]);
-                $.ajax({
-                  url: $(this).attr('action'),
-                  data: formData,
-                  processData: false,
-                  contentType: false,
-                  type: 'POST',
-                  success: function(data) {
-                    if (data.errors) {
-                        $('.user-store-error').text(data.errors);
-                        $('.user-store-error').css('display', 'block');
-                        setTimeout(function() {
-                            $('.user-store-error').slideUp(500);
-                        }, 5000);
-                    } else {
-                        location.reload();
-                    }
-                  }
-                }); // ajax ends
-            }); // form submit function
-
 
             $('#inviteuser_form_1').submit(function(e){
                 e.preventDefault();
