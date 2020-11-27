@@ -844,5 +844,10 @@ class TransmissionController extends Controller
             echo  view('admin::transmissions.queries_table_view',compact('records'));
         }
     }
+
+    public function verifiedToken(Request $request,$id)
+    {
+        dd($id,'Happy forgiving');
+    }
 }
 
