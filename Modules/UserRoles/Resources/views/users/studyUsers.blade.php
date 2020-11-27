@@ -65,7 +65,7 @@
                                             <tr>
                                                 <td>{{ucfirst($user->name)}}</td>
                                                 <td>{{$user->email}}</td>
-                                                <td>{{$user->role_name}}</td>
+                                                <td>{{ \App\User::getUserRolesString($user) }}</td>
                                                 <td>
                                                     <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                         <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
@@ -177,8 +177,9 @@
                 <div class="modal-header">
                     <p class="modal-title">Add User</p>
                 </div>
-                <form action="{{route('users.assignUsers')}}" enctype="multipart/form-data" method="POST">
+                <form action="{{route('users.assignUsers')}}" enctype="multipart/form-data" method="POST" id="assignuser_form_2">
                     <div class="modal-body">
+                        <p class="alert alert-danger assignuser_error" style="display: none;"></p>
                         <div class="tab-content" id="nav-tabContent">
                             <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
                                 @csrf
@@ -186,7 +187,7 @@
                                     <div class="col-md-4">Select User</div>
                                     <div class="col-md-8">
                                         <select class="form-control dropdown" name="study_user">
-                                            <option value="selectuser"> Select User</option>
+                                            <option value=""> Select User</option>
                                             @foreach($users as $user)
                                                 <option value="{{$user->id}}">{{$user->name}}</option>
                                             @endforeach
@@ -197,7 +198,7 @@
                                     <div class="col-md-4">Select Role</div>
                                     <div class="col-md-8">
                                         <select class="form-control dropdown" name="user_role">
-                                            <option value="1">Select Role</option>
+                                            <option value="">Select Role</option>
                                             @foreach($roles as $role)
                                                 <option value="{{$role->id}}">{{$role->name}}</option>
                                             @endforeach
@@ -210,7 +211,7 @@
                     <div class="modal-footer">
                         <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                         @if(hasPermission(auth()->user(),'users.store'))
-                            <button type="submit" class="btn btn-outline-primary" id="btn-save" onclick="checkuser()" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                            <button type="submit" class="btn btn-outline-primary" id="btn-save" value="create"><i class="fa fa-save"></i> Save Changes</button>
                         @endif
                     </div>
                 </form>
@@ -225,7 +226,7 @@
                 <div class="modal-header">
                     <p class="modal-title">Add User</p>
                 </div>
-                <form action="{{route('users.assignUsers')}}" enctype="multipart/form-data" method="POST">
+                <form action="{{route('users.assignUsers')}}" enctype="multipart/form-data" method="POST" id="">
                     <div class="modal-body">
                         <div class="tab-content" id="nav-tabContent">
                             <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
@@ -258,7 +259,7 @@
                     <div class="modal-footer">
                         <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                         @if(hasPermission(auth()->user(),'users.store'))
-                            <button type="submit" class="btn btn-outline-primary" id="btn-save" onclick="checkuser()" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                            <button type="submit" class="btn btn-outline-primary" id="btn-save" value="create"><i class="fa fa-save"></i> Save Changes</button>
                         @endif
                     </div>
                 </form>
@@ -273,10 +274,10 @@
                 <div class="modal-header">
                     <p class="modal-title">Invite User</p>
                 </div>
-                <form action="{{route('process_invite')}}" enctype="multipart/form-data" method="POST">
+                <form action="{{route('process_invite')}}" enctype="multipart/form-data" method="POST" id="inviteuser_form_2">
                     @csrf
                     <div class="modal-body">
-
+                        <p class="alert alert-danger inviteuser_error" style="display: none;"></p>
                         <div class="tab-content" id="nav-tabContent">
                             <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
                                 @csrf
@@ -376,22 +377,68 @@
                 }); // ajax ends
             }); // form submit function
 
+            $('#inviteuser_form_2').submit(function(e){
+                e.preventDefault();
+                var formData = new FormData($(this)[0]);
+                //var formData = $("#inviteuser_form").serialize();
+
+                $.ajax({
+                  url: $(this).attr('action'),
+                  data: formData,
+                  processData: false,
+                  contentType: false,
+                  type: 'POST',
+                  success: function(data) {
+
+                    if (data.errors) {
+
+                        $('.inviteuser_error').text(data.errors);
+                        $('.inviteuser_error').css('display', 'block');
+
+                        setTimeout(function() {
+                            $('.inviteuser_error').slideUp(500);
+                        }, 2000);
+
+                    } else {
+
+                        location.reload();
+                    }
+                  }
+                }); // ajax ends
+            }); // form submit function
+
+            $('#assignuser_form_2').submit(function(e){
+                e.preventDefault();
+                var formData = new FormData($(this)[0]);
+                //var formData = $("#inviteuser_form").serialize();
+
+                $.ajax({
+                  url: $(this).attr('action'),
+                  data: formData,
+                  processData: false,
+                  contentType: false,
+                  type: 'POST',
+                  success: function(data) {
+
+                    if (data.errors) {
+
+                        $('.assignuser_error').text(data.errors);
+                        $('.assignuser_error').css('display', 'block');
+
+                        setTimeout(function() {
+                            $('.assignuser_error').slideUp(500);
+                        }, 2000);
+
+                    } else {
+
+                        location.reload();
+                    }
+                  }
+                }); // ajax ends
+            }); // form submit function
+
         });
     </script>
-
-    <script type="text/javascript">
-        function checkuser() {
-            var user = document.getElementByName("users")[0].value;
-            if (user.value == "selectuser") {
-                alert("Please select a user");
-            }
-        }
-
-        @if (count($errors) > 0)
-        $('#inviteuser').modal('show');
-        @endif
-    </script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
 @stop
