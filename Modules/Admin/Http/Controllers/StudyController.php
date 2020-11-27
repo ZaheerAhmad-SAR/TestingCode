@@ -66,15 +66,10 @@ class StudyController extends Controller
         $sites = Site::all();
         $studies = [];
         $studiesIDs = [];
-        $adminUsers = [];
         $studyAdminRoleId = '';
         $user = \auth()->user()->id;
         if (hasPermission(\auth()->user(), 'systemtools.index')) {
             $studyAdminRoleId = Permission::getStudyAdminRole();
-            if (!empty($studyAdminRoleId)) {
-                $userIdsArrayFromUserRole = UserRole::where('role_id', $studyAdminRoleId[1])->pluck('user_id')->toArray();
-                $adminUsers = User::whereIn('id', $userIdsArrayFromUserRole)->orderBy('name', 'asc')->get();
-            }
             if (isThisUserSuperAdmin(\auth()->user())) {
                 $studiesIDs = array_merge($studiesIDs, Study::all()->pluck('id')->toArray());
             } else {
@@ -105,7 +100,7 @@ class StudyController extends Controller
         }
         //dd($studiesIDs);
         $studies = Study::whereIn('id', array_unique($studiesIDs))->get();
-        return view('admin::studies.index', compact('sites', 'users', 'adminUsers', 'studyAdminRoleId', 'studies'));
+        return view('admin::studies.index', compact('sites', 'users', 'studies'));
     }
 
 
@@ -257,28 +252,36 @@ class StudyController extends Controller
      */
     public function show(Study $study)
     {
-        session(['current_study' => $study->id, 'study_short_name' => $study->study_short_name]);
-        $id = $study->id;
+        $assignedUserIds = RoleStudyUser::where('study_id', 'LIKE', $study->id)->pluck('user_id')->toArray();
+        if (
+            isThisUserSuperAdmin(\auth()->user()) ||
+            in_array(auth()->user()->id, $assignedUserIds)
+        ) {
+            session(['current_study' => $study->id, 'study_short_name' => $study->study_short_name]);
+            $id = $study->id;
 
-        $studies  =   UserRole::select('user_roles.*', 'users.*', 'studies.*')
-            ->join('users', 'users.id', '=', 'user_roles.user_id')
-            ->join('studies', 'studies.id', '=', 'user_roles.study_id')
-            ->where('users.id', '=', \auth()->user()->id)
-            ->orderBy('study_short_name')->get();
-        $currentStudy = Study::find($id);
-        $study = Study::find($id);
+            $studies  =   UserRole::select('user_roles.*', 'users.*', 'studies.*')
+                ->join('users', 'users.id', '=', 'user_roles.user_id')
+                ->join('studies', 'studies.id', '=', 'user_roles.study_id')
+                ->where('users.id', '=', \auth()->user()->id)
+                ->orderBy('study_short_name')->get();
+            $currentStudy = Study::find($id);
+            $study = Study::find($id);
 
-        $subjects = Subject::select(['subjects.*', 'sites.site_name', 'sites.site_address', 'sites.site_city', 'sites.site_state', 'sites.site_code', 'sites.site_country', 'sites.site_phone'])
-            ->where('subjects.study_id', '=', $id)
-            ->join('sites', 'sites.id', '=', 'subjects.site_id')
-            ->get();
-        $site_study = StudySite::where('study_id', '=', $id)
-            ->join('sites', 'sites.id', '=', 'site_study.site_id')
-            ->select('sites.site_name', 'sites.id')
-            ->get();
+            $subjects = Subject::select(['subjects.*', 'sites.site_name', 'sites.site_address', 'sites.site_city', 'sites.site_state', 'sites.site_code', 'sites.site_country', 'sites.site_phone'])
+                ->where('subjects.study_id', '=', $id)
+                ->join('sites', 'sites.id', '=', 'subjects.site_id')
+                ->get();
+            $site_study = StudySite::where('study_id', '=', $id)
+                ->join('sites', 'sites.id', '=', 'site_study.site_id')
+                ->select('sites.site_name', 'sites.id')
+                ->get();
 
-        $diseaseCohort = DiseaseCohort::where('study_id', '=', $id)->get();
-        return view('admin::studies.show', compact('study', 'studies', 'subjects', 'currentStudy', 'site_study', 'diseaseCohort'));
+            $diseaseCohort = DiseaseCohort::where('study_id', '=', $id)->get();
+            return view('admin::studies.show', compact('study', 'studies', 'subjects', 'currentStudy', 'site_study', 'diseaseCohort'));
+        } else {
+            return redirect()->route('studies.index');
+        }
     }
 
     /**
@@ -323,10 +326,10 @@ class StudyController extends Controller
      * @param int $id
      * @return Response
      */
-    public function update(Request $request)
+    public function update_studies(Request $request)
     {
     }
-    public function update_studies(Request $request)
+    public function update(Request $request)
     {
         // get old data for audit section
         $oldStudy = Study::find($request->study_id);

@@ -22,13 +22,7 @@
                 </ul>
             </div>
     @endif
-        @if (count($errors) > 0)
-            <script>
-                $( document ).ready(function() {
-                    $('#createUser').modal('show');
-                });
-            </script>
-    @endif
+
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
         <div class="row">
@@ -42,14 +36,12 @@
             @endif
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
-
                     <div class="card-header d-flex align-items-center">
                             @if(hasPermission(auth()->user(),'users.create'))
-                                <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#createUser">
+                                <button type="button" class="btn btn-outline-primary" onclick="openAddUserPopup();">
                                     <i class="fa fa-plus"></i> Add User
                                 </button>
                             @endif
-
                                 @if(hasPermission(auth()->user(),'invite_view'))
                                     &nbsp; <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#inviteuser">
                                         <i class="far fa-edit"></i>&nbsp; Invite User
@@ -88,7 +80,7 @@
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                 <span class="dropdown-item">
-                                                    <a href="{!! route('users.edit',$user->id) !!}">
+                                                <a href="javascript:void(0);" onclick="openEditUserPopup('{{ $user->id }}');">
                                                         <i class="far fa-edit"></i>&nbsp; Edit
                                                     </a>
                                                 </span>
@@ -109,227 +101,9 @@
             </div>
         </div>
     </div>
-    <!-- END: Card DATA-->
-    <!-- modal code  -->
-    <div class="modal fade" tabindex="-1" role="dialog" id="createUser">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-
-            <div class="modal-content">
-                <div class="alert alert-danger" style="display:none"></div>
-                <div class="modal-header">
-                    <p class="modal-title">Add User</p>
-                </div>
-                <form action="{{route('users.store')}}" enctype="multipart/form-data" method="POST" class="user-store-form" id="user-store-form-5">
-                    <div class="modal-body">
-                        <p class="alert alert-danger user-store-error" style="display: none;"></p>
-                        <nav>
-                            <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
-                                <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-Basic" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
-                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-Modalities" role="tab" aria-controls="nav-profile" aria-selected="false">Roles</a>
-                            </div>
-                        </nav>
-                        <div class="tab-content" id="nav-tabContent">
-                            <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
-                                @csrf
-                                <div class="form-group row" style="margin-top: 10px;">
-                                    <label for="Name" class="col-md-3">Name</label>
-                                    <div class="{!! ($errors->has('name')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
-                                        <input type="text" class="form-control" required="required" id="name" name="name" value="{{old('name')}}">
-                                        @error('name')
-                                        <span class="text-danger small">{{ $message }} </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="Email" class="col-md-3">Email</label>
-                                    <div class="{!! ($errors->has('email')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
-                                        <input type="email" class="form-control" name="email" id="email" required="required" value="{{old('email')}}"> @error('email')
-                                        <span class="text-danger small"> {{ $message }} </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label for="password" class="col-md-3">Password</label>
-                                    <div class="{!! ($errors->has('password')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
-                                        <input type="password" class="form-control" required="required" id="password" name="password" value="{{old('password')}}">
-                                        @error('password')
-                                        <span class="text-danger small"> {{ $message }} </span>
-                                        @enderror
-                                        <p id="passwordHelpBlock" class="form-text text-muted">
-                                            Your password must be 8 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character.
-                                        </p>
-                                    </div>
-
-                                </div>
-                                <div class="form-group row">
-                                    <label for="C-Password" class="col-md-3">Confirm Password</label>
-                                    <div class="{!! ($errors->has('password_confirmation')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
-                                        <input type="password" class="form-control" required="required" id="password_confirmation" name="password_confirmation" value="{{old('password_confirmation')}}">
-                                        @error('password_confirmation')
-                                        <span class="text-danger small">{{ $message }} </span>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="nav-Modalities" role="tabpanel" aria-labelledby="nav-Validation-tab">
-                                @include('admin::assignRoles.assign_roles', ['roles'=>$roles, 'assigned_roles'=>[], 'errors'=>$errors ])
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                        @if(hasPermission(auth()->user(),'users.store'))
-                            <button  class="btn btn-outline-primary" id="userSubmit">
-                                <i class="fa fa-save"></i>  Save changes</button>
-                        @endif
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- modal code  -->
-    <div class="modal fade" tabindex="-1" role="dialog" id="assignUser">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <div class="alert alert-danger" style="display:none"></div>
-                <div class="modal-header">
-                    <p class="modal-title">Add User</p>
-                </div>
-                <form action="{{route('users.assignUsers')}}" enctype="multipart/form-data" method="POST" id="assignuser_form_1">
-                    <div class="modal-body">
-                        <p class="alert alert-danger assignuser_error" style="display: none;"></p>
-                        <div class="tab-content" id="nav-tabContent">
-                            <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
-                                @csrf
-                                <div class="form-group row" style="margin-top: 10px;">
-                                    <div class="col-md-4">Select User</div>
-                                    <div class="col-md-8">
-                                        <select class="form-control dropdown" name="study_user">
-                                            <option value=""> Select User</option>
-                                            @foreach($studyusers as $user)
-                                            <option value="{{$user->id}}">{{$user->name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row" style="margin-top: 10px;">
-                                    <div class="col-md-4">Select Role</div>
-                                    <div class="col-md-8">
-                                        <select class="form-control dropdown" name="user_role">
-                                            <option value="">Select Role</option>
-                                            @foreach($roles as $role)
-                                                <option value="{{$role->id}}">{{$role->name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                        @if(hasPermission(auth()->user(),'users.store'))
-                            <button type="submit" class="btn btn-outline-primary" id="btn-save" value="create"><i class="fa fa-save"></i> Save Changes</button>
-                        @endif
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!-- reset password -->
-    <div class="modal fade" tabindex="-1" role="dialog" id="resetpassword">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <div class="alert alert-danger" style="display:none"></div>
-                <div class="modal-header">
-                    <p class="modal-title">Add User</p>
-                </div>
-                <form action="{{route('users.assignUsers')}}" enctype="multipart/form-data" method="POST">
-                    <div class="modal-body">
-                        <div class="tab-content" id="nav-tabContent">
-                            <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
-                                @csrf
-                                <div class="form-group row" style="margin-top: 10px;">
-                                    <div class="col-md-4">Select User</div>
-                                    <div class="col-md-8">
-                                        <select class="form-control dropdown" name="study_user">
-                                            <option value="selectuser"> Select User</option>
-                                            @foreach($studyusers as $user)
-                                                <option value="{{$user->id}}">{{$user->name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="form-group row" style="margin-top: 10px;">
-                                    <div class="col-md-4">Select Role</div>
-                                    <div class="col-md-8">
-                                        <select class="form-control dropdown" name="user_role">
-                                            <option value="1">Select Role</option>
-                                            @foreach($roles as $role)
-                                                <option value="{{$role->id}}">{{$role->name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                        @if(hasPermission(auth()->user(),'users.store'))
-                            <button type="submit" class="btn btn-outline-primary" id="btn-save" value="create"><i class="fa fa-save"></i> Save Changes</button>
-                        @endif
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-    <!--Invite User -->
-    <div class="modal fade" tabindex="-1" role="dialog" id="inviteuser">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <p class="modal-title">Invite User</p>
-                </div>
-                <form action="{{route('process_invite')}}" enctype="multipart/form-data" method="POST" id="inviteuser_form_1">
-                    @csrf
-                    <div class="modal-body">
-                        <p class="alert alert-danger inviteuser_error" style="display: none;"></p>
-
-                        <div class="tab-content" id="nav-tabContent">
-                            <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
-                                @csrf
-                                <div class="form-group row" style="margin-top: 10px;">
-                                    <div class="col-md-4">Email address</div>
-                                    <div class="col-md-8">
-                                        <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email">
-                                        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-                                    </div>
-                                </div>
-                                <div class="form-group row" style="margin-top: 10px;">
-                                    <div class="col-md-4">Role </div>
-                                    <div class="col-md-8">
-                                        <select name="roles" id="roles" class="form-control">
-                                            <option value="">-- Select Role --</option>
-                                            @foreach($roles as $role)
-                                                <option value="{{$role->id}}">{{$role->name}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                        @if(hasPermission(auth()->user(),'users.store'))
-                            <button type="submit" class="btn btn-success">Send Invitation</button>
-                        @endif
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
+    @include('userroles::users.popups.createuser')
+    @include('userroles::users.popups.assignuser', ['roles'=>$roles, 'studyusers'=>$studyusers])
+    @include('userroles::users.popups.inviteuser', ['roles'=>$roles])
 
 @stop
 @section('styles')
@@ -345,7 +119,7 @@
 @section('script')
     <script src="{{ asset('public/dist/js/jquery.validate.min.js') }}"></script>
     <script type="text/javascript">
-$(document).ready(function() {
+function setMultiselect() {
 		        $('#select_roles').multiselect({
                     search: {
                         left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
@@ -355,7 +129,7 @@ $(document).ready(function() {
                         return value.length > 1;
                     }
                 });
-	        });
+	        }
         $(document).ready(function(){
             $('#2fa').on('show.bs.modal',function (e) {
                 var id = $(e.relatedTarget).data('target-id');
@@ -436,6 +210,79 @@ $(document).ready(function() {
             });
 
         });
+            function openAddUserPopup(){
+                $("#createUser").modal('show');
+                loadUserForm();
+            }
+            function openEditUserPopup(userId){
+                $("#createUser").modal('show');
+                loadUserEditForm(userId);
+            }
+            function loadUserForm(){
+                $.ajax({
+                    url: "{{route('users.create')}}",
+                    type: 'GET',
+                    success: function(response){
+                        $('#userFormInner').empty();
+                        $("#userFormInner").html(response);
+                        setMultiselect();
+                    }
+                });
+            }
+            function loadUserEditForm(userId){
+                $.ajax({
+                    url: "{{ url('/')}}" + '/users/'+ userId +'/edit',
+                    type: 'GET',
+                    success: function(response){
+                        $('#userFormInner').empty();
+                        $("#userFormInner").html(response);
+                        setMultiselect();
+                    }
+                });
+            }
+
+            function submitAddUserForm(){
+                $('#select_roles_to option').prop('selected', true);
+                $.ajax({
+                    url: $("#user-store-form-5").attr('action'),
+                    type: 'POST',
+                    data: $("#user-store-form-5").serialize(),
+                    success: function(data){
+                        if (data.errors) {
+                            $('.user-store-error').text(data.errors);
+                            $('.user-store-error').css('display', 'block');
+                            setTimeout(function() {
+                                $('.user-store-error').slideUp(500);
+                            }, 5000);
+                        } else {
+                            $('#userFormInner').empty();
+                            location.reload();
+                        }
+                    }
+                });
+            }
+
+            function submitEditUserForm(){
+                $('#select_roles_to option').prop('selected', true);
+                $.ajax({
+                    url: $("#user-store-form-5").attr('action'),
+                    type: 'POST',
+                    data: $("#user-store-form-5").serialize(),
+                    success: function(data){
+                        if (data.errors) {
+                            $('.user-store-error').text(data.errors);
+                            $('.user-store-error').css('display', 'block');
+                            setTimeout(function() {
+                                $('.user-store-error').slideUp(500);
+                            }, 5000);
+                        } else {
+                            $('#userFormInner').empty();
+                            location.reload();
+                        }
+                    }
+                });
+
+            }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
