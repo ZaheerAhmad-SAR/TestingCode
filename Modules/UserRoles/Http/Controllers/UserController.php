@@ -53,9 +53,14 @@ class UserController extends Controller
     }
     public function index()
     {
+        if (isThisUserSuperAdmin(\auth()->user())) {
+            $roles  =   Role::where('role_type', '!=', 'study_role')->get();
+            $systemRoleIds = Role::where('role_type', '!=', 'study_role')->pluck('id')->toArray();
+        } else {
+            $roles  =   Role::where('role_type', '=', 'system_role')->get();
+            $systemRoleIds = Role::where('role_type', '=', 'system_role')->pluck('id')->toArray();
+        }
 
-        $roles  =   Role::where('role_type', '!=', 'study_role')->get();
-        $systemRoleIds = Role::where('role_type', '!=', 'study_role')->pluck('id')->toArray();
         $currentStudy = session('current_study');
 
         $userIdsOfSystemRoles = UserRole::whereIn('role_id', $systemRoleIds)->pluck('user_id')->toArray();
@@ -223,11 +228,18 @@ class UserController extends Controller
         $currentRoleIds = UserRole::where('user_id', 'like', $user->id)->pluck('role_id')->toArray();
         $currentRoles = Role::whereIn('id', $currentRoleIds)->get();
 
-
         if (!empty($currentRoleIds)) {
-            $unassignedRoles = Role::where('role_type', '!=', 'study_role')->whereNotIn('id', $currentRoleIds)->get();
+            if (isThisUserSuperAdmin(\auth()->user())) {
+                $unassignedRoles = Role::where('role_type', '!=', 'study_role')->whereNotIn('id', $currentRoleIds)->get();
+            } else {
+                $unassignedRoles = Role::where('role_type', '=', 'system_role')->whereNotIn('id', $currentRoleIds)->get();
+            }
         } else {
-            $unassignedRoles = Role::where('role_type', '!=', 'study_role')->get();
+            if (isThisUserSuperAdmin(\auth()->user())) {
+                $unassignedRoles = Role::where('role_type', '!=', 'study_role')->get();
+            } else {
+                $unassignedRoles = Role::where('role_type', '=', 'system_role')->get();
+            }
         }
         return view('userroles::users.edit', compact('user', 'unassignedRoles', 'currentRoles'));
     }
