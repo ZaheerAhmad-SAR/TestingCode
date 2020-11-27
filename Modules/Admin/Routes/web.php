@@ -16,7 +16,7 @@
     return view('admin::test_transmission_api');
 });*/
 // transmission end point
-Route::post('studies/getAssignedAdminsToStudy','StudyController@getAssignedAdminsToStudy')->name('studies.getAssignedAdminsToStudy');
+Route::post('studies/getAssignedAdminsToStudy', 'StudyController@getAssignedAdminsToStudy')->name('studies.getAssignedAdminsToStudy');
 Route::post('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
 
 
@@ -31,7 +31,7 @@ Route::prefix('admin')->group(function () {
     Route::get('/', 'AdminController@index');
 });
 Route::group(['middleware' => ['auth', 'web']], function () {
-    Route::resource('studies', 'StudyController');
+
     Route::get('get_steps', 'StudyStructureController@get_steps')->name('study.getSteps');
     Route::get('study_phases', 'StudyStructureController@getallphases')->name('getPhases');
     Route::get('forms/get_phases/{id}', 'FormController@get_phases')->name('forms.get_phases');
@@ -117,8 +117,8 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('annotation/get_allAnnotations/{id}', 'AnnotationController@get_allAnnotations')->name('annotation.get_allAnnotations');
     Route::post('annotation/add_annotation', 'AnnotationController@store_new_annotation')->name('annotation.addAnnotation');
 });
-Route::group(['middleware' => ['auth', 'web', 'roles'], 'roles' => ['admin']], function () {
-
+Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
+    Route::resource('studies', 'StudyController');
     Route::resource('sites', 'SiteController');
     Route::post('sites/update', 'SiteController@update')->name('sites.updateSites');
     Route::DELETE('sites/destroy/{sites_id}', 'SiteController@destroy')->name('sites.destroy');
