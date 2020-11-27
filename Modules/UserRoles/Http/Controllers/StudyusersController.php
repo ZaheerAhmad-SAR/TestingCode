@@ -34,9 +34,14 @@ class StudyusersController extends Controller
         $roles  =   Role::where('role_type', '=', 'study_role')->get();
 
         $enrolledUserIds = RoleStudyUser::where('study_id', '=', session('current_study'))->pluck('user_id')->toArray();
-        $studyusers = $enrolledusers = User::whereIn('id', $enrolledUserIds)->get();
+        $studyusers = $enrolledusers = User::where('id', '!=', \auth()->user()->id)
+            ->whereIn('id', $enrolledUserIds)
+            ->get();
 
-        $users = User::whereIn('id', $idsOfUsersWithStudyRole)->whereNotIn('id', $enrolledUserIds)->get();
+        $users = User::where('id', '!=', \auth()->user()->id)
+            ->whereIn('id', $idsOfUsersWithStudyRole)
+            ->whereNotIn('id', $enrolledUserIds)
+            ->get();
 
         return view('userroles::users.studyUsers', compact('roles', 'enrolledusers', 'studyusers', 'users'));
     }
@@ -181,7 +186,7 @@ class StudyusersController extends Controller
         $assigned_roles = [];
         $unassigned_roles = [];
 
-        $currentRoleIds = UserRole::where('user_id', 'like', $id)->pluck('role_id')->toArray();
+        $currentRoleIds = RoleStudyUser::where('user_id', 'like', $id)->where('study_id', 'like', session('current_study'))->pluck('role_id')->toArray();
         $assigned_roles = Role::whereIn('id', $currentRoleIds)->get();
 
         if (!empty($currentRoleIds)) {
@@ -206,37 +211,89 @@ class StudyusersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $user   =  User::find($id);
-        $user->update([
-            'name'  =>  $request->name,
-            'email' =>  $request->email,
-            'password'  =>  Hash::make($request->password),
-            'role_id'   =>  !empty($request->roles) ? $request->roles[0] : 2
-        ]);
+        $messages = [
+            'name.required' => 'Please provide name!',
+            'email.required' => 'Please provide e-mail address!',
+            'email.email' => 'Please provide valid e-mail address!',
+            'password.required' => 'Please provide password!',
+            'password.confirmed' => 'Passwords must match...',
+            'password.regex' => 'Password must be 8 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character',
+            'roles.required' => 'Please select role!',
+        ];
+        $rules = [
+            'name'      => 'required',
+            'email'     => 'required|email',
+            'password' => [
+                'nullable',
+                'string',
+                'min:8',             // must be at least 10 characters in length
+                'regex:/[a-z]/',      // must contain at least one lowercase letter
+                'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                'regex:/[0-9]/',      // must contain at least one digit
+                'regex:/[@$!%*#?&]/', // must contain a special character
+                'confirmed',
+            ],
+            'roles'    => 'required|array|min:1',
+            'roles.*'  => 'required|min:1',
+        ];
+        $validator = Validator::make($request->all(), $rules, $messages);
 
-        if ($request->roles != null) {
-            RoleStudyUser::where('study_id', 'like', session('current_study'))
-                ->where('user_id', $user->id)
-                ->delete();
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->first()]);
+        } else {
+            $user   =  User::find($id);
+            $user->update([
+                'name'  =>  $request->name,
+                'email' =>  $request->email,
+                'password'  =>  Hash::make($request->password),
+                'role_id'   =>  !empty($request->roles) ? $request->roles[0] : 2
+            ]);
+
+            $this->updateRoles($request, $user);
+
+            return response()->json(['success' => 'User Updated successfully.']);
+        }
+    }
+
+    private function updateRoles($request, $user)
+    {
+        if ($request->roles) {
+
+            $currentRoleIds = RoleStudyUser::where('study_id', 'like', session('current_study'))
+                ->where('user_id', 'like', $user->id)
+                ->pluck('role_id')
+                ->toArray();
+
+            $newRoleIds = $request->roles;
+
+            foreach ($currentRoleIds as $roleId) {
+                if (!in_array($roleId, $newRoleIds)) {
+                    RoleStudyUser::where('user_id', $user->id)
+                        ->where('role_id', $roleId)
+                        ->where('study_id', 'like', session('current_study'))
+                        ->delete();
+                }
+            }
+
             foreach ($request->roles as $role) {
-                RoleStudyUser::create([
-                    'id'         => Str::uuid(),
-                    'user_id'    =>  $user->id,
-                    'role_id'    =>  $role,
-                    'study_id'   => session('current_study'),
-                ]);
-                $checkUserRole = UserRole::where('role_id', $role)->where('user_id', $user->id)->first();
-                if (null === $checkUserRole) {
-                    UserRole::create([
-                        'id'    => Str::uuid(),
-                        'user_id'   => $user->id,
-                        'role_id'   => $role
+                if (!in_array($role, $currentRoleIds)) {
+                    RoleStudyUser::create([
+                        'id'         => Str::uuid(),
+                        'user_id'    =>  $user->id,
+                        'role_id'    =>  $role,
+                        'study_id'   => session('current_study'),
                     ]);
+                    $checkUserRole = UserRole::where('role_id', $role)->where('user_id', $user->id)->first();
+                    if (null === $checkUserRole) {
+                        UserRole::create([
+                            'id'    => Str::uuid(),
+                            'user_id'   => $user->id,
+                            'role_id'   => $role
+                        ]);
+                    }
                 }
             }
         }
-
-        return redirect(route('studyusers.index'));
     }
 
     /**
