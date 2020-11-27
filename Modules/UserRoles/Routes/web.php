@@ -26,6 +26,10 @@
 
 // QC Work List
     Route::get('qc-work-list','QualityControlController@qcWorkList')->name('qualitycontrol.qc-work-list');
+// Grading Work List
+    Route::get('grading-work-list','GradingController@gradingWorkList')->name('gradingcontrol.grading-work-list');
+// Adjudication Work List
+    Route::get('adjudication-work-list','AdjudicationController@adjudicationWorkList')->name('adjudicationcontroller.adjudication-work-list');
 
 
 Route::prefix('userroles')->group(function() {
