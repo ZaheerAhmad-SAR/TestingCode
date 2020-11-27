@@ -29,9 +29,7 @@ use Illuminate\Support\Str;
 use ParagonIE\ConstantTime\Base32;
 use PragmaRX\Google2FAQRCode\Google2FA;
 use App\Traits\UploadTrait;
-
-
-
+use Modules\UserRoles\Entities\StudyRoleUsers;
 
 class UserController extends Controller
 {
@@ -64,11 +62,23 @@ class UserController extends Controller
         $currentStudyId = session('current_study');
 
         $userIdsOfSystemRoles = UserRole::whereIn('role_id', $systemRoleIds)->pluck('user_id')->toArray();
-        $users = User::whereIn('id', $userIdsOfSystemRoles)->orderBy('name', 'asc')->get();
+        $users = User::whereIn('id', $userIdsOfSystemRoles)
+            ->where('id', '!=', \auth()->user()->id)
+            ->orderBy('name', 'asc')->get();
 
         $studyRoleIds = Role::where('role_type', '=', 'study_role')->pluck('id')->toArray();
         $userIdsOfStudyRoles = UserRole::whereIn('role_id', $studyRoleIds)->pluck('user_id')->toArray();
-        $studyusers = User::whereIn('id', $userIdsOfStudyRoles)->where('id', '!=', \auth()->user()->id)->get();
+
+        if ($currentStudyId != '') {
+            $studyUserIds = RoleStudyUser::where('study_id', 'like', $currentStudyId)->pluck('user_id')->toArray();
+            $studyusers = User::whereIn('id', $userIdsOfStudyRoles)
+                ->whereIn('id', $studyUserIds)
+                ->where('id', '!=', \auth()->user()->id)->get();
+        } else {
+            $studyusers = User::whereIn('id', $userIdsOfStudyRoles)->where('id', '!=', \auth()->user()->id)->get();
+        }
+
+
 
         return view('userroles::users.index', compact('users', 'roles', 'studyusers'));
     }
@@ -239,18 +249,28 @@ class UserController extends Controller
 
         $assigned_roles = [];
         $unassigned_roles = [];
+        $allRoleIds = [];
 
-        $currentRoleIds = UserRole::where('user_id', 'like', $id)->pluck('role_id')->toArray();
-        $assigned_roles = Role::whereIn('id', $currentRoleIds)->get();
+        if (isThisUserHasSystemRole($user)) {
+            $currentRoleIds = UserRole::where('user_id', 'like', $id)->pluck('role_id')->toArray();
+            $assigned_roles = Role::whereIn('id', $currentRoleIds)->get();
 
-        if (isThisUserSuperAdmin(\auth()->user())) {
-            $allRoleIds = Role::where('role_type', '!=', 'study_role')->pluck('id')->toArray();
+            if (isThisUserSuperAdmin(\auth()->user())) {
+                $allRoleIds = Role::where('role_type', '!=', 'study_role')->pluck('id')->toArray();
+            } else {
+                $allRoleIds = Role::where('role_type', '=', 'system_role')->pluck('id')->toArray();
+            }
+            $unassignedRoleIds = array_diff($allRoleIds, $currentRoleIds);
+            $unassigned_roles = Role::whereIn('id', $unassignedRoleIds)->get();
         } else {
-            $allRoleIds = Role::where('role_type', '=', 'system_role')->pluck('id')->toArray();
+            $currentRoleIds = RoleStudyUser::where('user_id', 'like', $id)->pluck('role_id')->toArray();
+            $assigned_roles = Role::whereIn('id', $currentRoleIds)->get();
+            if (!empty($currentRoleIds)) {
+                $unassigned_roles = Role::where('role_type', '=', 'study_role')->whereNotIn('id', $currentRoleIds)->get();
+            } else {
+                $unassigned_roles = Role::where('role_type', '=', 'study_role')->get();
+            }
         }
-
-        $unassignedRoleIds = array_diff($allRoleIds, $currentRoleIds);
-        $unassigned_roles = Role::whereIn('id', $unassignedRoleIds)->get();
 
         $add_or_edit = 'Edit';
         $route = route('users.update', $id);
@@ -318,156 +338,132 @@ class UserController extends Controller
         $oldUser = User::where('id', $id)->first();
         $data = array('name' => $oldUser->name);
         $user   =   User::find($id);
-        if ($request->fa == 'enabled' && !empty($request->password)) {
-            //dd('fa enabled and not empty password');
-            $user->name  =  $request->name;
-            $user->email =  $request->email;
-            $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
-            $user->password =   Hash::make($request->password);
-            $user->qr_flag = '0';
-            $user->save();
-            if ($request->roles) {
-                $userroles  = UserRole::where('user_id', $user->id)->where('user_type', '!=', '2')->get();
-                foreach ($userroles as $role_id) {
-                    $role_id->delete();
-                }
-                foreach ($request->roles as $role) {
-                    $new = UserRole::create([
-                        'id'    => Str::uuid(),
-                        'user_id'    =>  $user->id,
-                        'role_id'    =>  $role,
-                    ]);
-                }
-            }
-            $secret = $this->generateSecret();
-            $user->google2fa_secret = Crypt::encrypt($secret);
-            $google2fa = new Google2FA();
+        $messages = [
+            'name.required' => 'Please provide name!',
+            'email.required' => 'Please provide e-mail address!',
+            'email.email' => 'Please provide valid e-mail address!',
+            'password.required' => 'Please provide password!',
+            'password.confirmed' => 'Passwords must match...',
+            'password.regex' => 'Password must be 8 characters long, should contain at-least 1 Uppercase, 1 Lowercase, 1 Numeric and 1 special character',
+            'roles.required' => 'Please select role!',
+        ];
+        $rules = [
+            'name'      => 'required',
+            'email'     => 'required|email',
+            'password' => [
+                'nullable',
+                'string',
+                'min:8',             // must be at least 10 characters in length
+                'regex:/[a-z]/',      // must contain at least one lowercase letter
+                'regex:/[A-Z]/',      // must contain at least one uppercase letter
+                'regex:/[0-9]/',      // must contain at least one digit
+                'regex:/[@$!%*#?&]/', // must contain a special character
+                'confirmed',
+            ],
+            'roles'    => 'required|array|min:1',
+            'roles.*'  => 'required|min:1',
+        ];
+        $validator = Validator::make($request->all(), $rules, $messages);
 
-            $inlineUrl = $google2fa->getQRCodeInline(
-                'OIRRC',
-                'info@oirrc.net',
-                $secret
-            );
-            $user->google_auth = $inlineUrl;
-            $user->save();
-        } elseif ($request->fa == 'enabled' && empty($request->password)) {
-            //  dd('fa enabled and empty password');
-            $user->name  =  $request->name;
-            $user->email =  $request->email;
-            $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
-            $user->qr_flag = '0';
-            $user->save();
-            if ($request->roles) {
-                $userroles  = UserRole::where('user_id', $user->id)->get();
-                foreach ($userroles as $role_id) {
-                    $role_id->delete();
-                }
-                foreach ($request->roles as $role) {
-                    $new = UserRole::create([
-                        'id'    => Str::uuid(),
-                        'user_id'    =>  $user->id,
-                        'role_id'    =>  $role,
-                    ]);
-                }
-            }
-            $secret = $this->generateSecret();
-            $user->google2fa_secret = Crypt::encrypt($secret);
-            $google2fa = new Google2FA();
-
-            $inlineUrl = $google2fa->getQRCodeInline(
-                'OIRRC',
-                'info@oirrc.net',
-                $secret
-            );
-            $user->google_auth = $inlineUrl;
-            $user->save();
-        } elseif ($request->fa == 'disabled' && !empty($request->password)) {
-            //dd('fa disabled and not empty password');
-            $user->name  =  $request->name;
-            $user->email =  $request->email;
-            $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
-            $user->password =   Hash::make($request->password);
-            $user->qr_flag = '0';
-            $user->google2fa_secret = NULL;
-            $user->google_auth = NULL;
-
-            $user->save();
-            if ($request->roles) {
-                $userroles  = UserRole::where('user_id', $user->id)->get();
-                foreach ($userroles as $role_id) {
-                    $role_id->delete();
-                }
-                foreach ($request->roles as $role) {
-                    $new = UserRole::create([
-                        'id'    => Str::uuid(),
-                        'user_id'    =>  $user->id,
-                        'role_id'    =>  $role,
-                    ]);
-                }
-            }
-            $system_infos = UserSystemInfo::where('user_id', '=', $oldUser->id)->get();
-            foreach ($system_infos as $system_info) {
-                $system_info->delete();
-            }
-        } elseif ($request->fa == 'disabled' && empty($request->password)) {
-            //dd('fa disabled and empty password');
-            $user->name  =  $request->name;
-            $user->email =  $request->email;
-            $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
-            $user->qr_flag = '0';
-            $user->google2fa_secret = NULL;
-            $user->google_auth = NULL;
-            $user->save();
-            if ($request->roles) {
-                $userroles  = UserRole::where('user_id', $user->id)->get();
-                foreach ($userroles as $role_id) {
-                    $role_id->delete();
-                }
-                foreach ($request->roles as $role) {
-                    $new = UserRole::create([
-                        'id'    => Str::uuid(),
-                        'user_id'    =>  $user->id,
-                        'role_id'    =>  $role,
-                    ]);
-                }
-            }
-            $system_infos = UserSystemInfo::where('user_id', '=', $oldUser->id)->get();
-            foreach ($system_infos as $system_info) {
-                $system_info->delete();
-            }
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->first()]);
         } else {
+            if ($request->fa == 'enabled' && !empty($request->password)) {
+                //dd('fa enabled and not empty password');
+                $user = $this->updateUser($request, $user);
+                $this->updateRoles($request, $user);
 
-            $user->name  =  $request->name;
-            $user->email =  $request->email;
-            $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
-            $user->qr_flag = '0';
-            $user->google2fa_secret = NULL;
-            $user->google_auth = NULL;
-            $user->save();
-            if ($request->roles) {
-                $userroles  = UserRole::where('user_id', $user->id)->get();
-                foreach ($userroles as $role_id) {
-                    $role_id->delete();
+                $secret = $this->generateSecret();
+                $user->google2fa_secret = Crypt::encrypt($secret);
+                $google2fa = new Google2FA();
+                $inlineUrl = $google2fa->getQRCodeInline(
+                    'OIRRC',
+                    'info@oirrc.net',
+                    $secret
+                );
+                $user->google_auth = $inlineUrl;
+                $user->save();
+            } elseif ($request->fa == 'enabled' && empty($request->password)) {
+                //  dd('fa enabled and empty password');
+                $user = $this->updateUser($request, $user);
+                $this->updateRoles($request, $user);
+                $secret = $this->generateSecret();
+                $user->google2fa_secret = Crypt::encrypt($secret);
+                $google2fa = new Google2FA();
+                $inlineUrl = $google2fa->getQRCodeInline(
+                    'OIRRC',
+                    'info@oirrc.net',
+                    $secret
+                );
+                $user->google_auth = $inlineUrl;
+                $user->save();
+            } elseif ($request->fa == 'disabled' && !empty($request->password)) {
+                //dd('fa disabled and not empty password');
+                $user = $this->updateUser($request, $user);
+                $this->updateRoles($request, $user);
+                $this->updateSystemInfo($oldUser);
+            } elseif ($request->fa == 'disabled' && empty($request->password)) {
+                //dd('fa disabled and empty password');
+                $user = $this->updateUser($request, $user);
+                $this->updateRoles($request, $user);
+                $this->updateSystemInfo($oldUser);
+            } else {
+                $user = $this->updateUser($request, $user);
+                $this->updateRoles($request, $user);
+                $this->updateSystemInfo($oldUser);
+            }
+            // log event details
+            $logEventDetails = eventDetails($user->id, 'User', 'Update', $request->ip(), $oldUser);
+            return response()->json(['success' => 'User Updated successfully.']);
+        }
+    }
+
+
+    private function updateSystemInfo($oldUser)
+    {
+        $system_infos = UserSystemInfo::where('user_id', '=', $oldUser->id)->get();
+        foreach ($system_infos as $system_info) {
+            $system_info->delete();
+        }
+    }
+    private function updateUser($request, $user)
+    {
+        $user->name  =  $request->name;
+        $user->email =  $request->email;
+        $user->role_id   =  !empty($request->roles) ? $request->roles[0] : 2;
+        if (!empty($request->password)) {
+            $user->password =   Hash::make($request->password);
+        }
+        $user->qr_flag = '0';
+        $user->google2fa_secret = NULL;
+        $user->google_auth = NULL;
+        $user->save();
+        return $user;
+    }
+    private function updateRoles($request, $user)
+    {
+        if ($request->roles) {
+
+            $currentRoleIds = UserRole::where('user_id', 'like', $user->id)->pluck('role_id')->toArray();
+            $newRoleIds = $request->roles;
+
+            foreach ($currentRoleIds as $roleId) {
+                if (!in_array($roleId, $newRoleIds)) {
+                    RoleStudyUser::where('user_id', $user->id)->where('role_id', $roleId)->delete();
+                    UserRole::where('user_id', $user->id)->where('role_id', $roleId)->delete();
                 }
-                foreach ($request->roles as $role) {
+            }
+
+            foreach ($request->roles as $role) {
+                if (!in_array($role, $currentRoleIds)) {
                     $new = UserRole::create([
                         'id'    => Str::uuid(),
                         'user_id'    =>  $user->id,
                         'role_id'    =>  $role,
                     ]);
                 }
-            }
-            $system_infos = UserSystemInfo::where('user_id', '=', $oldUser->id)->get();
-            foreach ($system_infos as $system_info) {
-                $system_info->delete();
             }
         }
-
-
-        // log event details
-        $logEventDetails = eventDetails($user->id, 'User', 'Update', $request->ip(), $oldUser);
-
-        return redirect(route('users.index'))->with('message', 'user updated');
     }
 
     /**

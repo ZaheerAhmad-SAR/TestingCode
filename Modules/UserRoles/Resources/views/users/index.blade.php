@@ -280,6 +280,7 @@ function setMultiselect() {
                         }
                     }
                 });
+
             }
 
             function submitEditUserForm(){
