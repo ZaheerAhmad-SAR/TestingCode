@@ -68,7 +68,17 @@ class UserController extends Controller
 
         $studyRoleIds = Role::where('role_type', '=', 'study_role')->pluck('id')->toArray();
         $userIdsOfStudyRoles = UserRole::whereIn('role_id', $studyRoleIds)->pluck('user_id')->toArray();
-        $studyusers = User::whereIn('id', $userIdsOfStudyRoles)->where('id', '!=', \auth()->user()->id)->get();
+
+        if ($currentStudyId != '') {
+            $studyUserIds = RoleStudyUser::where('study_id', 'like', $currentStudyId)->pluck('user_id')->toArray();
+            $studyusers = User::whereIn('id', $userIdsOfStudyRoles)
+                ->whereIn('id', $studyUserIds)
+                ->where('id', '!=', \auth()->user()->id)->get();
+        } else {
+            $studyusers = User::whereIn('id', $userIdsOfStudyRoles)->where('id', '!=', \auth()->user()->id)->get();
+        }
+
+
 
         return view('userroles::users.index', compact('users', 'roles', 'studyusers'));
     }
@@ -366,7 +376,6 @@ class UserController extends Controller
                 $secret = $this->generateSecret();
                 $user->google2fa_secret = Crypt::encrypt($secret);
                 $google2fa = new Google2FA();
-
                 $inlineUrl = $google2fa->getQRCodeInline(
                     'OIRRC',
                     'info@oirrc.net',
@@ -377,13 +386,10 @@ class UserController extends Controller
             } elseif ($request->fa == 'enabled' && empty($request->password)) {
                 //  dd('fa enabled and empty password');
                 $user = $this->updateUser($request, $user);
-
                 $this->updateRoles($request, $user);
-
                 $secret = $this->generateSecret();
                 $user->google2fa_secret = Crypt::encrypt($secret);
                 $google2fa = new Google2FA();
-
                 $inlineUrl = $google2fa->getQRCodeInline(
                     'OIRRC',
                     'info@oirrc.net',
