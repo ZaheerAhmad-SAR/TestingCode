@@ -43,10 +43,10 @@
                                 <tbody>
                                 @php $count= 1; @endphp
                                 @foreach($queries as $query)
-                                    @php
-                                        $moduleId = \Modules\Admin\Entities\Study::where('id','=',$query->module_id)->first();
-                                        $studyShortName = $moduleId->study_short_name;
-                                    @endphp
+{{--                                    @php--}}
+{{--                                        $moduleId = \Modules\Admin\Entities\Study::where('id','=',$query->module_id)->first();--}}
+{{--                                        $studyShortName = $moduleId->study_short_name;--}}
+{{--                                    @endphp--}}
                                     <tr>
                                         <td>{{$count++}}</td>
                                         <td>{{$query->query_subject}}</td>
