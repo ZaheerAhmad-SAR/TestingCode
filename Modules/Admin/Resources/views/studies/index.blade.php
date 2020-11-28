@@ -84,13 +84,13 @@
                                         </td>
 
                                         <td>{{$study->study_status}}</td>
-                                        @if(hasPermission(auth()->user(),'systemtools.index'))
                                             <td>
+                                                @if(hasPermission(auth()->user(),'systemtools.index'))
                                                     {{\Modules\Admin\Entities\Study::getstudyAdminsName($study->id)}}
+                                                @endif
                                             </td>
-                                        @endif
-                                        @if(hasPermission(auth()->user(),'studies.edit'))
                                             <td>
+                                                @if(hasPermission(auth()->user(),'studies.edit'))
                                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                     <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                     @php
@@ -154,11 +154,9 @@
                                                         </span>
                                                     </div>
                                                 </div>
-
+                                                @endif
                                             </td>
-                                        @else
-                                            <td></td>
-                                        @endif
+
                                     </tr>
                                     <?php $index++; ?>
                                 @endforeach
@@ -181,6 +179,7 @@
                 </div>
                 <div class="modal-body">
                     <form action="{{route('studies.store')}}" name="studyForm" id="studyForm" class="form-horizontal" method="POST">
+                        <input name="_method" id="_method" type="hidden" value="POST">
                         @if ($errors->any())
                             <div class="alert alert-danger">
                                 <strong>Whoops!</strong> Please fill all required fields!.
@@ -796,8 +795,10 @@
 
 
             $('body').on('click', '#edit-study', function () {
-                $('#studyForm').attr('action', "{{route('studies.update_studies')}}");
                 var study_id = $(this).data('id');
+                $('#studyForm').attr('action', "{{url('studies')}}" + '/' + study_id);
+                $("#studyForm #_method").val('PUT');
+
                 var edit_study = $.get('studies/'+study_id+'/edit', function (data) {
 
                     $('#studyCrudModal').html("Edit study");

@@ -82,6 +82,36 @@
         <!-- START: Card Data-->
         <div class="row">
             <!-- Adjudication legends -->
+
+            <div class="col-12 col-sm-12 mt-3">
+                <div class="card">
+                    <div class="card-header  justify-content-between align-items-center">
+                        <h4 class="card-title">Adjudication Legend</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img src="{{url('images/no_status.png')}}"/>&nbsp;&nbsp;Not Initiated
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/incomplete.png')}}"/>&nbsp;&nbsp;Initiated
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/resumable.png')}}"/>&nbsp;&nbsp;Editing
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/complete.png')}}"/>&nbsp;&nbsp;Complete
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/not_required.png')}}"/>&nbsp;&nbsp;Not Required
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/query.png')}}"/>&nbsp;&nbsp;Query
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">

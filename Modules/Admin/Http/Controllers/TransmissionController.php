@@ -28,6 +28,7 @@ use DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\Traits\UploadTrait;
+use Modules\Queries\Entities\Query;
 use Modules\Queries\Entities\QueryNotification;
 use Modules\Queries\Entities\QueryNotificationUser;
 
@@ -771,9 +772,9 @@ class TransmissionController extends Controller
             $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
             $this->uploadOne($image, $folder, 'public', $name);
         }
-
-
-        $data = array(
+        $id    = Str::uuid();
+        $token = Str::uuid();
+        $dataInt = array(
          'Transmission_Number'=>$transNumber,
          'query_subject'=>$query_subject,
          'remarks'=>$remarks,
@@ -782,13 +783,15 @@ class TransmissionController extends Controller
          'visit_name'=>$visit_name,
          'Subject_ID'=>$subjectID,
           'attachment'=>$filePath,
-          'studyShortName'=>$studyShortName
+          'studyShortName'=>$studyShortName,
+           'replyToken'=> $token
         );
-        $id              = Str::uuid();
+
 
         $queryNotification = QueryNotification::create([
            'id'=>$id,
            'cc_email'=>$cc_email,
+            'notifications_status'=> 'open',
             'subject'=>$query_subject,
             'email_body'=>$remarks,
             'email_attachment'=>$filePath,
@@ -797,10 +800,19 @@ class TransmissionController extends Controller
             'study_id'=>$studyID,
             'subject_id'=>$subjectID,
             'transmission_number'=>$transNumber,
-            'vist_name'=>$visit_name
+            'vist_name'=>$visit_name,
+            'notifications_token'=>$token
         ]);
+
+
+
+
+
         foreach ($usersArray as $user)
         {
+            $new_array = array('receiverEmail'=>$user);
+            $data=array_merge($dataInt, $new_array);
+
             Mail::to($user)->send(new TransmissonQuery($data));
             QueryNotificationUser::create([
              'id'=>Str::uuid(),
@@ -827,6 +839,26 @@ class TransmissionController extends Controller
 //        });
         //// Mail Raw end function
 
+    }
+
+    public function getQueryByTransmissionId(Request $request)
+    {
+        if ($request->ajax())
+        {
+            $transmission_Id = $request->transmission_Id;
+
+            $records = QueryNotification::where('id','like',$transmission_Id)->where('parent_notification_id','like',0)->get();
+
+            echo  view('admin::transmissions.queries_table_view',compact('records'));
+        }
+    }
+
+    public function verifiedToken(Request $request,$id)
+    {
+
+        $record = QueryNotification::where('notifications_token',$id)->where('notifications_status','open')->first();
+        //dd($record);
+        echo  view('admin::transmissions.queries_reply_view',compact('record'));
     }
 }
 
