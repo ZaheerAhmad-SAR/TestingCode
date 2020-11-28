@@ -273,6 +273,12 @@ class FormController extends Controller
     }
 
     /**
+       $questions = Question::where('section_id', $question->section_id)->get();
+       foreach ($questions as $ques_value) {
+            if($ques_value->question_sort >= $request->sort_value){
+                
+            }
+        }
      * Show the form for creating a new resource.
      * @return Response
      */
@@ -557,7 +563,12 @@ class FormController extends Controller
     }
     public function create_filter_session(Request $request)
     {
-        // Make new session 
+        // Make new session
+        dd(session::all());
+        $old_session_filter_phase = session('filter_phase');
+        $old_session_filter_step = session('filter_step');
+        unset($old_session_filter_phase);
+        unset($old_session_filter_step);
         session(['filter_phase' => $request->phase_id, 'filter_step' => $request->step_id]);
         // session()->put('filter_phase', $request->phase_id);
         // session()->put('filter_step', $request->step_id);
