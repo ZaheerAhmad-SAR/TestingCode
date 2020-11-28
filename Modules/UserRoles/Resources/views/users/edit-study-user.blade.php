@@ -56,7 +56,7 @@
                                 <div class="form-group row">
                                         <label for="password" class="col-md-3">Password</label>
                                         <div class="{!! ($errors->has('password')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
-                                            <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password"  autocomplete="new-password">
+                                            <input id="password" type="password" autocomplete="off" class="form-control @error('password') is-invalid @enderror" name="password"  autocomplete="new-password">
                                             @error('password')
                                             <span class="text-danger small"> {{ $message }} </span>
                                             @enderror
@@ -65,7 +65,7 @@
                                     <div class="form-group row">
                                         <label for="C-Password" class="col-md-3">Confirm Password</label>
                                         <div class="{!! ($errors->has('password_confirmation')) ?'form-group col-md-9 has-error':'form-group col-md-9' !!}">
-                                            <input id="password-confirm" type="password" class="form-control" name="password_confirmation"  autocomplete="new-password">
+                                            <input id="password-confirm" type="password" autocomplete="off" class="form-control" name="password_confirmation"  autocomplete="new-password">
                                             @error('password_confirmation')
                                             <span class="text-danger small">{{ $message }} </span>
                                             @enderror

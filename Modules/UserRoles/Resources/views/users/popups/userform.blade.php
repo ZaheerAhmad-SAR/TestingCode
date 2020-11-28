@@ -29,7 +29,7 @@
                     </div>
                     <div class="form-group row">
                         <label for="password" class="col-md-3">Password</label>
-                        <input type="password" class="form-control col-md-8" required="required" id="password"
+                        <input type="password" autocomplete="off" class="form-control col-md-8" required="required" id="password"
                             name="password" value="">
                         <p id="passwordHelpBlock" class="form-text text-muted col-md-12">
                             Your password must be 8 characters long, should contain at-least 1 Uppercase, 1
@@ -38,7 +38,7 @@
                     </div>
                     <div class="form-group row">
                         <label for="C-Password" class="col-md-3">Confirm Password</label>
-                        <input type="password" class="form-control col-md-8" required="required"
+                        <input type="password" autocomplete="off" class="form-control col-md-8" required="required"
                             id="password_confirmation" name="password_confirmation"
                             value="">
                     </div>
