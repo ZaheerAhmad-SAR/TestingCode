@@ -30,7 +30,7 @@
 
                    <div class="form-group mb-3">
                         <label for="password">Password</label>
-                        <input class="form-control @error('password') is-invalid @enderror" type="password"  name="password" required id="password" placeholder="Enter your password" required>
+                        <input class="form-control @error('password') is-invalid @enderror" type="password" autocomplete="off"  name="password" required id="password" placeholder="Enter your password" required>
                         @error('password')
                             <span class="invalid-feedback" role="alert">
                                 <strong>{{ $message }}</strong>
