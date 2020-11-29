@@ -564,7 +564,6 @@ class FormController extends Controller
     public function create_filter_session(Request $request)
     {
         // Make new session
-        dd(session::all());
         $old_session_filter_phase = session('filter_phase');
         $old_session_filter_step = session('filter_step');
         unset($old_session_filter_phase);
