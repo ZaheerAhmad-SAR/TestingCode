@@ -172,6 +172,12 @@ class StudyStructureController extends Controller
             'q_c' =>  $request->q_c,
             'eligibility' =>  $request->eligibility
         ]);
+
+        $oldStep = [];
+
+        // log event details
+        $logEventDetails = eventDetails($id, 'Step', 'Add', $request->ip(), $oldStep);
+
         /************************* */
         $step = PhaseSteps::find($id);
         $this->addStepToReplicatedVisits($step, true);
@@ -184,6 +190,9 @@ class StudyStructureController extends Controller
     // Update steps here
     public function update_steps(Request $request, $id = '')
     {
+        $oldStep = PhaseSteps::where('step_id', $request->step_id)->first();
+
+
         $step = PhaseSteps::find($request->step_id);
         $step->phase_id  =  $request->phase_id;
         $step->step_position  =  $request->step_position;
@@ -195,6 +204,9 @@ class StudyStructureController extends Controller
         $step->q_c  =  $request->q_c;
         $step->eligibility  =  $request->eligibility;
         $step->save();
+
+        // log event details
+        $logEventDetails = eventDetails($request->step_id, 'Step', 'Update', $request->ip(), $oldStep);
 
 
         $this->updateStepToReplicatedVisits($step);

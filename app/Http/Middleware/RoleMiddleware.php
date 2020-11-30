@@ -17,10 +17,15 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next)
     {
         if (!empty($request->user())) {
-            $routeName  =   $request->route()->getName();
+
+                $routeName  =   $request->route()->getName();
+
             if (hasPermission($request->user(), $routeName)) {
+
                 return $next($request);
+
             } else {
+                
                 return redirect()->route('dashboard.index');
             }
         } else {

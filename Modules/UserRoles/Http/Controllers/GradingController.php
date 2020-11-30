@@ -524,30 +524,33 @@ class GradingController extends Controller
                                               ->where('form_type_id', $input['form_type_id'])
                                               ->first();
 
-                if ($checkSubjectPhase != null ) {
+
+                if ($checkSubjectPhase != null) {
 
                     $count++;
                 }
                 
             } // check subject ends
 
-            // return response
-            if ($count == 0) {
-
-                return response()->json(['success' => 'No data found.']);
-
-            } else {
-
-                return response()->json(['error' => 'Data found.']);
-
-            }
-
         } // subject ends
+
+        // return response
+        if ($count == 0) {
+
+            return response()->json(['success' => $count]);
+
+        } else {
+
+            return response()->json(['success' => $count]);
+
+        }
     }
 
     public function saveAssignWork(Request $request) {
 
         $input = $request->all();
+
+        //dd($input);
 
         // loop dubject
         foreach($input['subject_id'] as $key => $subject) {

@@ -18,6 +18,7 @@ use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\StudySite;
 use Modules\Admin\Entities\Subject;
 use Modules\Admin\Entities\StudyStructure;
+use Modules\Admin\Entities\FormType;
 use Modules\Admin\Scopes\StudyStructureWithoutRepeatedScope;
 use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\Question;
@@ -98,6 +99,7 @@ function hasPermission($user, $routeName)
 
         $roleIds[] = $role->role_id;
     }
+    
     $permission = Permission::where('name', '=', $routeName)->first();
     $rolePermission = RolePermission::whereIn('role_id', $roleIds)
         ->where('permission_id', $permission->id)->first();
@@ -541,10 +543,71 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             );
 
             // set message for audit
-            $auditMessage = Auth::user()->name . ' updated device ' . $previousData->name . '.';
+            $auditMessage = Auth::user()->name . ' updated phase ' . $previousData->name . '.';
         }
 
         //////////////////////////// phase Ends /////////////////////////////////////////
+    } else if ($eventSection == 'Step') {
+        // get event data
+        $eventData = PhaseSteps::where('step_id', $eventId)->first();
+
+        // set message for audit
+        $auditMessage = Auth::user()->name . ' added step ' . $eventData->step_name . '.';
+        // set audit url
+        $auditUrl = url('study');
+
+        // FIND PHASE NAME
+        $getPhaseName = StudyStructure::find($eventData->phase_id);
+
+        //get Form name
+        $getFormName = FormType::find($eventData->form_type_id);
+
+        // get modility name
+        $getModilityName = Modility::find($eventData->modility_id);
+
+        // store data in event array
+        $newData = array(
+            'study_id'    => session('current_study'),
+            'phase_id'    => $getPhaseName->name,
+            'step_position'  =>  $eventData->step_position,
+            'form_type_id' =>  $getFormName->form_type,
+            'modility_id' =>  $getModilityName->modility_name,
+            'step_name' =>  $eventData->step_name,
+            'step_description' =>  $eventData->step_description,
+            'graders_number' =>  $eventData->graders_number,
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
+        );
+        // if it is update case
+        if ($eventType == 'Update') {
+
+            // FIND PHASE NAME
+            $getOldPhaseName = StudyStructure::find($previousData->phase_id);
+
+            //get Form name
+            $getOldFormName = FormType::find($previousData->form_type_id);
+
+            // get modility name
+            $getOldModilityName = Modility::find($previousData->modility_id);
+
+            $oldData = array(
+                'study_id'    => session('current_study'),
+                'phase_id'    => $getOldPhaseName->name,
+                'step_position'  =>  $previousData->step_position,
+                'form_type_id' =>  $getOldFormName->form_type,
+                'modility_id' =>  $getOldModilityName->modility_name,
+                'step_name' =>  $previousData->step_name,
+                'step_description' =>  $previousData->step_description,
+                'graders_number' =>  $previousData->graders_number,
+                'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+                'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+            );
+
+            // set message for audit
+            $auditMessage = Auth::user()->name . ' updated step ' . $previousData->step_name . '.';
+        }
+
+        //////////////////////////// step Ends /////////////////////////////////////////
     } else if ($eventSection == 'Study Site') {
         // get event data
         $eventData = StudySite::select('sites.site_name')

@@ -11,7 +11,7 @@
         .select2-container--default
         .select2-selection--single {
             background-color: #fff;
-             border: transparent !important;
+            border: transparent !important;
             border-radius: 4px;
         }
         .select2-selection__rendered {
@@ -23,6 +23,18 @@
             border: 1px solid #ced4da;
             border-radius: .25rem;
             transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+
+        .select2-container--default.select2-container--focus .select2-selection--multiple {
+            border: solid black 1px;
+            outline: 0;
+        }
+
+        .select2-container--default .select2-selection--multiple {
+            background-color: white;
+            border: 1px solid #485e9029 !important; 
+            border-radius: 4px;
+            cursor: text;
         }
 
         legend {
@@ -436,6 +448,12 @@
     $('select[name="phase"]').select2();
     $('select[name="site"]').select2();
 
+    // initialize select2
+    $('.users_id').select2({
+        dropdownPosition: 'below'
+      
+    });
+
     $('.reset-filter').click(function(){
         // reset values
         $('.filter-form').trigger("reset");
@@ -444,16 +462,10 @@
         window.location.reload();
     });
 
-    // initialize select2
-    $('.users_id').select2({
-        dropdownPosition: 'below'
+    // $('#edit_users_id').select2({
+    //     dropdownPosition: 'below'
       
-    });
-
-    $('#edit_users_id').select2({
-        dropdownPosition: 'below'
-      
-    });
+    // });
 
     //form type on change
     $('.form_type_id').change(function(){
@@ -585,7 +597,7 @@
                         contentType: false,
                         success:function(data) {
                             
-                            if (data.success) {
+                            if (data.success == 0) {
 
                                 // submit the form
                                 e.currentTarget.submit();
@@ -642,7 +654,7 @@
                 contentType: false,
                 success:function(data) {
 
-                    if (data.success) {
+                    if (data.success == 0) {
 
                         // submit the form
                         e.currentTarget.submit();
