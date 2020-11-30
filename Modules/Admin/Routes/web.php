@@ -147,7 +147,6 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
     Route::post('others/update', 'OtherController@update')->name('others.update');
 
-
     // routes for form managment
 
     //end
@@ -236,7 +235,9 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::get('trail_logs', 'TrailLogController@index')->name('trail_logs.list');
     //Transmissions Routes
     Route::resource('transmissions', 'TransmissionController');
+
     Route::get('transmissions-study-edit/{id}', 'TransmissionController@transmissionsStudyEdit')->name('transmissions-study-edit');
+    
     Route::get('study-transmissions', 'TransmissionController@studyTransmissions')->name('transmissions.study-transmissions');
 });
 

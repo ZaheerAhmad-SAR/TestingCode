@@ -161,31 +161,55 @@
 
             <!-- //////////////////////////////// Transmission //////////////////////// -->
 
+            @if(hasPermission(auth()->user(),'systemtools.index'))
+            <li class="dropdown">
+                <ul>
+                    <li class="dropdown"><a href="#"><i class="icon-grid"></i>Transmissions</a>
+                        <ul class="sub-menu">
+
+                            @if(!empty(session('current_study')))
+                            <li class="@if(is_active('transmissions.study-transmissions')) {{ ' active' }} @endif">
+                                <a href="{!! route('transmissions.study-transmissions') !!}">
+                                    Study Transmissions
+                                </a>
+                            </li>
+                            @endif
+
+                           
+                            <li class="@if(is_active('transmissions.index')) {{ ' active' }} @endif">
+                                <a href="{!! route('transmissions.index') !!}">
+                                    System Transmissions
+                                </a>
+                            </li>
+                            
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+
+            @elseif(hasPermission(auth()->user(),'qualitycontrol.store') && hasPermission(auth()->user(),'qualitycontrol.edit'))
+
             @if(!empty(session('current_study')))
             <li class="dropdown">
                 <ul>
                     <li class="dropdown"><a href="#"><i class="icon-grid"></i>Transmissions</a>
                         <ul class="sub-menu">
 
-
+                  
                             <li class="@if(is_active('transmissions.study-transmissions')) {{ ' active' }} @endif">
                                 <a href="{!! route('transmissions.study-transmissions') !!}">
                                     Study Transmissions
                                 </a>
                             </li>
 
-                            @if(hasPermission(auth()->user(),'systemtools.index'))
-                                <li class="@if(is_active('transmissions.index')) {{ ' active' }} @endif">
-                                    <a href="{!! route('transmissions.index') !!}">
-                                        System Transmissions
-                                    </a>
-                                </li>
-                            @endif
                         </ul>
                     </li>
                 </ul>
             </li>
             @endif
+
+            @endif
+            
             <!-- //////////////////////////////// Transmissions ////////////////// -->
             @if(hasPermission(auth()->user(),'subjects.index'))
             <li class=""><!-- <a href="#"><i class="fas fa-laptop-medical mr-1"></i>Subject Management</a> -->
@@ -215,7 +239,8 @@
                 @endif
             @endif
 
-            @if(hasPermission(auth()->user(),'qualitycontrol.index'))
+            @if(hasPermission(auth()->user(),'qualitycontrol.store') && hasPermission(auth()->user(),'qualitycontrol.edit'))
+
                 @if(session('current_study'))
                     <li class="dropdown">
                         <ul>
@@ -238,7 +263,9 @@
                     </li>
                 @endif
             @endif
-            @if(hasPermission(auth()->user(),'grading.index'))
+
+            @if(hasPermission(auth()->user(),'grading.store') && hasPermission(auth()->user(),'grading.edit'))
+
                 @if(session('current_study'))
                     <li class="dropdown">
                         <ul>
@@ -268,6 +295,7 @@
                     </li>
                 @endif
             @endif
+            
             @if(hasPermission(auth()->user(),'adjudication.index'))
                 @if(session('current_study'))
                     <li class="dropdown">

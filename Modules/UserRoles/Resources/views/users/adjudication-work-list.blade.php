@@ -166,7 +166,7 @@
 
                            
                             <div class="form-group col-md-4">
-                                <label for="dt">Assign Date</label>
+                                <label for="dt">Due Date</label>
                                 <input type="text" name="assign_date" id="assign_date" class="form-control assign_date filter-form-data" value="{{ request()->assign_date }}">
                             </div>
 
@@ -200,7 +200,7 @@
                                     <tr class="table-secondary">
                                         <th>Subject ID</th>
                                         <th>Phase</th>
-                                        <th>Assign Date</th>
+                                        <th>Due Date</th>
                                         <th>Site Name</th>
                                     
                                         @php
@@ -255,11 +255,11 @@
                                             @if($subject->form_status != null)
                                                 @foreach($subject->form_status as $status)
                                                    
-                                                    <td style="text-align: center;">
+                                                    <td style="text-align: center; {{$status['color']}}">
 
                                                         <a href="{{route('subjectFormLoader.showSubjectForm',['study_id' => $subject->study_id, 'subject_id' => $subject->subj_id])}}" class="text-primary font-weight-bold">
                                                             
-                                                            <?php echo $status; ?>
+                                                            <?php echo $status['status']; ?>
                                                         
                                                         </a>
                                                          

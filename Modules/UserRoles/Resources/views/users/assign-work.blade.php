@@ -8,13 +8,31 @@
 
     <style type="text/css">
 
+        .select2-container--default
+        .select2-selection--single {
+            background-color: #fff;
+            border: transparent !important;
+            border-radius: 4px;
+        }
+        .select2-selection__rendered {
+            font-weight: 400;
+            line-height: 1.5;
+            color: #495057 !important;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+
         .select2-container--default.select2-container--focus .select2-selection--multiple {
-            border: solid #485e9029 1px !important;
+            border: solid black 1px;
             outline: 0;
         }
+
         .select2-container--default .select2-selection--multiple {
             background-color: white;
-            border: 1px solid #485e9029 !important;
+            border: 1px solid #485e9029 !important; 
             border-radius: 4px;
             cursor: text;
         }
@@ -104,7 +122,62 @@
 
                     </div>
 
-                    <hr>
+                     <hr>
+                    <!-- Other Filters ends -->
+
+                    <form action="{{route('assign-work')}}" method="get" class="form-1 filter-form">
+                        <div class="form-row" style="padding: 10px;">
+
+                            <input type="hidden" name="form_1" value="1" class="form-control">
+
+                            <div class="form-group col-md-3">
+                                <label for="inputState">Subject</label>
+                                <select id="subject" name="subject" class="form-control filter-form-data">
+                                    <option value="">All Subject</option>
+                                    @foreach($getFilterSubjects as $filterSubject)
+                                    <option @if(request()->subject == $filterSubject->id) selected @endif value="{{ $filterSubject->id }}">{{ $filterSubject->subject_id }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label for="inputState">Phase</label>
+                                <select id="phase" name="phase" class="form-control filter-form-data">
+                                    <option value="">All Phase</option>
+                                    @foreach($getFilterPhases as $filterPhase)
+                                    <option  @if(request()->phase == $filterPhase->id) selected @endif value="{{ $filterPhase->id }}">{{ $filterPhase->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            
+                            <div class="form-group col-md-2">
+                            
+                                <label for="inputState">Site</label>
+                                <select id="site" name="site" class="form-control filter-form-data">
+                                    <option value="">All Site</option>
+                                     @foreach($getFilterSites as $filterSite)
+                                     <option @if(request()->site == $filterSite->id) selected @endif value="{{ $filterSite->id }}">{{ $filterSite->site_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                           
+                            <div class="form-group col-md-3">
+                                <label for="dt">Visit Date</label>
+                                <input type="text" name="visit_date" id="visit_date" class="form-control visit_date filter-form-data" value="{{ request()->visit_date }}">
+                            </div>
+
+                            <div class="form-group col-md-2 mt-4">        
+                               <!--  <button type="button" class="btn btn-primary reset-filter-1">Reset</button> -->
+                                <button type="submit" class="btn btn-primary btn-lng">Filter Records</button>
+                                <button type="button" class="btn btn-primary reset-filter">Reset</button>
+
+                            </div>
+
+                        </div>
+                        <!-- row ends -->
+                    </form>
 
                     <div class="card-body">
 
@@ -181,7 +254,7 @@
                                                 @foreach($subject->form_status as $status)
 
                                                    
-                                                    <td style="text-align: center; border-bottom: 2px solid {{$status['color']}} !important;">
+                                                    <td style="text-align: center; {{$status['color']}}">
 
                                                         <a href="{{route('subjectFormLoader.showSubjectForm',['study_id' => $subject->study_id, 'subject_id' => $subject->id])}}" class="text-primary font-weight-bold">
                                                             
@@ -248,7 +321,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="users">Assign Date</label>
+                                        <label class="users">Due Date</label>
                                         <input type="date" class="form-control" id="assign_date" name="assign_date" value="" required>
                                     </div>
 
@@ -321,7 +394,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="users">Assign Date</label>
+                    <label class="users">Due Date</label>
                     <input type="date" class="form-control" id="edit_assign_date" name="edit_assign_date" value="" required>
                 </div>
 
@@ -355,16 +428,44 @@
 
 <script type="text/javascript">
 
+    // initialize date range picker
+    $('input[name="visit_date"]').daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            cancelLabel: 'Clear'
+        }
+    });
+
+    $('input[name="visit_date"]').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+    });
+
+    $('input[name="visit_date"]').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
+
+    $('select[name="subject"]').select2();
+    $('select[name="phase"]').select2();
+    $('select[name="site"]').select2();
+
     // initialize select2
     $('.users_id').select2({
         dropdownPosition: 'below'
       
     });
 
-    $('#edit_users_id').select2({
-        dropdownPosition: 'below'
-      
+    $('.reset-filter').click(function(){
+        // reset values
+        $('.filter-form').trigger("reset");
+        $('.filter-form-data').val("").trigger("change")
+        // submit the filter form
+        window.location.reload();
     });
+
+    // $('#edit_users_id').select2({
+    //     dropdownPosition: 'below'
+      
+    // });
 
     //form type on change
     $('.form_type_id').change(function(){
@@ -496,7 +597,7 @@
                         contentType: false,
                         success:function(data) {
                             
-                            if (data.success) {
+                            if (data.success == 0) {
 
                                 // submit the form
                                 e.currentTarget.submit();
@@ -553,7 +654,7 @@
                 contentType: false,
                 success:function(data) {
 
-                    if (data.success) {
+                    if (data.success == 0) {
 
                         // submit the form
                         e.currentTarget.submit();
