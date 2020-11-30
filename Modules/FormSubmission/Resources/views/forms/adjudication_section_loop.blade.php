@@ -1,6 +1,21 @@
 @if (canAdjudication(['index']))
+@php
+$showStep = 'none';
+if(
+    (request('stepId', '-') == $step->step_id) &&
+    (request('isAdjudication', 'no') == 'yes')
+    ){
+    $showStep = 'block';
+}
+if(
+    ($activeStep && request('stepId', '-') == '-') &&
+    (request('isAdjudication', 'no') == 'yes')
+){
+    $showStep = 'block';
+}
+@endphp
 <div class="all_step_sections step_adjudication_sections_{{ $stepIdStr }}"
-        style="display: {{ $firstStep ? 'block' : 'none' }};">
+        style="display: {{ $showStep }};">
         @php
         $form_filled_by_user_id = ($form_filled_by_user_id ?? '');
         $subjectId = ($subjectId ?? '');
@@ -49,16 +64,24 @@
                                     @php
                                     $stepIdStr = buildSafeStr($step->step_id, '');
                                     $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
-                                    $firstSection = true;
+                                    $activeSection = true;
                                     @endphp
                                     @foreach ($sections as $section)
                                         @php
                                         $sectionClsStr = buildSafeStr($section->id, 'section_cls_');
+
+                                        $showSection = '';
+                                        if(request('sectionId', '-') == $section->id){
+                                            $showSection = 'active';
+                                        }
+                                        if($activeSection && request('sectionId', '-') == '-'){
+                                            $showSection = 'active';
+                                        }
                                         @endphp
                                         <li class="nav-item mr-auto mb-4">
                                             <a class="nav-link p-0
-                                    {{ $firstSection ? 'active' : '' }}
-                                    {{ $firstSection ? 'first_navlink_' . $stepIdStr : '' }}" data-toggle="tab"
+                                            {{ $showSection }}
+                                            {{ $activeSection ? 'first_navlink_' . $stepIdStr : '' }}" data-toggle="tab"
                                                 href="#adjudication_tab_{{ $section->id }}">
                                                 <div class="d-flex">
                                                     <div class="mr-3 mb-0 h1">{{ $section->sort_number }}</div>
@@ -72,13 +95,13 @@
                                             </a>
                                         </li>
                                         @php
-                                        $firstSection = false;
+                                        $activeSection = false;
                                         @endphp
                                     @endforeach
                                 </ul>
                                 <div class="tab-content">
                                     @php
-                                    $firstSection = true;
+                                    $activeSection = true;
                                     $last = count($sections)-1;
                                     @endphp
                                     @foreach ($sections as $key => $section)
@@ -105,14 +128,22 @@
                                         'last' => $last,
                                         'getAdjudicationFormStatusArray'=>$getAdjudicationFormStatusArray
                                         ];
+
+                                        $showSection = '';
+                                        if(request('sectionId', '-') == $section->id){
+                                            $showSection = 'active show';
+                                        }
+                                        if($activeSection && request('sectionId', '-') == '-'){
+                                            $showSection = 'active show';
+                                        }
                                         @endphp
-                                        <div class="tab-pane fade {{ $firstSection ? 'first_tab_' . $stepIdStr : '' }} {{ $firstSection ? 'active show' : '' }}"
+                                        <div class="tab-pane fade {{ $activeSection ? 'first_tab_' . $stepIdStr : '' }} {{ $showSection }}"
                                             id="adjudication_tab_{{ $section->id }}">
                                             @include('formsubmission::forms.adjudication_section_questions', $sharedData )
                                             @include('formsubmission::forms.adjudication_section_next_previous', $sharedData)
                                         </div>
                                         @php
-                                        $firstSection = false;
+                                        $activeSection = false;
                                         @endphp
                                     @endforeach
                                 </div>

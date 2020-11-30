@@ -16,7 +16,22 @@ if ($step->form_type_id == 2 && canGrading(['index'])){
 }
 @endphp
 @if($showForm == true)
-<div class="all_step_sections step_sections_{{ $stepIdStr }}" style="display: {{ $firstStep ? 'block' : 'none' }};">
+@php
+$showStep = 'none';
+if(
+    (request('stepId', '-') == $step->step_id) &&
+    (request('isAdjudication', 'no') == 'no')
+    ){
+    $showStep = 'block';
+}
+if(
+    ($activeStep && request('stepId', '-') == '-') &&
+    (request('isAdjudication', 'no') == 'no')
+){
+    $showStep = 'block';
+}
+@endphp
+<div class="all_step_sections step_sections_{{ $stepIdStr }}" style="display: {{ $showStep }};">
 @php
 $getFormStatusArray = [
     'subject_id' => $subjectId,
@@ -71,21 +86,28 @@ if(null !== $formStatusObj){
                                 $subjectId = ($subjectId ?? '');
                                 $studyId = ($studyId ?? '');
                                 $studyClsStr = ($studyClsStr ?? '');
-
-                                $firstSection = true;
+                                $activeSection = true;
                                 @endphp
                                 @foreach ($sections as $section)
                                 @php
                                 $sectionClsStr = buildSafeStr($section->id, 'section_cls_');
+                                $showSection = '';
+                                if(request('sectionId', '-') == $section->id){
+                                    $showSection = 'active';
+                                }
+                                if($activeSection && request('sectionId', '-') == '-'){
+                                    $showSection = 'active';
+                                }
                                 @endphp
                                     <li class="nav-item mr-auto mb-4">
                                         <a class="nav-link p-0
                                     {{ $studyClsStr }}
                                     {{ $stepClsStr }}
                                     {{ $sectionClsStr }}
-                                    {{ $firstSection ? 'active' : '' }}
-                                    {{ $firstSection ? 'first_navlink_' . $stepIdStr : '' }}" data-toggle="tab"
-                                            href="#tab{{ $section->id }}">
+                                    {{ $showSection }}
+                                    {{ $activeSection ? 'first_navlink_' . $stepIdStr : '' }}" data-toggle="tab"
+                                            href="#tab{{ $section->id }}"
+                                            onclick="updateCurrentSectionId('{{ $section->step->phase->id }}', '{{ $section->step->step_id }}', '{{ $section->id }}');">
                                             <div class="d-flex">
                                                 <div class="mr-3 mb-0 h1">{{ $section->sort_number }}</div>
                                                 <div class="media-body align-self-center">
@@ -103,13 +125,13 @@ if(null !== $formStatusObj){
                                         </a>
                                     </li>
                                     @php
-                                    $firstSection = false;
+                                    $activeSection = false;
                                     @endphp
                                 @endforeach
                             </ul>
                             <div class="tab-content">
                                 @php
-                                $firstSection = true;
+                                $activeSection = true;
                                 $last = count($sections)-1;
                                 @endphp
                                 @foreach ($sections as $key => $section)
@@ -136,14 +158,22 @@ if(null !== $formStatusObj){
                                     'last' => $last,
                                     'getFormStatusArray'=>$getFormStatusArray
                                     ];
+
+                                    $showSection = '';
+                                    if(request('sectionId', '-') == $section->id){
+                                        $showSection = 'active show';
+                                    }
+                                    if($activeSection && request('sectionId', '-') == '-'){
+                                        $showSection = 'active show';
+                                    }
                                     @endphp
-                                    <div class="tab-pane tab-pane_{{ $stepIdStr }} fade {{ $firstSection ? 'first_tab_' . $stepIdStr : '' }} {{ $firstSection ? 'active show' : '' }}"
+                                    <div class="tab-pane tab-pane_{{ $stepIdStr }} fade {{ $activeSection ? 'first_tab_' . $stepIdStr : '' }} {{ $showSection }}"
                                         id="tab{{ $section->id }}">
                                         @include('formsubmission::forms.section_questions', $sharedData )
                                         @include('formsubmission::forms.section_next_previous', $sharedData)
                                     </div>
                                     @php
-                                    $firstSection = false;
+                                    $activeSection = false;
                                     @endphp
                                 @endforeach
                             </div>

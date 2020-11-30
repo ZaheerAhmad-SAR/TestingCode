@@ -310,12 +310,22 @@
             }
 
             function showAllQuestions(){
-                var route = "{{ route('subjectFormLoader.showSubjectForm', ['study_id'=>$studyId, 'subject_id'=>$subjectId, 'showAllQuestions'=>'yes' ])}}";
-                location.href = route;
+                var phaseId = $('#current_phase_id').val();
+                var stepId = $('#current_step_id').val();
+                var sectionId = $('#current_section_id').val();
+                var isAdjudication = $('#isAdjudication').val();
+
+                var url = "{{ url('/') }}/subjectFormLoader/{{ $studyId }}/{{ $subjectId }}/" + phaseId + '/' + stepId + '/' + sectionId + '/' + isAdjudication + '/yes';
+                location.href = url;
             }
             function showOnlyAdjudicationRequiredQuestions(){
-                var route = "{{ route('subjectFormLoader.showSubjectForm', ['study_id'=>$studyId, 'subject_id'=>$subjectId, 'showAllQuestions'=>'no' ])}}";
-                location.href = route;
+                var phaseId = $('#current_phase_id').val();
+                var stepId = $('#current_step_id').val();
+                var sectionId = $('#current_section_id').val();
+                var isAdjudication = $('#isAdjudication').val();
+
+                var url = "{{ url('/') }}/subjectFormLoader/{{ $studyId }}/{{ $subjectId }}/" + phaseId + '/' + stepId + '/' + sectionId + '/' + isAdjudication + '/no';
+                location.href = url;
             }
 
             function canSubmitAdjudicationForm(stepIdStr){

@@ -41,14 +41,14 @@
                                 <tbody>
                                 @foreach($subjects as $subject)
                                     <tr>
-                                        <td><a href="{{route('subjectFormLoader.showSubjectForm',['study_id'=>$currentStudy->id,'subject_id'=>$subject->id, 'showAllQuestions'=>'no'])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
+                                        <td><a href="{{route('subjectFormLoader.showSubjectForm',['study_id'=>$currentStudy->id,'subject_id'=>$subject->id])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
                                         </td>
                                         <td>{{$subject->enrollment_date}}</td>
                                         <td>{{!empty($subject->site_name)?$subject->site_name:'SiteName'}}</td>
                                         <td>{{!empty($subject->disease_cohort->name)?$subject->disease_cohort->name:'Not Defined'}}</td>
                                         <td>{{!empty($subject->study_eye)?$subject->study_eye:'Not Defined'}}</td>
                                         <td>
-                                    
+
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">

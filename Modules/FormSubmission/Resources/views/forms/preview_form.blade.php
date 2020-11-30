@@ -23,18 +23,18 @@
         <div class="row">
             <div class="col-12 col-sm-12">
                 @php
-                $firstStep = true;
+                $activeStep = true;
                 @endphp
                 @php
                 $sections = $step->sections;
                 if(count($sections)){
                 @endphp
-                <div class="tab-pane fade {{ $firstStep ? 'active show' : '' }}" id="tab{{ $step->step_id }}">
+                <div class="tab-pane fade {{ $activeStep ? 'active show' : '' }}" id="tab{{ $step->step_id }}">
                     @include('formsubmission::forms.section_loop', ['step'=>$step, 'sections'=> $sections])
                 </div>
                 @php
                 }
-                $firstStep = false;
+                $activeStep = false;
                 @endphp
             </div>
         </div>

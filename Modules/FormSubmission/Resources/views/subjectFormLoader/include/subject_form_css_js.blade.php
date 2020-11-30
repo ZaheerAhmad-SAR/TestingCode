@@ -647,6 +647,46 @@
                 }
             }
 
+            function updateCurrentPhaseId(phaseId){
+                $('#current_phase_id').val(phaseId);
+                $('#current_step_id').val('-');
+                $('#current_section_id').val('-');
+                changeUrl();
+            }
+
+            function updateCurrentStepId(phaseId, stepId, isAdjudication){
+                $('#current_phase_id').val(phaseId);
+                $('#current_step_id').val(stepId);
+                $('#current_section_id').val('-');
+                $('#isAdjudication').val(isAdjudication);
+                changeUrl();
+            }
+
+            function updateCurrentSectionId(phaseId, stepId, sectionId){
+                $('#current_phase_id').val(phaseId);
+                $('#current_step_id').val(stepId);
+                $('#current_section_id').val(sectionId);
+                changeUrl();
+            }
+
+            function changeUrl() {
+
+                var phaseId = $('#current_phase_id').val();
+                var stepId = $('#current_step_id').val();
+                var sectionId = $('#current_section_id').val();
+                var showAllQuestions = $('#showAllQuestions').val();
+                var isAdjudication = $('#isAdjudication').val();
+
+                var title = 'new title';
+                var url = "{{ url('/') }}/subjectFormLoader/{{ $studyId }}/{{ $subjectId }}/" + phaseId + '/' + stepId + '/' + sectionId + '/' + isAdjudication + '/' + showAllQuestions;
+                if (typeof (history.pushState) != "undefined") {
+                    var obj = { Title: title, Url: url };
+                    history.pushState(obj, obj.Title, obj.Url);
+                } else {
+                    alert("Browser does not support HTML5.");
+                }
+            }
+
             function reloadPage(waitSeconds) {
                 startWait();
                 var seconds = waitSeconds * 1000;
