@@ -2,6 +2,11 @@
 @section('content')
     <input type="hidden" name="already_global_disabled" id="already_global_disabled" value="100000" />
     <input type="hidden" name="previous_alert_message" id="previous_alert_message" value="" />
+<input type="hidden" name="current_phase_id" id="current_phase_id" value="{{ request('phaseId', '-') }}" />
+    <input type="hidden" name="current_step_id" id="current_step_id" value="{{ request('stepId', '-') }}" />
+    <input type="hidden" name="current_section_id" id="current_section_id" value="{{ request('sectionId', '-') }}" />
+    <input type="hidden" name="showAllQuestions" id="showAllQuestions" value="{{ request('showAllQuestions', 'no') }}" />
+    <input type="hidden" name="isAdjudication" id="isAdjudication" value="{{ request('isAdjudication', 'no') }}" />
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
         <div class="row ">
@@ -125,7 +130,7 @@
                         <div class="card border h-100 contact-menu-section">
                             <div id="accordion">
                                 @php
-                                $firstPhase = true;
+                                $activePhase = true;
                                 @endphp
                                 @if (count($visitPhases))
                                     @foreach ($visitPhases as $phase)
@@ -133,12 +138,24 @@
                                         $phaseIdStr = buildSafeStr($phase->id, 'phase_cls_');
                                         $subjectPhaseDetail =
                                         \Modules\FormSubmission\Entities\SubjectsPhases::getSubjectPhase($subjectId, $phase->id);
+
+                                        $showPhase = 'false';
+                                        if(request('phaseId', '-') == $phase->id){
+                                            $showPhase = 'true';
+                                        }
+                                        if($activePhase && request('phaseId', '-') == '-'){
+                                            $showPhase = 'true';
+                                        }
                                         @endphp
                                         <div class="card text-white bg-primary m-1">
-                                            <div id="heading{{ $phase->id }}" class="card-header {{ $phaseIdStr }}"
+                                            <div
+                                                id="heading{{ $phase->id }}"
+                                                class="card-header {{ $phaseIdStr }}"
                                                 data-toggle="collapse" data-target="#collapse{{ $phase->id }}"
-                                                aria-expanded="{{ $firstPhase ? 'true' : 'false' }}"
-                                                aria-controls="collapse{{ $phase->id }}">
+                                                aria-expanded="{{ $showPhase }}"
+                                                aria-controls="collapse{{ $phase->id }}"
+                                                onclick="updateCurrentPhaseId('{{ $phase->id }}');"
+                                                >
                                                 {{ $phase->name }}
                                                 {{ $phase->count > 0 ? ' - Repeated: ' . $phase->count : '' }}<br>
                                                 {{ $subjectPhaseDetail->visit_date->format('m-d-Y') }}
@@ -151,12 +168,12 @@
                                                 @endif
                                             </div>
                                             <div id="collapse{{ $phase->id }}"
-                                                class="card-body collapse-body-bg collapse {{ $firstPhase ? 'show' : '' }}"
+                                                class="card-body collapse-body-bg collapse {{ ($activePhase || request('phaseId', '-') == $phase->id) ? 'show' : '' }}"
                                                 aria-labelledby="heading{{ $phase->id }}" data-parent="#accordion" style="">
                                                 <p class="card-text">
                                                     @if (count($phase->phases))
                                                         @php
-                                                        $firstStep = true;
+                                                        $activeStep = true;
                                                         $steps =
                                                         \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($subjectId, $phase->id);
                                                         $previousStepId = '';
@@ -182,19 +199,29 @@
                                                             $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                                                             $adjStepClsStr = buildSafeStr($step->step_id, 'adj_step_cls_');
                                                             $stepIdStr = buildSafeStr($step->step_id, '');
+
+                                                            $badgeCls = 'badge-light';
+                                                            if(request('stepId', '-') == $step->step_id){
+                                                                $badgeCls = 'badge-light';
+                                                            }
+                                                            if($activeStep && request('stepId', '-') == '-'){
+                                                                $badgeCls = 'badge-light';
+                                                            }
+
                                                             $stepData = [
                                                                 'step' => $step,
                                                                 'stepClsStr' => $stepClsStr,
                                                                 'adjStepClsStr' => $adjStepClsStr,
                                                                 'stepIdStr' => $stepIdStr,
+                                                                'activeStep' => $activeStep,
+                                                                'badgeCls' => $badgeCls,
                                                             ];
                                                             @endphp
-
                                                             @include('formsubmission::subjectFormLoader.qc_left_bar_nav', $stepData)
                                                             @include('formsubmission::subjectFormLoader.grader_left_bar_nav', $stepData)
                                                             @include('formsubmission::subjectFormLoader.adjudication_left_bar_nav', $stepData)
                                                             @php
-                                                            $firstStep = false;
+                                                            $activeStep = false;
                                                             $previousStepId = $step->step_id;
                                                             @endphp
                                                         @endforeach
@@ -203,7 +230,7 @@
                                             </div>
                                         </div>
                                         @php
-                                        $firstPhase = false;
+                                        $activePhase = false;
                                         @endphp
                                     @endforeach
                                 @endif
@@ -216,7 +243,7 @@
                                 <div class="contacts list">
                                     @if (count($visitPhases))
                                         @php
-                                        $firstStep = true;
+                                        $activeStep = true;
                                         $stepCounter = 0;
                                         @endphp
                                         @foreach ($visitPhases as $phase)
@@ -261,7 +288,7 @@
                                                 'sections'=> $sections,
                                                 'phaseIdStr'=>$phaseIdStr,
                                                 'form_filled_by_user_id' => $form_filled_by_user_id,
-                                                'firstStep' => $firstStep,
+                                                'activeStep' => $activeStep,
                                                 'stepClsStr' => $stepClsStr,
                                                 'stepIdStr' => $stepIdStr,
                                                 'skipLogicStepIdStr' => $skipLogicStepIdStr,
@@ -272,7 +299,7 @@
                                                 @include('formsubmission::forms.adjudication_form', $dataArray)
                                                 @php
                                                 }
-                                                $firstStep = false;
+                                                $activeStep = false;
                                                 $previousStepId = $step->step_id;
                                                 @endphp
                                             @endforeach

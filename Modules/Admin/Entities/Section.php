@@ -5,6 +5,7 @@ namespace Modules\Admin\Entities;
 use Modules\Admin\Scopes\SectionOrderByScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Section extends Model
 {
     use SoftDeletes;
@@ -18,7 +19,7 @@ class Section extends Model
         'deleted_at'
     ];
 
-    protected $keyType ='string';
+    protected $keyType = 'string';
 
     protected static function boot()
     {
@@ -27,13 +28,12 @@ class Section extends Model
     }
 
     public function step()
-	{
-    	return $this->belongsTo(PhaseSteps::class,'phase_steps_id','id');
+    {
+        return $this->belongsTo(PhaseSteps::class, 'phase_steps_id', 'step_id');
     }
 
     public function questions()
     {
         return $this->hasMany(Question::class, 'section_id', 'id');
     }
-
 }

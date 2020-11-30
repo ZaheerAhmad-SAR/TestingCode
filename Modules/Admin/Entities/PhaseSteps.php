@@ -102,7 +102,7 @@ class PhaseSteps extends Model
     }
     public function phase()
     {
-        return $this->belongsTo(StudyStructure::class, 'phase_id', 'step_id');
+        return $this->belongsTo(StudyStructure::class, 'phase_id', 'id');
     }
 
     public function modility()
