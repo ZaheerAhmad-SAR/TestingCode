@@ -55,9 +55,13 @@ function search_auth($arr, $auth)
 function isThisUserSuperAdmin($user)
 {
     $roles = $user->user_roles;
+    echo '<pre>';
+    print_r($roles);
+    echo '</pre>';
     $isSuperAdmin = false;
     foreach ($roles as $userRole) {
         $role = Role::find($userRole->role_id);
+        echo 'role_type :' . $role->role_type . '<br>';
         if ($role->role_type == 'super_admin') {
             $isSuperAdmin = true;
             break;
