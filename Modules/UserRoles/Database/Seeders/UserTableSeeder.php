@@ -22,25 +22,23 @@ class UserTableSeeder extends Seeder
         Model::unguard();
 
         $user   =   User::get();
-        $role = Role::first();
+        $role = Role::where('name', 'like', 'Super Admin')->first();
         $role_id = $role->id;
 
-        if (count($user) <= 0){
+        if (count($user) <= 0) {
             $user =  User::create([
                 'id'    => Str::uuid(),
-                 'role_id'  => $role_id,
-                 'name' =>  'admin',
-                'email' =>  'admin@admin.com',
+                'role_id'  => $role_id,
+                'name' =>  'Super Admin',
+                'email' =>  'superadmin@admin.com',
                 'user_type' => 'super_user',
                 'password'  =>  Hash::make('Cyb#rG@tE@1234'),
                 'created_by' => ''
             ]);
 
-            //  dd($user);
-
             $user   =   User::first();
             $user_id = $user->id;
-            $role = Role::first();
+            $role = Role::where('name', 'like', 'basic')->first();
             $role_id = $role->id;
 
             UserRole::create([
@@ -49,8 +47,7 @@ class UserTableSeeder extends Seeder
                 'user_id'   =>  $user_id,
                 'user_type' => '2'
             ]);
-        }
-        else{
+        } else {
             dd('useer exists');
         }
     }
