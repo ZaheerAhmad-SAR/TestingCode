@@ -47,7 +47,7 @@
                                         <td class="edit_study_eye" style="display: none;">{{$subject->study_eye}}</td>
                                         <td class="edit_disease_cohort" style="display: none;">{{$subject->disease_cohort_id}}</td>
                                         <td class="eye" style="display: none;">{{$subject}}</td>
-                                        <td class="subject_id"><a href="{{route('subjectFormLoader.showSubjectForm',['study_id'=>$currentStudy->id,'subject_id'=>$subject->id, 'showAllQuestions'=>'no'])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
+                                        <td class="subject_id"><a href="{{route('subjectFormLoader.showSubjectForm',['study_id'=>$currentStudy->id,'subject_id'=>$subject->id])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
                                         </td>
                                         <td class="enrol_date">{{$subject->enrollment_date}}</td>
                                         <td class="site_name">{{!empty($subject->site_name)?$subject->site_name:'SiteName'}}</td>
@@ -351,7 +351,7 @@
                         },
                         url: $(this).data("href"),
                         success: function (data) {
-                            
+
                             if(data.success == null){ // if true (1)
 
                                 $("#subject_id_" + subject_id).slideUp(500).delay(5000);

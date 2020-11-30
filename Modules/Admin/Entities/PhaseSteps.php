@@ -13,15 +13,17 @@ use Modules\FormSubmission\Entities\FormVersion;
 use Modules\FormSubmission\Entities\SubjectsPhases;
 use Modules\FormSubmission\Traits\JSQuestionDataValidation;
 use Modules\FormSubmission\Traits\JSStepCalculatedFields;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PhaseSteps extends Model
 {
+    use SoftDeletes;
     use JSQuestionDataValidation;
     use JSStepCalculatedFields;
 
     protected $fillable = [
         'step_id', 'phase_id', 'step_position', 'form_type', 'form_type_id', 'modility_id', 'step_name',
-        'step_description', 'graders_number', 'q_c', 'eligibility', 'parent_id'
+        'step_description', 'graders_number', 'q_c', 'eligibility', 'parent_id', 'deleted_at'
     ];
     // protected $key = 'string';
     protected $table = 'phase_steps';
@@ -100,7 +102,7 @@ class PhaseSteps extends Model
     }
     public function phase()
     {
-        return $this->belongsTo(StudyStructure::class, 'phase_id', 'step_id');
+        return $this->belongsTo(StudyStructure::class, 'phase_id', 'id');
     }
 
     public function modility()
