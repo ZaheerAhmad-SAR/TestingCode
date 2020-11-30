@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2.min.css") }}"/>
 <link rel="stylesheet" href="{{ asset("dist/vendors/select2/css/select2-bootstrap.min.css") }}"/>
 
-<select name="users" id="users" class="multieSelectDropDown usersList" multiple data-allow-clear="1">
+<select name="users" id="users" class="multieSelectDropDown form-control usersList">
     @foreach($records as $record)
     <option value="{{$record->PI_email}}">{{$record->PI_FirstName. '  '.$record->PI_LastName}}  (PI)</option>
      <option value="{{$record->photographer_email}}">{{$record->photographer_full_name}} (P)</option>

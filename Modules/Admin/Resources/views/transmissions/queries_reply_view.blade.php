@@ -13,18 +13,23 @@
             <div class="col-12">
                 <form  action="" method="POST" class="row row-eq-height lockscreen  mt-5 mb-5">
                     @csrf
-                    <div class="lock-image col-12 col-sm-5" style="min-height: 400px;">
-                        <img src="{{asset('public/dist/images/Logo.gif')}}" alt="" style="width: 230px;margin-top: 120px;">
-                    </div>
                     <div class="login-form col-12 col-sm-7">
                         <input type="hidden" id="userAgent" value="">
                         <div class="form-group mb-3" style="margin-top: 60px;">
-                            <label for="emailaddress">Query</label>
+                            <label for="emailaddress"> <strong>Query</strong></label>
                             <p>{{$record['email_body']}}</p>
                         </div>
 
                         <div class="form-group mb-3">
-                            <label for="emailaddress">Your Response</label>
+                            <label for="emailaddress"><strong>Name</strong></label>
+                            <input type="text" name="yourName" id="yourName" class="form-control">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="emailaddress"><strong>Email</strong></label>
+                            <input type="email" name="yourEmail" id="yourEmail" class="form-control">
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="emailaddress"><strong>Your Response</strong></label>
                             <textarea name="message" id="message" cols="2" rows="1" class="form-control" style="height: 50px;"></textarea>
                         </div>
                         <div class="garbageData">
@@ -32,14 +37,12 @@
                             <input type="hidden" name="parent_notification_id" value="{{$record['id']}}">
                             <input type="hidden" name="cc_email" value="{{$record['cc_email']}}">
                         </div>
-
                         <div class="form-group mb-3">
                             <div class="custom-control custom-checkbox">
                                 <button class="btn btn-primary" type="submit" style="float: right;"> Send </button>
                             </div>
                         </div>
-
-                        <div class="mt-2" style="padding-top: 90px;">OIRRC CAPTURE System</div>
+                        <div class="mt-2" style="padding-top: 90px; text-align: center;">OIRRC CAPTURE System</div>
                     </div>
                 </form>
             </div>

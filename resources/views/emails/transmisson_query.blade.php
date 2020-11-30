@@ -20,11 +20,6 @@
                     <p> <strong>Study ID:</strong> {{$data['StudyI_ID']}}</p>
                     <p><strong>Subject ID:</strong> {{$data['Subject_ID']}}</p>
                     <p><strong>Remarks</strong> <br> {{$data['remarks']}}</p>
-                    <p><strong>Receiver</strong> <br> {{$data['receiverEmail']}}</p>
-
-{{--                    <p > {{$data['replyToken']}}</p>--}}
-
-{{--                    href="{{ url('transmissions/verifiedToken',$data['replyToken']) }}"--}}
                     <p style="cursor: pointer;"><a class="openQueryPopUp" data-value="{{$data['replyToken']}}" href="{{ url('transmissions/verifiedToken',$data['replyToken']) }}">Click Here to Reply :</a></p>
                 </div>
             </div>

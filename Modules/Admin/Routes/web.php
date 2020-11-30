@@ -25,6 +25,7 @@ Route::post('transmissions/getAllPIBySiteId', 'TransmissionController@getAllPIBy
 
 Route::post('transmissions/queryTransmissionMail', 'TransmissionController@queryTransmissionMail')->name('transmissions.queryTransmissionMail');
 Route::post('transmissions/getQueryByTransmissionId', 'TransmissionController@getQueryByTransmissionId')->name('transmissions.getQueryByTransmissionId');
+Route::post('transmissions/getSiteByTransmissionId', 'TransmissionController@getSiteByTransmissionId')->name('transmissions.getSiteByTransmissionId');
 Route::get('transmissions/verifiedToken/{id}/', 'TransmissionController@verifiedToken')->name('transmissions.verifiedToken');
 
 Route::post('transmissions-status', 'TransmissionController@transmissionStatus')->name('transmissions-status');
