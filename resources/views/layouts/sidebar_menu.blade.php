@@ -14,6 +14,11 @@
                     {{--@endif--}}
                 </ul>
                 <ul class="@if(is_active('studies.index')) {{ 'active' }} @endif">
+                    @php
+                    echo 'studies.index :' . hasPermission(auth()->user(),'studies.index').'<br>';
+                    echo 'current_study :' . session('current_study').'<br>';
+                    echo 'isThisUserSuperAdmin :' . isThisUserSuperAdmin(auth()->user()).'<br><br><br>';
+                    @endphp
                     @if(
                         (hasPermission(auth()->user(),'studies.index') &&
                         empty(session('current_study'))) ||
@@ -160,14 +165,14 @@
             @endif
 
             <!-- //////////////////////////////// Transmission //////////////////////// -->
-            
+
             @if(!empty(session('current_study')))
             <li class="dropdown">
                 <ul>
                     <li class="dropdown"><a href="#"><i class="icon-grid"></i>Transmissions</a>
                         <ul class="sub-menu">
 
-                            
+
                             <li class="@if(is_active('transmissions.study-transmissions')) {{ ' active' }} @endif">
                                 <a href="{!! route('transmissions.study-transmissions') !!}">
                                     Study Transmissions
