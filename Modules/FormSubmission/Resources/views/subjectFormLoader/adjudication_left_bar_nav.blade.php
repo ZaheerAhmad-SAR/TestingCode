@@ -17,8 +17,8 @@ $getAdjudicationFormStatusArray = [
 @endphp
 @if (canAdjudication(['index']))
     @if ($step->form_type_id == 2 && \Modules\FormSubmission\Entities\FormStatus::isAllGradersGradedThatForm($step, $getGradingFormStatusArray))
-        <a class="badge p-1 badge-light m-1" href="javascript:void(0);"
-            onclick="showSections('step_adjudication_sections_{{ $stepIdStr }}');">
+        <a class="badge p-1 {{ $badgeCls }} m-1" href="javascript:void(0);"
+            onclick="showSections('step_adjudication_sections_{{ $stepIdStr }}'); updateCurrentStepId('{{ $step->phase->id }}', '{{ $step->step_id }}', 'yes');">
             Adjudication {{ $step->modility->modility_name }}
             @php
             echo

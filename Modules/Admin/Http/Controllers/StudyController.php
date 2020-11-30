@@ -93,7 +93,17 @@ class StudyController extends Controller
         if (hasPermission(\auth()->user(), 'qualitycontrol.index')) {
             $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistQC());
         }
-        $studies = Study::whereIn('id', array_unique($studiesIDs))->get();
+
+        if (
+            (hasPermission(\auth()->user(), 'systemtools.index')) ||
+            (hasPermission(\auth()->user(), 'studytools.index'))
+        ) {
+            $studies = Study::whereIn('id', array_unique($studiesIDs))->get();
+        } else {
+            $studies = Study::where('study_status', 'Live')->whereIn('id', array_unique($studiesIDs))->get();
+        }
+
+
         return view('admin::studies.index', compact('sites', 'users', 'studies'));
     }
 
