@@ -21,8 +21,8 @@ class RoleTableSeeder extends Seeder
         Model::unguard();
 
         $role  =   'Super Admin';
-        $check_role = Role::where('name', $role)->first();
-        if (!$check_role) {
+        $check_role = Role::where('name', 'like', $role)->first();
+        if (null === $check_role) {
             $check_role = Role::create([
                 'id' => Str::uuid(),
                 'name' => $role,

@@ -14,11 +14,6 @@
                     {{--@endif--}}
                 </ul>
                 <ul class="@if(is_active('studies.index')) {{ 'active' }} @endif">
-                    @php
-                    echo 'studies.index :' . hasPermission(auth()->user(),'studies.index').'<br>';
-                    echo 'current_study :' . session('current_study').'<br>';
-                    echo 'isThisUserSuperAdmin :' . isThisUserSuperAdmin(auth()->user()).'<br><br><br>';
-                    @endphp
                     @if(
                         (hasPermission(auth()->user(),'studies.index') &&
                         empty(session('current_study'))) ||
