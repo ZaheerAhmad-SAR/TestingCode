@@ -38,11 +38,11 @@ class Permission extends Model
             ->distinct('id')->pluck('id')->toArray();
         $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
         $roleIdsArray = Role::where('role_type', '!=', 'super_admin')->distinct()->pluck('id')->toArray();
-        $studyAdminRoleId = array_intersect($roleIdsArrayFromRolePermission, $roleIdsArray);
-        if (!empty($studyAdminRoleId)) {
-            return $studyAdminRoleId;
+        $roleId = array_intersect($roleIdsArrayFromRolePermission, $roleIdsArray);
+        if (!empty($roleId)) {
+            return $roleId;
         }
-        return true;
+        return null;
     }
 
     public static function getStudyQCRole()
@@ -52,9 +52,12 @@ class Permission extends Model
         $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
         $roleIdsArray = Role::where('role_type', '!=', 'super_admin')->distinct()->pluck('id')->toArray();
 
-        $studyAdminRoleId = array_intersect($roleIdsArrayFromRolePermission, $roleIdsArray);
+        $roleId = array_intersect($roleIdsArrayFromRolePermission, $roleIdsArray);
 
-        return $studyAdminRoleId;
+        if (!empty($roleId)) {
+            return $roleId;
+        }
+        return null;
     }
 
     public static function getStudyGraderRole()
@@ -64,9 +67,12 @@ class Permission extends Model
         $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
         $roleIdsArray = Role::where('role_type', '!=', 'super_admin')->distinct()->pluck('id')->toArray();
 
-        $studyAdminRoleId = array_intersect($roleIdsArrayFromRolePermission, $roleIdsArray);
+        $roleId = array_intersect($roleIdsArrayFromRolePermission, $roleIdsArray);
 
-        return $studyAdminRoleId;
+        if (!empty($roleId)) {
+            return $roleId;
+        }
+        return null;
     }
 
     public static function getStudyAdjudicationRole()
@@ -76,8 +82,11 @@ class Permission extends Model
         $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
         $roleIdsArray = Role::where('role_type', '!=', 'super_admin')->distinct()->pluck('id')->toArray();
 
-        $studyAdminRoleId = array_intersect($roleIdsArrayFromRolePermission, $roleIdsArray);
+        $roleId = array_intersect($roleIdsArrayFromRolePermission, $roleIdsArray);
 
-        return $studyAdminRoleId;
+        if (!empty($roleId)) {
+            return $roleId;
+        }
+        return null;
     }
 }

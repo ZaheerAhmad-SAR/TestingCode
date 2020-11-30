@@ -64,19 +64,14 @@ class StudyController extends Controller
         $studyAdminRoleId = '';
         $user = \auth()->user()->id;
         if (hasPermission(\auth()->user(), 'systemtools.index')) {
-            echo 'systemtools.index' . '<br>';
             $studyAdminRoleId = Permission::getStudyAdminRole();
             if (isThisUserSuperAdmin(\auth()->user())) {
-                echo 'super admin' . '<br>';
                 $studiesIDs = array_merge($studiesIDs, Study::all()->pluck('id')->toArray());
             } else {
-                echo 'not super admin' . '<br>';
                 $userRole = UserRole::where('user_id', \auth()->user()->id)->first();
                 if (!empty($studyAdminRoleId) && $userRole->role_id == $studyAdminRoleId[1]) {
-                    echo 'study admin' . '<br>';
                     $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistAdmin());
                 } else {
-                    echo 'not study admin' . '<br>';
                     $studiesIDs = array_merge($studiesIDs, Study::all()->pluck('id')->toArray());
                 }
             }
@@ -84,28 +79,20 @@ class StudyController extends Controller
         }
 
         if (hasPermission(\auth()->user(), 'studytools.index')) {
-            echo 'only study admin' . '<br>';
             $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistAdmin());
         }
 
         if (hasPermission(\auth()->user(), 'grading.index')) {
-            echo 'only grading' . '<br>';
             $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistGrader());
         }
 
         if (hasPermission(\auth()->user(), 'adjudication.index')) {
-            echo 'only adjudication' . '<br>';
             $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistAdjudicator());
         }
 
         if (hasPermission(\auth()->user(), 'qualitycontrol.index')) {
-            echo 'only QC' . '<br>';
             $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistQC());
         }
-        echo '<pre>';
-        print_r($studiesIDs);
-        echo '</pre>';
-        //exit;
         $studies = Study::whereIn('id', array_unique($studiesIDs))->get();
         return view('admin::studies.index', compact('sites', 'users', 'studies'));
     }

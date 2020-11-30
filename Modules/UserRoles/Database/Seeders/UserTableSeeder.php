@@ -36,9 +36,9 @@ class UserTableSeeder extends Seeder
                 'created_by' => ''
             ]);
 
-            $user   =   User::first();
+            $user   =   User::where('name', 'like', 'Super Admin')->first();
             $user_id = $user->id;
-            $role = Role::where('name', 'like', 'basic')->first();
+            $role = Role::where('name', 'like', 'Super Admin')->first();
             $role_id = $role->id;
 
             UserRole::create([
@@ -48,7 +48,7 @@ class UserTableSeeder extends Seeder
                 'user_type' => '2'
             ]);
         } else {
-            dd('useer exists');
+            dd('user exists');
         }
     }
 }
