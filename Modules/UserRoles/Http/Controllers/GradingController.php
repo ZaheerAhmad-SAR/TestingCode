@@ -334,7 +334,10 @@ class GradingController extends Controller
 
     public function assignWork(Request $request) {
 
-        $subjects = Subject::query();
+            // modility/form type array
+            $modalitySteps = [];
+
+            $subjects = Subject::query();
             $subjects = $subjects->select('subjects.*', 'study_structures.id as phase_id', 'study_structures.name as phase_name', 'study_structures.position', 'subjects_phases.visit_date', 'subjects_phases.assign_work', 'sites.site_name')
             ->rightJoin('subjects_phases', 'subjects_phases.subject_id', '=', 'subjects.id')
             ->leftJoin('study_structures', 'study_structures.id', '=', 'subjects_phases.phase_id')
@@ -378,7 +381,6 @@ class GradingController extends Controller
             ->orderBy('modilities.modility_name')
             ->get();
 
-            $modalitySteps = [];
 
             // get form types for modality
             foreach($getModilities as $key => $modility) {
@@ -414,7 +416,7 @@ class GradingController extends Controller
 
                             if ($getAssignWork != null) {
 
-                                $formStatus[$key.'_'.$type['form_type']]['color'] = '#28a745';
+                                $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(76, 175, 80, 0.5)';
 
                                 // check if form is not initialize and assign date is passed
                                 $getFormStatus = FormStatus::where('subject_id', $subject->id)
@@ -424,16 +426,28 @@ class GradingController extends Controller
                                                         ->first();
 
                                 if($getFormStatus == null) {
+
                                     // check date
-                                    if (Carbon::now()->gt(Carbon::parse($getAssignWork->assign_date))) {
-                                        $formStatus[$key.'_'.$type['form_type']]['color'] = 'red';
+                                    $diffInDays = Carbon::now()->diffInDays(Carbon::parse($getAssignWork->assign_date), false);
+
+
+                                    // check week difference (past date)
+                                    if ($diffInDays < 0) {
+
+                                        $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(255, 0, 0, 0.5)';
+                                        
+                                    }
+
+                                    // check due date (in week)
+                                    if ($diffInDays >= 0 && $diffInDays <= 7) {
+                                        $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(241, 245, 15, 0.5)';
                                     }
 
                                 } // form status null check ends
 
                             } else {
 
-                                $formStatus[$key.'_'.$type['form_type']]['color'] = '#dee2e6';
+                                $formStatus[$key.'_'.$type['form_type']]['color'] = '';
 
                             } // assignwork check ends
 
@@ -472,6 +486,18 @@ class GradingController extends Controller
                 }// subject loop ends
             } // modality step null check
 
+
+        // get subjects
+        $getFilterSubjects = Subject::select('id', 'subject_id')
+                                      ->get();
+        //get phases
+        $getFilterPhases = StudyStructure::select('id', 'name')
+                                           ->orderBy('position')
+                                           ->get();
+        // get sites
+        $getFilterSites = Site::select('id', 'site_name')
+                                ->get();
+
         // get modilities
         $getModilities = Modility::select('id', 'modility_name')
                                         ->get();
@@ -479,7 +505,7 @@ class GradingController extends Controller
         $getFormType = FormType::select('id', 'form_type')
                                 ->get();
 
-        return view('userroles::users.assign-work', compact('subjects', 'modalitySteps', 'getModilities', 'getFormType'));
+        return view('userroles::users.assign-work', compact('subjects', 'modalitySteps', 'getFilterSubjects', 'getFilterPhases', 'getFilterSites', 'getModilities', 'getFormType'));
     }
 
     public function checkAssignWork(Request $request) {
@@ -572,7 +598,7 @@ class GradingController extends Controller
                         'modility_name' => $getModilityName->modility_name,
                         'form_type' => $getFormName->form_type,
                         'users' => $userName != null ? implode(',', $userName) : '',
-                        'assign_date' => date('d-M-Y', strtotime($input['assign_date']))
+                        'due_date' => date('d-M-Y', strtotime($input['assign_date']))
                     );
 
                     // Log the event
@@ -1197,8 +1223,46 @@ class GradingController extends Controller
                         // form type loop
                         foreach($formType as $type) {
 
-                            // comparing assign modality with the array modality
-                            if($subject->modility_id == $type['modility_id']) {
+                        // comparing assign modality with the array modality
+                        $checkModality = AssignWork::where('subject_id', $subject->subj_id)
+                                                    ->where('phase_id', $subject->phase_id)
+                                                    ->where('modility_id', $type['modility_id'])
+                                                    ->where('form_type_id', $type['form_type_id'])
+                                                    ->where('user_id', \Auth::user()->id)
+                                                    ->first();
+
+                        if($checkModality != null) {
+                        // comparing assign modality with the array modality
+                        //if($subject->modility_id == $type['modility_id']) {
+
+
+                            $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(76, 175, 80, 0.5)';
+
+                            // check if form is not initialize and assign date is passed
+                            $getFormStatus = FormStatus::where('subject_id', $subject->subj_id)
+                                                    ->where('study_structures_id', $subject->phase_id)
+                                                    ->where('modility_id', $type['modility_id'])
+                                                    ->where('form_type_id', $type['form_type_id'])
+                                                    ->first();
+
+                            if($getFormStatus == null) {
+
+                                $diffInDays = Carbon::now()->diffInDays(Carbon::parse($checkModality->assign_date), false);
+
+                                
+                                // check week difference (past date)
+                                if ($diffInDays < 0) {
+
+                                    $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(255, 0, 0, 0.5)';
+                                    
+                                }
+
+                                // check due date (in week)
+                                if ($diffInDays >= 0 && $diffInDays <= 7) {
+                                    $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(241, 245, 15, 0.5)';
+                                }
+
+                            } // form status null check ends
 
                                 // check step
                                 $step = PhaseSteps::where('phase_id', $subject->phase_id)
@@ -1217,20 +1281,21 @@ class GradingController extends Controller
 
                                     if ($step->form_type_id == 2) {
 
-                                        $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $step->graders_number, false);
+                                        $formStatus[$key.'_'.$type['form_type']]['status'] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $step->graders_number, false);
                                     } else {
 
-                                        $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
+                                        $formStatus[$key.'_'.$type['form_type']]['status'] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
                                     }
 
                                 } else {
 
-                                    $formStatus[$key.'_'.$type['form_type']] = '<img src="' . url('images/no_status.png') . '"/>';
+                                    $formStatus[$key.'_'.$type['form_type']]['status'] = '<img src="' . url('images/no_status.png') . '"/>';
                                 } // step check ends
 
                             } else {
 
-                                $formStatus[$key.'_'.$type['form_type']] = '';
+                                $formStatus[$key.'_'.$type['form_type']]['status'] = '';
+                                $formStatus[$key.'_'.$type['form_type']]['color'] = '';
 
                             } // modility check ends
 

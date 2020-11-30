@@ -496,6 +496,41 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         }
 
         //////////////////////////// Device Ends /////////////////////////////////////////
+    } else if ($eventSection == 'Phase') {
+        // get event data
+        $eventData = StudyStructure::find($eventId);
+        // set message for audit
+        $auditMessage = Auth::user()->name . ' added phase ' . $eventData->name . '.';
+        // set audit url
+        $auditUrl = url('study');
+        // store data in event array
+        $newData = array(
+            'study_id'    => session('current_study'),
+            'position'  =>  $eventData->position,
+            'name' =>  $eventData->name,
+            'duration' =>  $eventData->duration,
+            'is_repeatable' =>  $eventData->is_repeatable,
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
+        );
+        // if it is update case
+        if ($eventType == 'Update') {
+
+            $oldData = array(
+                'study_id'    => session('current_study'),
+                'position'  =>  $previousData->position,
+                'name' =>  $previousData->name,
+                'duration' =>  $previousData->duration,
+                'is_repeatable' =>  $previousData->is_repeatable,
+                'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+                'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+            );
+
+            // set message for audit
+            $auditMessage = Auth::user()->name . ' updated device ' . $previousData->name . '.';
+        }
+
+        //////////////////////////// phase Ends /////////////////////////////////////////
     } else if ($eventSection == 'Study Site') {
         // get event data
         $eventData = StudySite::select('sites.site_name')

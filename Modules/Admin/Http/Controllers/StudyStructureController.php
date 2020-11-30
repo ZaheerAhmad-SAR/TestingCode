@@ -156,6 +156,12 @@ class StudyStructureController extends Controller
             'duration' =>  $request->duration,
             'is_repeatable' =>  $request->is_repeatable,
         ]);
+
+        $oldPhase = [];
+
+        // log event details
+        $logEventDetails = eventDetails($id, 'Phase', 'Add', $request->ip(), $oldPhase);
+
         $data = [
             'success' => true,
             'message' => 'Recode added successfully'
@@ -238,12 +244,18 @@ class StudyStructureController extends Controller
      */
     public function update(Request $request, $id = '')
     {
+        // old phase
+        $oldPhase = StudyStructure::where('id', $request->id)->first();
+
         $phase = StudyStructure::find($request->id);
         $phase->position  =  $request->position;
         $phase->name  =  $request->name;
         $phase->duration  =  $request->duration;
         $phase->is_repeatable  =  $request->is_repeatable;
         $phase->save();
+
+        // log event details
+        $logEventDetails = eventDetails($phase->id, 'Phase', 'Update', $request->ip(), $oldPhase);
 
         $this->updatePhaseToReplicatedVisits($phase);
     }
