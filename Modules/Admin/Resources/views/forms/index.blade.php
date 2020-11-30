@@ -736,8 +736,8 @@
         // $('select[name="phases"]').select2();
 
         $(document).ready(function() {
-            var tId;
-            var step_change;
+            var tId ='';
+            var step_change ='';
             tId = setTimeout(function() {
                 $(".success-alert").slideUp('slow');
             }, 4000);
@@ -756,11 +756,11 @@
                 $('#phases').trigger('change');
             @endif
 
-            //if //(session('filter_step') !='')
-                //step_change = setTimeout(function() {
-                   // $('#steps').trigger('change');
-                //}, 2000);  
-            //endif
+            @if(session('filter_step') !='')
+                step_change = setTimeout(function() {
+                   $('#steps').trigger('change');
+                }, 1000);  
+            @endif
         })
         $('.addOptions').on('click', function() {
             $('.appendDataOptions').append(
@@ -904,7 +904,7 @@
             var sec_class = $('select.decisionSections');
             var sec_class2 = $('select.decisionSections2');
             var basic_section = $('select.basic_section');
-            //make_session(step_id,phase_id);
+            make_session(step_id,phase_id);
             display_sections(step_id);
             section_against_step(step_id, basic_section);
         });
@@ -1287,22 +1287,22 @@
         // for new route end
 
         /**************************************************************/
-        // function make_session(step_id,phase_id)
-        // {
-        //     $.ajax({
-        //         url: "{{ route('forms.makeFilterSession') }}",
-        //         type: 'post',
-        //         data: {
-        //             "_token": "{{ csrf_token() }}",
-        //             "_method": 'POST',
-        //             'step_id': step_id,
-        //             'phase_id': phase_id,
-        //         },
-        //         dataType: 'json',
-        //         success: function(res) {
-        //         }
-        //     });
-        // }
+        function make_session(step_id,phase_id)
+        {
+            $.ajax({
+                url: "{{ route('forms.makeFilterSession') }}",
+                type: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'step_id': step_id,
+                    'phase_id': phase_id,
+                },
+                dataType: 'json',
+                success: function(res) {
+                }
+            });
+        }
     </script>
 
 @endsection

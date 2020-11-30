@@ -245,7 +245,30 @@ trait QuestionReplication
         $this->deleteQuestionValidationToReplicatedVisits($questionId);
         QuestionValidation::where('question_id', $questionId)->delete();
     }
-
+    Private function deleteTreeAgainstPhase($phaseid){
+        $phase = StudyStructure::find($phaseid);
+        $steps = PhaseSteps::where('phase_id', $phaseid)->get();
+        foreach($steps as $step){
+            $this->deleteStepAndSectionsAgainstStep($step->step_id);
+        }
+        $phase->delete();
+    }
+    Private function deleteStepAndSectionsAgainstStep($stepid){
+        $step = PhaseSteps::find($stepid);
+        $sections = Section::where('phase_steps_id',$stepid)->get();
+        foreach($sections as $section){
+            $this->deleteSectionAndQuestionsAgainstSection($section->id);
+        }
+        $step->delete();
+    }
+    Private function deleteSectionAndQuestionsAgainstSection($sectionid){
+        $section = Section::find($sectionid);
+        $questions = Question::where('section_id',$sectionid)->get();
+        foreach($questions as $question){
+            $this->deleteQuestionAndItsRelatedValues($question->id);
+        }
+        $section->delete();
+    }
     private function deleteQuestionAndItsRelatedValues($questionId)
     {
         $question = Question::find($questionId);
