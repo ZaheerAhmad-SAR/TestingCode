@@ -53,11 +53,6 @@ class StudyController extends Controller
      */
     public function index()
     {
-        $countStudies = Study::count();
-        if ($countStudies == 0) {
-            return redirect()->route('dashboard.index');
-        }
-
         session(['current_study' => '']);
         $systemRoleIds = Role::where('role_type', 'system_role')->pluck('id')->toArray();
         $userIdsWithSystemRole = UserRole::whereIn('role_id', $systemRoleIds)->pluck('user_id')->toArray();
@@ -98,7 +93,6 @@ class StudyController extends Controller
         if (hasPermission(\auth()->user(), 'qualitycontrol.index')) {
             $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistQC());
         }
-        //dd($studiesIDs);
         $studies = Study::whereIn('id', array_unique($studiesIDs))->get();
         return view('admin::studies.index', compact('sites', 'users', 'studies'));
     }

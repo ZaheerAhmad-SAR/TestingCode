@@ -37,7 +37,7 @@
                        <div class="card-body">
                             <div class="col-md-6" style="display: inline-block;">
                                 <div class="">
-                                    <input type="text" class="form-control" name="number_value[]" placeholder="Enter Number values " value="">
+                                    <input type="number" class="form-control" name="number_value[]" placeholder="Enter Number values " value="">
                                 </div>
                             </div>
                             <div class="col-md-5" style="display: inline-block;">    

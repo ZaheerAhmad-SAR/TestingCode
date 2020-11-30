@@ -56,7 +56,7 @@
                             <div class="{!! ($errors->has('password')) ?'form-group col-md-6 has-error':'form-group col-md-6' !!}">
 
                                 <label>Password</label>
-                                <input type="password" class="form-control" name="password" value="{{old('password')}}">
+                                <input type="password" autocomplete="off" class="form-control" name="password" value="{{old('password')}}">
                                 @error('password')
                                 <span class="text-danger small">
                                     {{ $message }}
@@ -66,7 +66,7 @@
                             <div class="{!! ($errors->has('password_confirmation')) ?'form-group col-md-6 has-error':'form-group col-md-6' !!}">
 
                                 <label>Confirm Password</label>
-                                <input type="password" class="form-control" name="password_confirmation" value="{{old('password_confirmation')}}">
+                                <input type="password" autocomplete="off" class="form-control" name="password_confirmation" value="{{old('password_confirmation')}}">
                                 @error('password_confirmation')
                                 <span class="text-danger small">
                                     {{ $message }}

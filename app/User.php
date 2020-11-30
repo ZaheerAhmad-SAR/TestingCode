@@ -89,6 +89,19 @@ class User extends Authenticatable
         return implode(', ', $roleNamesArray);
     }
 
+    public static function getUserRolesInStudyString($user)
+    {
+        $userRoleIds = RoleStudyUser::where('study_id', 'like', session('current_study'))
+            ->where('user_id', $user->id)->pluck('role_id')->toArray();
+
+        $roleNamesArray = [];
+        foreach ($userRoleIds as $roleId) {
+            $role = Role::find($roleId);
+            $roleNamesArray[] = ucfirst($role->name);
+        }
+        return implode(', ', $roleNamesArray);
+    }
+
     public function role()
     {
         return $this->hasOne(Role::class, 'id', 'role_id');

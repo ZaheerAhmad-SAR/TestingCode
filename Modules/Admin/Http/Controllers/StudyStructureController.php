@@ -131,20 +131,7 @@ class StudyStructureController extends Controller
         }
         return Response($html);
     }
-    /**
-     * Show the form for creating a new resource.
-     * @return Response
-     */
-    public function create()
-    {
-        return view('admin::create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     * @param Request $request
-     * @return Response
-     */
+    // Store phases here
     public function store(Request $request)
     {
         $id    = Str::uuid();
@@ -169,7 +156,7 @@ class StudyStructureController extends Controller
 
         return response()->json($data);
     }
-
+    // store steps here
     public function store_steps(Request $request)
     {
         $id    = Str::uuid();
@@ -194,6 +181,7 @@ class StudyStructureController extends Controller
             'message' => 'Recode added successfully'
         ];
     }
+    // Update steps here
     public function update_steps(Request $request, $id = '')
     {
         $step = PhaseSteps::find($request->step_id);
@@ -216,32 +204,7 @@ class StudyStructureController extends Controller
             'message' => 'Recode updated successfully'
         ];
     }
-    /**
-     * Show the specified resource.
-     * @param int $id
-     * @return Response
-     */
-    public function show($id)
-    {
-        return view('admin::show');
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     * @param int $id
-     * @return Response
-     */
-    public function edit($id)
-    {
-        return view('admin::edit');
-    }
-
-    /**
-     * Update the specified resource in storage.
-     * @param Request $request
-     * @param int $id
-     * @return Response
-     */
+    // Update Phase here
     public function update(Request $request, $id = '')
     {
         // old phase
@@ -259,15 +222,11 @@ class StudyStructureController extends Controller
 
         $this->updatePhaseToReplicatedVisits($phase);
     }
-
-    /**
-     * Remove the specified resource from storage.
-     * @param int $id
-     * @return Response
-     */
+    // Delete Phase here
     public function destroy($id)
     {
         $phase = StudyStructure::find($id);
+        $this->deleteTreeAgainstPhase($id);
         $this->deletePhase($phase);
     }
     public function destroySteps($step_id)

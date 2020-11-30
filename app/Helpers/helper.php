@@ -66,6 +66,20 @@ function isThisUserSuperAdmin($user)
     return $isSuperAdmin;
 }
 
+function isThisUserHasSystemRole($user)
+{
+    $roles = $user->user_roles;
+    $isSuperAdmin = false;
+    foreach ($roles as $userRole) {
+        $role = Role::find($userRole->role_id);
+        if (($role->role_type == 'super_admin') || $role->role_type == 'system_role') {
+            $isSuperAdmin = true;
+            break;
+        }
+    }
+    return $isSuperAdmin;
+}
+
 function hasPermission($user, $routeName)
 {
     if (isThisUserSuperAdmin($user)) {

@@ -108,8 +108,8 @@
                                     <label for="password">Password</label>
                                 </div>
                                 <div class="{!! ($errors->has('password')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                    {{--<input type="password" class="form-control" required="required" id="password" name="password" value="{{old('password')}}">--}}
-                                    <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password"  autocomplete="new-password">
+                                    {{--<input type="password" autocomplete="off" class="form-control" required="required" id="password" name="password" value="{{old('password')}}">--}}
+                                    <input type="password" autocomplete="off" class="form-control @error('password') is-invalid @enderror" id="password" name="password"  autocomplete="new-password">
                                     @error('password')
                                     <span class="text-danger small"> {{ $message }} </span>
                                     @enderror
@@ -118,8 +118,8 @@
                                     <label for="C-Password">Confirm Password</label>
                                 </div>
                                 <div class="{!! ($errors->has('password_confirmation')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                   {{-- <input type="password" class="form-control" required="required" id="password_confirmation" name="password_confirmation" value="{{old('password_confirmation')}}">--}}
-                                    <input type="password" class="form-control" id="password-confirm" name="password_confirmation"  autocomplete="new-password">
+                                   {{-- <input type="password" autocomplete="off" class="form-control" required="required" id="password_confirmation" name="password_confirmation" value="{{old('password_confirmation')}}">--}}
+                                    <input type="password" autocomplete="off" class="form-control" id="password-confirm" name="password_confirmation"  autocomplete="new-password">
                                     @error('password_confirmation')
                                     <span class="text-danger small">{{ $message }} </span>
                                     @enderror

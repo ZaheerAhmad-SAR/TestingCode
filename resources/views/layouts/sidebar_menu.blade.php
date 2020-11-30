@@ -160,14 +160,14 @@
             @endif
 
             <!-- //////////////////////////////// Transmission //////////////////////// -->
-            
+
             @if(!empty(session('current_study')))
             <li class="dropdown">
                 <ul>
                     <li class="dropdown"><a href="#"><i class="icon-grid"></i>Transmissions</a>
                         <ul class="sub-menu">
 
-                            
+
                             <li class="@if(is_active('transmissions.study-transmissions')) {{ ' active' }} @endif">
                                 <a href="{!! route('transmissions.study-transmissions') !!}">
                                     Study Transmissions

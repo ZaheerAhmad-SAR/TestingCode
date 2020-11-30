@@ -4,16 +4,18 @@ namespace Modules\Admin\Entities;
 
 use Modules\Admin\Scopes\SectionOrderByScope;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\SoftDeletes;
 class Section extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'id',
         'phase_steps_id',
         'name',
         'description',
         'sort_number',
-        'parent_id'
+        'parent_id',
+        'deleted_at'
     ];
 
     protected $keyType ='string';
