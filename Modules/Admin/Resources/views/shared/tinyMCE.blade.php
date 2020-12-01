@@ -2,7 +2,7 @@
 <script src="{{ asset('tinymce/js/tinymce/tinymce.min.js') }}"></script>
 <script>
 tinymce.init({
-    selector: '#text_info_add,#text_info_add_calc,#text_info_add_cert',
+    selector: '#text_info_add,#text_info_add_calc,#text_info_add_cert,#text_info_de',
     height: 250,
     forced_root_block: '',
     relative_urls : false,

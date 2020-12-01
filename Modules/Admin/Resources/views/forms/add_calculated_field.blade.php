@@ -122,6 +122,7 @@
                 var step_id = $('#steps').val();
                 $('#question_type_calc').val(id);
                 $("#text_info_add_calc").val('');
+                tinymce.get('text_info_add_calc').setContent('');
                 $('#calculate_Modal').modal('show');
                 load_questions_in_dropdowns(step_id);
             } else {
@@ -179,7 +180,7 @@
                 $('#make_decision').val(make_decision);
                 $('#make_decision').trigger('change');
                 $('#calculate_with_costum_val').val(calculate_with_costum_val);
-                $("#text_info_add_calc").val(text_info);
+                tinymce.get('text_info_add_calc').setContent(text_info);
                 if (is_required == 'yes') {
                     $('#is_required_yes_calc').prop('checked', true);
                 } else {

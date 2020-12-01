@@ -985,7 +985,7 @@
                 formFields_id = row.find('input.formFields_id').val()
                 section_id = row.find('input.section_id').val()
                 text_info = row.find('input.text_info').val();
-                $("#text_info_de").val(text_info);
+                tinymce.get('text_info_de').setContent(text_info);
                 $('#question_sort_de').val(question_sort);
                 $('#questionId_hide_des').val(ques_id);
                 $('#form_field_id_des').val(formFields_id);
