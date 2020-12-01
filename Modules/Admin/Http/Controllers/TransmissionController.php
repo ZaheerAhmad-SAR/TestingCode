@@ -818,6 +818,39 @@ class TransmissionController extends Controller
 
     }
 
+    public function queryResponseSave( Request $request)
+    {
+        $yourName               = $request->post('yourName');
+        $yourEmail              = $request->post('yourEmail');
+        $yourMessage            = $request->post('yourMessage');
+        $subject                = $request->post('subject');
+        $notifications_token    = $request->post('notifications_token');
+        $parent_notification_id = $request->post('parent_notification_id');
+        $filePath               = '';
+
+        if (!empty($request->file('attachment'))) {
+            $image = $request->file('attachment');
+            $name = Str::slug($request->input('name')).'_'.time();
+            $folder = '/query_attachments/';
+            $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
+            $this->uploadOne($image, $folder, 'public', $name);
+        }
+        $id    = Str::uuid();
+
+        QueryNotification::create([
+            'id'=>$id,
+            'notifications_status'=> 'read',
+            'email_body'=>$yourMessage,
+            'email_attachment'=>$filePath,
+            'parent_notification_id'=> $parent_notification_id,
+            'notification_remarked_id'=>$yourEmail,
+            'person_name'=>$yourName,
+            'subject'=>$subject,
+            'notifications_token'=>$notifications_token
+        ]);
+        return response()->json(['Status'=>'Send','message'=>'Query has been send']);
+    }
+
     public function getAllPIBySiteId(Request $request)
     {
         $transmissionNumber = $request->transmissionNumber;
@@ -836,6 +869,15 @@ class TransmissionController extends Controller
         }
     }
 
+    public function showResponseById(Request $request)
+    {
+        $id      = $request->id;
+        $query   = QueryNotification::where('id',$id)->orderBy('created_at','asc')->first();
+        $answers = QueryNotification::where('parent_notification_id',$id)->orderBy('created_at','asc')->get();
+
+        echo  view('admin::transmissions.response_view',compact('answers','query'));
+    }
+
     public function getSiteByTransmissionId(Request $request)
     {
             $transmission_Id = $request->transmission_Id;
@@ -849,8 +891,17 @@ class TransmissionController extends Controller
     {
 
         $record = QueryNotification::where('notifications_token',$id)->where('notifications_status','open')->first();
-        //dd($record);
-        echo  view('admin::transmissions.queries_reply_view',compact('record'));
+        //$status = QueryNotification::where('notifications_token',$id)->where('id','like','parent_notification_id')->where('notifications_status', '!=','open')->first();
+        if ($record == null)
+        {
+            echo  view('admin::transmissions.null_reply_view');
+        }
+        else
+        {
+            echo  view('admin::transmissions.queries_reply_view',compact('record'));
+        }
+
+
     }
 }
 
