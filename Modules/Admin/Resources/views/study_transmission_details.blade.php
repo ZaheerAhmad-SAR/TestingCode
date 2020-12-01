@@ -208,7 +208,7 @@
                                                     @if(null !== $studyHaveTransimision)
                                                         <div class="transmissionQuery">
                                                     <span class="ml-3" style="cursor: pointer;">
-                                                        <i class="fas fa-question-circle showAlltransmissionQuery" data-id="{{$studyHaveTransimision->id}}"  style="margin-top: 3px;"></i></span>
+                                                        <i class="fas fa-question-circle showAlltransmissionQuery" data-id="{{$studyHaveTransimision->transmission_number}}"  style="margin-top: 3px;"></i></span>
                                                         </div>
                                                     @endif
 
@@ -382,6 +382,18 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" tabindex="-1" role="dialog" id="responseView" aria-labelledby="exampleModalQueries" aria-hidden="true">
+        <div class="modal-dialog  modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header ">
+                    <p class="modal-title">Response View</p>
+                </div>
+                <div class="modal-body dataResponse">
+                </div>
+            </div>
+        </div>
+    </div>
 
 @endsection
 @section('script')
@@ -405,7 +417,6 @@
 
     $('.showAlltransmissionQuery').click(function () {
         var transmission_Id = $(this).attr('data-id');
-        console.log(transmission_Id);
         $('#transmissonQueryTableView').modal('show');
         loadQueryByTransmissionId(transmission_Id);
     });
@@ -446,10 +457,35 @@
     }
 
 
+    $('body').on('click', '.checkTransmissionResponse', function () {
+        var id     = $(this).attr('data-id');
+        console.log(id);
+        $('#transmissonQueryTableView').modal('hide');
+        $('#responseView').modal('show');
+        showTransmissionResponse(id);
+    });
+
+    function showTransmissionResponse(id) {
+        $.ajax({
+            url:"{{route('transmissions.showResponseById')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'POST',
+                'id'      :id,
+            },
+            success: function(response)
+            {
+                $('.dataResponse').html('');
+                $('.dataResponse').html(response);
+            }
+        });
+    }
+
+
     $(".sitesChange").change(function () {
         var selectedText = $(this).find("option:selected").text();
         var selectedValue = $(this).val();
-        console.log(selectedValue);
         getSitesUsers(selectedValue);
     });
 
@@ -514,7 +550,8 @@
             success: function(response)
             {
                 console.log(response);
-                //$("#queriesTransmissionForm")[0].reset();
+                $("#queriesTransmissionForm")[0].reset();
+                $('#transmissonQueryModal').modal('show');
             }
         });
     });

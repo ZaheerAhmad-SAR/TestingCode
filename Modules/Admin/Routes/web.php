@@ -24,6 +24,8 @@ Route::post('transmissions/getAllPIBySiteId', 'TransmissionController@getAllPIBy
 
 
 Route::post('transmissions/queryTransmissionMail', 'TransmissionController@queryTransmissionMail')->name('transmissions.queryTransmissionMail');
+Route::post('transmissions/queryResponseSave', 'TransmissionController@queryResponseSave')->name('transmissions.queryResponseSave');
+Route::post('transmissions/showResponseById', 'TransmissionController@showResponseById')->name('transmissions.showResponseById');
 Route::post('transmissions/getQueryByTransmissionId', 'TransmissionController@getQueryByTransmissionId')->name('transmissions.getQueryByTransmissionId');
 Route::post('transmissions/getSiteByTransmissionId', 'TransmissionController@getSiteByTransmissionId')->name('transmissions.getSiteByTransmissionId');
 Route::get('transmissions/verifiedToken/{id}/', 'TransmissionController@verifiedToken')->name('transmissions.verifiedToken');
@@ -237,7 +239,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::resource('transmissions', 'TransmissionController');
 
     Route::get('transmissions-study-edit/{id}', 'TransmissionController@transmissionsStudyEdit')->name('transmissions-study-edit');
-    
+
     Route::get('study-transmissions', 'TransmissionController@studyTransmissions')->name('transmissions.study-transmissions');
 });
 

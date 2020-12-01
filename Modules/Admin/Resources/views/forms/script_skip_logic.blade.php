@@ -25,7 +25,11 @@
     </script>
     <script type="text/javascript" id="question_for_activate">
     </script>
-     <script type="text/javascript" id="question_for_deactivate">
+    <script type="text/javascript" id="question_for_deactivate">
+    </script>
+    <script type="text/javascript" id="options_for_activate">
+    </script>
+    <script type="text/javascript" id="options_for_deactivate">
     </script>
     
 <script type="text/javascript">
@@ -151,7 +155,7 @@
         $.ajax({
             url: url,
             type: 'post',
-            dataType: 'html',
+            dataType: 'json',
             data: {
                 "_token": "{{ csrf_token() }}",
                 "_method": 'GET',
@@ -162,7 +166,9 @@
                 "option_value": option_value
             },
             success: function(response){
-                $('.'+append_class+q_id+'_'+index).html(response);
+                $('.'+append_class+q_id+'_'+index).html(response.html_str);
+                $('#options_for_activate').html(response.function_str);
+                eval(document.getElementById("options_for_activate").innerHTML);
             }
         })
     }
@@ -172,7 +178,7 @@
         $.ajax({
             url: url,
             type: 'post',
-            dataType: 'html',
+            dataType: 'json',
             data: {
                 "_token": "{{ csrf_token() }}",
                 "_method": 'GET',
@@ -183,7 +189,9 @@
                 "option_value": option_value
             },
             success: function(response){
-                $('.'+append_class+id+'_'+index).html(response);
+                $('.'+append_class+id+'_'+index).html(response.html_str);
+                $('#options_for_deactivate').html(response.function_str);
+                eval(document.getElementById("options_for_deactivate").innerHTML);
             }
         })
     }

@@ -480,7 +480,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             $auditMessage = Auth::user()->name . ' updated child modality ' . $eventData->modility_name . '.';
         }
 
-        ////////////////////////// Child Modality Ends /////////////////////////////////////////
+    ////////////////////////// Child Modality Ends /////////////////////////////////////
     } else if ($eventSection == 'Device') {
         // get event data
         $eventData = Device::find($eventId);
@@ -608,6 +608,48 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         }
 
         //////////////////////////// step Ends /////////////////////////////////////////
+    } else if ($eventSection == 'Section') {
+        // get event data
+        $eventData = Section::find($eventId);
+        // set message for audit
+        $auditMessage = Auth::user()->name . ' added section ' . $eventData->name . '.';
+        // set audit url
+        $auditUrl = url('study');
+
+        // FIND PHASE NAME
+        $getPhaseName = PhaseSteps::where('step_id', $eventData->phase_steps_id)->first();
+
+        // store data in event array
+        $newData = array(
+            'study_id'    => session('current_study'),
+            'step_name'    => $getPhaseName->step_name,
+            'name'        =>  $eventData->name,
+            'description' =>  $eventData->description,
+            'sort_number' =>  $eventData->sort_number,
+            'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
+            'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
+        );
+        // if it is update case
+        if ($eventType == 'Update') {
+
+            // FIND PHASE NAME
+            $getOldPhaseName = PhaseSteps::where('step_id', $previousData->phase_steps_id)->first();
+
+            $oldData = array(
+                'study_id'    =>  session('current_study'),
+                'step_name'    =>  $getOldPhaseName->step_name,
+                'name'        =>  $previousData->name,
+                'description' =>  $previousData->description,
+                'sort_number' =>  $previousData->sort_number,
+                'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
+                'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
+            );
+
+            // set message for audit
+            $auditMessage = Auth::user()->name . ' updated section ' . $previousData->name . '.';
+        }
+
+        //////////////////////////// Section Ends /////////////////////////////////////////
     } else if ($eventSection == 'Study Site') {
         // get event data
         $eventData = StudySite::select('sites.site_name')

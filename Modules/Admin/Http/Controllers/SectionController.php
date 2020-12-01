@@ -45,6 +45,11 @@ class SectionController extends Controller
             'description' =>  $request->sec_description,
             'sort_number' =>  $request->sort_num
         ]);
+
+        $oldSection = [];
+        // log event details
+        $logEventDetails = eventDetails($id, 'Section', 'Add', $request->ip(), $oldSection);
+
         /************************* */
         $section = Section::find($id);
         $this->addSectionToReplicatedVisits($section, true);
@@ -89,12 +94,17 @@ class SectionController extends Controller
      */
     public function update(Request $request)
     {
-        // dd($request->all());
+        $oldSection = Section::where('id', $request->section_id)->first();
+
         $section = Section::find($request->section_id);
         $section->name  =  $request->post('sec_name');
         $section->description  =  $request->post('sec_description');
         $section->sort_number  =  $request->post('sort_num');
         $section->save();
+
+        // log event details
+        $logEventDetails = eventDetails($section->id, 'Section', 'Update', $request->ip(), $oldSection);
+
         $this->updateSectionToReplicatedVisits($section);
         $data = [
             'success' => true,

@@ -387,8 +387,9 @@ class AdjudicationController extends Controller
                 }
 
                 $subjects = $subjects->groupBy(['assign_work.subject_id', 'assign_work.phase_id'])
-                                     ->orderBy('study_structures.position')
-                                     ->paginate(15);
+                                ->orderBy('subjects.subject_id')
+                                ->orderBy('study_structures.position')
+                                ->paginate(15);
 
             // get modalities
             $getModilities = AssignWork::query();
@@ -450,108 +451,124 @@ class AdjudicationController extends Controller
                         foreach($formType as $type) {
 
                             // comparing assign modality with the array modality
-                            if($subject->modility_id == $type['modility_id']) {
+                            // if($subject->modility_id == $type['modility_id']) {
 
-                                if ($key != 'Adjudication') {
+                            if ($key != 'Adjudication') {
 
-                                    $checkModality = AssignWork::where('subject_id', $subject->subj_id)
+                                    // comparing assign modality with the array modality
+                                $checkModality = AssignWork::where('subject_id', $subject->subj_id)
                                                     ->where('phase_id', $subject->phase_id)
                                                     ->where('modility_id', $type['modility_id'])
                                                     ->where('form_type_id', $type['form_type_id'])
                                                     ->where('user_id', \Auth::user()->id)
                                                     ->first();
 
-                                    $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(76, 175, 80, 0.5)';
+                            if($checkModality != null) {
+                            // comparing assign modality with the array modality
+                            //if($subject->modility_id == $type['modility_id']) {
 
-                                    // check if form is not initialize and assign date is passed
-                                    $getFormStatus = FormStatus::where('subject_id', $subject->subj_id)
-                                                            ->where('study_structures_id', $subject->phase_id)
-                                                            ->where('modility_id', $type['modility_id'])
-                                                            ->where('form_type_id', $type['form_type_id'])
-                                                            ->first();
 
-                                    if($getFormStatus == null) {
+                                $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(76, 175, 80, 0.5)';
 
-                                        $diffInDays = Carbon::now()->diffInDays(Carbon::parse($checkModality->assign_date), false);
-
-                                        
-                                        // check week difference (past date)
-                                        if ($diffInDays < 0) {
-
-                                            $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(255, 0, 0, 0.5)';
-                                            
-                                        }
-
-                                        // check due date (in week)
-                                        if ($diffInDays >= 0 && $diffInDays <= 7) {
-                                            $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(241, 245, 15, 0.5)';
-                                        }
-
-                                    } // form status null check ends
-
-                                    // check step
-                                    $step = PhaseSteps::where('phase_id', $subject->phase_id)
+                                // check if form is not initialize and assign date is passed
+                                $getFormStatus = FormStatus::where('subject_id', $subject->subj_id)
+                                                        ->where('study_structures_id', $subject->phase_id)
                                                         ->where('modility_id', $type['modility_id'])
                                                         ->where('form_type_id', $type['form_type_id'])
                                                         ->first();
+
+                                if($getFormStatus == null) {
+
+                                    $diffInDays = Carbon::now()->diffInDays(Carbon::parse($checkModality->assign_date), false);
+
                                     
-                                    if ($step != null) {
+                                    // check week difference (past date)
+                                    if ($diffInDays < 0) {
 
-                                        $getFormStatusArray = array(
-                                            'subject_id' => $subject->subj_id,
-                                            'study_structures_id' => $subject->phase_id,
-                                            'modility_id'=> $type['modility_id'],
-                                            'form_type_id' => $type['form_type_id']
-                                        );
+                                        $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(255, 0, 0, 0.5)';
+                                        
+                                    }
 
-                                        if ($step->form_type_id == 2) {
-
-                                            $formStatus[$key.'_'.$type['form_type']]['status'] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $step->graders_number, false);
-                                        } else {
-
-                                            $formStatus[$key.'_'.$type['form_type']]['status'] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
-                                        }
-
-                                    } else {
-
-                                        $formStatus[$key.'_'.$type['form_type']]['status'] = '<img src="' . url('images/no_status.png') . '"/>';
-                                    } // step check ends
+                                    // check due date (in week)
+                                    if ($diffInDays >= 0 && $diffInDays <= 7) {
+                                        $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(241, 245, 15, 0.5)';
+                                    }
 
                                 } else {
 
-                                    $formStatus[$key.'_'.$type['form_type']]['color'] = '';
+                                    // if it is graded
+                                    if($getFormStatus->form_status == 'complete') {
 
-
-                                    $step = PhaseSteps::where('phase_id', $subject->phase_id)
-                                                ->where('modility_id', $type['modility_id'])
-                                                ->where('form_type_id', 2)
-                                                ->first();
-
-                                    if ($step != null) {
-
-                                        // for ajudictaion
-                                        $getAdjudicationFormStatusArray = [
-                                            'subject_id' => $subject->subj_id,
-                                            'study_structures_id' => $subject->phase_id,
-                                            'modility_id'=> $type['modility_id'],
-                                        ];
-
-                                        $formStatus[$key.'_'.$type['form_type']]['status'] = \Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, true);
-
-                                    } else {
-
-                                        $formStatus[$key.'_'.$type['form_type']]['status'] = '<img src="' . url('images/no_status.png') . '"/>';
+                                        $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(179, 183, 187, 0.5)';
 
                                     }
+                                    
+                                }// form status null check ends
 
-                                } // ADJUDICATION CHECK ENDS
+                                // check step
+                                $step = PhaseSteps::where('phase_id', $subject->phase_id)
+                                                    ->where('modility_id', $type['modility_id'])
+                                                    ->where('form_type_id', $type['form_type_id'])
+                                                    ->first();
+                                
+                                if ($step != null) {
+
+                                    $getFormStatusArray = array(
+                                        'subject_id' => $subject->subj_id,
+                                        'study_structures_id' => $subject->phase_id,
+                                        'modility_id'=> $type['modility_id'],
+                                        'form_type_id' => $type['form_type_id']
+                                    );
+
+                                    if ($step->form_type_id == 2) {
+
+                                        $formStatus[$key.'_'.$type['form_type']]['status'] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $step->graders_number, false);
+                                    } else {
+
+                                        $formStatus[$key.'_'.$type['form_type']]['status'] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
+                                    }
+
+                                } else {
+
+                                    $formStatus[$key.'_'.$type['form_type']]['status'] = '<img src="' . url('images/no_status.png') . '"/>';
+                                } // step check ends
+
+                                } else {
+
+                                    $formStatus[$key.'_'.$type['form_type']]['status'] = '';
+                                    $formStatus[$key.'_'.$type['form_type']]['color'] = '';
+
+                                } // modility check ends
+
 
                             } else {
 
-                                $formStatus[$key.'_'.$type['form_type']]['status'] = '';
                                 $formStatus[$key.'_'.$type['form_type']]['color'] = '';
 
-                            } // modility check ends
+
+                                $step = PhaseSteps::where('phase_id', $subject->phase_id)
+                                            ->where('modility_id', $type['modility_id'])
+                                            ->where('form_type_id', 2)
+                                            ->first();
+
+                                if ($step != null) {
+
+                                    // for ajudictaion
+                                    $getAdjudicationFormStatusArray = [
+                                        'subject_id' => $subject->subj_id,
+                                        'study_structures_id' => $subject->phase_id,
+                                        'modility_id'=> $type['modility_id'],
+                                    ];
+
+                                    $formStatus[$key.'_'.$type['form_type']]['status'] = \Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, true);
+
+                                } else {
+
+                                    $formStatus[$key.'_'.$type['form_type']]['status'] = '<img src="' . url('images/no_status.png') . '"/>';
+
+                                }
+
+                            } // ADJUDICATION CHECK ENDS
 
                         } // step lopp ends
 
