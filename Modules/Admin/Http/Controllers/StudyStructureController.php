@@ -143,6 +143,12 @@ class StudyStructureController extends Controller
             'duration' =>  $request->duration,
             'is_repeatable' =>  $request->is_repeatable,
         ]);
+
+        $oldPhase = [];
+
+        // log event details
+        $logEventDetails = eventDetails($id, 'Phase', 'Add', $request->ip(), $oldPhase);
+
         $data = [
             'success' => true,
             'message' => 'Recode added successfully'
@@ -166,6 +172,12 @@ class StudyStructureController extends Controller
             'q_c' =>  $request->q_c,
             'eligibility' =>  $request->eligibility
         ]);
+
+        $oldStep = [];
+
+        // log event details
+        $logEventDetails = eventDetails($id, 'Step', 'Add', $request->ip(), $oldStep);
+
         /************************* */
         $step = PhaseSteps::find($id);
         $this->addStepToReplicatedVisits($step, true);
@@ -178,6 +190,9 @@ class StudyStructureController extends Controller
     // Update steps here
     public function update_steps(Request $request, $id = '')
     {
+        $oldStep = PhaseSteps::where('step_id', $request->step_id)->first();
+
+
         $step = PhaseSteps::find($request->step_id);
         $step->phase_id  =  $request->phase_id;
         $step->step_position  =  $request->step_position;
@@ -190,6 +205,9 @@ class StudyStructureController extends Controller
         $step->eligibility  =  $request->eligibility;
         $step->save();
 
+        // log event details
+        $logEventDetails = eventDetails($request->step_id, 'Step', 'Update', $request->ip(), $oldStep);
+
 
         $this->updateStepToReplicatedVisits($step);
 
@@ -201,12 +219,18 @@ class StudyStructureController extends Controller
     // Update Phase here
     public function update(Request $request, $id = '')
     {
+        // old phase
+        $oldPhase = StudyStructure::where('id', $request->id)->first();
+
         $phase = StudyStructure::find($request->id);
         $phase->position  =  $request->position;
         $phase->name  =  $request->name;
         $phase->duration  =  $request->duration;
         $phase->is_repeatable  =  $request->is_repeatable;
         $phase->save();
+
+        // log event details
+        $logEventDetails = eventDetails($phase->id, 'Phase', 'Update', $request->ip(), $oldPhase);
 
         $this->updatePhaseToReplicatedVisits($phase);
     }
