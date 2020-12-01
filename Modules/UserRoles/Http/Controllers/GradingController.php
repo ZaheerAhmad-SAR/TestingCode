@@ -443,6 +443,14 @@ class GradingController extends Controller
                                         $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(241, 245, 15, 0.5)';
                                     }
 
+                                } else {
+
+                                    // if it is graded
+                                    if($getFormStatus->form_status == 'complete') {
+
+                                        $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(179, 183, 187, 0.5)';
+
+                                    }
                                 } // form status null check ends
 
                             } else {
@@ -451,7 +459,7 @@ class GradingController extends Controller
 
                             } // assignwork check ends
 
-                            $step = PhaseSteps::where('phase_id', $subject->phase_id)
+                                $step = PhaseSteps::where('phase_id', $subject->phase_id)
                                                 ->where('modility_id', $type['modility_id'])
                                                 ->where('form_type_id', $type['form_type_id'])
                                                 ->first();
