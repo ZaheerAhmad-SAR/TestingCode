@@ -29,7 +29,7 @@ class TinyMceController extends Controller
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $fileName = ImgUploader::UploadImageTinyMce('tinymce_images', $image, time());
-            echo json_encode(array('location' => config('app.url') . '/tinymce_images/' . $fileName));
+            echo json_encode(array('location' => url('/') . '/tinymce_images/' . $fileName));
         } else {
             echo 'No Image Available';
         }

@@ -323,10 +323,10 @@
             function getFormFieldValue(stepIdStr, field_name, fieldId) {
                 var field_val;
                 var checkedCheckBoxes = [];
-                if ($('#' + fieldId).is("textarea")) {
-                    field_val = $('#' + fieldId).val();
-                } else if ($('#' + fieldId).is("select")) {
-                    field_val = $('#' + fieldId).find(":selected").val();
+                if ($('#form_' + stepIdStr + ' #' + fieldId).is("textarea")) {
+                    field_val = $('#form_' + stepIdStr + ' #' + fieldId).val();
+                } else if ($('#form_' + stepIdStr + ' #' + fieldId).is("select")) {
+                    field_val = $('#form_' + stepIdStr + ' #' + fieldId).find(":selected").val();
                 } else if ($('#form_' + stepIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
                     field_val = $('#form_' + stepIdStr + ' input[name="' + field_name + '"]:checked').val();
                 } else if ($('#form_' + stepIdStr + ' input[name="' + field_name + '[]"]').attr('type') == 'checkbox') {

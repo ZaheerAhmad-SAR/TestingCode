@@ -205,4 +205,13 @@ class Study extends Model
 
         return json_encode($userNames);
     }
+
+    public static function getDiseaseCohort($study)
+    {
+        $diseaseCohartArray = [];
+        foreach ($study->diseaseCohort as $diseaseCohart) {
+            $diseaseCohartArray[] = $diseaseCohart->name;
+        }
+        return implode(', ', $diseaseCohartArray);
+    }
 }
