@@ -28,10 +28,13 @@
     </style>
     <!-- date range picker -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-tagsinput/1.3.6/jquery.tagsinput.min.css" rel="stylesheet">
     <!-- select2 -->
     <link rel="stylesheet" href="{{ asset('public/dist/vendors/select2/css/select2.min.css') }}"/>
     <link rel="stylesheet" href="{{ asset('public/dist/vendors/select2/css/select2-bootstrap.min.css') }}"/>
+    <!-- select2-->
+
+
 @endsection
 
 @section('content')
@@ -201,7 +204,6 @@
                                                     </div>
                                                     @php
                                                         $studyHaveTransimision = Modules\Queries\Entities\QueryNotification::where('transmission_number','=',$transmission->Transmission_Number)->where('notifications_status','=','open')->first();
-
                                                     @endphp
                                                     @if(null !== $studyHaveTransimision)
                                                         <div class="transmissionQuery">
@@ -291,16 +293,18 @@
                                 <div class="form-group row">
                                     <label for="Name" class="col-sm-2 col-form-label"> Sites :</label>
                                     <div class="col-sm-4">
+
                                         <select class="form-control sitesChange" name="site_name" id="site_name">
                                             <option value="">--Select Sites--</option>
 
-                                            @foreach($getTransmissions as $transmission)
-                                                <option value="{{$transmission->Transmission_Number}}">{{$transmission->Site_Name}}</option>
-
-                                            @endforeach
+                                            @php
+                                                $data = Modules\Admin\Entities\CrushFtpTransmission::where('transmission_number','=',$transmission->Transmission_Number)->first();
+                                            @endphp
+                                            <option value="{{$data['Transmission_Number']}}">{{$data['Site_Name']}}</option>
                                         </select>
+
                                     </div>
-                                    <label for="Name" id="usersList" class="col-sm-2 col-form-label" style="display: none;"> Select Users :</label>
+                                    <label for="Name" id="usersList" class="col-sm-2 col-form-label"> Select Users :</label>
                                     <div class="col-sm-4 primaryList">
                                     </div>
 
@@ -367,7 +371,6 @@
                                 <th>Subject</th>
                                 <th>Submited By</th>
                                 <th>Assigned To</th>
-                                <th>CC Email</th>
                                 <th>Created Date</th>
                                 <th>Action</th>
                             </tr>
@@ -395,7 +398,9 @@
 
     // Transmission Query  Work start
     $('.creatNewTransmissionsForQueries').click(function () {
+        var transmission_Id = $(this).attr('data-id');
         $('#transmissonQueryModal').modal('show');
+
     });
 
     $('.showAlltransmissionQuery').click(function () {
@@ -404,6 +409,24 @@
         $('#transmissonQueryTableView').modal('show');
         loadQueryByTransmissionId(transmission_Id);
     });
+
+
+    {{--function loadSiteByTransmissionId(transmission_Id) {--}}
+    {{--    $.ajax({--}}
+    {{--        url:"{{route('transmissions.getSiteByTransmissionId')}}",--}}
+    {{--        type: 'POST',--}}
+    {{--        data: {--}}
+    {{--            "_token": "{{ csrf_token() }}",--}}
+    {{--            'transmission_Id'      :transmission_Id,--}}
+    {{--        },--}}
+    {{--        success: function(response)--}}
+    {{--        {--}}
+    {{--            console.log(response);--}}
+    {{--            $('#siteShowUp').html('');--}}
+    {{--            $('#siteShowUp').html(response);--}}
+    {{--        }--}}
+    {{--    });--}}
+    {{--}--}}
 
     function loadQueryByTransmissionId(transmission_Id) {
         $.ajax({
@@ -450,6 +473,7 @@
 
 
 
+
     $("#queriesTransmissionForm").on('submit', function(e) {
         e.preventDefault();
         $.ajaxSetup({
@@ -487,12 +511,6 @@
             contentType: false,
             cache: false,
             processData:false,
-            // data: {
-            //     'users':users,'remarks':remarks,
-            //     'cc_email':cc_email,'querySubject':querySubject,'studyID':studyID,
-            //     'subjectID':subjectID,'transNumber':transNumber,'visitName':visitName
-            // },
-            // dataType: 'json',
             success: function(response)
             {
                 console.log(response);
@@ -537,6 +555,11 @@
         $('#transmission-status-modal').modal('show');
     }
 
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-tagsinput/1.3.6/jquery.tagsinput.min.js"></script>
+<script type="text/javascript">
+
+    $('#cc_email').tagsInput();
 </script>
 
 @endsection

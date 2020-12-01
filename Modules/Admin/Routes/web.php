@@ -25,6 +25,7 @@ Route::post('transmissions/getAllPIBySiteId', 'TransmissionController@getAllPIBy
 
 Route::post('transmissions/queryTransmissionMail', 'TransmissionController@queryTransmissionMail')->name('transmissions.queryTransmissionMail');
 Route::post('transmissions/getQueryByTransmissionId', 'TransmissionController@getQueryByTransmissionId')->name('transmissions.getQueryByTransmissionId');
+Route::post('transmissions/getSiteByTransmissionId', 'TransmissionController@getSiteByTransmissionId')->name('transmissions.getSiteByTransmissionId');
 Route::get('transmissions/verifiedToken/{id}/', 'TransmissionController@verifiedToken')->name('transmissions.verifiedToken');
 
 Route::post('transmissions-status', 'TransmissionController@transmissionStatus')->name('transmissions-status');
@@ -146,7 +147,6 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
     Route::post('others/update', 'OtherController@update')->name('others.update');
 
-
     // routes for form managment
 
     //end
@@ -235,7 +235,9 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::get('trail_logs', 'TrailLogController@index')->name('trail_logs.list');
     //Transmissions Routes
     Route::resource('transmissions', 'TransmissionController');
+
     Route::get('transmissions-study-edit/{id}', 'TransmissionController@transmissionsStudyEdit')->name('transmissions-study-edit');
+    
     Route::get('study-transmissions', 'TransmissionController@studyTransmissions')->name('transmissions.study-transmissions');
 });
 

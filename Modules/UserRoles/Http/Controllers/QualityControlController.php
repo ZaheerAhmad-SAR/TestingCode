@@ -420,6 +420,34 @@ class QualityControlController extends Controller
                         if($checkModality != null) {
                         //if ($subject->modility_id == $type['modility_id']) {
 
+                            $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(76, 175, 80, 0.5)';
+
+                            // check if form is not initialize and assign date is passed
+                            $getFormStatus = FormStatus::where('subject_id', $subject->subj_id)
+                                                    ->where('study_structures_id', $subject->phase_id)
+                                                    ->where('modility_id', $type['modility_id'])
+                                                    ->where('form_type_id', $type['form_type_id'])
+                                                    ->first();
+
+                            if($getFormStatus == null) {
+
+                                $diffInDays = Carbon::now()->diffInDays(Carbon::parse($checkModality->assign_date), false);
+
+                                
+                                // check week difference (past date)
+                                if ($diffInDays < 0) {
+
+                                    $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(255, 0, 0, 0.5)';
+                                    
+                                }
+
+                                // check due date (in week)
+                                if ($diffInDays >= 0 && $diffInDays <= 7) {
+                                    $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(241, 245, 15, 0.5)';
+                                }
+
+                            } // form status null check ends
+
                             // check step
                             $step = PhaseSteps::where('phase_id', $subject->phase_id)
                                                 ->where('modility_id', $type['modility_id'])
@@ -437,21 +465,22 @@ class QualityControlController extends Controller
 
                                 if ($step->form_type_id == 2) {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $step->graders_number, false);
+                                    $formStatus[$key.'_'.$type['form_type']]['status'] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $step->graders_number, false);
                                 } else {
 
-                                    $formStatus[$key.'_'.$type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
+                                    $formStatus[$key.'_'.$type['form_type']]['status'] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
 
                                 }
 
                             } else {
 
-                                $formStatus[$key.'_'.$type['form_type']] = '<img src="' . url('images/no_status.png') . '"/>';
+                                $formStatus[$key.'_'.$type['form_type']]['status'] = '<img src="' . url('images/no_status.png') . '"/>';
                             } // step check ends
 
                         } else {
 
-                            $formStatus[$key.'_'.$type['form_type']] = '';
+                            $formStatus[$key.'_'.$type['form_type']]['status'] = '';
+                            $formStatus[$key.'_'.$type['form_type']]['color'] = '';
 
                         } // modility check ends
 

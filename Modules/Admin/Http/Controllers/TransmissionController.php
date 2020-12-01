@@ -740,27 +740,20 @@ class TransmissionController extends Controller
         //
     }
 
-    public function getAllPIBySiteId(Request $request)
-    {
-        $transmissionNumber = $request->transmissionNumber;
-        $records = CrushFtpTransmission::where('Transmission_Number',$transmissionNumber)->get();
-
-        echo  view('admin::transmissions.users_dropdown',compact('records'));
-    }
-
     public function queryTransmissionMail()
     {
-         //dd(\request()->all());
+        //dd(\request()->all());
         //request()->validate(['cc_email'=>'required|email']);
         //request()->validate(['users'=>'required|email']);
         $transNumber   = request('Transmission_Number');
         $query_subject = request('query_subject');
-        $users         = request('users');
-        $usersArray    = explode(',',$users);
+        $user          = request('users');
+        $cc_email      = request('cc_email');
+        $ccArray       = explode(',',$cc_email);
         $remarks       = request('remarks');
         $studyID       = request('StudyI_ID');
         $visit_name    = request('visitName');
-        $cc_email      = request('cc_email');
+
         $subjectID     = request('Subject_ID');
         $studyShortName= request('studyShortName');
         $filePath      = '';
@@ -774,11 +767,11 @@ class TransmissionController extends Controller
         }
         $id    = Str::uuid();
         $token = Str::uuid();
-        $dataInt = array(
+        $data  = array(
          'Transmission_Number'=>$transNumber,
          'query_subject'=>$query_subject,
          'remarks'=>$remarks,
-         'cc_email'=>$cc_email,
+         'cc_email'=>$ccArray,
          'StudyI_ID'=>$studyID,
          'visit_name'=>$visit_name,
          'Subject_ID'=>$subjectID,
@@ -787,8 +780,7 @@ class TransmissionController extends Controller
            'replyToken'=> $token
         );
 
-
-        $queryNotification = QueryNotification::create([
+        QueryNotification::create([
            'id'=>$id,
            'cc_email'=>$cc_email,
             'notifications_status'=> 'open',
@@ -804,28 +796,13 @@ class TransmissionController extends Controller
             'notifications_token'=>$token
         ]);
 
+        QueryNotificationUser::create([
+            'id'=>Str::uuid(),
+            'query_notification_id'=>$id,
+            'query_notification_user_id'=>$user
+        ]);
 
-
-
-
-        foreach ($usersArray as $user)
-        {
-            $new_array = array('receiverEmail'=>$user);
-            $data=array_merge($dataInt, $new_array);
-
-            Mail::to($user)->send(new TransmissonQuery($data));
-            QueryNotificationUser::create([
-             'id'=>Str::uuid(),
-              'query_notification_id'=>$id,
-              'query_notification_user_id'=>$user
-            ]);
-
-//            QueryNotificationUser::create([
-//                'id' => Str::uuid(),
-//               'query_notification_user_id'=>$user
-//            ]);
-        }
-
+        Mail::to($user)->send(new TransmissonQuery($data));
 
         return response()->json(['Status'=>'Send','message'=>'Query has been send']);
 
@@ -841,6 +818,14 @@ class TransmissionController extends Controller
 
     }
 
+    public function getAllPIBySiteId(Request $request)
+    {
+        $transmissionNumber = $request->transmissionNumber;
+        $records = CrushFtpTransmission::where('Transmission_Number',$transmissionNumber)->get();
+
+        echo  view('admin::transmissions.users_dropdown',compact('records'));
+    }
+
     public function getQueryByTransmissionId(Request $request)
     {
         if ($request->ajax())
@@ -852,6 +837,15 @@ class TransmissionController extends Controller
             echo  view('admin::transmissions.queries_table_view',compact('records'));
         }
     }
+
+    public function getSiteByTransmissionId(Request $request)
+    {
+            $transmission_Id = $request->transmission_Id;
+            $record = CrushFtpTransmission::where('Transmission_Number','like',$transmission_Id)->first();
+            echo  view('admin::transmissions.site_dropdown',compact('record'));
+
+    }
+
 
     public function verifiedToken(Request $request,$id)
     {

@@ -15,7 +15,6 @@
     <td>{{$record->subject}}</td>
     <td>{{$querySubmitedBy->name}}</td>
     <td>{{$queryUsersString}}</td>
-    <td>{{$record->cc_email}}</td>
     <td>{{date_format($record->created_at,'M-d-Y')}}</td>
     <td class="replyModal" data-id="{{$record->id}}" data-value=""><span style="cursor: pointer;"><i class="fab fa-rocketchat"></i></span></td>
 </tr>
