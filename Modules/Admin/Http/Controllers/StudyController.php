@@ -54,22 +54,21 @@ class StudyController extends Controller
     public function index()
     {
         session(['current_study' => '']);
+        $studyAdminRoleId = Permission::getStudyAdminRole();
         $systemRoleIds = Role::where('role_type', 'system_role')->pluck('id')->toArray();
-        $userIdsWithSystemRole = UserRole::whereIn('role_id', $systemRoleIds)->pluck('user_id')->toArray();
-        $users = User::whereIn('id', $userIdsWithSystemRole)->get();
+        $userIdsWithStudyAdminRole = UserRole::whereIn('role_id', $studyAdminRoleId)->pluck('user_id')->toArray();
+        $users = User::whereIn('id', $userIdsWithStudyAdminRole)->get();
 
         $sites = Site::all();
         $studies = [];
         $studiesIDs = [];
-        $studyAdminRoleId = '';
         $user = \auth()->user()->id;
         if (hasPermission(\auth()->user(), 'systemtools.index')) {
-            $studyAdminRoleId = Permission::getStudyAdminRole();
             if (isThisUserSuperAdmin(\auth()->user())) {
                 $studiesIDs = array_merge($studiesIDs, Study::all()->pluck('id')->toArray());
             } else {
                 $userRole = UserRole::where('user_id', \auth()->user()->id)->first();
-                if (!empty($studyAdminRoleId) && $userRole->role_id == $studyAdminRoleId[1]) {
+                if (count($studyAdminRoleId) > 0 && in_array($userRole->role_id, $studyAdminRoleId)) {
                     $studiesIDs = array_merge($studiesIDs, Study::getStudiesAganistAdmin());
                 } else {
                     $studiesIDs = array_merge($studiesIDs, Study::all()->pluck('id')->toArray());
@@ -127,10 +126,10 @@ class StudyController extends Controller
     public function create()
     {
         if (Auth::user()->can('users.create')) {
-
-            $systemRoleIds = Role::where('role_type', 'system_role')->pluck('id')->toArray();
-            $userIdsWithSystemRole = UserRole::whereIn('role_id', $systemRoleIds)->pluck('user_id')->toArray();
-            $users = User::whereIn('id', $userIdsWithSystemRole)->get();
+            $studyAdminRoleId = Permission::getStudyAdminRole();
+            //$systemRoleIds = Role::whereIn('id', $studyAdminRoleId)->pluck('id')->toArray();
+            $userIdsWithStudyAdminRole = UserRole::whereIn('role_id', $studyAdminRoleId)->pluck('user_id')->toArray();
+            $users = User::whereIn('id', $userIdsWithStudyAdminRole)->get();
 
             $sites = Site::get();
             return view('admin::studies.create', compact('users', 'sites')); //->with(compact('permissions'));
@@ -295,15 +294,14 @@ class StudyController extends Controller
      */
     public function edit($id)
     {
-        $systemRoleIds = Role::where('role_type', 'system_role')->pluck('id')->toArray();
-
+        $studyAdminRoleId = Permission::getStudyAdminRole();
         $assignedUserIds = RoleStudyUser::where('study_id', 'LIKE', $id)->whereIn('role_id', Permission::getStudyAdminRole())->pluck('user_id')->toArray();
 
-        $userIdsWithSystemRole = UserRole::whereIn('role_id', $systemRoleIds)
+        $userIdsWithStudyAdminRole = UserRole::whereIn('role_id', $studyAdminRoleId)
             ->whereNotIn('user_id', $assignedUserIds)
             ->pluck('user_id')
             ->toArray();
-        $users = User::whereIn('id', $userIdsWithSystemRole)->get();
+        $users = User::whereIn('id', $userIdsWithStudyAdminRole)->get();
 
         $userNames = [];
         foreach ($users as $user) {
@@ -386,13 +384,13 @@ class StudyController extends Controller
     {
         if ($request->users != null) {
             $studyAdminRoleId = Permission::getStudyAdminRole();
-            RoleStudyUser::where('study_id', 'like', $study->id)->where('role_id', 'like', $studyAdminRoleId[1])->delete();
+            RoleStudyUser::where('study_id', 'like', $study->id)->whereIn('role_id', $studyAdminRoleId)->delete();
             foreach ($request->users as $user_id) {
                 RoleStudyUser::create([
                     'id' => Str::uuid(),
                     'study_id'   => $study->id,
                     'user_id'   => $user_id,
-                    'role_id'   => $studyAdminRoleId[1]
+                    'role_id'   => $studyAdminRoleId[0]
                 ]);
             }
         }
