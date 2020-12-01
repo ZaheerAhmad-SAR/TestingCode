@@ -162,6 +162,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         PragmaRX\Google2FALaravel\ServiceProvider::class,
+        Intervention\Image\ImageServiceProvider::class,
 
 
 
@@ -234,6 +235,8 @@ return [
         '2fa' => PragmaRX\Google2FALaravel\Middleware::class,
         'Google2FA' => PragmaRX\Google2FALaravel\Facade::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Image' => Intervention\Image\Facades\Image::class,
+        'ImgUploader' => App\Helpers\ImageUploadingHelper::class,
     ],
 
 ];

@@ -285,8 +285,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Text/info: </label>
                                     <div class="col-sm-10">
-                                        <textarea name="text_info" id="text_info_add" cols="2" rows="1" class="summernote"
-                                            style="height: 50px;"></textarea>
+                                        <textarea name="text_info" id="text_info_add" cols="2" rows="1"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -634,7 +633,7 @@
         </div>
     </div>
     <!-- End -->
-   
+
     <!-- Modal To add Option Groups -->
     <div class="modal fade" tabindex="-1" role="dialog" id="descriptionModal">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="min-width: 1130px;">
@@ -695,6 +694,7 @@
 @include('admin::forms.add_certification_field')
 @include('admin::forms.form_models')
 @include('admin::forms.add_annotation')
+@include('admin::shared.tinyMCE')
 @section('styles')
     <style>
         .custom_fields {
@@ -717,15 +717,12 @@
 
     </style>
     <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
-    <link rel="stylesheet" href="{{ asset('public/dist/vendors/summernote/summernote-bs4.css') }}">
     {{-- Select 2 --}}
     <link rel="stylesheet" href="{{ asset('dist/vendors/select2/css/select2.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('dist/vendors/select2/css/select2-bootstrap.min.css') }}" />
 
 @endsection
 @section('script')
-    <script src="{{ asset('public/dist/vendors/summernote/summernote-bs4.js') }}"></script>
-    <script src="{{ asset('public/dist/js/summernote.script.js') }}"></script>
     <script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script>
     <script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
     {{-- Select 2 --}}
@@ -759,7 +756,7 @@
             @if(session('filter_step') !='')
                 step_change = setTimeout(function() {
                    $('#steps').trigger('change');
-                }, 1000);  
+                }, 1000);
             @endif
         })
         $('.addOptions').on('click', function() {
@@ -784,7 +781,7 @@
                 );
             return false;
         });
-      
+
         $('#section_id').on('change', function() {
             $('.field_dependent').trigger('change');
         })
@@ -815,7 +812,7 @@
             $('#question_type').val(id);
             $('#descriptionModal').modal('show');
         })
-        
+
         $('body').on('click', '.fetch_phases', function() {
             var phase_id = '1';
             var row = $(this).closest('div.values_row');
@@ -1045,7 +1042,7 @@
                     $('#variable_name').val(variable_name);
                     $('#form_field_id').val(formFields_id);
                     // $('#text_info').val();
-                    $("#text_info_add").summernote("code", text_info);
+                    $("#text_info_add").val(text_info);
                     if (ques_type == 'Number') {
                         $('#measurement_unit_text').val(measurement_unit);
                         $('#field_width_text').val(field_width);
@@ -1261,7 +1258,7 @@
                 }
             });
         }
-       
+
 
         // get sections for dropdown
         function section_against_step(id, section_class) {
