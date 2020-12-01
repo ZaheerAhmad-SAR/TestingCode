@@ -286,13 +286,27 @@
             }
 
             function copyValueToField(stepIdStr, sectionIdStr, questionId, questionIdStr, field_name, fieldId, copyToFieldId) {
+                alert('stepIdStr :' + stepIdStr);
+                alert('sectionIdStr :' + sectionIdStr);
+                alert('questionId :' + questionId);
+                alert('questionIdStr :' + questionIdStr);
+                alert('field_name :' + field_name);
+                alert('fieldId :' + fieldId);
+                alert('copyToFieldId :' + copyToFieldId);
                 var fieldVal = $('#' + fieldId).val();
                 $('#' + copyToFieldId).val(fieldVal);
+                alert('fieldVal :' + fieldVal);
                 var copyToFieldName = $("#" + copyToFieldId).attr("name");
                 validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, questionIdStr, copyToFieldName, copyToFieldId);
             }
 
             function calculateAverage(stepIdStr, sectionIdStr, questionId, questionIdStr, copyToFieldId, decimalPoint){
+                alert('stepIdStr :' + stepIdStr);
+                alert('sectionIdStr :' + sectionIdStr);
+                alert('questionId :' + questionId);
+                alert('questionIdStr :' + questionIdStr);
+                alert('copyToFieldId :' + copyToFieldId);
+                alert('decimalPoint :' + decimalPoint);
                 var numberValues = [];
                 $('.' + questionIdStr).each(function() {
                     numberValues.push($(this).val());
@@ -305,6 +319,7 @@
                 var avg = total / numberValues.length;
                 var avg = avg.toFixed(decimalPoint);
                 $('#' + copyToFieldId).val(avg);
+                alert('avg :' + avg);
                 var copyToFieldName = $("#" + copyToFieldId).attr("name");
                 validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, questionIdStr, copyToFieldName, copyToFieldId);
             }

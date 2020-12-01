@@ -208,7 +208,7 @@
                                                     @if(null !== $studyHaveTransimision)
                                                         <div class="transmissionQuery">
                                                     <span class="ml-3" style="cursor: pointer;">
-                                                        <i class="fas fa-question-circle showAlltransmissionQuery" data-id="{{$studyHaveTransimision->id}}"  style="margin-top: 3px;"></i></span>
+                                                        <i class="fas fa-question-circle showAlltransmissionQuery" data-id="{{$studyHaveTransimision->transmission_number}}"  style="margin-top: 3px;"></i></span>
                                                         </div>
                                                     @endif
 
@@ -514,7 +514,8 @@
             success: function(response)
             {
                 console.log(response);
-                //$("#queriesTransmissionForm")[0].reset();
+                $("#queriesTransmissionForm")[0].reset();
+                $(this).find(":submit").attr('disabled', 'disabled');
             }
         });
     });

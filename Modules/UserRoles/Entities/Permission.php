@@ -34,12 +34,30 @@ class Permission extends Model
 
     public static function getStudyAdminRole()
     {
-        $permissionsIdsArray = self::where('permissions.name', 'like', 'studytools.index')
+        $studyToolsPermissionsIdsArray = self::where('permissions.name', 'like', 'studytools.index')
             ->distinct('id')->pluck('id')->toArray();
-        $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
-        $roleIdsArray = Role::where('role_type', '!=', 'super_admin')->distinct()->pluck('id')->toArray();
-        $roleId = array_intersect($roleIdsArrayFromRolePermission, $roleIdsArray);
-        if (!empty($roleId)) {
+
+        $systemToolsPermissionsIdsArray = self::where('permissions.name', 'like', 'systemtools.index')
+            ->distinct('id')->pluck('id')->toArray();
+
+        $roleIdsArray = Role::where('role_type', '=', 'system_role')
+            ->where('name', '!=', 'basic')
+            ->distinct()->pluck('id')->toArray();
+
+        $roleIdsWithStudyToolPermission = RolePermission::whereIn('permission_id', $studyToolsPermissionsIdsArray)
+            ->whereIn('role_id', $roleIdsArray)
+            ->distinct()
+            ->pluck('role_id')
+            ->toArray();
+
+        $roleIdsWithSystemToolPermission = RolePermission::whereIn('permission_id', $systemToolsPermissionsIdsArray)
+            ->whereIn('role_id', $roleIdsArray)
+            ->distinct()
+            ->pluck('role_id')
+            ->toArray();
+
+        $roleId = array_values(array_diff($roleIdsWithStudyToolPermission, $roleIdsWithSystemToolPermission));
+        if (count($roleId) > 0) {
             return $roleId;
         }
         return null;
@@ -50,11 +68,9 @@ class Permission extends Model
         $permissionsIdsArray = self::where('permissions.name', 'like', 'qualitycontrol.create')
             ->distinct('id')->pluck('id')->toArray();
         $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
-        $roleIdsArray = Role::where('role_type', '!=', 'super_admin')->distinct()->pluck('id')->toArray();
-
-        $roleId = array_intersect($roleIdsArrayFromRolePermission, $roleIdsArray);
-
-        if (!empty($roleId)) {
+        $roleIdsArray = Role::where('role_type', '=', 'study_role')->distinct()->pluck('id')->toArray();
+        $roleId = array_values(array_intersect($roleIdsArrayFromRolePermission, $roleIdsArray));
+        if (count($roleId) > 0) {
             return $roleId;
         }
         return null;
@@ -65,11 +81,9 @@ class Permission extends Model
         $permissionsIdsArray = self::where('permissions.name', 'like', 'grading.create')
             ->distinct('id')->pluck('id')->toArray();
         $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
-        $roleIdsArray = Role::where('role_type', '!=', 'super_admin')->distinct()->pluck('id')->toArray();
-
-        $roleId = array_intersect($roleIdsArrayFromRolePermission, $roleIdsArray);
-
-        if (!empty($roleId)) {
+        $roleIdsArray = Role::where('role_type', '=', 'study_role')->distinct()->pluck('id')->toArray();
+        $roleId = array_values(array_intersect($roleIdsArrayFromRolePermission, $roleIdsArray));
+        if (count($roleId) > 0) {
             return $roleId;
         }
         return null;
@@ -80,11 +94,9 @@ class Permission extends Model
         $permissionsIdsArray = self::where('permissions.name', 'like', 'adjudication.create')
             ->distinct('id')->pluck('id')->toArray();
         $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
-        $roleIdsArray = Role::where('role_type', '!=', 'super_admin')->distinct()->pluck('id')->toArray();
-
-        $roleId = array_intersect($roleIdsArrayFromRolePermission, $roleIdsArray);
-
-        if (!empty($roleId)) {
+        $roleIdsArray = Role::where('role_type', '=', 'study_role')->distinct()->pluck('id')->toArray();
+        $roleId = array_values(array_intersect($roleIdsArrayFromRolePermission, $roleIdsArray));
+        if (count($roleId) > 0) {
             return $roleId;
         }
         return null;

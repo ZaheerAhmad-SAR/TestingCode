@@ -443,6 +443,14 @@ class GradingController extends Controller
                                         $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(241, 245, 15, 0.5)';
                                     }
 
+                                } else {
+
+                                    // if it is graded
+                                    if($getFormStatus->form_status == 'complete') {
+
+                                        $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(179, 183, 187, 0.5)';
+
+                                    }
                                 } // form status null check ends
 
                             } else {
@@ -451,7 +459,7 @@ class GradingController extends Controller
 
                             } // assignwork check ends
 
-                            $step = PhaseSteps::where('phase_id', $subject->phase_id)
+                                $step = PhaseSteps::where('phase_id', $subject->phase_id)
                                                 ->where('modility_id', $type['modility_id'])
                                                 ->where('form_type_id', $type['form_type_id'])
                                                 ->first();
@@ -498,12 +506,23 @@ class GradingController extends Controller
         $getFilterSites = Site::select('id', 'site_name')
                                 ->get();
 
-        // get modilities
-        $getModilities = Modility::select('id', 'modility_name')
-                                        ->get();
-        // get form types
-        $getFormType = FormType::select('id', 'form_type')
-                                ->get();
+        // get modilities according to study
+        $getModilities = PhaseSteps::select('modilities.id', 'modilities.modility_name')
+            ->leftJoin('study_structures','study_structures.id', '=', 'phase_steps.phase_id')
+            ->leftJoin('modilities', 'modilities.id', '=', 'phase_steps.modility_id')
+            ->where('study_structures.study_id', \Session::get('current_study'))
+            ->groupBy('phase_steps.modility_id')
+            ->orderBy('modilities.modility_name')
+            ->get();
+
+        // get form types according to study
+        $getFormType = PhaseSteps::select('form_types.id', 'form_types.form_type')
+            ->leftJoin('study_structures','study_structures.id', '=', 'phase_steps.phase_id')
+            ->leftJoin('form_types', 'form_types.id', '=', 'phase_steps.form_type_id')
+            ->where('study_structures.study_id', \Session::get('current_study'))
+            ->groupBy('phase_steps.form_type_id')
+            ->orderBy('form_types.sort_order')
+            ->get();
 
         return view('userroles::users.assign-work', compact('subjects', 'modalitySteps', 'getFilterSubjects', 'getFilterPhases', 'getFilterSites', 'getModilities', 'getFormType'));
     }
@@ -1178,8 +1197,9 @@ class GradingController extends Controller
                 }
 
                 $subjects = $subjects->groupBy(['assign_work.subject_id', 'assign_work.phase_id'])
-                                     ->orderBy('study_structures.position')
-                                     ->paginate(15);
+                                    ->orderBy('subjects.subject_id')
+                                    ->orderBy('study_structures.position')
+                                    ->paginate(15);
 
 
             // get modalities
@@ -1265,7 +1285,16 @@ class GradingController extends Controller
                                     $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(241, 245, 15, 0.5)';
                                 }
 
-                            } // form status null check ends
+                            } else {
+
+                                // if it is graded
+                                if($getFormStatus->form_status == 'complete') {
+
+                                    $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(179, 183, 187, 0.5)';
+
+                                }
+
+                            }// form status null check ends
 
                                 // check step
                                 $step = PhaseSteps::where('phase_id', $subject->phase_id)
