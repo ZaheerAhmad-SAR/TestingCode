@@ -29,18 +29,19 @@
                             <input type="email" name="yourEmail" id="yourEmail" class="form-control">
                         </div>
                         <div class="form-group mb-3">
+                            <label for="Attachment"><strong>Attachment</strong>:</label>
+                                <input class="form-control" type="file" name="attachment"  id="attachment">
+                        </div>
+
+                        <div class="form-group mb-3">
                             <label for="emailaddress"><strong>Your Response</strong></label>
                             <textarea name="message" id="message" cols="2" rows="1" class="form-control" style="height: 50px;"></textarea>
                         </div>
                         <div class="garbageData">
-                            <input type="hidden" name="cc_email" value="{{$record['cc_email']}}">
                             <input type="hidden" name="parent_notification_id" value="{{$record['id']}}">
-                            <input type="hidden" name="cc_email" value="{{$record['cc_email']}}">
                         </div>
                         <div class="form-group mb-3">
-                            <div class="custom-control custom-checkbox">
-                                <button class="btn btn-primary" type="submit" style="float: right;"> Send </button>
-                            </div>
+                                <button class="btn btn-primary" type="submit"> Send </button>
                         </div>
                         <div class="mt-2" style="padding-top: 90px; text-align: center;">OIRRC CAPTURE System</div>
                     </div>

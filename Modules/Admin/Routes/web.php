@@ -251,3 +251,5 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('preference/loadAddPreferenceForm', 'PreferenceController@loadAddPreferenceForm')->name('preference.loadAddPreferenceForm');
     Route::post('preference/submitAddPreferenceForm', 'PreferenceController@submitAddPreferenceForm')->name('preference.submitAddPreferenceForm');
 });
+
+Route::post('tinymce-image_upload', 'TinyMceController@uploadImage')->name('tinymce.image_upload');
