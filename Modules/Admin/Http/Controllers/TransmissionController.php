@@ -831,9 +831,7 @@ class TransmissionController extends Controller
         if ($request->ajax())
         {
             $transmission_Id = $request->transmission_Id;
-
-            $records = QueryNotification::where('id','like',$transmission_Id)->where('parent_notification_id','like',0)->get();
-
+            $records = QueryNotification::where('Transmission_Number','like',$transmission_Id)->where('parent_notification_id','like',0)->get();
             echo  view('admin::transmissions.queries_table_view',compact('records'));
         }
     }
