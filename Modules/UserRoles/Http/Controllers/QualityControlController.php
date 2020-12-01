@@ -446,6 +446,14 @@ class QualityControlController extends Controller
                                     $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(241, 245, 15, 0.5)';
                                 }
 
+                            } else {
+
+                                // if it is graded
+                                if($getFormStatus->form_status == 'complete') {
+
+                                    $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(179, 183, 187, 0.5)';
+
+                                }
                             } // form status null check ends
 
                             // check step
