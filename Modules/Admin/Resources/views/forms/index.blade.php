@@ -667,8 +667,7 @@
                                 <div class="form-group row">
                                     <label for="label" class="col-sm-2 col-form-label"> Description </label>
                                     <div class="col-sm-12">
-                                        <textarea name="text_info" id="text_info_de" cols="2" rows="1" class="summernote"
-                                            style="height: 50px;"></textarea>
+                                        <textarea name="text_info" id="text_info_de"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -686,16 +685,16 @@
     </div>
     </div>
     <!-- End -->
-
-@endsection
-@include('admin::forms.edit_crf')
+    @include('admin::forms.add_calculated_field')
+    @include('admin::forms.add_certification_field')
+    @include('admin::forms.form_models')
+    @include('admin::forms.add_annotation')
+    @include('admin::forms.edit_crf')
 @include('admin::forms.form_checks')
-@include('admin::forms.add_calculated_field')
-@include('admin::forms.add_certification_field')
-@include('admin::forms.form_models')
-@include('admin::forms.add_annotation')
 @include('admin::shared.tinyMCE')
-@section('styles')
+@endsection
+
+@push('styles')
     <style>
         .custom_fields {
             border-bottom: 1px solid #F6F6F7;
@@ -721,8 +720,8 @@
     <link rel="stylesheet" href="{{ asset('dist/vendors/select2/css/select2.min.css') }}" />
     <link rel="stylesheet" href="{{ asset('dist/vendors/select2/css/select2-bootstrap.min.css') }}" />
 
-@endsection
-@section('script')
+@endpush
+@push('script')
     <script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script>
     <script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
     {{-- Select 2 --}}
@@ -986,7 +985,7 @@
                 formFields_id = row.find('input.formFields_id').val()
                 section_id = row.find('input.section_id').val()
                 text_info = row.find('input.text_info').val();
-                $("#text_info_de").summernote("code", text_info);
+                $("#text_info_de").val(text_info);
                 $('#question_sort_de').val(question_sort);
                 $('#questionId_hide_des').val(ques_id);
                 $('#form_field_id_des').val(formFields_id);
@@ -1041,8 +1040,7 @@
                     $('#question_text').val(question_text);
                     $('#variable_name').val(variable_name);
                     $('#form_field_id').val(formFields_id);
-                    // $('#text_info').val();
-                    $("#text_info_add").val(text_info);
+                    tinymce.get('text_info_add').setContent(text_info);
                     if (ques_type == 'Number') {
                         $('#measurement_unit_text').val(measurement_unit);
                         $('#field_width_text').val(field_width);
@@ -1302,4 +1300,4 @@
         }
     </script>
 
-@endsection
+@endpush

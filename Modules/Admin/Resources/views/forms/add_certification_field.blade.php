@@ -97,7 +97,7 @@
         }
     })
     $('body').on('click', '.edit_certify', function() {
-          
+
                 $('#form_certify').trigger('reset');
                 $('.modal-title').html('Update Certification List');
                 $('#form_certify').attr('action', "{{ route('forms.updateQuestion') }}");
@@ -134,7 +134,7 @@
                 $('#certification_type').val(certification_type);
                 $('#make_decision').trigger('change');
                 $('#calculate_with_costum_val').val(calculate_with_costum_val);
-                $("#text_info_add_cert").summernote("code", text_info);
+                $("#text_info_add_cert").val(text_info);
                 if (is_required == 'yes') {
                     $('#is_required_yes_cert').prop('checked', true);
                 } else {
@@ -147,12 +147,12 @@
                 }
                 tId = setTimeout(function() {
                  $('#first_question_id_cert').val(first_question_id);
-                 $('#second_question_id_cert').val(second_question_id);               
+                 $('#second_question_id_cert').val(second_question_id);
                 }, 2000);
                 $('#listModal').modal('show');
-               
+
                 loadValidationRulesByQuestionId(ques_id);
-            
+
         })
 </script>
 @endpush

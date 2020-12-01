@@ -141,13 +141,13 @@ class FormController extends Controller
             <input type="hidden" class="operator_calculate" value="' . $ques_value->operator_calculate . '">
             <input type="hidden" class="second_question_id" value="' . $ques_value->second_question_id . '">
             <input type="hidden" class="make_decision" value="' . $ques_value->make_decision . '">
-            <input type="hidden" class="certification_type" value="'.$ques_value->certification_type.'">
+            <input type="hidden" class="certification_type" value="' . $ques_value->certification_type . '">
             <input type="hidden" class="calculate_with_costum_val" value="' . $ques_value->calculate_with_costum_val . '">';
             $question_contents .= '<input type="hidden" class="option_group_id" value="' . $ques_value->option_group_id . '">
             <input type="hidden" class="c_disk" value="' . $ques_value->c_disk . '">
             <input type="hidden" class="question_text" value="' . $ques_value->question_text . '">
             <input type="hidden" class="variable_name" value="' . $ques_value->formFields->variable_name . '">
-            <input type="hidden" class="text_info" value="' . strip_tags($ques_value->formFields->text_info) . '">
+            <input type="hidden" class="text_info" value="' . $ques_value->formFields->text_info . '">
             <input type="hidden" class="is_required" value="' . $ques_value->formFields->is_required . '">
             <input type="hidden" class="is_exportable_to_xls" value="' . $ques_value->formFields->is_exportable_to_xls . '">
             <input type="hidden" class="field_width" value="' . $ques_value->formFields->field_width . '">
@@ -240,14 +240,14 @@ class FormController extends Controller
             } elseif ($ques_value->form_field_type->field_type == 'Description') {
                 $question_contents .= '<div class="col-sm-6">' . strip_tags($ques_value->formFields->text_info) . '</div>';
             }
-            $question_contents .= '<div class="col-sm-2"><span class="d-flex mt-3 mt-md-0 ml-auto float-right"><i type="button" class="far fa-eye" data-toggle="tooltip" data-placement="top" title="'.strip_tags($ques_value->formFields->text_info).'"  style="margin-top:6px;"></i></span><div class="d-flex mt-3 mt-md-0 ml-auto" style="width:50%;display:inline-block !important;"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 6px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right">';
+            $question_contents .= '<div class="col-sm-2"><span class="d-flex mt-3 mt-md-0 ml-auto float-right"><i type="button" class="far fa-eye" data-toggle="tooltip" data-placement="top" title="' . strip_tags($ques_value->formFields->text_info) . '"  style="margin-top:6px;"></i></span><div class="d-flex mt-3 mt-md-0 ml-auto" style="width:50%;display:inline-block !important;"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 6px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right">';
             if ($ques_value->form_field_type->field_type == 'Certification') {
                 $question_contents .= '<span class="dropdown-item edit_certify"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
-            }elseif($ques_value->form_field_type->field_type == 'Description') {
+            } elseif ($ques_value->form_field_type->field_type == 'Description') {
                 $question_contents .= '<span class="dropdown-item edit_desc"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
-            }elseif($ques_value->form_field_type->field_type == 'Calculated') {
+            } elseif ($ques_value->form_field_type->field_type == 'Calculated') {
                 $question_contents .= '<span class="dropdown-item edit_calculated_field"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
-            }else{
+            } else {
                 $question_contents .= '<span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
             }
             $question_contents .= '<span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span>';
@@ -276,7 +276,7 @@ class FormController extends Controller
        $questions = Question::where('section_id', $question->section_id)->get();
        foreach ($questions as $ques_value) {
             if($ques_value->question_sort >= $request->sort_value){
-                
+
             }
         }
      * Show the form for creating a new resource.
@@ -394,7 +394,7 @@ class FormController extends Controller
             'decimal_point' => $request->decimal_point,
             'field_width' => $request->field_width,
             'question_info' => $request->question_info,
-            'text_info' => $request->text_info,
+            'text_info' => htmlentities($request->text_info),
 
         ]);
     }
@@ -410,10 +410,9 @@ class FormController extends Controller
         $form_field->upper_limit = $request->upper_limit;
         $form_field->decimal_point = $request->decimal_point;
         $form_field->field_width = $request->field_width;
-        $form_field->text_info = $request->question_info;
-        $form_field->text_info = $request->text_info;
+        //$form_field->question_info = $request->question_info;
+        $form_field->text_info = htmlentities($request->text_info);
         $form_field->save();
-
         $this->updateQuestionFormFieldToReplicatedVisits($form_field);
     }
     private function createQuestionAdjudicationStatus($request, $questionObj)
@@ -520,7 +519,6 @@ class FormController extends Controller
                 QuestionValidation::insert($validation);
             }
         }
-  
     }
 
     private function updateQuestionValidation($request, $questionObj, $isReplicating = true)

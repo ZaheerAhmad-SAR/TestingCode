@@ -94,8 +94,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Text/info: </label>
                                     <div class="col-sm-10">
-                                        <textarea name="text_info" id="text_info_add_calc" cols="2" rows="1" class="summernote"
-                                            style="height: 50px;"></textarea>
+                                        <textarea name="text_info" id="text_info_add_calc"></textarea>
                                     </div>
                                 </div>
                             </div>
@@ -122,7 +121,7 @@
                 var id = $(this).attr("data-field-id");
                 var step_id = $('#steps').val();
                 $('#question_type_calc').val(id);
-                $("#text_info_add_calc").summernote("code", '');
+                $("#text_info_add_calc").val('');
                 $('#calculate_Modal').modal('show');
                 load_questions_in_dropdowns(step_id);
             } else {
@@ -135,8 +134,8 @@
                 $('#hide_if_custom').css('display','block');
                 $('#hide_if_question').css('display','none');
             }else{
-               $('#hide_if_custom').css('display','none'); 
-               $('#hide_if_question').css('display','block'); 
+               $('#hide_if_custom').css('display','none');
+               $('#hide_if_question').css('display','block');
             }
         })
         // update question of calculated field
@@ -180,7 +179,7 @@
                 $('#make_decision').val(make_decision);
                 $('#make_decision').trigger('change');
                 $('#calculate_with_costum_val').val(calculate_with_costum_val);
-                $("#text_info_add_calc").summernote("code", text_info);
+                $("#text_info_add_calc").val(text_info);
                 if (is_required == 'yes') {
                     $('#is_required_yes_calc').prop('checked', true);
                 } else {
@@ -193,10 +192,10 @@
                 }
                 tId = setTimeout(function() {
                  $('#first_question_id_calc').val(first_question_id);
-                 $('#second_question_id_calc').val(second_question_id);               
+                 $('#second_question_id_calc').val(second_question_id);
                 }, 2000);
                 $('#calculate_Modal').modal('show');
-               
+
                 loadValidationRulesByQuestionId(ques_id);
             }else {
                 showStepDeActivationAlert();

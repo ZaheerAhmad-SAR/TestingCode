@@ -55,8 +55,16 @@ class StudyController extends Controller
     {
         session(['current_study' => '']);
         $studyAdminRoleId = Permission::getStudyAdminRole();
+        if (count((array)$studyAdminRoleId) == 0) {
+            echo '<a href="' . route('roles.index') . '">Please add study admin role first</a>';
+            exit;
+        }
         $systemRoleIds = Role::where('role_type', 'system_role')->pluck('id')->toArray();
         $userIdsWithStudyAdminRole = UserRole::whereIn('role_id', $studyAdminRoleId)->pluck('user_id')->toArray();
+        if (count((array)$userIdsWithStudyAdminRole) == 0) {
+            echo '<a href="' . route('users.index') . '">Please add study admin first</a>';
+            exit;
+        }
         $users = User::whereIn('id', $userIdsWithStudyAdminRole)->get();
 
         $sites = Site::all();
