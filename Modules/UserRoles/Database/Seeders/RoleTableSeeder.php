@@ -30,18 +30,18 @@ class RoleTableSeeder extends Seeder
                 'created_by' => ''
             ]);
         }
-        $check_role = Role::where('name', 'like', 'basic')->first();
+        $check_role = Role::where('name', 'like', 'Basic')->first();
         if (null === $check_role) {
             Role::create([
                 'id' => Str::uuid(),
-                'name' => 'basic',
-                'description' => 'basic',
+                'name' => 'Basic',
+                'description' => 'Basic',
                 'role_type' => 'system_role',
                 'created_by' => ''
             ]);
         }
 
-        $roles = Role::whereIn('name', ['Super Admin', 'basic'])->get();
+        $roles = Role::whereIn('name', ['Super Admin', 'Basic'])->get();
         foreach ($roles as $role) {
             if ($role->name == 'Super Admin') {
                 $permissions = Permission::all();
@@ -62,7 +62,7 @@ class RoleTableSeeder extends Seeder
                     }
                 }
             }
-            if ($role->name == 'basic') {
+            if ($role->name == 'Basic') {
                 $permissions = Permission::where('name', '=', 'dashboard.index')
                     ->orwhere('name', '=', 'dashboard.create')
                     ->orwhere('name', '=', 'dashboard.store')
