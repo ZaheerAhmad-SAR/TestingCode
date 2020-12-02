@@ -357,7 +357,7 @@
     <!-- transmission query model start-->
 
     <div class="modal fade" tabindex="-1" role="dialog" id="transmissonQueryTableView" aria-labelledby="exampleModalQueries" aria-hidden="true">
-        <div class="modal-dialog  modal-lg modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered" style="max-width: 850px;" role="document">
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header ">
@@ -369,7 +369,7 @@
                             <thead>
                             <tr>
                                 <th>Subject</th>
-                                <th>Submited By</th>
+                                <th>Submitted By</th>
                                 <th>Assigned To</th>
                                 <th>Created Date</th>
                                 <th>Action</th>
@@ -383,13 +383,30 @@
         </div>
     </div>
     <div class="modal fade" tabindex="-1" role="dialog" id="responseView" aria-labelledby="exampleModalQueries" aria-hidden="true">
-        <div class="modal-dialog  modal-lg modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document" style="max-width: 1000px;">
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header ">
                     <p class="modal-title">Response View</p>
                 </div>
-                <div class="modal-body dataResponse">
+                <div class="modal-body ">
+                    <form id="responseReplyViewForm" name="responseReplyViewForm">
+                        <div class="tab-content clearfix">
+                            @csrf
+                            <div class="dataResponse"></div>
+                            <div class="col-sm-12">
+                                <div class="replyClick" style="text-align: right;">
+                                    <span style="cursor: pointer;">
+                                        <i class="fa fa-reply"></i> &nbsp; reply
+                                        </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="submit"  name="submit" class="btn btn-outline-primary" id="submit"><i class="fa fa-save"></i> Send</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -419,6 +436,13 @@
         var transmission_Id = $(this).attr('data-id');
         $('#transmissonQueryTableView').modal('show');
         loadQueryByTransmissionId(transmission_Id);
+    });
+
+    $('body').on('click', '.replyClick', function () {
+        $('.commentsInput').css('display','');
+        $('.queryAttachments').css('display','');
+        $('.queryStatus').css('display','');
+        $('.replyClick').css('display','none');
     });
 
 
