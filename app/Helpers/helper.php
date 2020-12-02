@@ -512,7 +512,8 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         }
 
         //////////////////////////// Device Ends /////////////////////////////////////////
-    } else if ($eventSection == 'Phase') {
+    } else if ($eventSection == 'Phase' && ($eventType != 'Activate' && $eventType != 'Deactivate')) {
+
         // get event data
         $eventData = StudyStructure::find($eventId);
         // set message for audit
@@ -521,7 +522,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         $auditUrl = url('study');
         // store data in event array
         $newData = array(
-            'study_id'    => session('current_study'),
+            'study_name'    => session('study_short_name'),
             'position'  =>  $eventData->position,
             'name' =>  $eventData->name,
             'duration' =>  $eventData->duration,
@@ -533,7 +534,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         if ($eventType == 'Update') {
 
             $oldData = array(
-                'study_id'    => session('current_study'),
+                'study_name'    => session('study_short_name'),
                 'position'  =>  $previousData->position,
                 'name' =>  $previousData->name,
                 'duration' =>  $previousData->duration,
@@ -544,6 +545,61 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
 
             // set message for audit
             $auditMessage = Auth::user()->name . ' updated phase ' . $previousData->name . '.';
+        }
+
+
+        //////////////////////////// phase Ends /////////////////////////////////////////
+    } else if ($eventSection == 'Phase' && ($eventType == 'Activate' || $eventType == 'Deactivate')) {
+
+        // phase activation
+        if ($eventType == 'Activate') {
+
+            // get subject Name
+            $getSubjectName = Subject::find($eventId->subject_id);
+
+            //get phase name
+            $getPhaseName = StudyStructure::find($eventId['phase_id']);
+
+            // set message for audit
+            $auditMessage = Auth::user()->name . ' activated phase ' . $getPhaseName->name . '.';
+
+            // set audit url
+            $auditUrl = url('subjectFormLoader');
+
+            $newData = array(
+                'study_name'    => session('study_short_name'),
+                'subject_id' => $getSubjectName->subject_id,
+                'phase_id' => $getPhaseName->name,
+                'visit_date' => date("d-M-Y h:m:i a", strtotime($eventId->visit_date)),
+                'is_out_of_window' => $eventId->is_out_of_window,
+                'form_type_id' => 'QC'
+            );
+        }
+
+        // phase de-activation
+        if ($eventType == 'Deactivate') {
+
+            // get subject Name
+            $getSubjectName = Subject::find($eventId->subject_id);
+
+            //get phase name
+            $getPhaseName = StudyStructure::find($eventId->phase_id);
+
+            // set message for audit
+            $auditMessage = Auth::user()->name . ' deactivated phase ' . $getPhaseName->name . '.';
+
+            // set audit url
+            $auditUrl = url('subjectFormLoader');
+
+            $newData = array(
+                'study_name'    => session('study_short_name'),
+                'subject_id' => $getSubjectName->subject_id,
+                'phase_id' => $getPhaseName->name,
+                'visit_date' => date("d-M-Y h:m:i a", strtotime($eventId->visit_date)),
+                'is_out_of_window' => $eventId->is_out_of_window,
+                'form_type_id' => 'QC'
+            );
+
         }
 
         //////////////////////////// phase Ends /////////////////////////////////////////
@@ -637,7 +693,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
 
             $oldData = array(
                 'study_id'    =>  session('current_study'),
-                'step_name'    =>  $getOldPhaseName->step_name,
+                'step_name'   =>  $getOldPhaseName->step_name,
                 'name'        =>  $previousData->name,
                 'description' =>  $previousData->description,
                 'sort_number' =>  $previousData->sort_number,

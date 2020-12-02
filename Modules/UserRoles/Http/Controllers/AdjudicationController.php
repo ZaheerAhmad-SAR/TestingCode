@@ -467,9 +467,8 @@ class AdjudicationController extends Controller
                             // comparing assign modality with the array modality
                             //if($subject->modility_id == $type['modility_id']) {
 
-
-                                $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(76, 175, 80, 0.5)';
-
+                                $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(179, 183, 187, 0.5)';
+                                
                                 // check if form is not initialize and assign date is passed
                                 $getFormStatus = FormStatus::where('subject_id', $subject->subj_id)
                                                         ->where('study_structures_id', $subject->phase_id)
@@ -499,7 +498,7 @@ class AdjudicationController extends Controller
                                     // if it is graded
                                     if($getFormStatus->form_status == 'complete') {
 
-                                        $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(179, 183, 187, 0.5)';
+                                        $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(76, 175, 80, 0.5)';
 
                                     }
                                     
