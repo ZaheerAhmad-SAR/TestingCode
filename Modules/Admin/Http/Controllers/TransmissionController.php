@@ -874,7 +874,6 @@ class TransmissionController extends Controller
         $id      = $request->id;
         $query   = QueryNotification::where('id',$id)->orderBy('created_at','asc')->first();
         $answers = QueryNotification::where('parent_notification_id',$id)->orderBy('created_at','asc')->get();
-
         echo  view('admin::transmissions.response_view',compact('answers','query'));
     }
 
