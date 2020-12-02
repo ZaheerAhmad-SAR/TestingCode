@@ -211,8 +211,9 @@ class SkipNumberController extends Controller
         $skip_options = [];
         if(isset($request->number_value) && count($request->number_value) > 0){
             for ($i = 0; $i < count($request->number_value); $i++) {
+                $skiplogic_id = Str::uuid();
                 $skip_ques = [
-                    'id' => Str::uuid(),
+                    'id' => $skiplogic_id,
                     'question_id' => $request->question_id,
                     'number_value' => (isset($request->number_value) && $request->number_value != '') ? implode(',', $request->number_value) : '',
                     'operator' => (isset($request->operator) && $request->operator != '') ? implode(',', $request->operator) : '',
@@ -229,9 +230,11 @@ class SkipNumberController extends Controller
                     $op_content = explode('_', $request->deactivate_options[$i][$j]);
                     $skip_options = [
                         'id' => Str::uuid(),
+                        'skip_logic_id' => $skiplogic_id,
                         'question_id' => $request->question_id,
                         'value' => $op_content[0], 
                         'title' => $op_content[1],
+                        'type' => 'deactivate',
                         'option_question_id' => $op_content[2]
                         ];
                     QuestionOption::insert($skip_options);
@@ -243,9 +246,11 @@ class SkipNumberController extends Controller
                     $op_content = explode('_', $request->activate_options[$i][$j]);
                     $skip_options = [
                         'id' => Str::uuid(),
+                        'skip_logic_id' => $skiplogic_id,
                         'question_id' => $request->question_id,
                         'value' => $op_content[0], 
                         'title' => $op_content[1],
+                        'type' => 'activate',
                         'option_question_id' => $op_content[2]
                         ];
                     QuestionOption::insert($skip_options);
@@ -272,8 +277,9 @@ class SkipNumberController extends Controller
             $remove_checks_if_already_exists = skipLogic::where($where)->delete();
             $remove_options_checks_if_exists = QuestionOption::where($where)->delete();
             for ($i = 0; $i < count($request->number_value); $i++) {
+                $skiplogic_id = Str::uuid();
                 $skip_ques = [
-                    'id' => Str::uuid(),
+                    'id' => $skiplogic_id,
                     'question_id' => $num_values->question_id,
                     'number_value' => (isset($request->number_value) && $request->number_value != '') ? implode(',', $request->number_value) : '',
                     'operator' => (isset($request->operator) && $request->operator != '') ? implode(',', $request->operator) : '',
@@ -287,12 +293,15 @@ class SkipNumberController extends Controller
                 // Deactivate Questions options
                 if(isset($request->deactivate_options[$i]) && count($request->deactivate_options[$i]) > 0){
                   for($j = 0; $j < count($request->deactivate_options[$i]); $j++) {
+                    $skiplogic_id = Str::uuid();
                     $op_content = explode('_', $request->deactivate_options[$i][$j]);
                     $skip_options = [
                         'id' => Str::uuid(),
+                        'skip_logic_id' => $skiplogic_id,
                         'question_id' => $num_values->question_id,
                         'value' => $op_content[0], 
                         'title' => $op_content[1],
+                        'type' => 'deactivate',
                         'option_question_id' => $op_content[2]
                         ];
                     QuestionOption::insert($skip_options);
@@ -304,9 +313,11 @@ class SkipNumberController extends Controller
                     $op_content = explode('_', $request->activate_options[$i][$j]);
                     $skip_options = [
                         'id' => Str::uuid(),
+                        'skip_logic_id' => $skiplogic_id,
                         'question_id' => $num_values->question_id,
                         'value' => $op_content[0], 
                         'title' => $op_content[1],
+                        'type' => 'activate',
                         'option_question_id' => $op_content[2]
                         ];
                     QuestionOption::insert($skip_options);
@@ -324,8 +335,9 @@ class SkipNumberController extends Controller
             $where = array('question_id' =>$request->question_id);
             $remove_checks_if_already_exists = skipLogic::where($where)->delete();
             for ($i = 0; $i < count($request->textbox_value); $i++) {
+                $skiplogic_id = Str::uuid();
                 $skip_ques = [
-                    'id' => Str::uuid(),
+                    'id' => $skiplogic_id,
                     'question_id' => $request->question_id,
                     'textbox_value' => (isset($request->textbox_value) && $request->textbox_value != '') ? implode(',', $request->textbox_value) : '',
                     'activate_forms' => (isset($request->activate_forms[$i]) && $request->activate_forms[$i] != '') ? implode(',', $request->activate_forms[$i]) : '',
@@ -341,9 +353,12 @@ class SkipNumberController extends Controller
                     $op_content = explode('_', $request->deactivate_options[$i][$j]);
                     $skip_options = [
                         'id' => Str::uuid(),
+                        'skip_logic_id' => $skiplogic_id,
+                        'skip_logic_id' => $skiplogic_id,
                         'question_id' => $request->question_id,
                         'value' => $op_content[0], 
                         'title' => $op_content[1],
+                        'type' => 'deactivate',
                         'option_question_id' => $op_content[2]
                         ];
                     QuestionOption::insert($skip_options);
@@ -355,9 +370,11 @@ class SkipNumberController extends Controller
                     $op_content = explode('_', $request->activate_options[$i][$j]);
                     $skip_options = [
                         'id' => Str::uuid(),
+                        'skip_logic_id' => $skiplogic_id,
                         'question_id' => $request->question_id,
                         'value' => $op_content[0], 
                         'title' => $op_content[1],
+                        'type' => 'activate',
                         'option_question_id' => $op_content[2]
                         ];
                     QuestionOption::insert($skip_options);
@@ -386,8 +403,9 @@ class SkipNumberController extends Controller
             $remove_checks_if_already_exists = skipLogic::where($where)->delete();
             $remove_options_checks_if_exists = QuestionOption::where($where)->delete();
             for ($i = 0; $i < count($request->textbox_value); $i++) {
+                $skiplogic_id = Str::uuid();
                 $skip_ques = [
-                    'id' => Str::uuid(),
+                    'id' => $skiplogic_id,
                     'question_id' => $num_values->question_id,
                     'textbox_value' => (isset($request->textbox_value) && $request->textbox_value != '') ? implode(',', $request->textbox_value) : '',
                     'activate_forms' => (isset($request->activate_forms[$i]) && $request->activate_forms[$i] != '') ? implode(',', $request->activate_forms[$i]) : '',
@@ -403,9 +421,11 @@ class SkipNumberController extends Controller
                     $op_content = explode('_', $request->deactivate_options[$i][$j]);
                     $skip_options = [
                         'id' => Str::uuid(),
+                        'skip_logic_id' => $skiplogic_id,
                         'question_id' => $num_values->question_id,
                         'value' => $op_content[0], 
                         'title' => $op_content[1],
+                        'type' => 'deactivate',
                         'option_question_id' => $op_content[2]
                         ];
                     QuestionOption::insert($skip_options);
@@ -417,9 +437,11 @@ class SkipNumberController extends Controller
                     $op_content = explode('_', $request->activate_options[$i][$j]);
                     $skip_options = [
                         'id' => Str::uuid(),
+                        'skip_logic_id' => $skiplogic_id,
                         'question_id' => $num_values->question_id,
                         'value' => $op_content[0], 
                         'title' => $op_content[1],
+                        'type' => 'activate',
                         'option_question_id' => $op_content[2]
                         ];
                     QuestionOption::insert($skip_options);
