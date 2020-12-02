@@ -448,8 +448,9 @@ class SkipLogicController extends Controller
             $remove_checks_if_already_exists = skipLogic::where($where)->delete();
             $remove_options_checks_if_exists = QuestionOption::where($where)->delete();
             for ($i = 0; $i < count($request->option_value); $i++) {
+                $skiplogic_id = Str::uuid();
                 $skip_ques = [
-                    'id' => Str::uuid(),
+                    'id' => $skiplogic_id,
                     'question_id' => $request->question_id,
                     'option_title' => (isset($request->option_title[$i]) && $request->option_title[$i] != '') ? $request->option_title[$i] : '',
                     'option_value' => (isset($request->option_value[$i]) && $request->option_value[$i] != '') ? $request->option_value[$i] : '',
@@ -466,8 +467,10 @@ class SkipLogicController extends Controller
                     $op_content = explode('_', $request->deactivate_options[$i][$j]);
                     $skip_options = [
                         'id' => Str::uuid(),
+                        'skip_logic_id' => $skiplogic_id,
                         'question_id' => $request->question_id,
                         'value' => $op_content[0], 
+                        'type' => 'deactivate', 
                         'title' => $op_content[1],
                         'option_question_id' => $op_content[2]
                         ];
@@ -480,8 +483,10 @@ class SkipLogicController extends Controller
                     $op_content = explode('_', $request->activate_options[$i][$j]);
                     $skip_options = [
                         'id' => Str::uuid(),
+                        'skip_logic_id' => $skiplogic_id,
                         'question_id' => $request->question_id,
-                        'value' => $op_content[0], 
+                        'value' => $op_content[0],
+                        'type' => 'activate', 
                         'title' => $op_content[1],
                         'option_question_id' => $op_content[2]
                         ];
