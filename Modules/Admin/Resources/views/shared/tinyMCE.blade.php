@@ -2,9 +2,12 @@
 <script src="{{ asset('tinymce/js/tinymce/tinymce.min.js') }}"></script>
 <script>
 tinymce.init({
-    selector: '#text_info_add',
+    selector: '#text_info_add,#text_info_add_calc,#text_info_add_cert,#text_info_de',
     height: 250,
     forced_root_block: '',
+    relative_urls : false,
+    remove_script_host : false,
+    convert_urls : true,
     entity_encoding : "raw",
     plugins: [
         'advlist autolink lists link image charmap print preview anchor',
@@ -12,7 +15,6 @@ tinymce.init({
         'insertdatetime media table contextmenu paste code'
     ],
     toolbar: 'insertfile undo redo | styleselect | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-    relative_urls: true,
     images_upload_url: "{{ route('tinymce.image_upload') }}",
     images_upload_handler: function (blobInfo, success, failure) {
         var xhr, formData;

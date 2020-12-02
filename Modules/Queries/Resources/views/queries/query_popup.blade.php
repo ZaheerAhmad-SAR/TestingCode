@@ -669,7 +669,6 @@
         var module              = $("#module").val();
         var modility_id         = $("#modility_id").val();
         var form_type_id        = $("#form_type_id").val();
-
         var queryAssignedTo     = $("input[name='assignQueries']:checked").val();
         var message             = $('#message').val();
         var query_url           =  document.URL;

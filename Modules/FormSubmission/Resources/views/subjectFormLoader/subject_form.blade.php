@@ -66,6 +66,10 @@
                                             <th scope="row">Site Code</th>
                                             <td>{{ $site->site_code }}</td>
                                         </tr>
+                                        <tr>
+                                            <th scope="row">Cohart</th>
+                                            <td>{{ \Modules\Admin\Entities\Study::getDiseaseCohort($study) }}</td>
+                                        </tr>
                                     </table>
                                 </div>
                             </div>
