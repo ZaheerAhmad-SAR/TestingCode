@@ -38,6 +38,10 @@
             .fstselected{
                 font-size: 12px !important;
             }
+            .modal-lg {
+                min-width: auto;
+                max-width: fit-content;
+            }
         </style>
     </head>
 
@@ -49,6 +53,7 @@
     <!-- END: Pre Loader-->
     @yield('body')
 
+    @stack('popup_modals')
      <!-- START: Back to top-->
         <a href="#" class="scrollup text-center">
             <i class="icon-arrow-up"></i>

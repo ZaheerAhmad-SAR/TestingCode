@@ -1,24 +1,37 @@
-<div class="d-flex mt-3 mt-md-0 ml-auto">
-<span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;">
-<i class="fas fa-eye" style="margin-top: 12px;" id="question-info-adjudication-{{ $question->id }}"></i></span>
-</div>
 @php
 $text_info = str_replace(array("\n", "\r"), '', html_entity_decode($question->formFields->text_info));
 @endphp
-@push('script_last')
+
+<div class="d-flex mt-3 mt-md-0 ml-auto">
+<span class="ml-3" style="cursor: pointer;">
+<i class="fas fa-eye" style="margin-top: 12px;"  onclick="showModalAdjudication{{ $questionIdStr }}();"></i></span>
+</div>
+@push('popup_modals')
+<!-- Modal -->
+<div class="modal fade" id="question-info-adjudication-{{ $question->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">{!! $question->question_text !!}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            {!! nl2br($text_info) !!}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- Modal End -->
+@endpush
+@push('script')
 <script>
-$(function () {
-  $('#question-info-adjudication-{{ $question->id }}').popover(
-      {
-        title:'{!! $question->question_text !!}',
-        content:'{!! nl2br($text_info) !!}',
-        animation:true,
-        html:true,
-        trigger:'hover',
-        container:'body',
-        template:'<div class="popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>'
-      }
-  )
-})
+    function showModalAdjudication{{ $questionIdStr }}(){
+        $('#question-info-{{ $question->id }}').modal('show')
+    }
 </script>
 @endpush
