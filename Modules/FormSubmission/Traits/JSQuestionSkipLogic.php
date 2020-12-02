@@ -3,6 +3,7 @@
 namespace Modules\FormSubmission\Traits;
 
 use Modules\Admin\Entities\PhaseSteps;
+use Modules\Admin\Entities\QuestionOption;
 use Modules\Admin\Entities\Section;
 
 trait JSQuestionSkipLogic
@@ -143,6 +144,32 @@ trait JSQuestionSkipLogic
             }
             /*---------------------*/
 
+            /*---------------------*/
+            $skipLogicOptions = QuestionOption::where('skip_logic_id', 'like', $skipLogic->id)->get();
+            $activateQuestionOptionsClsArray = [];
+            $deActivateQuestionOptionsClsArray = [];
+            foreach ($skipLogicOptions as $skipLogicOption) {
+                if ($skipLogicOption->type == 'activate') {
+                    $activateQuestionOptionsClsArray[] = buildSafeStr($skipLogicOption->option_question_id, 'skip_logic_' . $skipLogicOption->title . '_' . $skipLogicOption->value);
+                }
+                if ($skipLogicOption->type == 'deactivate') {
+                    $deActivateQuestionOptionsClsArray[] = buildSafeStr($skipLogicOption->option_question_id, 'skip_logic_' . $skipLogicOption->title . '_' . $skipLogicOption->value);
+                }
+            }
+
+            $activateQuestionOptionsClsArray = array_filter($activateQuestionOptionsClsArray);
+            $activatedQuestionOptionsJsArray = '[]';
+            if (count($activateQuestionOptionsClsArray) > 0) {
+                $activatedQuestionOptionsJsArray = '["' . implode('", "', $activateQuestionOptionsClsArray) . '"]';
+            }
+
+            $deActivateQuestionOptionsClsArray = array_filter($deActivateQuestionOptionsClsArray);
+            $deActivatedQuestionOptionsJsArray = '[]';
+            if (count($deActivateQuestionOptionsClsArray) > 0) {
+                $deActivatedQuestionOptionsJsArray = '["' . implode('", "', $deActivateQuestionOptionsClsArray) . '"]';
+            }
+            /*---------------------*/
+
             $skipLogicOperator = (!empty($skipLogic->operator)) ? $skipLogic->operator : '==';
 
             $questionSkipLogicStr .= '
@@ -161,10 +188,12 @@ trait JSQuestionSkipLogic
                 var activate_forms = ' . $activatedFormsJsArray . ';
                 var activate_sections = ' . $activatedSectionsJsArray . ';
                 var activate_questions = ' . $activatedQuestionsJsArray . ';
+                var activate_question_options = ' . $activatedQuestionOptionsJsArray . ';
 
                 var deactivate_forms = ' . $deActivatedFormsJsArray . ';
                 var deactivate_sections = ' . $deActivatedSectionsJsArray . ';
                 var deactivate_questions = ' . $deActivatedQuestionsJsArray . ';
+                var deactivate_question_options = ' . $deActivatedQuestionOptionsJsArray . ';
 
                 var isRunActivateDeactivate = false;
 
@@ -208,6 +237,14 @@ trait JSQuestionSkipLogic
                         });
                     }
 
+                    if(deactivate_question_options.length > 0){
+                        $.each(deactivate_question_options, function( index, value ) {
+                            if(value != \'\'){
+                                disableByClass(value);
+                            }
+                        });
+                    }
+
                     if(activate_forms.length > 0){
                         $.each(activate_forms, function( index, value ) {
                             if(value != \'\'){
@@ -226,6 +263,14 @@ trait JSQuestionSkipLogic
 
                     if(activate_questions.length > 0){
                         $.each(activate_questions, function( index, value ) {
+                            if(value != \'\'){
+                                enableByClass(value);
+                            }
+                        });
+                    }
+
+                    if(activate_question_options.length > 0){
+                        $.each(activate_question_options, function( index, value ) {
                             if(value != \'\'){
                                 enableByClass(value);
                             }
