@@ -416,7 +416,7 @@ class GradingController extends Controller
 
                             if ($getAssignWork != null) {
 
-                                $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(76, 175, 80, 0.5)';
+                                $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(179, 183, 187, 0.5)';
 
                                 // check if form is not initialize and assign date is passed
                                 $getFormStatus = FormStatus::where('subject_id', $subject->id)
@@ -448,7 +448,8 @@ class GradingController extends Controller
                                     // if it is graded
                                     if($getFormStatus->form_status == 'complete') {
 
-                                        $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(179, 183, 187, 0.5)';
+                                        
+                                        $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(76, 175, 80, 0.5)';
 
                                     }
                                 } // form status null check ends
@@ -666,35 +667,45 @@ class GradingController extends Controller
 
                 // get QC Role IDs
                 $roleIds = Role::leftJoin('permission_role','permission_role.role_id', '=', 'roles.id')
-                                    ->leftJoin('permissions', 'permissions.id', '=', 'permission_role.permission_id')
-                                    ->where('permissions.name', '=', 'qualitycontrol.index')
-                                    ->where('roles.role_type', '!=', 'super_admin')
-                                    ->groupBy('permission_role.role_id')
-                                    ->pluck('permission_role.role_id')
-                                    ->toArray();
+                        ->leftJoin('permissions', 'permissions.id', '=', 'permission_role.permission_id')
+                        ->where(function ($query) {
+                            $query->where('permissions.name', '=', 'qualitycontrol.create')
+                            ->orWhere('permissions.name', '=', 'qualitycontrol.edit');
+                        })
+                        ->whereNotIn('roles.role_type', ['super_admin', 'system_role'])
+                        ->groupBy('permission_role.role_id')
+                        ->pluck('permission_role.role_id')
+                        ->toArray();
                 
             } elseif ($getFormType->form_type == 'Grading') {
                 // get GRADING Role IDs
                 $roleIds = Role::leftJoin('permission_role','permission_role.role_id', '=', 'roles.id')
-                                    ->leftJoin('permissions', 'permissions.id', '=', 'permission_role.permission_id')
-                                    ->where('roles.role_type', '!=', 'super_admin')
-                                    ->where(function ($query) {
-                                        $query->where('permissions.name', '=', 'grading.index')
-                                              ->orWhere('permissions.name', '=', 'adjudication.index');
-                                    })
-                                    ->groupBy('permission_role.role_id')
-                                    ->pluck('permission_role.role_id')
-                                    ->toArray();
-                
+      
+                ->leftJoin('permissions', 'permissions.id', '=', 'permission_role.permission_id')
+                ->where(function ($query) {
+                    $query->where('permissions.name', '=', 'grading.create')
+                    ->orWhere('permissions.name', '=', 'grading.edit')
+                    ->orWhere('permissions.name', '=', 'adjudication.index');       
+                })
+                ->whereNotIn('roles.role_type', ['super_admin', 'system_role'])
+                ->groupBy('permission_role.role_id')
+                ->pluck('permission_role.role_id')
+                ->toArray();
+
+
             } elseif ($getFormType->form_type == 'Eligibility') {
+                
                 // get Eligibility Role IDs
                 $roleIds = Role::leftJoin('permission_role','permission_role.role_id', '=', 'roles.id')
-                                    ->leftJoin('permissions', 'permissions.id', '=', 'permission_role.permission_id')
-                                    ->where('permissions.name','=','eligibility.index')
-                                    ->where('roles.role_type', '!=', 'super_admin')
-                                    ->groupBy('permission_role.role_id')
-                                    ->pluck('permission_role.role_id')
-                                    ->toArray();
+                        ->leftJoin('permissions', 'permissions.id', '=', 'permission_role.permission_id')
+                        ->where(function ($query) {
+                            $query->where('permissions.name','=','eligibility.create')
+                            ->orWhere('permissions.name','=','eligibility.edit');
+                        })
+                        ->whereNotIn('roles.role_type', ['super_admin', 'system_role'])
+                        ->groupBy('permission_role.role_id')
+                        ->pluck('permission_role.role_id')
+                        ->toArray();
 
             }
 
@@ -1257,9 +1268,8 @@ class GradingController extends Controller
                         if($checkModality != null) {
                         // comparing assign modality with the array modality
                         //if($subject->modility_id == $type['modility_id']) {
-
-
-                            $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(76, 175, 80, 0.5)';
+                            
+                            $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(179, 183, 187, 0.5)';
 
                             // check if form is not initialize and assign date is passed
                             $getFormStatus = FormStatus::where('subject_id', $subject->subj_id)
@@ -1290,7 +1300,7 @@ class GradingController extends Controller
                                 // if it is graded
                                 if($getFormStatus->form_status == 'complete') {
 
-                                    $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(179, 183, 187, 0.5)';
+                                    $formStatus[$key.'_'.$type['form_type']]['color'] = 'background: rgba(76, 175, 80, 0.5)';
 
                                 }
 

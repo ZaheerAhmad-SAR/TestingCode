@@ -187,7 +187,7 @@
                 </ul>
             </li>
 
-            @elseif(hasPermission(auth()->user(),'qualitycontrol.store') && hasPermission(auth()->user(),'qualitycontrol.edit'))
+            @elseif(hasPermission(auth()->user(),'qualitycontrol.create') && hasPermission(auth()->user(),'qualitycontrol.edit'))
 
             @if(!empty(session('current_study')))
             <li class="dropdown">
@@ -239,7 +239,7 @@
                 @endif
             @endif
 
-            @if(hasPermission(auth()->user(),'qualitycontrol.store') && hasPermission(auth()->user(),'qualitycontrol.edit'))
+            @if(hasPermission(auth()->user(),'qualitycontrol.create') && hasPermission(auth()->user(),'qualitycontrol.edit'))
 
                 @if(session('current_study'))
                     <li class="dropdown">
@@ -264,7 +264,7 @@
                 @endif
             @endif
 
-            @if(hasPermission(auth()->user(),'grading.store') && hasPermission(auth()->user(),'grading.edit'))
+            @if(hasPermission(auth()->user(),'grading.create') && hasPermission(auth()->user(),'grading.edit'))
 
                 @if(session('current_study'))
                     <li class="dropdown">

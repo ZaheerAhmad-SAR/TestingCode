@@ -874,14 +874,14 @@ class TransmissionController extends Controller
         $id      = $request->id;
         $query   = QueryNotification::where('id',$id)->orderBy('created_at','asc')->first();
         $answers = QueryNotification::where('parent_notification_id',$id)->orderBy('created_at','asc')->get();
-
         echo  view('admin::transmissions.response_view',compact('answers','query'));
     }
 
     public function getSiteByTransmissionId(Request $request)
     {
-            $transmission_Id = $request->transmission_Id;
-            $record = CrushFtpTransmission::where('Transmission_Number','like',$transmission_Id)->first();
+            $trans_id = $request->trans_id;
+            $record   = DB::table('crush_ftp_transmissions')->where('Transmission_Number', $trans_id)->first();
+            //printSqlQuery($aa,true);
             echo  view('admin::transmissions.site_dropdown',compact('record'));
 
     }

@@ -196,7 +196,7 @@
                                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right" style="">
                                                         @if($transmission->status !== 'accepted')
                                                     <span class="dropdown-item">
-                                                        <a href="javascript:void(0)" data-id="{{$transmission->Transmission_Number}}" class="creatNewTransmissionsForQueries">
+                                                        <a href="javascript:void(0)" data-id="{{$transmission->Transmission_Number}}" onclick="creatNewTransmissionsForQueries('{{$transmission->Transmission_Number}}');">
                                                             <i class="fas fa-question-circle" aria-hidden="true">
                                                             </i> Queries</a>
                                                     </span>
@@ -216,6 +216,7 @@
                                                  <!-- gear dropdown -->
                                             </td>
                                         </tr>
+
                                     @endforeach
                                     @else
                                         <tr>
@@ -235,49 +236,6 @@
         <!-- END: Card DATA-->
     </div>
 
-
-    <!-- transmission status modal  -->
-    <!-- Modal -->
-    <div class="modal fade" id="transmission-status-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content" style="border-color: #1e3d73;">
-          <div class="modal-header bg-primary" style="color: #fff">
-            <h5 class="modal-title" id="exampleModalLabel">Change Transmission Status</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"  style="color: #fff">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-            <form action="{{ route('transmissions-status') }}" method="POST" class="transmission-status-form">
-                @csrf
-              <div class="modal-body">
-                    <input type="hidden" name="hidden_transmission_id" value="">
-                    <div class="form-group col-md-12">
-                        <label>Change Status</label>
-                        <select name="status" id="status" class="form-control" required="required">
-                            <option value="">Select Status</option>
-                            <option value="pending">Pending</option>
-                            <option value="accepted">Accepted</option>
-                            <option value="rejected">Reject</option>
-                            <option value="onhold">On-Hold</option>
-                            <option value="query_opened">Open Query</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group col-md-12">
-                        <label>Comments / Query Text for site coordinator</label>
-                        <textarea class="form-control" name="comment" value="" rows="4" required=""></textarea>
-                    </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Change Status</button>
-              </div>
-            </form>
-        </div>
-      </div>
-    </div>
-
-
     <div class="modal fade" tabindex="-1" role="dialog" id="transmissonQueryModal" aria-labelledby="exampleModalQueries" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -294,13 +252,12 @@
                                     <label for="Name" class="col-sm-2 col-form-label"> Sites :</label>
                                     <div class="col-sm-4">
 
-                                        <select class="form-control sitesChange" name="site_name" id="site_name">
-                                            <option value="">--Select Sites--</option>
+                                        <select class="form-control sitesChange siteShowUp" name="site_name" id="site_name">
 
-                                            @php
-                                                $data = Modules\Admin\Entities\CrushFtpTransmission::where('transmission_number','=',$transmission->Transmission_Number)->first();
-                                            @endphp
-                                            <option value="{{$data['Transmission_Number']}}">{{$data['Site_Name']}}</option>
+{{--                                            @php--}}
+{{--                                                $data = Modules\Admin\Entities\CrushFtpTransmission::where('transmission_number','=',$transmission->Transmission_Number)->first();--}}
+{{--                                            @endphp--}}
+{{--                                            <option value="{{$data['Transmission_Number']}}">{{$data['Site_Name']}}</option>--}}
                                         </select>
 
                                     </div>
@@ -354,10 +311,54 @@
             </div>
         </div>
     </div>
+
+    <!-- transmission status modal  -->
+    <!-- Modal -->
+    <div class="modal fade" id="transmission-status-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-color: #1e3d73;">
+          <div class="modal-header bg-primary" style="color: #fff">
+            <h5 class="modal-title" id="exampleModalLabel">Change Transmission Status</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"  style="color: #fff">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+            <form action="{{ route('transmissions-status') }}" method="POST" class="transmission-status-form">
+                @csrf
+              <div class="modal-body">
+                    <input type="hidden" name="hidden_transmission_id" value="">
+                    <div class="form-group col-md-12">
+                        <label>Change Status</label>
+                        <select name="status" id="status" class="form-control" required="required">
+                            <option value="">Select Status</option>
+                            <option value="pending">Pending</option>
+                            <option value="accepted">Accepted</option>
+                            <option value="rejected">Reject</option>
+                            <option value="onhold">On-Hold</option>
+                            <option value="query_opened">Open Query</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <label>Comments / Query Text for site coordinator</label>
+                        <textarea class="form-control" name="comment" value="" rows="4" required=""></textarea>
+                    </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Change Status</button>
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+
+
     <!-- transmission query model start-->
 
     <div class="modal fade" tabindex="-1" role="dialog" id="transmissonQueryTableView" aria-labelledby="exampleModalQueries" aria-hidden="true">
-        <div class="modal-dialog  modal-lg modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered" style="max-width: 850px;" role="document">
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header ">
@@ -369,7 +370,7 @@
                             <thead>
                             <tr>
                                 <th>Subject</th>
-                                <th>Submited By</th>
+                                <th>Submitted By</th>
                                 <th>Assigned To</th>
                                 <th>Created Date</th>
                                 <th>Action</th>
@@ -383,13 +384,30 @@
         </div>
     </div>
     <div class="modal fade" tabindex="-1" role="dialog" id="responseView" aria-labelledby="exampleModalQueries" aria-hidden="true">
-        <div class="modal-dialog  modal-lg modal-dialog-centered" role="document">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" role="document" style="max-width: 1000px;">
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header ">
                     <p class="modal-title">Response View</p>
                 </div>
-                <div class="modal-body dataResponse">
+                <div class="modal-body ">
+                    <form id="responseReplyViewForm" name="responseReplyViewForm">
+                        <div class="tab-content clearfix">
+                            @csrf
+                            <div class="dataResponse"></div>
+                            <div class="col-sm-12">
+                                <div class="replyClick" style="text-align: right;">
+                                    <span style="cursor: pointer;">
+                                        <i class="fa fa-reply"></i> &nbsp; reply
+                                        </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="submit"  name="submit" class="btn btn-outline-primary" id="submit"><i class="fa fa-save"></i> Send</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -409,11 +427,13 @@
 <script type="text/javascript">
 
     // Transmission Query  Work start
-    $('.creatNewTransmissionsForQueries').click(function () {
-        var transmission_Id = $(this).attr('data-id');
+    function creatNewTransmissionsForQueries(transmission_Id)
+    {
         $('#transmissonQueryModal').modal('show');
+        loadSiteByTransmissionId(transmission_Id);
+        //loadQueryByTransmissionId(transmission_Id);
+    }
 
-    });
 
     $('.showAlltransmissionQuery').click(function () {
         var transmission_Id = $(this).attr('data-id');
@@ -421,23 +441,30 @@
         loadQueryByTransmissionId(transmission_Id);
     });
 
+    $('body').on('click', '.replyClick', function () {
+        $('.commentsInput').css('display','');
+        $('.queryAttachments').css('display','');
+        $('.queryStatus').css('display','');
+        $('.replyClick').css('display','none');
+    });
 
-    {{--function loadSiteByTransmissionId(transmission_Id) {--}}
-    {{--    $.ajax({--}}
-    {{--        url:"{{route('transmissions.getSiteByTransmissionId')}}",--}}
-    {{--        type: 'POST',--}}
-    {{--        data: {--}}
-    {{--            "_token": "{{ csrf_token() }}",--}}
-    {{--            'transmission_Id'      :transmission_Id,--}}
-    {{--        },--}}
-    {{--        success: function(response)--}}
-    {{--        {--}}
-    {{--            console.log(response);--}}
-    {{--            $('#siteShowUp').html('');--}}
-    {{--            $('#siteShowUp').html(response);--}}
-    {{--        }--}}
-    {{--    });--}}
-    {{--}--}}
+
+    function loadSiteByTransmissionId(trans_id) {
+        $.ajax({
+            url:"{{route('transmissions.getSiteByTransmissionId')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                'trans_id'      :trans_id,
+            },
+            success: function(response)
+            {
+                console.log(response);
+                $('.siteShowUp').html('');
+                $('.siteShowUp').html(response);
+            }
+        });
+    }
 
     function loadQueryByTransmissionId(transmission_Id) {
         $.ajax({

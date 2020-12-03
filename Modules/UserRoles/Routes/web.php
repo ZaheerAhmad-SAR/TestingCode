@@ -14,28 +14,6 @@
     Route::get('/registration/{token}', 'UserController@registration_view')->name('registration');
 
 
-    Route::get('assign-work','GradingController@assignWork')->name('assign-work');
-    Route::post('save-assign-work','GradingController@saveAssignWork')->name('save-assign-work');
-    
-    //Route::post('update-assign-work','GradingController@updateAssignWork')->name('update-assign-work');
-
-
-// get users for form type, assign work section
-    Route::get('get-form-type-users', 'GradingController@getFormTypeUsers')->name('get-form-type-users');
-// edit assign work
-    //Route::get('edit-assign-work', 'GradingController@editAssignWork')->name('edit-assign-work');
-// check assign work
-    Route::post('check-assign-work','GradingController@checkAssignWork')->name('check-assign-work');
-
-
-// QC Work List
-    Route::get('qc-work-list','QualityControlController@qcWorkList')->name('qualitycontrol.qc-work-list');
-// Grading Work List
-    Route::get('grading-work-list','GradingController@gradingWorkList')->name('gradingcontrol.grading-work-list');
-// Adjudication Work List
-    Route::get('adjudication-work-list','AdjudicationController@adjudicationWorkList')->name('adjudicationcontroller.adjudication-work-list');
-
-
 Route::prefix('userroles')->group(function() {
     Route::get('/', 'UserRolesController@index');
 	Route::get('getallUsers','UserRolesController@getallUsers')->name('getallUsers');
@@ -47,7 +25,8 @@ Route::group(['middleware' => ['auth','web']],function (){
 
 Route::group(['middleware' => ['auth','web','roles']],function(){
 
-//Amir Khan route
+/** -----------------------Amir Khan route ---------------------------------- **/
+
 // form 1 grading
     Route::get('excel-grading','GradingController@excelGrading')->name('excel-grading');
 // form 2 grading
@@ -68,6 +47,30 @@ Route::group(['middleware' => ['auth','web','roles']],function(){
 
 // grading status
     Route::get('grading-status','GradingController@gradingStatus')->name('grading.status');
+
+// assign work routes*
+    Route::get('assign-work','GradingController@assignWork')->name('assign-work');
+    Route::post('save-assign-work','GradingController@saveAssignWork')->name('save-assign-work');
+    
+    //Route::post('update-assign-work','GradingController@updateAssignWork')->name('update-assign-work');
+
+// get users for form type, assign work section*
+    Route::get('get-form-type-users', 'GradingController@getFormTypeUsers')->name('get-form-type-users');
+// edit assign work
+    //Route::get('edit-assign-work', 'GradingController@editAssignWork')->name('edit-assign-work');
+// check assign work*
+    Route::post('check-assign-work','GradingController@checkAssignWork')->name('check-assign-work');
+
+// QC Work List*
+    Route::get('qc-work-list','QualityControlController@qcWorkList')->name('qualitycontrol.qc-work-list');
+
+// Grading Work List*
+    Route::get('grading-work-list','GradingController@gradingWorkList')->name('gradingcontrol.grading-work-list');
+
+// Adjudication Work List*
+    Route::get('adjudication-work-list','AdjudicationController@adjudicationWorkList')->name('adjudicationcontroller.adjudication-work-list');
+
+/** ------------------------------ Amir Khan Routes ends ------------------------------------------**/
 
 //Invitation_Routes
     Route::get('/users/invite', 'UserController@invite_view')->name('invite_view');

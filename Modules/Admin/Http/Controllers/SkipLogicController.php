@@ -41,7 +41,8 @@ class SkipLogicController extends Controller
     {
         $activate_forms_array = [];
         $deactivate_forms_array = [];
-        $function_string = '';
+        $function_string_ac = '';
+        $function_string_de = '';
         //$view = return view('admin::forms.skip_sections');
         $where = array(
             "question_id" =>$request->question_id,
@@ -84,7 +85,7 @@ class SkipLogicController extends Controller
                                             <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" onclick="activate_checks(\'' . $value->step_id . '\',\'sections_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');" data-target=".row-' .$value->step_id.'-ac-'.$request->index.'" style="font-size: 20px; color: #1e3d73;"></i>
                                           </div>
                                         </td>
-                                        <td colspan="5"> <input type="checkbox" name="activate_forms[' .$request->index. '][]" value="' . $value->step_id . '" '.$checked.' class="activate_step_'.$value->step_id.'_'.$request->index.'" onclick="disabled_opposite(\'' . $value->step_id . '\',\'deactivate_step_\',\''.$request->index.'\',\'activate_step_\')"> &nbsp;&nbsp;' . $value->step_name . '</td>
+                                        <td colspan="5"> <input type="checkbox" name="activate_forms[' .$request->index. '][]" value="' . $value->step_id . '" '.$checked.' class="activate_step_'.$value->step_id.'_'.$request->index.'" onclick="disabled_opposite(\'' . $value->step_id . '\',\'deactivate_step_\',\''.$request->index.'\',\'activate_step_\');"> &nbsp;&nbsp;' . $value->step_name . '</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -93,8 +94,8 @@ class SkipLogicController extends Controller
                 </div>
                 <div class="card collapse row-'.$value->step_id.'-ac-'.$request->index.' sections_list_'.$value->step_id.'_'.$request->index.'">
                 </div>';
-            $function_string .='disabled_opposite(\'' . $value->step_id . '\',\'deactivate_step_\',\''.$request->index.'\',\'activate_step_\');';
-            $function_string .='activate_checks(\'' . $value->step_id . '\',\'sections_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
+            $function_string_ac .='disabled_opposite(\'' . $value->step_id . '\',\'deactivate_step_\',\''.$request->index.'\',\'activate_step_\');';
+            $function_string_ac .='activate_checks(\'' . $value->step_id . '\',\'sections_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
         }
         $step_contents_active .= '</div>';
         $step_contents_deactive = '<div class="col-12 col-sm-6 mt-3 current_div_de">
@@ -138,13 +139,14 @@ class SkipLogicController extends Controller
               <div class="card collapse row-'.$value->step_id.'-de-'.$request->index.' de_sections_list_'.$value->step_id.'_'.$request->index.'">';
              
             $step_contents_deactive .= '</div>';
-            $function_string .='disabled_opposite(\'' . $value->step_id . '\',\'activate_step_\',\''.$request->index.'\',\'deactivate_step_\');';
-            $function_string .= 'deactivate_checks(\'' . $value->step_id . '\',\'de_sections_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
+            $function_string_de .='disabled_opposite(\'' . $value->step_id . '\',\'activate_step_\',\''.$request->index.'\',\'deactivate_step_\');';
+            $function_string_de .= 'deactivate_checks(\'' . $value->step_id . '\',\'de_sections_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
             
         }
 
         $step_contents_deactive .= '</div>';
         $step_contents = $step_contents_active . $step_contents_deactive;
+        $function_string = $function_string_de . $function_string_ac;
         $content_array = array(
             'html_str' => $step_contents,
             'function_str' => $function_string
@@ -191,7 +193,7 @@ class SkipLogicController extends Controller
                             <div class="card-body collapse row-'.$value->id.'-ac-'.$request->index.' ac_questions_list_'.$value->id.'_'.$request->index.'" style="padding: 0;">
 
                            </div>';
-            $function_string .='activate_section_'.$value->id.'_'.$request->index.'"  onclick="disabled_opposite(\''.$value->id.'\',\'deactivate_section_\',\''.$request->index.'\',\'activate_section_\');';
+            $function_string .='disabled_opposite(\''.$value->id.'\',\'deactivate_section_\',\''.$request->index.'\',\'activate_section_\');';
             $function_string .= 'question_for_activate(\'' . $value->id . '\',\'ac_questions_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
         }
         
@@ -278,16 +280,16 @@ class SkipLogicController extends Controller
                                     <tbody>';
             $options_ac_contents .= '<tr><td class="sec_id" style="display: none;">'.$value->id.'</td><td style="text-align: center;width:15%;">
                                       <div class="btn-group btn-group-sm" role="group">
-                                        <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-'.$value->id.'-ac-'.$request->index.'" style="font-size: 20px; color: #1e3d73;" onclick="question_options_activate(\''.$value->id.'\',\'ac_options_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\')"></i>
+                                        <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-'.$value->id.'-ac-'.$request->index.'" style="font-size: 20px; color: #1e3d73;" onclick="question_options_activate(\''.$value->id.'\',\'ac_options_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');"></i>
                                       </div>
-                                    </td><td colspan="5"> <input type="checkbox" name="activate_questions[' .$request->index. '][]" value="' . $value->id . '" '.$checked.' class="activate_question_'.$value->id.'_'.$request->index.'"  onclick="disabled_opposite(\''.$value->id.'\',\'deactivate_question_\',\''.$request->index.'\',\'activate_question_\')"> ' . $value->question_text . '</td>';
+                                    </td><td colspan="5"> <input type="checkbox" name="activate_questions[' .$request->index. '][]" value="'.$value->id.'" class="activate_question_'.$value->id.'_'.$request->index.'"  onclick="disabled_opposite(\''.$value->id.'\',\'deactivate_question_\',\''.$request->index.'\',\'activate_question_\');" '.$checked.'> ' . $value->question_text . '</td>';
 
             $options_ac_contents .= '</tr></tbody></table></div></div>';
             $options_ac_contents .= '<div class="card-body collapse row-'.$value->id.'-ac-'.$request->index.' " style="padding: 0;"><table class="table table-bordered" style="margin-bottom:0px;">
                                     <tbody class="ac_options_list_'.$value->id.'_'.$request->index.'">
                                     </tbody>
                                 </table> </div>';
-            $function_string .='activate_question_'.$value->id.'_'.$request->index.'"  onclick="disabled_opposite(\''.$value->id.'\',\'deactivate_question_\',\''.$request->index.'\',\'activate_question_\');';                    
+            $function_string .='disabled_opposite(\''.$value->id.'\',\'deactivate_question_\',\''.$request->index.'\',\'activate_question_\');';                    
             $function_string .='question_options_activate(\''.$value->id.'\',\'ac_options_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';                    
         }
         $options_ac_array = array(
@@ -352,22 +354,24 @@ class SkipLogicController extends Controller
     {
         $questions = Question::where('id', $request->id)->with('optionsGroup')->first();
         $options_contents = '';
-         $function_string = '';
+        $function_string = '';
         $options_value = explode(',', $questions->optionsGroup->option_value);
         $options_name = explode(',', $questions->optionsGroup->option_name);
         if(null !== $questions->optionsGroup){
             foreach ($options_name as $key => $value) {
                 if($request->option_value != 'q_type_num'){
                     $where = array(
-                        "question_id" =>$request->question_id,
+                        "option_question_id" =>$request->id,
                         "title" =>$value,
-                        "value" =>$options_value[$key]
+                        "value" =>$options_value[$key],
+                        "type" => 'activate'
                     );
                 }else{
                     $where = array(
                         "option_question_id" =>$request->id,
                         "title" =>$value,
-                        "value" =>$options_value[$key]
+                        "value" =>$options_value[$key],
+                        "type" => 'activate'
                     );
                 }
                 $if_exists_record = QuestionOption::where($where)->first();
@@ -406,15 +410,17 @@ class SkipLogicController extends Controller
             foreach ($options_name as $key => $value) {
                 if($request->option_value != 'q_type_num'){
                     $where = array(
-                        "question_id" =>$request->question_id,
+                        "option_question_id" =>$request->id,
                         "title" =>$value,
-                        "value" =>$options_value[$key]
+                        "value" =>$options_value[$key],
+                        "type" => 'deactivate'
                     );
                 }else{
                     $where = array(
                         "option_question_id" =>$request->id,
                         "title" =>$value,
-                        "value" =>$options_value[$key]
+                        "value" =>$options_value[$key],
+                        "type" => 'deactivate'
                     );
                 }
                 $if_exists_record = QuestionOption::where($where)->first();
