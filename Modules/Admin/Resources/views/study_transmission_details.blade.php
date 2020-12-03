@@ -196,7 +196,7 @@
                                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right" style="">
                                                         @if($transmission->status !== 'accepted')
                                                     <span class="dropdown-item">
-                                                        <a href="javascript:void(0)" data-id="{{$transmission->Transmission_Number}}" class="creatNewTransmissionsForQueries">
+                                                        <a href="javascript:void(0)" data-id="{{$transmission->Transmission_Number}}" onclick="creatNewTransmissionsForQueries('{{$transmission->Transmission_Number}}');">
                                                             <i class="fas fa-question-circle" aria-hidden="true">
                                                             </i> Queries</a>
                                                     </span>
@@ -216,82 +216,7 @@
                                                  <!-- gear dropdown -->
                                             </td>
                                         </tr>
-                                        <div class="modal fade" tabindex="-1" role="dialog" id="transmissonQueryModal" aria-labelledby="exampleModalQueries" aria-hidden="true">
-                                            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                                                <div class="modal-content">
-                                                    <div class="alert alert-danger" style="display:none"></div>
-                                                    <div class="modal-header ">
-                                                        <p class="modal-title">Transmisson Query</p>
-                                                    </div>
-                                                    <form id="queriesTransmissionForm" name="queriesTransmissionForm">
-                                                        <div class="modal-body">
-                                                            <div id="exTab1">
-                                                                <div class="tab-content clearfix">
-                                                                    @csrf
-                                                                    <div class="form-group row">
-                                                                        <label for="Name" class="col-sm-2 col-form-label"> Sites :</label>
-                                                                        <div class="col-sm-4">
 
-                                                                            <select class="form-control sitesChange" name="site_name" id="site_name">
-                                                                                <option value="">--Select Sites--</option>
-
-                                                                                @php
-                                                                                    $data = Modules\Admin\Entities\CrushFtpTransmission::where('transmission_number','=',$transmission->Transmission_Number)->first();
-                                                                                @endphp
-                                                                                <option value="{{$data['Transmission_Number']}}">{{$data['Site_Name']}}</option>
-                                                                            </select>
-
-                                                                        </div>
-                                                                        <label for="Name" id="usersList" class="col-sm-2 col-form-label"> Select Users :</label>
-                                                                        <div class="col-sm-4 primaryList">
-                                                                        </div>
-
-                                                                    </div>
-                                                                    <div class="form-group row">
-                                                                        <label for="Name" class="col-sm-2 col-form-label">CC:</label>
-                                                                        <div class="col-sm-10">
-                                                                            <input class="form-control" type="text" name="cc_email" id="cc_email">
-                                                                            @error('cc_email')
-                                                                            <div class="text-danger text-xl-center">{{$message}}</div>
-                                                                            @enderror
-                                                                        </div>
-
-                                                                    </div>
-
-                                                                    <div class="form-group row">
-                                                                        <label for="Name" class="col-sm-2 col-form-label">Subject:</label>
-                                                                        <div class="col-sm-10">
-                                                                            <input class="form-control" type="text" name="query_subject" minlength="6" maxlength="50" id="query_subject">
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="form-group row ">
-                                                                        <label for="Name" class="col-sm-2 col-form-label">Email Body</label>
-                                                                        <div class="col-sm-10">
-                                                                            <textarea class="form-control"  name="remarks"  id="remarks"></textarea>
-                                                                        </div>
-                                                                    </div>
-
-                                                                    <div class="form-group row queryAttachments">
-                                                                        <label for="Attachment" class="col-sm-2 col-form-label">Attachment:</label>
-                                                                        <div class="col-sm-10">
-                                                                            <input class="form-control" type="file" name="query_file"  id="query_file">
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button class="btn btn-outline-danger" data-dismiss="modal" id="sendEmail-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                                                                <button type="submit" name="sendEmail" class="btn btn-outline-primary" id="sendEmail"><i class="fa fa-save"></i> Send Email</button>
-                                                            </div>
-                                                            @if(session('message'))
-                                                                <div class="alert-success">{{session('message')}}</div>
-                                                            @endif
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
                                     @endforeach
                                     @else
                                         <tr>
@@ -311,6 +236,81 @@
         <!-- END: Card DATA-->
     </div>
 
+    <div class="modal fade" tabindex="-1" role="dialog" id="transmissonQueryModal" aria-labelledby="exampleModalQueries" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header ">
+                    <p class="modal-title">Transmisson Query</p>
+                </div>
+                <form id="queriesTransmissionForm" name="queriesTransmissionForm">
+                    <div class="modal-body">
+                        <div id="exTab1">
+                            <div class="tab-content clearfix">
+                                @csrf
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-2 col-form-label"> Sites :</label>
+                                    <div class="col-sm-4">
+
+                                        <select class="form-control sitesChange siteShowUp" name="site_name" id="site_name">
+
+{{--                                            @php--}}
+{{--                                                $data = Modules\Admin\Entities\CrushFtpTransmission::where('transmission_number','=',$transmission->Transmission_Number)->first();--}}
+{{--                                            @endphp--}}
+{{--                                            <option value="{{$data['Transmission_Number']}}">{{$data['Site_Name']}}</option>--}}
+                                        </select>
+
+                                    </div>
+                                    <label for="Name" id="usersList" class="col-sm-2 col-form-label"> Select Users :</label>
+                                    <div class="col-sm-4 primaryList">
+                                    </div>
+
+                                </div>
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-2 col-form-label">CC:</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="text" name="cc_email" id="cc_email">
+                                        @error('cc_email')
+                                        <div class="text-danger text-xl-center">{{$message}}</div>
+                                        @enderror
+                                    </div>
+
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="Name" class="col-sm-2 col-form-label">Subject:</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="text" name="query_subject" minlength="6" maxlength="50" id="query_subject">
+                                    </div>
+                                </div>
+
+                                <div class="form-group row ">
+                                    <label for="Name" class="col-sm-2 col-form-label">Email Body</label>
+                                    <div class="col-sm-10">
+                                        <textarea class="form-control"  name="remarks"  id="remarks"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row queryAttachments">
+                                    <label for="Attachment" class="col-sm-2 col-form-label">Attachment:</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" type="file" name="query_file"  id="query_file">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="btn btn-outline-danger" data-dismiss="modal" id="sendEmail-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="submit" name="sendEmail" class="btn btn-outline-primary" id="sendEmail"><i class="fa fa-save"></i> Send Email</button>
+                        </div>
+                        @if(session('message'))
+                            <div class="alert-success">{{session('message')}}</div>
+                        @endif
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- transmission status modal  -->
     <!-- Modal -->
@@ -427,11 +427,13 @@
 <script type="text/javascript">
 
     // Transmission Query  Work start
-    $('.creatNewTransmissionsForQueries').click(function () {
-        var transmission_Id = $(this).attr('data-id');
+    function creatNewTransmissionsForQueries(transmission_Id)
+    {
         $('#transmissonQueryModal').modal('show');
+        loadSiteByTransmissionId(transmission_Id);
+        //loadQueryByTransmissionId(transmission_Id);
+    }
 
-    });
 
     $('.showAlltransmissionQuery').click(function () {
         var transmission_Id = $(this).attr('data-id');
@@ -447,22 +449,22 @@
     });
 
 
-    {{--function loadSiteByTransmissionId(transmission_Id) {--}}
-    {{--    $.ajax({--}}
-    {{--        url:"{{route('transmissions.getSiteByTransmissionId')}}",--}}
-    {{--        type: 'POST',--}}
-    {{--        data: {--}}
-    {{--            "_token": "{{ csrf_token() }}",--}}
-    {{--            'transmission_Id'      :transmission_Id,--}}
-    {{--        },--}}
-    {{--        success: function(response)--}}
-    {{--        {--}}
-    {{--            console.log(response);--}}
-    {{--            $('#siteShowUp').html('');--}}
-    {{--            $('#siteShowUp').html(response);--}}
-    {{--        }--}}
-    {{--    });--}}
-    {{--}--}}
+    function loadSiteByTransmissionId(trans_id) {
+        $.ajax({
+            url:"{{route('transmissions.getSiteByTransmissionId')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                'trans_id'      :trans_id,
+            },
+            success: function(response)
+            {
+                console.log(response);
+                $('.siteShowUp').html('');
+                $('.siteShowUp').html(response);
+            }
+        });
+    }
 
     function loadQueryByTransmissionId(transmission_Id) {
         $.ajax({

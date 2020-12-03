@@ -879,8 +879,9 @@ class TransmissionController extends Controller
 
     public function getSiteByTransmissionId(Request $request)
     {
-            $transmission_Id = $request->transmission_Id;
-            $record = CrushFtpTransmission::where('Transmission_Number','like',$transmission_Id)->first();
+            $trans_id = $request->trans_id;
+            $record   = DB::table('crush_ftp_transmissions')->where('Transmission_Number', $trans_id)->first();
+            //printSqlQuery($aa,true);
             echo  view('admin::transmissions.site_dropdown',compact('record'));
 
     }
