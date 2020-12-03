@@ -185,9 +185,8 @@ class RoleController extends Controller
         if ($request->study_view == 'on') {
             //dd('log store');
             $permissions = Permission::where('name', '=', 'studies.index')
-                ->orwhere('name', '=', 'transmissions.study-transmissions')
-                ->orwhere('name', '=', 'transmissions-study-edit')
-                ->get();
+                                        ->get();
+
             $this->createRolePermissions($role, $permissions);
         }
         if ($request->study_delete == 'on') {
@@ -234,6 +233,15 @@ class RoleController extends Controller
                 ->get();
             $this->createRolePermissions($role, $permissions);
         }
+
+        // if add/edit
+        if ($request->grading_add == 'on' && $request->grading_edit == 'on') {
+            $permissions = Permission::where('name', '=', 'gradingcontrol.grading-work-list')
+                                        ->get();
+            $this->createRolePermissions($role, $permissions);
+        }
+        //ends add/edit check
+
         if ($request->grading_view == 'on') {
             $permissions = Permission::where('name', '=', 'grading.index')
                 ->orwhere('name', 'excel-grading')
@@ -263,6 +271,19 @@ class RoleController extends Controller
                 ->get();
             $this->createRolePermissions($role, $permissions);
         }
+
+        // if add/edit are assigned
+        if ($request->qualityControl_add == 'on' && $request->qualityControl_edit == 'on') {
+
+            $permissions = Permission::where('name', '=', 'transmissions.study-transmissions')
+                ->orwhere('name', '=', 'transmissions-study-edit')
+                ->orwhere('name', '=', 'qualitycontrol.qc-work-list')
+                ->get();
+
+            $this->createRolePermissions($role, $permissions);
+
+        } // check for add/edit ends
+
         if ($request->qualityControl_view == 'on') {
             $permissions = Permission::where('name', '=', 'qualitycontrol.index')
                 ->orwhere('name', 'excel-qc')
@@ -289,10 +310,12 @@ class RoleController extends Controller
                 ->get();
             $this->createRolePermissions($role, $permissions);
         }
+
         if ($request->adjudication_view == 'on') {
             $permissions = Permission::where('name', '=', 'adjudication.index')
                 ->orwhere('name', '=', 'excel-adjudication')
                 ->orwhere('name', '=', 'excel-adjudication2')
+                ->orwhere('name', '=', 'adjudicationcontroller.adjudication-work-list')
                 ->get();
             $this->createRolePermissions($role, $permissions);
         }
@@ -469,6 +492,11 @@ class RoleController extends Controller
                 ->orwhere('name', '=', 'diseaseCohort.edit')
                 ->orwhere('name', '=', 'diseaseCohort.update')
                 ->orwhere('name', '=', 'diseaseCohort.destroy')
+                // ASSIGN WORK PERMISSIONS
+                ->orwhere('name', '=', 'assign-work')
+                ->orwhere('name', '=', 'save-assign-work')
+                ->orwhere('name', '=', 'get-form-type-users')
+                ->orwhere('name', '=', 'check-assign-work')
                 ->get();
             $this->createRolePermissions($role, $permissions);
         }
