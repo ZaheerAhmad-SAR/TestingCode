@@ -669,7 +669,7 @@ class GradingController extends Controller
                 $roleIds = Role::leftJoin('permission_role','permission_role.role_id', '=', 'roles.id')
                         ->leftJoin('permissions', 'permissions.id', '=', 'permission_role.permission_id')
                         ->where(function ($query) {
-                            $query->where('permissions.name', '=', 'qualitycontrol.store')
+                            $query->where('permissions.name', '=', 'qualitycontrol.create')
                             ->orWhere('permissions.name', '=', 'qualitycontrol.edit');
                         })
                         ->whereNotIn('roles.role_type', ['super_admin', 'system_role'])
@@ -683,7 +683,7 @@ class GradingController extends Controller
       
                 ->leftJoin('permissions', 'permissions.id', '=', 'permission_role.permission_id')
                 ->where(function ($query) {
-                    $query->where('permissions.name', '=', 'grading.store')
+                    $query->where('permissions.name', '=', 'grading.create')
                     ->orWhere('permissions.name', '=', 'grading.edit')
                     ->orWhere('permissions.name', '=', 'adjudication.index');       
                 })
@@ -699,7 +699,7 @@ class GradingController extends Controller
                 $roleIds = Role::leftJoin('permission_role','permission_role.role_id', '=', 'roles.id')
                         ->leftJoin('permissions', 'permissions.id', '=', 'permission_role.permission_id')
                         ->where(function ($query) {
-                            $query->where('permissions.name','=','eligibility.store')
+                            $query->where('permissions.name','=','eligibility.create')
                             ->orWhere('permissions.name','=','eligibility.edit');
                         })
                         ->whereNotIn('roles.role_type', ['super_admin', 'system_role'])
