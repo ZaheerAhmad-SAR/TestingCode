@@ -75,7 +75,7 @@ return [
        'mysql2' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', 'https://certifyme.oirrc.net'),
+            'host' => env('DB_HOST', '18.216.100.149'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE_2', 'certification'),
             'username' => env('DB_USERNAME_2', 'certifymeremote'),
