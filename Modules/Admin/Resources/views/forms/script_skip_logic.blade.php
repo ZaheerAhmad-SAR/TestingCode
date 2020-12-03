@@ -17,7 +17,7 @@
         $('select[name="event_section"]').select2();
         $('select[name="event_study"]').select2();
     </script>
-    <script type="text/javascript" id="activate_deactivate">
+    <script type="text/javascript" id="activate_deactivate_steps">
     </script>
     <script type="text/javascript" id="activate_checks">
     </script>
@@ -48,10 +48,9 @@
                     "option_value": id
                 },
                 success: function(response) {
-                    $(append_class).slideDown('600');
                     $(append_class).html(response.html_str);
-                    $('#activate_deactivate').html(response.function_str);
-                    eval(document.getElementById("activate_deactivate").innerHTML);
+                    $('#activate_deactivate_steps').html(response.function_str);
+                    eval(document.getElementById("activate_deactivate_steps").innerHTML);
                 }
             });
     }
@@ -166,7 +165,7 @@
                 "option_value": option_value
             },
             success: function(response){
-                $('.'+append_class+q_id+'_'+index).html(response.html_str);
+                $('.'+append_class+id+'_'+index).html(response.html_str);
                 $('#options_for_activate').html(response.function_str);
                 eval(document.getElementById("options_for_activate").innerHTML);
             }
