@@ -16,18 +16,25 @@
     return view('admin::test_transmission_api');
 });*/
 // transmission end point
-Route::post('studies/getAssignedAdminsToStudy', 'StudyController@getAssignedAdminsToStudy')->name('studies.getAssignedAdminsToStudy');
+
 Route::post('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
 
+
+Route::post('studies/getAssignedAdminsToStudy', 'StudyController@getAssignedAdminsToStudy')->name('studies.getAssignedAdminsToStudy');
 
 Route::post('transmissions/getAllPIBySiteId', 'TransmissionController@getAllPIBySiteId')->name('transmissions.getAllPIBySiteId');
 
 
 Route::post('transmissions/queryTransmissionMail', 'TransmissionController@queryTransmissionMail')->name('transmissions.queryTransmissionMail');
+
 Route::post('transmissions/queryResponseSave', 'TransmissionController@queryResponseSave')->name('transmissions.queryResponseSave');
+
 Route::post('transmissions/showResponseById', 'TransmissionController@showResponseById')->name('transmissions.showResponseById');
+
 Route::post('transmissions/getQueryByTransmissionId', 'TransmissionController@getQueryByTransmissionId')->name('transmissions.getQueryByTransmissionId');
+
 Route::post('transmissions/getSiteByTransmissionId', 'TransmissionController@getSiteByTransmissionId')->name('transmissions.getSiteByTransmissionId');
+
 Route::get('transmissions/verifiedToken/{id}/', 'TransmissionController@verifiedToken')->name('transmissions.verifiedToken');
 
 Route::post('transmissions-status', 'TransmissionController@transmissionStatus')->name('transmissions-status');

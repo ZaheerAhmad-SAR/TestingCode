@@ -186,6 +186,7 @@ class RoleController extends Controller
             //dd('log store');
             $permissions = Permission::where('name', '=', 'studies.index')
                 ->orwhere('name', '=', 'transmissions.study-transmissions')
+                ->orwhere('name', '=', 'transmissions-study-edit')
                 ->get();
             $this->createRolePermissions($role, $permissions);
         }
