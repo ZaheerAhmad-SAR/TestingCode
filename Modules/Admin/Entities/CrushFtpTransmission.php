@@ -22,4 +22,5 @@ class CrushFtpTransmission extends Model
     public $table = 'crush_ftp_transmissions';
 
     public $timestamps = true;
+
 }
