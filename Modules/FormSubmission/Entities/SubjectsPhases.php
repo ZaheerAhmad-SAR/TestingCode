@@ -48,6 +48,11 @@ class SubjectsPhases extends Model
             ];
             self::create($data);
         }
+
+        $oldPhase = [];
+
+        // log event details
+        $logEventDetails = eventDetails($request, 'Phase', 'Activate', 'N/A', $oldPhase);
     }
 
     public static function getActivatedPhasesidsArray($studyPhasesIdsArray)

@@ -110,6 +110,8 @@
                                     <option @if(request()->event_type == 'Add') selected @endif vale="Add">Add</option>
                                     <option  @if(request()->event_type == 'Update') selected @endif value="Update">Update</option>
                                     <option  @if(request()->event_type == 'Delete') selected @endif value="Delete">Delete</option>
+                                    <option  @if(request()->event_type == 'Activate') selected @endif value="Activate">Activate</option>
+                                     <option  @if(request()->event_type == 'Deactivate') selected @endif value="Deactivate">Deactivate</option>
                                 </select>
                             </div>
 
@@ -170,7 +172,7 @@
                                         <td colspan="6">
                                            <table class="table table-hover" style="width: 100%">
                                                 <thead class="table-secondary">
-                                                    @if($log->event_type == 'Add' || $log->event_type == 'Delete' || $log->event_section == 'QC Form' || $log->event_section == 'Grading Form')
+                                                    @if($log->event_type == 'Add' || $log->event_type == 'Activate' || $log->event_type == 'Deactivate' || $log->event_type == 'Delete' || $log->event_section == 'QC Form' || $log->event_section == 'Grading Form')
                                                         <th>Name</th>
                                                         <th>Value</th>
                                                     @else
@@ -226,7 +228,7 @@
                                                         @endforeach
                                                     @else
                                                         <!-- for add event -->
-                                                        @if($log->event_type == 'Add' || $log->event_type == 'Delete')
+                                                        @if($log->event_type == 'Add' || $log->event_type == 'Activate' || $log->event_type == 'Deactivate' || $log->event_type == 'Delete')
                                                             @foreach($newDetails as $key => $details)
                                                             <tr>
                                                                 <td>{{$key}}</td>
