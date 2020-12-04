@@ -268,7 +268,11 @@ class StudyController extends Controller
             isThisUserSuperAdmin(\auth()->user()) ||
             in_array(auth()->user()->id, $assignedUserIds)
         ) {
-            session(['current_study' => $study->id, 'study_short_name' => $study->study_short_name]);
+            session([
+                'current_study' => $study->id,
+                'study_short_name' => $study->study_short_name,
+                'study_code' => $study->study_code
+            ]);
             $id = $study->id;
 
             $studies  =   UserRole::select('user_roles.*', 'users.*', 'studies.*')

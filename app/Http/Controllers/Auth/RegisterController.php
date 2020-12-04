@@ -69,20 +69,22 @@ class RegisterController extends Controller
         $invite = Invitation::where('token', $data['token'])->first();
         $invite->delete();
 
-        return [
-            User::create([
-                'id' => $id = \Illuminate\Support\Str::uuid(),
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
-                'role_id' => $data['role']
-            ]),
-            UserRole::create([
-                'id' => \Illuminate\Support\Str::uuid(),
-                'role_id' => $data['role'],
-                'user_id' => $id,
-                'study_id' => ''
-            ])
-        ];
+        $userId = \Illuminate\Support\Str::uuid();
+        User::create([
+            'id' => $userId,
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'role_id' => $data['role']
+        ]);
+        UserRole::create([
+            'id' => \Illuminate\Support\Str::uuid(),
+            'role_id' => $data['role'],
+            'user_id' => $id,
+            'study_id' => ''
+        ]);
+
+        $user = User::find($userId);
+        return $user;
     }
 }
