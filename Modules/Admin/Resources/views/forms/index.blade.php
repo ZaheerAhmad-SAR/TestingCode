@@ -1,6 +1,6 @@
 @extends ('layouts.home')
 @section('content')
-    {{-- {{dd(Session('current_study'))}} --}}
+    {{dd(session()->all())}}
    {{--  @if(session()->has('filter_step'))
             {{dd(Session('filter_step'))}}
     @endif   --}}
