@@ -72,14 +72,14 @@ return [
 
 // for certify me application
 
-       'mysql2' => [
+        'mysql2' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
             'host' => env('DB_HOST_2', '18.216.100.149'),
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE_2', 'certification'),
             'username' => env('DB_USERNAME_2', 'certifymeremote'),
-            'password' => env('DB_PASSWORD_2', 'r8Ft4xvSRJogcNeP'),
+            'password' => env('DB_PASSWORD_2', 'AVNiNpoSY4C3ufzk'),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
@@ -90,6 +90,8 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
+
+ 
 
         ],
 
