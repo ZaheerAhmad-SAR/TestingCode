@@ -1,6 +1,6 @@
 @extends ('layouts.home')
 @section('content')
-    {{-- {{dd(Session('current_study'))}} --}}
+    {{-- {{dd(session()->all())}} --}}
    {{--  @if(session()->has('filter_step'))
             {{dd(Session('filter_step'))}}
     @endif   --}}
@@ -322,7 +322,7 @@
                                 <div class="col-sm-4">
                                     <select class="form-control">
                                         <option value="">---Select---</option>
-                                        <option value="=">Equal</option>
+                                        <option value="==">Equal</option>
                                         <option value=">=">Greater OR Equal</option>
                                         <option value="<=">Less OR Equal</option>
                                         <option value="!=">Not Equal</option>
@@ -373,7 +373,7 @@
                                 <div class="col-sm-4">
                                     <select class="form-control">
                                         <option value="">---Select---</option>
-                                        <option value="=">Equal</option>
+                                        <option value="==">Equal</option>
                                         <option value=">=">Greater OR Equal</option>
                                         <option value="<=">Less OR Equal</option>
                                         <option value="!=">Not Equal</option>
@@ -450,7 +450,7 @@
                                         <div class="col-sm-4">
                                             <select name="dependency_opertaor" id="dependency_operator" class="form-control">
                                                 <option value="">---Select---</option>
-                                                <option value="=">Equal</option>
+                                                <option value="==">Equal</option>
                                                 <option value=">=">Greater OR Equal</option>
                                                 <option value="<=">Less OR Equal</option>
                                                 <option value="!=">Not Equal</option>

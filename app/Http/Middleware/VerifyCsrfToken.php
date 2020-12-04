@@ -23,19 +23,14 @@ class VerifyCsrfToken extends Middleware
         'tinymce-image_upload',
     ];
 
-
-
+    /*
     protected function tokensMatch($request)
-
     {
-
         // Don't validate CSRF when testing.
-
         if (env('APP_ENV') === 'testing') {
-
             return true;
         }
-
         return parent::tokensMatch($request);
     }
+    */
 }

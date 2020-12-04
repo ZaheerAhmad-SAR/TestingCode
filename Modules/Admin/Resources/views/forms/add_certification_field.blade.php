@@ -90,7 +90,7 @@
             $('.modal-title').html('Add Certification list');
             $('#form_certify').attr('action', "{{ route('forms.addQuestions') }}");
             var id = $(this).attr("data-field-id");
-            $('#question_type').val(id);
+            $('#question_type_cert').val(id);
             $('#listModal').modal('show');
         } else {
             showStepDeActivationAlert();

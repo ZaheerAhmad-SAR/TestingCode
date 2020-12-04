@@ -19,7 +19,7 @@ use Modules\Admin\Entities\QuestionValidation;
 use Modules\Admin\Entities\QuestionAdjudicationStatus;
 use Modules\Admin\Entities\AnnotationDescription;
 use Modules\Admin\Entities\Study;
-use Modules\Admin\Entities\skipLogic;
+use Modules\Admin\Entities\SkipLogic;
 use Modules\Admin\Entities\QuestionOption;
 use Illuminate\Support\Facades\DB;
 use Modules\FormSubmission\Traits\Replication\ReplicatePhaseStructure;
@@ -56,7 +56,7 @@ class SkipNumberController extends Controller
 
                            </div>';
         }
-        
+
         $section_array = array(
             'html_str' => $section_contents
         );
@@ -79,27 +79,27 @@ class SkipNumberController extends Controller
                                       </div>
                                     </td><td  colspan="5"> <input type="checkbox" name="deactivate_sections[' .$request->index. '][]" value="' . $value->id . '"  class="deactivate_section_'.$value->id.'_'.$request->index.'"  onclick="disabled_opposite(\''.$value->id.'\',\'activate_section_\',\''.$request->index.'\',\'deactivate_section_\')" > ' . $value->name . '</td>';
             $section_contents .= '</tr>';
-            $section_contents .= '</tbody> 
+            $section_contents .= '</tbody>
                                 </table>
                                  </div>
                             </div>
                             <div class="card-body collapse row-'.$value->id.'-de-'.$request->index.' de_questions_list_'.$value->id.'_'.$request->index.'" style="padding: 0;">
                             </div>';
         }
-        
+
         $section_array = array(
             'html_str' => $section_contents
         );
         return json_encode($section_array);
     }
     // end function here
-    
+
     //---------------------------------------------------
     // get all question for skip with against specific section
     public function questions_skip_logic(Request $request, $id)
     {
         $activate_questions_array = [];
-       
+
         $questions = Question::select('*')->where('section_id', $id)->orderBy('question_sort', 'asc')->get();
         $options_ac_contents = '';
         foreach ($questions as $key => $value) {
@@ -153,7 +153,7 @@ class SkipNumberController extends Controller
 
                                     </tbody>
                                 </table>  </div></div>';
-            
+
         }
         $question_contents_array = array(
             'html_str' => $question_contents
@@ -177,9 +177,9 @@ class SkipNumberController extends Controller
                                            <input type="checkbox" name="activate_options['.$request->index.'][]" value="'.$options_value[$key].'_'.$value.'_'.$questions->id.'" class="activate_option_'.$questions->id.$value.'_'.$request->index.'"  onclick="disabled_opposite(\''.$questions->id.$value.'\',\'deactivate_option_\',\''.$request->index.'\',\'activate_option_\')">
                                         </td>
                                         <td colspan="5">'.$value.'</td>';
-                $options_contents .= '</tr>';               
+                $options_contents .= '</tr>';
             }
-        }    
+        }
         return Response($options_contents);
     }
     // end function
@@ -198,9 +198,9 @@ class SkipNumberController extends Controller
                                            <input type="checkbox" name="deactivate_options['.$request->index.'][]" value="'.$options_value[$key].'_'.$value.'_'.$questions->id.'" class="deactivate_option_'.$questions->id.$value.'_'.$request->index.'" onclick="disabled_opposite(\''.$questions->id.$value.'\',\'activate_option_\',\''.$request->index.'\',\'deactivate_option_\')">
                                         </td>
                                         <td colspan="5">'.$value.'</td>';
-                $options_contents .= '</tr>';               
+                $options_contents .= '</tr>';
             }
-        }    
+        }
         return Response($options_contents);
     }
     //---------------------------------------------------
@@ -232,13 +232,14 @@ class SkipNumberController extends Controller
                         'id' => Str::uuid(),
                         'skip_logic_id' => $skiplogic_id,
                         'question_id' => $request->question_id,
-                        'value' => $op_content[0], 
+                        'value' => $op_content[0],
                         'title' => $op_content[1],
                         'type' => 'deactivate',
-                        'option_question_id' => $op_content[2]
+                        'option_question_id' => $op_content[2],
+                        'option_depend_on_question_type' => 'number'
                         ];
                     QuestionOption::insert($skip_options);
-                  }  
+                  }
                 }
                 // Activate Questions options
                 if(isset($request->activate_options[$i]) && count($request->activate_options[$i]) > 0){
@@ -248,13 +249,14 @@ class SkipNumberController extends Controller
                         'id' => Str::uuid(),
                         'skip_logic_id' => $skiplogic_id,
                         'question_id' => $request->question_id,
-                        'value' => $op_content[0], 
+                        'value' => $op_content[0],
                         'title' => $op_content[1],
                         'type' => 'activate',
-                        'option_question_id' => $op_content[2]
+                        'option_question_id' => $op_content[2],
+                        'option_depend_on_question_type' => 'number'
                         ];
                     QuestionOption::insert($skip_options);
-                  } 
+                  }
                 }
                 skipLogic::insert($skip_ques);
             }
@@ -299,13 +301,14 @@ class SkipNumberController extends Controller
                         'id' => Str::uuid(),
                         'skip_logic_id' => $skiplogic_id,
                         'question_id' => $num_values->question_id,
-                        'value' => $op_content[0], 
+                        'value' => $op_content[0],
                         'title' => $op_content[1],
                         'type' => 'deactivate',
-                        'option_question_id' => $op_content[2]
+                        'option_question_id' => $op_content[2],
+                        'option_depend_on_question_type' => 'number'
                         ];
                     QuestionOption::insert($skip_options);
-                  }  
+                  }
                 }
                 // Activate Questions options
                 if(isset($request->activate_options[$i]) && count($request->activate_options[$i]) > 0){
@@ -315,18 +318,19 @@ class SkipNumberController extends Controller
                         'id' => Str::uuid(),
                         'skip_logic_id' => $skiplogic_id,
                         'question_id' => $num_values->question_id,
-                        'value' => $op_content[0], 
+                        'value' => $op_content[0],
                         'title' => $op_content[1],
                         'type' => 'activate',
-                        'option_question_id' => $op_content[2]
+                        'option_question_id' => $op_content[2],
+                        'option_depend_on_question_type' => 'number'
                         ];
                     QuestionOption::insert($skip_options);
-                  } 
+                  }
                 }
                 skipLogic::insert($skip_ques);
             }
         }
-        return redirect()->route('skipNumber.numskipLogic', $num_values->question_id)->with('message', 'Checks Applied Successfully!'); 
+        return redirect()->route('skipNumber.numskipLogic', $num_values->question_id)->with('message', 'Checks Applied Successfully!');
     }
     public function add_skipLogic_text(Request $request){
         $skip_ques = [];
@@ -354,15 +358,15 @@ class SkipNumberController extends Controller
                     $skip_options = [
                         'id' => Str::uuid(),
                         'skip_logic_id' => $skiplogic_id,
-                        'skip_logic_id' => $skiplogic_id,
                         'question_id' => $request->question_id,
-                        'value' => $op_content[0], 
+                        'value' => $op_content[0],
                         'title' => $op_content[1],
                         'type' => 'deactivate',
-                        'option_question_id' => $op_content[2]
+                        'option_question_id' => $op_content[2],
+                        'option_depend_on_question_type' => 'textbox'
                         ];
                     QuestionOption::insert($skip_options);
-                  }  
+                  }
                 }
                 // Activate Questions options
                 if(isset($request->activate_options[$i]) && count($request->activate_options[$i]) > 0){
@@ -372,13 +376,14 @@ class SkipNumberController extends Controller
                         'id' => Str::uuid(),
                         'skip_logic_id' => $skiplogic_id,
                         'question_id' => $request->question_id,
-                        'value' => $op_content[0], 
+                        'value' => $op_content[0],
                         'title' => $op_content[1],
                         'type' => 'activate',
-                        'option_question_id' => $op_content[2]
+                        'option_question_id' => $op_content[2],
+                        'option_depend_on_question_type' => 'textbox'
                         ];
                     QuestionOption::insert($skip_options);
-                  } 
+                  }
                 }
                 skipLogic::insert($skip_ques);
             }
@@ -423,13 +428,14 @@ class SkipNumberController extends Controller
                         'id' => Str::uuid(),
                         'skip_logic_id' => $skiplogic_id,
                         'question_id' => $num_values->question_id,
-                        'value' => $op_content[0], 
+                        'value' => $op_content[0],
                         'title' => $op_content[1],
                         'type' => 'deactivate',
-                        'option_question_id' => $op_content[2]
+                        'option_question_id' => $op_content[2],
+                        'option_depend_on_question_type' => 'textbox'
                         ];
                     QuestionOption::insert($skip_options);
-                  }  
+                  }
                 }
                 // Activate Questions options
                 if(isset($request->activate_options[$i]) && count($request->activate_options[$i]) > 0){
@@ -439,13 +445,14 @@ class SkipNumberController extends Controller
                         'id' => Str::uuid(),
                         'skip_logic_id' => $skiplogic_id,
                         'question_id' => $num_values->question_id,
-                        'value' => $op_content[0], 
+                        'value' => $op_content[0],
                         'title' => $op_content[1],
                         'type' => 'activate',
-                        'option_question_id' => $op_content[2]
+                        'option_question_id' => $op_content[2],
+                        'option_depend_on_question_type' => 'textbox'
                         ];
                     QuestionOption::insert($skip_options);
-                  } 
+                  }
                 }
                 skipLogic::insert($skip_ques);
             }

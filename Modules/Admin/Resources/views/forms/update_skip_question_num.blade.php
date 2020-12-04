@@ -187,6 +187,7 @@
 @endsection
 @include('admin::forms.edit_crf')
 @include('admin::forms.script_skip_logic')
+@include('admin::forms.common_script_skip_logic')
     @section('styles')
     <style type="text/css">
             /*.table{table-layout: fixed;}*/

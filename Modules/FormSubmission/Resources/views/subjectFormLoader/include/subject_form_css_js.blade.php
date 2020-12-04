@@ -670,20 +670,21 @@
             }
 
             function changeUrl() {
+                if(isPreview === false){
+                    var phaseId = $('#current_phase_id').val();
+                    var stepId = $('#current_step_id').val();
+                    var sectionId = $('#current_section_id').val();
+                    var showAllQuestions = $('#showAllQuestions').val();
+                    var isAdjudication = $('#isAdjudication').val();
 
-                var phaseId = $('#current_phase_id').val();
-                var stepId = $('#current_step_id').val();
-                var sectionId = $('#current_section_id').val();
-                var showAllQuestions = $('#showAllQuestions').val();
-                var isAdjudication = $('#isAdjudication').val();
-
-                var title = 'new title';
-                var url = "{{ url('/') }}/subjectFormLoader/{{ $studyId }}/{{ $subjectId }}/" + phaseId + '/' + stepId + '/' + sectionId + '/' + isAdjudication + '/' + showAllQuestions;
-                if (typeof (history.pushState) != "undefined") {
-                    var obj = { Title: title, Url: url };
-                    history.pushState(obj, obj.Title, obj.Url);
-                } else {
-                    alert("Browser does not support HTML5.");
+                    var title = 'new title';
+                    var url = "{{ url('/') }}/subjectFormLoader/{{ $studyId }}/{{ $subjectId }}/" + phaseId + '/' + stepId + '/' + sectionId + '/' + isAdjudication + '/' + showAllQuestions;
+                    if (typeof (history.pushState) != "undefined") {
+                        var obj = { Title: title, Url: url };
+                        history.pushState(obj, obj.Title, obj.Url);
+                    } else {
+                        alert("Browser does not support HTML5.");
+                    }
                 }
             }
 

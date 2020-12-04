@@ -35,7 +35,7 @@ class PhotographersControllers extends Controller
         if(isset($request->status) && $request->status !=''){
             $photographers = $photographers->where('photographer_data.certificate_status','like', $request->status);
         }
-        $photographers = $photographers->groupBy('photographer_name')->groupBy('study_name')->paginate(15);
+        $photographers = $photographers->groupBy('photographer_name')->groupBy('study_name')->where('photographer_data.study_id', session('study_code'))->paginate(15);
         return view('certification::photographer.index', ['photographers' => $photographers,'imaging_modality' =>$imaging_modality]);
     }
     /**

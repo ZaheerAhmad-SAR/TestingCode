@@ -53,7 +53,11 @@ class StudyController extends Controller
      */
     public function index()
     {
-        session(['current_study' => '']);
+        session([
+            'current_study' => '',
+            'study_short_name' => '',
+            'study_code' => ''
+        ]);
         $studyAdminRoleId = Permission::getStudyAdminRole();
         if (count((array)$studyAdminRoleId) == 0) {
             echo '<a href="' . route('roles.index') . '">Please add study admin role first</a>';
@@ -221,7 +225,7 @@ class StudyController extends Controller
             Preference::create([
                 'study_id' => $study->id,
                 'preference_title'    => 'STUDY_EMAIL',
-                'preference_value'    => 'study_email@study.com',
+                'preference_value'    => '',
                 'is_selectable'       => 'no', //yes/no
                 'preference_options'  => '', //Pipe sign seperated options
                 'created_at'        => Carbon::now(),
@@ -234,7 +238,7 @@ class StudyController extends Controller
             Preference::create([
                 'study_id' => $study->id,
                 'preference_title'    => 'STUDY_CC_EMAILS',
-                'preference_value'    => 'studyEmail1@study.com,studyEmail2@study.com,studyEmail3@study.com',
+                'preference_value'    => '',
                 'is_selectable'       => 'no', //yes/no
                 'preference_options'  => '', //Pipe sign seperated options
                 'created_at'        => Carbon::now(),
@@ -268,7 +272,11 @@ class StudyController extends Controller
             isThisUserSuperAdmin(\auth()->user()) ||
             in_array(auth()->user()->id, $assignedUserIds)
         ) {
-            session(['current_study' => $study->id, 'study_short_name' => $study->study_short_name]);
+            session([
+                'current_study' => $study->id,
+                'study_short_name' => $study->study_short_name,
+                'study_code' => $study->study_code
+            ]);
             $id = $study->id;
 
             $studies  =   UserRole::select('user_roles.*', 'users.*', 'studies.*')

@@ -67,7 +67,7 @@
                                             <td>{{ $site->site_code }}</td>
                                         </tr>
                                         <tr>
-                                            <th scope="row">Cohart</th>
+                                            <th scope="row">Cohort</th>
                                             <td>{{ \Modules\Admin\Entities\Study::getDiseaseCohort($study) }}</td>
                                         </tr>
                                     </table>
@@ -106,10 +106,6 @@
                     </div>
                 </div>
             </div>
-            @if(
-                (\Modules\Admin\Entities\Preference::getPreference('VISIT_ACTIVATION') == 'Manual') &&
-                canQualityControl(['index', 'create', 'store', 'edit', 'update'])
-            )
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
                     <div class="card-header  justify-content-between align-items-center">
@@ -117,16 +113,21 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-12">
+                            @if(
+                                (\Modules\Admin\Entities\Preference::getPreference('VISIT_ACTIVATION') == 'Manual') &&
+                                canQualityControl(['index', 'create', 'store', 'edit', 'update'])
+                            )
+                            <div class="col-2">
                                 <button type="button" class="btn btn-success"
                                     onclick="openAssignPhasesToSubjectPopup('{{ $studyId }}', '{{ $subjectId }}');">Activate
                                     Visits</button>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
-            @endif
+
             <div class="col-12 col-sm-12">
                 <div class="row row-eq-height">
                     <div class="col-12 col-lg-2 mt-3 todo-menu-bar flip-menu pr-lg-0">
@@ -317,6 +318,7 @@
             </div>
             <!-- END: Card DATA-->
         </div>
+
         @include('queries::queries.query_popup')
         @include('formsubmission::subjectFormLoader.include.subject_form_wait_popup')
         @include('formsubmission::subjectFormLoader.include.assignPhasesToSubjectPopup')

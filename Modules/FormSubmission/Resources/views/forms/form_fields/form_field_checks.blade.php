@@ -20,10 +20,11 @@ $dataArray = ['question'=> $question, 'field_name'=> $field_name,
     @include('formsubmission::forms.form_fields.upload_field', $dataArray)
 @elseif($fieldType == 'Calculated')
     @include('formsubmission::forms.form_fields.calculated_field', $dataArray)
+@elseif($fieldType == 'Certification')
+    @include('formsubmission::forms.form_fields.certification_field', $dataArray)
 @elseif($fieldType == 'Description')
-    {!! $question->formFields->text_info !!}
+    {!! html_entity_decode($question->formFields->text_info) !!}
 @endif
-
 @php
 /*********************************** */
 $questionValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidationForQuestion($question, false);
