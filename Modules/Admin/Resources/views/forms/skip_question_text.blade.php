@@ -40,7 +40,7 @@
                            <div class="card-body">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <input type="text" class="form-control" name="textbox_value[]" placeholder="Enter Text" value="">
+                                        <input type="text" class="form-control" name="textbox_value[]" placeholder="Enter Text" value="" required>
                                     </div>
                                 </div>                           
                            </div>
@@ -64,8 +64,8 @@
                             </div>
                         </div>
                     </div>
-        @foreach ($all_study_steps as $value)
-        @foreach($value->studySteps as $key => $value)
+        @foreach ($all_study_steps as $key => $value)
+        @foreach($value->studySteps as $index => $value)
             {{-- @if(in_array($value->step_id, $activate_forms_array)){ $checked = 'checked'; }@else{ $checked = ''; }@endif --}}
                     <div class="card">
                         <div class="card-body" style="padding: 0;">
@@ -106,8 +106,8 @@
                             </div>
                         </div>
                     </div>
-        @foreach ($all_study_steps as $value)
-        @foreach($value->studySteps as $key => $value)
+        @foreach ($all_study_steps as $key => $value)
+        @foreach($value->studySteps as $index => $value)
             {{-- if(in_array($value->step_id, $deactivate_forms_array)){ $checked = 'checked'; }else{ $checked = ''; } --}}
             <div class="card">
                 <div class="card-body" style="padding: 0;">
