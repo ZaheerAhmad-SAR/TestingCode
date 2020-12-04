@@ -16,18 +16,24 @@
     return view('admin::test_transmission_api');
 });*/
 // transmission end point
-Route::post('studies/getAssignedAdminsToStudy', 'StudyController@getAssignedAdminsToStudy')->name('studies.getAssignedAdminsToStudy');
+
 Route::post('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
 
+Route::post('studies/getAssignedAdminsToStudy', 'StudyController@getAssignedAdminsToStudy')->name('studies.getAssignedAdminsToStudy');
 
 Route::post('transmissions/getAllPIBySiteId', 'TransmissionController@getAllPIBySiteId')->name('transmissions.getAllPIBySiteId');
 
 
 Route::post('transmissions/queryTransmissionMail', 'TransmissionController@queryTransmissionMail')->name('transmissions.queryTransmissionMail');
+
 Route::post('transmissions/queryResponseSave', 'TransmissionController@queryResponseSave')->name('transmissions.queryResponseSave');
+
 Route::post('transmissions/showResponseById', 'TransmissionController@showResponseById')->name('transmissions.showResponseById');
+
 Route::post('transmissions/getQueryByTransmissionId', 'TransmissionController@getQueryByTransmissionId')->name('transmissions.getQueryByTransmissionId');
+
 Route::post('transmissions/getSiteByTransmissionId', 'TransmissionController@getSiteByTransmissionId')->name('transmissions.getSiteByTransmissionId');
+
 Route::get('transmissions/verifiedToken/{id}/', 'TransmissionController@verifiedToken')->name('transmissions.verifiedToken');
 
 Route::post('transmissions-status', 'TransmissionController@transmissionStatus')->name('transmissions-status');
@@ -143,12 +149,6 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
     //Route::resource('studyrole','StudyRoleController');
 
-    Route::resource('others', 'OtherController');
-
-    Route::get('others/{id}/showOtherBySiteId', 'OtherController@showOtherBySiteId')->name('others.showOtherBySiteId');
-
-    Route::post('others/update', 'OtherController@update')->name('others.update');
-
     // routes for form managment
 
     //end
@@ -172,30 +172,6 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
     Route::get('modalities/{id}/childshow', 'ModilityController@child')->name('modalities.childshow');
 
-    Route::resource('photographers', 'PhotographerController');
-
-    Route::get('photographers/{id}/showPhotographerBySiteId', 'PhotographerController@showPhotographerBySiteId')->name('photographers.showPhotographerBySiteId');
-
-    Route::post('photographers/update', 'PhotographerController@update')->name('photographers.update');
-
-
-    Route::resource('coordinator', 'CoordinatorController');
-
-
-    Route::get('coordinator/{id}/showCoordinatorBySiteId', 'CoordinatorController@showCoordinatorBySiteId')->name('coordinator.showCoordinatorBySiteId');
-
-    Route::post('coordinator/update', 'CoordinatorController@update')->name('coordinator.update');
-
-
-
-    Route::resource('primaryinvestigator', 'PrimaryInvestigatorController');
-
-    Route::post('primaryinvestigator/update', 'PrimaryInvestigatorController@update')->name('primaryinvestigator.update');
-
-
-    Route::get('primaryinvestigator/{id}/showSiteId', 'PrimaryInvestigatorController@showSiteId')->name('primaryinvestigator.showSiteId');
-
-
     Route::get('modalities/{id}/showChild', 'ModilityController@showChild')->name('modalities.showChild');
 
     Route::get('modalities/{id}/editChild', 'ModilityController@editChild')->name('modalities.editChild');
@@ -211,17 +187,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
     Route::get('modalities/{id}/restoreParent', 'ModilityController@restoreParent')->name('modalities.restoreParent');
 
-    Route::get('primaryinvestigator/{id}/destroy', 'PrimaryInvestigatorController@destroy')->name('primaryinvestigator.destroy');
-
-    Route::get('coordinator/{id}/destroy', 'CoordinatorController@destroy')->name('coordinator.destroy');
-
-    Route::get('others/{id}/destroy', 'OtherController@destroy')->name('others.destroy');
-
-    Route::get('photographers/{id}/destroy', 'PhotographerController@destroy')->name('photographers.destroy');
-
     Route::resource('studySite', 'StudySiteController');
-
-
 
     Route::post('studySite/update', 'StudySiteController@update')->name('studySite.update');
 
@@ -252,6 +218,30 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     //Add Preference
     Route::post('preference/loadAddPreferenceForm', 'PreferenceController@loadAddPreferenceForm')->name('preference.loadAddPreferenceForm');
     Route::post('preference/submitAddPreferenceForm', 'PreferenceController@submitAddPreferenceForm')->name('preference.submitAddPreferenceForm');
+
+    //primaryinvestigator
+    Route::resource('primaryinvestigator', 'PrimaryInvestigatorController');
+    Route::post('primaryinvestigator/update', 'PrimaryInvestigatorController@update')->name('primaryinvestigator.update');
+    Route::get('primaryinvestigator/{id}/showSiteId', 'PrimaryInvestigatorController@showSiteId')->name('primaryinvestigator.showSiteId');
+    Route::get('primaryinvestigator/{id}/destroy', 'PrimaryInvestigatorController@destroy')->name('primaryinvestigator.destroy');
+
+    //coordinator
+    Route::resource('coordinator', 'CoordinatorController');
+    Route::get('coordinator/{id}/showCoordinatorBySiteId', 'CoordinatorController@showCoordinatorBySiteId')->name('coordinator.showCoordinatorBySiteId');
+    Route::post('coordinator/update', 'CoordinatorController@update')->name('coordinator.update');
+    Route::get('coordinator/{id}/destroy', 'CoordinatorController@destroy')->name('coordinator.destroy');
+
+    //photographers
+    Route::resource('photographers', 'PhotographerController');
+    Route::get('photographers/{id}/showPhotographerBySiteId', 'PhotographerController@showPhotographerBySiteId')->name('photographers.showPhotographerBySiteId');
+    Route::post('photographers/update', 'PhotographerController@update')->name('photographers.update');
+    Route::get('photographers/{id}/destroy', 'PhotographerController@destroy')->name('photographers.destroy');
+
+    //others
+    Route::resource('others', 'OtherController');
+    Route::get('others/{id}/showOtherBySiteId', 'OtherController@showOtherBySiteId')->name('others.showOtherBySiteId');
+    Route::post('others/update', 'OtherController@update')->name('others.update');
+    Route::get('others/{id}/destroy', 'OtherController@destroy')->name('others.destroy');
 });
 
 Route::post('tinymce-image_upload', 'TinyMceController@uploadImage')->name('tinymce.image_upload');

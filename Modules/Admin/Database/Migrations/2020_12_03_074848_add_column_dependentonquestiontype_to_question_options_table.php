@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddSkipLogicIdColumnToQuestionOptionsTable extends Migration
+class AddColumnDependentonquestiontypeToQuestionOptionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddSkipLogicIdColumnToQuestionOptionsTable extends Migration
     public function up()
     {
         Schema::table('question_options', function (Blueprint $table) {
-            $table->uuid('skip_logic_id')->after('id')->nullable();
+            $table->enum('option_depend_on_question_type',array('radio','number','textbox'))->nullable()->after('type');
         });
     }
 
@@ -26,7 +26,7 @@ class AddSkipLogicIdColumnToQuestionOptionsTable extends Migration
     public function down()
     {
         Schema::table('question_options', function (Blueprint $table) {
-            $table->dropColumn('skip_logic_id');
+            $table->dropColumn('option_depend_on_question_type');
         });
     }
 }

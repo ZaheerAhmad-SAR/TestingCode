@@ -1,3 +1,4 @@
+@if($fieldType != 'Description')
 @php
 $text_info = str_replace(array("\n", "\r"), '', html_entity_decode($question->formFields->text_info));
 @endphp
@@ -9,7 +10,7 @@ $text_info = str_replace(array("\n", "\r"), '', html_entity_decode($question->fo
 @push('popup_modals')
 <!-- Modal -->
 <div class="modal fade" id="question-info-{{ $question->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog modal-lg modal-lg-custom modal-dialog-centered" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLongTitle">{!! $question->question_text !!}</h5>
@@ -35,3 +36,4 @@ $text_info = str_replace(array("\n", "\r"), '', html_entity_decode($question->fo
     }
 </script>
 @endpush
+@endif

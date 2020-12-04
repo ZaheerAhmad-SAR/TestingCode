@@ -115,6 +115,7 @@ class SubjectAdjudicationFormSubmissionController extends Controller
             $answerArray = $answerFixedArray;
 
             $answerArray['question_id'] = $question->id;
+            $answerArray['variable_name'] = $form_field_name;
             $answerArray['field_id'] = $form_field_id;
             /************************** */
             $answerObj = FinalAnswer::getFinalAnswer($answerArray);

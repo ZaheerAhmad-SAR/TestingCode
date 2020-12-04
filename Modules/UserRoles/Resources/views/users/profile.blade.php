@@ -65,7 +65,7 @@
                                     <div class="{!! ($errors->has('name')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
                                         <select class="form-control dropdown" name="title">
                                             <option value="">Select Title</option>
-                                            <option value="doctor" @if($user->title == 'doctor') selected @endif>Doctor</option>
+                                            <option value="doctor" @if($user->title == 'doctor') selected @endif>Dr.</option>
                                             <option value="mr" @if($user->title == 'mr') selected @endif>Mr.</option>
                                             <option value="mrs" @if($user->title == 'mrs') selected @endif>Mrs.</option>
                                             <option value="miss" @if($user->title == 'miss') selected @endif>Miss</option>
