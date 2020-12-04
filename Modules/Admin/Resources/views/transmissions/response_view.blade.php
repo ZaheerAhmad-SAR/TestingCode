@@ -35,13 +35,17 @@
     </div>
 </div>
 
-{{--<div class="malwareData">--}}
-{{--    <input type="hidden" name="notification_remarked_id" id="notification_remarked_id" value="{{ $query->notification_remarked_id }}">--}}
+<div class="malwareData">
+    <input type="hidden" name="notification_remarked_id" id="notification_remarked_id" value="{{ $query->notification_remarked_id }}">
 {{--    <input type="hidden" name="notifications_token" id="notifications_token" value="{{ $query->notifications_token }}">--}}
-{{--    <input type="hidden" name="query_id" id="query_id" value="{{ $query->id }}">--}}
-{{--    <input type="hidden" name="cc_email" id="cc_email" value="{{ $query->cc_email }}">--}}
-{{--    <input type="hidden" name="subject" id="subject" value="{{ $query->subject }}">--}}
-{{--</div>--}}
+    <input type="hidden" name="query_id" id="query_id" value="{{ $query->id }}">
+    <input type="hidden" name="cc_email" id="cc_email" value="{{ $query->cc_email }}">
+    <input type="hidden" name="subject" id="subject" value="{{ $query->subject }}">
+    <input type="hidden" name="subject" id="study_id" value="{{ $query->study_id }}">
+    <input type="hidden" name="subject" id="subject_id" value="{{ $query->subject_id }}">
+    <input type="hidden" name="transmission_number" id="transmission_number" value="{{ $query->transmission_number }}">
+    <input type="hidden" name="vist_name" id="vist_name" value="{{ $query->vist_name }}">
+</div>
 
 
 {{--<div class="well">--}}

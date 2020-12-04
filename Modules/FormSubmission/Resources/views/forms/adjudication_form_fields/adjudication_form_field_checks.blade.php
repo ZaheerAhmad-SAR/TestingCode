@@ -16,6 +16,8 @@ $dataArray = ['field_name'=> $grader_field_name, 'questionIdStr'=>
     @include('formsubmission::forms.adjudication_form_fields.number_field', $dataArray)
 @elseif($fieldType == 'Calculated')
     @include('formsubmission::forms.adjudication_form_fields.number_field', $dataArray)
+@elseif($fieldType == 'Certification')
+    @include('formsubmission::forms.adjudication_form_fields.certification_field', $dataArray)
 @elseif($fieldType == 'Description')
     {!! html_entity_decode($question->formFields->text_info) !!}
 @endif
