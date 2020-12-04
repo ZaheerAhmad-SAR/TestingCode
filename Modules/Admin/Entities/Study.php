@@ -208,10 +208,10 @@ class Study extends Model
 
     public static function getDiseaseCohort($study)
     {
-        $diseaseCohartArray = [];
-        foreach ($study->diseaseCohort as $diseaseCohart) {
-            $diseaseCohartArray[] = $diseaseCohart->name;
+        $diseaseCohortArray = [];
+        foreach ($study->diseaseCohort as $diseaseCohort) {
+            $diseaseCohortArray[] = $diseaseCohort->name;
         }
-        return implode(', ', $diseaseCohartArray);
+        return implode(', ', $diseaseCohortArray);
     }
 }
