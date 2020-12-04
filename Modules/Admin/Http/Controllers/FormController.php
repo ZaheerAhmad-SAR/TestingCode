@@ -238,9 +238,11 @@ class FormController extends Controller
                 }
                 $question_contents .= '</select></div>';
             } elseif ($ques_value->form_field_type->field_type == 'Description') {
-                $question_contents .= '<div class="col-sm-6">' . strip_tags($ques_value->formFields->text_info) . '</div>';
+                $question_contents .= '<div class="col-sm-6">' . html_entity_decode($ques_value->formFields->text_info) . '</div>';
             }
-            $question_contents .= '<div class="col-sm-2"><span class="d-flex mt-3 mt-md-0 ml-auto float-right"><i type="button" class="far fa-eye" data-toggle="tooltip" data-placement="top" title="' . strip_tags($ques_value->formFields->text_info) . '"  style="margin-top:6px;"></i></span><div class="d-flex mt-3 mt-md-0 ml-auto" style="width:50%;display:inline-block !important;"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 6px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right">';
+            //$eye = '<span class="d-flex mt-3 mt-md-0 ml-auto float-right"><i type="button" class="far fa-eye" data-toggle="tooltip" data-placement="top" title="' . html_entity_decode($ques_value->formFields->text_info) . '"  style="margin-top:6px;"></i></span>';
+            $eye = '';
+            $question_contents .= '<div class="col-sm-2">' . $eye . '<div class="d-flex mt-3 mt-md-0 ml-auto" style="width:50%;display:inline-block !important;"><span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 6px;"></i></span><div class="dropdown-menu p-0 m-0 dropdown-menu-right">';
             if ($ques_value->form_field_type->field_type == 'Certification') {
                 $question_contents .= '<span class="dropdown-item edit_certify"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
             } elseif ($ques_value->form_field_type->field_type == 'Description') {

@@ -8,7 +8,7 @@ $option_values = explode(',', $optionGroup->option_value);
 $option_names = explode(',', $optionGroup->option_name);
 }else{
 $option_values = [1];
-$option_names = [$question->formFields->text_info];
+$option_names = [html_entity_decode($question->formFields->text_info)];
 }
 $answersArray = explode(',', $answer->answer);
 $options = array_combine ( $option_names , $option_values );

@@ -38,7 +38,10 @@
             .fstselected{
                 font-size: 12px !important;
             }
-           
+            .modal-lg-custom {
+                min-width: auto;
+                max-width: fit-content;
+            }
         </style>
     </head>
 
