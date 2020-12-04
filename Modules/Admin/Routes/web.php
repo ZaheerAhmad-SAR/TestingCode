@@ -30,6 +30,7 @@ Route::post('transmissions/getAllPIBySiteId', 'TransmissionController@getAllPIBy
 
 
 Route::post('transmissions/queryTransmissionMail', 'TransmissionController@queryTransmissionMail')->name('transmissions.queryTransmissionMail');
+Route::post('transmissions/queryTransmissionMailResponse', 'TransmissionController@queryTransmissionMailResponse')->name('transmissions.queryTransmissionMailResponse');
 
 Route::post('transmissions/queryResponseSave', 'TransmissionController@queryResponseSave')->name('transmissions.queryResponseSave');
 

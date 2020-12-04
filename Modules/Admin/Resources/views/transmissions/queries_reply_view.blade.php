@@ -47,6 +47,7 @@
                             <input type="hidden" name="vist_name" id="vist_name" value="{{ $record['vist_name'] }}">
                             <input type="hidden" name="notifications_token" id="notifications_token" value="{{$record['notifications_token']}}">
                             <input type="hidden" name="site_name" id="site_name" value="{{$record['site_name']}}">
+                            <input type="hidden" name="study_short_name" id="study_short_name" value="{{$record['study_short_name']}}">
                         </div>
                         <div class="form-group mb-3">
                             <button type="submit" name="sendEmail" class="btn btn-primary" id="sendEmail"><i class="fa fa-save"></i> Send</button>
@@ -82,6 +83,7 @@
             var notifications_token    = $('#notifications_token').val();
             var parent_notification_id = $('#parent_notification_id').val();
             var site_name              = $('#site_name').val();
+            var study_short_name              = $('#study_short_name').val();
             var formData               = new FormData();
             formData.append('yourName', yourName);
             formData.append('yourEmail', yourEmail);
@@ -95,6 +97,7 @@
             formData.append('site_name', site_name);
             formData.append('notifications_token', notifications_token);
             formData.append('parent_notification_id', parent_notification_id);
+            formData.append('study_short_name', study_short_name);
             // Attach file
             formData.append('attachment', $('input[type=file]')[0].files[0]);
 
