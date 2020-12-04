@@ -29,7 +29,7 @@
                             <li class="nav-item @if(is_active('studies.index')) {{ ' active' }} @endif">
                                 <a href="{!! route('studies.index') !!}">
                                     <i class="icon-book-open"></i>
-                                    Exit {{session('study_short_name')}},<strong>Study:</strong>
+                                    Exit {{session('study_short_name')}} Study
                                 </a>
                             </li>
                         @endif
@@ -283,11 +283,13 @@
                                         </a>
                                     </li>
 
+                                    {{--
                                     <li>
                                         <a href="{{route('grading.status')}}">
                                             <i class="fas fa-chart-line"></i> Grading Status
                                         </a>
                                     </li>
+                                    --}}
 
                                 </ul>
                             </li>
@@ -296,7 +298,25 @@
                 @endif
             @endif
 
-            @if(hasPermission(auth()->user(),'adjudication.index'))
+            <!-- show grading status -->
+            @if(hasPermission(auth()->user(),'studytools.index') && hasPermission(auth()->user(),'grading.index'))
+
+                @if(!empty(session('current_study')))
+                <li class="">
+                    <ul class="@if(is_active('grading.status')) {{ 'active' }} @endif">
+                        <li class="nav-item @if(is_active('grading.status')) {{ ' active' }} @endif">
+                            <a href="{{route('grading.status')}}">
+                                <i class="fas fa-chart-line"></i> Grading Status
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                @endif
+
+            @endif
+            
+            @if(hasPermission(auth()->user(),'adjudication.create') && hasPermission(auth()->user(),'adjudication.edit'))
+
                 @if(session('current_study'))
                     <li class="dropdown">
                         <ul>
@@ -319,7 +339,9 @@
                         </ul>
                     </li>
                 @endif
+
             @endif
+
             @if(session('current_study'))
             <li class="dropdown">
                 <ul>
@@ -340,6 +362,7 @@
                 </ul>
             </li>
             @endif
+            
             @if(hasPermission(auth()->user(),'data_management.index'))
                 @if(session('current_study'))
                     <li class="dropdown">
@@ -388,7 +411,26 @@
                 @endif
             @endif
 
-                @if(hasPermission(auth()->user(),'systemtools.index') && hasPermission(auth()->user(),'trail_logs.list'))
+            @if(hasPermission(auth()->user(),'systemtools.index') && hasPermission(auth()->user(),'trail_logs.list'))
+
+            <li class="dropdown">
+                <ul>
+                    <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="{{route('trail_logs.list')}}">
+                                    <i class="fas fa-history"></i>
+                                    Audit Trail
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+
+            @elseif(hasPermission(auth()->user(),'trail_logs.list'))
+
+                @if(session('current_study'))
                 <li class="dropdown">
                     <ul>
                         <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
@@ -403,21 +445,9 @@
                         </li>
                     </ul>
                 </li>
-                @elseif(hasPermission(auth()->user(),'trail_logs.list'))
-
-                    <li class="dropdown"><a href="#"><i class="icon-organization mr-1"></i> Audit Trail</a>
-                        <ul >
-
-                            <li>
-                                <a href="{{route('trail_logs.list')}}">
-                                    <i class="fas fa-history"></i>
-                                    Audit Trail
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-
                 @endif
+                
+            @endif
         </ul>
         <!-- END: Menu-->
         <ol class="breadcrumb bg-transparent align-self-center m-0 p-0 ml-auto">
