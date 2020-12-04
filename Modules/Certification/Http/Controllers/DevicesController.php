@@ -33,7 +33,7 @@ class DevicesController extends Controller
         if(isset($request->cert_issueDate) && $request->cert_issueDate !=''){
             $devices = $devices->where('certify_device.cert_issueDate', $request->cert_issueDate);
         }
-        $devices = $devices->groupBy('certify_device.device_categ')->paginate(15);
+        $devices = $devices->groupBy('certify_device.device_categ')->where('certify_device.study_id', session('study_code'))->paginate(15);
         return view('certification::devices.index', ['devices' => $devices]);
     }
     /**
