@@ -1,33 +1,53 @@
+{{--@extends ('layouts.app')--}}
+{{--@section('body')--}}
+{{--    <div class="container" id ="container">--}}
+{{--        <div class="row vh-100 justify-content-between align-items-center">--}}
+{{--            @if(session()->has('message'))--}}
+{{--                <div class="col-lg-12 success-alert">--}}
+{{--                    <div class="alert alert-primary success-msg" role="alert">--}}
+{{--                        {{ session()->get('message') }}--}}
+{{--                        <button class="close" data-dismiss="alert">&times;</button>--}}
+{{--                    </div>--}}
+{{--                </div>--}}
+{{--            @endif--}}
+{{--            <div class="col-12">--}}
+{{--                <form  method="POST" class="row row-eq-height lockscreen  mt-5 mb-5" name="responseForm" id="responseForm">--}}
+{{--                    @csrf--}}
+{{--                    <div class="login-form col-12 col-sm-7">--}}
+{{--                        <input type="hidden" id="userAgent" value="">--}}
+{{--                        <div class="form-group mb-3" style="margin-top: 60px;">--}}
+{{--                            <label for="emailaddress"> <strong>Status</strong></label>--}}
+{{--                            <p>access denied contact your administrator</p>--}}
+{{--                        </div>--}}
+
+{{--                        <div class="mt-2" style="padding-top: 90px; text-align: center;">OIRRC CAPTURE System</div>--}}
+{{--                    </div>--}}
+{{--                </form>--}}
+{{--            </div>--}}
+
+{{--        </div>--}}
+{{--    </div>--}}
+
 @extends ('layouts.app')
 @section('body')
-    <div class="container" id ="container">
+    <div class="container">
         <div class="row vh-100 justify-content-between align-items-center">
-            @if(session()->has('message'))
-                <div class="col-lg-12 success-alert">
-                    <div class="alert alert-primary success-msg" role="alert">
-                        {{ session()->get('message') }}
-                        <button class="close" data-dismiss="alert">&times;</button>
+            <div class="col-12">
+                <div  class="lockscreen  mt-5 mb-5">
+                    <div class="jumbotron mb-0 text-center theme-background rounded">
+                        <h1 class="display-3 font-weight-bold"> 404</h1>
+                        <h5><i class="ion ion-alert pr-2"></i>Oops! Something went wrong</h5>
+                        <p>The page you are looking for is not found, please try after some time or go back to home</p>
+                        <a href="#" class="btn btn-primary">Go To Home</a>
                     </div>
                 </div>
-            @endif
-            <div class="col-12">
-                <form  method="POST" class="row row-eq-height lockscreen  mt-5 mb-5" name="responseForm" id="responseForm">
-                    @csrf
-                    <div class="login-form col-12 col-sm-7">
-                        <input type="hidden" id="userAgent" value="">
-                        <div class="form-group mb-3" style="margin-top: 60px;">
-                            <label for="emailaddress"> <strong>Status</strong></label>
-                            <p>access denied contact your administrator</p>
-                        </div>
-
-                        <div class="mt-2" style="padding-top: 90px; text-align: center;">OIRRC CAPTURE System</div>
-                    </div>
-                </form>
             </div>
 
         </div>
     </div>
 @stop
+
+{{--@stop--}}
 
 @section('styles')
     <link rel="stylesheet" href="{{ asset('dist/vendors/social-button/bootstrap-social.css') }}"/>

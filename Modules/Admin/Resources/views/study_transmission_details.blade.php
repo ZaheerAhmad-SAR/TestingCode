@@ -24,6 +24,14 @@
             border: 1px solid #ced4da;
             border-radius: .25rem;
             transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+
+
+        }
+        div#cc_email_tagsinput {
+            width: 631px !important;
+            min-height: 42px !important;
+            height: 30px !important;
+            overflow: hidden !important;
         }
     </style>
     <!-- date range picker -->
@@ -261,7 +269,7 @@
                                         </select>
 
                                     </div>
-                                    <label for="Name" id="usersList" class="col-sm-2 col-form-label"> Select Users :</label>
+                                    <label for="Name" id="usersList" class="col-sm-2 col-form-label" style="display: none;"> Select Users :</label>
                                     <div class="col-sm-4 primaryList">
                                     </div>
 
@@ -459,7 +467,6 @@
             },
             success: function(response)
             {
-                console.log(response);
                 $('.siteShowUp').html('');
                 $('.siteShowUp').html(response);
             }
@@ -529,6 +536,7 @@
             success: function(response)
             {
                 $('.primaryList').html('');
+                $('#usersList').css('display','');
                 $('.primaryList').html(response);
             }
         });
@@ -536,12 +544,59 @@
 
 
 
+    $("#responseReplyViewForm").on('submit', function(e) {
+        e.preventDefault();
+        $.ajaxSetup({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+        });
+        // var users               = $('#users').val();
+        // var StudyI_ID           = $('#StudyI_ID').val();
+        // var remarks             = $('#remarks').val();
+        // var cc_email            = $('#cc_email').val();
+        // var visitName           = $('#visitName').val();
+        // var Subject_ID          = $('#Subject_ID').val();
+        // var Transmission_Number = $('#Transmission_Number').val();
+        // var query_subject       = $('#query_subject').val();
+        // var studyShortName      = $('#studyShortName').val();
+        //
+        // var formData      = new FormData();
+        // formData.append('users', users);
+        // formData.append('StudyI_ID', StudyI_ID);
+        // formData.append('remarks', remarks);
+        // formData.append('cc_email', cc_email);
+        // formData.append('visitName', visitName);
+        // formData.append('Subject_ID', Subject_ID);
+        // formData.append('Transmission_Number', Transmission_Number);
+        // formData.append('query_subject', query_subject);
+        // formData.append('studyShortName', studyShortName);
+        // // Attach file
+        // formData.append('query_file', $('input[type=file]')[0].files[0]);
+
+        {{--$.ajax({--}}
+
+        {{--    url:"{{route('transmissions.queryTransmissionMail')}}",--}}
+        {{--    type: "POST",--}}
+        {{--    data: formData,--}}
+        {{--    dataType: 'json',--}}
+        {{--    contentType: false,--}}
+        {{--    cache: false,--}}
+        {{--    processData:false,--}}
+        {{--    success: function(response)--}}
+        {{--    {--}}
+        {{--        console.log(response);--}}
+        {{--        $("#queriesTransmissionForm")[0].reset();--}}
+        {{--        $('#transmissonQueryModal').modal('show');--}}
+        {{--    }--}}
+        {{--});--}}
+    });
+
 
     $("#queriesTransmissionForm").on('submit', function(e) {
         e.preventDefault();
         $.ajaxSetup({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         });
+        var site_name           = $('#site_name option:selected').text();
         var users               = $('#users').val();
         var StudyI_ID           = $('#StudyI_ID').val();
         var remarks             = $('#remarks').val();
@@ -554,6 +609,7 @@
 
         var formData      = new FormData();
         formData.append('users', users);
+        formData.append('site_name', site_name);
         formData.append('StudyI_ID', StudyI_ID);
         formData.append('remarks', remarks);
         formData.append('cc_email', cc_email);
@@ -578,10 +634,15 @@
             {
                 console.log(response);
                 $("#queriesTransmissionForm")[0].reset();
-                $('#transmissonQueryModal').modal('show');
+                $('#transmissonQueryModal').modal('hide');
             }
         });
     });
+
+    $('#transmissonQueryModal').on('hidden.bs.modal', function () {
+        $(this).find('form').trigger('reset');
+    })
+
     // Transmission End Work
 
     // initialize date range picker
