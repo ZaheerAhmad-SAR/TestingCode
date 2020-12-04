@@ -19,7 +19,7 @@ use Modules\Admin\Entities\QuestionValidation;
 use Modules\Admin\Entities\QuestionAdjudicationStatus;
 use Modules\Admin\Entities\AnnotationDescription;
 use Modules\Admin\Entities\Study;
-use Modules\Admin\Entities\skipLogic;
+use Modules\Admin\Entities\SkipLogic;
 use Illuminate\Support\Facades\DB;
 use Modules\FormSubmission\Entities\FormVersion;
 use Modules\FormSubmission\Traits\Replication\ReplicatePhaseStructure;
