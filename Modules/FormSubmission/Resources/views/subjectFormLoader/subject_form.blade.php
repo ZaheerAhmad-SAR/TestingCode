@@ -190,7 +190,7 @@
                                                                     'subject_id' => $subjectId,
                                                                     'study_id' => $studyId,
                                                                     'study_structures_id' => $phase->id,
-                                                                    'phase_steps_id' => $previousStepId,
+                                                                    //'phase_steps_id' => $previousStepId,
                                                                     'form_type_id' => '1',
                                                                     'modility_id' => $step->modility_id,
                                                                 ];
@@ -199,7 +199,7 @@
                                                                 $getQcFormStatusArray);
                                                                 //dd($qcFormStatus);
                                                                 if($qcFormStatus !== 'complete'){
-                                                                    //continue;
+                                                                    continue;
                                                                 }
                                                             }
                                                             $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
@@ -267,14 +267,14 @@
                                                         'subject_id' => $subjectId,
                                                         'study_id' => $studyId,
                                                         'study_structures_id' => $phase->id,
-                                                        'phase_steps_id' => $previousStepId,
+                                                        //'phase_steps_id' => $previousStepId,
                                                         'form_type_id' => '1',
                                                         'modility_id' => $step->modility_id,
                                                     ];
                                                     $qcFormStatus = \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step,
                                                     $getQcFormStatusArray);
                                                     if($qcFormStatus !== 'complete'){
-                                                        //continue;
+                                                        continue;
                                                     }
                                                 }
                                                 $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
