@@ -235,7 +235,8 @@ class SkipNumberController extends Controller
                         'value' => $op_content[0],
                         'title' => $op_content[1],
                         'type' => 'deactivate',
-                        'option_question_id' => $op_content[2]
+                        'option_question_id' => $op_content[2],
+                        'option_depend_on_question_type' => 'number'
                         ];
                     QuestionOption::insert($skip_options);
                   }
@@ -251,7 +252,8 @@ class SkipNumberController extends Controller
                         'value' => $op_content[0],
                         'title' => $op_content[1],
                         'type' => 'activate',
-                        'option_question_id' => $op_content[2]
+                        'option_question_id' => $op_content[2],
+                        'option_depend_on_question_type' => 'number'
                         ];
                     QuestionOption::insert($skip_options);
                   }
@@ -302,7 +304,8 @@ class SkipNumberController extends Controller
                         'value' => $op_content[0],
                         'title' => $op_content[1],
                         'type' => 'deactivate',
-                        'option_question_id' => $op_content[2]
+                        'option_question_id' => $op_content[2],
+                        'option_depend_on_question_type' => 'number'
                         ];
                     QuestionOption::insert($skip_options);
                   }
@@ -318,7 +321,8 @@ class SkipNumberController extends Controller
                         'value' => $op_content[0],
                         'title' => $op_content[1],
                         'type' => 'activate',
-                        'option_question_id' => $op_content[2]
+                        'option_question_id' => $op_content[2],
+                        'option_depend_on_question_type' => 'number'
                         ];
                     QuestionOption::insert($skip_options);
                   }
@@ -354,12 +358,12 @@ class SkipNumberController extends Controller
                     $skip_options = [
                         'id' => Str::uuid(),
                         'skip_logic_id' => $skiplogic_id,
-                        'skip_logic_id' => $skiplogic_id,
                         'question_id' => $request->question_id,
                         'value' => $op_content[0],
                         'title' => $op_content[1],
                         'type' => 'deactivate',
-                        'option_question_id' => $op_content[2]
+                        'option_question_id' => $op_content[2],
+                        'option_depend_on_question_type' => 'textbox'
                         ];
                     QuestionOption::insert($skip_options);
                   }
@@ -375,7 +379,8 @@ class SkipNumberController extends Controller
                         'value' => $op_content[0],
                         'title' => $op_content[1],
                         'type' => 'activate',
-                        'option_question_id' => $op_content[2]
+                        'option_question_id' => $op_content[2],
+                        'option_depend_on_question_type' => 'textbox'
                         ];
                     QuestionOption::insert($skip_options);
                   }
@@ -426,7 +431,8 @@ class SkipNumberController extends Controller
                         'value' => $op_content[0],
                         'title' => $op_content[1],
                         'type' => 'deactivate',
-                        'option_question_id' => $op_content[2]
+                        'option_question_id' => $op_content[2],
+                        'option_depend_on_question_type' => 'textbox'
                         ];
                     QuestionOption::insert($skip_options);
                   }
@@ -442,7 +448,8 @@ class SkipNumberController extends Controller
                         'value' => $op_content[0],
                         'title' => $op_content[1],
                         'type' => 'activate',
-                        'option_question_id' => $op_content[2]
+                        'option_question_id' => $op_content[2],
+                        'option_depend_on_question_type' => 'textbox'
                         ];
                     QuestionOption::insert($skip_options);
                   }

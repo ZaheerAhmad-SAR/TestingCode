@@ -408,21 +408,32 @@ class SkipLogicController extends Controller
         $options_name = explode(',', $questions->optionsGroup->option_name);
         if(null !== $questions->optionsGroup){
             foreach ($options_name as $key => $value) {
-                if($request->option_value != 'q_type_num'){
+                if($request->option_value == 'q_type_num'){
                     $where = array(
                         "option_question_id" =>$request->id,
                         "title" =>$value,
                         "value" =>$options_value[$key],
-                        "type" => 'deactivate'
+                        "type" => 'deactivate',
+                        "option_depend_on_question_type" => 'number'
+                    );
+                }elseif($request->option_value == 'q_type_text'){
+                    $where = array(
+                        "option_question_id" =>$request->id,
+                        "title" =>$value,
+                        "value" =>$options_value[$key],
+                        "type" => 'deactivate',
+                        "option_depend_on_question_type" => 'textbox'
                     );
                 }else{
                     $where = array(
                         "option_question_id" =>$request->id,
                         "title" =>$value,
                         "value" =>$options_value[$key],
-                        "type" => 'deactivate'
+                        "type" => 'deactivate',
+                        "option_depend_on_question_type" => 'radio'
                     );
                 }
+
                 $if_exists_record = QuestionOption::where($where)->first();
                 if(null !==$if_exists_record && ($if_exists_record->value == $options_value[$key])){
                     $checked = "checked";
@@ -478,7 +489,8 @@ class SkipLogicController extends Controller
                         'value' => $op_content[0],
                         'type' => 'deactivate',
                         'title' => $op_content[1],
-                        'option_question_id' => $op_content[2]
+                        'option_question_id' => $op_content[2],
+                        'option_depend_on_question_type' => 'radio'
                         ];
                     QuestionOption::insert($skip_options);
                   }
@@ -494,7 +506,8 @@ class SkipLogicController extends Controller
                         'value' => $op_content[0],
                         'type' => 'activate',
                         'title' => $op_content[1],
-                        'option_question_id' => $op_content[2]
+                        'option_question_id' => $op_content[2],
+                        'option_depend_on_question_type' => 'radio'
                         ];
                     QuestionOption::insert($skip_options);
                   }
