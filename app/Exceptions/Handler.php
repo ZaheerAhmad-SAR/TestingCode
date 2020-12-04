@@ -61,50 +61,50 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Throwable $exception)
     {
-        // if ($exception instanceof MethodNotAllowedHttpException) //post/get route exception 
-        // {   
-        //     return redirect()->back();   
-        //     //return response()->view('error.404');
-        // }
+        if ($exception instanceof MethodNotAllowedHttpException) //post/get route exception 
+        {   
+            return redirect()->back();   
+            //return response()->view('error.404');
+        }
 
-        // if ($exception instanceof NotFoundHttpException) { // no url found exception
-        //     return response()->view('errors.404');
-        // }
+        if ($exception instanceof NotFoundHttpException) { // no url found exception
+            return response()->view('errors.404');
+        }
 
-        // if($exception instanceof \PDOException){ //query exception
-        //     // send your custom error message here
-        //     return response()->view('errors.404');
-        // }
+        if($exception instanceof \PDOException){ //query exception
+            // send your custom error message here
+            return response()->view('errors.404');
+        }
 
-        // if ($exception instanceof TokenMismatchException){ //form token mismatch exception
-        //     // Redirect to a form. Here is an example of how I handle mine
-        //     return redirect($request->fullUrl())->with('csrf_error',"Oops! Seems you couldn't submit form for a long time. Please try again.");
-        // }
+        if ($exception instanceof TokenMismatchException){ //form token mismatch exception
+            // Redirect to a form. Here is an example of how I handle mine
+            return redirect($request->fullUrl())->with('csrf_error',"Oops! Seems you couldn't submit form for a long time. Please try again.");
+        }
 
-        // if ($exception instanceof \ErrorException) { // php errors exception
-        //     // send your custom error message here
-        //     return response()->view('errors.404');
-        // }
+        if ($exception instanceof \ErrorException) { // php errors exception
+            // send your custom error message here
+            return response()->view('errors.404');
+        }
 
-        // if ($exception instanceof \BadMethodCallException) { // call undefined function exception
-        //     // send your custom error message here
-        //     return response()->view('errors.404');
-        // }
+        if ($exception instanceof \BadMethodCallException) { // call undefined function exception
+            // send your custom error message here
+            return response()->view('errors.404');
+        }
 
-        // if ($exception instanceof \NotReadableException) { // Image invertion  error handling
-        //     // send your custom error message here
-        //     return response()->view('errors.404');
-        // }
+        if ($exception instanceof \NotReadableException) { // Image invertion  error handling
+            // send your custom error message here
+            return response()->view('errors.404');
+        }
 
-        // if ($exception instanceof \Swift_TransportException) { // Swift mailer error handling
-        //     // send your custom error message here
-        //     return response()->view('errors.404');
-        // }
+        if ($exception instanceof \Swift_TransportException) { // Swift mailer error handling
+            // send your custom error message here
+            return response()->view('errors.404');
+        }
 
-        // if ($exception instanceof \Illuminate\Contracts\Encryption\DecryptException) { // encryption payload error handling
-        //  // send your custom error message here
-        //     return response()->view('errors.404');
-        // }
+        if ($exception instanceof \Illuminate\Contracts\Encryption\DecryptException) { // encryption payload error handling
+         // send your custom error message here
+            return response()->view('errors.404');
+        }
 
         return parent::render($request, $exception);
     }
