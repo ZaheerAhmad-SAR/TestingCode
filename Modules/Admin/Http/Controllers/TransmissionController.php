@@ -709,6 +709,7 @@ class TransmissionController extends Controller
                 $getSubjectPhase->Transmission_Number = $findTransmission->Transmission_Number;
                 $getSubjectPhase->modility_id = $getModality->id;
                 $getSubjectPhase->save();
+                
             } // subject phases check is end
 
             // check modality and phase id
