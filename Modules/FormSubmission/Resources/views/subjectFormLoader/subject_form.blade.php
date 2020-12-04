@@ -197,8 +197,9 @@
                                                                 $qcFormStatus =
                                                                 \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step,
                                                                 $getQcFormStatusArray);
+                                                                //dd($qcFormStatus);
                                                                 if($qcFormStatus !== 'complete'){
-                                                                    continue;
+                                                                    //continue;
                                                                 }
                                                             }
                                                             $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
@@ -273,7 +274,7 @@
                                                     $qcFormStatus = \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step,
                                                     $getQcFormStatusArray);
                                                     if($qcFormStatus !== 'complete'){
-                                                        continue;
+                                                        //continue;
                                                     }
                                                 }
                                                 $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
