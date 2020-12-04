@@ -10,10 +10,13 @@ use Modules\Admin\Entities\FormFields;
 use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\Question;
 use Modules\Admin\Entities\Section;
+use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\Study;
+use Modules\Admin\Entities\StudySite;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\Subject;
 use Modules\FormSubmission\Entities\Answer;
+use Modules\FormSubmission\Entities\SubjectsPhases;
 
 class FormDataExport implements FromView
 {
@@ -60,8 +63,11 @@ class FormDataExport implements FromView
 
         foreach ($subjectIds as $subject_id) {
             $subject = Subject::find($subject_id);
+            $site = Site::find($subject->site_id);
+            $studySite = StudySite::where('study_id', $study->id)->where('site_id', $site->id)->firstOrNew();
             foreach ($this->visit_ids as $visit_id) {
                 $visit = StudyStructure::find($visit_id);
+                $subjectVisit = SubjectsPhases::where('phase_id', 'like', $visit_id)->where('subject_id', 'like', $subject_id)->first();
                 $steps = PhaseSteps::where('phase_id', 'like', $visit_id)
                     ->where('form_type_id', $this->form_type_id)
                     ->where('modility_id', $this->modility_id)
@@ -70,7 +76,17 @@ class FormDataExport implements FromView
                 foreach ($steps as $step) {
                     $step = PhaseSteps::find($step->step_id);
                     $sections = Section::where('phase_steps_id', 'like', $step->step_id)->get();
-                    $permanentTds = '<tr><td>' . $study->study_short_name . '</td><td>' . $subject->subject_id . '</td><td>' . $visit->name . '</td><td>' . $step->step_name . ' (' . $step->formType->form_type . ' - ' . $step->modility->modility_name . ')</td>';
+                    $permanentTds = '<tr>
+                    <td>' . $study->study_short_name . '</td>
+                    <td>' . Study::getDiseaseCohort($study) . '</td>
+                    <td>' . $studySite->study_site_id . '</td>
+                    <td>' . $site->site_name . '</td>
+                    <td>' . $site->site_code . '</td>
+                    <td>' . $subject->subject_id . '</td>
+                    <td>' . $subject->study_eye . '</td>
+                    <td>' . $visit->name . '</td>
+                    <td>' . $subjectVisit->visit_date->format('m-d-Y') . '</td>
+                    <td>' . $step->step_name . ' (' . $step->formType->form_type . ' - ' . $step->modility->modility_name . ')</td>';
                     $answerTds = '';
                     foreach ($sections as $section) {
                         $questions = Question::where('section_id', 'like', $section->id)
@@ -111,7 +127,19 @@ class FormDataExport implements FromView
             $body .= $permanentTds . $answerTds;
         }
 
-        $header = '<tr><th>Study</th><th>Subject</th><th>Visit</th><th>Step</th>' . $questionHeader . '</tr>';
+        $header = '<tr>
+        <th>Study</th>
+        <th>Cohort</th>
+        <th>Site ID</th>
+        <th>Site Name</th>
+        <th>Site Code</th>
+        <th>Subject</th>
+        <th>Study EYE</th>
+        <th>Visit</th>
+        <th>Visit Date</th>
+        <th>Step</th>
+        ' . $questionHeader . '
+        </tr>';
 
         return view('formsubmission::exports.export_view', [
             'header' => $header,
