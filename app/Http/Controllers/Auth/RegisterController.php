@@ -80,7 +80,7 @@ class RegisterController extends Controller
         UserRole::create([
             'id' => \Illuminate\Support\Str::uuid(),
             'role_id' => $data['role'],
-            'user_id' => $id,
+            'user_id' => $userId,
             'study_id' => ''
         ]);
 
