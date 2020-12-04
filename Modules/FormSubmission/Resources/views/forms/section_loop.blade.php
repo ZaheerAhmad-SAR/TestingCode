@@ -6,6 +6,7 @@ $transmissionNumber = \Modules\FormSubmission\Entities\SubjectsPhases::getTransm
 /**************************************/
 /**************************************/
 /**************************************/
+$form_filled_by_user_id = auth()->user()->id;
 
 $showForm = false;
 if ($step->form_type_id == 1 && canQualityControl(['index'])){
