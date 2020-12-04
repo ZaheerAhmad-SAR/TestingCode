@@ -70,7 +70,8 @@ class QualityControlController extends Controller
                 $subjects =  $subjects->whereBetween('subjects_phases.visit_date', [$from, $to]);
             }
 
-            $subjects = $subjects->orderBy('subjects.subject_id')
+            $subjects = $subjects->groupBy(['subjects.id', 'study_structures.id'])
+            ->orderBy('subjects.subject_id')
             ->orderBy('study_structures.position')
             ->paginate(15);
 
