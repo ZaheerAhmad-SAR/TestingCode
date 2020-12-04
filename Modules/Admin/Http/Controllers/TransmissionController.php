@@ -748,6 +748,7 @@ class TransmissionController extends Controller
         $transNumber   = request('Transmission_Number');
         $query_subject = request('query_subject');
         $user          = request('users');
+        $site_name     = request('site_name');
         $cc_email      = request('cc_email');
         $ccArray       = explode(',',$cc_email);
         $remarks       = request('remarks');
@@ -789,6 +790,8 @@ class TransmissionController extends Controller
             'email_attachment'=>$filePath,
             'parent_notification_id'=> 0,
             'notification_remarked_id'=>\auth()->user()->email,
+            'person_name'=>\auth()->user()->name,
+            'site_name'=>$site_name,
             'study_id'=>$studyID,
             'subject_id'=>$subjectID,
             'transmission_number'=>$transNumber,
@@ -803,27 +806,22 @@ class TransmissionController extends Controller
         ]);
 
         Mail::to($user)->send(new TransmissonQuery($data));
-
         return response()->json(['Status'=>'Send','message'=>'Query has been send']);
-
-//        //$ccEmail = $request->post('cc_email');
-//        $remarks = $request->post('remarks');
-
-        /// Mail Raw using plain text
-//        Mail::raw(request('remarks'),function ($message){
-//                $message->to(request('cc_email'))
-//                ->subject(request('query_subject'));
-//        });
-        //// Mail Raw end function
-
     }
 
     public function queryResponseSave( Request $request)
     {
+
         $yourName               = $request->post('yourName');
         $yourEmail              = $request->post('yourEmail');
         $yourMessage            = $request->post('yourMessage');
-        $subject                = $request->post('subject');
+        $subject                = $request->post('emailSubject');
+        $cc_email               = $request->post('cc_email');
+        $study_id               = $request->post('study_id');
+        $subject_id             = $request->post('subject_id');
+        $site_name              = $request->post('site_name');
+        $transmission_number    = $request->post('transmission_number');
+        $vist_name              = $request->post('vist_name');
         $notifications_token    = $request->post('notifications_token');
         $parent_notification_id = $request->post('parent_notification_id');
         $filePath               = '';
@@ -846,7 +844,13 @@ class TransmissionController extends Controller
             'notification_remarked_id'=>$yourEmail,
             'person_name'=>$yourName,
             'subject'=>$subject,
-            'notifications_token'=>$notifications_token
+            'notifications_token'=>$notifications_token,
+            'cc_email'=>$cc_email,
+            'study_id'=>$study_id,
+            'subject_id'=>$subject_id,
+            'transmission_number'=>$transmission_number,
+            'vist_name'=>$vist_name,
+            'site_name'=>$site_name
         ]);
         return response()->json(['Status'=>'Send','message'=>'Query has been send']);
     }
