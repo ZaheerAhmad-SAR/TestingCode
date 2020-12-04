@@ -37,7 +37,7 @@
                        <div class="card-body">
                             <div class="col-md-6" style="display: inline-block;">
                                 <div class="">
-                                    <input type="number" class="form-control" name="number_value[]" placeholder="Enter Number values " value="">
+                                    <input type="number" class="form-control" name="number_value[]" placeholder="Enter Number values " value="" required>
                                 </div>
                             </div>
                             <div class="col-md-5" style="display: inline-block;">    
@@ -70,8 +70,8 @@
                             </div>
                         </div>
                     </div>           
-        @foreach ($all_study_steps as $value)
-        @foreach($value->studySteps as $key => $value)
+        @foreach ($all_study_steps as $key => $value)
+        @foreach($value->studySteps as $index => $value)
             {{-- @if(in_array($value->step_id, $activate_forms_array)){ $checked = 'checked'; }@else{ $checked = ''; }@endif --}}
                     <div class="card">
                         <div class="card-body" style="padding: 0;">
@@ -112,8 +112,8 @@
                             </div>
                         </div>
                     </div>
-        @foreach ($all_study_steps as $value)
-        @foreach($value->studySteps as $key => $value)
+        @foreach ($all_study_steps as $key => $value)
+        @foreach($value->studySteps as $index => $value)
             {{-- if(in_array($value->step_id, $deactivate_forms_array)){ $checked = 'checked'; }else{ $checked = ''; } --}}
             <div class="card">
                 <div class="card-body" style="padding: 0;">
