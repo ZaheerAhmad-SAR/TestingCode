@@ -404,7 +404,7 @@
                             @csrf
                             <div class="dataResponse"></div>
                             <div class="col-sm-12">
-                                <div class="replyClick" style="text-align: right;">
+                                <div class="replyClickButtonResponse" style="text-align: right;">
                                     <span style="cursor: pointer;">
                                         <i class="fa fa-reply"></i> &nbsp; reply
                                         </span>
@@ -449,11 +449,10 @@
         loadQueryByTransmissionId(transmission_Id);
     });
 
-    $('body').on('click', '.replyClick', function () {
-        $('.commentsInput').css('display','');
-        $('.queryAttachments').css('display','');
-        $('.queryStatus').css('display','');
-        $('.replyClick').css('display','none');
+    $('body').on('click', '.replyClickButtonResponse', function () {
+        $('.replyResponseInput').css('display','');
+        $('.responseAttachmentInput').css('display','');
+        $('.replyClickButtonResponse').css('display','none');
     });
 
 
@@ -549,45 +548,50 @@
         $.ajaxSetup({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         });
-        // var users               = $('#users').val();
-        // var StudyI_ID           = $('#StudyI_ID').val();
-        // var remarks             = $('#remarks').val();
-        // var cc_email            = $('#cc_email').val();
-        // var visitName           = $('#visitName').val();
-        // var Subject_ID          = $('#Subject_ID').val();
-        // var Transmission_Number = $('#Transmission_Number').val();
-        // var query_subject       = $('#query_subject').val();
-        // var studyShortName      = $('#studyShortName').val();
-        //
-        // var formData      = new FormData();
-        // formData.append('users', users);
-        // formData.append('StudyI_ID', StudyI_ID);
-        // formData.append('remarks', remarks);
-        // formData.append('cc_email', cc_email);
-        // formData.append('visitName', visitName);
-        // formData.append('Subject_ID', Subject_ID);
-        // formData.append('Transmission_Number', Transmission_Number);
-        // formData.append('query_subject', query_subject);
-        // formData.append('studyShortName', studyShortName);
-        // // Attach file
-        // formData.append('query_file', $('input[type=file]')[0].files[0]);
+        var transmission_number_response = $('#transmission_number_response').val();
+        var notification_remarked_id     = $('#notification_remarked_id').val();
+        var query_id_response            = $('#query_id_response').val();
+        var cc_email_response            = $('#cc_email_response').val();
+        var email_subject_response       = $('#email_subject_response').val();
+        var study_id_response            = $('#study_id_response').val();
+        var subject_id_response          = $('#subject_id_response').val();
+        var vist_name_response           = $('#vist_name_response').val();
+        var reply_response               = $('#reply_response').val();
+        var study_short_name_response    = $('#study_short_name_response').val();
+        var site_name_response           = $('#site_name_response').val();
 
-        {{--$.ajax({--}}
+        var formDataResponse      = new FormData();
+        formDataResponse.append('transmission_number_response', transmission_number_response);
+        formDataResponse.append('notification_remarked_id', notification_remarked_id);
+        formDataResponse.append('query_id_response', query_id_response);
+        formDataResponse.append('cc_email_response', cc_email_response);
+        formDataResponse.append('email_subject_response', email_subject_response);
+        formDataResponse.append('study_id_response', study_id_response);
+        formDataResponse.append('subject_id_response', subject_id_response);
+        formDataResponse.append('vist_name_response', vist_name_response);
+        formDataResponse.append('reply_response', reply_response);
+        formDataResponse.append('study_short_name_response', study_short_name_response);
+        formDataResponse.append('site_name_response', site_name_response);
+        // Attach file
+        formDataResponse.append("responseAttachment", $("#attachment_R")[0].files[0]);
 
-        {{--    url:"{{route('transmissions.queryTransmissionMail')}}",--}}
-        {{--    type: "POST",--}}
-        {{--    data: formData,--}}
-        {{--    dataType: 'json',--}}
-        {{--    contentType: false,--}}
-        {{--    cache: false,--}}
-        {{--    processData:false,--}}
-        {{--    success: function(response)--}}
-        {{--    {--}}
-        {{--        console.log(response);--}}
-        {{--        $("#queriesTransmissionForm")[0].reset();--}}
-        {{--        $('#transmissonQueryModal').modal('show');--}}
-        {{--    }--}}
-        {{--});--}}
+        $.ajax({
+
+            url:"{{route('transmissions.queryTransmissionMailResponse')}}",
+            type: "POST",
+            data: formDataResponse,
+            dataType: 'json',
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response)
+            {
+                console.log(response);
+                var query_id = response[0].parent_notification_id;
+                console.log(query_id);
+                showTransmissionResponse(query_id);
+            }
+        });
     });
 
 
