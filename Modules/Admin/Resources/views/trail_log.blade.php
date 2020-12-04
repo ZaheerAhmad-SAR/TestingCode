@@ -73,9 +73,11 @@
 
                             @if(hasPermission(auth()->user(),'systemtools.index'))
                             <div class="form-group col-md-4">
+                            {{--
                             @else
                             <div class="form-group col-md-3">
                             @endif
+                            --}}
                                 <label for="inputState">Study</label>
                                 <select id="event_study" name="event_study" class="form-control filter-form-data">
                                     <option value="">All Studies</option>
@@ -84,11 +86,12 @@
                                     @endforeach
                                 </select>
                             </div>
+                            @endif
 
                             @if(hasPermission(auth()->user(),'systemtools.index'))
                             <div class="form-group col-md-4">
                             @else
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-3">
                             @endif
                                 <label for="inputState">Event Section</label>
                                 <select id="event_section" name="event_section" class="form-control filter-form-data">
@@ -102,7 +105,7 @@
                             @if(hasPermission(auth()->user(),'systemtools.index'))
                             <div class="form-group col-md-4">
                             @else
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-3">
                             @endif
                                 <label for="inputState">Event Type</label>
                                 <select id="event_type" name="event_type" class="form-control filter-form-data">
@@ -127,7 +130,7 @@
                             @if(hasPermission(auth()->user(),'systemtools.index'))
                             <div class="form-group col-md-2 mt-4">
                             @else
-                            <div class="form-group col-md-2 mt-4">
+                            <div class="form-group col-md-3 mt-4">
                             @endif
                                 <button type="button" class="btn btn-primary reset-filter">Reset</button>
                                 <button type="submit" class="btn btn-primary btn-lng">Filter</button>
