@@ -259,7 +259,7 @@ class TransmissionController extends Controller
                 'Subject_ID'                => $xml->Subject_ID,
                 'StudyEye'                  => $xml->StudyEye,
                 'visit_name'                => $xml->visit_name,
-                'visit_date'                => $xml->visit_date,
+                'visit_date'                => date('Y-m-d', strtotime($xml->visit_date)),
                 'ImageModality'             => $xml->ImageModality,
                 'device_model'              => $xml->device_model,
                 'device_oirrcID'            => $xml->device_oirrcID,
@@ -709,6 +709,7 @@ class TransmissionController extends Controller
                 $getSubjectPhase->Transmission_Number = $findTransmission->Transmission_Number;
                 $getSubjectPhase->modility_id = $getModality->id;
                 $getSubjectPhase->save();
+                
             } // subject phases check is end
 
             // check modality and phase id

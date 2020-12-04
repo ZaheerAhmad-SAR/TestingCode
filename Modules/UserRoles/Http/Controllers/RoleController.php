@@ -252,6 +252,15 @@ class RoleController extends Controller
                 ->get();
             $this->createRolePermissions($role, $permissions);
         }
+
+        // if study tool and grading view permission is assign only them allow grading status
+        if ($request->study_tools == 'on' && $request->grading_view == 'on') {
+
+            $permissions = Permission::where('name', 'grading.status')
+                                       ->get();
+            $this->createRolePermissions($role, $permissions);
+        }
+
         if ($request->grading_delete == 'on') {
             $permissions = Permission::where('name', '=', 'grading.destroy')
                 ->get();

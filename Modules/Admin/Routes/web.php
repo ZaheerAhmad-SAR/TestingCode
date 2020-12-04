@@ -12,10 +12,15 @@
 */
 
 // test transmission view
-/*Route::get('transmissions/transmissionData', function () {
-    return view('admin::test_transmission_api');
-});*/
+// Route::get('transmissions/transmissionData', function () {
+//     return view('admin::test_transmission_api');
+// });
 // transmission end point
+
+// Route::get('error-message', function(){
+
+//     return view('errors.404');
+// });
 
 Route::post('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
 
@@ -209,6 +214,8 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
     Route::get('study-transmissions', 'TransmissionController@studyTransmissions')->name('transmissions.study-transmissions');
 });
+
+
 
 // for checking subject ID
 Route::get('check-subject', 'SubjectController@checkSubject')->name('subjects.check-subject');

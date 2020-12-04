@@ -38,7 +38,7 @@
                        <div class="card-body">
                             <div class="col-md-6" style="display: inline-block;">
                                 <div class="">
-                                    <input type="text" class="form-control" name="textbox_value[]" placeholder="Enter Text" value="{{$num_values->textbox_value}}">
+                                    <input type="text" class="form-control" name="textbox_value[]" placeholder="Enter Text" value="{{$num_values->textbox_value}}" required>
                                 </div>
                             </div>
                        </div>
@@ -61,8 +61,8 @@
                             </div>
                         </div>
                     </div>           
-        @foreach ($all_study_steps as $value)
-        @foreach($value->studySteps as $key => $value)
+        @foreach ($all_study_steps as $key => $value)
+        @foreach($value->studySteps as $index => $value)
         @php 
             $q_id = request('id');
             $activate_forms_array = explode(',', $num_values->activate_forms);
@@ -78,7 +78,7 @@
                                         <td class="step_id" style="display: none;">{{$value->step_id}}</td>
                                         <td style="text-align: center;width: 15%">
                                           <div class="btn-group btn-group-sm" role="group">
-                                            <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" onclick="activate_checks('{{$value->step_id}}','sections_list_','{{$key}}','{{request('id')}}','q_type_num');" data-target=".row-{{$value->step_id}}-ac-{{$key}}" style="font-size: 20px; color: #1e3d73;"></i>
+                                            <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" onclick="activate_checks('{{$value->step_id}}','sections_list_','{{$key}}','{{request('id')}}','q_type_text');" data-target=".row-{{$value->step_id}}-ac-{{$key}}" style="font-size: 20px; color: #1e3d73;"></i>
                                           </div>
                                         </td>
                                         <td colspan="5"> <input type="checkbox" name="activate_forms[{{$key}}][]" value="{{$value->step_id}}" {{$checked}}> &nbsp;&nbsp;{{$value->step_name}}</td>
@@ -94,7 +94,7 @@
                     <script>
                      $(document).ready(function() {
                      @php
-                         echo "activate_checks('$value->step_id','sections_list_','$key','$q_id','q_type_num','');";
+                         echo "activate_checks('$value->step_id','sections_list_','$key','$q_id','q_type_text','');";
                      @endphp
                      })
                  </script>
@@ -117,8 +117,8 @@
                             </div>
                         </div>
                     </div>
-        @foreach ($all_study_steps as $value)
-        @foreach($value->studySteps as $key => $value)
+        @foreach ($all_study_steps as $key => $value)
+        @foreach($value->studySteps as $index => $value)
          @php 
             $q_id = request('id');
             $deactivate_forms_array = explode(',', $num_values->deactivate_forms);
@@ -133,7 +133,7 @@
                                 <td class="step_id" style="display: none;">{{$value->step_id}}</td>
                                 <td style="text-align: center;width: 15%">
                                   <div class="btn-group btn-group-sm" role="group">
-                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-de-{{$key}}" onclick="deactivate_checks('{{$value->step_id}}','de_sections_list_','{{$key}}','{{request('id')}}','q_type_num');" style="font-size: 20px; color: #1e3d73;"></i>
+                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-de-{{$key}}" onclick="deactivate_checks('{{$value->step_id}}','de_sections_list_','{{$key}}','{{request('id')}}','q_type_text');" style="font-size: 20px; color: #1e3d73;"></i>
                                   </div>
                                 </td>
                                 <td colspan="5"><input type="checkbox" name="deactivate_forms[{{$key}}][]" value="{{$value->step_id}}" {{$checked}}> &nbsp;&nbsp;{{$value->step_name}}</td>
@@ -149,7 +149,7 @@
              <script>
                  $(document).ready(function() {
                  @php
-                     echo "deactivate_checks('$value->step_id','de_sections_list_','$key','$q_id','q_type_num','');";
+                     echo "deactivate_checks('$value->step_id','de_sections_list_','$key','$q_id','q_type_text','');";
                  @endphp
                  })
              </script>
@@ -168,6 +168,7 @@
 @endsection
 @include('admin::forms.edit_crf')
 @include('admin::forms.script_skip_logic')
+@include('admin::forms.common_script_skip_logic')
     @section('styles')
     <style type="text/css">
             /*.table{table-layout: fixed;}*/
