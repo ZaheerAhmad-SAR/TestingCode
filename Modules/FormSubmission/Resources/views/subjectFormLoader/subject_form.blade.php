@@ -181,23 +181,18 @@
                                                         $activeStep = true;
                                                         $steps =
                                                         \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($subjectId, $phase->id);
-                                                        $previousStepId = '';
                                                         @endphp
                                                         @foreach ($steps as $step)
                                                             @php
-                                                            if ($step->form_type_id == 2 && $previousStepId != '') {
+                                                            if ($step->form_type_id == 2) {
                                                                 $getQcFormStatusArray = [
                                                                     'subject_id' => $subjectId,
                                                                     'study_id' => $studyId,
                                                                     'study_structures_id' => $phase->id,
-                                                                    //'phase_steps_id' => $previousStepId,
                                                                     'form_type_id' => '1',
                                                                     'modility_id' => $step->modility_id,
                                                                 ];
-                                                                $qcFormStatus =
-                                                                \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step,
-                                                                $getQcFormStatusArray);
-                                                                //dd($qcFormStatus);
+                                                                $qcFormStatus = \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getQcFormStatusArray);
                                                                 if($qcFormStatus !== 'complete'){
                                                                     continue;
                                                                 }
@@ -228,7 +223,6 @@
                                                             @include('formsubmission::subjectFormLoader.adjudication_left_bar_nav', $stepData)
                                                             @php
                                                             $activeStep = false;
-                                                            $previousStepId = $step->step_id;
                                                             @endphp
                                                         @endforeach
                                                     @endif
@@ -257,22 +251,19 @@
                                             $phaseIdStr = buildSafeStr($phase->id, 'phase_cls_');
                                             $steps =
                                             \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($subjectId, $phase->id);
-                                            $previousStepId = '';
                                             @endphp
                                             @foreach ($steps as $step)
                                                 @php
                                                 $stepCounter++;
-                                                if ($step->form_type_id == 2 && $previousStepId != '') {
+                                                if ($step->form_type_id == 2) {
                                                     $getQcFormStatusArray = [
                                                         'subject_id' => $subjectId,
                                                         'study_id' => $studyId,
                                                         'study_structures_id' => $phase->id,
-                                                        //'phase_steps_id' => $previousStepId,
                                                         'form_type_id' => '1',
                                                         'modility_id' => $step->modility_id,
                                                     ];
-                                                    $qcFormStatus = \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step,
-                                                    $getQcFormStatusArray);
+                                                    $qcFormStatus = \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getQcFormStatusArray);
                                                     if($qcFormStatus !== 'complete'){
                                                         continue;
                                                     }
@@ -306,7 +297,6 @@
                                                 @php
                                                 }
                                                 $activeStep = false;
-                                                $previousStepId = $step->step_id;
                                                 @endphp
                                             @endforeach
                                         @endforeach
