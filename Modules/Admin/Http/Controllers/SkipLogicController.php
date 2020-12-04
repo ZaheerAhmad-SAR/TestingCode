@@ -19,7 +19,7 @@ use Modules\Admin\Entities\QuestionValidation;
 use Modules\Admin\Entities\QuestionAdjudicationStatus;
 use Modules\Admin\Entities\AnnotationDescription;
 use Modules\Admin\Entities\Study;
-use Modules\Admin\Entities\skipLogic;
+use Modules\Admin\Entities\SkipLogic;
 use Modules\Admin\Entities\QuestionOption;
 use Illuminate\Support\Facades\DB;
 use Modules\FormSubmission\Traits\Replication\ReplicatePhaseStructure;
@@ -113,7 +113,7 @@ class SkipLogicController extends Controller
                             </div>
                         </div>
                     </div>';
-       
+
         foreach ($all_study_steps->studySteps as $key => $value) {
             if(in_array($value->step_id, $deactivate_forms_array)){ $checked = 'checked'; }else{ $checked = ''; }
             $step_contents_deactive .= '<div class="card">
@@ -137,11 +137,11 @@ class SkipLogicController extends Controller
                         </div>
 
               <div class="card collapse row-'.$value->step_id.'-de-'.$request->index.' de_sections_list_'.$value->step_id.'_'.$request->index.'">';
-             
+
             $step_contents_deactive .= '</div>';
             $function_string_de .='disabled_opposite(\'' . $value->step_id . '\',\'activate_step_\',\''.$request->index.'\',\'deactivate_step_\');';
             $function_string_de .= 'deactivate_checks(\'' . $value->step_id . '\',\'de_sections_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
-            
+
         }
 
         $step_contents_deactive .= '</div>';
@@ -166,7 +166,7 @@ class SkipLogicController extends Controller
         }else{
            $where = array(
                 "id" =>$request->question_id,
-            ); 
+            );
         }
         $if_exists_record = skipLogic::where($where)->first();
         if(null !== $if_exists_record){
@@ -196,7 +196,7 @@ class SkipLogicController extends Controller
             $function_string .='disabled_opposite(\''.$value->id.'\',\'deactivate_section_\',\''.$request->index.'\',\'activate_section_\');';
             $function_string .= 'question_for_activate(\'' . $value->id . '\',\'ac_questions_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
         }
-        
+
         $section_array = array(
             'html_str' => $section_contents,
             'function_str' => $function_string
@@ -216,12 +216,12 @@ class SkipLogicController extends Controller
         }else{
            $where = array(
                 "id" =>$request->question_id,
-            ); 
-        }    
+            );
+        }
         $if_exists_record = skipLogic::where($where)->first();
         if(null !==$if_exists_record){
             $deactivate_sections_array = explode(',', $if_exists_record->deactivate_sections);
-        }    
+        }
         $section = Section::select('*')->where('phase_steps_id', $id)->orderBy('sort_number', 'asc')->get();
         $section_contents = '';
         foreach ($section as $key => $value) {
@@ -235,7 +235,7 @@ class SkipLogicController extends Controller
                                       </div>
                                     </td><td  colspan="5"> <input type="checkbox" name="deactivate_sections[' .$request->index. '][]" value="' . $value->id . '" '.$checked.' class="deactivate_section_'.$value->id.'_'.$request->index.'"  onclick="disabled_opposite(\''.$value->id.'\',\'activate_section_\',\''.$request->index.'\',\'deactivate_section_\')"> ' . $value->name . '</td>';
             $section_contents .= '</tr>';
-            $section_contents .= '</tbody> 
+            $section_contents .= '</tbody>
                                 </table>
                                  </div>
                             </div>
@@ -245,7 +245,7 @@ class SkipLogicController extends Controller
             $function_string .= 'question_for_deactivate(\'' . $value->id . '\',\'de_questions_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
 
         }
-        
+
         $section_array = array(
             'html_str' => $section_contents,
             'function_str' => $function_string
@@ -265,7 +265,7 @@ class SkipLogicController extends Controller
         }else{
            $where = array(
                 "id" =>$request->question_id,
-            ); 
+            );
         }
         $if_exists_record = skipLogic::where($where)->first();
         if(null !==$if_exists_record){
@@ -289,8 +289,8 @@ class SkipLogicController extends Controller
                                     <tbody class="ac_options_list_'.$value->id.'_'.$request->index.'">
                                     </tbody>
                                 </table> </div>';
-            $function_string .='disabled_opposite(\''.$value->id.'\',\'deactivate_question_\',\''.$request->index.'\',\'activate_question_\');';                    
-            $function_string .='question_options_activate(\''.$value->id.'\',\'ac_options_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';                    
+            $function_string .='disabled_opposite(\''.$value->id.'\',\'deactivate_question_\',\''.$request->index.'\',\'activate_question_\');';
+            $function_string .='question_options_activate(\''.$value->id.'\',\'ac_options_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
         }
         $options_ac_array = array(
             'html_str' => $options_ac_contents,
@@ -311,12 +311,12 @@ class SkipLogicController extends Controller
         }else{
            $where = array(
                 "id" =>$request->question_id,
-            ); 
+            );
         }
         $if_exists_record = skipLogic::where($where)->first();
         if(null !==$if_exists_record){
             $deactivate_questions_array = explode(',', $if_exists_record->deactivate_questions);
-        }    
+        }
         $questions = Question::select('*')->where('section_id', $id)->orderBy('question_sort', 'asc')->get();
         $question_contents = '';
         foreach ($questions as $key => $value) {
@@ -375,28 +375,28 @@ class SkipLogicController extends Controller
                     );
                 }
                 $if_exists_record = QuestionOption::where($where)->first();
-                if(null !==$if_exists_record && ($if_exists_record->value == $options_value[$key])){ 
-                    $checked = "checked"; 
+                if(null !==$if_exists_record && ($if_exists_record->value == $options_value[$key])){
+                    $checked = "checked";
                 }else{
-                    $checked = ""; 
+                    $checked = "";
                 }
                 if(null !==$if_exists_record){
                     $deactivate_questions_array = explode(',', $if_exists_record->deactivate_questions);
-                } 
+                }
                 $options_contents .= '<tr>
                                         <td style="text-align: center;width:15%;">
                                            <input type="checkbox" name="activate_options['.$request->index.'][]" value="'.$options_value[$key].'_'.$value.'_'.$questions->id.'" '.$checked.' class="activate_option_'.$questions->id.$value.'_'.$request->index.'"  onclick="disabled_opposite(\''.$questions->id.$value.'\',\'deactivate_option_\',\''.$request->index.'\',\'activate_option_\')">
                                         </td>
                                         <td colspan="5">'.$value.'</td>';
-                $options_contents .= '</tr>';  
-                $function_string .='disabled_opposite(\''.$questions->id.$value.'\',\'deactivate_option_\',\''.$request->index.'\',\'activate_option_\');';             
+                $options_contents .= '</tr>';
+                $function_string .='disabled_opposite(\''.$questions->id.$value.'\',\'deactivate_option_\',\''.$request->index.'\',\'activate_option_\');';
             }
-        }  
+        }
         $options_contents_array = array(
             'html_str' => $options_contents,
             'function_str' => $function_string
         );
-        return json_encode($options_contents_array);  
+        return json_encode($options_contents_array);
         // return Response($options_contents);
     }
     public function options_skip_logic_deactivate(Request $request, $id)
@@ -424,17 +424,17 @@ class SkipLogicController extends Controller
                     );
                 }
                 $if_exists_record = QuestionOption::where($where)->first();
-                if(null !==$if_exists_record && ($if_exists_record->value == $options_value[$key])){ 
-                    $checked = "checked"; 
+                if(null !==$if_exists_record && ($if_exists_record->value == $options_value[$key])){
+                    $checked = "checked";
                 }else{
-                    $checked = ""; 
+                    $checked = "";
                 }
                 $options_contents .= '<tr>
                                         <td style="text-align: center;width:15%;">
                                            <input type="checkbox" name="deactivate_options['.$request->index.'][]" value="'.$options_value[$key].'_'.$value.'_'.$questions->id.'" '.$checked.' class="deactivate_option_'.$questions->id.$value.'_'.$request->index.'"  onclick="disabled_opposite(\''.$questions->id.$value.'\',\'activate_option_\',\''.$request->index.'\',\'deactivate_option_\')">
                                         </td>
                                         <td colspan="5">'.$value.'</td>';
-                $options_contents .= '</tr>'; 
+                $options_contents .= '</tr>';
                 $function_string .='disabled_opposite(\''.$questions->id.$value.'\',\'activate_option_\',\''.$request->index.'\',\'deactivate_option_\');';
             }
         }
@@ -442,7 +442,7 @@ class SkipLogicController extends Controller
             'html_str' => $options_contents,
             'function_str' => $function_string
         );
-        return json_encode($options_contents_array);     
+        return json_encode($options_contents_array);
         // return Response($options_contents);
     }
     public function add_skipLogic(Request $request)
@@ -475,13 +475,13 @@ class SkipLogicController extends Controller
                         'id' => Str::uuid(),
                         'skip_logic_id' => $skiplogic_id,
                         'question_id' => $request->question_id,
-                        'value' => $op_content[0], 
-                        'type' => 'deactivate', 
+                        'value' => $op_content[0],
+                        'type' => 'deactivate',
                         'title' => $op_content[1],
                         'option_question_id' => $op_content[2]
                         ];
                     QuestionOption::insert($skip_options);
-                  }  
+                  }
                 }
                 // Activate Questions options
                 if(isset($request->activate_options[$i]) && count($request->activate_options[$i]) > 0){
@@ -492,12 +492,12 @@ class SkipLogicController extends Controller
                         'skip_logic_id' => $skiplogic_id,
                         'question_id' => $request->question_id,
                         'value' => $op_content[0],
-                        'type' => 'activate', 
+                        'type' => 'activate',
                         'title' => $op_content[1],
                         'option_question_id' => $op_content[2]
                         ];
                     QuestionOption::insert($skip_options);
-                  } 
+                  }
                 }
                 skipLogic::insert($skip_ques);
             }

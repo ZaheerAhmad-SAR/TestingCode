@@ -21,7 +21,7 @@ $dataArray = ['question'=> $question, 'field_name'=> $field_name,
 @elseif($fieldType == 'Calculated')
     @include('formsubmission::forms.form_fields.calculated_field', $dataArray)
 @elseif($fieldType == 'Description')
-    {!! $question->formFields->text_info !!}
+    {!! html_entity_decode($question->formFields->text_info) !!}
 @endif
 
 @php

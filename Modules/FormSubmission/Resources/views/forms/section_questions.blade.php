@@ -1,4 +1,4 @@
-@if($step->is_active == 1)
+@if($step->is_active == 1 || $isPreview === true)
 @if (count($section->questions))
 <fieldset id="fieldset_{{ $stepIdStr }}" class="{{ $studyClsStr }} {{ $stepClsStr }} {{ $skipLogicStepIdStr }} {{ $skipLogicSectionIdStr }} {{ $sectionClsStr }}">
     <div class="card p-2 mb-1">
@@ -36,7 +36,7 @@
                             @include('formsubmission::forms.form_fields.form_field_checks', ['fieldType'=>$fieldType, 'question'=> $question, 'field_name'=> $field_name,
                             'questionIdStr'=> $questionIdStr, 'skipLogicQuestionIdStr'=>$skipLogicQuestionIdStr, 'fieldId'=> $fieldId, 'answer'=> $answer, 'is_required'=> $is_required])
             </div>
-            <div class="col-1">@include('formsubmission::forms.form_fields.info_popup', ['question'=>$question])</div>
+            <div class="col-1">@include('formsubmission::forms.form_fields.info_popup', ['fieldType'=>$fieldType, 'question'=>$question])</div>
             @php
             $queryParams = [
                     'study_id'=>$studyId,
@@ -52,7 +52,7 @@
             ];
             @endphp
             @if($isPreview === false)
-            <div class="col-1">@include('formsubmission::forms.form_fields.query_popup', ['queryParams'=>$queryParams])</div>
+            <div class="col-1">@include('formsubmission::forms.form_fields.query_popup', ['fieldType'=>$fieldType, 'queryParams'=>$queryParams])</div>
             @endif
         </div>
     </div>

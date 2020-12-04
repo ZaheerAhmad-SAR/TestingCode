@@ -46,4 +46,11 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('assignPhaseToSubject/loadAssignPhaseToSubjectForm', 'AssignPhaseToSubjectController@loadAssignPhaseToSubjectForm')->name('assignPhaseToSubject.loadAssignPhaseToSubjectForm');
     Route::post('assignPhaseToSubject/submitAssignPhaseToSubjectForm', 'AssignPhaseToSubjectController@submitAssignPhaseToSubjectForm')->name('assignPhaseToSubject.submitAssignPhaseToSubjectForm');
     Route::post('assignPhaseToSubject/unAssignPhaseToSubject', 'AssignPhaseToSubjectController@unAssignPhaseToSubject')->name('assignPhaseToSubject.unAssignPhaseToSubject');
+
+    // Form Data Export
+    Route::get('formDataExport/index', 'FormDataExportController@index')->name('formDataExport.index');
+    Route::post('formDataExport/loadExportFilterForm', 'FormDataExportController@filterForm')->name('formDataExport.loadExportFilterForm');
+    Route::get('formDataExport/export', 'FormDataExportController@export')->name('formDataExport.export');
+    Route::post('formDataExport/filterVisits', 'FormDataExportController@filterVisits')->name('formDataExport.filterVisits');
+    Route::post('formDataExport/filterSteps', 'FormDataExportController@filterSteps')->name('formDataExport.filterSteps');
 });

@@ -26,7 +26,7 @@ $adjudicationRequiredQuestionIdsArray = \Modules\FormSubmission\Entities\Questio
             @foreach ($section->questions as $question)
             @php
             $fieldType = $question->form_field_type->field_type;
-            if (($fieldType == 'Upload') || ($fieldType == 'Date & Time')){
+            if (($fieldType == 'Upload') || ($fieldType == 'Date & Time') || ($fieldType == 'Description')){
                 continue;
             }
             if ($showAllQuestions == 'no'){

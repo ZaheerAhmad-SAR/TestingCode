@@ -175,19 +175,19 @@
                             </li>
                             @endif
 
-                           
+
                             <li class="@if(is_active('transmissions.index')) {{ ' active' }} @endif">
                                 <a href="{!! route('transmissions.index') !!}">
                                     System Transmissions
                                 </a>
                             </li>
-                            
+
                         </ul>
                     </li>
                 </ul>
             </li>
 
-            @elseif(hasPermission(auth()->user(),'qualitycontrol.store') && hasPermission(auth()->user(),'qualitycontrol.edit'))
+            @elseif(hasPermission(auth()->user(),'qualitycontrol.create') && hasPermission(auth()->user(),'qualitycontrol.edit'))
 
             @if(!empty(session('current_study')))
             <li class="dropdown">
@@ -195,7 +195,7 @@
                     <li class="dropdown"><a href="#"><i class="icon-grid"></i>Transmissions</a>
                         <ul class="sub-menu">
 
-                  
+
                             <li class="@if(is_active('transmissions.study-transmissions')) {{ ' active' }} @endif">
                                 <a href="{!! route('transmissions.study-transmissions') !!}">
                                     Study Transmissions
@@ -209,7 +209,7 @@
             @endif
 
             @endif
-            
+
             <!-- //////////////////////////////// Transmissions ////////////////// -->
             @if(hasPermission(auth()->user(),'subjects.index'))
             <li class=""><!-- <a href="#"><i class="fas fa-laptop-medical mr-1"></i>Subject Management</a> -->
@@ -239,7 +239,7 @@
                 @endif
             @endif
 
-            @if(hasPermission(auth()->user(),'qualitycontrol.store') && hasPermission(auth()->user(),'qualitycontrol.edit'))
+            @if(hasPermission(auth()->user(),'qualitycontrol.create') && hasPermission(auth()->user(),'qualitycontrol.edit'))
 
                 @if(session('current_study'))
                     <li class="dropdown">
@@ -264,7 +264,7 @@
                 @endif
             @endif
 
-            @if(hasPermission(auth()->user(),'grading.store') && hasPermission(auth()->user(),'grading.edit'))
+            @if(hasPermission(auth()->user(),'grading.create') && hasPermission(auth()->user(),'grading.edit'))
 
                 @if(session('current_study'))
                     <li class="dropdown">
@@ -295,7 +295,7 @@
                     </li>
                 @endif
             @endif
-            
+
             @if(hasPermission(auth()->user(),'adjudication.index'))
                 @if(session('current_study'))
                     <li class="dropdown">
@@ -352,7 +352,7 @@
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#">
+                                        <a href="{{route('formDataExport.index')}}">
                                             Data Exports
                                         </a>
                                     </li>
