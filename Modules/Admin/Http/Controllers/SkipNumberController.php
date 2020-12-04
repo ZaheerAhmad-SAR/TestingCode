@@ -336,8 +336,6 @@ class SkipNumberController extends Controller
         $skip_ques = [];
         $skip_options = [];
         if (isset($request->textbox_value) && count($request->textbox_value) > 0) {
-            $where = array('question_id' =>$request->question_id);
-            $remove_checks_if_already_exists = skipLogic::where($where)->delete();
             for ($i = 0; $i < count($request->textbox_value); $i++) {
                 $skiplogic_id = Str::uuid();
                 $skip_ques = [

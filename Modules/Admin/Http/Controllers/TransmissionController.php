@@ -709,6 +709,7 @@ class TransmissionController extends Controller
                 $getSubjectPhase->Transmission_Number = $findTransmission->Transmission_Number;
                 $getSubjectPhase->modility_id = $getModality->id;
                 $getSubjectPhase->save();
+                
             } // subject phases check is end
 
             // check modality and phase id
@@ -738,6 +739,68 @@ class TransmissionController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function queryTransmissionMailResponse(Request $request)
+    {
+
+       $transmission_number_response = $request->post('transmission_number_response');
+       $notification_remarked_id     = $request->post('notification_remarked_id'); // Sender Email Address
+       $email_subject_response       = $request->post('email_subject_response');
+       $query_id_response            = $request->post('query_id_response');
+       $cc_email_response            = $request->post('cc_email_response');
+       $study_id_response            = $request->post('study_id_response');
+       $subject_id_response          = $request->post('subject_id_response');
+       $vist_name_response           = $request->post('vist_name_response');
+       $reply_response               = $request->post('reply_response');
+       $study_short_name_response    = $request->post('study_short_name_response');
+       $site_name_response           = $request->post('site_name_response');
+       $filePath                     = '';
+
+        if (!empty($request->file('responseAttachment'))) {
+            $image  = $request->file('responseAttachment');
+            $name   = Str::slug(request()->input('name')).'_'.time();
+            $folder = '/query_attachments/';
+            $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
+            $this->uploadOne($image, $folder, 'public', $name);
+        }
+        $id    = Str::uuid();
+        $token = Str::uuid();
+
+        $data  = array(
+            'Transmission_Number'=>$transmission_number_response,
+            'query_subject'=>$email_subject_response,
+            'remarks'=>$reply_response,
+            'cc_email'=>$cc_email_response,
+            'StudyI_ID'=>$study_id_response,
+            'visit_name'=>$vist_name_response,
+            'Subject_ID'=>$subject_id_response,
+            'attachment'=>$filePath,
+            'studyShortName'=>$study_short_name_response,
+            'replyToken'=> $token
+        );
+        $result = QueryNotification::create([
+            'id'=>$id,
+            'cc_email'=>$cc_email_response,
+            'notifications_status'=>'read',
+            'subject'=>$email_subject_response,
+            'email_body'=>$reply_response,
+            'email_attachment'=>$filePath,
+            'parent_notification_id'=> $query_id_response,
+            'notification_remarked_id'=>$notification_remarked_id,
+            'person_name'=>\auth()->user()->name,
+            'site_name'=>$site_name_response,
+            'study_id'=>$study_id_response,
+            'subject_id'=>$subject_id_response,
+            'transmission_number'=>$transmission_number_response,
+            'vist_name'=>$vist_name_response,
+            'notifications_token'=>$token,
+            'study_short_name'=>$study_short_name_response
+        ]);
+
+        return response()->json(['Status'=>$result,'message'=>'Query response has been send to the users']);
+
+
     }
 
     public function queryTransmissionMail()
@@ -796,7 +859,8 @@ class TransmissionController extends Controller
             'subject_id'=>$subjectID,
             'transmission_number'=>$transNumber,
             'vist_name'=>$visit_name,
-            'notifications_token'=>$token
+            'notifications_token'=>$token,
+            'study_short_name'=>$studyShortName
         ]);
 
         QueryNotificationUser::create([
@@ -824,6 +888,7 @@ class TransmissionController extends Controller
         $vist_name              = $request->post('vist_name');
         $notifications_token    = $request->post('notifications_token');
         $parent_notification_id = $request->post('parent_notification_id');
+        $study_short_name       = $request->post('study_short_name');
         $filePath               = '';
 
         if (!empty($request->file('attachment'))) {
@@ -850,7 +915,8 @@ class TransmissionController extends Controller
             'subject_id'=>$subject_id,
             'transmission_number'=>$transmission_number,
             'vist_name'=>$vist_name,
-            'site_name'=>$site_name
+            'site_name'=>$site_name,
+            'study_short_name'=>$study_short_name
         ]);
         return response()->json(['Status'=>'Send','message'=>'Query has been send']);
     }
