@@ -79,7 +79,7 @@ return [
             'port' => env('DB_PORT', '3306'),
             'database' => env('DB_DATABASE_2', 'certification'),
             'username' => env('DB_USERNAME_2', 'certifymeremote'),
-            'password' => env('DB_PASSWORD_2', 'r8Ft4xvSRJogcNeP'),
+            'password' => env('DB_PASSWORD_2', 'AVNiNpoSY4C3ufzk'),
             'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
