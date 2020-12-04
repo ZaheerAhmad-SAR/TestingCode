@@ -221,7 +221,7 @@ class StudyController extends Controller
             Preference::create([
                 'study_id' => $study->id,
                 'preference_title'    => 'STUDY_EMAIL',
-                'preference_value'    => 'study_email@study.com',
+                'preference_value'    => '',
                 'is_selectable'       => 'no', //yes/no
                 'preference_options'  => '', //Pipe sign seperated options
                 'created_at'        => Carbon::now(),
@@ -234,7 +234,7 @@ class StudyController extends Controller
             Preference::create([
                 'study_id' => $study->id,
                 'preference_title'    => 'STUDY_CC_EMAILS',
-                'preference_value'    => 'studyEmail1@study.com,studyEmail2@study.com,studyEmail3@study.com',
+                'preference_value'    => '',
                 'is_selectable'       => 'no', //yes/no
                 'preference_options'  => '', //Pipe sign seperated options
                 'created_at'        => Carbon::now(),
