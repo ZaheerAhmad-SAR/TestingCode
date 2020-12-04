@@ -53,7 +53,11 @@ class StudyController extends Controller
      */
     public function index()
     {
-        session(['current_study' => '']);
+        session([
+            'current_study' => '',
+            'study_short_name' => '',
+            'study_code' => ''
+        ]);
         $studyAdminRoleId = Permission::getStudyAdminRole();
         if (count((array)$studyAdminRoleId) == 0) {
             echo '<a href="' . route('roles.index') . '">Please add study admin role first</a>';
