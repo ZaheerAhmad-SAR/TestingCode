@@ -23,13 +23,26 @@ class FormDataExport implements FromView
     public function __construct($request)
     {
         $this->study_id = session('current_study');
-        $this->visit_ids = $request->input('visit_id', '');
+        $this->visit_ids = $request->input('visit_ids', []);
         $this->modility_id = $request->input('modility_id', '');
         $this->form_type_id = $request->input('form_type_id', '');
+        $this->print_options_values = $request->input('print_options_values', 'option_values');
     }
 
     public function view(): View
     {
+        $header = [
+            'study' => 'Study',
+            'cohort' => 'Cohort',
+            'site_id' => 'Site ID',
+            'site_name' => 'Site Name',
+            'site_code' => 'Site Code',
+            'subject' => 'Subject',
+            'study_eye' => 'Study EYE',
+            'visit' => 'Visit',
+            'visit_date' => 'Visit Date',
+            'step' => 'Step',
+        ];
 
         $study = Study::find($this->study_id);
         $stepIds = PhaseSteps::whereIn('phase_id', $this->visit_ids)
@@ -37,6 +50,12 @@ class FormDataExport implements FromView
             ->where('modility_id', $this->modility_id)
             ->pluck('step_id')
             ->toArray();
+
+        $maxNumberOfGraders = max(PhaseSteps::whereIn('phase_id', $this->visit_ids)
+            ->where('form_type_id', $this->form_type_id)
+            ->where('modility_id', $this->modility_id)
+            ->pluck('graders_number')
+            ->toArray());
 
         $sectionIds = Section::whereIn('phase_steps_id', $stepIds)
             ->pluck('id')
@@ -50,9 +69,6 @@ class FormDataExport implements FromView
             ->pluck('question_id')
             ->toArray();
 
-        $body = '';
-        $questionHeader = '';
-
         $subjectIds = Answer::where('study_id', 'like', $this->study_id)
             ->whereIn('study_structures_id', $this->visit_ids)
             ->whereIn('phase_steps_id', $stepIds)
@@ -61,6 +77,7 @@ class FormDataExport implements FromView
             ->toArray();
         $subjectIds = array_unique($subjectIds);
 
+        $body = [];
         foreach ($subjectIds as $subject_id) {
             $subject = Subject::find($subject_id);
             $site = Site::find($subject->site_id);
@@ -76,23 +93,26 @@ class FormDataExport implements FromView
                 foreach ($steps as $step) {
                     $step = PhaseSteps::find($step->step_id);
                     $sections = Section::where('phase_steps_id', 'like', $step->step_id)->get();
-                    $permanentTds = '<tr>
-                    <td>' . $study->study_short_name . '</td>
-                    <td>' . Study::getDiseaseCohort($study) . '</td>
-                    <td>' . $studySite->study_site_id . '</td>
-                    <td>' . $site->site_name . '</td>
-                    <td>' . $site->site_code . '</td>
-                    <td>' . $subject->subject_id . '</td>
-                    <td>' . $subject->study_eye . '</td>
-                    <td>' . $visit->name . '</td>
-                    <td>' . $subjectVisit->visit_date->format('m-d-Y') . '</td>
-                    <td>' . $step->step_name . ' (' . $step->formType->form_type . ' - ' . $step->modility->modility_name . ')</td>';
-                    $answerTds = '';
+
+                    $permanentTds = [
+                        'study' => $study->study_short_name,
+                        'cohort' => Study::getDiseaseCohort($study),
+                        'site_id' => $studySite->study_site_id,
+                        'site_name' => $site->site_name,
+                        'site_code' => $site->site_code,
+                        'subject_id' => $subject->subject_id,
+                        'study_eye' => $subject->study_eye,
+                        'visit' => $visit->name,
+                        'visit_date' => $subjectVisit->visit_date->format('m-d-Y'),
+                        'step' => $step->step_name . ' (' . $step->formType->form_type . ' - ' . $step->modility->modility_name . ')',
+                    ];
+                    $answerTds = [];
                     foreach ($sections as $section) {
                         $questions = Question::where('section_id', 'like', $section->id)
                             ->whereIn('id', $questionIds)
                             ->get();
                         foreach ($questions as $question) {
+                            $variableName = $question->formFields->variable_name;
                             $form_filled_by_user_ids = Answer::where('study_id', 'like', $this->study_id)
                                 ->where('subject_id', 'like', $subject_id)
                                 ->where('study_structures_id', $visit->id)
@@ -104,100 +124,49 @@ class FormDataExport implements FromView
                             $form_filled_by_user_ids = array_unique($form_filled_by_user_ids);
                             $form_filled_by_user_ids = array_values($form_filled_by_user_ids);
 
-                            foreach ($form_filled_by_user_ids as $form_filled_by_user_id) {
-                                $questionHeader .= '<th>' . $question->formFields->variable_name . '</th>';
-                                $tdAnswer = '';
+                            for ($counter = 0; $counter < $maxNumberOfGraders; $counter++) {
+
+                                $headerName = ($step->form_type_id == 1) ? $variableName : $variableName . '_G' . ($counter + 1);
+                                if (!in_array($headerName, $header)) {
+                                    $header[$headerName] = $headerName;
+                                }
+
+                                $answerVal = '';
                                 $answer = Answer::where('study_id', 'like', $this->study_id)
                                     ->where('subject_id', 'like', $subject_id)
                                     ->where('study_structures_id', 'like', $visit->id)
                                     ->where('phase_steps_id', 'like', $step->step_id)
-                                    ->where('question_id', 'like', $question->id)
-                                    ->where('form_filled_by_user_id', 'like', $form_filled_by_user_id)
+                                    ->where('variable_name', 'like', $variableName)
+                                    ->where('form_filled_by_user_id', 'like', $form_filled_by_user_ids[$counter])
                                     ->first();
-                                $answerArray[] = $answer;
                                 if (null !== $answer) {
-                                    $tdAnswer = $answer->answer;
+                                    $answerVal = $answer->answer;
+                                    $fieldType = $question->form_field_type->field_type;
+                                    if (
+                                        ($this->print_options_values == 'option_titles') &&
+                                        (
+                                            ($fieldType == 'Radio') ||
+                                            ($fieldType == 'Checkbox') ||
+                                            ($fieldType == 'Dropdown'))
+                                    ) {
+                                        $option_names = [];
+                                        $option_values = [];
+                                        $optionGroup = $question->optionGroup;
+                                        if (!empty($optionGroup->option_value)) {
+                                            $option_values = explode(',', $optionGroup->option_value);
+                                            $option_names = explode(',', $optionGroup->option_name);
+                                            $options = array_combine($option_values, $option_names);
+                                            $answerVal = $options[$answer->answer];
+                                        }
+                                    }
                                 }
-                                $answerTds .= '<td>' . $tdAnswer . '</td>';
+                                $answerTds[$headerName] = htmlentities($answerVal);
                             }
                         }
                     }
                 }
+                $body[] = $permanentTds + $answerTds;
             }
-            $body .= $permanentTds . $answerTds;
-        }
-
-        $header = '<tr>
-        <th>Study</th>
-        <th>Cohort</th>
-        <th>Site ID</th>
-        <th>Site Name</th>
-        <th>Site Code</th>
-        <th>Subject</th>
-        <th>Study EYE</th>
-        <th>Visit</th>
-        <th>Visit Date</th>
-        <th>Step</th>
-        ' . $questionHeader . '
-        </tr>';
-
-        return view('formsubmission::exports.export_view', [
-            'header' => $header,
-            'body' => $body
-        ]);
-    }
-
-    public function view123(): View
-    {
-        $study = Study::find($this->study_id);
-        $visits = StudyStructure::find($this->visit_ids);
-        $step = PhaseSteps::find($this->step_id);
-
-        $sectionIds = Section::where('phase_steps_id', 'like', $this->step_id)->pluck('id')->toArray();
-        $questionIds = Question::whereIn('section_id', $sectionIds)->pluck('id')->toArray();
-        $questionIds = FormFields::whereIn('question_id', $questionIds)->where('is_exportable_to_xls', 'yes')->pluck('question_id')->toArray();
-        $questions = Question::whereIn('id', $questionIds)->get();
-
-        $questionHeader = '';
-        foreach ($questions as $question) {
-            $questionHeader .= '<th>' . $question->question_text . '</th>';
-        }
-        $header = '<tr>
-                    <th>Study</th>
-                    <th>Subject</th>
-                    <th>Visit</th>
-                    <th>Step</th>
-                    ' . $questionHeader . '
-                </tr>';
-
-
-        $body = '';
-        $subjectIds = Answer::where('study_id', 'like', $this->study_id)
-            ->where('study_structures_id', 'like', $this->visit_ids)
-            ->where('phase_steps_id', 'like', $this->step_id)
-            ->pluck('subject_id')
-            ->toArray();
-        $subjectIds = array_unique($subjectIds);
-
-        foreach ($subjectIds as $subject_id) {
-            $subject = Subject::find($subject_id);
-            $permanentTds = '<tr><td>' . $study->study_short_name . '</td><td>' . $subject->subject_id . '</td><td>' . $visits->name . '</td><td>' . $step->step_name . ' (' . $step->formType->form_type . ' - ' . $step->modility->modility_name . ')</td>';
-            $answerTds = '';
-            foreach ($questions as $question) {
-                $answer = Answer::where('study_id', 'like', $this->study_id)
-                    ->where('subject_id', 'like', $subject_id)
-                    ->where('study_structures_id', 'like', $this->visit_ids)
-                    ->where('phase_steps_id', 'like', $this->step_id)
-                    ->where('question_id', 'like', $question->id)
-                    ->first();
-                if (null !== $answer) {
-                    $tdAnswer = $answer->answer;
-                } else {
-                    $tdAnswer = '';
-                }
-                $answerTds .= '<td>' . $tdAnswer . '</td>';
-            }
-            $body .= $permanentTds . $answerTds;
         }
 
         return view('formsubmission::exports.export_view', [

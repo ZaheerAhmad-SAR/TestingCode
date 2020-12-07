@@ -60,9 +60,10 @@
             function submitExportFilterForm(e){
                 e.preventDefault();
                 var query = {
-                        visit_id: $('#export_visit_id').val(),
+                        visit_ids: $('#export_visit_ids').val(),
                         form_type_id: $('#export_form_type_id').val(),
                         modility_id: $('#export_modility_id').val(),
+                        print_options_values: $('#print_options_values').val(),
                         "_token": "{{ csrf_token() }}"
                     }
                 var url = "{{ route('formDataExport.export') }}?" + $.param(query);
