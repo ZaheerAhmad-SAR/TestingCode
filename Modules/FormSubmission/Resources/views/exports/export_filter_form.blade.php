@@ -1,9 +1,9 @@
-<form action="{{ route('formDataExport.export') }}" method="POST" target="_blank" id="export_filter_form">
+<form action="{{ route('formDataExport.export') }}" method="GET" target="_blank" id="export_filter_form">
     @csrf
     <div class="form-row">
         <div class="form-group col-md-4">
             <label for="visit_ids">Visits</label>
-            <select name="visit_id" id="export_visit_id" class="form-control" required multiple>
+            <select name="visit_ids[]" id="export_visit_ids" class="form-control" required multiple>
                 <option value="">Select...</option>
                 @foreach ($visits as $visit)
                     <option value="{{ $visit->id }}">{{ $visit->name }}
@@ -29,6 +29,14 @@
                     <option value="{{ $modality->id }}">{{ $modality->modility_name }}
                     </option>
                 @endforeach
+            </select>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="modility_id">Export Option Titles or Values</label>
+            <select name="print_options_values" id="print_options_values" class="form-control">
+                <option value="">Select...</option>
+                <option value="option_titles">Option titles</option>
+                <option value="option_values">Option Values</option>
             </select>
         </div>
     </div>
