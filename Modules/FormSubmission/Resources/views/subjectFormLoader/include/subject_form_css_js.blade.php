@@ -221,7 +221,9 @@
                                     if(eval("typeof " + window['showHideQuestion' + questionIdStr]) != 'undefined'){
                                         window['showHideQuestion' + questionIdStr](stepIdStr);
                                     }
-                                    window['runCalculatedFieldsFunctions' + stepIdStr](questionIdStr);
+                                    if(eval("typeof " + window['runCalculatedFieldsFunctions' + stepIdStr]) != 'undefined'){
+                                        window['runCalculatedFieldsFunctions' + stepIdStr](questionIdStr);
+                                    }
                                     if(eval("typeof " + window['checkQuestionSkipLogic' + questionIdStr]) != 'undefined'){
                                         window['checkQuestionSkipLogic' + questionIdStr]();
                                     }
@@ -321,7 +323,7 @@
             }
 
             function getFormFieldValue(stepIdStr, field_name, fieldId) {
-                var field_val;
+                var field_val = '';
                 var checkedCheckBoxes = [];
                 if ($('#form_' + stepIdStr + ' #' + fieldId).is("textarea")) {
                     field_val = $('#form_' + stepIdStr + ' #' + fieldId).val();
@@ -411,21 +413,26 @@
                 putResponseImage(stepIdStr, 'resumable', formTypeId, formStatusIdStr);
             }
 
-            function hideReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr) {
-                $("#edit_form_div_" + stepIdStr).hide(500);
-                $('#edit_reason_text_' + stepIdStr).prop('required', false);
-                $('#edit_reason_text_' + stepIdStr).val('');
-                disableByClass(stepClsStr);
-                $('.form_hid_editing_status_' + stepIdStr).val('no');
-                $('.nav-link').removeClass('active');
-                $('.first_navlink_' + stepIdStr).addClass('active');
-                $('.tab-pane_' + stepIdStr).removeClass('active show');
-                $('.first_tab_' + stepIdStr).addClass('active show');
-                putResponseImage(stepIdStr, 'complete', formTypeId, formStatusIdStr);
+            function hideReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr, waitSeconds) {
+                startWait();
+                var seconds = waitSeconds * 1000;
+                setTimeout(function() {
+                    $("#edit_form_div_" + stepIdStr).hide(500);
+                    $('#edit_reason_text_' + stepIdStr).prop('required', false);
+                    $('#edit_reason_text_' + stepIdStr).val('');
+                    disableByClass(stepClsStr);
+                    $('.form_hid_editing_status_' + stepIdStr).val('no');
+                    $('.nav-link').removeClass('active');
+                    $('.first_navlink_' + stepIdStr).addClass('active');
+                    $('.tab-pane_' + stepIdStr).removeClass('active show');
+                    $('.first_tab_' + stepIdStr).addClass('active show');
+                    putResponseImage(stepIdStr, 'complete', formTypeId, formStatusIdStr);
+                    endWait();
+               }, seconds);
             }
 
             function startWait(){
-                $("#waitModal").modal();
+                //$("#waitModal").modal('show');
             }
 
             function wait(){
@@ -435,8 +442,7 @@
             }
 
             function endWait(){
-                start_wait = 'no';
-                console.log('endWait');
+                //$("#waitModal").modal('hide');
             }
 
             function openAssignPhasesToSubjectPopup(studyId, subjectId){
@@ -642,7 +648,7 @@
                             }
                         }
 
-                        $('#' + fieldId).val(answer);
+                        $('#form_' + stepIdStr + ' #' + fieldId).val(answer);
                         validateAndSubmitField(stepIdStr, sectionIdStr, questionId, questionIdStr, form_type_id, field_name, fieldId);
                 }
             }
@@ -695,6 +701,5 @@
                    location.reload();
                }, seconds);
             }
-            //disableByClass('{{ $studyClsStr }}');
         </script>
     @endpush

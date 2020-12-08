@@ -2,8 +2,6 @@
 
 namespace Modules\FormSubmission\Exports;
 
-use App\User;
-use Maatwebsite\Excel\Concerns\FromCollection;
 use Illuminate\Contracts\View\View;
 use Maatwebsite\Excel\Concerns\FromView;
 use Modules\Admin\Entities\FormFields;
@@ -82,6 +80,7 @@ class FormDataExport implements FromView
             $subject = Subject::find($subject_id);
             $site = Site::find($subject->site_id);
             $studySite = StudySite::where('study_id', $study->id)->where('site_id', $site->id)->firstOrNew();
+
             foreach ($this->visit_ids as $visit_id) {
                 $visit = StudyStructure::find($visit_id);
                 $subjectVisit = SubjectsPhases::where('phase_id', 'like', $visit_id)->where('subject_id', 'like', $subject_id)->first();
@@ -106,11 +105,14 @@ class FormDataExport implements FromView
                         'visit_date' => $subjectVisit->visit_date->format('m-d-Y'),
                         'step' => $step->step_name . ' (' . $step->formType->form_type . ' - ' . $step->modility->modility_name . ')',
                     ];
+
                     $answerTds = [];
+
                     foreach ($sections as $section) {
                         $questions = Question::where('section_id', 'like', $section->id)
                             ->whereIn('id', $questionIds)
                             ->get();
+
                         foreach ($questions as $question) {
                             $variableName = $question->formFields->variable_name;
                             $form_filled_by_user_ids = Answer::where('study_id', 'like', $this->study_id)
@@ -124,8 +126,7 @@ class FormDataExport implements FromView
                             $form_filled_by_user_ids = array_unique($form_filled_by_user_ids);
                             $form_filled_by_user_ids = array_values($form_filled_by_user_ids);
 
-                            for ($counter = 0; $counter < $maxNumberOfGraders; $counter++) {
-
+                            for ($counter = 0; $counter < $maxNumberOfGraders; ++$counter) {
                                 $headerName = ($step->form_type_id == 1) ? $variableName : $variableName . '_G' . ($counter + 1);
                                 if (!in_array($headerName, $header)) {
                                     $header[$headerName] = $headerName;
@@ -139,9 +140,11 @@ class FormDataExport implements FromView
                                     ->where('variable_name', 'like', $variableName)
                                     ->where('form_filled_by_user_id', 'like', $form_filled_by_user_ids[$counter])
                                     ->first();
+
                                 if (null !== $answer) {
                                     $answerVal = $answer->answer;
                                     $fieldType = $question->form_field_type->field_type;
+
                                     if (
                                         ($this->print_options_values == 'option_titles') &&
                                         (
@@ -171,7 +174,7 @@ class FormDataExport implements FromView
 
         return view('formsubmission::exports.export_view', [
             'header' => $header,
-            'body' => $body
+            'body' => $body,
         ]);
     }
 }
