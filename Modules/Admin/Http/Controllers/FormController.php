@@ -253,6 +253,11 @@ class FormController extends Controller
                 $question_contents .= '<span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
             }
             $question_contents .= '<span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span>';
+            if($ques_value->form_field_type->field_type =='Certification' || $ques_value->form_field_type->field_type =='Description' ||$ques_value->form_field_type->field_type =='Calculated'){
+
+            }else{
+                $question_contents .= '<span class="dropdown-item cloneQuestion" data-type="clone" style="cursor:pointer;"><i class="far fa-clone"></i>&nbsp; Clone</span>';
+            }
             if ($ques_value->form_field_type->field_type == 'Radio') {
                 $question_contents .= '<span class="dropdown-item add_checks"><a href="' . url("skiplogic/skip_logic", $ques_value->id) . '" style="cursor:pointer;"><i class="fas fa-crop-alt"></i>&nbsp; Skip Logic </a></span>';
             } elseif ($ques_value->form_field_type->field_type == 'Number') {

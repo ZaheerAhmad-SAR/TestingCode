@@ -304,123 +304,6 @@
 
                                 </div>
                             </div>
-                            <!--
-                    <div class="tab-pane fade" id="nav-Validation" role="tabpanel" aria-labelledby="nav-Validation-tab">
-                        <div class="py-3 border-bottom border-primary">
-                            <span class="text-muted font-w-600">Default Validation</span><br>
-                        </div>
-                       {{--  <div class="form-group">
-                            <div class="col-sm-12" style="margin-top: 10px;padding-left: 0px;"><button type="button" class="btn btn-outline-primary addvalidations"><i class="fa fa-plus"></i> Add Message</button></div>
-                        </div> --}}
-                        <div class="values_row">
-                            <div class="form-group row" style="margin-top: 10px;">
-                                <div class="col-sm-2"> Take Decision:</div>
-                                <div class="col-sm-4">
-                                    <select class="form-control decision"><option value="">---Based ON---</option><option value="question_value">Question Value</option><option value="custom_value">Custom Value</option></select>
-                                </div>
-                                <div class="col-sm-2"> Operator:</div>
-                                <div class="col-sm-4">
-                                    <select class="form-control">
-                                        <option value="">---Select---</option>
-                                        <option value="==">Equal</option>
-                                        <option value=">=">Greater OR Equal</option>
-                                        <option value="<=">Less OR Equal</option>
-                                        <option value="!=">Not Equal</option>
-                                        <option value=">">Greater Then</option>
-                                        <option value="<">Less</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-sm-2 questionValue" style="display: none;">Section:</div>
-                                <div class="col-sm-4 questionValue" style="display: none;">
-                                    <select class="form-control decisionSections">
-                                        <option value="">---Section---</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-2 questionValue" style="display: none;">With:</div>
-                                <div class="col-sm-4 questionValue" style="display: none;">
-                                    <select class="form-control decision_question">
-                                        <option value="">---Select Question---</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-2 customValue" style="display: none;">Decision Value:</div>
-                                <div class="col-sm-4 customValue" style="display: none;">
-                                    <input type="text" name="custom_value" class="form-control custom_value" placeholder="Define Value">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-sm-2"> Condition:</div>
-                                <div class="col-sm-10">
-                                    <select class="form-control operators">
-                                        <option value="">Select if third conditon as well</option>
-                                        <option value="and">AND</option>
-                                        <option value="or">OR</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="third_condition" style="display: none;">
-                            <div class="form-group row">
-                                <div class="col-sm-2"> Take Decision:</div>
-                                <div class="col-sm-4">
-                                    <select class="form-control decision2">
-                                        <option value="">---Based ON---</option>
-                                        <option value="question_value_sec">Question Value</option>
-                                        <option value="custom_value_sec">Custom Value</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-2"> Operator:</div>
-                                <div class="col-sm-4">
-                                    <select class="form-control">
-                                        <option value="">---Select---</option>
-                                        <option value="==">Equal</option>
-                                        <option value=">=">Greater OR Equal</option>
-                                        <option value="<=">Less OR Equal</option>
-                                        <option value="!=">Not Equal</option>
-                                        <option value=">">Greater Then</option>
-                                        <option value="<">Less</option>
-                                    </select>
-                                </div>
-                            </div>
-                             <div class="form-group row">
-                                <div class="col-sm-2 questionValue2" style="display: none;">Section:</div>
-                                <div class="col-sm-4 questionValue2" style="display: none;">
-                                    <select class="form-control decisionSections2">
-                                        <option value="">---Section---</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-2 questionValue2" style="display: none;">With:</div>
-                                <div class="col-sm-4 questionValue2" style="display: none;">
-                                    <select class="form-control decision_question2">
-                                        <option value="">---Select Question---</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-2 customValue2" style="display: none;">Decision Value:</div>
-                                <div class="col-sm-4 customValue2" style="display: none;">
-                                    <input type="text" name="custom_value" class="form-control custom_value" placeholder="Define Value">
-                                </div>
-                            </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-sm-2"> Show a:</div>
-                                <div class="col-sm-4">
-                                    <select name="requiredvalidation_value" id="requiredvalidation_value" class="form-control">
-                                        <option value="">Exclusion</option>
-                                        <option value="">Error</option>
-                                        <option value="">Warning</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-2">Message:</div>
-                                <div class="col-sm-4">
-                                    <textarea name="validation_message" class="form-control" rows="1"></textarea>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="appendDatavalidations values_row">
-                        </div>
-
-                    </div>
-                                    -->
                             <div class="tab-pane fade" id="nav-Dependencies" role="tabpanel"
                                 aria-labelledby="nav-Dependencies-tab">
                                 <div class="py-3 border-bottom border-primary">
@@ -690,9 +573,9 @@
     @include('admin::forms.form_models')
     @include('admin::forms.add_annotation')
     @include('admin::forms.edit_crf')
-@include('admin::forms.form_checks')
-@include('admin::shared.tinyMCE')
-@endsection
+    @include('admin::forms.form_checks')
+    @include('admin::shared.tinyMCE')
+    @endsection
 
 @push('styles')
     <style>
@@ -993,14 +876,15 @@
                 $('#descriptionModal').modal('show');
             });
             // update question
-            $('body').on('click', '.Edit_ques', function() {
+            $('body').on('click', '.Edit_ques,.cloneQuestion', function() {
                 checkIsStepHasData();
                 if (checkIsStepActive() == false) {
                     $('#formfields').trigger('reset');
-                    $('.modal-title').html('Update Question')
-                    $('#formfields').attr('action', "{{ route('forms.updateQuestion') }}");
                     var row = $(this).closest('div.custom_fields')
                     tId = ''
+                    type = ''
+                    type = $(this).attr('data-type');
+                    
                     ques_id = row.find('input.question_id').val()
                     ques_type = row.find('input.question_type').val()
                     ques_type_id = row.find('input.question_type_id').val()
@@ -1031,14 +915,20 @@
                     adj_custom_value = row.find('input.adj_custom_value').val()
                     adj_id = row.find('input.adj_id').val();
                     $('#questionId_hide').val(ques_id);
-                    $('#question_sort').val(question_sort);
+                    
                     $('#question_type').val(ques_type_id);
                     $('#question_type').trigger('change');
                     $('#section_id').val(section_id);
                     $('#option_group_id').val(option_group_id);
                     $('#c_disk').val(c_disk);
                     $('#question_text').val(question_text);
-                    $('#variable_name').val(variable_name);
+                    if(type == 'clone'){
+                        $('#variable_name').val('');
+                        $('#question_sort').val('');
+                    }else{
+                        $('#variable_name').val(variable_name);
+                        $('#question_sort').val(question_sort);
+                    }
                     $('#form_field_id').val(formFields_id);
                     tinymce.get('text_info_add').setContent(text_info);
                     if (ques_type == 'Number') {
@@ -1082,6 +972,13 @@
                     $('#decision_based_on').trigger('change');
                     $('#adj_operator').val(adj_operator);
                     $('#adj_custom_value').val(adj_custom_value);
+                    if(type == 'clone'){
+                        $('.modal-title').html('Clone Question')
+                        $('#formfields').attr('action', "{{ route('forms.addQuestions') }}");
+                    }else{
+                        $('.modal-title').html('Update Question')
+                        $('#formfields').attr('action', "{{ route('forms.updateQuestion') }}");
+                    }   
                     $('#addField').modal('show');
                     loadValidationRulesByQuestionId(ques_id);
                 } else {
