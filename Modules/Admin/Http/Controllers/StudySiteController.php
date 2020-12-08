@@ -43,8 +43,8 @@ class StudySiteController extends Controller
             $primaryArray = array();
             foreach ($primaryInvestigator as $primary)
             {
-                //$primaryArray[] = $primary->id.'/'. $primary->first_name.' '.$primary->last_name;
-                $primaryArray[] = $primary->id.'/'. $primary->first_name;
+                $primaryArray[] = $primary->id.'/'. $primary->first_name.' '.$primary->last_name;
+                //$primaryArray[] = $primary->id.'/'. $primary->first_name;
             }
             $site->pi=$primaryArray;
         }
