@@ -14,12 +14,43 @@ class TransmissionDataDeviceController extends Controller
      * Display a listing of the resource.
      * @return Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
         $getTransmissions = TransmissionDataDevice::query();
 
+        if ($request->trans_id != '') {
+
+           $getTransmissions = $getTransmissions->where('Transmission_Number', 'like', '%' . $request->trans_id . '%');
+        }
+
+        if ($request->study != '') {
+
+           $getTransmissions = $getTransmissions->where('Study_Name', 'like', '%' . $request->study . '%');
+        }
+
+        if ($request->device_category != '') {
+
+           $getTransmissions = $getTransmissions->where('Device_Category', 'like', '%' . $request->device_category . '%');
+        }
+
+        if ($request->device_serial != '') {
+
+           $getTransmissions = $getTransmissions->where('Device_Serial', 'like', '%' . $request->device_serial . '%');
+        }
+
+        if ($request->site != '') {
+
+           $getTransmissions = $getTransmissions->where('Site_Name', 'like', '%' . $request->site . '%');
+        }
+
+        if ($request->status != '') {
+
+           $getTransmissions = $getTransmissions->where('status', $request->status);
+        }
+
         $getTransmissions = $getTransmissions->orderBy('id', 'desc')
                                              ->paginate(50);
+                                             
         return view('certificationapp::certificate_device.index', compact('getTransmissions'));
     }
 

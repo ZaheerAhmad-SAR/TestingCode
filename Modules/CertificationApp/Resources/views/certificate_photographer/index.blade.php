@@ -55,8 +55,8 @@
         <div class="row">
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
-                    
-                    <form action="{{route('certification-device.index')}}" method="get" class="filter-form">
+                    {{--
+                    <form action="{{route('certification-photographer.index')}}" method="get" class="filter-form">
                         <div class="form-row" style="padding: 10px;">
 
                             <div class="form-group col-md-3">
@@ -104,7 +104,7 @@
                         </div>
                         <!-- row ends -->
                     </form>
-                   
+                    --}}
                    <hr>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -125,7 +125,7 @@
                                     @if(!$getTransmissions->isEmpty())
                                     @foreach($getTransmissions as $transmission)
                                         <tr>
-                                            <td>  
+                                            <!-- <td>  
                                                 <a href="#" id="view-transmission" class="" data-id="" title="Edit Certifaction Device Details" data-url="" style="color: #17a2b8 !important">
                                                     {{$transmission->Transmission_Number}}
                                                 </a>
@@ -180,7 +180,7 @@
                                                     </div>
                                                 </div>
                                                  <!-- gear dropdown -->
-                                            </td>
+                                            <!-- </td>  -->
                                             
                                         </tr>
                                     @endforeach

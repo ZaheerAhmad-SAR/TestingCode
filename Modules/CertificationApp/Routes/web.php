@@ -20,6 +20,9 @@
 // certificate device
     Route::resource('certification-device', 'TransmissionDataDeviceController');
 
+// certificate photographer
+    Route::resource('certification-photographer', 'TransmissionDataPhotographerController');
+
 
 Route::group(['middleware' => ['auth', 'web']], function () {
     

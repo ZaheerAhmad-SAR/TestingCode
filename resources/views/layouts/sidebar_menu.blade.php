@@ -416,19 +416,19 @@
                     <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Certification App</a>
                         <ul class="sub-menu">
 
-                            <li class="@if(is_active('certification-device.index')) {{ ' active' }} @endif">
+                            <li class="@if(is_active('certification-device')) {{ ' active' }} @endif">
                                 <a href="{{route('certification-device.index')}}">
                                     <i class="fas fa-list"></i> Certification Devices
                                 </a>
                             </li>
 
-                            {{--
-                            <li  class="@if(is_active('photographer.index')) {{ ' active' }} @endif">
-                                <a href="{{route('photographer.index')}}">
-                                    <i class="fas fa-list"></i> Photographers List
+                            
+                            <li  class="@if(is_active('certification-photographer')) {{ ' active' }} @endif">
+                                <a href="{{route('certification-photographer.index')}}">
+                                    <i class="fas fa-list"></i> Certification Photo
                                 </a>
                             </li>
-                            --}}
+                            
                         </ul>
                     </li>
                 </ul>

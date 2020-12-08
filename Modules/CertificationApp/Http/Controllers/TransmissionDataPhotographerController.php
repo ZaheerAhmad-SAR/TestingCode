@@ -13,9 +13,16 @@ class TransmissionDataPhotographerController extends Controller
      * Display a listing of the resource.
      * @return Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('certificationapp::index');
+        $getTransmissions = TransmissionDataPhotographer::query();
+
+        $getTransmissions = $getTransmissions->orderBy('id', 'desc')
+                                             ->paginate(50);
+
+
+
+        return view('certificationapp::certificate_photographer.index', compact('getTransmissions'));
     }
 
     /**
