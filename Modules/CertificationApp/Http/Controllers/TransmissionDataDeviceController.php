@@ -50,7 +50,7 @@ class TransmissionDataDeviceController extends Controller
 
         $getTransmissions = $getTransmissions->orderBy('id', 'desc')
                                              ->paginate(50);
-                                             
+
         return view('certificationapp::certificate_device.index', compact('getTransmissions'));
     }
 
@@ -117,7 +117,7 @@ class TransmissionDataDeviceController extends Controller
     public function transmissionDataDevice(Request $request) {
         
         // get xml data
-        $xml    = simplexml_load_string($request->data);
+        $xml    = simplexml_load_string($request);
 
         // check for trimission number
         $checkTransmissionNumber = TransmissionDataDevice::where('Transmission_Number', $xml->Transmission_Number)->first();
@@ -125,7 +125,7 @@ class TransmissionDataDeviceController extends Controller
         if ($checkTransmissionNumber == null) {
 
             $saveData = new TransmissionDataDevice;
-            $saveData->data                         = $request->data;
+            $saveData->data                         = $request;
             $saveData->Transmission_Number          = $xml->Transmission_Number;
             $saveData->Device_Category              = $xml->Device_Category;
             $saveData->Device_manufacturer          = $xml->Device_manufacturer;
