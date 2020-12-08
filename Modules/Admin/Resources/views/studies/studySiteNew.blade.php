@@ -138,7 +138,7 @@
                         <div class="modal-body">
                             <div class="form-group">
                                 <div class="{!! ($errors->has('sites')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
-                                    <select class="searchable" id="select-sites" multiple="multiple" name="sites[]">
+                                    <select class="searchable form-control" id="select-sites" multiple="multiple" name="sites[]">
                                         @foreach($sites as $site)
                                             <option  selected="selected" value="{{$site->site_id}}">{{ $site->site_code .'  '.$site->site_name}}</option>
                                         @endforeach
@@ -200,10 +200,9 @@
                                                     <div class="{!! ($errors->has('site_code')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                                         <label class="required">Site Code</label>
-                                                        <input type="input" class="form-control"
-                                                               name="site_code" id="site_code"
-                                                               value="{{old('site_code')}}" required/>
-                                                        <p id="site_code_uniqe"></p>
+                                                        <input autofocus type="input" class="form-control"
+                                                               name="site_code"  id="site_code"
+                                                               value="{{old('site_code')}}"  required onchange="siteCodeValue(this);"/>
                                                         @error('site_code')
                                                         <span class="input-danger small">
                                                         {{ $message }}
@@ -1580,15 +1579,33 @@
                 });
 
 
-
-                function checkIfSiteCodeExist()
+                function  siteCodeValue(data)
                 {
-                    $('#site_code').focus(function () {
-                        var siteCode = $('#site_code').val();
+                    var siteCode  = data.value;
+                    $.ajax({
+                        url:"{{route('sites.checkIfSiteIsExist')}}",
+                        type: 'POST',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            'siteCode'      :siteCode,
+                        },
+                        success: function(results)
+                        {
+                            if (results.success)
+                            {
+                                $('.success-msg-sec').html('');
+                                $('.success-msg-sec').html(results.success)
+                                $('.success-alert-sec').slideDown('slow');
+                                tId=setTimeout(function(){
+                                    $(".success-alert-sec").slideUp('slow');
+                                }, 3000);
+                                $('#site_code').val('');
+                                $("#site_code").focus();
+                            }
+                        }
                     });
-                }
 
-                checkIfSiteCodeExist();
+                }
 
                 $('body').on('click', '.editsiterecord', function (e) {
                     $('.modal-title').text('Edit Site');

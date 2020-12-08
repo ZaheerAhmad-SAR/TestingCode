@@ -127,6 +127,13 @@ class StudySiteController extends Controller
             return response()->json([$sites]);
     }
 
+    public function checkSiteExist(Request $request)
+    {
+        if (Site::where('site_code', $request->post('siteCode'))->first()) {
+            return response()->json(['success'=>'Site Code already Exist']);
+        }
+    }
+
     public function updateStudySite(Request $request)
     {
         $textValue = trim($_POST['text_val']);
