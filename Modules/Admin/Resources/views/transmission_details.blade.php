@@ -192,14 +192,14 @@
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog"></i></span>
                                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right" style="">
                                                         @if($transmission->status !== 'accepted')
-                                                    <span class="dropdown-item">
-                                                        <a href="javascript:void(0)" data-id="{{$transmission->Transmission_Number}}" class="creatNewTransmissionsForQueries">
-                                                            <i class="fas fa-question-circle" aria-hidden="true">
-                                                            </i> Queries</a>
-                                                    </span>
+                                                        <span class="dropdown-item">
+                                                            <a href="javascript:void(0)" data-id="{{$transmission->Transmission_Number}}" class="creatNewTransmissionsForQueries">
+                                                                <i class="fas fa-question-circle" aria-hidden="true">
+                                                                </i> Queries</a>
+                                                        </span>
                                                         @endif
                                                     </div>
-                                            </div>
+                                                </div>
                                                  <!-- gear dropdown -->
                                             </td>
                                         </tr>

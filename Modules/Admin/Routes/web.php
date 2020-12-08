@@ -74,6 +74,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     /// for form management
     Route::get('forms/step_by_phaseId/{id}', 'FormController@get_steps_by_phaseId')->name('forms.stepbyphaseId');
     Route::get('forms/get_questions_for_calculation/{id}', 'FormController@get_questions_calculation')->name('forms.calculationQuestions');
+    Route::get('forms/show_available_variable_names/{id}', 'FormController@show_available_variable_names')->name('forms.availableVariables');
     Route::resource('forms', 'FormController');
     Route::post('forms/add_questions', 'FormController@add_questions')->name('forms.addQuestions');
     Route::post('forms/updateQuestion', 'FormController@update_questions')->name('forms.updateQuestion');
@@ -134,11 +135,13 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::DELETE('annotation/delete/{id}', 'AnnotationController@deleteAnnotation')->name('annotation.delete');
     Route::get('annotation/get_allAnnotations/{id}', 'AnnotationController@get_allAnnotations')->name('annotation.get_allAnnotations');
     Route::post('annotation/add_annotation', 'AnnotationController@store_new_annotation')->name('annotation.addAnnotation');
+    Route::post('sites/checkIfSiteIsExist', 'SiteController@checkIfSiteIsExist')->name('sites.checkIfSiteIsExist');
 });
 Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::resource('studies', 'StudyController');
     Route::resource('sites', 'SiteController');
     Route::post('sites/update', 'SiteController@update')->name('sites.updateSites');
+
     Route::DELETE('sites/destroy/{sites_id}', 'SiteController@destroy')->name('sites.destroy');
 
 
@@ -196,6 +199,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::resource('studySite', 'StudySiteController');
 
     Route::post('studySite/update', 'StudySiteController@update')->name('studySite.update');
+
 
     Route::post('studySite/updateStudySite', 'StudySiteController@updateStudySite')->name('studySite.updateStudySite');
 

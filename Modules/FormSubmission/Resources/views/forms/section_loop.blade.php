@@ -209,7 +209,7 @@ if(null !== $formStatusObj){
                     echo "enableByClass('$stepClsStr');";
                 }
             } else {
-                echo "hideReasonField('$stepIdStr', '$stepClsStr', '$step->form_type_id', '".buildGradingStatusIdClsStr($formStatusObj->id)."');";
+                echo "hideReasonField('$stepIdStr', '$stepClsStr', '$step->form_type_id', '".buildGradingStatusIdClsStr($formStatusObj->id)."', 5);";
             }
             @endphp
         });
@@ -221,6 +221,7 @@ if(null !== $formStatusObj){
 @php
 $stepValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidationForStep($step, false);
 $stepCalculatedFunctionsStr = Modules\Admin\Entities\PhaseSteps::generateCalculatedFieldsJSFunctions($step);
+$runStepCalculatedFunctionsStr = Modules\Admin\Entities\PhaseSteps::runCalculatedFieldsJSFunctions($step);
 @endphp
 @push('script')
     <script>
@@ -230,8 +231,12 @@ $stepCalculatedFunctionsStr = Modules\Admin\Entities\PhaseSteps::generateCalcula
             return isFormValid;
         }
 
-        function runCalculatedFieldsFunctions{{$stepIdStr}}(questionIdStr) {
-            {!! $stepCalculatedFunctionsStr !!}
+        {!! $stepCalculatedFunctionsStr !!}
+
+        function runCalculatedFieldsFunctions{{$stepIdStr}}(triggeringQuestionIdStr) {
+            if(isPreview === false){
+                {!! $runStepCalculatedFunctionsStr !!}
+            }
         }
     </script>
 @endpush

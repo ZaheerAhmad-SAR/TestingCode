@@ -96,7 +96,7 @@
                                             $coordinators = Modules\Admin\Entities\Coordinator::where('site_id',$site->site_id)->get();
                                             @endphp
                                                     @foreach($coordinators as $coordinator)
-                                                        <option value="{{$coordinator->id}}" {{in_array($coordinator->id,$siteCoordinatorsIdsArray) ? 'selected': ''}} >{{$coordinator->first_name}}</option>
+                                                        <option value="{{$coordinator->id}}" {{in_array($coordinator->id,$siteCoordinatorsIdsArray) ? 'selected': ''}} >{{$coordinator->first_name.' '.$coordinator->last_name}}</option>
 
                                                     @endforeach
                                                 </Select>
@@ -109,6 +109,10 @@
                                             <td class="studySitetableData addRowItem" data-id="{{$site->id}}" data-value="{{$site->study_site_id}}" name="studySiteId" id="studySiteId">{{$site->study_site_id}}</td>
                                         </tr>
                                     @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="9" style="text-align: center">No record found.</td>
+                                    </tr>
                                 @endif
                                 </tbody>
 
@@ -120,7 +124,7 @@
             <!-- END: Card DATA-->
         </div>
         <div class="modal fade" tabindex="-1" role="dialog" id="assignSites">
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="max-width: 1000px;">
                 <div class="modal-content">
                     <div class="alert alert-danger" style="display:none"></div>
                     <div class="modal-header">
@@ -134,7 +138,7 @@
                         <div class="modal-body">
                             <div class="form-group">
                                 <div class="{!! ($errors->has('sites')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
-                                    <select class="searchable" id="select-sites" multiple="multiple" name="sites[]">
+                                    <select class="searchable form-control" id="select-sites" multiple="multiple" name="sites[]">
                                         @foreach($sites as $site)
                                             <option  selected="selected" value="{{$site->site_id}}">{{ $site->site_code .'  '.$site->site_name}}</option>
                                         @endforeach
@@ -196,10 +200,9 @@
                                                     <div class="{!! ($errors->has('site_code')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                                         <label class="required">Site Code</label>
-                                                        <input type="input" class="form-control"
-                                                               name="site_code" id="site_code"
-                                                               value="{{old('site_code')}}" required/>
-                                                        <p id="site_code_uniqe"></p>
+                                                        <input autofocus type="input" class="form-control"
+                                                               name="site_code"  id="site_code"
+                                                               value="{{old('site_code')}}"  required onchange="siteCodeValue(this);"/>
                                                         @error('site_code')
                                                         <span class="input-danger small">
                                                         {{ $message }}
@@ -1576,15 +1579,33 @@
                 });
 
 
-
-                function checkIfSiteCodeExist()
+                function  siteCodeValue(data)
                 {
-                    $('#site_code').focus(function () {
-                        var siteCode = $('#site_code').val();
+                    var siteCode  = data.value;
+                    $.ajax({
+                        url:"{{route('sites.checkIfSiteIsExist')}}",
+                        type: 'POST',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            'siteCode'      :siteCode,
+                        },
+                        success: function(results)
+                        {
+                            if (results.success)
+                            {
+                                $('.success-msg-sec').html('');
+                                $('.success-msg-sec').html(results.success)
+                                $('.success-alert-sec').slideDown('slow');
+                                tId=setTimeout(function(){
+                                    $(".success-alert-sec").slideUp('slow');
+                                }, 3000);
+                                $('#site_code').val('');
+                                $("#site_code").focus();
+                            }
+                        }
                     });
-                }
 
-                checkIfSiteCodeExist();
+                }
 
                 $('body').on('click', '.editsiterecord', function (e) {
                     $('.modal-title').text('Edit Site');
