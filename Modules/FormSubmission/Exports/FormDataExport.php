@@ -23,9 +23,10 @@ class FormDataExport implements FromView
     public function __construct($request)
     {
         $this->study_id = session('current_study');
-        $this->visit_ids = $request->input('visit_id', '');
+        $this->visit_ids = $request->input('visit_ids', []);
         $this->modility_id = $request->input('modility_id', '');
         $this->form_type_id = $request->input('form_type_id', '');
+        $this->print_options_values = $request->input('print_options_values', 'option_values');
     }
 
     public function view(): View
@@ -76,7 +77,7 @@ class FormDataExport implements FromView
             ->toArray();
         $subjectIds = array_unique($subjectIds);
 
-        $body = '';
+        $body = [];
         foreach ($subjectIds as $subject_id) {
             $subject = Subject::find($subject_id);
             $site = Site::find($subject->site_id);
@@ -127,7 +128,7 @@ class FormDataExport implements FromView
 
                                 $headerName = ($step->form_type_id == 1) ? $variableName : $variableName . '_G' . ($counter + 1);
                                 if (!in_array($headerName, $header)) {
-                                    array_push($header, $headerName);
+                                    $header[$headerName] = $headerName;
                                 }
 
                                 $answerVal = '';
@@ -140,19 +141,36 @@ class FormDataExport implements FromView
                                     ->first();
                                 if (null !== $answer) {
                                     $answerVal = $answer->answer;
+                                    $fieldType = $question->form_field_type->field_type;
+                                    if (
+                                        ($this->print_options_values == 'option_titles') &&
+                                        (
+                                            ($fieldType == 'Radio') ||
+                                            ($fieldType == 'Checkbox') ||
+                                            ($fieldType == 'Dropdown'))
+                                    ) {
+                                        $option_names = [];
+                                        $option_values = [];
+                                        $optionGroup = $question->optionGroup;
+                                        if (!empty($optionGroup->option_value)) {
+                                            $option_values = explode(',', $optionGroup->option_value);
+                                            $option_names = explode(',', $optionGroup->option_name);
+                                            $options = array_combine($option_values, $option_names);
+                                            $answerVal = $options[$answer->answer];
+                                        }
+                                    }
                                 }
-                                $answerTds[$headerName] = $answerVal;
+                                $answerTds[$headerName] = htmlentities($answerVal);
                             }
                         }
                     }
                 }
+                $body[] = $permanentTds + $answerTds;
             }
-            $finalAnswerTds = $permanentTds + $answerTds;
-            $body .= '<tr><td>' . implode('</td><td>', $finalAnswerTds) . '</td></tr>';
         }
 
         return view('formsubmission::exports.export_view', [
-            'header' => '<tr><th>' . implode('</th><th>', $header) . '</th></tr>',
+            'header' => $header,
             'body' => $body
         ]);
     }
