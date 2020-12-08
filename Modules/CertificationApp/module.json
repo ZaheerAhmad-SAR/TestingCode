@@ -1,0 +1,13 @@
+{
+    "name": "CertificationApp",
+    "alias": "certificationapp",
+    "description": "",
+    "keywords": [],
+    "order": 0,
+    "providers": [
+        "Modules\\CertificationApp\\Providers\\CertificationAppServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}

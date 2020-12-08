@@ -3,5 +3,8 @@
     "Admin": true,
     "Queries": true,
     "Certification": true,
-    "FormSubmission": true
+    "FormSubmission": true,
+    "CertificationApp": true,
+    "Model": true,
+    "TransmissionDataDevice": true
 }
