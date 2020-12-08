@@ -1,5 +1,6 @@
 @php
     $querySubmitedBy = App\User::where('email','=',$query['notification_remarked_id'])->first();
+
 @endphp
 
 <div class="m-2">
@@ -9,10 +10,12 @@
         @php
             //$answerSubmitedBy = App\User::find($answer->queried_remarked_by_id);
             $answerSubmitedBy=Modules\Queries\Entities\QueryNotification::
-            where('notification_remarked_id','=',$answer->notification_remarked_id)->get();
+            where('notification_remarked_id','=',$answer->notification_remarked_id)->first();
+
 
         @endphp
         @if($query->notification_remarked_id == $answer->notification_remarked_id)
+{{--            {{dd($answerSubmitedBy)}}--}}
             {!! Modules\Queries\Entities\QueryNotification::buildHtmlForQuerySubmitter($answerSubmitedBy, $answer) !!}
         @else
             {!! Modules\Queries\Entities\QueryNotification::buildHtmlForQueryAnswer($answerSubmitedBy, $answer) !!}
