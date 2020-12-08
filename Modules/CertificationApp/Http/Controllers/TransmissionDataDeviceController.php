@@ -17,8 +17,10 @@ class TransmissionDataDeviceController extends Controller
     public function index()
     {
         $getTransmissions = TransmissionDataDevice::query();
-        dd($getTransmissions);
-        return view('certificationapp::index', compact('getTransmissions'));
+
+        $getTransmissions = $getTransmissions->orderBy('id', 'desc')
+                                             ->paginate(50);
+        return view('certificationapp::certificate_device.index', compact('getTransmissions'));
     }
 
     /**

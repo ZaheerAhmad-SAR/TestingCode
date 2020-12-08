@@ -102,7 +102,7 @@
         <!-- END: Card DATA-->
     </div>
 
-    <div class="modal fade" tabindex="-1" role="dialog" id="siteModal">
+    <div class="modal fade" role="dialog" id="siteModal">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="alert alert-danger" style="display:none"></div>
@@ -139,9 +139,9 @@
                                                 <div class="{!! ($errors->has('site_code')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                                     <label class="required">Site Code</label>
-                                                    <input type="input" class="form-control"
-                                                           name="site_code" id="site_code"
-                                                           value="{{old('site_code')}}" required/>
+                                                    <input autofocus type="input" class="form-control"
+                                                           name="site_code"  id="site_code"
+                                                           value="{{old('site_code')}}"  required onchange="siteCodeValue(this);"/>
                                                     <p id="site_code_uniqe"></p>
                                                     @error('site_code')
                                                     <span class="input-danger small">
@@ -1290,8 +1290,40 @@
     addOthers();
     // End of Others
 
+        function  siteCodeValue(data)
+        {
+            var siteCode  = data.value;
+
+
+            $.ajax({
+                url:"{{route('sites.checkIfSiteIsExist')}}",
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    'siteCode'      :siteCode,
+                },
+                success: function(results)
+                {
+                    if (results.success)
+                    {
+                        $('.success-msg-sec').html('');
+                        $('.success-msg-sec').html(results.success)
+                        $('.success-alert-sec').slideDown('slow');
+                        tId=setTimeout(function(){
+                            $(".success-alert-sec").slideUp('slow');
+                        }, 3000);
+                        $('#site_code').val('');
+                        $("#site_code").focus();
+
+                    }
+
+                }
+            });
+
+        }
 
         $("#siteInfoForm").submit(function(e) {
+
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1337,14 +1369,10 @@
 
 
 
-    function checkIfSiteCodeExist()
-    {
-        $('#site_code').focus(function () {
-            var siteCode = $('#site_code').val();
-        });
-    }
 
-    checkIfSiteCodeExist();
+    $(document).on('shown.bs.modal', '.modal', function() {
+        $(this).find('[autofocus]').focus();
+    });
 
         $('body').on('click', '.editsiterecord', function (e) {
             $('.modal-title').text('Edit Site');

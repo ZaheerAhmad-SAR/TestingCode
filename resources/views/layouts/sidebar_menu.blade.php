@@ -411,6 +411,29 @@
                 @endif
             @endif
 
+             <li class="dropdown">
+                <ul>
+                    <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Certification App</a>
+                        <ul class="sub-menu">
+
+                            <li class="@if(is_active('certification-device.index')) {{ ' active' }} @endif">
+                                <a href="{{route('certification-device.index')}}">
+                                    <i class="fas fa-list"></i> Certification Devices
+                                </a>
+                            </li>
+
+                            {{--
+                            <li  class="@if(is_active('photographer.index')) {{ ' active' }} @endif">
+                                <a href="{{route('photographer.index')}}">
+                                    <i class="fas fa-list"></i> Photographers List
+                                </a>
+                            </li>
+                            --}}
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+
             @if(hasPermission(auth()->user(),'systemtools.index') && hasPermission(auth()->user(),'trail_logs.list'))
 
             <li class="dropdown">

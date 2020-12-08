@@ -12,10 +12,14 @@
 */
 
 // post device transmission
-Route::post('transmissions/transmissionDataDevice', 'TransmissionDataDeviceController@transmissionDataDevice')->name('transmissions.transmissionDataDevice');
+	Route::post('transmissions/transmissionDataDevice', 'TransmissionDataDeviceController@transmissionDataDevice')->name('transmissions.transmissionDataDevice');
 
 // post photographer transmission
-Route::post('transmissions/transmissionDataPhotographer', 'TransmissionDataPhotographerController@transmissionDataPhotographer')->name('transmissions.transmissionDataPhotographer');
+	Route::post('transmissions/transmissionDataPhotographer', 'TransmissionDataPhotographerController@transmissionDataPhotographer')->name('transmissions.transmissionDataPhotographer');
+
+// certificate device
+    Route::resource('certification-device', 'TransmissionDataDeviceController');
+
 
 Route::group(['middleware' => ['auth', 'web']], function () {
     

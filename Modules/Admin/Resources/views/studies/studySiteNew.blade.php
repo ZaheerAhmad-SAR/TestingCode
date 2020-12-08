@@ -96,7 +96,7 @@
                                             $coordinators = Modules\Admin\Entities\Coordinator::where('site_id',$site->site_id)->get();
                                             @endphp
                                                     @foreach($coordinators as $coordinator)
-                                                        <option value="{{$coordinator->id}}" {{in_array($coordinator->id,$siteCoordinatorsIdsArray) ? 'selected': ''}} >{{$coordinator->first_name}}</option>
+                                                        <option value="{{$coordinator->id}}" {{in_array($coordinator->id,$siteCoordinatorsIdsArray) ? 'selected': ''}} >{{$coordinator->first_name.' '.$coordinator->last_name}}</option>
 
                                                     @endforeach
                                                 </Select>
@@ -109,6 +109,10 @@
                                             <td class="studySitetableData addRowItem" data-id="{{$site->id}}" data-value="{{$site->study_site_id}}" name="studySiteId" id="studySiteId">{{$site->study_site_id}}</td>
                                         </tr>
                                     @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="9" style="text-align: center">No record found.</td>
+                                    </tr>
                                 @endif
                                 </tbody>
 
@@ -120,7 +124,7 @@
             <!-- END: Card DATA-->
         </div>
         <div class="modal fade" tabindex="-1" role="dialog" id="assignSites">
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="max-width: 1000px;">
                 <div class="modal-content">
                     <div class="alert alert-danger" style="display:none"></div>
                     <div class="modal-header">

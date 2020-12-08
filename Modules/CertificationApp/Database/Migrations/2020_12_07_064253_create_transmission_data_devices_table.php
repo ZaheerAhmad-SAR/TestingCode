@@ -63,6 +63,7 @@ class CreateTransmissionDataDevicesTable extends Migration
             $table->string('QC_folder', 255)->nullable();
             $table->string('CO_folder', 255)->nullable();
             $table->string('CO_email', 255)->nullable();
+            $table->enum('status', ['pending','accepted','rejected','deficient','duplicate'])->default('pending');
             $table->timestamps();
         });
     }
