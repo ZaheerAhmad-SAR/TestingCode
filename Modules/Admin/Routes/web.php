@@ -135,11 +135,13 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::DELETE('annotation/delete/{id}', 'AnnotationController@deleteAnnotation')->name('annotation.delete');
     Route::get('annotation/get_allAnnotations/{id}', 'AnnotationController@get_allAnnotations')->name('annotation.get_allAnnotations');
     Route::post('annotation/add_annotation', 'AnnotationController@store_new_annotation')->name('annotation.addAnnotation');
+    Route::post('sites/checkIfSiteIsExist', 'SiteController@checkIfSiteIsExist')->name('sites.checkIfSiteIsExist');
 });
 Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::resource('studies', 'StudyController');
     Route::resource('sites', 'SiteController');
     Route::post('sites/update', 'SiteController@update')->name('sites.updateSites');
+
     Route::DELETE('sites/destroy/{sites_id}', 'SiteController@destroy')->name('sites.destroy');
 
 
@@ -197,6 +199,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::resource('studySite', 'StudySiteController');
 
     Route::post('studySite/update', 'StudySiteController@update')->name('studySite.update');
+
 
     Route::post('studySite/updateStudySite', 'StudySiteController@updateStudySite')->name('studySite.updateStudySite');
 

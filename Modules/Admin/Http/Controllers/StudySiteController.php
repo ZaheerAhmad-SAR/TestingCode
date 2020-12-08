@@ -43,8 +43,8 @@ class StudySiteController extends Controller
             $primaryArray = array();
             foreach ($primaryInvestigator as $primary)
             {
-                //$primaryArray[] = $primary->id.'/'. $primary->first_name.' '.$primary->last_name;
-                $primaryArray[] = $primary->id.'/'. $primary->first_name;
+                $primaryArray[] = $primary->id.'/'. $primary->first_name.' '.$primary->last_name;
+                //$primaryArray[] = $primary->id.'/'. $primary->first_name;
             }
             $site->pi=$primaryArray;
         }
@@ -125,6 +125,13 @@ class StudySiteController extends Controller
             $logEventDetails = eventDetails($current_study, 'Study Site', 'Update', $request->ip(), $oldStudySite);
 
             return response()->json([$sites]);
+    }
+
+    public function checkSiteExist(Request $request)
+    {
+        if (Site::where('site_code', $request->post('siteCode'))->first()) {
+            return response()->json(['success'=>'Site Code already Exist']);
+        }
     }
 
     public function updateStudySite(Request $request)

@@ -134,7 +134,7 @@
                 $('#certification_type').val(certification_type);
                 $('#make_decision').trigger('change');
                 $('#calculate_with_costum_val').val(calculate_with_costum_val);
-                tinymce.get('text_info_add_cert').setContent(text_info);
+                //tinymce.get('text_info_add_cert').setContent(text_info);
                 if (is_required == 'yes') {
                     $('#is_required_yes_cert').prop('checked', true);
                 } else {
