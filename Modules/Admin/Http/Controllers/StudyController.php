@@ -291,6 +291,7 @@ class StudyController extends Controller
                 ->where('subjects.study_id', '=', $id)
                 ->join('sites', 'sites.id', '=', 'subjects.site_id')
                 ->get();
+            
             $site_study = StudySite::where('study_id', '=', $id)
                 ->join('sites', 'sites.id', '=', 'site_study.site_id')
                 ->select('sites.site_name', 'sites.id')
