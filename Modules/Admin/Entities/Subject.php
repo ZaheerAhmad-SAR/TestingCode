@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Subject extends Model
 {
     use SoftDeletes;
-    
+
     protected $fillable = ['id', 'old_id', 'study_id', 'subject_id', 'enrollment_date', 'study_eye', 'site_id', 'disease_cohort_id'];
     protected $keyType = 'string';
 
@@ -42,5 +42,17 @@ class Subject extends Model
     public function subjectPhasesArray()
     {
         return $this->subjectPhases()->distinct()->pluck('phase_id')->toArray();
+    }
+
+    public static function getDiseaseCohort($subject)
+    {
+        $disease_cohort = $subject->disease_cohort;
+        $name = '';
+        if (null !== $disease_cohort) {
+            $name = $disease_cohort->name;
+        } else {
+            $name = '';
+        }
+        return $name;
     }
 }
