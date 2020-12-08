@@ -68,7 +68,7 @@
                                         </tr>
                                         <tr>
                                             <th scope="row">Cohort</th>
-                                            <td>{{ \Modules\Admin\Entities\Study::getDiseaseCohort($study) }}</td>
+                                            <td>{{ \Modules\Admin\Entities\Subject::getDiseaseCohort($subject) }}</td>
                                         </tr>
                                     </table>
                                 </div>
