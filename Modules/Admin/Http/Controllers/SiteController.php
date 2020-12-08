@@ -55,7 +55,7 @@ class SiteController extends Controller
             'site_email:required|email',
         ]);
 
-            $id = Str::uuid();
+        $id = Str::uuid();
             $site = Site::create([
                 'id'    => $id,
                 'site_code'=> empty($request->site_code) ? Null : $request->site_code,
@@ -131,6 +131,13 @@ class SiteController extends Controller
 
         return response()->json(['success'=>'Site Info is updated successfully']);
 
+    }
+
+    public function checkIfSiteIsExist(Request $request)
+    {
+        if (Site::where('site_code', $request->post('siteCode'))->first()) {
+            return response()->json(['success'=>'Site Code already Exist']);
+        }
     }
 
     /**

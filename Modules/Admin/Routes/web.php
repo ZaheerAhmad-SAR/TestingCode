@@ -139,6 +139,8 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::resource('studies', 'StudyController');
     Route::resource('sites', 'SiteController');
     Route::post('sites/update', 'SiteController@update')->name('sites.updateSites');
+    Route::post('sites/checkIfSiteIsExist', 'SiteController@checkIfSiteIsExist')->name('sites.checkIfSiteIsExist');
+
     Route::DELETE('sites/destroy/{sites_id}', 'SiteController@destroy')->name('sites.destroy');
 
 
