@@ -1,7 +1,7 @@
 @extends ('layouts.home')
 
 @section('title')
-    <title> Certification Devices | {{ config('app.name', 'Laravel') }}</title>
+    <title> Certification Photographer | {{ config('app.name', 'Laravel') }}</title>
 @stop
 
 @section('styles')
@@ -41,10 +41,10 @@
         <div class="row ">
             <div class="col-12  align-self-center">
                 <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
-                    <div class="w-sm-100 mr-auto"><h4 class="mb-0">Certification Devices</h4></div>
+                    <div class="w-sm-100 mr-auto"><h4 class="mb-0">Certification Photographer</h4></div>
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                         <li class="breadcrumb-item">Dashboard</li>
-                        <li class="breadcrumb-item">Certification Devices</li>
+                        <li class="breadcrumb-item">Certification Photographer</li>
                     </ol>
                 </div>
             </div>
@@ -181,8 +181,8 @@
                                                         @endif
                                                     </div>
                                                 </div>
-                                                 <!-- gear dropdown
-                                            <!-- </td>  -->
+                                                 gear dropdown
+                                            </td> 
                                             
                                         </tr>
                                     @endforeach
@@ -201,7 +201,7 @@
 
             </div>
         </div>
-        <!-- END: Card DATA-->
+        <!-- END: Card DATA
     </div>
 
 
