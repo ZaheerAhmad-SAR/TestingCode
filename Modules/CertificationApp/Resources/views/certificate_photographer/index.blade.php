@@ -55,7 +55,7 @@
         <div class="row">
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
-                    {{--
+                   
                     <form action="{{route('certification-photographer.index')}}" method="get" class="filter-form">
                         <div class="form-row" style="padding: 10px;">
 
@@ -70,13 +70,13 @@
                             </div>
 
                             <div class="form-group col-md-3">
-                                <label for="device_category">Device Category</label>
-                                <input type="text" name="device_category" id="device_category" class="form-control filter-form-data" value="{{ request()->device_category }}" placeholder="Device Category">
+                                <label for="photographer_name">Photographer Name</label>
+                                <input type="text" name="photographer_name" id="photographer_name" class="form-control filter-form-data" value="{{ request()->photographer_name }}" placeholder="Photographer Name">
                             </div>
 
                             <div class="form-group col-md-3">
-                                <label for="device_serial">Device Serial</label>
-                                <input type="text" name="device_serial" id="device_serial" class="form-control filter-form-data" value="{{ request()->device_serial }}" placeholder="Device Serial">
+                                <label for="certification">Certification</label>
+                                <input type="text" name="certification" id="certification" class="form-control filter-form-data" value="{{ request()->certification }}" placeholder="Certification">
                             </div>
 
                             <div class="form-group col-md-3">
@@ -104,7 +104,7 @@
                         </div>
                         <!-- row ends -->
                     </form>
-                    --}}
+                   
                    <hr>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -114,8 +114,8 @@
                                     <tr>
                                         <th>Transmission#</th>
                                         <th>Study</th>
-                                        <th>Device Category</th>
-                                        <th>Device Serial</th>
+                                        <th>Photographer</th>
+                                        <th>Certification</th>
                                         <th>Site</th>
                                         <th>Status</th>
                                         <th>Action</th>
@@ -125,14 +125,16 @@
                                     @if(!$getTransmissions->isEmpty())
                                     @foreach($getTransmissions as $transmission)
                                         <tr>
-                                            <!-- <td>  
-                                                <a href="#" id="view-transmission" class="" data-id="" title="Edit Certifaction Device Details" data-url="" style="color: #17a2b8 !important">
+                                            <td>  
+                                                <a href="#" id="view-transmission" class="" data-id="" title="Edit Certifaction Photographer Details" data-url="" style="color: #17a2b8 !important">
                                                     {{$transmission->Transmission_Number}}
                                                 </a>
                                             </td>
                                             <td> {{$transmission->Study_Name}} </td>
-                                            <td> {{$transmission->Device_Category}} </td>
-                                            <td> {{$transmission->Device_Serial}}</td>
+                                            <td> 
+                                                {{$transmission->Photographer_First_Name}} 
+                                            </td>
+                                            <td> {{$transmission->Requested_certification}}</td>
                                             <td> {{$transmission->Site_Name}} </td>
                                             <td> 
                                                 @if($transmission->status == 'accepted')
@@ -179,7 +181,7 @@
                                                         @endif
                                                     </div>
                                                 </div>
-                                                 <!-- gear dropdown -->
+                                                 <!-- gear dropdown
                                             <!-- </td>  -->
                                             
                                         </tr>

@@ -17,6 +17,36 @@ class TransmissionDataPhotographerController extends Controller
     {
         $getTransmissions = TransmissionDataPhotographer::query();
 
+        if ($request->trans_id != '') {
+
+           $getTransmissions = $getTransmissions->where('Transmission_Number', 'like', '%' . $request->trans_id . '%');
+        }
+
+        if ($request->study != '') {
+
+           $getTransmissions = $getTransmissions->where('Study_Name', 'like', '%' . $request->study . '%');
+        }
+
+        if ($request->photographer_name != '') {
+
+           $getTransmissions = $getTransmissions->where('Photographer_First_Name', 'like', '%' . $request->photographer_name . '%');
+        }
+
+        if ($request->certification != '') {
+
+           $getTransmissions = $getTransmissions->where('Requested_certification', 'like', '%' . $request->certification . '%');
+        }
+
+        if ($request->site != '') {
+
+           $getTransmissions = $getTransmissions->where('Site_Name', 'like', '%' . $request->site . '%');
+        }
+
+        if ($request->status != '') {
+
+           $getTransmissions = $getTransmissions->where('status', $request->status);
+        }
+
         $getTransmissions = $getTransmissions->orderBy('id', 'desc')
                                              ->paginate(50);
 
