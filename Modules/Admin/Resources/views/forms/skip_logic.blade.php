@@ -5,9 +5,7 @@
         <div class="row ">
             <div class="col-12 align-self-center">
                 <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
-                    <div class="w-sm-100 mr-auto">
-                        <h4 class="mb-0">Skip Logic</h4>
-                    </div>
+                   
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                         <li class="breadcrumb-item">Dashboard</li>
                         <li class="breadcrumb-item">Skip Logic</li>
@@ -25,6 +23,27 @@
                     </div>
                 </div>
             @endif
+        </div>
+        <div class="card">
+            <div class="card-header  justify-content-between align-items-center">
+                <h4 class="card-title">Skip Logic</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <button type="button" class="btn-primary" style="border-radius: 50%;height: 20px;width: 20px;border-color: black;"></button> Steps
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn-secondry" style="border-radius: 50%;height: 20px;width: 20px;border-color: black;"></button> Sections
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn-danger" style="border-radius: 50%;height: 20px;width: 20px;border-color: black;"></button> Questions
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn-info" style="border-radius: 50%;height: 20px;width: 20px;border-color: black;background-color:white;"></button> Options
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
@@ -44,7 +63,6 @@
                    <div class="card">
                        <div class="card-body">
                             <input type="hidden" name="option_title[]" value="{{$value}}">
-                           
                             @foreach($options->skiplogic as $logic)
                                 @if(!empty($logic->option_value))
                                    <?php $check_value[] = $logic->option_value; ?>
@@ -73,6 +91,9 @@
             @endforeach
             </div>
             <div class="modal-footer">
+                <a href="{{route('forms.index')}}">
+                    <button type="button" class="btn btn-outline-danger"><i class="far fa-arrow-alt-circle-left"></i> Back to Listing</button>
+                </a>
                 <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
             </div>
         </form>

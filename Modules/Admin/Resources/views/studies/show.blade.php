@@ -18,6 +18,56 @@
             </div>
         </div>
         <!-- END: Breadcrumbs-->
+        <div class="card">
+            <div class="card-body">
+                <form action="" method="get" class="filter-form">
+                    @csrf
+                    <div class="form-row" style="padding: 10px;">
+                        <div class="form-group col-md-4">
+                            <input type="text" name="subject_id" class="form-control" placeholder="Subject ID">
+                        </div>
+                         <div class="form-group col-md-4">
+                            <select name="site_id" class="form-control">
+                                <option value="">Select Subject Site</option>
+                                @if(!empty($site_study))
+                                    @foreach($site_study as $site)
+                                        <option class="dropdown" value="{{$site->id}}">{{$site->site_name}}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input type="date" class="form-control" name="enrollment_date" placeholder="Enrollment Date">
+                        </div>
+                        <div class="form-group col-md-4">
+                            {{-- <input type="text" name="disease_cohort" class="form-control" placeholder="Filter Via Disease Cohort"> --}}
+                            <select name="disease_cohort" class="form-control">
+                                <option value="">Select Subject Disease Cohort</option>
+                                @if(!empty($diseaseCohort))
+                                    {!! $diseaseCohort !!}
+                                    @foreach($diseaseCohort as $disease)
+                                        <option class="dropdown" value="{{$disease->id}}">{{$disease->name}}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <select name="study_eye" class="form-control">
+                                <option value="">Select Study Eye</option>
+                                <option value="OD">OD</option>
+                                <option value="OS">OS</option>
+                                <option value="OU">OU</option>
+                                <option value="NA">NA</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4" style="text-align: right;">
+                            <button class="btn btn-outline-warning reset-filter"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
+                            <button type="submit" class="btn btn-primary submit-filter"><i class="fas fa-filter" aria-hidden="true"></i> Filter</button>
+                        </div>
+                    </div>    
+                </form>
+            </div>
+        </div>
         <div class="row">
             <div class="col-12 mt-3">
                 <div class="card">

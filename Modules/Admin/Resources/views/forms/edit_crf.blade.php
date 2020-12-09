@@ -68,6 +68,7 @@ function check_if_name_exists(selectObject) {
             if (response == 'field_found') {
                 $('.space_msg').html('Variable Name already exists!');
                 $('.variable_name_ques').val('');
+                $('.variable_name_ques').focus();
             } else {
                 $('.space_msg').html('');
             }
