@@ -40,7 +40,7 @@ class SkipNumberController extends Controller
         $section_contents = '';
         foreach ($section as $key => $value) {
             $section_contents .= '<div class="card-body" style="padding: 0;">
-                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;">
+                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;background-color: #EFEFEF;color: black;">
                                     <tbody>';
             $section_contents .= '<tr class=""><td class="sec_id" style="display: none;">'.$value->id.'</td><td style="text-align: center;width:15%;">
                                       <div class="btn-group btn-group-sm" role="group">
@@ -71,7 +71,7 @@ class SkipNumberController extends Controller
         $section_contents = '';
         foreach ($section as $key => $value) {
             $section_contents .= '<div class="card-body" style="padding: 0;">
-                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;">
+                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;background-color: #EFEFEF;color: black;">
                                     <tbody>';
             $section_contents .= '<tr class=""><td class="sec_id" style="display: none;">' . $value->id . '</td><td style="text-align: center;width:15%;">
                                       <div class="btn-group btn-group-sm" role="group">
@@ -104,11 +104,11 @@ class SkipNumberController extends Controller
         $options_ac_contents = '';
         foreach ($questions as $key => $value) {
             $options_ac_contents .= '<div class="card-body" style="padding: 0;">
-                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;background-color: whitesmoke;">
+                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;background-color: #F64E60;color:black;">
                                     <tbody>';
             $options_ac_contents .= '<tr><td class="sec_id" style="display: none;">'.$value->id.'</td><td style="text-align: center;width:15%;">
                                       <div class="btn-group btn-group-sm" role="group">
-                                        <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-'.$value->id.'-ac-'.$request->index.'" style="font-size: 20px; color: #1e3d73;" onclick="question_options_activate(\''.$value->id.'\',\'ac_options_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\')"></i>
+                                        <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-'.$value->id.'-ac-'.$request->index.'" style="font-size: 20px; color: #ffffff;" onclick="question_options_activate(\''.$value->id.'\',\'ac_options_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\')"></i>
                                       </div>
                                     </td><td colspan="5"> <input type="checkbox" name="activate_questions[' .$request->index. '][]" value="' . $value->id . '" class="activate_question_'.$value->id.'_'.$request->index.'"  onclick="disabled_opposite(\''.$value->id.'\',\'deactivate_question_\',\''.$request->index.'\',\'activate_question_\')" > ' . $value->question_text . '</td>';
             $options_ac_contents .= '</tr></tbody></table></div></div>';
@@ -134,13 +134,13 @@ class SkipNumberController extends Controller
         $questions = Question::select('*')->where('section_id', $id)->orderBy('question_sort', 'asc')->get();
         $question_contents = '';
         foreach ($questions as $key => $value) {
-            $question_contents .= '<div class="card-body" style="padding: 0;background-color: whitesmoke;">
+            $question_contents .= '<div class="card-body" style="padding: 0;background-color: #F64E60;color:black;">
                                     <table class="table table-bordered" style="margin-bottom:0px;">
                                     <tbody>';
             $question_contents .= '<tr><td class="sec_id" style="display: none;">' . $value->id . '</td>
                                     <td style="text-align: center;width:15%;">
                                         <div class="btn-group btn-group-sm" role="group">
-                                            <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" style="font-size: 20px; color: #1e3d73;" onclick="question_options_deactivate(\''.$value->id.'\',\'de_options_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');" data-target=".row-'.$value->id.'-de-'.$request->index.'">
+                                            <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" style="font-size: 20px; color: #ffffff;" onclick="question_options_deactivate(\''.$value->id.'\',\'de_options_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');" data-target=".row-'.$value->id.'-de-'.$request->index.'">
                                             </i>
                                       </div>
                                     </td>
@@ -171,19 +171,22 @@ class SkipNumberController extends Controller
         $options_value = explode(',', $questions->optionsGroup->option_value);
         $options_name = explode(',', $questions->optionsGroup->option_name);
         if(null !== $questions->optionsGroup){
-            foreach ($options_name as $key => $value) {
-                $options_contents .= '<tr>
-                                        <td style="text-align: center;width:15%;">
-                                           <input type="checkbox" name="activate_options['.$request->index.'][]" value="'.$options_value[$key].'_'.$value.'_'.$questions->id.'" class="activate_option_'.$questions->id.$value.'_'.$request->index.'"  onclick="disabled_opposite(\''.$questions->id.$value.'\',\'deactivate_option_\',\''.$request->index.'\',\'activate_option_\')">
-                                        </td>
-                                        <td colspan="5">'.$value.'</td>';
-                $options_contents .= '</tr>';
+            if(count($options_name) >= 2){
+                foreach ($options_name as $key => $value) {
+                    $options_contents .= '<tr>
+                                            <td style="text-align: center;width:15%;">
+                                               <input type="checkbox" name="activate_options['.$request->index.'][]" value="'.$options_value[$key].'_'.$value.'_'.$questions->id.'" class="activate_option_'.$questions->id.$value.'_'.$request->index.'"  onclick="disabled_opposite(\''.$questions->id.$value.'\',\'deactivate_option_\',\''.$request->index.'\',\'activate_option_\')">
+                                            </td>
+                                            <td colspan="5">'.$value.'</td>';
+                    $options_contents .= '</tr>';
+                }
+            }else{
+                $options_contents .='<tr><td colspan="6">Records Not found</td></tr>';
             }
         }
         return Response($options_contents);
     }
     // end function
-
     // start function
     public function options_skip_logic_deactivate(Request $request, $id)
     {
@@ -192,13 +195,17 @@ class SkipNumberController extends Controller
         $options_value = explode(',', $questions->optionsGroup->option_value);
         $options_name = explode(',', $questions->optionsGroup->option_name);
         if(null !== $questions->optionsGroup){
-            foreach ($options_name as $key => $value) {
-                $options_contents .= '<tr>
-                                        <td style="text-align: center;width:15%;">
-                                           <input type="checkbox" name="deactivate_options['.$request->index.'][]" value="'.$options_value[$key].'_'.$value.'_'.$questions->id.'" class="deactivate_option_'.$questions->id.$value.'_'.$request->index.'" onclick="disabled_opposite(\''.$questions->id.$value.'\',\'activate_option_\',\''.$request->index.'\',\'deactivate_option_\')">
-                                        </td>
-                                        <td colspan="5">'.$value.'</td>';
-                $options_contents .= '</tr>';
+            if(count($options_name) >= 2){
+                foreach ($options_name as $key => $value) {
+                    $options_contents .= '<tr>
+                                            <td style="text-align: center;width:15%;">
+                                               <input type="checkbox" name="deactivate_options['.$request->index.'][]" value="'.$options_value[$key].'_'.$value.'_'.$questions->id.'" class="deactivate_option_'.$questions->id.$value.'_'.$request->index.'" onclick="disabled_opposite(\''.$questions->id.$value.'\',\'activate_option_\',\''.$request->index.'\',\'deactivate_option_\')">
+                                            </td>
+                                            <td colspan="5">'.$value.'</td>';
+                    $options_contents .= '</tr>';
+                }
+            }else{
+                $options_contents .='<tr><td colspan="6">Records Not found</td></tr>';
             }
         }
         return Response($options_contents);
