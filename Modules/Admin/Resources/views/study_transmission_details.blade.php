@@ -559,8 +559,9 @@
         var reply_response               = $('#reply_response').val();
         var study_short_name_response    = $('#study_short_name_response').val();
         var site_name_response           = $('#site_name_response').val();
+        var mailToUserAddress            = $('#mailToUserAddress').val();
 
-        var formDataResponse      = new FormData();
+        var formDataResponse             = new FormData();
         formDataResponse.append('transmission_number_response', transmission_number_response);
         formDataResponse.append('notification_remarked_id', notification_remarked_id);
         formDataResponse.append('query_id_response', query_id_response);
@@ -572,6 +573,7 @@
         formDataResponse.append('reply_response', reply_response);
         formDataResponse.append('study_short_name_response', study_short_name_response);
         formDataResponse.append('site_name_response', site_name_response);
+        formDataResponse.append('mailToUserAddress', mailToUserAddress);
         // Attach file
         formDataResponse.append("responseAttachment", $("#attachment_R")[0].files[0]);
 
@@ -586,10 +588,9 @@
             processData:false,
             success: function(response)
             {
-                console.log(response);
-                var query_id = response[0].parent_notification_id;
-                console.log(query_id);
-                showTransmissionResponse(query_id);
+                 var id = response.Status.parent_notification_id;
+                 showTransmissionResponse(id);
+                $('.replyClickButtonResponse').css('display','');
             }
         });
     });

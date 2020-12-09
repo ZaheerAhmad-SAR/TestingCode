@@ -709,7 +709,7 @@ class TransmissionController extends Controller
                 $getSubjectPhase->Transmission_Number = $findTransmission->Transmission_Number;
                 $getSubjectPhase->modility_id = $getModality->id;
                 $getSubjectPhase->save();
-                
+
             } // subject phases check is end
 
             // check modality and phase id
@@ -755,6 +755,7 @@ class TransmissionController extends Controller
        $reply_response               = $request->post('reply_response');
        $study_short_name_response    = $request->post('study_short_name_response');
        $site_name_response           = $request->post('site_name_response');
+       $mailToUserAddress            = $request->post('mailToUserAddress');
        $filePath                     = '';
 
         if (!empty($request->file('responseAttachment'))) {
@@ -797,7 +798,7 @@ class TransmissionController extends Controller
             'notifications_token'=>$token,
             'study_short_name'=>$study_short_name_response
         ]);
-
+        Mail::to($mailToUserAddress)->send(new TransmissonQuery($data));
         return response()->json(['Status'=>$result,'message'=>'Query response has been send to the users']);
 
 
