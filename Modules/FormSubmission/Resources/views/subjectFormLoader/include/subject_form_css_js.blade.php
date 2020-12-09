@@ -52,6 +52,10 @@
                 $("." + cls).prop('disabled', true);
             }
 
+            function disableLinkByClass(cls) {
+                $("." + cls).addClass('disable_link');
+            }
+
             function globalDisableByClass(stepCounter, studyClsStr, stepClsStr) {
                 //if (stepCounter < $('#already_global_disabled').val()) {
                     $("." + studyClsStr).prop('disabled', true);
@@ -62,6 +66,10 @@
 
             function enableByClass(cls) {
                 $("." + cls).prop('disabled', false);
+            }
+
+            function enableLinkByClass(cls) {
+                $("." + cls).removeClass('disable_link');
             }
 
             function submitForm(stepIdStr, formTypeId, formStatusIdStr) {
@@ -94,6 +102,14 @@
 
             function putImageOnStepLevel(stepIdStr, responseImage){
                 $('.img_step_status_' + stepIdStr+':first').html('<img src="{{ url('/').'/images/' }}' + responseImage + '.png"/>');
+            }
+
+            function putNotRequiredImage(skipLogicCls){
+                $('.img_step_status_' + skipLogicCls).html('<img src="{{ url('/').'/images/' }}not_required.png"/>');
+            }
+
+            function putRequiredImage(skipLogicCls){
+                $('.img_step_status_' + skipLogicCls).html('<img src="{{ url('/').'/images/' }}no_status.png"/>');
             }
 
             function submitRequest(frmData, stepIdStr, formTypeId, formStatusIdStr) {
@@ -432,7 +448,7 @@
             }
 
             function startWait(){
-                //$("#waitModal").modal('show');
+                $("#waitModal").modal('show');
             }
 
             function wait(){
@@ -442,7 +458,7 @@
             }
 
             function endWait(){
-                //$("#waitModal").modal('hide');
+                $("#waitModal").modal('hide');
             }
 
             function openAssignPhasesToSubjectPopup(studyId, subjectId){

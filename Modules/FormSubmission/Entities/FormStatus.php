@@ -136,7 +136,8 @@ class FormStatus extends Model
         }
 
         $imgSpanStepClsStr = buildSafeStr($step->step_id, 'img_step_status_');
-        $spanStr = '<span class="' . $imgSpanStepClsStr . '" ' . $info . '>';
+        $imgSpanStepSkipLogicClsStr = buildSafeStr($step->step_id, 'img_step_status_skip_logic_');
+        $spanStr = '<span class="' . $imgSpanStepClsStr . ' ' . $imgSpanStepSkipLogicClsStr . '" ' . $info . '>';
         $spanStr .= self::makeFormStatusSpanImage($formStatus) . '</span>';
         return $spanStr;
     }
@@ -198,8 +199,9 @@ class FormStatus extends Model
             $imgSpanClsStr = buildSafeStr($step->step_id, 'img_step_status_');
         }
 
+        $imgSpanStepSkipLogicClsStr = buildSafeStr($step->step_id, 'img_step_status_skip_logic_');
 
-        $spanStr = '<span class="' . $imgSpanClsStr . '" ' . $info . '>';
+        $spanStr = '<span class="' . $imgSpanClsStr . ' ' . $imgSpanStepSkipLogicClsStr . '" ' . $info . '>';
         $spanStr .= self::makeFormStatusSpanImage($formStatusObj->form_status) . '</span>';
         return $spanStr;
     }

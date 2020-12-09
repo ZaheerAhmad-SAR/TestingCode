@@ -209,14 +209,13 @@ if(null !== $formStatusObj){
                     echo "enableByClass('$stepClsStr');";
                 }
             } else {
-                echo "hideReasonField('$stepIdStr', '$stepClsStr', '$step->form_type_id', '".buildGradingStatusIdClsStr($formStatusObj->id)."', 5);";
+                echo "hideReasonField('$stepIdStr', '$stepClsStr', '$step->form_type_id', '".buildGradingStatusIdClsStr($formStatusObj->id)."', 2);";
             }
             @endphp
         });
 
     </script>
 @endpush
-
 
 @php
 $stepValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidationForStep($step, false);
