@@ -94,6 +94,7 @@ class CoordinatorController extends Controller
     {
         // get old data for logs
         $oldCoordinator = Coordinator::find($request->c_id);
+        
         $data = array (
             'first_name' => $request->c_first_name,
             'mid_name' => $request->c_mid_name,
@@ -105,7 +106,7 @@ class CoordinatorController extends Controller
 
         $c_site_id  = $request->c_site_id;
 
-        $allCoordinator    = Coordinator::where('site_id',$c_site_id)->get();
+        $allCoordinator = Coordinator::where('site_id',$c_site_id)->get();
 
          // log event details
         $logEventDetails = eventDetails($request->c_id, 'Coordinator', 'Update', $request->ip(), $oldCoordinator);

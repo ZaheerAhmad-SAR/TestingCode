@@ -51,6 +51,7 @@ class UserController extends Controller
     }
     public function index()
     {
+
         if (isThisUserSuperAdmin(\auth()->user())) {
             $roles  =   Role::where('role_type', '!=', 'study_role')->get();
             $systemRoleIds = Role::where('role_type', '!=', 'study_role')->pluck('id')->toArray();
@@ -336,6 +337,15 @@ class UserController extends Controller
     {
         // get old user data for trail log
         $oldUser = User::where('id', $id)->first();
+
+        //get old Roles
+        $getUserOldRoles = Role::leftjoin('user_roles', 'user_roles.role_id', '=', 'roles.id')
+                                ->where('user_roles.user_id', $id)
+                                ->pluck('roles.name')
+                                ->toArray();
+
+        $oldUser->role = $getUserOldRoles != null ? implode(',', $getUserOldRoles) : '';
+
         $data = array('name' => $oldUser->name);
         $user   =   User::find($id);
         $messages = [

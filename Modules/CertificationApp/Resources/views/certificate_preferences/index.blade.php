@@ -3,7 +3,7 @@
     <title> Studies | {{ config('app.name', 'Laravel') }}</title>
 @stop
 @section('styles')
-    <link rel="stylesheet" href="{{ asset('dist/vendors/tablesaw/tablesaw.css') }}">
+    <!-- <link rel="stylesheet" href="{{ asset('dist/vendors/tablesaw/tablesaw.css') }}"> -->
     
 @stop
 
@@ -26,52 +26,97 @@
         <div class="row">
             <div class="col-12 mt-3">
                 <div class="card">
+
+                     <div class="form-group col-md-12 mt-3">        
+
+
+                        @if (!$getStudies->isEmpty())
+                        <span style="float: right; margin-top: 3px;" class="badge badge-pill badge-primary">
+                            {{ $getStudies->count().' out of '.$getStudies->total() }}
+                        </span>
+                        @endif
+
+                    </div>
+
+                     <hr>
+                    <!-- Other Filters ends -->
+
+                    <form action="{{route('certification-preferences.index')}}" method="get" class="filter-form">
+                        <div class="form-row" style="padding: 10px;">
+
+                            <div class="form-group col-md-2">
+                                <label for="study_code">Study Code</label>
+                                <input type="text" name="study_code" id="study_code" class="form-control filter-form-data" value="{{ request()->study_code }}" placeholder="Study Code">
+                            </div>
+
+                            <div class="form-group col-md-2">
+                                <label for="short_name">Short Name</label>
+                                <input type="text" name="short_name" id="short_name" class="form-control filter-form-data" value="{{ request()->short_name }}" placeholder="Short Name">
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="study_title">Study Title</label>
+                                <input type="text" name="study_title" id="study_title" class="form-control filter-form-data" value="{{ request()->study_title }}" placeholder="Study Title">
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="study_sponsor">Study Sponsor</label>
+                                <input type="text" name="study_sponsor" id="study_sponsor" class="form-control filter-form-data" value="{{ request()->study_sponsor }}" placeholder="Study Sponsor">
+                            </div>
+
+
+                            <div class="form-group col-md-2 mt-4">
+                                <button type="button" class="btn btn-primary reset-filter">Reset</button>
+                                <button type="submit" class="btn btn-primary btn-lng">Filter Record</button>
+                            </div>
+
+                        </div>
+                        <!-- row ends -->
+                    </form>
+                
                    
                     <div class="card-body">
-                        <table class="tablesaw table-bordered">
-                            <thead>
+                        <table class="table table-bordered" id="laravel_crud">
+                            <thead class="table-secondary">
                             <tr>
-                                <th scope="col" data-tablesaw-sortable-default-col data-tablesaw-priority="3">
-                                    Short Name : <strong>Study Title</strong>
-                                    <br>
-                                    <br>Sponsor
+                                <th>
+                                    Study Code
                                 </th>
 
-                                <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block">Progress bar</th>
+                                <th>
+                                    Short Name
+                                </th>
 
-                                <th scope="col" data-tablesaw-priority="1">Status</th>
+                                <th>
+                                    Study Title
+                                </th>
 
-                                <th scope="col" data-tablesaw-priority="1">Study Admin</th>
+                                <th>
+                                    Sponser
+                                </th>
                                 
-                                <th scope="col" data-tablesaw-priority="4">Action</th>
+                                <th>
+                                    Action
+                                </th>
 
                             </tr>
                             </thead>
                             <tbody>
-                                @if (!$studies->isEmpty())
-                                @foreach($studies as $study)
+                                @if (!$getStudies->isEmpty())
+                                @foreach($getStudies as $study)
                                     <tr>
                                         <td>
-                                            <a class="" href="{{ route('studies.show', $study->id) }}">
-                                                {{ucfirst($study->study_short_name)}} : <strong>{{ucfirst($study->study_title)}}</strong>
-                                            </a>
-                                            <br><br>
-                                            <p style="font-size: 14px; font-style: oblique">
-                                                Sponsor: <strong>{{ucfirst($study->study_sponsor)}}</strong>
-                                            </p>
+                                           {{ $study->study_code}}
                                         </td>
-
-                                        <td class="tablesaw-stack-block">
-                                            <p></p>
-                                            {!! \Modules\Admin\Entities\Study::calculateFormPercentage($study->id) !!}
-                                        </td>
-
-                                        <td>{{$study->study_status}}</td>
 
                                         <td>
-                                          
-                                            {{ \Modules\Admin\Entities\Study::getstudyAdminsName($study->id) }}
-                                           
+                                            {{ $study->study_short_name}}
+                                        </td>
+
+                                        <td>{{$study->study_title}}</td>
+
+                                        <td>
+                                          {{ $study->study_sponsor }}
                                         </td>
 
                                         <td>
@@ -112,7 +157,7 @@
                                 @endif
                             </tbody>
                         </table>
-                            {{ $studies->links() }}
+                            {{ $getStudies->links() }}
                         
                     </div>
                 </div>
@@ -124,5 +169,16 @@
 @endsection
 
 @section('script')
+
+<script type="text/javascript">
+    
+    $('.reset-filter').click(function(){
+        // reset values
+        $('.filter-form').trigger("reset");
+        $('.filter-form-data').val("").trigger("change");
+        // submit the filter form
+        window.location.reload();
+    });
+</script>
 
 @endsection

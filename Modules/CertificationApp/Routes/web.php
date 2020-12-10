@@ -32,6 +32,9 @@
 // post preferences assign modality
 	Route::post('preferences/save-assign-modality/{study_id}', 'CertificationPreferencesController@saveAssignModality')->name('preferences.save-assign-modality');
 
+// post preferences remove modality
+	Route::post('preferences/remove-assign-modality/{study_id}', 'CertificationPreferencesController@removeAssignModality')->name('preferences.remove-assign-modality');
+
 // get studies for preference
 	Route::resource('certification-preferences', 'CertificationPreferencesController');
 
