@@ -64,7 +64,7 @@ class UserController extends Controller
 
         $userIdsOfSystemRoles = UserRole::whereIn('role_id', $systemRoleIds)->pluck('user_id')->toArray();
         $users = User::whereIn('id', $userIdsOfSystemRoles)
-            ->where('id', '!=', \auth()->user()->id)
+            //->where('id', '!=', \auth()->user()->id)
             ->orderBy('name', 'asc')->get();
 
         $studyRoleIds = Role::where('role_type', '=', 'study_role')->pluck('id')->toArray();
@@ -510,7 +510,7 @@ class UserController extends Controller
             );
 
             Notification::route('mail', $request->input('email'))->notify(new InviteNotification($url));
-            $request->session()->flash('status', 'The Invite has been sent successfully!');
+            session()->put('message', 'The Invite has been sent successfully!');
             return response()->json(['success' => 'The Invite has been sent successfully.']);
         }
     }
