@@ -271,12 +271,7 @@
     // initilaize summer note for edit
     $('.edit_summernote').summernote({
         height: 100,
-      // toolbar: [
-      //     ['font', ['bold', 'underline', 'clear']],
-      //     ['para', ['ul', 'ol', 'paragraph']],
-      // ]
-
-      });
+    });
 
     function updateTitle(templateId, templateTitle, templateBody) {
         // show template
@@ -286,8 +281,22 @@
         $('#template_id').val(templateId);
         // assign title
         $('#edit_title').val(templateTitle);
-
+        // assign body
+        $('.edit_summernote').summernote('code', templateBody);
     }
+
+    // submit edit form
+    $('.edit-template-form').submit(function(e) {
+        
+        if($('.edit_summernote').summernote('isEmpty')) {
+            // cancel submit
+            e.preventDefault(); 
+            $('.edit-error-field').css('display', 'block');  
+        } else {
+            
+            e.currentTarget;
+        }
+    });
    
 </script>
 @endsection
