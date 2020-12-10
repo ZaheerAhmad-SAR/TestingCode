@@ -26,19 +26,17 @@ class SystemusersController extends Controller
     public function index()
     {
         if (Auth::user()->can('users.create')) {
-            $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
+            $roles  =   Role::where('created_by', '=', \auth()->user()->id)->get();
         }
 
-        if (hasPermission(auth()->user(),'studytools.index')){
+        if (hasPermission(auth()->user(), 'studytools.index')) {
             $users  =   User::all();
-        }
-        else {
-            $users = User::where('deleted_at','=',Null)
-                ->where('user_type','=','study_user')
+        } else {
+            $users = User::where('deleted_at', '=', Null)
+                ->where('user_type', '=', 'study_user')
                 ->get();
         }
-        return view('userroles::users.index',compact('users','roles'));
-
+        return view('userroles::users.index', compact('users', 'roles'));
     }
 
     /**
@@ -48,9 +46,9 @@ class SystemusersController extends Controller
     public function create()
     {
         if (Auth::user()->can('users.create')) {
-            $roles  =   Role::where('created_by','=',\auth()->user()->id)->get();
+            $roles  =   Role::where('created_by', '=', \auth()->user()->id)->get();
 
-            return view('userroles::users.create',compact('roles'));
+            return view('userroles::users.create', compact('roles'));
         }
 
         return redirect('dashboard');
@@ -67,16 +65,19 @@ class SystemusersController extends Controller
         if ($request->ajax()) {
             $userID = $request->user_id;
             $id = Str::uuid();
-            $user = User::updateOrCreate([
-                'id' => $id],
-                ['name' => $request->name,
+            $user = User::updateOrCreate(
+                [
+                    'id' => $id
+                ],
+                [
+                    'name' => $request->name,
                     'email' => $request->email,
                     'password' => encrypt($request->password),
                     'created_by'    => \auth()->user()->id
-                ]);
-            if ($request->roles)
-            {
-                foreach ($request->roles as $role){
+                ]
+            );
+            if ($request->roles) {
+                foreach ($request->roles as $role) {
                     UserRole::updateOrCreate([
                         'id'    => Str::uuid(),
                         'user_id'     => $user->id,
@@ -93,7 +94,6 @@ class SystemusersController extends Controller
             }
         }
         return \response()->json($user);
-
     }
 
     /**
@@ -106,7 +106,7 @@ class SystemusersController extends Controller
         $user = User::find($id);
         $user->delete();
 
-        return redirect()->route('users.index')->with('success','User deleted');
+        return redirect()->route('users.index')->with('success', 'User deleted');
     }
 
     /**
@@ -138,21 +138,17 @@ class SystemusersController extends Controller
             'name'  =>  $request->name,
             'email' =>  $request->email,
             'password'  =>  Hash::make($request->password),
-            'role_id'   =>  !empty($request->roles)?$request->roles[0]:2
+            'role_id'   =>  !empty($request->roles) ? $request->roles[0] : 2
         ]);
-        $userroles  = UserRole::where('user_id',$user->id)->get();
-        foreach ($userroles as $role_id){
+        $userroles  = UserRole::where('user_id', $user->id)->get();
+        foreach ($userroles as $role_id) {
             $role_id->delete();
         }
-        foreach ($request->roles as $role){
-            UserRole::create([
-                'user_id'    =>  $user->id,
-                'role_id'    =>  $role
-            ]);
+        foreach ($request->roles as $role) {
+            UserRole::createUserRole($user->id, $role);
         }
 
         return redirect()->route('users.index');
-
     }
 
     /**

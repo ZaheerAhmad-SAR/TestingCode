@@ -29,6 +29,7 @@ use Illuminate\Support\Str;
 use ParagonIE\ConstantTime\Base32;
 use PragmaRX\Google2FAQRCode\Google2FA;
 use App\Traits\UploadTrait;
+use Illuminate\Contracts\Session\Session;
 use Modules\UserRoles\Entities\StudyRoleUsers;
 
 class UserController extends Controller
@@ -168,11 +169,7 @@ class UserController extends Controller
 
                     if (!empty($request->roles)) {
                         foreach ($request->roles as $role) {
-                            $roles = UserRole::create([
-                                'id'    => Str::uuid(),
-                                'user_id'     => $user->id,
-                                'role_id'   => $role,
-                            ]);
+                            UserRole::createUserRole($user->id, $role);
                         }
                     } // roles
 
@@ -212,14 +209,7 @@ class UserController extends Controller
                 'role_id'   => $request->user_role,
                 'study_id'  => session('current_study')
             ]);
-            $checkUserRole = UserRole::where('role_id', $request->user_role)->where('user_id', $request->study_user)->first();
-            if (null === $checkUserRole) {
-                UserRole::create([
-                    'id' => Str::uuid(),
-                    'user_id' => $request->study_user,
-                    'role_id' => $request->user_role
-                ]);
-            }
+            UserRole::createUserRole($request->study_user, $request->user_role);
             return response()->json(['success' => 'User assigned successfully.']);
         }
     }
@@ -456,11 +446,7 @@ class UserController extends Controller
 
             foreach ($request->roles as $role) {
                 if (!in_array($role, $currentRoleIds)) {
-                    $new = UserRole::create([
-                        'id'    => Str::uuid(),
-                        'user_id'    =>  $user->id,
-                        'role_id'    =>  $role,
-                    ]);
+                    UserRole::createUserRole($user->id, $role);
                 }
             }
         }
@@ -483,22 +469,33 @@ class UserController extends Controller
 
     public function process_invites(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => 'required|email|unique:users,email',
-            'roles' => 'required'
-        ]);
-        $validator->after(function ($validator) use ($request) {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'email' => 'required|email|unique:users,email',
+                'roles' => 'required'
+            ],
+            [
+                'required' => 'Please provide email address!',
+                'email' => 'Please provide a valid email address!',
+                'unique' => 'A user with this email is already part of OCAP!',
+                'roles' => 'Please select a role!',
+            ]
+        );
+        /*$validator->after(function ($validator) use ($request) {
             if (Invitation::where('email', $request->input('email'))->exists()) {
                 $validator->errors()->add('email', 'There exists an invite with this email!');
                 $validator->errors()->add('roles', 'Please select a role to send invite!');
             }
-        });
+        });*/
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()->first()]);
         } else {
             do {
                 $token = Str::random(15);
             } while (Invitation::where('token', $token)->first());
+
+            Invitation::where('email', 'like', $request->input('email'))->delete();
             Invitation::create([
                 'id'    => Str::uuid(),
                 'token' => $token,
@@ -513,6 +510,7 @@ class UserController extends Controller
             );
 
             Notification::route('mail', $request->input('email'))->notify(new InviteNotification($url));
+            $request->session()->flash('status', 'The Invite has been sent successfully!');
             return response()->json(['success' => 'The Invite has been sent successfully.']);
         }
     }
@@ -520,6 +518,16 @@ class UserController extends Controller
     public function registration_view($token)
     {
         $invite = Invitation::where('token', $token)->first();
-        return view('auth.register', ['invite' => $invite]);
+        $user = User::where('email', 'like', $invite->email)->first();
+        if (null !== $invite) {
+            if (null === $user) {
+                return view('auth.register', ['invite' => $invite]);
+            } else {
+                UserRole::createUserRole($user->id, $invite->role_id);
+                return redirect()->route('dashboard.index')->with('message', 'OCAP user role accepted successfully!');
+            }
+        } else {
+            return redirect()->route('dashboard.index')->with('message', 'Invitition expired!');
+        }
     }
 }

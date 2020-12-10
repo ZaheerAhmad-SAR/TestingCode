@@ -291,7 +291,7 @@ class StudyController extends Controller
                 ->where('subjects.study_id', '=', $id)
                 ->join('sites', 'sites.id', '=', 'subjects.site_id')
                 ->get();
-            
+
             $site_study = StudySite::where('study_id', '=', $id)
                 ->join('sites', 'sites.id', '=', 'site_study.site_id')
                 ->select('sites.site_name', 'sites.id')
@@ -453,13 +453,7 @@ class StudyController extends Controller
         if ($request->studyUsers  == 'on') {
             $study_users = UserRole::where('study_id', '=', $study_id)->get();
             foreach ($study_users  as $user) {
-                $id = \Illuminate\Support\Str::uuid();
-                $user = UserRole::create([
-                    'id'    => $id,
-                    'role_id' => $user->role_id,
-                    'user_id' => $user->user_id,
-                    'study_id' => $replica_id->id
-                ]);
+                UserRole::createUserRole($user->user_id, $user->role_id, $replica_id->id);
             }
         }
         if ($request->studySites == 'on') {
@@ -915,13 +909,7 @@ class StudyController extends Controller
         if ($request->studyUsers  == 'on') {
             $study_users = UserRole::where('study_id', '=', $study_id)->get();
             foreach ($study_users  as $user) {
-                $id = \Illuminate\Support\Str::uuid();
-                $user = UserRole::create([
-                    'id'    => $id,
-                    'role_id' => $user->role_id,
-                    'user_id' => $user->user_id,
-                    'study_id' => $replica_id->id
-                ]);
+                UserRole::createUserRole($user->user_id, $user->role_id, $replica_id->id);
             }
         }
         if ($request->studySites == 'on') {
