@@ -428,6 +428,18 @@
                                     <i class="fas fa-list"></i> Certification Photo
                                 </a>
                             </li>
+
+                            <li  class="@if(is_active('certification-preferences')) {{ ' active' }} @endif">
+                                <a href="{{route('certification-preferences.index')}}">
+                                    <i class="fas fa-list"></i> Preferences
+                                </a>
+                            </li>
+
+                             <li  class="@if(is_active('certification-template')) {{ ' active' }} @endif">
+                                <a href="{{route('certification-template')}}">
+                                    <i class="fas fa-list"></i> Template
+                                </a>
+                            </li>
                             
                         </ul>
                     </li>
