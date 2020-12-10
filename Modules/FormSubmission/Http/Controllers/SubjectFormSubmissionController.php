@@ -2,6 +2,7 @@
 
 namespace Modules\FormSubmission\Http\Controllers;
 
+use Illuminate\Support\Facades\File;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
@@ -13,6 +14,7 @@ use Modules\FormSubmission\Entities\FormStatus;
 use Modules\Admin\Entities\Question;
 use Modules\FormSubmission\Entities\FormVersion;
 use Modules\FormSubmission\Traits\QuestionDataValidation;
+use App\Helpers\ImageUploadingHelper;
 
 class SubjectFormSubmissionController extends Controller
 {
@@ -66,16 +68,19 @@ class SubjectFormSubmissionController extends Controller
         if (PhaseSteps::isStepActive($request->stepId)) {
             $formRevisionDataArray = ['edit_reason_text' => ''];
             $question = Question::find($request->questionId);
-            $formRevisionDataArray['form_data'][] = $this->putAnswer($request, $question);
+            $formData = $this->putAnswer($request, $question);
+            $formRevisionDataArray['form_data'][] = $formData['form_data'];
             $formStatusArray = FormStatus::putFormStatus($request);
             FormRevisionHistory::putFormRevisionHistory($formRevisionDataArray, $formStatusArray['id']);
-            echo json_encode($formStatusArray);
+            echo json_encode(['status' => $formStatusArray, 'answer' => $formData['form_data']['answer']]);
         }
     }
 
 
     private function putAnswer($request, $question)
     {
+        $needToDeleteFiles = false;
+
         $step = PhaseSteps::find($request->stepId);
         $formVersion = PhaseSteps::getFormVersion($step->step_id);
 
@@ -92,11 +97,23 @@ class SubjectFormSubmissionController extends Controller
 
         $form_field_name = buildFormFieldName($question->formFields->variable_name);
         $form_field_id = $question->formFields->id;
-        if ($request->has($form_field_name)) {
-
-            $answer = $request->{$form_field_name};
-            if (is_array($answer)) {
-                $answer = implode(',', $answer);
+        if ($request->has($form_field_name) || $request->hasFile($form_field_name . '0')) {
+            if ($request->hasFile($form_field_name . '0')) {
+                $formFilesStr = '';
+                for ($x = 0; $x < $request->TotalFiles; $x++) {
+                    if ($request->hasFile($form_field_name . $x)) {
+                        $file      = $request->file($form_field_name . $x);
+                        $fileName = ImageUploadingHelper::UploadDoc('form_files', $file);
+                        $formFilesStr .= 'form_files/' . $fileName . '<<|!|>>';
+                    }
+                }
+                $needToDeleteFiles = true;
+                $answer = $formFilesStr;
+            } else {
+                $answer = $request->{$form_field_name};
+                if (is_array($answer)) {
+                    $answer = implode(',', $answer);
+                }
             }
 
             $formDataArray = ['question_id' => $question->id, 'variable_name' => $form_field_name, 'field_id' => $form_field_id, 'answer' => $answer];
@@ -111,6 +128,12 @@ class SubjectFormSubmissionController extends Controller
             $answerObj = Answer::getAnswer($answerArray);
             /************************** */
             if ($answerObj) {
+                if ($needToDeleteFiles === true) {
+                    $oldFilesArray = explode('<<|!|>>', $answerObj->answer);
+                    foreach ($oldFilesArray as $oldFile) {
+                        File::delete(ImageUploadingHelper::real_public_path() . $oldFile);
+                    }
+                }
                 $answerArray['answer'] = $answer;
                 $answerArray['form_version_num'] = $formVersion;
                 $answerObj->update($answerArray);
