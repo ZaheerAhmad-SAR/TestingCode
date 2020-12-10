@@ -1,4 +1,8 @@
 <style>
+    .disable_link {
+        pointer-events: none;
+    }
+
     .adjudication-border{
         border: #C30 1px dashed;
         border-radius: 5px;

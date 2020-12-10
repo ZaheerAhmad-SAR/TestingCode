@@ -2,6 +2,7 @@
 
 namespace Modules\Queries\Entities;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 
 class QueryNotification extends Model
@@ -17,6 +18,25 @@ class QueryNotification extends Model
     public static function buildHtmlForQuerySubmitter($querySubmitedBy, $query)
     {
 
+        $profileImage = '';
+        $checkUserEmail = $query->notification_remarked_id;
+        $checkPersonName = $query->person_name;
+
+
+        if(!empty($checkUserEmail))
+        {
+            $result = User::where('email','=',$checkUserEmail)->first();
+
+            if (null=== $result)
+            {
+                $profileImage = asset('public/images/download.png');
+            }
+            else
+            {
+                $profileImage = asset($result->profile_image);
+            }
+        }
+
         $attachment = '';
         if (!empty($query->email_attachment)) {
             $attachment .= '<div class="row">
@@ -30,9 +50,9 @@ class QueryNotification extends Model
                     <div class="col-md-12">
 
                         <img class="mr-3" style="width: 40px; height: 40px; border-radius: 50%;"
-                            src="' . url((string)$querySubmitedBy->profile_image) . '" />
+                           src="' . url((string)$profileImage) . '" />
 
-                        <strong>' . ucfirst((string)$querySubmitedBy->name) . ':</strong>
+                        <strong>' . ucfirst((string)$query->person_name) . ':</strong>
                         ' . date_format($query->created_at, 'M-d-Y H:i A') . '<br>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         ' . $query->email_body . '
                         ' . $attachment . '
@@ -42,6 +62,25 @@ class QueryNotification extends Model
 
     public static function buildHtmlForQueryAnswer($querySubmitedBy, $query)
     {
+
+
+
+        $profileImage = '';
+        $checkUserEmail = $querySubmitedBy->notification_remarked_id;
+
+        if(!empty($checkUserEmail))
+        {
+            $result = User::where('email','=',$checkUserEmail)->first();
+            if (null=== $result)
+            {
+                $profileImage = asset('public/images/download.png');
+            }
+            else
+            {
+                $profileImage = asset($result->profile_image);
+            }
+        }
+
         $attachment = '';
         if (!empty($query->email_attachment)) {
             $attachment .= '<div class="row">
@@ -53,7 +92,7 @@ class QueryNotification extends Model
         return '<div class="row text-right">
                     <div class="col-md-12">
 
-                    <img class="mr-3" style="width: 40px; height: 40px; border-radius: 50%;" src="'.(asset('public/images/download.png')). '" />
+                    <img class="mr-3" style="width: 40px; height: 40px; border-radius: 50%;"  src="' . url((string)$profileImage) . '" />
                         <strong>' . ucfirst((string)$query->person_name) . ':</strong>
                         ' . date_format($query->created_at, 'M-d-Y H:i A') . '<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         ' . $query->email_body . '

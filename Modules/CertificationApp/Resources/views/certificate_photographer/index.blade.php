@@ -181,7 +181,7 @@
                                                         @endif
                                                     </div>
                                                 </div>
-                                                 gear dropdown
+                                                
                                             </td> 
                                             
                                         </tr>

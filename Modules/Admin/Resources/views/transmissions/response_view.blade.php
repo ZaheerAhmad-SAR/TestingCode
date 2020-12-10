@@ -1,5 +1,6 @@
 @php
     $querySubmitedBy = App\User::where('email','=',$query['notification_remarked_id'])->first();
+
 @endphp
 
 <div class="m-2">
@@ -9,10 +10,12 @@
         @php
             //$answerSubmitedBy = App\User::find($answer->queried_remarked_by_id);
             $answerSubmitedBy=Modules\Queries\Entities\QueryNotification::
-            where('notification_remarked_id','=',$answer->notification_remarked_id)->get();
+            where('notification_remarked_id','=',$answer->notification_remarked_id)->first();
+
 
         @endphp
         @if($query->notification_remarked_id == $answer->notification_remarked_id)
+{{--            {{dd($answerSubmitedBy)}}--}}
             {!! Modules\Queries\Entities\QueryNotification::buildHtmlForQuerySubmitter($answerSubmitedBy, $answer) !!}
         @else
             {!! Modules\Queries\Entities\QueryNotification::buildHtmlForQueryAnswer($answerSubmitedBy, $answer) !!}
@@ -35,10 +38,17 @@
     </div>
 </div>
 
+@php
+    $toUsersEmailAddress = Modules\Queries\Entities\QueryNotificationUser::where('query_notification_id','=',$query->id)->first();
+
+ @endphp
 <div class="malwareData">
     <input type="hidden" name="notification_remarked_id" id="notification_remarked_id" value="{{ $query->notification_remarked_id }}">
+
+    <input type="hidden" name="mailToUserAddress" id="mailToUserAddress" value="{{ $toUsersEmailAddress->query_notification_user_id }}">
 {{--    <input type="hidden" name="notifications_token" id="notifications_token" value="{{ $query->notifications_token }}">--}}
     <input type="hidden" name="query_id_response" id="query_id_response" value="{{ $query->id }}">
+
     <input type="hidden" name="cc_email_response" id="cc_email_response" value="{{ $query->cc_email }}">
     <input type="hidden" name="email_subject_response" id="email_subject_response" value="{{ $query->subject }}">
     <input type="hidden" name="study_id_response" id="study_id_response" value="{{ $query->study_id }}">

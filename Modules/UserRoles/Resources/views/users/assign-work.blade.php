@@ -1,7 +1,7 @@
 @extends ('layouts.home')
 
 @section('title')
-    <title> Grading List | {{ config('app.name', 'Laravel') }}</title>
+    <title> Assign Work | {{ config('app.name', 'Laravel') }}</title>
 @stop
 
 @section('styles')
@@ -276,11 +276,8 @@
                                     @endif
                                 </tbody>
                             </table>
-                            @if(!$subjects->isEmpty())
 
-                                {{ $subjects->links() }}
-                            
-                            @endif
+                            {{ $subjects->links() }}
 
                             <!--Add  Modal -->
                             <div class="modal fade" id="assign-work-model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
