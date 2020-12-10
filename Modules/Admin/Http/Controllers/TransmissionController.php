@@ -749,6 +749,7 @@ class TransmissionController extends Controller
        $email_subject_response       = $request->post('email_subject_response');
        $query_id_response            = $request->post('query_id_response');
        $cc_email_response            = $request->post('cc_email_response');
+        $ccArray                     = explode(',',$cc_email_response);
        $study_id_response            = $request->post('study_id_response');
        $subject_id_response          = $request->post('subject_id_response');
        $vist_name_response           = $request->post('vist_name_response');
@@ -772,7 +773,7 @@ class TransmissionController extends Controller
             'Transmission_Number'=>$transmission_number_response,
             'query_subject'=>$email_subject_response,
             'remarks'=>$reply_response,
-            'cc_email'=>$cc_email_response,
+            'cc_email'=>$ccArray,
             'StudyI_ID'=>$study_id_response,
             'visit_name'=>$vist_name_response,
             'Subject_ID'=>$subject_id_response,
@@ -780,6 +781,7 @@ class TransmissionController extends Controller
             'studyShortName'=>$study_short_name_response,
             'replyToken'=> $token
         );
+
         $result = QueryNotification::create([
             'id'=>$id,
             'cc_email'=>$cc_email_response,
