@@ -100,7 +100,7 @@ function hasPermission($user, $routeName)
 
         $roleIds[] = $role->role_id;
     }
-    
+
     $permission = Permission::where('name', '=', $routeName)->first();
     $rolePermission = RolePermission::whereIn('role_id', $roleIds)
         ->where('permission_id', $permission->id)->first();
@@ -528,7 +528,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
             $auditMessage = Auth::user()->name . ' updated child modality ' . $eventData->modility_name . '.';
         }
 
-    ////////////////////////// Child Modality Ends /////////////////////////////////////
+        ////////////////////////// Child Modality Ends /////////////////////////////////////
     } else if ($eventSection == 'Device') {
         // get event data
         $eventData = Device::find($eventId);
@@ -647,7 +647,6 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
                 'is_out_of_window' => $eventId->is_out_of_window,
                 'form_type_id' => 'QC'
             );
-
         }
 
         //////////////////////////// phase Ends /////////////////////////////////////////
@@ -1238,5 +1237,30 @@ function printSqlQuery($builder, $dd = true)
         dd($query);
     } else {
         echo ($query);
+    }
+}
+
+function showMessage()
+{
+    if (session()->has('message') && session()->get('message') != '') {
+        echo '<div class="col-lg-12 success-alert"><div class="alert alert-primary success-msg" role="alert">' . session()->get('message') . '<button class="close" data-dismiss="alert">&times;</button></div></div>';
+        session()->put('message', '');
+    }
+}
+
+function return_bytes($size_str)
+{
+    switch (substr($size_str, -1)) {
+        case 'M':
+        case 'm':
+            return (int)$size_str * 1048576;
+        case 'K':
+        case 'k':
+            return (int)$size_str * 1024;
+        case 'G':
+        case 'g':
+            return (int)$size_str * 1073741824;
+        default:
+            return $size_str;
     }
 }

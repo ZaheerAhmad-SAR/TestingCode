@@ -149,7 +149,9 @@ class Study extends Model
             $userIds = RoleStudyUser::where('study_id', 'LIKE', $id)->whereIn('role_id', Permission::getStudyAdminRole())->pluck('user_id')->toArray();
             foreach ($userIds as $userId) {
                 $user = User::find($userId);
-                $userNames .= $user->name . ', ';
+                $userNames .=  '<p style="border-bottom:1px solid gray;">';
+                $userNames .=  $user->name;
+                $userNames .=  '</p>';
             }
         }
 

@@ -136,14 +136,7 @@ class StudyusersController extends Controller
                                 'role_id' => $role,
                                 'study_id' => session('current_study'),
                             ]);
-                            $checkUserRole = UserRole::where('role_id', $role)->where('user_id', $user->id)->first();
-                            if (null === $checkUserRole) {
-                                UserRole::create([
-                                    'id' => Str::uuid(),
-                                    'user_id' => $user->id,
-                                    'role_id' => $role
-                                ]);
-                            }
+                            UserRole::createUserRole($user->id, $role);
                         }
                     } // roles
 
@@ -299,14 +292,7 @@ class StudyusersController extends Controller
                         'role_id'    =>  $role,
                         'study_id'   => session('current_study'),
                     ]);
-                    $checkUserRole = UserRole::where('role_id', $role)->where('user_id', $user->id)->first();
-                    if (null === $checkUserRole) {
-                        UserRole::create([
-                            'id'    => Str::uuid(),
-                            'user_id'   => $user->id,
-                            'role_id'   => $role
-                        ]);
-                    }
+                    UserRole::createUserRole($user->id, $role);
                 }
             }
         }

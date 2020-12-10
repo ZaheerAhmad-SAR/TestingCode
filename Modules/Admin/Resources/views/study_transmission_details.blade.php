@@ -274,13 +274,13 @@
                                 <div class="form-group row">
                                     <label for="Name" class="col-sm-2 col-form-label">CC:</label>
                                     @php
-                                        $studyId = session('current_study');
 
-                                $preferences = Modules\Admin\Entities\Preference::where('study_id', 'like', $studyId)->first();
-                                //dd($preferences);
+                                $study_email = Modules\Admin\Entities\Preference::getPreference('STUDY_EMAIL');
+                                $study_cc_email = Modules\Admin\Entities\Preference::getPreference('STUDY_CC_EMAILS');
+
                                     @endphp
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text" name="cc_email" id="cc_email" value="amjadkhan89@hotmail.com">
+                                        <input class="form-control" type="text" name="cc_email" id="cc_email" value="{{$study_email}},{{$study_cc_email}}">
                                         @error('cc_email')
                                         <div class="text-danger text-xl-center">{{$message}}</div>
                                         @enderror
@@ -641,9 +641,10 @@
             success: function(response)
             {
                 console.log(response);
-                $('#defaultloader').css('display','');
-                $("#queriesTransmissionForm")[0].reset();
                 $('#transmissonQueryModal').modal('hide');
+                $("#queriesTransmissionForm")[0].reset();
+                $('#defaultloader').css('display','');
+                location.reload();
             }
         });
     });

@@ -51,18 +51,18 @@
                         <table class="tablesaw table-bordered" data-tablesaw-mode="stack" id="studies_crud">
                             <thead>
                             <tr>
-                                <th scope="col" data-tablesaw-priority="persist">ID</th>
-                                <th scope="col" data-tablesaw-sortable-default-col data-tablesaw-priority="3">
+                                <th scope="col" data-tablesaw-priority="persist" style="width: 5%">ID</th>
+                                <th scope="col" data-tablesaw-sortable-default-col data-tablesaw-priority="3" style="width: 40%">
                                     Short Name : <strong>Study Title</strong>
                                     <br>
                                     <br>Sponsor
                                 </th>
-                                <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block">Progress bar</th>
-                                <th scope="col" data-tablesaw-priority="1">Status</th>
+                                <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block"  style="width: 25%">Progress bar</th>
+                                <th scope="col" data-tablesaw-priority="1" style="width: 10%">Status</th>
                                 @if(hasPermission(auth()->user(),'systemtools.index'))
-                                    <th scope="col" data-tablesaw-priority="1">Study Admin</th>
+                                    <th scope="col" data-tablesaw-priority="1" style="width: 10%">Study Admin</th>
                                 @endif
-                                <th scope="col" data-tablesaw-priority="4">Action</th>
+                                <th scope="col" data-tablesaw-priority="4" style="width: 10%">Action</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -86,7 +86,7 @@
                                         <td>{{$study->study_status}}</td>
                                             <td>
                                                 @if(hasPermission(auth()->user(),'systemtools.index'))
-                                                    {{\Modules\Admin\Entities\Study::getstudyAdminsName($study->id)}}
+                                                    {!! \Modules\Admin\Entities\Study::getstudyAdminsName($study->id) !!}
                                                 @endif
                                             </td>
                                             <td>
@@ -213,6 +213,11 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
+                                    <div class="col-md-6"></div>
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-4">
+                                        <span class="space_msg" style="font-size: 9px;color: red;"></span>
+                                    </div>
                                     <label for="study_short_name" class="col-md-2">Short Name </label>
                                     <div class="{!! ($errors->has('study_short_name')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
                                         <input type="text" class="form-control" id="study_short_name" name="study_short_name" value="{{old('study_short_name')}}">
@@ -222,8 +227,9 @@
                                     </div>
 
                                     <label for="study_code" class="col-md-2">Study Code</label>
+
                                     <div class="{!! ($errors->has('study_code')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                        <input type="text" class="form-control" id="study_code" name="study_code" value="{{old('study_code')}}">
+                                        <input type="text" class="form-control variable_name_ques" id="study_code" name="study_code" value="{{old('study_code')}}">
                                         @error('study_code')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
@@ -284,13 +290,15 @@
                                     <div class="col-md-2">
                                         <label for="disease_cohort">Disease Cohort</label>
                                     </div>
-                                    <div class="col-md-7 appendfields">
+                                    <div class="col-md-6 appendfields">
 
                                     </div>
-                                    <div class="col-md-3" style="text-align: right">
+                                    <div class="col-md-4" style="text-align: right">
                                         @if(hasPermission(auth()->user(),'diseaseCohort.create'))
-                                            <button class="btn btn-outline-primary add_field"><i class="fa fa-plus"></i> Add New</button>
+                                            <button class="btn btn-outline-primary add_field"><i class="fa fa-plus"></i> Add</button>
                                         @endif
+                                        {{-- @if(hasPermission(auth()->user(),'diseaseCohort.create')) --}}
+                                        {{-- @endif --}}
                                     </div>
                                 </div>
                             </div>
@@ -724,6 +732,18 @@
 
     <script type="text/javascript">
 
+        $('.variable_name_ques').keydown(function(e) {
+            if (e.keyCode == 32) {
+                $('.variable_name_ques').css('border', '1px solid red');
+                $('.space_msg').html('Space Not Allowed!!')
+                e.preventDefault();
+            } else {
+                $('.variable_name_ques').css('border', '');
+                $('.space_msg').html('');
+                return true;
+            }
+        })
+
         $(document).ready(function() {
 
             $('#change_status').on('show.bs.modal',function (e) {
@@ -771,7 +791,7 @@
             $('.add_field').on('click',function (e) {
                 e.preventDefault();
                 $('.appendfields').append('<div class="disease_row" style="margin-top:10px;">' +
-                    '    <input type="text" class="form-control" name="disease_cohort_name[]" value="" style="width: 90%;display: inline;">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>');
+                    '    <input type="text" class="form-control" name="disease_cohort_name[]" value="" style="width: 80%;display: inline;">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>');
             })
             $('body').on('click','.remove_field',function () {
                 var row = $(this).closest('div.disease_row');
@@ -822,7 +842,7 @@
 
                     $.each(data.study.disease_cohort,function (index, value) {
                         disease_cohort += '<div class="disease_row" style="margin-top:10px;">' +
-                            '<input type="text" class="form-control" value="'+value.name+'" style="width: 90%;display: inline;" name="disease_cohort_name[]">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>';
+                            '<input type="text" class="form-control" value="'+value.name+'" style="width: 80%;display: inline;" name="disease_cohort_name[]">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>';
                     });
                     $('.appendfields').append(disease_cohort);
 

@@ -265,8 +265,9 @@ class StudyController extends Controller
      * @param int $id
      * @return Response
      */
-    public function show(Study $study)
+    public function show(Request $request, Study $study)
     {
+        $subjects = [];
         $assignedUserIds = RoleStudyUser::where('study_id', 'LIKE', $study->id)->pluck('user_id')->toArray();
         if (
             isThisUserSuperAdmin(\auth()->user()) ||
@@ -287,11 +288,27 @@ class StudyController extends Controller
             $currentStudy = Study::find($id);
             $study = Study::find($id);
 
-            $subjects = Subject::select(['subjects.*', 'sites.site_name', 'sites.site_address', 'sites.site_city', 'sites.site_state', 'sites.site_code', 'sites.site_country', 'sites.site_phone'])
-                ->where('subjects.study_id', '=', $id)
-                ->join('sites', 'sites.id', '=', 'subjects.site_id')
-                ->get();
-            
+            $subjects = Subject::select(['subjects.*', 'sites.site_name', 'sites.site_address', 'sites.site_city', 'sites.site_state', 'sites.site_code', 'sites.site_country', 'sites.site_phone']);
+            $subjects = $subjects->where('subjects.study_id', '=', $id);
+            if ($request->subject_id != '') {
+                $subjects = $subjects->where('subjects.subject_id', $request->subject_id);
+            }
+            if ($request->site_id != '') {
+                $subjects = $subjects->where('subjects.site_id', $request->site_id);
+            }
+            if ($request->enrollment_date != '') {
+                $subjects = $subjects->where('subjects.enrollment_date', $request->enrollment_date);
+            }
+            if ($request->disease_cohort != '') {
+                $subjects = $subjects->where('subjects.disease_cohort_id', $request->disease_cohort);
+            }
+            if ($request->study_eye != '') {
+                $subjects = $subjects->where('subjects.study_eye', $request->study_eye);
+            }
+
+            $subjects = $subjects->join('sites', 'sites.id', '=', 'subjects.site_id');
+            $subjects = $subjects->get();
+
             $site_study = StudySite::where('study_id', '=', $id)
                 ->join('sites', 'sites.id', '=', 'site_study.site_id')
                 ->select('sites.site_name', 'sites.id')
@@ -453,13 +470,7 @@ class StudyController extends Controller
         if ($request->studyUsers  == 'on') {
             $study_users = UserRole::where('study_id', '=', $study_id)->get();
             foreach ($study_users  as $user) {
-                $id = \Illuminate\Support\Str::uuid();
-                $user = UserRole::create([
-                    'id'    => $id,
-                    'role_id' => $user->role_id,
-                    'user_id' => $user->user_id,
-                    'study_id' => $replica_id->id
-                ]);
+                UserRole::createUserRole($user->user_id, $user->role_id, $replica_id->id);
             }
         }
         if ($request->studySites == 'on') {
@@ -915,13 +926,7 @@ class StudyController extends Controller
         if ($request->studyUsers  == 'on') {
             $study_users = UserRole::where('study_id', '=', $study_id)->get();
             foreach ($study_users  as $user) {
-                $id = \Illuminate\Support\Str::uuid();
-                $user = UserRole::create([
-                    'id'    => $id,
-                    'role_id' => $user->role_id,
-                    'user_id' => $user->user_id,
-                    'study_id' => $replica_id->id
-                ]);
+                UserRole::createUserRole($user->user_id, $user->role_id, $replica_id->id);
             }
         }
         if ($request->studySites == 'on') {

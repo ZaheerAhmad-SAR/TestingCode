@@ -44,7 +44,7 @@ class InviteNotification extends Notification
             ->from('infor@oirrc.net')
             ->replyTo('infor@oirrc.net')
             ->line('This is to invite you to join OCAP, OIRRC Team ' . config('OCAP'))
-            ->action('Join Team',$this->notification_url)
+            ->action('Join Team', $this->notification_url)
             ->line('Thank you for using our data capturing system!');
     }
     /**
