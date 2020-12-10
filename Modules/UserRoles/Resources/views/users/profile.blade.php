@@ -16,13 +16,7 @@
                     </ol>
                 </div>
             </div>
-            @if(session()->has('message'))
-                <div class="col-lg-12 success-alert">
-                    <div class="alert alert-primary success-msg" role="alert">
-                        {{ session()->get('message') }}
-                    </div>
-                </div>
-            @endif
+            {{ showMessage() }}
         </div>
         <!-- END: Breadcrumbs-->
 
