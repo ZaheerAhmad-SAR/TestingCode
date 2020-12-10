@@ -161,7 +161,9 @@
                                                     </span>
 
 
-                                                @endif </td>
+                                                @endif 
+                                            </td>
+
                                             <td>
 
                                                 &nbsp; &nbsp;

@@ -253,31 +253,34 @@
                 </div>
                 <form id="queriesTransmissionForm" name="queriesTransmissionForm">
                     <div class="modal-body">
+                        <div class="text-center">
+                        <div class="spinner-border" id="defaultloader" role="status" style="display: none;">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                        </div>
                         <div id="exTab1">
                             <div class="tab-content clearfix">
                                 @csrf
                                 <div class="form-group row">
                                     <label for="Name" class="col-sm-2 col-form-label"> Sites :</label>
                                     <div class="col-sm-4">
-
                                         <select class="form-control sitesChange siteShowUp" name="site_name" id="site_name">
-
-{{--                                            @php--}}
-{{--                                                $data = Modules\Admin\Entities\CrushFtpTransmission::where('transmission_number','=',$transmission->Transmission_Number)->first();--}}
-{{--                                            @endphp--}}
-{{--                                            <option value="{{$data['Transmission_Number']}}">{{$data['Site_Name']}}</option>--}}
                                         </select>
-
                                     </div>
                                     <label for="Name" id="usersList" class="col-sm-2 col-form-label" style="display: none;"> Select Users :</label>
                                     <div class="col-sm-4 primaryList">
                                     </div>
-
                                 </div>
                                 <div class="form-group row">
                                     <label for="Name" class="col-sm-2 col-form-label">CC:</label>
+                                    @php
+                                        $studyId = session('current_study');
+
+                                $preferences = Modules\Admin\Entities\Preference::where('study_id', 'like', $studyId)->first();
+                                //dd($preferences);
+                                    @endphp
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text" name="cc_email" id="cc_email">
+                                        <input class="form-control" type="text" name="cc_email" id="cc_email" value="amjadkhan89@hotmail.com">
                                         @error('cc_email')
                                         <div class="text-danger text-xl-center">{{$message}}</div>
                                         @enderror
@@ -288,14 +291,14 @@
                                 <div class="form-group row">
                                     <label for="Name" class="col-sm-2 col-form-label">Subject:</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="text" name="query_subject" minlength="6" maxlength="50" id="query_subject">
+                                        <input class="form-control" type="text" name="query_subject" minlength="6" maxlength="70" id="query_subject" required>
                                     </div>
                                 </div>
 
                                 <div class="form-group row ">
                                     <label for="Name" class="col-sm-2 col-form-label">Email Body</label>
                                     <div class="col-sm-10">
-                                        <textarea class="form-control"  name="remarks"  id="remarks"></textarea>
+                                        <textarea class="form-control"  name="remarks"  id="remarks" required ></textarea>
                                     </div>
                                 </div>
 
@@ -625,7 +628,7 @@
         formData.append('studyShortName', studyShortName);
         // Attach file
         formData.append('query_file', $('input[type=file]')[0].files[0]);
-
+        $('#defaultloader').css('display','');
         $.ajax({
 
             url:"{{route('transmissions.queryTransmissionMail')}}",
@@ -638,6 +641,7 @@
             success: function(response)
             {
                 console.log(response);
+                $('#defaultloader').css('display','');
                 $("#queriesTransmissionForm")[0].reset();
                 $('#transmissonQueryModal').modal('hide');
             }
