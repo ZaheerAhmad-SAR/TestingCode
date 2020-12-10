@@ -213,6 +213,11 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
+                                    <div class="col-md-6"></div>
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-4">
+                                        <span class="space_msg" style="font-size: 9px;color: red;"></span>
+                                    </div>
                                     <label for="study_short_name" class="col-md-2">Short Name </label>
                                     <div class="{!! ($errors->has('study_short_name')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
                                         <input type="text" class="form-control" id="study_short_name" name="study_short_name" value="{{old('study_short_name')}}">
@@ -222,8 +227,9 @@
                                     </div>
 
                                     <label for="study_code" class="col-md-2">Study Code</label>
+
                                     <div class="{!! ($errors->has('study_code')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                        <input type="text" class="form-control" id="study_code" name="study_code" value="{{old('study_code')}}">
+                                        <input type="text" class="form-control variable_name_ques" id="study_code" name="study_code" value="{{old('study_code')}}">
                                         @error('study_code')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
@@ -723,6 +729,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
 
     <script type="text/javascript">
+
+        $('.variable_name_ques').keydown(function(e) {
+            if (e.keyCode == 32) {
+                $('.variable_name_ques').css('border', '1px solid red');
+                $('.space_msg').html('Space Not Allowed!!')
+                e.preventDefault();
+            } else {
+                $('.variable_name_ques').css('border', '');
+                $('.space_msg').html('');
+                return true;
+            }
+        })
 
         $(document).ready(function() {
 

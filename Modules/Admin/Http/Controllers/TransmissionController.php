@@ -783,7 +783,7 @@ class TransmissionController extends Controller
         $result = QueryNotification::create([
             'id'=>$id,
             'cc_email'=>$cc_email_response,
-            'notifications_status'=>'read',
+            'notifications_status'=>'open',
             'subject'=>$email_subject_response,
             'email_body'=>$reply_response,
             'email_attachment'=>$filePath,
