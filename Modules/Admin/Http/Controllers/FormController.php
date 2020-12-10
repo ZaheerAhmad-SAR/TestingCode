@@ -140,6 +140,7 @@ class FormController extends Controller
             <input type="hidden" class="first_question_id" value="' . $ques_value->first_question_id . '">
             <input type="hidden" class="operator_calculate" value="' . $ques_value->operator_calculate . '">
             <input type="hidden" class="second_question_id" value="' . $ques_value->second_question_id . '">
+            <input type="hidden" class="custom_formula" value="' . $ques_value->custom_formula . '">
             <input type="hidden" class="make_decision" value="' . $ques_value->make_decision . '">
             <input type="hidden" class="certification_type" value="' . $ques_value->certification_type . '">
             <input type="hidden" class="calculate_with_costum_val" value="' . $ques_value->calculate_with_costum_val . '">';
@@ -329,6 +330,7 @@ class FormController extends Controller
             'make_decision' => $request->make_decision,
             'calculate_with_costum_val' => $request->calculate_with_costum_val,
             'second_question_id' => $request->second_question_id,
+            'custom_formula' => $request->custom_formula,
             'question_sort' => $request->question_sort,
             'question_text' => $request->question_text,
             'c_disk' => $request->c_disk,
@@ -365,6 +367,7 @@ class FormController extends Controller
         $questionObj->make_decision = $request->make_decision;
         $questionObj->calculate_with_costum_val = $request->calculate_with_costum_val;
         $questionObj->second_question_id = $request->second_question_id;
+        $questionObj->custom_formula = $request->custom_formula;
         $questionObj->question_sort = $request->question_sort;
         $questionObj->question_text = $request->question_text;
         $questionObj->c_disk = $request->c_disk;
@@ -563,6 +566,17 @@ class FormController extends Controller
         $options = '<option value="">select question for auto calculation</option>';
         foreach ($questions as $key => $value) {
             $options .= '<option value="' . $value->id . '">' . $value->question_text . '</option>';
+        }
+        return $options;
+    }
+    public function show_available_variable_names(Request $request, $id)
+    {
+        $section_ids = Section::where('phase_steps_id', $request->step_id)->pluck('id')->toArray();
+        $questions = Question::whereIn('section_id', $section_ids)->where('form_field_type_id', 1)->with('formFields')->get();
+        $options = '';
+        foreach ($questions as $question) {
+            $variableName = $question->formFields->variable_name;
+            $options .= '<div class="col-3"><code>[' . $variableName . ']</code></div>';
         }
         return $options;
     }

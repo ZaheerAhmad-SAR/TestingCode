@@ -6,7 +6,7 @@
             <div class="col-12 align-self-center">
                 <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
                     <div class="w-sm-100 mr-auto">
-                        <h4 class="mb-0">Validations ON Number</h4>
+                        <h4 class="mb-0"></h4>
                     </div>
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                         <li class="breadcrumb-item">Dashboard</li>
@@ -25,6 +25,27 @@
                     </div>
                 </div>
             @endif
+        </div>
+        <div class="card">
+            <div class="card-header  justify-content-between align-items-center">
+                <h4 class="card-title">Validations ON Number</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <button type="button" class="btn-primary" style="border-radius: 50%;height: 20px;width: 20px;border-color: black;"></button> Steps
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn-secondry" style="border-radius: 50%;height: 20px;width: 20px;border-color: black;"></button> Sections
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn-danger" style="border-radius: 50%;height: 20px;width: 20px;border-color: black;"></button> Questions
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn-info" style="border-radius: 50%;height: 20px;width: 20px;border-color: black;background-color:white;"></button> Options
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
@@ -76,13 +97,13 @@
                     <div class="card">
                         <div class="card-body" style="padding: 0;">
                             <div class="table-responsive">
-                                <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;">
+                                <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;background-color: #1E3D73;color: white;">
                                 <tbody>
                                     <tr>
                                         <td class="step_id" style="display: none;">{{$value->step_id}}</td>
                                         <td style="text-align: center;width: 15%">
                                           <div class="btn-group btn-group-sm" role="group">
-                                            <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" onclick="activate_checks('{{$value->step_id}}','sections_list_','{{$key}}','{{request('id')}}');" data-target=".row-{{$value->step_id}}-ac-{{$key}}" style="font-size: 20px; color: #1e3d73;"></i>
+                                            <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" onclick="activate_checks('{{$value->step_id}}','sections_list_','{{$key}}','{{request('id')}}');" data-target=".row-{{$value->step_id}}-ac-{{$key}}" style="font-size: 20px;"></i>
                                           </div>
                                         </td>
                                         <td colspan="5"> <input type="checkbox" name="activate_forms[{{$key}}][]" value="{{$value->step_id}}" class="activate_step_{{$value->step_id}}_{{$key}}" onclick="disabled_opposite('{{$value->step_id}}','deactivate_step_','{{$key}}','activate_step_')"> &nbsp;&nbsp;{{$value->step_name}}({{$value->formType->form_type }}- {{ $value->modility->modility_name}})</td>
@@ -118,13 +139,13 @@
             <div class="card">
                 <div class="card-body" style="padding: 0;">
                     <div class="table-responsive">
-                        <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;">
+                        <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;background-color: #1E3D73;color: white;">
                         <tbody>
                             <tr>
                                 <td class="step_id" style="display: none;">{{$value->step_id}}</td>
                                 <td style="text-align: center;width: 15%">
                                   <div class="btn-group btn-group-sm" role="group">
-                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-de-{{$key}}" onclick="deactivate_checks('{{$value->step_id}}','de_sections_list_','{{$key}}','{{request('id')}}');" style="font-size: 20px; color: #1e3d73;"></i>
+                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-de-{{$key}}" onclick="deactivate_checks('{{$value->step_id}}','de_sections_list_','{{$key}}','{{request('id')}}');" style="font-size: 20px;"></i>
                                   </div>
                                 </td>
                                 <td colspan="5"><input type="checkbox" name="deactivate_forms[{{$key}}][]" value="{{$value->step_id}}" class="deactivate_step_{{$value->step_id}}_{{$key}}" onclick="disabled_opposite('{{$value->step_id}}','activate_step_','{{$key}}','deactivate_step_')"> &nbsp;&nbsp;{{$value->step_name}}({{$value->formType->form_type }}- {{ $value->modility->modility_name}})</td>
@@ -147,6 +168,9 @@
             @endpush
             </div>
             <div class="modal-footer">
+                <a href="{{route('forms.index')}}">
+                    <button type="button" class="btn btn-outline-danger"><i class="far fa-arrow-alt-circle-left"></i> Back to Listing</button>
+                </a>
                 <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
             </div>
         </form>

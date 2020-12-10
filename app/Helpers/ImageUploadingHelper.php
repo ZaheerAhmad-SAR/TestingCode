@@ -55,7 +55,9 @@ class ImageUploadingHelper
     {
         $destinationPath = ImageUploadingHelper::real_public_path() . $destinationPath;
         $extension = $field->getClientOriginalExtension();
-        $fileName = Str::slug($newName, '-') . '-' . time() . '-' . rand(1, 999) . '.' . $extension;
+
+        $fileName = pathinfo($field->getClientOriginalName(), PATHINFO_FILENAME);
+        $fileName = Str::slug($newName, '-') . '-' . $fileName . '-' . time() . '-' . rand(1, 999) . '.' . $extension;
         $field->move($destinationPath, $fileName);
         return $fileName;
     }

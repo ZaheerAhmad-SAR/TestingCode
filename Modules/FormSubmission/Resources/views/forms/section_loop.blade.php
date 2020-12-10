@@ -63,7 +63,7 @@ if(null !== $formStatusObj){
     <div class="col-12 col-md-12">
         <div class="card">
             <div class="card-body">
-                <form name="form_master_{{ $stepIdStr }}" id="form_master_{{ $stepIdStr }}">
+                <form name="form_master_{{ $stepIdStr }}" id="form_master_{{ $stepIdStr }}" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="studyId" value="{{ $studyId }}" />
                     <input type="hidden" name="subjectId" value="{{ $subjectId }}" />
@@ -79,7 +79,7 @@ if(null !== $formStatusObj){
                     <input type="hidden" class="form_hid_editing_status_{{ $stepIdStr }}" name="form_editing_status_{{ $stepIdStr }}"
                         id="form_editing_status_{{ $stepIdStr }}" value="{{ $formStatus == 'resumable' ? 'yes' : 'no' }}" />
                 </form>
-                <form class="" method="POST" name="form_{{ $stepIdStr }}" id="form_{{ $stepIdStr }}">
+                <form class="" method="POST" name="form_{{ $stepIdStr }}" id="form_{{ $stepIdStr }}" enctype="multipart/form-data">
                         <div class="wizard wizard-white mb-4">
                             <ul class="nav nav-tabs d-block d-sm-flex">
                                 @php
@@ -209,7 +209,7 @@ if(null !== $formStatusObj){
                     echo "enableByClass('$stepClsStr');";
                 }
             } else {
-                echo "hideReasonField('$stepIdStr', '$stepClsStr', '$step->form_type_id', '".buildGradingStatusIdClsStr($formStatusObj->id)."');";
+                echo "hideReasonField('$stepIdStr', '$stepClsStr', '$step->form_type_id', '".buildGradingStatusIdClsStr($formStatusObj->id)."', 2);";
             }
             @endphp
         });
@@ -217,10 +217,10 @@ if(null !== $formStatusObj){
     </script>
 @endpush
 
-
 @php
 $stepValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidationForStep($step, false);
 $stepCalculatedFunctionsStr = Modules\Admin\Entities\PhaseSteps::generateCalculatedFieldsJSFunctions($step);
+$runStepCalculatedFunctionsStr = Modules\Admin\Entities\PhaseSteps::runCalculatedFieldsJSFunctions($step);
 @endphp
 @push('script')
     <script>
@@ -230,8 +230,12 @@ $stepCalculatedFunctionsStr = Modules\Admin\Entities\PhaseSteps::generateCalcula
             return isFormValid;
         }
 
-        function runCalculatedFieldsFunctions{{$stepIdStr}}(questionIdStr) {
-            {!! $stepCalculatedFunctionsStr !!}
+        {!! $stepCalculatedFunctionsStr !!}
+
+        function runCalculatedFieldsFunctions{{$stepIdStr}}(triggeringQuestionIdStr) {
+            if(isPreview === false){
+                {!! $runStepCalculatedFunctionsStr !!}
+            }
         }
     </script>
 @endpush

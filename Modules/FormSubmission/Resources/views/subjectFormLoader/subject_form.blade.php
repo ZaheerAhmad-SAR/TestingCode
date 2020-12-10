@@ -2,7 +2,7 @@
 @section('content')
     <input type="hidden" name="already_global_disabled" id="already_global_disabled" value="100000" />
     <input type="hidden" name="previous_alert_message" id="previous_alert_message" value="" />
-<input type="hidden" name="current_phase_id" id="current_phase_id" value="{{ request('phaseId', '-') }}" />
+    <input type="hidden" name="current_phase_id" id="current_phase_id" value="{{ request('phaseId', '-') }}" />
     <input type="hidden" name="current_step_id" id="current_step_id" value="{{ request('stepId', '-') }}" />
     <input type="hidden" name="current_section_id" id="current_section_id" value="{{ request('sectionId', '-') }}" />
     <input type="hidden" name="showAllQuestions" id="showAllQuestions" value="{{ request('showAllQuestions', 'no') }}" />
@@ -18,8 +18,7 @@
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                         <li class="breadcrumb-item"><a href="{{ url('dashboard') }}">Home</a></li>
                         <li class="breadcrumb-item"><a href="{{ url('studies') }}">Studies</a></li>
-                        <li class="breadcrumb-item active"><a href="{{ url('studies/' . $studyId) }}">Study Subjects</a>
-                        </li>
+                        <li class="breadcrumb-item active"><a href="{{ url('studies/' . $studyId) }}">Study Subjects</a></li>
                         <li class="breadcrumb-item active"><a href="javascript:void();">Form</a></li>
                     </ol>
                 </div>
@@ -68,7 +67,7 @@
                                         </tr>
                                         <tr>
                                             <th scope="row">Cohort</th>
-                                            <td>{{ \Modules\Admin\Entities\Study::getDiseaseCohort($study) }}</td>
+                                            <td>{{ \Modules\Admin\Entities\Subject::getDiseaseCohort($subject) }}</td>
                                         </tr>
                                     </table>
                                 </div>
@@ -208,6 +207,7 @@
                                                             if($activeStep && request('stepId', '-') == '-'){
                                                                 $badgeCls = 'badge-light';
                                                             }
+                                                            $skipLogicStepIdStr = buildSafeStr($step->step_id, 'skip_logic_');
 
                                                             $stepData = [
                                                                 'step' => $step,
@@ -216,6 +216,7 @@
                                                                 'stepIdStr' => $stepIdStr,
                                                                 'activeStep' => $activeStep,
                                                                 'badgeCls' => $badgeCls,
+                                                                'skipLogicStepIdStr' => $skipLogicStepIdStr,
                                                             ];
                                                             @endphp
                                                             @include('formsubmission::subjectFormLoader.qc_left_bar_nav', $stepData)

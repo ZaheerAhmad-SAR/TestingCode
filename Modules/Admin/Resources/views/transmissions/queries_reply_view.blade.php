@@ -21,11 +21,11 @@
                         </div>
 
                         <div class="form-group mb-3">
-                            <label for="emailaddress"><strong>Name</strong></label>
+                            <label for="emailaddress"><strong>Your Name</strong></label>
                             <input type="text" name="yourName" id="yourName" class="form-control">
                         </div>
                         <div class="form-group mb-3">
-                            <label for="emailaddress"><strong>Email</strong></label>
+                            <label for="emailaddress"><strong>Your Email</strong></label>
                             <input type="email" name="yourEmail" id="yourEmail" class="form-control">
                         </div>
                         <div class="form-group mb-3">

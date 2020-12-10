@@ -4,7 +4,8 @@
 
     @push('script')
         <script>
-            var isPreview = {{ ($isPreview === true)? 'true':'false' }};
+            var isPreview = {{ $isPreview === true ? 'true' : 'false' }};
+
             function showAlert(swalTitle, message, messageType) {
                 swal.fire({
                     title: swalTitle,
@@ -52,16 +53,24 @@
                 $("." + cls).prop('disabled', true);
             }
 
+            function disableLinkByClass(cls) {
+                $("." + cls).addClass('disable_link');
+            }
+
             function globalDisableByClass(stepCounter, studyClsStr, stepClsStr) {
                 //if (stepCounter < $('#already_global_disabled').val()) {
-                    $("." + studyClsStr).prop('disabled', true);
-                   // $('#already_global_disabled').val(stepCounter);
-                    //enableByClass(stepClsStr);
+                $("." + studyClsStr).prop('disabled', true);
+                // $('#already_global_disabled').val(stepCounter);
+                //enableByClass(stepClsStr);
                 //}
             }
 
             function enableByClass(cls) {
                 $("." + cls).prop('disabled', false);
+            }
+
+            function enableLinkByClass(cls) {
+                $("." + cls).removeClass('disable_link');
             }
 
             function submitForm(stepIdStr, formTypeId, formStatusIdStr) {
@@ -74,26 +83,35 @@
                 if (submitFormFlag) {
                     var term_cond = $('#terms_cond_' + stepIdStr).val();
                     var reason = $('#edit_reason_text_' + stepIdStr).val();
-                    var frmData = $("#form_master_" + stepIdStr).serialize() + '&' + $("#form_" + stepIdStr).serialize() + '&terms_cond_' + stepIdStr + '=' + term_cond + '&' + 'edit_reason_text=' + reason;
+                    var frmData = $("#form_master_" + stepIdStr).serialize() + '&' + $("#form_" + stepIdStr).serialize() +
+                        '&terms_cond_' + stepIdStr + '=' + term_cond + '&' + 'edit_reason_text=' + reason;
                     submitRequest(frmData, stepIdStr, formTypeId, formStatusIdStr);
                     reloadPage(2);
                 }
             }
 
-            function putResponseImage(stepIdStr, responseImage, formTypeId, formStatusIdStr){
-                if(formTypeId == 2){
-                    if($('.' + formStatusIdStr).length != 0){
-                        $('.' + formStatusIdStr).html('<img src="{{ url('/').'/images/' }}' + responseImage + '.png"/>');
-                    }else{
+            function putResponseImage(stepIdStr, responseImage, formTypeId, formStatusIdStr) {
+                if (formTypeId == 2) {
+                    if ($('.' + formStatusIdStr).length != 0) {
+                        $('.' + formStatusIdStr).html('<img src="{{ url('/') . '/images/' }}' + responseImage + '.png"/>');
+                    } else {
                         putImageOnStepLevel(stepIdStr, responseImage);
                     }
-                }else{
+                } else {
                     putImageOnStepLevel(stepIdStr, responseImage);
                 }
             }
 
-            function putImageOnStepLevel(stepIdStr, responseImage){
-                $('.img_step_status_' + stepIdStr+':first').html('<img src="{{ url('/').'/images/' }}' + responseImage + '.png"/>');
+            function putImageOnStepLevel(stepIdStr, responseImage) {
+                $('.img_step_status_' + stepIdStr + ':first').html('<img src="{{ url('/') . '/images/' }}' + responseImage + '.png"/>');
+            }
+
+            function putNotRequiredImage(skipLogicCls) {
+                $('.img_step_status_' + skipLogicCls).html('<img src="{{ url('/') . '/images/' }}not_required.png"/>');
+            }
+
+            function putRequiredImage(skipLogicCls) {
+                $('.img_step_status_' + skipLogicCls).html('<img src="{{ url('/') . '/images/' }}no_status.png"/>');
             }
 
             function submitRequest(frmData, stepIdStr, formTypeId, formStatusIdStr) {
@@ -114,7 +132,9 @@
                     type: 'POST',
                     data: frmData,
                     dataType: 'JSON',
-                    success: function(response) {
+                    success: function(responseData) {
+                        response = responseData.status;
+                        answer = responseData.answer;
                         putResponseImage(stepIdStr, response.formStatus, response.formTypeId, response.formStatusIdStr);
                     }
                 });
@@ -130,7 +150,8 @@
 
             function validateForm(stepIdStr) {
                 return new Promise(function(resolve, reject) {
-                    var frmData = $("#form_master_" + stepIdStr).serialize() + '&' + $("#form_" + stepIdStr).serialize();
+                    var frmData = $("#form_master_" + stepIdStr).serialize() + '&' + $("#form_" + stepIdStr)
+                        .serialize();
                     $.ajax({
                         url: "{{ route('subjectFormSubmission.validateSectionQuestionsForm') }}",
                         type: 'POST',
@@ -166,9 +187,9 @@
             }
 
             function validateAndSubmitForm_bk123445567(stepIdStr, formTypeId, formStatusIdStr) {
-                if(isFormDataLocked(stepIdStr) == false){
-                    if(canSubmitForm(formTypeId,stepIdStr)){
-                        if(needToPutFormInEditMode(stepIdStr) == false){
+                if (isFormDataLocked(stepIdStr) == false) {
+                    if (canSubmitForm(formTypeId, stepIdStr)) {
+                        if (needToPutFormInEditMode(stepIdStr) == false) {
                             const promise = validateForm(stepIdStr);
                             promise
                                 .then((data) => {
@@ -179,70 +200,74 @@
                                     console.log(error);
                                     handleValidationErrors(error);
                                 });
-                        }else{
+                        } else {
                             showPutFormInEditModeError();
                         }
-                    }else{
+                    } else {
                         showPermissionError();
                     }
-                }else{
+                } else {
                     showDataLockError();
                 }
 
             }
 
             function validateAndSubmitForm(stepIdStr, formTypeId, formStatusIdStr) {
-                if(isPreview === false){
-                    if(isFormDataLocked(stepIdStr) == false){
-                        if(canSubmitForm(formTypeId,stepIdStr)){
-                            if(needToPutFormInEditMode(stepIdStr) == false){
-                                if(window['validateStep' + stepIdStr]()){
+                if (isPreview === false) {
+                    if (isFormDataLocked(stepIdStr) == false) {
+                        if (canSubmitForm(formTypeId, stepIdStr)) {
+                            if (needToPutFormInEditMode(stepIdStr) == false) {
+                                if (window['validateStep' + stepIdStr]()) {
                                     submitForm(stepIdStr, formTypeId, formStatusIdStr);
                                 }
-                            }else{
+                            } else {
                                 showPutFormInEditModeError();
                             }
-                        }else{
+                        } else {
                             showPermissionError();
                         }
-                    }else{
+                    } else {
                         showDataLockError();
                     }
                 }
             }
 
-            function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, questionIdStr, formTypeId, field_name, fieldId) {
-                if(isPreview === false){
-                    if(isFormDataLocked(stepIdStr) == false){
-                        if(canSubmitForm(formTypeId,stepIdStr)){
-                            if(needToPutFormInEditMode(stepIdStr) == false){
+            function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, questionIdStr, formTypeId, field_name,
+                fieldId) {
+                if (isPreview === false) {
+                    if (isFormDataLocked(stepIdStr) == false) {
+                        if (canSubmitForm(formTypeId, stepIdStr)) {
+                            if (needToPutFormInEditMode(stepIdStr) == false) {
                                 checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
-                                if(window['validateQuestion' + questionIdStr](true, stepIdStr)){
-                                    if(eval("typeof " + window['showHideQuestion' + questionIdStr]) != 'undefined'){
+                                if (window['validateQuestion' + questionIdStr](true, stepIdStr)) {
+                                    if (eval("typeof " + window['showHideQuestion' + questionIdStr]) != 'undefined') {
                                         window['showHideQuestion' + questionIdStr](stepIdStr);
                                     }
-                                    window['runCalculatedFieldsFunctions' + stepIdStr](questionIdStr);
-                                    if(eval("typeof " + window['checkQuestionSkipLogic' + questionIdStr]) != 'undefined'){
+                                    if (eval("typeof " + window['runCalculatedFieldsFunctions' + stepIdStr]) !=
+                                        'undefined') {
+                                        window['runCalculatedFieldsFunctions' + stepIdStr](questionIdStr);
+                                    }
+                                    if (eval("typeof " + window['checkQuestionSkipLogic' + questionIdStr]) != 'undefined') {
                                         window['checkQuestionSkipLogic' + questionIdStr]();
                                     }
                                     submitFormField(stepIdStr, questionId, field_name, fieldId);
                                 }
-                            }else{
+                            } else {
                                 showPutFormInEditModeError();
                             }
-                        }else{
+                        } else {
                             showPermissionError();
                         }
-                    }else{
+                    } else {
                         showDataLockError();
                     }
                 }
             }
 
             function validateAndSubmitField_bk123(stepIdStr, sectionIdStr, questionId, formTypeId, field_name, fieldId) {
-                if(isFormDataLocked(stepIdStr) == false){
-                    if(canSubmitForm(formTypeId,stepIdStr)){
-                        if(needToPutFormInEditMode(stepIdStr) == false){
+                if (isFormDataLocked(stepIdStr) == false) {
+                    if (canSubmitForm(formTypeId, stepIdStr)) {
+                        if (needToPutFormInEditMode(stepIdStr) == false) {
                             checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
                             const validationPromise = validateFormField(stepIdStr, questionId, field_name, fieldId);
                             validationPromise
@@ -258,13 +283,13 @@
                                     console.log(error)
                                     handleValidationErrors(error);
                                 });
-                        }else{
+                        } else {
                             showPutFormInEditModeError();
                         }
-                    }else{
+                    } else {
                         showPermissionError();
                     }
-                }else{
+                } else {
                     showDataLockError();
                 }
             }
@@ -284,7 +309,7 @@
                     showAlert('Alert',
                         'Please acknowledge the truthfulness and correctness of information being submitting in this form!',
                         'error'
-                        );
+                    );
                     return false;
                 }
             }
@@ -310,20 +335,26 @@
             }
 
             function submitFormField(stepIdStr, questionId, field_name, fieldId) {
-                var submitFormFlag = true;
-                if (submitFormFlag) {
-                    var frmData = $("#form_master_" + stepIdStr).serialize();
-                    var field_val;
-                    field_val = getFormFieldValue(stepIdStr, field_name, fieldId);
-                    frmData = frmData + '&' + field_name + '=' + field_val + '&' + 'questionId=' + questionId;
-                    submitFieldRequest(frmData, stepIdStr, '', '');
-                }
+                var frmData = $("#form_master_" + stepIdStr).serialize();
+                var field_val;
+                field_val = getFormFieldValue(stepIdStr, field_name, fieldId);
+                frmData = frmData + '&' + field_name + '=' + field_val + '&' + 'questionId=' + questionId;
+                submitFieldRequest(frmData, stepIdStr);
+
             }
 
             function getFormFieldValue(stepIdStr, field_name, fieldId) {
-                var field_val;
+                var field_val = '';
                 var checkedCheckBoxes = [];
-                if ($('#form_' + stepIdStr + ' #' + fieldId).is("textarea")) {
+
+                if ($('#' + fieldId + '_' + stepIdStr).prop('type') == "file") {
+                    var file = document.getElementById(fieldId + '_' + stepIdStr);
+                    if(file.files.length == 0 ){
+                        field_val = '';
+                    }else{
+                        field_val = 'has files';
+                    }
+                }else if ($('#form_' + stepIdStr + ' #' + fieldId).is("textarea")) {
                     field_val = $('#form_' + stepIdStr + ' #' + fieldId).val();
                 } else if ($('#form_' + stepIdStr + ' #' + fieldId).is("select")) {
                     field_val = $('#form_' + stepIdStr + ' #' + fieldId).find(":selected").val();
@@ -343,29 +374,29 @@
             }
 
             function openFormForEditing(stepIdStr, stepClsStr, formTypeId, formStatusIdStr) {
-                if(isFormDataLocked(stepIdStr) == false){
-                    if(canSubmitForm(formTypeId,stepIdStr)){
-                            var frmData = $("#form_master_" + stepIdStr).serialize();
-                            frmData = frmData + '&' + 'open_form_to_edit=1';
-                            $.ajax({
-                                url: "{{ route('SubjectFormSubmission.openSubjectFormToEdit') }}",
-                                type: 'POST',
-                                data: frmData,
-                                success: function(response) {
-                                    showReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr);
-                                    reloadPage(0);
-                                }
-                            });
-                    }else{
+                if (isFormDataLocked(stepIdStr) == false) {
+                    if (canSubmitForm(formTypeId, stepIdStr)) {
+                        var frmData = $("#form_master_" + stepIdStr).serialize();
+                        frmData = frmData + '&' + 'open_form_to_edit=1';
+                        $.ajax({
+                            url: "{{ route('SubjectFormSubmission.openSubjectFormToEdit') }}",
+                            type: 'POST',
+                            data: frmData,
+                            success: function(response) {
+                                showReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr);
+                                reloadPage(0);
+                            }
+                        });
+                    } else {
                         showPermissionError();
                     }
-                }else{
+                } else {
                     showDataLockError();
                 }
             }
 
             function lockFormData(stepIdStr) {
-                if(canLockFormData() == true){
+                if (canLockFormData() == true) {
                     var frmData = $("#form_master_" + stepIdStr).serialize();
                     $.ajax({
                         url: "{{ route('SubjectFormSubmission.lockFormData') }}",
@@ -378,13 +409,13 @@
                             showAlert('Data lock status', 'Data locked successfully!', 'info');
                         }
                     });
-                }else{
+                } else {
                     showAlert('Data lock status', 'You can not lock data!', 'error');
                 }
             }
 
             function unlockFormData(stepIdStr) {
-                if(canLockFormData() == true){
+                if (canLockFormData() == true) {
                     var frmData = $("#form_master_" + stepIdStr).serialize();
                     $.ajax({
                         url: "{{ route('SubjectFormSubmission.unlockFormData') }}",
@@ -397,7 +428,7 @@
                             showAlert('Data lock status', 'Data unlocked successfully!', 'info');
                         }
                     });
-                }else{
+                } else {
                     showAlert('Data lock status', 'You can not unlock data!', 'error');
                 }
             }
@@ -411,62 +442,68 @@
                 putResponseImage(stepIdStr, 'resumable', formTypeId, formStatusIdStr);
             }
 
-            function hideReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr) {
-                $("#edit_form_div_" + stepIdStr).hide(500);
-                $('#edit_reason_text_' + stepIdStr).prop('required', false);
-                $('#edit_reason_text_' + stepIdStr).val('');
-                disableByClass(stepClsStr);
-                $('.form_hid_editing_status_' + stepIdStr).val('no');
-                $('.nav-link').removeClass('active');
-                $('.first_navlink_' + stepIdStr).addClass('active');
-                $('.tab-pane_' + stepIdStr).removeClass('active show');
-                $('.first_tab_' + stepIdStr).addClass('active show');
-                putResponseImage(stepIdStr, 'complete', formTypeId, formStatusIdStr);
+            function hideReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr, waitSeconds) {
+                startWait();
+                var seconds = waitSeconds * 1000;
+                setTimeout(function() {
+                    $("#edit_form_div_" + stepIdStr).hide(500);
+                    $('#edit_reason_text_' + stepIdStr).prop('required', false);
+                    $('#edit_reason_text_' + stepIdStr).val('');
+                    disableByClass(stepClsStr);
+                    $('.form_hid_editing_status_' + stepIdStr).val('no');
+                    $('.nav-link').removeClass('active');
+                    $('.first_navlink_' + stepIdStr).addClass('active');
+                    $('.tab-pane_' + stepIdStr).removeClass('active show');
+                    $('.first_tab_' + stepIdStr).addClass('active show');
+                    putResponseImage(stepIdStr, 'complete', formTypeId, formStatusIdStr);
+                    endWait();
+                }, seconds);
             }
 
-            function startWait(){
-                $("#waitModal").modal();
+            function startWait() {
+                $("#waitModal").modal('show');
             }
 
-            function wait(){
-                while(start_wait == 'yes'){
+            function wait() {
+                while (start_wait == 'yes') {
                     console.log('wait');
                 }
             }
 
-            function endWait(){
-                start_wait = 'no';
-                console.log('endWait');
+            function endWait() {
+                $("#waitModal").modal('hide');
             }
 
-            function openAssignPhasesToSubjectPopup(studyId, subjectId){
+            function openAssignPhasesToSubjectPopup(studyId, subjectId) {
                 $("#assignPhasesToSubjectPopup").modal('show');
                 loadAssignPhaseToSubjectForm(studyId, subjectId)
             }
-            function loadAssignPhaseToSubjectForm(studyId, subjectId){
+
+            function loadAssignPhaseToSubjectForm(studyId, subjectId) {
                 $.ajax({
-                    url: "{{route('assignPhaseToSubject.loadAssignPhaseToSubjectForm')}}",
+                    url: "{{ route('assignPhaseToSubject.loadAssignPhaseToSubjectForm') }}",
                     type: 'POST',
                     data: {
                         "_token": "{{ csrf_token() }}",
                         'subjectId': subjectId,
                         'studyId': studyId
                     },
-                    success: function(response){
+                    success: function(response) {
                         $('#assignPhaseToSubjectMainDiv').empty();
                         $("#assignPhaseToSubjectMainDiv").html(response);
                     }
                 });
             }
-            function submitAssignPhaseToSubjectForm(e){
+
+            function submitAssignPhaseToSubjectForm(e) {
                 e.preventDefault();
                 $("#assignPhasesToSubjectPopup").modal('hide');
                 startWait();
                 $.ajax({
-                    url: "{{route('assignPhaseToSubject.submitAssignPhaseToSubjectForm')}}",
+                    url: "{{ route('assignPhaseToSubject.submitAssignPhaseToSubjectForm') }}",
                     type: 'POST',
-                    data: $( "#assignPhaseToSubjectForm" ).serialize(),
-                    success: function(response){
+                    data: $("#assignPhaseToSubjectForm").serialize(),
+                    success: function(response) {
                         $('#assignPhaseToSubjectMainDiv').empty();
                         reloadPage(0);
                     }
@@ -474,7 +511,7 @@
 
             }
 
-            function unAssignPhaseToSubject(subjectId, phaseId){
+            function unAssignPhaseToSubject(subjectId, phaseId) {
                 $.confirm({
                     columnClass: 'col-md-6',
                     title: 'Confirm to deactivate visit!',
@@ -498,117 +535,120 @@
                             }
                         }
                     }
-            });
+                });
 
             }
 
-            function unAssignPhaseToSubjectAjax(subjectId, phaseId){
+            function unAssignPhaseToSubjectAjax(subjectId, phaseId) {
                 startWait();
                 $.ajax({
-                    url: "{{route('assignPhaseToSubject.unAssignPhaseToSubject')}}",
+                    url: "{{ route('assignPhaseToSubject.unAssignPhaseToSubject') }}",
                     type: 'POST',
                     data: {
                         "_token": "{{ csrf_token() }}",
                         'subjectId': subjectId,
                         'phaseId': phaseId
                     },
-                    success: function(response){
+                    success: function(response) {
                         reloadPage(0);
                     }
                 });
             }
-            function isFormDataLocked(stepIdStr){
+
+            function isFormDataLocked(stepIdStr) {
                 var isFormDataLocked = $('#form_master_' + stepIdStr + ' input[name="isFormDataLocked"]').val();
-                if(isFormDataLocked == 1){
+                if (isFormDataLocked == 1) {
                     return true;
-                }else{
+                } else {
                     return false;
                 }
             }
 
-            function canLockFormData(){
-                var canManageData = {{ (canManageData(['create', 'store', 'edit', 'update']))? 'true':'false' }};
+            function canLockFormData() {
+                var canManageData = {{ canManageData(['create', 'store', 'edit', 'update']) ? 'true' : 'false' }};
                 userCanLockFormData = false;
-                if(canManageData == true){
+                if (canManageData == true) {
                     userCanLockFormData = true;
                 }
                 return userCanLockFormData;
             }
-            function canSubmitForm(formTypeId, stepIdStr){
+
+            function canSubmitForm(formTypeId, stepIdStr) {
 
                 var numberOfGraders = $('#form_master_' + stepIdStr + ' input[name="numberOfGraders"]').val();;
-                var numberOfAlreadyGradedPersons = $('#form_master_' + stepIdStr + ' input[name="numberOfAlreadyGradedPersons"]').val();;
+                var numberOfAlreadyGradedPersons = $('#form_master_' + stepIdStr + ' input[name="numberOfAlreadyGradedPersons"]').val();
 
-                var canQualityControl = {{ (canQualityControl(['create', 'store', 'edit', 'update']))? 'true':'false' }};
-                var canGrading = {{ (canGrading(['create', 'store', 'edit', 'update']))? 'true':'false' }};
-                var canAdjudication = {{ (canAdjudication(['create', 'store', 'edit', 'update']))? 'true':'false' }};
+                var canQualityControl = {{ canQualityControl(['create', 'store', 'edit', 'update']) ? 'true' : 'false' }};
+                var canGrading = {{ canGrading(['create', 'store', 'edit', 'update']) ? 'true' : 'false' }};
+                var canAdjudication = {{ canAdjudication(['create', 'store', 'edit', 'update']) ? 'true' : 'false' }};
                 var canSubmit = false;
                 var formStatus = $('#form_master_' + stepIdStr + ' input[name="formStatus"]').val();
                 var formFilledByUserId = $('#form_master_' + stepIdStr + ' input[name="formFilledByUserId"]').val();
                 var current_user_id = '{{ auth()->user()->id }}';
 
-                if(
+                if (
                     (formTypeId == 1) &&
                     (canQualityControl == true)
-                ){
-                    if((formStatus == 'no_status') && (formFilledByUserId == 'no-user-id')){
+                ) {
+                    if ((formStatus == 'no_status') && (formFilledByUserId == 'no-user-id')) {
                         canSubmit = true;
                     }
-                    if((formStatus != 'no_status') && (formFilledByUserId == current_user_id)){
+                    if ((formStatus != 'no_status') && (formFilledByUserId == current_user_id)) {
                         canSubmit = true;
                     }
-                    if((formStatus == 'complete') && (isFormInEditMode == 'no')){
+                    if ((formStatus == 'complete') && (isFormInEditMode == 'no')) {
                         canSubmit = false;
                     }
                 }
 
-                if(
+                if (
                     (formTypeId == 2) &&
                     (canGrading == true)
-                ){
-                    if((formStatus == 'no_status') && (formFilledByUserId == 'no-user-id')){
+                ) {
+                    if ((formStatus == 'no_status') && (formFilledByUserId == 'no-user-id')) {
                         canSubmit = true;
                     }
-                    if((formStatus != 'no_status') && (formFilledByUserId == current_user_id)){
+                    if ((formStatus != 'no_status') && (formFilledByUserId == current_user_id)) {
                         canSubmit = true;
                     }
                 }
 
-                if(
+                if (
                     (numberOfGraders == numberOfAlreadyGradedPersons) &&
                     (formFilledByUserId != current_user_id)
-                ){
+                ) {
                     canSubmit = false;
                 }
 
                 return canSubmit;
             }
 
-            function needToPutFormInEditMode(stepIdStr){
+            function needToPutFormInEditMode(stepIdStr) {
                 var putFormInEditMode = false;
                 var formStatus = $('#form_master_' + stepIdStr + ' input[name="formStatus"]').val();
                 var isFormInEditMode = $('#form_editing_status_' + stepIdStr).val();
 
-                if((formStatus == 'complete') && (isFormInEditMode == 'no')){
+                if ((formStatus == 'complete') && (isFormInEditMode == 'no')) {
                     putFormInEditMode = true;
                 }
                 return putFormInEditMode;
             }
 
-            function showPermissionError(){
+            function showPermissionError() {
                 showAlert('Alert', 'You do not have permission to submit form', 'error');
             }
 
-            function showPutFormInEditModeError(){
+            function showPutFormInEditModeError() {
                 showAlert('Alert', 'Please put form in edit mode first', 'error');
             }
 
-            function showDataLockError(){
+            function showDataLockError() {
                 showAlert('Data lock status', 'Form data is locked, you can not change data!', 'error');
             }
 
-            function calculateField(firstFieldId, secondFieldId, operator, make_decision, customVal, stepIdStr, sectionIdStr, questionId, questionIdStr, form_type_id, field_name, fieldId) {
-                if(isPreview === false){
+            function calculateField(firstFieldId, secondFieldId, operator, make_decision, customVal, stepIdStr,
+                sectionIdStr, questionId, questionIdStr, form_type_id, field_name, fieldId) {
+                if (isPreview === false) {
                     var firstVal = 0;
                     var secondVal = 0;
                     customVal = Number(customVal);
@@ -617,44 +657,45 @@
                     var firstFieldVal = getFormFieldValue(stepIdStr, firstFieldName, firstFieldId);
                     firstVal = Number(firstFieldVal);
 
-                    if(make_decision == 'question'){
+                    if (make_decision == 'question') {
                         var secondFieldName = $("#" + secondFieldId).attr("name");
                         var secondFieldVal = getFormFieldValue(stepIdStr, secondFieldName, secondFieldId);
                         secondVal = Number(secondFieldVal);
                     }
 
-                    if(make_decision == 'custom'){
+                    if (make_decision == 'custom') {
                         secondVal = customVal;
                     }
 
-                        var answer = 0;
-                        if(operator == '+'){
-                            answer = firstVal + secondVal;
-                        }else if(operator == '-'){
-                            answer = firstVal - secondVal;
-                        }else if(operator == '*'){
-                            answer = firstVal * secondVal;
-                        }else if(operator == '/'){
-                            if(firstVal > 0 && secondVal > 0){
-                                answer = firstVal / secondVal;
-                            }else{
-                                $('#' + fieldId).val(0);
-                            }
+                    var answer = 0;
+                    if (operator == '+') {
+                        answer = firstVal + secondVal;
+                    } else if (operator == '-') {
+                        answer = firstVal - secondVal;
+                    } else if (operator == '*') {
+                        answer = firstVal * secondVal;
+                    } else if (operator == '/') {
+                        if (firstVal > 0 && secondVal > 0) {
+                            answer = firstVal / secondVal;
+                        } else {
+                            $('#' + fieldId).val(0);
                         }
+                    }
 
-                        $('#' + fieldId).val(answer);
-                        validateAndSubmitField(stepIdStr, sectionIdStr, questionId, questionIdStr, form_type_id, field_name, fieldId);
+                    $('#form_' + stepIdStr + ' #' + fieldId).val(answer);
+                    validateAndSubmitField(stepIdStr, sectionIdStr, questionId, questionIdStr, form_type_id, field_name,
+                        fieldId);
                 }
             }
 
-            function updateCurrentPhaseId(phaseId){
+            function updateCurrentPhaseId(phaseId) {
                 $('#current_phase_id').val(phaseId);
                 $('#current_step_id').val('-');
                 $('#current_section_id').val('-');
                 changeUrl();
             }
 
-            function updateCurrentStepId(phaseId, stepId, isAdjudication){
+            function updateCurrentStepId(phaseId, stepId, isAdjudication) {
                 $('#current_phase_id').val(phaseId);
                 $('#current_step_id').val(stepId);
                 $('#current_section_id').val('-');
@@ -662,7 +703,7 @@
                 changeUrl();
             }
 
-            function updateCurrentSectionId(phaseId, stepId, sectionId){
+            function updateCurrentSectionId(phaseId, stepId, sectionId) {
                 $('#current_phase_id').val(phaseId);
                 $('#current_step_id').val(stepId);
                 $('#current_section_id').val(sectionId);
@@ -670,7 +711,7 @@
             }
 
             function changeUrl() {
-                if(isPreview === false){
+                if (isPreview === false) {
                     var phaseId = $('#current_phase_id').val();
                     var stepId = $('#current_step_id').val();
                     var sectionId = $('#current_section_id').val();
@@ -678,9 +719,13 @@
                     var isAdjudication = $('#isAdjudication').val();
 
                     var title = 'new title';
-                    var url = "{{ url('/') }}/subjectFormLoader/{{ $studyId }}/{{ $subjectId }}/" + phaseId + '/' + stepId + '/' + sectionId + '/' + isAdjudication + '/' + showAllQuestions;
-                    if (typeof (history.pushState) != "undefined") {
-                        var obj = { Title: title, Url: url };
+                    var url = "{{ url('/') }}/subjectFormLoader/{{ $studyId }}/{{ $subjectId }}/" + phaseId + '/' + stepId +
+                        '/' + sectionId + '/' + isAdjudication + '/' + showAllQuestions;
+                    if (typeof(history.pushState) != "undefined") {
+                        var obj = {
+                            Title: title,
+                            Url: url
+                        };
                         history.pushState(obj, obj.Title, obj.Url);
                     } else {
                         alert("Browser does not support HTML5.");
@@ -688,13 +733,77 @@
                 }
             }
 
+            function validateAndUploadFiles(stepIdStr, sectionIdStr, questionId, questionIdStr, formTypeId, field_name,
+                fieldId) {
+                if (isPreview === false) {
+                    if (isFormDataLocked(stepIdStr) == false) {
+                        if (canSubmitForm(formTypeId, stepIdStr)) {
+                            if (needToPutFormInEditMode(stepIdStr) == false) {
+                                checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
+                                if (window['validateQuestion' + questionIdStr](true, stepIdStr)) {
+                                    submitFormFileField(stepIdStr, questionId, field_name, fieldId);
+                                }
+                            } else {
+                                showPutFormInEditModeError();
+                            }
+                        } else {
+                            showPermissionError();
+                        }
+                    } else {
+                        showDataLockError();
+                    }
+                }
+            }
+
+            function submitFormFileField(stepIdStr, questionId, field_name, fieldId) {
+                var frmData = new FormData(document.getElementById("form_master_" + stepIdStr));
+                var field_val;
+                frmData.append('questionId', questionId);
+                var fileField = document.getElementById(fieldId + '_' + stepIdStr);
+                let TotalFiles = fileField.files.length;
+                for (let i = 0; i < TotalFiles; i++) {
+                    frmData.append(field_name + i, fileField.files[i]);
+                }
+                frmData.append('TotalFiles', TotalFiles);
+                submitFileFieldRequest(frmData, stepIdStr, fieldId);
+            }
+
+            function submitFileFieldRequest(frmData, stepIdStr, fieldId){
+                var url = "{{ url('/') }}/";
+                $.ajax({
+                    type:'POST',
+                    url: "{{ route('SubjectFormSubmission.submitStudyPhaseStepQuestion') }}",
+                    data: frmData,
+                    cache:false,
+                    contentType: false,
+                    processData: false,
+                    dataType: 'json',
+                    success: (responseData) => {
+                        response = responseData.status;
+                        answer = responseData.answer;
+                        putResponseImage(stepIdStr, response.formStatus, response.formTypeId, response.formStatusIdStr);
+                        var answerArray = answer.split('<<|!|>>');
+                        var linkStr = '';
+                        for (i = 0; i < answerArray.length; i++) {
+                            if(answerArray[i] != ''){
+                                linkStr += '<a href="' + url + answerArray[i] + '" target="_blank">' + url + answerArray[i] + '</a><br>';
+                            }
+                        }
+                        $('#file_upload_files_div_' + fieldId).html(linkStr);
+                    },
+                    error: function(response){
+                        console.log(response);
+                    }
+                });
+            }
+
             function reloadPage(waitSeconds) {
                 startWait();
                 var seconds = waitSeconds * 1000;
                 setTimeout(function() {
-                   location.reload();
-               }, seconds);
+                    location.reload();
+                }, seconds);
             }
-            //disableByClass('{{ $studyClsStr }}');
+
         </script>
     @endpush
