@@ -20,7 +20,7 @@
         <!-- END: Breadcrumbs-->
         <div class="card">
             <div class="card-body">
-                <form action="" method="get" class="filter-form">
+                <form action="{{route('studies.show',session('current_study'))}}" method="get" class="filter-form">
                     @csrf
                     <div class="form-row" style="padding: 10px;">
                         <div class="form-group col-md-4">
@@ -28,7 +28,7 @@
                         </div>
                          <div class="form-group col-md-4">
                             <select name="site_id" class="form-control">
-                                <option value="">Select Subject Site</option>
+                                <option value="">Select Site</option>
                                 @if(!empty($site_study))
                                     @foreach($site_study as $site)
                                         <option class="dropdown" value="{{$site->id}}">{{$site->site_name}}</option>
@@ -42,7 +42,7 @@
                         <div class="form-group col-md-4">
                             {{-- <input type="text" name="disease_cohort" class="form-control" placeholder="Filter Via Disease Cohort"> --}}
                             <select name="disease_cohort" class="form-control">
-                                <option value="">Select Subject Disease Cohort</option>
+                                <option value="">Select Disease Cohort</option>
                                 @if(!empty($diseaseCohort))
                                     {!! $diseaseCohort !!}
                                     @foreach($diseaseCohort as $disease)
@@ -77,6 +77,11 @@
                                 <i class="fa fa-plus"></i> Add Subject
                             </button>
                         @endif
+                         <a href="{{route('skiplogic.sectionskiponcohort',session('current_study'))}}" target="_blank">
+                            <button class="btn btn-primary">
+                                <i class="fa fa-plus"></i> Skip Cohort
+                            </button>
+                        </a>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive list">

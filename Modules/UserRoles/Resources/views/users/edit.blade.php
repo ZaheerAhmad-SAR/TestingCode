@@ -21,13 +21,7 @@
         <!-- START: Card Data-->
         <div class="row">
             <div class="col-12 col-sm-12 mt-3">
-                @if(session()->has('message'))
-                    <div class="col-lg-12 success-alert">
-                        <div class="alert alert-primary success-msg" role="alert">
-                            {{ session()->get('message') }}
-                        </div>
-                    </div>
-                @endif
+                {{ showMessage() }}
                 <div class="card">
                     <form action="{{route('users.update',$user->id)}}" enctype="multipart/form-data" method="POST" id="user-store-form-3">
                         @csrf

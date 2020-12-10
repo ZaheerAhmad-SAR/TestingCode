@@ -22,6 +22,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('SubjectFormSubmission/openSubjectFormToEdit', 'SubjectFormSubmissionController@openSubjectFormToEdit')->name('SubjectFormSubmission.openSubjectFormToEdit');
     Route::post('SubjectFormSubmission/lockFormData', 'SubjectFormSubmissionController@lockFormData')->name('SubjectFormSubmission.lockFormData');
     Route::post('SubjectFormSubmission/unlockFormData', 'SubjectFormSubmissionController@unlockFormData')->name('SubjectFormSubmission.unlockFormData');
+    Route::post('SubjectFormSubmission/deleteFormUploadFile', 'SubjectFormSubmissionController@deleteFormUploadFile')->name('SubjectFormSubmission.deleteFormUploadFile');
 
     Route::post('SubjectAdjudicationFormSubmission/submitAdjudicationFormStudyPhaseStepQuestion', 'SubjectAdjudicationFormSubmissionController@submitAdjudicationFormQuestion')->name('SubjectAdjudicationFormSubmission.submitAdjudicationFormStudyPhaseStepQuestion');
     Route::post('SubjectAdjudicationFormSubmission/submitStudyPhaseStepQuestionAdjudicationForm', 'SubjectAdjudicationFormSubmissionController@submitAdjudicationForm')->name('SubjectAdjudicationFormSubmission.submitStudyPhaseStepQuestionAdjudicationForm');

@@ -35,12 +35,7 @@ class UserTableSeeder extends Seeder
                 'password'  =>  Hash::make('at@m|c_en@rgy1272'),
                 'created_by' => ''
             ]);
-            UserRole::create([
-                'id'    => Str::uuid(),
-                'role_id'   =>  $role_id,
-                'user_id'   =>  $user_id,
-                'user_type' => '2'
-            ]);
+            UserRole::createUserRole($user_id, $role_id, '', 2);
         }
     }
 }

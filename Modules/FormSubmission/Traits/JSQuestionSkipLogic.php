@@ -216,7 +216,9 @@ trait JSQuestionSkipLogic
                     if(deactivate_forms.length > 0){
                         $.each(deactivate_forms, function( index, value ) {
                             if(value != \'\'){
+                                putNotRequiredImage(value);
                                 disableByClass(value);
+                                disableLinkByClass(value);
                             }
                         });
                     }
@@ -248,7 +250,9 @@ trait JSQuestionSkipLogic
                     if(activate_forms.length > 0){
                         $.each(activate_forms, function( index, value ) {
                             if(value != \'\'){
+                                putRequiredImage(value);
                                 enableByClass(value);
+                                enableLinkByClass(value);
                             }
                         });
                     }
