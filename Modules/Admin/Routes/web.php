@@ -92,9 +92,14 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('skiplogic/options_for_skip_logic_deactivate/{id}', 'SkipLogicController@options_skip_logic_deactivate')->name('skiplogic.optionsSkipdeactivate');
     Route::get('skiplogic/options_for_skip_logic_activate/{id}', 'SkipLogicController@options_skip_logic_activate')->name('skiplogic.optionsSkipactivate');
     Route::post('skiplogic/steps_to_skip', 'SkipLogicController@getSteps_toskip')->name('skiplogic.get_steps_skip_logic');
+   
+
     Route::get('skiplogic/skip_logic/{id}', 'SkipLogicController@skip_question_on_click')->name('skiplogic.skipLogic');
     Route::get('skiplogic/text_skip_logic/{id}', 'SkipLogicController@skip_question_on_text')->name('skiplogic.textskipLogic');
     Route::post('skiplogic/add_skip_logic', 'SkipLogicController@add_skipLogic')->name('skiplogic.apply_skip_logic');
+    // skip logic on cohort
+    Route::get('skiplogic/skip_logic_cohort/{id}', 'SkipLogicController@skip_logic_cohort')->name('skiplogic.sectionskiponcohort');
+     Route::post('skiplogic/skip_via_cohort', 'SkipLogicController@git_steps_for_checks_deactivate_cohort')->name('skiplogic.get_steps_skip_logic_deactivate_via_cohort');
     // skip logic
     // routes for skip logic on Questions with type Number
     // Start
