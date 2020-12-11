@@ -197,10 +197,11 @@
                                         <div class="panel-body">
                                             <div class="row" style="margin-top: 10px;">
                                                 <div class="col-md-6">
+                                                    <p class="space_msg" style="font-size: 9px;color: red;"></p>
                                                     <div class="{!! ($errors->has('site_code')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                                         <label class="required">Site Code</label>
-                                                        <input autofocus type="input" class="form-control"
+                                                        <input autofocus type="input" class="form-control variable_name_ques"
                                                                name="site_code"  id="site_code"
                                                                value="{{old('site_code')}}"  required onchange="siteCodeValue(this);"/>
                                                         @error('site_code')
@@ -1565,7 +1566,7 @@
                                 tId=setTimeout(function(){
                                     $(".success-alert-sec").slideUp('slow');
                                 }, 3000);
-                                $("#siteInfoForm :input").prop("disabled", true);
+                                //$("#siteInfoForm :input").prop("disabled", true);
                                 $('.addTabs').attr("data-toggle","tab"); // Add data-toggle tab after inserts
                                 // $('#primaryInvestigatorForm').find($('input[name="site_id"]').val(results.site_id));
                                 $('#site_id').val(results.site_id);
@@ -1578,6 +1579,18 @@
                     });
                 });
 
+
+                $('.variable_name_ques').keydown(function(e) {
+                    if (e.keyCode == 32) {
+                        $('.variable_name_ques').css('border', '1px solid red');
+                        $('.space_msg').html('Space Not Allowed!!')
+                        e.preventDefault();
+                    } else {
+                        $('.variable_name_ques').css('border', '');
+                        $('.space_msg').html('');
+                        return true;
+                    }
+                })
 
                 function  siteCodeValue(data)
                 {
@@ -1748,6 +1761,10 @@
                         }
                     });
 
+                });
+
+                $('#siteModal').on('hidden.bs.modal', function () {
+                    location.reload();
                 });
 
                 //  Coordinator Delete function

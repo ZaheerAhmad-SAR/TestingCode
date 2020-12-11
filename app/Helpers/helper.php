@@ -29,6 +29,7 @@ use Modules\Admin\Entities\CrushFtpTransmission;
 use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\RolePermission;
 use Illuminate\Support\Facades\Route;
+use Modules\Admin\Entities\RoleStudyUser;
 
 function hasrole($role)
 {
@@ -110,7 +111,7 @@ function hasPermission($user, $routeName)
     }
 }
 
-function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
+function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $systemUser = true)
 {
 
     $newData = [];
@@ -189,7 +190,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             $auditMessage = Auth::user()->name . ' updated site ' . $eventData->site_name . '.';
         }
 
-        /////////////////////////////// Primary Investigator /////////////////////////////////////////////
+        /////////////////////////////// Primary Investigator ////////////////////////////////////
     } else if ($eventSection == 'Primary Investigator') {
         // get event data
         $eventData = PrimaryInvestigator::find($eventId);
@@ -197,6 +198,10 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         $auditMessage = Auth::user()->name . ' added primary investigator ' . $eventData->first_name . '.';
         // set audit url
         $auditUrl = url('sites');
+
+        // get site 
+        $getSite = Site::find($eventData->site_id);
+
         // store data in event array
         $newData = array(
             'first_name' => $eventData->first_name,
@@ -204,6 +209,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             'last_name' => $eventData->last_name,
             'email' => $eventData->email,
             'phone' => $eventData->phone,
+            'site' => $getSite->site_name,
             'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
             'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
         );
@@ -216,6 +222,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
                 'last_name' => $previousData->last_name,
                 'email' => $previousData->email,
                 'phone' => $previousData->phone,
+                'site' => $getSite->site_name,
                 'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
                 'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
             );
@@ -232,6 +239,10 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         $auditMessage = Auth::user()->name . ' added coordinator ' . $eventData->first_name . '.';
         // set audit url
         $auditUrl = url('sites');
+
+        // get site 
+        $getSite = Site::find($eventData->site_id);
+
         // store data in event array
         $newData = array(
             'first_name' => $eventData->first_name,
@@ -239,6 +250,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             'last_name' => $eventData->last_name,
             'email' => $eventData->email,
             'phone' => $eventData->phone,
+            'site' => $getSite->site_name,
             'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
             'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
         );
@@ -250,6 +262,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
                 'last_name' => $previousData->last_name,
                 'email' => $previousData->email,
                 'phone' => $previousData->phone,
+                'site' => $getSite->site_name,
                 'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
                 'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
             );
@@ -266,6 +279,10 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         $auditMessage = Auth::user()->name . ' added photographer ' . $eventData->first_name . '.';
         // set audit url
         $auditUrl = url('sites');
+
+        // get site 
+        $getSite = Site::find($eventData->site_id);
+
         // store data in event array
         $newData = array(
             'first_name' => $eventData->first_name,
@@ -273,6 +290,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             'last_name' => $eventData->last_name,
             'email' => $eventData->email,
             'phone' => $eventData->phone,
+            'site' => $getSite->site_name,
             'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
             'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
         );
@@ -285,6 +303,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
                 'last_name' => $previousData->last_name,
                 'email' => $previousData->email,
                 'phone' => $previousData->phone,
+                'site' => $getSite->site_name,
                 'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
                 'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
             );
@@ -301,6 +320,10 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         $auditMessage = Auth::user()->name . ' added others ' . $eventData->first_name . '.';
         // set audit url
         $auditUrl = url('sites');
+
+        // get site 
+        $getSite = Site::find($eventData->site_id);
+
         // store data in event array
         $newData = array(
             'first_name' => $eventData->first_name,
@@ -308,6 +331,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             'last_name' => $eventData->last_name,
             'email' => $eventData->email,
             'phone' => $eventData->phone,
+            'site' => $getSite->site_name,
             'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
             'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
         );
@@ -319,6 +343,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
                 'last_name' => $previousData->last_name,
                 'email' => $previousData->email,
                 'phone' => $previousData->phone,
+                'site' => $getSite->site_name,
                 'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
                 'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
             );
@@ -389,16 +414,38 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
 
         ////////////////////////// Role Ends ///////////////////////////////////////////////////
     } else if ($eventSection == 'User') {
+
         // get event data
         $eventData = User::find($eventId);
         // set message for audit
-        $auditMessage = Auth::user()->name . ' added system user ' . $eventData->name . '.';
+        $auditMessage = Auth::user()->name . ' added new user ' . $eventData->name . '.';
+
+        if ($systemUser == false) {
+
+            // get study user roles
+            $getUserRoles = Role::leftjoin('study_role_users', 'study_role_users.role_id', '=', 'roles.id')
+                                        ->where('study_role_users.study_id', 'like', session('current_study'))
+                                        ->where('study_role_users.user_id', 'like',  $eventData->id)
+                                        ->pluck('roles.name')
+                                        ->toArray();
+                        
+
+        } else {
+
+            // get system user roles
+            $getUserRoles = Role::leftjoin('user_roles', 'user_roles.role_id', '=', 'roles.id')
+                                ->where('user_roles.user_id', $eventData->id)
+                                ->pluck('roles.name')
+                                ->toArray();
+        }
+
         // set audit url
         $auditUrl = url('users');
         // store data in event array
         $newData = array(
             'name' => $eventData->name,
             'email' => $eventData->email,
+            'role' => $getUserRoles != null ? implode(',', $getUserRoles) : '',
             'created_by' => Auth::user()->name,
             'created_at' => date("Y-m-d h:i:s", strtotime($eventData->created_at)),
             'updated_at' => date("Y-m-d h:i:s", strtotime($eventData->updated_at)),
@@ -409,13 +456,14 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
             $oldData = array(
                 'name' => $previousData->name,
                 'email' => $previousData->email,
+                'role' => $previousData->role,
                 'created_by' => Auth::user()->name,
                 'created_at' => date("Y-m-d h:i:s", strtotime($previousData->created_at)),
                 'updated_at' => date("Y-m-d h:i:s", strtotime($previousData->updated_at)),
             );
 
             // set message for audit
-            $auditMessage = Auth::user()->name . ' updated system user ' . $eventData->name . '.';
+            $auditMessage = Auth::user()->name . ' updated user ' . $eventData->name . '.';
         }
 
         ////////////////////////// System Users Ends ///////////////////////////////////////////////////
@@ -706,11 +754,12 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
 
         //////////////////////////// Section Ends /////////////////////////////////////////
     } else if ($eventSection == 'Study Site') {
+        
         // get event data
-        $eventData = StudySite::select('sites.site_name')
+        $eventData = StudySite::select(\DB::raw('CONCAT(sites.site_name, " - ", sites.site_code) AS site_name_code'))
             ->leftjoin('sites', 'sites.id', '=', 'site_study.site_id')
             ->where('site_study.study_id', $eventId)
-            ->pluck('sites.site_name')
+            ->pluck('site_name_code')
             ->toArray();
 
         $eventData = $eventData != '' ? implode(', ', $eventData) : '';
@@ -722,7 +771,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         $auditUrl = url('studySite');
         // store data in event array
         $newData = array(
-            'study_id' => $getStudyName->id,
+            'study_code' => $getStudyName->study_code,
             'study_name' => $getStudyName->study_title,
             'study_sites' => $eventData,
             'created_at' => date("Y-m-d h:i:s", strtotime($getStudyName->created_at)),
@@ -730,9 +779,11 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         );
         // if it is update case
         if ($eventType == 'Update') {
+
             $previousData = $previousData != '' ? implode(', ', $previousData) : '';
+            
             $oldData = array(
-                'study_id' => $getStudyName->id,
+                'study_code' => $getStudyName->study_code,
                 'study_name' => $getStudyName->study_title,
                 'study_sites' => $previousData,
                 'created_at' => date("Y-m-d h:i:s", strtotime($getStudyName->created_at)),

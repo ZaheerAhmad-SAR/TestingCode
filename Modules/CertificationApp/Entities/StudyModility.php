@@ -42,11 +42,11 @@ class StudyModility extends Model
             // check if this modality is already assigned to study
             if ($checkAssignedUser != null) {
 
-            	return '<span class="badge badge-success">'.$checkAssignedUser->name.'</span>';
+            	return $checkAssignedUser->name;
 
             } else {
 
-            	return '<span class="badge badge-primary">N/A</span>';
+            	return 'N/A';
 
             } // check ends
     }

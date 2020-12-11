@@ -256,6 +256,8 @@
            });
 
            $('body').on('click', '.editOptions', function (e) {
+               $('#OptionsGroupEditForm').trigger('reset');
+               $('.appendDataOptions_edit').html('');
                $('#editOptionGroups').modal('show');
                var id =($(this).attr("data-id"));
                var url = "{{URL('optionsGroup')}}";

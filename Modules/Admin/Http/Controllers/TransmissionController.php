@@ -219,11 +219,11 @@ class TransmissionController extends Controller
     {
 
         // remove the upper section
-        $explodeGetCFtPTrans = explode('<?xml', $request);
+        $explodeGetCFtPTrans = explode('<?xml', $request->data);
 
         // concatinate xml with the remaining  xml
         $xml = '<?xml'.$explodeGetCFtPTrans[1];
-        //dd($xml);
+
         $xml    = simplexml_load_string($xml);
 
         // check for trimission number
@@ -266,6 +266,9 @@ class TransmissionController extends Controller
                 'Compliance'                => $xml->Compliance,
                 //'Compliance_comments'              => $xml->Compliance_comments,
                 'Submitted_By'              => $xml->Submitted_By,
+                'photographer_full_name'    => $xml->photographer_full_name,
+                'photographer_email'        => $xml->photographer_email,
+                'photographer_ID'           => $xml->photographer_ID,
                 'Number_files'              => $xml->Number_files,
                 'transmitted_file_name'     => $xml->transmitted_file_name,
                 'transmitted_file_size'     => $xml->transmitted_file_size,
@@ -749,6 +752,7 @@ class TransmissionController extends Controller
        $email_subject_response       = $request->post('email_subject_response');
        $query_id_response            = $request->post('query_id_response');
        $cc_email_response            = $request->post('cc_email_response');
+        $ccArray                     = explode(',',$cc_email_response);
        $study_id_response            = $request->post('study_id_response');
        $subject_id_response          = $request->post('subject_id_response');
        $vist_name_response           = $request->post('vist_name_response');
@@ -772,7 +776,7 @@ class TransmissionController extends Controller
             'Transmission_Number'=>$transmission_number_response,
             'query_subject'=>$email_subject_response,
             'remarks'=>$reply_response,
-            'cc_email'=>$cc_email_response,
+            'cc_email'=>$ccArray,
             'StudyI_ID'=>$study_id_response,
             'visit_name'=>$vist_name_response,
             'Subject_ID'=>$subject_id_response,
@@ -780,10 +784,11 @@ class TransmissionController extends Controller
             'studyShortName'=>$study_short_name_response,
             'replyToken'=> $token
         );
+
         $result = QueryNotification::create([
             'id'=>$id,
             'cc_email'=>$cc_email_response,
-            'notifications_status'=>'read',
+            'notifications_status'=>'open',
             'subject'=>$email_subject_response,
             'email_body'=>$reply_response,
             'email_attachment'=>$filePath,
@@ -962,6 +967,7 @@ class TransmissionController extends Controller
     {
 
         $record = QueryNotification::where('notifications_token',$id)->where('notifications_status','open')->first();
+
         //$status = QueryNotification::where('notifications_token',$id)->where('id','like','parent_notification_id')->where('notifications_status', '!=','open')->first();
         if ($record == null)
         {

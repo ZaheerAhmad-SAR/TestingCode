@@ -25,18 +25,6 @@
             transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
         }
 
-        .select2-container--default.select2-container--focus .select2-selection--multiple {
-            border: solid black 1px;
-            outline: 0;
-        }
-
-        .select2-container--default .select2-selection--multiple {
-            background-color: white;
-            border: 1px solid #485e9029 !important; 
-            border-radius: 4px;
-            cursor: text;
-        }
-
         legend {
           /*background-color: gray;
           color: white;*/
@@ -81,23 +69,59 @@
                 <div class="card">
 
                     <div class="form-group col-md-12 mt-3">        
+                        <button type="button" class="btn btn-primary assign-modality" data-url="{{ route('preferences.save-assign-modality', request()->study_id) }}">Assign Modality</button>
 
-                        <button type="button" class="btn btn-primary assign-work">Assign Modality</button>
+                        <button type="button" class="btn btn-primary remove-modality" data-url="{{ route('preferences.remove-assign-modality', request()->study_id) }}">Remove Modality</button>
 
                         @if (!$getModalities->isEmpty())
                         <span style="float: right; margin-top: 3px;" class="badge badge-pill badge-primary">
                             {{ $getModalities->count().' out of '.$getModalities->total() }}
                         </span>
                         @endif
-
                     </div>
 
                      <hr>
+
+                     <form action="{{route('preferences.assign-modality', request()->study_id)}}" method="get" class="form-1 filter-form">
+                        <div class="form-row" style="padding: 10px;">
+
+                            <input type="hidden" name="form_1" value="1" class="form-control">
+
+                            <div class="form-group col-md-5">
+                                <label for="inputState">Parent Modality</label>
+                                <select id="parent_modility" name="parent_modility" class="form-control filter-form-data">
+                                    <option value="">All Parent Modality</option>
+                                    @foreach($getParentModalities as $parentModality)
+                                    <option @if(request()->parent_modility == $parentModality->id) selected @endif value="{{ $parentModality->id }}">{{ $parentModality->modility_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-5">
+                                <label for="inputState">Child Modality</label>
+                                <select id="child_modility" name="child_modility" class="form-control filter-form-data">
+                                    <option value="">All Child Modality</option>
+                                    @foreach($getChildModalities as $childModality)
+                                    <option @if(request()->child_modility == $childModality->id) selected @endif value="{{ $childModality->id }}">{{ $childModality->modility_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-2 mt-4">        
+                               <!--  <button type="button" class="btn btn-primary reset-filter-1">Reset</button> -->
+                                <button type="submit" class="btn btn-primary btn-lng">Filter Records</button>
+                                <button type="button" class="btn btn-primary reset-filter">Reset</button>
+
+                            </div>
+
+                        </div>
+                        <!-- row ends -->
+                    </form>
                    
                     <div class="card-body">
 
                         <div class="table-responsive">
-                        <form method="POST" action="{{ route('preferences.save-assign-modality', request()->study_id) }}" class="modality-form">
+                        <form method="POST" action="" class="modality-form">
                             @csrf
                             <table class="table table-bordered" id="laravel_crud">
                                 <thead>
@@ -108,8 +132,8 @@
                                         </th>
                                         <th>Parent Modality</th>
                                         <th>Child Modality</th>
-                                        <th>Assign By</th>
-                                        <th>Assign Status</th>
+                                        <th>Assigned By</th>
+                                        <th>Assigned Status</th>
                                     </tr>
 
                                 </thead>
@@ -183,10 +207,39 @@
 
 <script type="text/javascript">
 
-    $('.assign-work').click(function() {
+    $('select[name="parent_modility"]').select2();
+    $('select[name="child_modility"]').select2();
+
+    $('.reset-filter').click(function(){
+        // reset values
+        $('.filter-form').trigger("reset");
+        $('.filter-form-data').val("").trigger("change");
+        // submit the filter form
+        window.location.reload();
+    });
+
+    $('.assign-modality').click(function() {
         // any checkbox is checked
         if ($(".check_modality:checked").length > 0) {
             
+            // assign url to action
+            $('.modality-form').attr('action', $(this).attr('data-url'))
+            // submit form
+            $('.modality-form').submit();
+
+        } else {
+           // alert msg
+           alert('No modality selected.');
+        }
+       
+    });
+
+    $('.remove-modality').click(function() {
+        // any checkbox is checked
+        if ($(".check_modality:checked").length > 0) {
+            
+            // assign url to action
+            $('.modality-form').attr('action', $(this).attr('data-url'))
             // submit form
             $('.modality-form').submit();
 

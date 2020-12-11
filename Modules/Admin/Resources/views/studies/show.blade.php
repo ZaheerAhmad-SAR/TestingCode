@@ -77,7 +77,7 @@
                                 <i class="fa fa-plus"></i> Add Subject
                             </button>
                         @endif
-                         <a href="{{route('skiplogic.sectionskiponcohort',session('current_study'))}}" target="_blank">
+                         <a href="{{route('skiplogic.skiponcohort',session('current_study'))}}" target="_blank">
                             <button class="btn btn-primary">
                                 <i class="fa fa-plus"></i> Skip Cohort
                             </button>
