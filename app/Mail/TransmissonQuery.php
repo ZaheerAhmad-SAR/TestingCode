@@ -38,9 +38,12 @@ class TransmissonQuery extends Mailable
             ->subject($this->data['studyShortName']. ' | ' .$this->data['StudyI_ID'].' | '.'Query:'. $this->data['query_subject']
                 .' | '.$this->data['Transmission_Number'].' | '
                 .$this->data['visit_name']);
-        if(!empty($this->data['attachment']))
+        if(count($this->data['attachment'])>0)
         {
-            $vi->attach(public_path().'/'.$this->data['attachment']);
+            foreach ($this->data['attachment'] as $attachment) {
+                $vi->attach(public_path().'/'.$attachment);
+            }
+
         }
         return $vi;
     }
