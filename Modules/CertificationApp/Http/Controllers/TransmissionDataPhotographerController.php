@@ -6,6 +6,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\CertificationApp\Entities\TransmissionDataPhotographer;
+use Modules\CertificationApp\Entities\TestPhotographerTransmission;
 
 class TransmissionDataPhotographerController extends Controller
 {
@@ -181,5 +182,15 @@ class TransmissionDataPhotographerController extends Controller
 
             echo 'Transmission Number already exists.';
         }
+    }
+
+    // test photographer transmission
+    public function testTransmissionDataPhotographer(Request $request) {
+
+        $saveData = new TestPhotographerTransmission;
+        $saveData->data = $request;
+        $saveData->save();
+
+        echo "Data Saved";
     }
 }
