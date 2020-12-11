@@ -64,10 +64,11 @@
                        <div class="card-body">
                             <input type="hidden" name="option_title[]" value="{{$value}}">
                             @foreach($options->skiplogic as $logic)
-                                @if(!empty($logic->option_value))
+
+                                @if($logic->option_value !='')
                                    <?php $check_value[] = $logic->option_value; ?>
                                 @endif
-                            @endforeach()
+                            @endforeach
                             <input type="checkbox" name="option_value[]" onclick="git_steps_for_checks('{{$options_value[$key]}}','{{$key}}','{{$q_id}}','{{$value}}')" value="{{$options_value[$key]}}" @if(in_array($options_value[$key], $check_value)) checked="checked" @endif> &nbsp; {{$value}}
                        </div>
                    </div>
