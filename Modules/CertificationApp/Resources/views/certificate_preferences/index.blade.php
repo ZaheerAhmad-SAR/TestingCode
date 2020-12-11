@@ -92,7 +92,7 @@
                                 </th>
 
                                 <th>
-                                    Sponser
+                                    Sponsor
                                 </th>
                                 
                                 <th>
