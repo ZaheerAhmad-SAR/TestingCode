@@ -132,8 +132,8 @@
                                         </th>
                                         <th>Parent Modality</th>
                                         <th>Child Modality</th>
-                                        <th>Assign By</th>
-                                        <th>Assign Status</th>
+                                        <th>Assigned By</th>
+                                        <th>Assigned Status</th>
                                     </tr>
 
                                 </thead>

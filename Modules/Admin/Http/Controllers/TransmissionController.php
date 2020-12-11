@@ -219,11 +219,11 @@ class TransmissionController extends Controller
     {
 
         // remove the upper section
-        $explodeGetCFtPTrans = explode('<?xml', $request);
+        $explodeGetCFtPTrans = explode('<?xml', $request->data);
 
         // concatinate xml with the remaining  xml
         $xml = '<?xml'.$explodeGetCFtPTrans[1];
-        //dd($xml);
+
         $xml    = simplexml_load_string($xml);
 
         // check for trimission number
@@ -266,6 +266,9 @@ class TransmissionController extends Controller
                 'Compliance'                => $xml->Compliance,
                 //'Compliance_comments'              => $xml->Compliance_comments,
                 'Submitted_By'              => $xml->Submitted_By,
+                'photographer_full_name'    => $xml->photographer_full_name,
+                'photographer_email'        => $xml->photographer_email,
+                'photographer_ID'           => $xml->photographer_ID,
                 'Number_files'              => $xml->Number_files,
                 'transmitted_file_name'     => $xml->transmitted_file_name,
                 'transmitted_file_size'     => $xml->transmitted_file_size,
