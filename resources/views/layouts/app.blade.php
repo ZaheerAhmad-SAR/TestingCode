@@ -44,12 +44,12 @@
             }
             /*For loader*/
             .loader {
-                  border: 16px solid #f3f3f3;
+                  border: 8px solid #f3f3f3;
                   border-radius: 50%;
-                  border-top: 16px solid blue;
-                  border-right: 16px solid green;
-                  border-bottom: 16px solid red;
-                  border-left: 16px solid pink;
+                  border-top: 8px solid #4C75F2;
+                  border-right: 8px solid #A8A8A8;
+                  border-bottom: 8px solid #A8A8A8;
+                  border-left: 8px solid #A8A8A8;
                   width: 120px;
                   height: 120px;
                   -webkit-animation: spin 2s linear infinite;

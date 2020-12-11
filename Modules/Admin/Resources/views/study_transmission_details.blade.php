@@ -495,7 +495,6 @@
 
     $('body').on('click', '.checkTransmissionResponse', function () {
         var id     = $(this).attr('data-id');
-        console.log(id);
         $('#transmissonQueryTableView').modal('hide');
         $('#responseView').modal('show');
         showTransmissionResponse(id);
@@ -555,6 +554,7 @@
         var notification_remarked_id     = $('#notification_remarked_id').val();
         var query_id_response            = $('#query_id_response').val();
         var cc_email_response            = $('#cc_email_response').val();
+        console.log(typeof cc_email_response);
         var email_subject_response       = $('#email_subject_response').val();
         var study_id_response            = $('#study_id_response').val();
         var subject_id_response          = $('#subject_id_response').val();
@@ -609,6 +609,8 @@
         var StudyI_ID           = $('#StudyI_ID').val();
         var remarks             = $('#remarks').val();
         var cc_email            = $('#cc_email').val();
+        console.log(cc_email)
+        console.log(typeof cc_email);
         var visitName           = $('#visitName').val();
         var Subject_ID          = $('#Subject_ID').val();
         var Transmission_Number = $('#Transmission_Number').val();
