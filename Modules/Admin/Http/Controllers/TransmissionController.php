@@ -219,7 +219,7 @@ class TransmissionController extends Controller
     {
 
         // remove the upper section
-        $explodeGetCFtPTrans = explode('<?xml', $request->data);
+        $explodeGetCFtPTrans = explode('<?xml', $request);
 
         // concatinate xml with the remaining  xml
         $xml = '<?xml'.$explodeGetCFtPTrans[1];

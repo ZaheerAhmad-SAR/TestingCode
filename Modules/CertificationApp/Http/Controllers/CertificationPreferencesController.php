@@ -216,9 +216,9 @@ class CertificationPreferencesController extends Controller
 
     public function saveStudySetup(Request $request) {
 
-        $checkStudy = StudySetup::where('study_id', decrypt($request->study))->first();
+        $checkStudy = StudySetup::where('study_id', $request->study_id)->first();
 
-        if ($checkStudy == null) {
+        if ($checkStudy === null) {
 
             $checkStudy = new StudySetup;
             $checkStudy->id = Str::uuid();
@@ -236,6 +236,10 @@ class CertificationPreferencesController extends Controller
             $checkStudy->study_id = $request->study_id;
             $checkStudy->save();
         }
+
+        Session::flash('success', 'Study setup successfully.');
+
+        return redirect(route ('preferences.study-setup', $request->study_id));
     }
 
     public function getTemplate(Request $request) {
