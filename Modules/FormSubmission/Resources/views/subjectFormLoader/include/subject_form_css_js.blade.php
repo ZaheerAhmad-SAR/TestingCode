@@ -27,20 +27,22 @@
                 $('.' + step_id_class).show(500);
             }
 
-            function disableAllFormFields(formId) {
-                $("#" + formId + " input").prop('disabled', true);
+            function disableAllFormFields(id) {
+                $("#" + id + " :input").prop('disabled', true);
+                $("#" + id + " select").prop('disabled', true);
             }
 
             function makeReadOnly(cls) {
-                $("." + cls + " input").prop('readonly', true);
+                $("." + cls + " :input").prop('readonly', true);
             }
 
             function removeReadOnly(cls) {
-                $("." + cls + " input").prop('readonly', false);
+                $("." + cls + " :input").prop('readonly', false);
             }
 
-            function enableAllFormFields(formId) {
-                $("#" + formId + " input").prop('disabled', false);
+            function enableAllFormFields(id) {
+                $("#" + id + " :input").prop('disabled', false);
+                $("#" + id + " select").prop('disabled', false);
             }
 
             function disableField(fieldId) {
