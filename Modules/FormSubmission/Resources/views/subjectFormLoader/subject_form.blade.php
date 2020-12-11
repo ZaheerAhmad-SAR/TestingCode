@@ -285,7 +285,7 @@
                                                 'step'=>$step,
                                                 'sections'=> $sections,
                                                 'phaseIdStr'=>$phaseIdStr,
-                                                'form_filled_by_user_id' => $form_filled_by_user_id,
+                                                'current_user_id' => $current_user_id,
                                                 'activeStep' => $activeStep,
                                                 'stepClsStr' => $stepClsStr,
                                                 'stepIdStr' => $stepIdStr,

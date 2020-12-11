@@ -36,18 +36,18 @@ trait JSQuestionDependency
 
             $questionDependencyStr .= '
             $( document ).ready(function() {
-                $(\'#' . $questionRowIdStr . '\').hide();
-                $(\'#form_' . $stepIdStr . ' #' . $fieldId . '\').val(-9999);
+                disableAllFormFields(\'' . $questionRowIdStr . '\');
+                //$(\'#form_' . $stepIdStr . ' #' . $fieldId . '\').val(-9999);
             });
             function ' . $functionName . $dependentOnQuestionIdStr . '(stepIdStr){
                 if(' . $getValueFunctionName . '(stepIdStr, \'' . $dependentOnFieldName . '\', \'' . $dependentOnFieldId . '\') ' . $questionDependency->opertaor . ' ' . $questionDependency->custom_value . '){
-                    $(\'#' . $questionRowIdStr . '\').show();
+                    enableAllFormFields(\'' . $questionRowIdStr . '\');
                     if($(\'#form_' . $stepIdStr . ' #' . $fieldId . '\').val() == -9999){
-                        $(\'#form_' . $stepIdStr . ' #' . $fieldId . '\').val(\'\');
+                        //$(\'#form_' . $stepIdStr . ' #' . $fieldId . '\').val(\'\');
                     }
                 }else{
-                    $(\'#' . $questionRowIdStr . '\').hide();
-                    $(\'#form_' . $stepIdStr . ' #' . $fieldId . '\').val(-9999);
+                    disableAllFormFields(\'' . $questionRowIdStr . '\');
+                    //$(\'#form_' . $stepIdStr . ' #' . $fieldId . '\').val(-9999);
                 }
             }';
         }

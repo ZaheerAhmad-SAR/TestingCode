@@ -22,7 +22,9 @@ trait AdjudicationTrait
                 $fieldType = $question->form_field_type->field_type;
                 if (
                     $fieldType == 'Upload' ||
-                    $fieldType == 'Date & Time'
+                    $fieldType == 'Date & Time' ||
+                    $fieldType == 'Description'
+
                 ) {
                     continue;
                 }
