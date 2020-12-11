@@ -204,6 +204,15 @@ class CertificationPreferencesController extends Controller
 
     } // function end
 
+    public function studySetup(Request $request) {
+
+        // get parent modalities
+        $getParentModalities = Modility::all();
+
+        return view('certificationapp::certificate_preferences.study_setup', compact('getParentModalities'));
+
+    } // study setup function ends
+
     public function getTemplate(Request $request) {
 
         // get Template

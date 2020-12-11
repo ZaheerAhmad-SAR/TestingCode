@@ -8,6 +8,8 @@
 	<form action="{{ route('transmissions.transmissionData') }}" method="post">
 	<!-- <form action="{{ route('transmissions.transmissionDataDevice') }}" method="post"> -->
 	<!-- <form action="{{ route('transmissions.transmissionDataPhotographer') }}" method="post"> -->
+	<!-- <form action="{{ route('transmissions.testTransmissionDataPhotographer') }}" method="post"> -->
+		
 		@csrf
 		@method('POST')
 
