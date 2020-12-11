@@ -12,9 +12,9 @@
 */
 
 //test transmission view
-Route::get('transmissions/transmissionData', function () {
-    return view('admin::test_transmission_api');
-});
+// Route::get('transmissions/transmissionData', function () {
+//     return view('admin::test_transmission_api');
+// });
 // transmission end point
 
 // Route::get('error-message', function(){
