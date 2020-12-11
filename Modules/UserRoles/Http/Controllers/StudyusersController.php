@@ -136,20 +136,13 @@ class StudyusersController extends Controller
                                 'role_id' => $role,
                                 'study_id' => session('current_study'),
                             ]);
-                            $checkUserRole = UserRole::where('role_id', $role)->where('user_id', $user->id)->first();
-                            if (null === $checkUserRole) {
-                                UserRole::create([
-                                    'id' => Str::uuid(),
-                                    'user_id' => $user->id,
-                                    'role_id' => $role
-                                ]);
-                            }
+                            UserRole::createUserRole($user->id, $role);
                         }
                     } // roles
 
                     $oldUser = [];
                     // log event details
-                    $logEventDetails = eventDetails($id, 'User', 'Add', $request->ip(), $oldUser);
+                    $logEventDetails = eventDetails($id, 'User', 'Add', $request->ip(), $oldUser, false);
 
                     return response()->json(['success' => 'User created successfully.']);
                 } // check email ends
@@ -211,6 +204,19 @@ class StudyusersController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+        // get old user data for trail log
+        $oldUser = User::where('id', $id)->first();
+
+        //get old Roles
+        $getUserOldRoles = Role::leftjoin('study_role_users', 'study_role_users.role_id', '=', 'roles.id')
+                                        ->where('study_role_users.study_id', 'like', session('current_study'))
+                                        ->where('study_role_users.user_id', 'like',  $id)
+                                        ->pluck('roles.name')
+                                        ->toArray();
+
+        $oldUser->role = $getUserOldRoles != null ? implode(',', $getUserOldRoles) : '';
+
         $messages = [
             'name.required' => 'Please provide name!',
             'email.required' => 'Please provide e-mail address!',
@@ -251,6 +257,9 @@ class StudyusersController extends Controller
 
             $this->updateRoles($request, $user);
 
+            // log event details
+            $logEventDetails = eventDetails($user->id, 'User', 'Update', $request->ip(), $oldUser, false);
+
             return response()->json(['success' => 'User Updated successfully.']);
         }
     }
@@ -283,14 +292,7 @@ class StudyusersController extends Controller
                         'role_id'    =>  $role,
                         'study_id'   => session('current_study'),
                     ]);
-                    $checkUserRole = UserRole::where('role_id', $role)->where('user_id', $user->id)->first();
-                    if (null === $checkUserRole) {
-                        UserRole::create([
-                            'id'    => Str::uuid(),
-                            'user_id'   => $user->id,
-                            'role_id'   => $role
-                        ]);
-                    }
+                    UserRole::createUserRole($user->id, $role);
                 }
             }
         }

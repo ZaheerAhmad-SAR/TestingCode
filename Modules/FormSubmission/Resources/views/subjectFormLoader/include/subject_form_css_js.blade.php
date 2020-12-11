@@ -5,6 +5,8 @@
     @push('script')
         <script>
             var isPreview = {{ $isPreview === true ? 'true' : 'false' }};
+            var upload_max_filesize = {{ return_bytes(ini_get('upload_max_filesize')) }};
+            var post_max_size = {{ return_bytes(ini_get('post_max_size')) }};
 
             function showAlert(swalTitle, message, messageType) {
                 swal.fire({
@@ -762,13 +764,20 @@
                 var fileField = document.getElementById(fieldId + '_' + stepIdStr);
                 let TotalFiles = fileField.files.length;
                 for (let i = 0; i < TotalFiles; i++) {
-                    frmData.append(field_name + i, fileField.files[i]);
+                    var fileSize = fileField.files[i].size;
+                    if(fileSize < upload_max_filesize && fileSize < post_max_size){
+                        frmData.append(field_name + i, fileField.files[i]);
+                    }else{
+
+                        console.log(fileSize);
+                    }
                 }
                 frmData.append('TotalFiles', TotalFiles);
                 submitFileFieldRequest(frmData, stepIdStr, fieldId);
             }
 
             function submitFileFieldRequest(frmData, stepIdStr, fieldId){
+                $('#file_upload_files_div_' + fieldId).html('Uploading files ....');
                 var url = "{{ url('/') }}/";
                 $.ajax({
                     type:'POST',
@@ -781,18 +790,35 @@
                     success: (responseData) => {
                         response = responseData.status;
                         answer = responseData.answer;
+                        answerId = responseData.answerId;
                         putResponseImage(stepIdStr, response.formStatus, response.formTypeId, response.formStatusIdStr);
                         var answerArray = answer.split('<<|!|>>');
                         var linkStr = '';
                         for (i = 0; i < answerArray.length; i++) {
                             if(answerArray[i] != ''){
-                                linkStr += '<a href="' + url + answerArray[i] + '" target="_blank">' + url + answerArray[i] + '</a><br>';
+                                linkStr += '<div id="'+answerArray[i]+'"><a href="' + url + '/form_files/' + answerArray[i] + '" target="_blank">' + answerArray[i] + '</a>&nbsp;&nbsp;<img onclick="deleteFormUploadFile(\''+answerId+'\', \''+answerArray[i]+'\');" src="' + url + '/images/remove.png"></div>';
                             }
                         }
                         $('#file_upload_files_div_' + fieldId).html(linkStr);
                     },
                     error: function(response){
                         console.log(response);
+                    }
+                });
+            }
+
+            function deleteFormUploadFile(answerId, fileName){
+                $.ajax({
+                    url: "{{ route('SubjectFormSubmission.deleteFormUploadFile') }}",
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        'answerId': answerId,
+                        'fileName': fileName
+                    },
+                    success: function(response) {
+                        var fileDiv = document.getElementById(fileName);
+                        fileDiv.remove();
                     }
                 });
             }

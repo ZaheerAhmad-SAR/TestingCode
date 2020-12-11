@@ -14,13 +14,7 @@
                     </ol>
                 </div>
             </div>
-            @if(session()->has('message'))
-                <div class="col-lg-12 success-alert">
-                    <div class="alert alert-primary success-msg" role="alert">
-                        {{ session()->get('message') }}
-                    </div>
-                </div>
-            @endif
+            {{ showMessage() }}
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
                     <div class="card-body">
@@ -61,11 +55,11 @@
                                     <button class="btn btn-outline-warning reset-filter"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
                                     <button type="submit" class="btn btn-primary submit-filter"><i class="fas fa-filter" aria-hidden="true"></i> Filter</button>
                                 </div>
-                            </div>    
+                            </div>
                         </form>
                     </div>
                 </div>
-            </div>            
+            </div>
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
                     <div class="card-body">
@@ -99,11 +93,11 @@
                                     </tr>
                                     @endforeach
                                 </tbody>
-                            </table> 
+                            </table>
                             {{$devices->links()}}
                         </div>
                     </div>
-                </div> 
+                </div>
             </div>
         </div>
     </div>

@@ -67,24 +67,20 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         $invite = Invitation::where('token', $data['token'])->first();
+        $user = User::where('email', 'like', $invite->email)->first();
+        if (null === $user) {
+            $userId = \Illuminate\Support\Str::uuid();
+            User::create([
+                'id' => $userId,
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+                'role_id' => $data['role']
+            ]);
+            UserRole::createUserRole($userId, $data['role'], '');
+            $user = User::find($userId);
+        }
         $invite->delete();
-
-        $userId = \Illuminate\Support\Str::uuid();
-        User::create([
-            'id' => $userId,
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'role_id' => $data['role']
-        ]);
-        UserRole::create([
-            'id' => \Illuminate\Support\Str::uuid(),
-            'role_id' => $data['role'],
-            'user_id' => $userId,
-            'study_id' => ''
-        ]);
-
-        $user = User::find($userId);
         return $user;
     }
 }

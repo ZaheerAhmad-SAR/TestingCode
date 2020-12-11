@@ -23,10 +23,32 @@ class CertificationPreferencesController extends Controller
      */
     public function index(Request $request)
     {
-        // get all studies 
-        $studies = Study::paginate(50);
+        // get all studies
+        $getStudies = Study::query();
 
-        return view('certificationapp::certificate_preferences.index', compact('studies'));
+        if ($request->study_code != '') {
+
+           $getStudies = $getStudies->where('study_code', 'like', '%' . $request->study_code . '%');
+        }
+
+        if ($request->short_name != '') {
+
+           $getStudies = $getStudies->where('study_short_name', 'like', '%' . $request->short_name . '%');
+        }
+
+        if ($request->study_title != '') {
+
+           $getStudies = $getStudies->where('study_title', 'like', '%' . $request->study_title . '%');
+        }
+
+        if ($request->study_sponsor != '') {
+
+           $getStudies = $getStudies->where('study_sponsor', 'like', '%' . $request->study_sponsor . '%');
+        }
+
+        $getStudies = $getStudies->paginate(50);
+
+        return view('certificationapp::certificate_preferences.index', compact('getStudies'));
     }
 
     /**
@@ -92,12 +114,31 @@ class CertificationPreferencesController extends Controller
     public function assignModality(Request $request) {
 
         // get all parent and child modalities
-        $getModalities = ChildModilities::select('modilities.id as parent_modility_id', 'modilities.modility_name as parent_modility_name', 'child_modilities.id as child_modility_id', 'child_modilities.modility_name as child_modility_name')
-        ->leftjoin('modilities', 'modilities.id', '=', 'child_modilities.modility_id')
-        ->orderBy('modilities.modility_name')
+        $getModalities = ChildModilities::query();
+        $getModalities = $getModalities->select('modilities.id as parent_modility_id', 'modilities.modility_name as parent_modility_name', 'child_modilities.id as child_modility_id', 'child_modilities.modility_name as child_modility_name')
+        ->leftjoin('modilities', 'modilities.id', '=', 'child_modilities.modility_id');
+
+        if ($request->parent_modility != '') {
+
+            $getModalities = $getModalities->where('modilities.id', $request->parent_modility);
+        }
+
+        if ($request->child_modility != '') {
+
+            $getModalities = $getModalities->where('child_modilities.id', $request->child_modility);
+        }
+
+        $getModalities = $getModalities->orderBy('modilities.modility_name')
         ->paginate(50);
 
-        return view('certificationapp::certificate_preferences.assign_modalities', compact('getModalities'));
+        // get parent modalities
+        $getParentModalities = Modility::all();
+
+        // get child modalities
+        $getChildModalities = ChildModilities::all();
+
+
+        return view('certificationapp::certificate_preferences.assign_modalities', compact('getModalities', 'getParentModalities', 'getChildModalities'));
     }
 
     public function saveAssignModality(Request $request) {
@@ -138,6 +179,31 @@ class CertificationPreferencesController extends Controller
 
     } // function end
 
+    public function removeAssignModality(Request $request) {
+
+        // get input
+        $input = $request->all();
+
+        foreach($input['parent_modility_id'] as $key => $parentModality) {
+
+            // check if checkbox is checked
+            if(isset($input['check_modality'][$parentModality.'_'.$input['child_modility_id'][$key]])) {
+
+                $checkStudyModality = StudyModility::where('parent_modility_id', $parentModality)
+                                                    ->where('child_modility_id', $input['child_modility_id'][$key])
+                                                    ->where('study_id', decrypt($request->study_id))
+                                                    ->delete();
+
+            } // checkbox checked condition ends
+
+        } // parent modality loop ends
+
+        Session::flash('success', 'Modalities assigned successfully.');
+
+        return redirect(route ('preferences.assign-modality', $request->study_id));
+
+    } // function end
+
     public function getTemplate(Request $request) {
 
         // get Template
@@ -166,6 +232,13 @@ class CertificationPreferencesController extends Controller
 
     public function updateTemplate(Request $request) {
 
-        dd($request);
+        $saveTemplate = CertificationTemplate::find($request->template_id);
+        $saveTemplate->title = $request->edit_title;
+        $saveTemplate->body = $request->edit_body;
+        $saveTemplate->save();
+
+        Session::flash('success', 'Template updated successfully.');
+
+        return redirect(route ('certification-template'));
     }
 }

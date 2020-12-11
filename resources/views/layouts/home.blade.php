@@ -20,7 +20,10 @@
                 </div>
                 @if(empty(auth()->user()->google2fa_secret))
                     <div class="" style="margin-top: 15px;padding: 9px 62px 14px 0px;" >
-                        <div class="alert alert-warning alert-dismissible" @if(empty(auth()->user()->google2fa_secret))?style="display:none;":style="margin-top:20px" @endif>
+                        @php
+                        $style = (empty(auth()->user()->google2fa_secret))? 'style="display:none;"':'style="margin-top:20px"';
+                        @endphp
+                        <div class="alert alert-warning alert-dismissible" {{ $style }} >
                             <a type="submit" class="btn btn-outline-info" href="{{route('users.updateProfile')}}" >Enable now</a>
                             <strong>Warning!</strong> Google 2-Factor Auth is disabled, turn it on.
                             <button class="close" data-dismiss="alert">&times;</button>

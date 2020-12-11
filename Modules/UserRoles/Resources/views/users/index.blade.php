@@ -26,14 +26,7 @@
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
         <div class="row">
-            @if(session()->has('message'))
-                <div class="col-lg-12 success-alert">
-                    <div class="alert alert-primary success-msg" role="alert">
-                        {{ session()->get('message') }}
-                        <button class="close" data-dismiss="alert">&times;</button>
-                    </div>
-                </div>
-            @endif
+            {{ showMessage() }}
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
                     <div class="card-header d-flex align-items-center">

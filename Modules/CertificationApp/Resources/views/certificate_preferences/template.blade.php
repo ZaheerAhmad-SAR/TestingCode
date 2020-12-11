@@ -127,7 +127,7 @@
 
                                             <td>
 
-                                                <a href="javascript:void()" onClick="updateTitle('{{$template->template_id}}', '{{$template->title}}', '{{$template->body}}')">
+                                                <a href="javascript:void()" onClick="updateTitle('{{$template->template_id}}', '{{$template->title}}', '{{$template->body}}')" style="color: #17a2b8 !important">
                                                     {{ $template->title}}
                                                 </a>
                                             </td>
@@ -245,9 +245,15 @@
 <script src="{{ asset('public/dist/vendors/summernote/summernote-bs4.js') }}"></script>
 <script src="{{ asset('public/dist/js/summernote.script.js') }}"></script>
 
-<script src="{{ asset('public/dist/js/summernote.script.js') }}"></script>
+<!-- <script src="{{ asset('public/dist/js/summernote.script.js') }}"></script> -->
 
 <script type="text/javascript">
+
+    // initialize summer note
+    $('.summernote').summernote({
+        height: 200,
+
+    });
 
     $('.add-template').click(function() {
             
@@ -270,7 +276,7 @@
 
     // initilaize summer note for edit
     $('.edit_summernote').summernote({
-        height: 100,
+        height: 200,
     });
 
     function updateTitle(templateId, templateTitle, templateBody) {
@@ -293,7 +299,7 @@
             e.preventDefault(); 
             $('.edit-error-field').css('display', 'block');  
         } else {
-            
+
             e.currentTarget;
         }
     });
