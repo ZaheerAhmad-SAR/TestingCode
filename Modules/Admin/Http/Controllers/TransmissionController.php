@@ -964,6 +964,7 @@ class TransmissionController extends Controller
     {
 
         $record = QueryNotification::where('notifications_token',$id)->where('notifications_status','open')->first();
+
         //$status = QueryNotification::where('notifications_token',$id)->where('id','like','parent_notification_id')->where('notifications_status', '!=','open')->first();
         if ($record == null)
         {

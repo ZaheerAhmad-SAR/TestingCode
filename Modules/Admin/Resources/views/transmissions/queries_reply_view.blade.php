@@ -22,11 +22,11 @@
 
                         <div class="form-group mb-3">
                             <label for="emailaddress"><strong>Your Name</strong></label>
-                            <input type="text" name="yourName" id="yourName" class="form-control">
+                            <input type="text" name="yourName" id="yourName" class="form-control" required>
                         </div>
                         <div class="form-group mb-3">
                             <label for="emailaddress"><strong>Your Email</strong></label>
-                            <input type="email" name="yourEmail" id="yourEmail" class="form-control">
+                            <input type="email" name="yourEmail" pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$" id="yourEmail" class="form-control" required>
                         </div>
                         <div class="form-group mb-3">
                             <label for="Attachment"><strong>Attachment</strong>:</label>
@@ -35,10 +35,10 @@
 
                         <div class="form-group mb-3">
                             <label for="emailaddress"><strong>Your Response</strong></label>
-                            <textarea name="yourMessage" id="yourMessage" cols="2" rows="1" class="form-control" style="height: 50px;"></textarea>
+                            <textarea name="yourMessage" id="yourMessage" cols="2" rows="1" class="form-control" style="height: 50px;" required></textarea>
                         </div>
                         <div class="garbage">
-                            <input type="hidden" name="parent_notification_id" id="parent_notification_id" value="{{$record['id']}}">
+                            <input type="hidden" name="parent_notification_id" id="parent_notification_id" value="{{$record['parent_notification_id']}}">
                             <input type="hidden" name="emailSubject" id="emailSubject" value="{{$record['subject']}}">
                             <input type="hidden" name="cc_email" id="cc_email" value="{{$record['cc_email'] }}">
                             <input type="hidden" name="study_id" id="study_id" value="{{ $record['study_id'] }}">
