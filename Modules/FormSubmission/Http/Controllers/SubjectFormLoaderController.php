@@ -29,7 +29,7 @@ class SubjectFormLoaderController extends Controller
         $site = Site::find($subject->site_id);
         $studySite = StudySite::where('study_id', $study->id)->where('site_id', $site->id)->firstOrNew();
 
-        $form_filled_by_user_id = auth()->user()->id;
+        $current_user_id = auth()->user()->id;
 
         $subjectPhasesIdsArray = $subject->subjectPhasesArray();
         $visitPhases = StudyStructure::where('study_id', $studyId)
@@ -49,6 +49,6 @@ class SubjectFormLoaderController extends Controller
             ->with('subject', $subject)
             ->with('site', $site)
             ->with('studySite', $studySite)
-            ->with('form_filled_by_user_id', $form_filled_by_user_id);
+            ->with('current_user_id', $current_user_id);
     }
 }

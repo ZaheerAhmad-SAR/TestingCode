@@ -14,6 +14,7 @@
 Route::group(['middleware' => ['auth', 'web']], function () {
     // Jawad
     Route::get('forms/show/{phase_id}/{step_id}', 'PreviewFormController@show')->name('forms.show');
+    Route::get('printForm/{studyId}/{subjectId}/{phaseId}/{stepId}/{formFilledByUserId}', 'PreviewFormController@printForm')->name('printForm');
     //SubjectFormLoader
     Route::get('subjectFormLoader/{study_id}/{subject_id}/{phaseId?}/{stepId?}/{sectionId?}/{isAdjudication?}/{showAllQuestions?}', 'SubjectFormLoaderController@showSubjectForm')->name('subjectFormLoader.showSubjectForm');
     //SubjectFormSubmission

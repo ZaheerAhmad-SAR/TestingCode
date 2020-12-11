@@ -17,13 +17,13 @@ if(
 <div class="all_step_sections step_adjudication_sections_{{ $stepIdStr }}"
         style="display: {{ $showStep }};">
         @php
-        $form_filled_by_user_id = ($form_filled_by_user_id ?? '');
+        $current_user_id = ($current_user_id ?? '');
         $subjectId = ($subjectId ?? '');
         $studyId = ($studyId ?? '');
         $studyClsStr = ($studyClsStr ?? '');
 
         $getAdjudicationFormStatusArray = [
-        //'form_adjudicated_by_id' => $form_filled_by_user_id,
+        //'form_adjudicated_by_id' => $current_user_id,
         'subject_id' => $subjectId,
         'study_id' => $studyId,
         'study_structures_id' => $phase->id,
