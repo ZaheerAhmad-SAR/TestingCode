@@ -47,18 +47,19 @@
         </div>
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
-        <form action="" enctype="multipart/form-data" method="POST">
+        <form action="{{route('skiplogic.apply_skip_logic_cohort_based')}}" enctype="multipart/form-data" method="POST">
             @csrf
             {{-- {{dd(request('id'))}} --}}
           
-            <input type="hidden" name="question_id" value="{{request('id')}}">
+            <input type="hidden" name="study_id" value="{{request('id')}}">
 
             @foreach($disease_cohorts as $key => $value)
             <div class="row">
                <div class="col-12 col-sm-12 mt-3">
                    <div class="card">
                        <div class="card-body">
-                            <input type="checkbox" name="option_value[]" onclick="git_steps_for_checks_deactivate_cohort('{{$value->id}}','{{$key}}','{{request('id')}}','{{$value->name}}')" value="">  {{$value->name}}
+                            <input type="hidden" name="cohort_name[]" value="{{$value->name}}">
+                            <input type="checkbox" name="cohort_id[]" onclick="git_steps_for_checks_deactivate_cohort('{{$value->id}}','{{$key}}','{{request('id')}}','{{$value->name}}')" value="{{$value->id}}">  {{$value->name}}
                        </div>
                    </div>
                </div>
