@@ -10,6 +10,7 @@ use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\ChildModilities;
 
 use Modules\CertificationApp\Entities\StudyModility;
+use Modules\CertificationApp\Entities\StudySetup;
 use Modules\CertificationApp\Entities\CertificationTemplate;
 
 use Illuminate\Support\Str;

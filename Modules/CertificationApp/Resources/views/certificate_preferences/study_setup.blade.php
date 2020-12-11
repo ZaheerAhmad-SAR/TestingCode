@@ -45,7 +45,7 @@
 
                                     <div class="col-md-12">
                                         <label for="Phone">CC Email</label>
-                                        <input type="text" class="form-control" name="cc_email" id="cc_email" required="required" value="" placeholder="e.g info@example.com,  johndoe@info.com">
+                                        <input type="text" class="form-control" name="study_cc_email" id="study_cc_email" required="required" value="" placeholder="e.g info@example.com,  johndoe@info.com">
                                     </div>
 
                                 </div>
@@ -69,14 +69,14 @@
                                         @if($key == 0)
                                         <label for="Phone">Devices Transmission No.</label>
                                         @endif
-                                        <input type="number" class="form-control" name="allowed_no[device][{{$modility->id}}]" id="allowed_no" value="1" required>
+                                        <input type="number" class="form-control" name="allowed_no_transmission[device][{{$modility->id}}]" id="allowed_no_transmission" value="1" required>
                                     </div>
 
                                     <div class="col-md-4">
                                         @if($key == 0)
                                         <label for="Phone">Photographer Transmission No.</label>
                                         @endif
-                                        <input type="number" class="form-control" name="allowed_no[photographer][{{$modility->id}}]" id="allowed_no" value="2" required>
+                                        <input type="number" class="form-control" name="allowed_no_transmission[photographer][{{$modility->id}}]" id="allowed_no_transmission" value="2" required>
                                     </div>
                                     @endforeach
                                  </div>

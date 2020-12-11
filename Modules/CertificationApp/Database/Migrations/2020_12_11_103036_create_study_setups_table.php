@@ -14,8 +14,11 @@ class CreateStudySetupsTable extends Migration
     public function up()
     {
         Schema::create('study_setups', function (Blueprint $table) {
-            $table->id();
-
+            $table->uuid('id')->primary()->unique();
+            $table->string('study_email');
+            $table->text('study_cc_email');
+            $table->text('allowed_no_transmission');
+            $table->uuid('study_id');
             $table->timestamps();
         });
     }
