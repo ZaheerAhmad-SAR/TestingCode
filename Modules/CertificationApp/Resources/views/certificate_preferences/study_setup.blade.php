@@ -32,11 +32,11 @@
                     <!-- <div class="card-body">  
                     </div> -->
                     <!-- card body ends -->
-                    <form action="{{ route('preferences.save-study-setup', request()->study_id) }}" enctype="multipart/form-data" method="POST">
+                    <form action="{{ route('preferences.save-study-setup') }}" enctype="multipart/form-data" method="POST">
                         @csrf
                         <div class="modal-body">
                             <div class="tab-content" id="nav-tabContent">
-                                
+                            <input type="hidden" name="study_id" value="{{ decrypt(request()->study_id) }}">
                                 <div class="form-group row">
                                     <div class="form-group col-md-12">
                                         <label for="Email">Study Email</label>

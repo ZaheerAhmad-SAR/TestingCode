@@ -42,7 +42,7 @@
 	Route::get('preferences/study-setup/{study_id}', 'CertificationPreferencesController@studySetup')->name('preferences.study-setup');
 
 // save preferences study setup
-	Route::post('preferences/study-setup/{study_id}', 'CertificationPreferencesController@saveStudySetup')->name('preferences.save-study-setup');
+	Route::post('preferences/study-setup', 'CertificationPreferencesController@saveStudySetup')->name('preferences.save-study-setup');
 
 // get studies for preference
 	Route::resource('certification-preferences', 'CertificationPreferencesController');
