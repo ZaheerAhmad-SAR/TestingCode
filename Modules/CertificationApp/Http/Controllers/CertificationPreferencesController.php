@@ -216,7 +216,26 @@ class CertificationPreferencesController extends Controller
 
     public function saveStudySetup(Request $request) {
 
-        dd($request['allowed_no']);
+        $checkStudy = StudySetup::where('study_id', decrypt($request->study))->first();
+
+        if ($checkStudy == null) {
+
+            $checkStudy = new StudySetup;
+            $checkStudy->id = Str::uuid();
+            $checkStudy->study_email = $request->study_email;
+            $checkStudy->study_cc_email = $request->study_cc_email;
+            $checkStudy->allowed_no_transmission = json_encode($request->allowed_no_transmission);
+            $checkStudy->study_id = $request->study_id;
+            $checkStudy->save();
+
+        } else {
+
+            $checkStudy->study_email = $request->study_email;
+            $checkStudy->study_cc_email = $request->study_cc_email;
+            $checkStudy->allowed_no_transmission = json_encode($request->allowed_no_transmission);
+            $checkStudy->study_id = $request->study_id;
+            $checkStudy->save();
+        }
     }
 
     public function getTemplate(Request $request) {
