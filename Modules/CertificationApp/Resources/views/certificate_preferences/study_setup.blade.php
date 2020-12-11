@@ -32,7 +32,7 @@
                     <!-- <div class="card-body">  
                     </div> -->
                     <!-- card body ends -->
-                    <form action="#" enctype="multipart/form-data" method="POST">
+                    <form action="{{ route('preferences.save-study-setup', request()->study_id) }}" enctype="multipart/form-data" method="POST">
                         @csrf
                         <div class="modal-body">
                             <div class="tab-content" id="nav-tabContent">
@@ -69,14 +69,14 @@
                                         @if($key == 0)
                                         <label for="Phone">Devices Transmission No.</label>
                                         @endif
-                                        <input type="number" class="form-control" name="cc_email" id="cc_email" value="1" required>
+                                        <input type="number" class="form-control" name="allowed_no[device][{{$modility->id}}]" id="allowed_no" value="1" required>
                                     </div>
 
                                     <div class="col-md-4">
                                         @if($key == 0)
                                         <label for="Phone">Photographer Transmission No.</label>
                                         @endif
-                                        <input type="number" class="form-control" name="cc_email" id="cc_email" value="2" required>
+                                        <input type="number" class="form-control" name="allowed_no[photographer][{{$modility->id}}]" id="allowed_no" value="2" required>
                                     </div>
                                     @endforeach
                                  </div>

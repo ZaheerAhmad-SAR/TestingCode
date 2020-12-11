@@ -119,7 +119,7 @@ class TransmissionDataPhotographerController extends Controller
     public function transmissionDataPhotographer(Request $request) {
 
         // get xml data
-        $xml    = simplexml_load_string($request);
+        $xml    = simplexml_load_string($request->data);
 
         // check for trimission number
         $checkTransmissionNumber = TransmissionDataPhotographer::where('Transmission_Number', $xml->Transmission_Number)->first();
@@ -127,7 +127,7 @@ class TransmissionDataPhotographerController extends Controller
         if ($checkTransmissionNumber == null) {
 
             $saveData = new TransmissionDataPhotographer;
-            $saveData->data                         = $request;
+            $saveData->data                         = $request->data;
             $saveData->Transmission_Number          = $xml->Transmission_Number;  
             $saveData->Salute                       = $xml->Salute;
             $saveData->Photographer_First_Name      = $xml->Photographer_First_Name;

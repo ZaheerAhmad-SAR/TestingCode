@@ -213,6 +213,11 @@ class CertificationPreferencesController extends Controller
 
     } // study setup function ends
 
+    public function saveStudySetup(Request $request) {
+
+        dd($request['allowed_no']);
+    }
+
     public function getTemplate(Request $request) {
 
         // get Template

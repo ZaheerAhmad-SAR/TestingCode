@@ -5,13 +5,14 @@
 </head>
 <body>
 	
-	<form action="{{ route('transmissions.transmissionData') }}" method="post">
+	<!-- <form action="{{ route('transmissions.transmissionData') }}" method="post"> -->
 	<!-- <form action="{{ route('transmissions.transmissionDataDevice') }}" method="post"> -->
 	<!-- <form action="{{ route('transmissions.transmissionDataPhotographer') }}" method="post"> -->
 	<!-- <form action="{{ route('transmissions.testTransmissionDataPhotographer') }}" method="post"> -->
+	
+
+	<form action="https://devocap.oirrc.net/transmissions/transmissionDataPhotographer" method="post">
 		
-		@csrf
-		@method('POST')
 
 		<div class="form-group">
 			<textarea name="data"></textarea>
