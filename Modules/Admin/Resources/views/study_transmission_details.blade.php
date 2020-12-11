@@ -554,7 +554,6 @@
         var notification_remarked_id     = $('#notification_remarked_id').val();
         var query_id_response            = $('#query_id_response').val();
         var cc_email_response            = $('#cc_email_response').val();
-        console.log(typeof cc_email_response);
         var email_subject_response       = $('#email_subject_response').val();
         var study_id_response            = $('#study_id_response').val();
         var subject_id_response          = $('#subject_id_response').val();

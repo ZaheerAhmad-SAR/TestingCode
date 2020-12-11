@@ -85,7 +85,6 @@ class FormStatus extends Model
         for ($counter = 0; $counter < $extraNeededObjects; $counter++) {
             $formStatusObjects[] = new FormStatus();
         }
-
         foreach ($formStatusObjects as $formStatusObj) {
 
             if ($wrapSeperate) {
@@ -192,17 +191,20 @@ class FormStatus extends Model
     {
         $info = '';
         $formStatus = $formStatusObj->form_status;
+        $imgSpanStepSkipLogicClsStr = '';
         if ($formStatus != 'no_status') {
             $imgSpanClsStr = buildGradingStatusIdClsStr($formStatusObj->id);
             $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="' . $formStatusObj->user->name . '"';
         } else {
             $imgSpanClsStr = buildSafeStr($step->step_id, 'img_step_status_');
+            $imgSpanStepSkipLogicClsStr = buildSafeStr($step->step_id, 'img_step_status_skip_logic_');
         }
 
-        $imgSpanStepSkipLogicClsStr = buildSafeStr($step->step_id, 'img_step_status_skip_logic_');
+
 
         $spanStr = '<span class="' . $imgSpanClsStr . ' ' . $imgSpanStepSkipLogicClsStr . '" ' . $info . '>';
-        $spanStr .= self::makeFormStatusSpanImage($formStatusObj->form_status) . '</span>';
+
+        $spanStr .= self::makeFormStatusSpanImage($formStatus) . '</span>';
         return $spanStr;
     }
 
@@ -229,9 +231,9 @@ class FormStatus extends Model
 
     public static function putFormStatus($request)
     {
-        $form_filled_by_user_id = auth()->user()->id;
+        $current_user_id = auth()->user()->id;
         $getFormStatusArray = [
-            'form_filled_by_user_id' => $form_filled_by_user_id,
+            'form_filled_by_user_id' => $current_user_id,
             'subject_id' => $request->subjectId,
             'study_id' => $request->studyId,
             'study_structures_id' => $request->phaseId,

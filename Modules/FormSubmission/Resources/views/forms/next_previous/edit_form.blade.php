@@ -32,6 +32,8 @@
         </button>
     @endif
 
+    @include('formsubmission::forms.next_previous.print_form')
+
 </div>
 @if($isPreview === false)
 <div class="row">
