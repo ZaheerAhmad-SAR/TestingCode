@@ -454,7 +454,7 @@
     $('.reset-filter').click(function(){
         // reset values
         $('.filter-form').trigger("reset");
-        $('.filter-form-data').val("").trigger("change")
+        $('.filter-form-data').val("").trigger("change");
         // submit the filter form
         window.location.reload();
     });

@@ -10,7 +10,7 @@
 
 
   $('.summernote').summernote({
-        height: 100,
+        height: 200,
       // toolbar: [
       //     ['font', ['bold', 'underline', 'clear']],
       //     ['para', ['ul', 'ol', 'paragraph']],

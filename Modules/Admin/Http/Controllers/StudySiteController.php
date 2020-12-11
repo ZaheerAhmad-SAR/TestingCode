@@ -25,6 +25,7 @@ class StudySiteController extends Controller
      */
     public function index()
     {
+
         $siteArray = array();
         $sites = StudySite::select('site_study.*'
             ,'sites.site_name'
@@ -110,11 +111,11 @@ class StudySiteController extends Controller
             $sites = $request->sites != null ? $request->sites : [];
             $current_study =  \Session::get('current_study');
 
-            // gte old study sites
-            $oldStudySite = StudySite::select('sites.site_name')
-            ->leftjoin('sites','sites.id', '=', 'site_study.site_id')
+            // get event data
+            $oldStudySite = StudySite::select(\DB::raw('CONCAT(sites.site_name, " - ", sites.site_code) AS site_name_code'))
+            ->leftjoin('sites', 'sites.id', '=', 'site_study.site_id')
             ->where('site_study.study_id', $current_study)
-            ->pluck('sites.site_name')
+            ->pluck('site_name_code')
             ->toArray();
 
             $study = Study::find($current_study);
