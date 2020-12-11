@@ -34,8 +34,8 @@ class SubjectFormSubmissionController extends Controller
             foreach ($sectionIds as $sectionId) {
                 $section = Section::find($sectionId);
                 foreach ($section->questions as $question) {
-                    if ($question->form_field_type_id == 11) {
-                        //if question is type description then continue
+                    $fieldType = $question->form_field_type->field_type;
+                    if (($fieldType == 'Upload') || ($fieldType == 'Description')) {
                         continue;
                     }
                     $retArray = $this->putAnswer($request, $question);
@@ -182,10 +182,10 @@ class SubjectFormSubmissionController extends Controller
 
     public function openSubjectFormToEdit(Request $request)
     {
-        $form_filled_by_user_id = auth()->user()->id;
+        $current_user_id = auth()->user()->id;
 
         $getFormStatusArray = [
-            'form_filled_by_user_id' => $form_filled_by_user_id,
+            'form_filled_by_user_id' => $current_user_id,
             'subject_id' => $request->subjectId,
             'study_id' => $request->studyId,
             'study_structures_id' => $request->phaseId,

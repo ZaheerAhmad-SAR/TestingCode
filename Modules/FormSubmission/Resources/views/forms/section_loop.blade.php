@@ -6,7 +6,7 @@ $transmissionNumber = \Modules\FormSubmission\Entities\SubjectsPhases::getTransm
 /**************************************/
 /**************************************/
 /**************************************/
-$form_filled_by_user_id = auth()->user()->id;
+$current_user_id = auth()->user()->id;
 
 $showForm = false;
 if ($step->form_type_id == 1 && canQualityControl(['index'])){
@@ -47,7 +47,7 @@ $formStatusObjects = \Modules\FormSubmission\Entities\FormStatus::getFormStatusO
 $numberOfAlreadyGradedPersons = count($formStatusObjects);
 
 if($step->form_type_id == 2){
-    $getFormStatusArray['form_filled_by_user_id'] = $form_filled_by_user_id;
+    $getFormStatusArray['form_filled_by_user_id'] = $current_user_id;
 }
 $formStatusObj = \Modules\FormSubmission\Entities\FormStatus::getFormStatusObj($getFormStatusArray);
 $formStatus = 'no_status';
@@ -83,7 +83,7 @@ if(null !== $formStatusObj){
                         <div class="wizard wizard-white mb-4">
                             <ul class="nav nav-tabs d-block d-sm-flex">
                                 @php
-                                $form_filled_by_user_id = ($form_filled_by_user_id ?? '');
+                                $current_user_id = ($current_user_id ?? '');
                                 $subjectId = ($subjectId ?? '');
                                 $studyId = ($studyId ?? '');
                                 $studyClsStr = ($studyClsStr ?? '');

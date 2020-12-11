@@ -351,7 +351,8 @@
 
                 if ($('#' + fieldId + '_' + stepIdStr).prop('type') == "file") {
                     var file = document.getElementById(fieldId + '_' + stepIdStr);
-                    if(file.files.length == 0 ){
+                    var divHtml = document.getElementById('file_upload_files_div_' + fieldId).innerHTML;
+                    if(file.files.length == 0 && divHtml == '' ){
                         field_val = '';
                     }else{
                         field_val = 'has files';
@@ -830,6 +831,5 @@
                     location.reload();
                 }, seconds);
             }
-
         </script>
     @endpush
