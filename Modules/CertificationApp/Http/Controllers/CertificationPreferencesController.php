@@ -207,16 +207,19 @@ class CertificationPreferencesController extends Controller
 
     public function studySetup(Request $request) {
 
+        // get study setups
+        $checkStudy = StudySetup::where('study_id', decrypt($request->study_id))->first();
+
         // get parent modalities
         $getParentModalities = Modility::all();
 
-        return view('certificationapp::certificate_preferences.study_setup', compact('getParentModalities'));
+        return view('certificationapp::certificate_preferences.study_setup', compact('checkStudy', 'getParentModalities'));
 
     } // study setup function ends
 
     public function saveStudySetup(Request $request) {
 
-        $checkStudy = StudySetup::where('study_id', $request->study_id)->first();
+        $checkStudy = StudySetup::where('study_id', decrypt($request->study_id))->first();
 
         if ($checkStudy === null) {
 
@@ -225,7 +228,7 @@ class CertificationPreferencesController extends Controller
             $checkStudy->study_email = $request->study_email;
             $checkStudy->study_cc_email = $request->study_cc_email;
             $checkStudy->allowed_no_transmission = json_encode($request->allowed_no_transmission);
-            $checkStudy->study_id = $request->study_id;
+            $checkStudy->study_id = decrypt($request->study_id);
             $checkStudy->save();
 
         } else {
@@ -233,7 +236,7 @@ class CertificationPreferencesController extends Controller
             $checkStudy->study_email = $request->study_email;
             $checkStudy->study_cc_email = $request->study_cc_email;
             $checkStudy->allowed_no_transmission = json_encode($request->allowed_no_transmission);
-            $checkStudy->study_id = $request->study_id;
+            $checkStudy->study_id = decrypt($request->study_id);
             $checkStudy->save();
         }
 
