@@ -811,7 +811,7 @@ class TransmissionController extends Controller
 
     public function queryTransmissionMail()
     {
-        //dd(\request()->all());
+
         //request()->validate(['cc_email'=>'required|email']);
         //request()->validate(['users'=>'required|email']);
         $transNumber   = request('Transmission_Number');
@@ -826,14 +826,31 @@ class TransmissionController extends Controller
 
         $subjectID     = request('Subject_ID');
         $studyShortName= request('studyShortName');
-        $filePath      = '';
+        $filePath      = array();
+
+        //$files = request()->file('query_file');
+
+//        if(request()->hasFile('query_file'))
+//        {
+//            foreach ($files as $file) {
+//                dd($file);
+//            }
+//
+//        }
 
         if (!empty(request()->file('query_file'))) {
             $image = request()->file('query_file');
-            $name = Str::slug(request()->input('name')).'_'.time();
-            $folder = '/query_attachments/';
-            $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
-            $this->uploadOne($image, $folder, 'public', $name);
+
+            foreach ($image as $item)
+            {
+                $name = Str::slug(request()->input('name')).'_'.time();
+
+                $folder = '/query_attachments/';
+                $filePath[] = $folder . $name. '.' . $item->getClientOriginalExtension();
+
+                $this->uploadOne($item, $folder, 'public', $name);
+            }
+
         }
         $id    = Str::uuid();
         $token = Str::uuid();
@@ -856,7 +873,7 @@ class TransmissionController extends Controller
             'notifications_status'=> 'open',
             'subject'=>$query_subject,
             'email_body'=>$remarks,
-            'email_attachment'=>$filePath,
+            'email_attachment'=>implode(',',$filePath),
             'parent_notification_id'=> 0,
             'notification_remarked_id'=>\auth()->user()->email,
             'person_name'=>\auth()->user()->name,
