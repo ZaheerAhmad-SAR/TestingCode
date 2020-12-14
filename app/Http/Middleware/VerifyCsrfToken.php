@@ -23,6 +23,7 @@ class VerifyCsrfToken extends Middleware
         'tinymce-image_upload',
         'transmissions/transmissionDataDevice',
         'transmissions/transmissionDataPhotographer',
+        'transmissions/testTransmissionDataPhotographer',
     ];
 
     /*
