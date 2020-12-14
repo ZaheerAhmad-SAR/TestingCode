@@ -118,8 +118,13 @@ class TransmissionDataPhotographerController extends Controller
 
     public function transmissionDataPhotographer(Request $request) {
 
+        // remove the upper section
+        $explodeGetCFtPTrans = explode('<?xml', $request);
+
+        // concatinate xml with the remaining  xml
+        $xml = '<?xml'.$explodeGetCFtPTrans[1];
         // get xml data
-        $xml    = simplexml_load_string($request);
+        $xml    = simplexml_load_string($xml);
 
         // check for trimission number
         $checkTransmissionNumber = TransmissionDataPhotographer::where('Transmission_Number', $xml->Transmission_Number)->first();
