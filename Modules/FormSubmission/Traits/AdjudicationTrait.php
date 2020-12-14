@@ -19,6 +19,7 @@ trait AdjudicationTrait
         foreach ($sections as $section) {
             $questions = $section->questions;
             foreach ($questions as $question) {
+                $form_field_name = buildFormFieldName($question->formFields->variable_name);
                 $fieldType = $question->form_field_type->field_type;
                 if (
                     $fieldType == 'Upload' ||
@@ -100,6 +101,7 @@ trait AdjudicationTrait
                     'phase_steps_id' => $getGradingFormStatusArray['phase_steps_id'],
                     'section_id' => $section->id,
                     'question_id' => $question->id,
+                    'variable_name' => $form_field_name,
                     'field_id' => $question->formfields->id,
                 ];
                 $finalAnswerArray_1 = [

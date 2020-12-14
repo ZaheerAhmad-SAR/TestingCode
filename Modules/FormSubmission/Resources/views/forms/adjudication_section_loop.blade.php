@@ -47,6 +47,7 @@ if(
                             <input type="hidden" name="phaseId" value="{{ $phase->id }}" />
                             <input type="hidden" name="stepId" value="{{ $step->step_id }}" />
                             <input type="hidden" name="formTypeId" value="{{ $step->form_type_id }}" />
+                            <input type="hidden" name="formType" value="{{ $step->formType->form_type }}" />
                             <input type="hidden" name="modilityId" value="{{ $step->modility_id }}" />
                             <input type="hidden" name="form_adjudicated_by_id" value="{{ $adjudicationFormStatusObj->form_adjudicated_by_id }}" />
                             <input type="hidden" name="adjudication_status" value="{{ $adjudicationFormStatusObj->adjudication_status }}" />

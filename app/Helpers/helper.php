@@ -199,7 +199,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
         // set audit url
         $auditUrl = url('sites');
 
-        // get site 
+        // get site
         $getSite = Site::find($eventData->site_id);
 
         // store data in event array
@@ -240,7 +240,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
         // set audit url
         $auditUrl = url('sites');
 
-        // get site 
+        // get site
         $getSite = Site::find($eventData->site_id);
 
         // store data in event array
@@ -280,7 +280,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
         // set audit url
         $auditUrl = url('sites');
 
-        // get site 
+        // get site
         $getSite = Site::find($eventData->site_id);
 
         // store data in event array
@@ -321,7 +321,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
         // set audit url
         $auditUrl = url('sites');
 
-        // get site 
+        // get site
         $getSite = Site::find($eventData->site_id);
 
         // store data in event array
@@ -424,19 +424,17 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
 
             // get study user roles
             $getUserRoles = Role::leftjoin('study_role_users', 'study_role_users.role_id', '=', 'roles.id')
-                                        ->where('study_role_users.study_id', 'like', session('current_study'))
-                                        ->where('study_role_users.user_id', 'like',  $eventData->id)
-                                        ->pluck('roles.name')
-                                        ->toArray();
-                        
-
+                ->where('study_role_users.study_id', 'like', session('current_study'))
+                ->where('study_role_users.user_id', 'like',  $eventData->id)
+                ->pluck('roles.name')
+                ->toArray();
         } else {
 
             // get system user roles
             $getUserRoles = Role::leftjoin('user_roles', 'user_roles.role_id', '=', 'roles.id')
-                                ->where('user_roles.user_id', $eventData->id)
-                                ->pluck('roles.name')
-                                ->toArray();
+                ->where('user_roles.user_id', $eventData->id)
+                ->pluck('roles.name')
+                ->toArray();
         }
 
         // set audit url
@@ -754,7 +752,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
 
         //////////////////////////// Section Ends /////////////////////////////////////////
     } else if ($eventSection == 'Study Site') {
-        
+
         // get event data
         $eventData = StudySite::select(\DB::raw('CONCAT(sites.site_name, " - ", sites.site_code) AS site_name_code'))
             ->leftjoin('sites', 'sites.id', '=', 'site_study.site_id')
@@ -781,7 +779,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
         if ($eventType == 'Update') {
 
             $previousData = $previousData != '' ? implode(', ', $previousData) : '';
-            
+
             $oldData = array(
                 'study_code' => $getStudyName->study_code,
                 'study_name' => $getStudyName->study_title,
@@ -1169,14 +1167,14 @@ function buildSafeStr($id, $str = '')
 {
     $safeStr = '';
     if (!empty($id)) {
-        $safeStr = $str . str_replace('-', '_', $id);
+        $safeStr = $str . str_replace([' ', '-'], '_', $id);
     }
     return $safeStr;
 }
 
 function buildFormFieldName($str = '')
 {
-    return str_replace(' ', '', $str);
+    return str_replace([' ', '-'], '_', $str);
 }
 
 function buildGradingStatusIdClsStr($id)

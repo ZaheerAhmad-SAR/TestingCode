@@ -25,26 +25,3 @@ $dataArray = ['question'=> $question, 'field_name'=> $field_name,
 @elseif($fieldType == 'Description')
     {!! html_entity_decode($question->formFields->text_info) !!}
 @endif
-@php
-/*********************************** */
-$questionValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidationForQuestion($question, false);
-$questionDependencyStr = Modules\Admin\Entities\Question::generateQuestionDependencyFunction($question, false);
-$questionSkipLogicStr = Modules\Admin\Entities\Question::generateQuestionSkipLogicFunction($question, false);
-$checkQuestionSkipLogicStr = Modules\Admin\Entities\Question::generateCheckQuestionSkipLogicFunction($question, false);
-$checkQuestionSkipLogicStrPageLoad = Modules\Admin\Entities\Question::generateCheckQuestionSkipLogicFunctionForPageLoad($question, false);
-@endphp
-
-@push('script')
-<script>
-{!! $questionValidationStr !!}
-{!! $questionDependencyStr !!}
-</script>
-@endpush
-
-@push('script_skip_logic')
-<script>
-{!! $questionSkipLogicStr !!}
-{!! $checkQuestionSkipLogicStr !!}
-{!! $checkQuestionSkipLogicStrPageLoad !!}
-</script>
-@endpush

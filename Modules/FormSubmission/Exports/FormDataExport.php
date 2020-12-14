@@ -127,7 +127,7 @@ class FormDataExport implements FromView
                             $form_filled_by_user_ids = array_values($form_filled_by_user_ids);
 
                             for ($counter = 0; $counter < $maxNumberOfGraders; ++$counter) {
-                                $headerName = ($step->form_type_id == 1) ? $variableName : $variableName . '_G' . ($counter + 1);
+                                $headerName = ($step->formType->form_type == 'QC') ? $variableName : $variableName . '_G' . ($counter + 1);
                                 if (!in_array($headerName, $header)) {
                                     $header[$headerName] = $headerName;
                                 }
