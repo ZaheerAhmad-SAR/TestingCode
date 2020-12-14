@@ -14,6 +14,7 @@ use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\SiteStudyCoordinator;
 use Modules\Admin\Entities\StudySite;
 use Modules\Admin\Entities\Study;
+use Modules\UserRoles\Http\Requests\RoleRequest;
 use MongoDB\Driver\Query;
 use MongoDB\Driver\Session;
 
@@ -106,9 +107,9 @@ class StudySiteController extends Controller
 
     public function update(Request $request)
     {
-
+            //dd($request->all());
             $others = '';
-            $sites = $request->sites != null ? $request->sites : [];
+            $sites = $request->check_sites != null ? $request->check_sites : [];
             $current_study =  \Session::get('current_study');
 
             // get event data
@@ -133,6 +134,12 @@ class StudySiteController extends Controller
         if (Site::where('site_code', $request->post('siteCode'))->first()) {
             return response()->json(['success'=>'Site Code already Exist']);
         }
+    }
+
+    public function assignedSites(Request $request)
+    {
+        $sites = Site::paginate(20);
+        return view('admin::studies.assign_sites',compact('sites'));
     }
 
     public function updateStudySite(Request $request)

@@ -91,7 +91,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('skiplogic/options_for_skip_logic_deactivate/{id}', 'SkipLogicController@options_skip_logic_deactivate')->name('skiplogic.optionsSkipdeactivate');
     Route::get('skiplogic/options_for_skip_logic_activate/{id}', 'SkipLogicController@options_skip_logic_activate')->name('skiplogic.optionsSkipactivate');
     Route::post('skiplogic/steps_to_skip', 'SkipLogicController@getSteps_toskip')->name('skiplogic.get_steps_skip_logic');
-   
+
 
     Route::get('skiplogic/skip_logic/{id}', 'SkipLogicController@skip_question_on_click')->name('skiplogic.skipLogic');
     Route::get('skiplogic/text_skip_logic/{id}', 'SkipLogicController@skip_question_on_text')->name('skiplogic.textskipLogic');
@@ -141,6 +141,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('annotation/get_allAnnotations/{id}', 'AnnotationController@get_allAnnotations')->name('annotation.get_allAnnotations');
     Route::post('annotation/add_annotation', 'AnnotationController@store_new_annotation')->name('annotation.addAnnotation');
     Route::post('sites/checkIfSiteIsExist', 'SiteController@checkIfSiteIsExist')->name('sites.checkIfSiteIsExist');
+    Route::get('studySite/assignedSites', 'StudySiteController@assignedSites')->name('studySite.assignedSites');
 });
 Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::resource('studies', 'StudyController');
@@ -202,6 +203,8 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::get('modalities/{id}/restoreParent', 'ModilityController@restoreParent')->name('modalities.restoreParent');
 
     Route::resource('studySite', 'StudySiteController');
+
+
 
     Route::post('studySite/update', 'StudySiteController@update')->name('studySite.update');
 
