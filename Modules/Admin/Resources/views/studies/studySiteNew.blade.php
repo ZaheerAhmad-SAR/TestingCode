@@ -46,11 +46,15 @@
             <div class="col-12 mt-3">
                 <div class="card">
                     <div class="card-header  justify-content-between align-items-center">
-                        @if(hasPermission(auth()->user(),'studySite.update'))
-                            <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#assignSites">
-                                <i class="fa fa-plus"></i> Assign Sites
-                            </button>
-                        @endif
+{{--                        @if(hasPermission(auth()->user(),'studySite.update'))--}}
+{{--                            <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#assignSites">--}}
+{{--                                <i class="fa fa-plus"></i> Assign Sites--}}
+{{--                            </button>--}}
+{{--                        @endif  --}}
+
+
+                            <a  href="{{ route ('studySite.assignedSites') }}"  class="btn btn-outline-primary"><i class="fa fa-plus"></i> Assign Sites</a>
+
                         <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#siteModal">
                             <i class="fa fa-plus"></i> Add Site
                         </button>
