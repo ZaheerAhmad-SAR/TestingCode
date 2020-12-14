@@ -56,7 +56,7 @@ class SubjectFormSubmissionController extends Controller
             }
 
             // get form type
-            $formType = $step->form_type_id == 1 ? 'QC Form' : 'Grading Form';
+            $formType = $step->formType->form_type .= ' Form';
 
             eventDetails($trailLogDataArray['trail_log'], $formType, $formAddOrEdit, request()->ip, []);
             /********************* */
@@ -167,7 +167,7 @@ class SubjectFormSubmissionController extends Controller
             $formDataArray['answerId'] = $answerObj->id;
             $trailLogArray = $answerArray;
             $trailLogArray['form_type_id'] = $step->form_type_id;
-            $trailLogArray['form_type'] = ($step->form_type_id == 1) ? 'qc' : 'grading';
+            $trailLogArray['form_type'] = $step->formType->form_type;
             $trailLogArray['modility_id'] = $step->modility_id;
             $trailLogArray['answer_id'] = $answerObj->id;
 

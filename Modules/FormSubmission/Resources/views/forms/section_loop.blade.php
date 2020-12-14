@@ -9,10 +9,13 @@ $transmissionNumber = \Modules\FormSubmission\Entities\SubjectsPhases::getTransm
 $current_user_id = auth()->user()->id;
 
 $showForm = false;
-if ($step->form_type_id == 1 && canQualityControl(['index'])){
+if ($step->formType->form_type == 'QC' && canQualityControl(['index'])){
     $showForm = true;
 }
-if ($step->form_type_id == 2 && canGrading(['index'])){
+if ($step->formType->form_type == 'Grading' && canGrading(['index'])){
+    $showForm = true;
+}
+if ($step->formType->form_type == 'Eligibility' && canEligibility(['index'])){
     $showForm = true;
 }
 @endphp
@@ -46,7 +49,7 @@ $getFormStatusArray = [
 $formStatusObjects = \Modules\FormSubmission\Entities\FormStatus::getFormStatusObjArray($getFormStatusArray);
 $numberOfAlreadyGradedPersons = count($formStatusObjects);
 
-if($step->form_type_id == 2){
+if($step->formType->form_type == 'Grading' || $step->formType->form_type == 'Eligibility'){
     $getFormStatusArray['form_filled_by_user_id'] = $current_user_id;
 }
 $formStatusObj = \Modules\FormSubmission\Entities\FormStatus::getFormStatusObj($getFormStatusArray);
@@ -70,6 +73,7 @@ if(null !== $formStatusObj){
                     <input type="hidden" name="phaseId" value="{{ $phase->id }}" />
                     <input type="hidden" name="stepId" value="{{ $step->step_id }}" />
                     <input type="hidden" name="formTypeId" value="{{ $step->form_type_id }}" />
+                    <input type="hidden" name="formType" value="{{ $step->formType->form_type }}" />
                     <input type="hidden" name="numberOfGraders" value="{{ $step->graders_number }}" />
                     <input type="hidden" name="numberOfAlreadyGradedPersons" value="{{ $numberOfAlreadyGradedPersons }}" />
                     <input type="hidden" name="modilityId" value="{{ $step->modility_id }}" />
@@ -194,7 +198,7 @@ if(null !== $formStatusObj){
                     stopJsHere();
                 }
             }
-            validateAndSubmitForm(stepIdStr, '{{ $step->form_type_id }}', '{{ buildGradingStatusIdClsStr($formStatusObj->id) }}');
+            validateAndSubmitForm(stepIdStr, '{{ $step->formType->form_type }}', '{{ buildGradingStatusIdClsStr($formStatusObj->id) }}');
         }
     }
 </script>
@@ -209,7 +213,7 @@ if(null !== $formStatusObj){
                     echo "enableByClass('$stepClsStr');";
                 }
             } else {
-                echo "hideReasonField('$stepIdStr', '$stepClsStr', '$step->form_type_id', '".buildGradingStatusIdClsStr($formStatusObj->id)."', 2);";
+                echo "hideReasonField('".$stepIdStr."', '".$stepClsStr."', '".$step->formType->form_type."', '".buildGradingStatusIdClsStr($formStatusObj->id)."', 2);";
             }
             @endphp
         });

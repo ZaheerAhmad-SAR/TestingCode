@@ -136,7 +136,6 @@
             function validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, questionIdStr, field_name, fieldId) {
                 if(canSubmitAdjudicationForm(stepIdStr)){
                     if(needToPutAdjudicationFormInEditMode(stepIdStr) == false){
-                        checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
                         if(window['validateAdjudicationQuestion' + questionIdStr](true, stepIdStr)){
                             if(eval("typeof " + window['checkQuestionSkipLogicForAdjudication' + questionIdStr]) != 'undefined'){
                                 window['checkQuestionSkipLogicForAdjudication' + questionIdStr]();
@@ -154,7 +153,6 @@
             function validateAndSubmitAdjudicationFormField_bk_123(stepIdStr, sectionIdStr, questionId, field_name, fieldId) {
                 if(canSubmitAdjudicationForm(stepIdStr)){
                     if(needToPutAdjudicationFormInEditMode(stepIdStr) == false){
-                        checkIsThisFieldDependent(sectionIdStr, questionId, field_name, fieldId);
                         const validationPromise = validateAdjudicationFormField(stepIdStr, questionId, field_name, fieldId);
                         validationPromise
                             .then((data) => {
@@ -244,7 +242,7 @@
                 return field_val;
             }
 
-            function openAdjudicationFormForEditing(stepIdStr, stepClsStr, formTypeId, formStatusIdStr) {
+            function openAdjudicationFormForEditing(stepIdStr, stepClsStr, formType, formStatusIdStr) {
                 if(canSubmitAdjudicationForm(stepIdStr)){
                         var frmData = $("#adjudication_form_master_" + stepIdStr).serialize();
                         frmData = frmData + '&' + 'open_adjudication_form_to_edit=1';
@@ -253,7 +251,7 @@
                             type: 'POST',
                             data: frmData,
                             success: function(response) {
-                                showAdjudicationFormReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr);
+                                showAdjudicationFormReasonField(stepIdStr, stepClsStr, formType, formStatusIdStr);
                             }
                         });
                 }else{
@@ -261,17 +259,17 @@
                 }
             }
 
-            function showAdjudicationFormReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr) {
+            function showAdjudicationFormReasonField(stepIdStr, stepClsStr, formType, formStatusIdStr) {
                 $("#adjudication_form_edit_div_" + stepIdStr).show(500);
                 $("#adjudication_form_edit_button_" + stepIdStr).hide(500);
                 $('#adjudication_form_edit_reason_text_' + stepIdStr).prop('required', true);
                 $('#fieldset_adjudication_' + stepIdStr).prop('disabled', false);
                 enableByClass(stepClsStr);
                 $('.adjudication_form_hid_editing_status_' + stepIdStr).val('yes');
-                putResponseImage(stepIdStr, 'resumable', formTypeId, formStatusIdStr);
+                putResponseImage(stepIdStr, 'resumable', formType, formStatusIdStr);
             }
 
-            function hideAdjudicationFormReasonField(stepIdStr, stepClsStr, formTypeId, formStatusIdStr) {
+            function hideAdjudicationFormReasonField(stepIdStr, stepClsStr, formType, formStatusIdStr) {
                 $("#adjudication_form_edit_div_" + stepIdStr).hide(500);
                 $('#adjudication_form_edit_reason_text_' + stepIdStr).prop('required', false);
                 $('#fieldset_adjudication_' + stepIdStr).prop('disabled', true);
@@ -282,7 +280,7 @@
                 $('.first_navlink_' + stepIdStr).addClass('active');
                 $('.tab-pane_' + stepIdStr).removeClass('active show');
                 $('.first_tab_' + stepIdStr).addClass('active show');
-                putResponseImage(stepIdStr, 'complete', formTypeId, formStatusIdStr);
+                putResponseImage(stepIdStr, 'complete', formType, formStatusIdStr);
             }
 
             function copyValueToField(stepIdStr, sectionIdStr, questionId, questionIdStr, field_name, fieldId, copyToFieldId) {

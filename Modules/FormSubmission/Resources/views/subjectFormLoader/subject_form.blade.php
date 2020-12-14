@@ -183,7 +183,7 @@
                                                         @endphp
                                                         @foreach ($steps as $step)
                                                             @php
-                                                            if ($step->form_type_id == 2) {
+                                                            if ($step->formType->form_type == 'Grading' || $step->formType->form_type == 'Eligibility') {
                                                                 $getQcFormStatusArray = [
                                                                     'subject_id' => $subjectId,
                                                                     'study_id' => $studyId,
@@ -196,6 +196,25 @@
                                                                     continue;
                                                                 }
                                                             }
+                                                            if ($step->formType->form_type == 'Grading') {
+                                                                $eligibilityStep = \Modules\Admin\Entities\PhaseSteps::getEligibilityStep($phase->id, $step->modility_id);
+
+                                                                $getEligibilityFormStatusArray = [
+                                                                'subject_id' => $subjectId,
+                                                                'study_id' => $studyId,
+                                                                'study_structures_id' => $phase->id,
+                                                                'form_type_id' => 3,
+                                                                'modility_id' => $step->modility_id,
+                                                                ];
+                                                                if(
+                                                                    null !== $eligibilityStep &&
+                                                                    \Modules\FormSubmission\Entities\FormStatus::isAllGradersGradedThatForm($eligibilityStep, $getEligibilityFormStatusArray) === false){
+                                                                        continue;
+                                                                }
+                                                            }
+
+
+
                                                             $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                                                             $adjStepClsStr = buildSafeStr($step->step_id, 'adj_step_cls_');
                                                             $stepIdStr = buildSafeStr($step->step_id, '');
@@ -220,6 +239,7 @@
                                                             ];
                                                             @endphp
                                                             @include('formsubmission::subjectFormLoader.qc_left_bar_nav', $stepData)
+                                                            @include('formsubmission::subjectFormLoader.eligibility_left_bar_nav', $stepData)
                                                             @include('formsubmission::subjectFormLoader.grader_left_bar_nav', $stepData)
                                                             @include('formsubmission::subjectFormLoader.adjudication_left_bar_nav', $stepData)
                                                             @php
@@ -256,12 +276,12 @@
                                             @foreach ($steps as $step)
                                                 @php
                                                 $stepCounter++;
-                                                if ($step->form_type_id == 2) {
+                                                if ($step->formType->form_type == 'Grading' || $step->formType->form_type == 'Eligibility') {
                                                     $getQcFormStatusArray = [
                                                         'subject_id' => $subjectId,
                                                         'study_id' => $studyId,
                                                         'study_structures_id' => $phase->id,
-                                                        'form_type_id' => '1',
+                                                        'form_type_id' => '1', //QC
                                                         'modility_id' => $step->modility_id,
                                                     ];
                                                     $qcFormStatus = \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getQcFormStatusArray);
@@ -269,6 +289,24 @@
                                                         continue;
                                                     }
                                                 }
+
+                                                if ($step->formType->form_type == 'Grading') {
+                                                    $eligibilityStep = \Modules\Admin\Entities\PhaseSteps::getEligibilityStep($phase->id, $step->modility_id);
+
+                                                    $getEligibilityFormStatusArray = [
+                                                        'subject_id' => $subjectId,
+                                                        'study_id' => $studyId,
+                                                        'study_structures_id' => $phase->id,
+                                                        'form_type_id' => 3,
+                                                        'modility_id' => $step->modility_id,
+                                                        ];
+                                                    if(
+                                                        null !== $eligibilityStep &&
+                                                        \Modules\FormSubmission\Entities\FormStatus::isAllGradersGradedThatForm($eligibilityStep, $getEligibilityFormStatusArray) === false){
+                                                        continue;
+                                                    }
+                                                }
+
                                                 $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                                                 $adjStepClsStr = buildSafeStr($step->step_id, 'adj_step_cls_');
                                                 $stepIdStr = buildSafeStr($step->step_id, '');

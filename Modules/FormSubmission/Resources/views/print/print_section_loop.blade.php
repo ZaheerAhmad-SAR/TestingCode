@@ -6,58 +6,8 @@ $transmissionNumber = \Modules\FormSubmission\Entities\SubjectsPhases::getTransm
 /**************************************/
 /**************************************/
 /**************************************/
-
-$showForm = false;
-if ($step->form_type_id == 1 && canQualityControl(['index'])){
-$showForm = true;
-}
-if ($step->form_type_id == 2 && canGrading(['index'])){
-$showForm = true;
-}
 @endphp
-@if ($showForm == true)
-    @php
-    $showStep = 'none';
-    if(
-    (request('stepId', '-') == $step->step_id) &&
-    (request('isAdjudication', 'no') == 'no')
-    ){
-    $showStep = 'block';
-    }
-    if(
-    ($activeStep && request('stepId', '-') == '-') &&
-    (request('isAdjudication', 'no') == 'no')
-    ){
-    $showStep = 'block';
-    }
-    @endphp
-    <div class="all_step_sections step_sections_{{ $stepIdStr }}" style="display: {{ $showStep }};">
-        @php
-        $getFormStatusArray = [
-        'subject_id' => $subjectId,
-        'study_id' => $studyId,
-        'study_structures_id' => $phase->id,
-        'phase_steps_id' => $step->step_id,
-        'form_type_id' => $step->form_type_id,
-        'modility_id' => $step->modility_id,
-        ];
-
-        $formStatusObjects = \Modules\FormSubmission\Entities\FormStatus::getFormStatusObjArray($getFormStatusArray);
-        $numberOfAlreadyGradedPersons = count($formStatusObjects);
-
-        if($step->form_type_id == 2){
-        $getFormStatusArray['form_filled_by_user_id'] = $current_user_id;
-        }
-        $formStatusObj = \Modules\FormSubmission\Entities\FormStatus::getFormStatusObj($getFormStatusArray);
-        $formStatus = 'no_status';
-        $formFilledByUserId = 'no-user-id';
-        $isFormDataLocked = 0;
-        if(null !== $formStatusObj){
-        $formStatus = $formStatusObj->form_status;
-        $formFilledByUserId = $formStatusObj->form_filled_by_user_id;
-        $isFormDataLocked = $formStatusObj->is_data_locked;
-        }
-        @endphp
+    <div class="all_step_sections step_sections_{{ $stepIdStr }}">
         <div class="row">
             <div class="col-12 col-md-12">
                 <div class="card">
@@ -101,13 +51,11 @@ $showForm = true;
                                         'step' => $step,
                                         'section' => $section,
                                         'formStatusObj' => $formStatusObj,
-                                        'formStatus' => $formStatus,
                                         'sectionIdStr' => $sectionIdStr,
                                         'sectionClsStr' => $sectionClsStr,
                                         'skipLogicSectionIdStr' => $skipLogicSectionIdStr,
                                         'stepClsStr'=> $stepClsStr,
                                         'skipLogicStepIdStr'=> $skipLogicStepIdStr,
-                                        'getFormStatusArray'=>$getFormStatusArray
                                         ];
 
                                         @endphp
@@ -123,4 +71,3 @@ $showForm = true;
             </div>
         </div>
     </div>
-@endif

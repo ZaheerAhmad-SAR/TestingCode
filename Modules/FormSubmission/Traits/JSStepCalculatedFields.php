@@ -89,7 +89,7 @@ trait JSStepCalculatedFields
                             if(doCalc == true){
                                 answer = ' . $customFormula . ';
                                 $(\'#form_' . $stepIdStr . ' #' . $fieldId . '\').val(answer);
-                                validateAndSubmitField(\'' . $stepIdStr . '\', \'' . $sectionIdStr . '\', \'' . $question->id . '\', \'' . $questionIdStr . '\', ' . $step->form_type_id . ', \'' . $field_name . '\', \'' . $fieldId . '\');
+                                validateAndSubmitField(\'' . $stepIdStr . '\', \'' . $sectionIdStr . '\', \'' . $question->id . '\', \'' . $questionIdStr . '\', ' . $step->formType->form_type . ', \'' . $field_name . '\', \'' . $fieldId . '\');
                             }
                         }
                     }';
