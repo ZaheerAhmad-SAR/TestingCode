@@ -32,7 +32,7 @@
                     <!-- <div class="card-body">  
                     </div> -->
                     <!-- card body ends -->
-                    <form action="#" enctype="multipart/form-data" method="POST">
+                    <form action="{{ route('preferences.save-study-setup', request()->study_id) }}" enctype="multipart/form-data" method="POST">
                         @csrf
                         <div class="modal-body">
                             <div class="tab-content" id="nav-tabContent">
@@ -40,12 +40,12 @@
                                 <div class="form-group row">
                                     <div class="form-group col-md-12">
                                         <label for="Email">Study Email</label>
-                                        <input type="email" class="form-control" name="study_email" id="study_email" required="required" value="" placeholder="e.g info@example.com">
+                                        <input type="email" class="form-control" name="study_email" id="study_email" required="required" @if($checkStudy != null) value="{{ $checkStudy->study_email}}" @else value="" @endif placeholder="e.g info@example.com">
                                     </div>
 
                                     <div class="col-md-12">
                                         <label for="Phone">CC Email</label>
-                                        <input type="text" class="form-control" name="cc_email" id="cc_email" required="required" value="" placeholder="e.g info@example.com,  johndoe@info.com">
+                                        <input type="text" class="form-control" name="study_cc_email" id="study_cc_email" required="required" @if($checkStudy != null) value="{{ $checkStudy->study_cc_email}}" @else value="" @endif placeholder="e.g info@example.com,  johndoe@info.com">
                                     </div>
 
                                 </div>
@@ -57,28 +57,65 @@
                                         <h6 style="padding-top: 15px; padding-bottom: 15px; text-decoration: underline;">Requirement Certification:
                                         </h6>
                                     </div>
-                                    @foreach($getParentModalities as $key => $modility)
-                                    <div class="col-md-4" style="margin-bottom: 10px;">
-                                        @if($key == 0)
-                                        <label for="Phone">Modalities</label>
-                                        @endif
-                                        <input type="text" class="form-control" name="modility_name[]" id="modility_name" value="{{ $modility->modility_name }}" disabled>
-                                    </div>
+                                    @if($checkStudy != null)
 
-                                    <div class="col-md-4">
-                                        @if($key == 0)
-                                        <label for="Phone">Devices Transmission No.</label>
-                                        @endif
-                                        <input type="number" class="form-control" name="cc_email" id="cc_email" value="1" required>
-                                    </div>
+                                    @php
+                                        $getAllowedNo = json_decode($checkStudy->allowed_no_transmission);
+                                        
+                                    @endphp
 
-                                    <div class="col-md-4">
-                                        @if($key == 0)
-                                        <label for="Phone">Photographer Transmission No.</label>
-                                        @endif
-                                        <input type="number" class="form-control" name="cc_email" id="cc_email" value="2" required>
-                                    </div>
-                                    @endforeach
+                                        @foreach($getParentModalities as $key => $modility)
+                                        @php
+                                            $getId = $modility->id;
+                                        @endphp
+                                        <div class="col-md-4" style="margin-bottom: 10px;">
+                                            @if($key == 0)
+                                            <label for="Phone">Modalities</label>
+                                            @endif
+                                            <input type="text" class="form-control" name="modility_name[]" id="modility_name" value="{{ $modility->modility_name }}" disabled>
+                                        </div>
+                                      
+                                        <div class="col-md-4">
+                                            @if($key == 0)
+                                            <label for="Phone">Devices Transmission No.</label>
+                                            @endif
+                                            <input type="number" class="form-control" name="allowed_no_transmission[device][{{$modility->id}}]" id="allowed_no_transmission" value="{{ $getAllowedNo->device->$getId }}" required>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            @if($key == 0)
+                                            <label for="Phone">Photographer Transmission No.</label>
+                                            @endif
+                                            <input type="number" class="form-control" name="allowed_no_transmission[photographer][{{$modility->id}}]" id="allowed_no_transmission" value="{{ $getAllowedNo->photographer->$getId }}" required>
+                                        </div>
+                                        @endforeach
+
+                                    @else
+
+                                        @foreach($getParentModalities as $key => $modility)
+                                        <div class="col-md-4" style="margin-bottom: 10px;">
+                                            @if($key == 0)
+                                            <label for="Phone">Modalities</label>
+                                            @endif
+                                            <input type="text" class="form-control" name="modility_name[]" id="modility_name" value="{{ $modility->modility_name }}" disabled>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            @if($key == 0)
+                                            <label for="Phone">Devices Transmission No.</label>
+                                            @endif
+                                            <input type="number" class="form-control" name="allowed_no_transmission[device][{{$modility->id}}]" id="allowed_no_transmission" value="1" required>
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            @if($key == 0)
+                                            <label for="Phone">Photographer Transmission No.</label>
+                                            @endif
+                                            <input type="number" class="form-control" name="allowed_no_transmission[photographer][{{$modility->id}}]" id="allowed_no_transmission" value="2" required>
+                                        </div>
+                                        @endforeach
+
+                                    @endif
                                  </div>
                                 <!-- row ends -->
                             </div>
