@@ -33,8 +33,6 @@ class PreviewFormController extends Controller
 
     public function printForm($studyId, $subjectId, $phaseId, $stepId, $formFilledByUserId)
     {
-        //`form_filled_by_user_id`, `subject_id`, `study_id`, `study_structures_id`, `phase_steps_id`, `form_type_id`, `modility_id`
-        /***************/
         $studyId = isset($studyId) ? $studyId : 0;
         $studyClsStr = buildSafeStr($studyId, 'study_cls_');
         $study = Study::find($studyId);

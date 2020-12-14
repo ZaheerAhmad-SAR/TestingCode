@@ -24,7 +24,7 @@ $showFalseField = true;
     <div
         class="custom-control custom-checkbox {{ $optionGroup->option_layout == 'horizontal' ? 'custom-control-inline' : '' }}">
         <input type="checkbox" name="{{ $field_name }}[]"
-            onchange="validateAndSubmitField('{{ $stepIdStr }}', '{{ $sectionIdStr }}', '{{ $question->id }}', '{{ $questionIdStr }}', {{ $step->form_type_id }}, '{{ $field_name }}', '{{ $fieldId }}');"
+            onchange="validateAndSubmitField('{{ $stepIdStr }}', '{{ $sectionIdStr }}', '{{ $question->id }}', '{{ $questionIdStr }}', '{{ $step->formType->form_type }}', '{{ $field_name }}', '{{ $fieldId }}');"
             value="{{ $option_value }}" {{ $checked }} class="custom-control-input {{ $skipLogicQuestionIdStr }} {{ 'skip_logic_' . $option_name . '_' . $option_value }}">
         <label class="custom-control-label" for="customCheck1">{{ $option_name }}</label>
     </div>

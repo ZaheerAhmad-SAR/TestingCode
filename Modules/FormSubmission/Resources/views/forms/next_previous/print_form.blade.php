@@ -1,4 +1,4 @@
-@if($isPreview === false && $formStatusObj->form_status == 'complete')
+@if($isPreview === false && $formStatus == 'complete')
 @if(canManageData(['index', 'create', 'store', 'edit', 'update']))
 @php
 $getGradersIdsArray = [

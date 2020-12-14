@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Modules\FormSubmission\Traits\AdjudicationTrait;
 use Modules\FormSubmission\Scopes\FormStatusOrderByScope;
+use Modules\Admin\Entities\FormType;
 use Modules\Admin\Entities\PhaseSteps;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -38,6 +39,11 @@ class FormStatus extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'form_filled_by_user_id', 'id');
+    }
+
+    public function formType()
+    {
+        return $this->belongsTo(FormType::class, 'form_type_id', 'id')->withDefault();
     }
 
     public function getUser($field)
@@ -250,7 +256,7 @@ class FormStatus extends Model
             $formStatusObj->update();
 
 
-            if ($formStatusObj->form_type_id == 2) {
+            if ($formStatusObj->formType->form_type == 'Grading' || $formStatusObj->formType->form_type == 'Eligibility') {
                 $step = PhaseSteps::find($request->stepId);
                 $getGradingFormStatusArray = [
                     'subject_id' => $request->subjectId,
@@ -265,7 +271,7 @@ class FormStatus extends Model
                 }
             }
         }
-        return ['id' => $formStatusObj->id, 'formTypeId' => $formStatusObj->form_type_id, 'formStatus' => $formStatusObj->form_status, 'formStatusIdStr' => buildGradingStatusIdClsStr($formStatusObj->id)];
+        return ['id' => $formStatusObj->id, 'formTypeId' => $formStatusObj->form_type_id, 'formType' => $formStatusObj->formType->form_type, 'formStatus' => $formStatusObj->form_status, 'formStatusIdStr' => buildGradingStatusIdClsStr($formStatusObj->id)];
     }
 
     public static function insertFormStatus($request, $formStatusArray)
