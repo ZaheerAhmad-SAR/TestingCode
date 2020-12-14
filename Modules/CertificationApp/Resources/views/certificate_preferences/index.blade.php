@@ -136,7 +136,7 @@
                                                        
 
                                                          <span class="dropdown-item">
-                                                            <a href="{{ route('preferences.study-setup', encrypt(request()->study_id))}}" data-id="">
+                                                            <a href="{{ route('preferences.study-setup', encrypt($study->id))}}" data-id="">
                                                                 <i class="fas fa-question-circle" aria-hidden="true">
                                                                 </i> Study Setup</a>
                                                         </span>
