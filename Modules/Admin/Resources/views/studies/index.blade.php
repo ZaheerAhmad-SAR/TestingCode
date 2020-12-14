@@ -142,14 +142,19 @@
                                                             </span>
                                                             @endif
                                                             @include('queries::queries.query_popup_span',['study_id'=>$study->id,'studyShortName'=>$study->study_short_name,'studyTitle'=>$study->study_title])
-                                                            <span class="dropdown-item">
+                                                        {{-- <span class="dropdown-item">
                                                              <a href="#" class="addModalities">
                                                                 <i class="fa fa-object-group" aria-hidden="true"></i> Preferences
                                                              </a>
-                                                        </span>
-                                                            <span class="dropdown-item">
+                                                        </span> --}}
+                                                        {{-- <span class="dropdown-item">
                                                             <a href="#" data-id="" class="addModalities">
                                                                 <i class="fa fa-object-group" aria-hidden="true"></i> Modalities
+                                                            </a>
+                                                        </span> --}}
+                                                        <span class="dropdown-item">
+                                                            <a href="{{route('skiplogic.skiponcohort',$study->id)}}" target="_blank">
+                                                                <i class="fa fa-plus"></i> Cohort Sitting
                                                             </a>
                                                         </span>
                                                     </div>

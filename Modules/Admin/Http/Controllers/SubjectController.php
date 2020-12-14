@@ -96,7 +96,15 @@ class SubjectController extends Controller
         //return \response()->json();
 
     }
-
+    public function check_variable_name(Request $request)
+    {
+        $subject_id = Subject::where('subject_id', $request->id)->get();
+        if (count($subject_id) < 1) {
+            echo 'subject_not_found';
+        } else {
+            echo 'subject_found';
+        }
+    }
     /**
      * Show the specified resource.
      * @param int $id

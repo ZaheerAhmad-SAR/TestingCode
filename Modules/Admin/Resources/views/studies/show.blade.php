@@ -77,11 +77,6 @@
                                 <i class="fa fa-plus"></i> Add Subject
                             </button>
                         @endif
-                         <a href="{{route('skiplogic.skiponcohort',session('current_study'))}}" target="_blank">
-                            <button class="btn btn-primary">
-                                <i class="fa fa-plus"></i> Skip Cohort
-                            </button>
-                        </a>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive list">
@@ -151,9 +146,13 @@
                         <input type="hidden" name="id" id="id">
                         <input type="hidden" value="{{$study}}" name="users">
                         <div class="form-group row" style="margin-top: 10px;">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-10">
+                                <p class="msg" style="color: red;font-size: 11px;"></p>
+                            </div>
                             <label for="subject_id" class="col-md-2">Subject ID</label>
                             <div class="{!! ($errors->has('subject_id')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                <input type="text" class="form-control" id="subject_id" name="subject_id" value="{{old('subject_id')}}">
+                                <input type="text" class="form-control" id="subject_id" name="subject_id" value="{{old('subject_id')}}" onchange="check_if_subject_exists(this)">
                                 @error('subject_id')
                                 <span class="text-danger small">{{ $message }} </span>
                                 @enderror
@@ -424,7 +423,31 @@
 
                 } // confirm
 
-            });
+        });
+        // check for duplicate subject entry
+        function check_if_subject_exists(selectObject)
+        {
+            var value = selectObject.value
+               url_route = "{{ URL('subjects/check_variable') }}";
 
+           $.ajax({
+                url: url_route,
+                type: 'post',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'id': value
+                },
+                success: function(response) {
+                    if (response == 'subject_found') {
+                        $('.msg').html('Subject already exists!');
+                        $('#subject_id').val('');
+                        $('#subject_id').focus();
+                    } else {
+                        $('.msg').html('');
+                    }
+                }
+            });
+        }
     </script>
 @endsection
