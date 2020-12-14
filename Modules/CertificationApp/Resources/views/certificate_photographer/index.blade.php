@@ -112,31 +112,39 @@
                             <table class="table table-bordered" id="laravel_crud">
                                 <thead class="table-secondary">
                                     <tr>
-                                        <th>Transmission#</th>
-                                        <th>Study</th>
                                         <th>Photographer</th>
                                         <th>Certification</th>
+                                        <th>Study</th>
                                         <th>Site</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
+                                        <th>Certification Status</th>
+                                        <th>Transmission#</th>
+                                        <!-- <th>Action</th> -->
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @if(!$getTransmissions->isEmpty())
                                     @foreach($getTransmissions as $transmission)
                                         <tr>
-                                            <td>  
-                                                <a href="#" id="view-transmission" class="" data-id="" title="Edit Certifaction Photographer Details" data-url="" style="color: #17a2b8 !important">
-                                                    {{$transmission->Transmission_Number}}
-                                                </a>
-                                            </td>
-                                            <td> {{$transmission->Study_Name}} </td>
                                             <td> 
                                                 {{$transmission->Photographer_First_Name}} 
                                             </td>
                                             <td> {{$transmission->Requested_certification}}</td>
+                                           
+                                            <td> {{$transmission->Study_Name}} </td>
+                                           
                                             <td> {{$transmission->Site_Name}} </td>
+                                            
                                             <td> 
+                                                <span class="badge badge-dark">
+                                                    Generate Certificate
+                                                </span> 
+                                            </td>
+                                            
+                                            <td>  
+                                                <a href="#" id="view-transmission" class="" data-id="" title="Edit Certifaction Photographer Details" data-url="" style="color: #17a2b8 !important">
+                                                    {{$transmission->Transmission_Number}}
+                                                </a> &nbsp; | &nbsp;
+
                                                 @if($transmission->status == 'accepted')
 
                                                     <span class="badge badge-success">{{$transmission->status}}
@@ -162,10 +170,14 @@
                                                     <span class="badge badge-dark">{{$transmission->status}}
                                                     </span>
 
+                                                @endif
 
-                                                @endif </td>
-                                            <td>
+                                                <!-- |
+                                                <i class="fas fa-edit"> </i> -->
 
+                                            </td>
+
+                                            <!--  <td>
                                                 &nbsp; &nbsp;
                                                 &nbsp; &nbsp;
 
@@ -182,7 +194,7 @@
                                                     </div>
                                                 </div>
                                                 
-                                            </td> 
+                                            </td>  -->
                                             
                                         </tr>
                                     @endforeach
