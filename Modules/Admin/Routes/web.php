@@ -21,30 +21,20 @@
 
 //     return view('errors.404');
 // });
-
+// route to check if subject exists
+Route::post('subjects/check_variable', 'SubjectController@check_variable_name')->name('subjects.checkVariable');
+// end
 Route::post('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
-
 Route::post('studies/getAssignedAdminsToStudy', 'StudyController@getAssignedAdminsToStudy')->name('studies.getAssignedAdminsToStudy');
-
 Route::post('transmissions/getAllPIBySiteId', 'TransmissionController@getAllPIBySiteId')->name('transmissions.getAllPIBySiteId');
-
-
 Route::post('transmissions/queryTransmissionMail', 'TransmissionController@queryTransmissionMail')->name('transmissions.queryTransmissionMail');
 Route::post('transmissions/queryTransmissionMailResponse', 'TransmissionController@queryTransmissionMailResponse')->name('transmissions.queryTransmissionMailResponse');
-
 Route::post('transmissions/queryResponseSave', 'TransmissionController@queryResponseSave')->name('transmissions.queryResponseSave');
-
 Route::post('transmissions/showResponseById', 'TransmissionController@showResponseById')->name('transmissions.showResponseById');
-
 Route::post('transmissions/getQueryByTransmissionId', 'TransmissionController@getQueryByTransmissionId')->name('transmissions.getQueryByTransmissionId');
-
 Route::post('transmissions/getSiteByTransmissionId', 'TransmissionController@getSiteByTransmissionId')->name('transmissions.getSiteByTransmissionId');
-
 Route::get('transmissions/verifiedToken/{id}/', 'TransmissionController@verifiedToken')->name('transmissions.verifiedToken');
-
 Route::post('transmissions-status', 'TransmissionController@transmissionStatus')->name('transmissions-status');
-
-
 Route::prefix('admin')->group(function () {
     Route::get('/', 'AdminController@index');
 });
@@ -91,7 +81,6 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('skiplogic/options_for_skip_logic_deactivate/{id}', 'SkipLogicController@options_skip_logic_deactivate')->name('skiplogic.optionsSkipdeactivate');
     Route::get('skiplogic/options_for_skip_logic_activate/{id}', 'SkipLogicController@options_skip_logic_activate')->name('skiplogic.optionsSkipactivate');
     Route::post('skiplogic/steps_to_skip', 'SkipLogicController@getSteps_toskip')->name('skiplogic.get_steps_skip_logic');
-
 
     Route::get('skiplogic/skip_logic/{id}', 'SkipLogicController@skip_question_on_click')->name('skiplogic.skipLogic');
     Route::get('skiplogic/text_skip_logic/{id}', 'SkipLogicController@skip_question_on_text')->name('skiplogic.textskipLogic');
@@ -159,9 +148,9 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
 
     Route::post('modalities/update', 'ModilityController@update')->name('modalities.update');
-
+    // routes for subject
     Route::resource('subjects', 'SubjectController');
-
+   
     //Route::resource('studyrole','StudyRoleController');
 
     // routes for form managment
