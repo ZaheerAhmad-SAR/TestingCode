@@ -305,7 +305,7 @@
                                 <div class="form-group row queryAttachments">
                                     <label for="Attachment" class="col-sm-2 col-form-label">Attachment:</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" type="file" name="query_file"  id="query_file">
+                                        <input class="form-control" type="file" name="query_file[]"  id="query_file" multiple>
                                     </div>
                                 </div>
                             </div>
@@ -554,7 +554,6 @@
         var notification_remarked_id     = $('#notification_remarked_id').val();
         var query_id_response            = $('#query_id_response').val();
         var cc_email_response            = $('#cc_email_response').val();
-        console.log(typeof cc_email_response);
         var email_subject_response       = $('#email_subject_response').val();
         var study_id_response            = $('#study_id_response').val();
         var subject_id_response          = $('#subject_id_response').val();
@@ -629,7 +628,15 @@
         formData.append('query_subject', query_subject);
         formData.append('studyShortName', studyShortName);
         // Attach file
-        formData.append('query_file', $('input[type=file]')[0].files[0]);
+
+        //formData.append('query_file', $('input[type=file]')[0].files[0]);
+
+        var files =$('input[type=file]')[0].files;
+
+        for(var i=0;i<files.length;i++){
+            formData.append("query_file[]", files[i], files[i]['name']);
+        }
+
         $('#defaultloader').css('display','');
         $.ajax({
 

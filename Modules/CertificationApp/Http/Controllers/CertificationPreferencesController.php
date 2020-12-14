@@ -10,6 +10,7 @@ use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\ChildModilities;
 
 use Modules\CertificationApp\Entities\StudyModility;
+use Modules\CertificationApp\Entities\StudySetup;
 use Modules\CertificationApp\Entities\CertificationTemplate;
 
 use Illuminate\Support\Str;
@@ -203,6 +204,46 @@ class CertificationPreferencesController extends Controller
         return redirect(route ('preferences.assign-modality', $request->study_id));
 
     } // function end
+
+    public function studySetup(Request $request) {
+
+        // get study setups
+        $checkStudy = StudySetup::where('study_id', decrypt($request->study_id))->first();
+
+        // get parent modalities
+        $getParentModalities = Modility::all();
+
+        return view('certificationapp::certificate_preferences.study_setup', compact('checkStudy', 'getParentModalities'));
+
+    } // study setup function ends
+
+    public function saveStudySetup(Request $request) {
+
+        $checkStudy = StudySetup::where('study_id', decrypt($request->study_id))->first();
+
+        if ($checkStudy === null) {
+
+            $checkStudy = new StudySetup;
+            $checkStudy->id = Str::uuid();
+            $checkStudy->study_email = $request->study_email;
+            $checkStudy->study_cc_email = $request->study_cc_email;
+            $checkStudy->allowed_no_transmission = json_encode($request->allowed_no_transmission);
+            $checkStudy->study_id = decrypt($request->study_id);
+            $checkStudy->save();
+
+        } else {
+
+            $checkStudy->study_email = $request->study_email;
+            $checkStudy->study_cc_email = $request->study_cc_email;
+            $checkStudy->allowed_no_transmission = json_encode($request->allowed_no_transmission);
+            $checkStudy->study_id = decrypt($request->study_id);
+            $checkStudy->save();
+        }
+
+        Session::flash('success', 'Study setup successfully.');
+
+        return redirect(route ('preferences.study-setup', $request->study_id));
+    }
 
     public function getTemplate(Request $request) {
 

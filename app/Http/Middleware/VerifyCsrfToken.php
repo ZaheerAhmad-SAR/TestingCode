@@ -21,6 +21,9 @@ class VerifyCsrfToken extends Middleware
     protected $except = [
         'transmissions/transmissionData',
         'tinymce-image_upload',
+        'transmissions/transmissionDataDevice',
+        'transmissions/transmissionDataPhotographer',
+        'transmissions/testTransmissionDataPhotographer',
     ];
 
     /*

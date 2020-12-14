@@ -6,6 +6,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\CertificationApp\Entities\TransmissionDataPhotographer;
+use Modules\CertificationApp\Entities\TestPhotographerTransmission;
 
 class TransmissionDataPhotographerController extends Controller
 {
@@ -117,8 +118,13 @@ class TransmissionDataPhotographerController extends Controller
 
     public function transmissionDataPhotographer(Request $request) {
 
+        // remove the upper section
+        $explodeGetCFtPTrans = explode('<?xml', $request);
+
+        // concatinate xml with the remaining  xml
+        $xml = '<?xml'.$explodeGetCFtPTrans[1];
         // get xml data
-        $xml    = simplexml_load_string($request);
+        $xml    = simplexml_load_string($xml);
 
         // check for trimission number
         $checkTransmissionNumber = TransmissionDataPhotographer::where('Transmission_Number', $xml->Transmission_Number)->first();
@@ -181,5 +187,15 @@ class TransmissionDataPhotographerController extends Controller
 
             echo 'Transmission Number already exists.';
         }
+    }
+
+    // test photographer transmission
+    public function testTransmissionDataPhotographer(Request $request) {
+
+        $saveData = new TestPhotographerTransmission;
+        $saveData->data = $request;
+        $saveData->save();
+
+        echo "Data Saved";
     }
 }

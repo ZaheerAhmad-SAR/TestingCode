@@ -11,19 +11,22 @@
 |
 */
 
+// test post phographer transmission
+	Route::post('transmissions/testTransmissionDataPhotographer', 'TransmissionDataPhotographerController@testTransmissionDataPhotographer')->name('transmissions.testTransmissionDataPhotographer');
+
 // post device transmission
 	Route::post('transmissions/transmissionDataDevice', 'TransmissionDataDeviceController@transmissionDataDevice')->name('transmissions.transmissionDataDevice');
 
 // post photographer transmission
 	Route::post('transmissions/transmissionDataPhotographer', 'TransmissionDataPhotographerController@transmissionDataPhotographer')->name('transmissions.transmissionDataPhotographer');
 
-// certification template
+// get certification template
 	Route::get('certification-template', 'CertificationPreferencesController@getTemplate')->name('certification-template');
 
 // save certification template
 	Route::post('certification-template', 'CertificationPreferencesController@saveTemplate')->name('save-certification-template');
 
-// save certification template
+// update certification template
 	Route::post('update-certification-template', 'CertificationPreferencesController@updateTemplate')->name('update-certification-template');
 
 // get preferences assign modality
@@ -34,6 +37,12 @@
 
 // post preferences remove modality
 	Route::post('preferences/remove-assign-modality/{study_id}', 'CertificationPreferencesController@removeAssignModality')->name('preferences.remove-assign-modality');
+
+// get preferences study setup
+	Route::get('preferences/study-setup/{study_id}', 'CertificationPreferencesController@studySetup')->name('preferences.study-setup');
+
+// save preferences study setup
+	Route::post('preferences/study-setup/{study_id}', 'CertificationPreferencesController@saveStudySetup')->name('preferences.save-study-setup');
 
 // get studies for preference
 	Route::resource('certification-preferences', 'CertificationPreferencesController');
