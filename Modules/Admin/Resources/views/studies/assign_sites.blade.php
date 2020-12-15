@@ -71,7 +71,7 @@
                     <div class="form-group col-md-12 mt-3">
                         <button type="button" class="btn btn-primary assign-sites" data-url="{{ route('studySite.update') }}">Assign Modality</button>
 
-                            <button type="button" class="btn btn-primary remove-modality" data-url="">Remove Sites</button>
+                            <button type="button" class="btn btn-primary remove-sites" data-url="{{route('studySite.removeAssignedSites')}}">Remove Sites</button>
 
                         @if (!$sites->isEmpty())
                         <span style="float: right; margin-top: 3px;" class="badge badge-pill badge-primary">
@@ -92,12 +92,6 @@
 
                             <div class="form-group col-md-5">
                                 <label for="inputState">Site Code</label>
-                                        <div id="bloodhound">
-                                            <input class="typeahead form-control rounded" type="text" placeholder="States of USA">
-                                        </div>
-                            </div>
-                            <div class="form-group col-md-5">
-                                <label for="inputState">Site Code</label>
                                 <select id="site_code" name="site_code" class="form-control filter-form-data">
                                     <option value="">All Site Code</option>
                                     @foreach($sites as $site)
@@ -105,12 +99,26 @@
                                     @endforeach
                                 </select>
                             </div>
+
+                            <div class="form-group col-md-5">
+                                <label for="inputState">Site Name</label>
+                                <select id="site_name" name="site_name" class="form-control filter-form-data">
+                                    <option value="">All Site Name</option>
+                                    @foreach($sites as $site)
+                                    <option @if(request()->site_name == $site->id) selected @endif value="{{ $site->id }}">{{ $site->site_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
                             <div class="form-group col-md-5">
                                 <label for="inputState">Site Address</label>
                                 <select id="site_address" name="site_address" class="form-control filter-form-data">
                                     <option value="">All Site Address</option>
-                                    @foreach($sites as $site)
-                                    <option @if(request()->site_address == $site->id) selected @endif value="{{ $site->id }}">{{ $site->site_address }}</option>
+                                    @php
+                                        $addressSites = Modules\Admin\Entities\Site::select('id','site_address')->groupBy('site_address')->get();
+                                    @endphp
+                                    @foreach($addressSites as $addressSite)
+                                    <option @if(request()->site_address == $addressSite->id) selected @endif value="{{ $addressSite->id }}">{{ $addressSite->site_address }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -150,13 +158,16 @@
                                     @endforeach
                                 </select>
                             </div>
-
-
-
+                            <div class="form-group col-md-5">
+                                <label for="inputState">Text </label>
+                                <div id="bloodhound">
+                                    <input class="typeahead form-control rounded" type="text" placeholder="">
+                                </div>
+                            </div>
                             <div class="form-group col-md-2 mt-4">
                                <!--  <button type="button" class="btn btn-primary reset-filter-1">Reset</button> -->
-                                <button type="submit" class="btn btn-primary btn-lng">Filter Records</button>
-                                <button type="button" class="btn btn-primary reset-filter">Reset</button>
+                                <button type="submit" class="btn btn-primary btn-lng"> <i class="fas fa-filter" aria-hidden="true"></i>Filter</button>
+                                <button type="button" class="btn btn-outline-warning reset-filter"><i class="fas fa-undo-alt" aria-hidden="true"></i>Reset</button>
 
                             </div>
 
@@ -173,8 +184,7 @@
                                     <thead>
 
                                     <tr class="table-secondary">
-                                        <th>Select All
-                                            <input type="checkbox" class="select_all" name="select_all" id="select_all">
+                                        <th style="width: 11%;"> <input type="checkbox" class="select_all" name="select_all" id="select_all"> &nbsp; Select All
                                         </th>
                                         <th>Code</th>
                                         <th>Name</th>
@@ -182,7 +192,7 @@
                                         <th>City</th>
                                         <th>State</th>
                                         <th>Country</th>
-{{--                                        <th style="width: 5%;">Status</th>--}}
+                                        <th>Status</th>
                                     </tr>
 
                                     </thead>
@@ -201,7 +211,9 @@
                                                 <td>{{ucfirst($site->site_city)}}</td>
                                                 <td>{{ucfirst($site->site_state)}}</td>
                                                 <td>{{ucfirst($site->site_country)}}</td>
-{{--                                                <td><span class="badge badge-success">Yes</span></td>--}}
+                                                <td>
+                                                    {!! \Modules\Admin\Entities\StudySite::checkAssignedStudySite(\Session::get('current_study'), $site->id) !!}
+                                                </td>
                                             </tr>
                                         @endforeach
 
@@ -249,6 +261,7 @@
 <script type="text/javascript">
 
     $('select[name="site_code"]').select2();
+    $('select[name="site_name"]').select2();
     $('select[name="site_address"]').select2();
     $('select[name="site_city"]').select2();
     $('select[name="site_state"]').select2();
@@ -278,7 +291,7 @@
 
     });
 
-    $('.remove-modality').click(function() {
+    $('.remove-sites').click(function() {
         // any checkbox is checked
         if ($(".check_sites:checked").length > 0) {
 
