@@ -27,7 +27,7 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-2">
-                            <button  onclick="showExportFilterModal();" class="btn btn-warning">Export Data</a>
+                            <button  onclick="showExportTypesModal();" class="btn btn-warning">Export Data</button>
                             </div>
                         </div>
                     </div>
@@ -39,14 +39,14 @@
     @stop
     @push('script')
     <script>
-        function showExportFilterModal(){
+            function showExportTypesModal(){
                 $('#export_filters_modal').modal('show');
-                loadExportFilterForm();
+                loadExportTypes();
             }
 
-            function loadExportFilterForm(){
+            function loadExportTypes(){
                 $.ajax({
-                    url: "{{route('formDataExport.loadExportFilterForm')}}",
+                    url: "{{route('exportType.loadExportTypes')}}",
                     type: 'POST',
                     data: {
                         "_token": "{{ csrf_token() }}"
@@ -57,17 +57,91 @@
                     }
                 });
             }
-            function submitExportFilterForm(e){
+
+            function showAddExportTypeModal(){
+                loadAddExportTypeForm();
+            }
+
+            function loadAddExportTypeForm(){
+                $.ajax({
+                    url: "{{route('exportType.loadAddExportTypeForm')}}",
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}"
+                    },
+                    success: function(response){
+                        $('#export_filter_form_div').empty();
+                        $("#export_filter_form_div").html(response);
+                    }
+                });
+            }
+
+            function loadEditExportTypeForm(exportTypeId){
+                $.ajax({
+                    url: "{{route('exportType.loadEditExportTypeForm')}}",
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "exportTypeId": exportTypeId
+                    },
+                    success: function(response){
+                        $('#export_filter_form_div').empty();
+                        $("#export_filter_form_div").html(response);
+                    }
+                });
+            }
+
+            function removeEditExportType(exportTypeId){
+                $.ajax({
+                    url: "{{route('exportType.removeEditExportType')}}",
+                    type: 'DELETE',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "exportTypeId": exportTypeId
+                    },
+                    success: function(response){
+                        $('#'+exportTypeId).remove();
+                    }
+                });
+            }
+
+            function submitAddExportTypeForm(e) {
                 e.preventDefault();
+                $.ajax({
+                    url: "{{ route('exportType.submitAddExportTypeForm') }}",
+                    type: 'POST',
+                    data: $("#add_export_type_form").serialize(),
+                    success: function(response) {
+                        loadExportTypes();
+                    }
+                });
+
+            }
+
+            function submitEditExportTypeForm(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: "{{ route('exportType.submitEditExportTypeForm') }}",
+                    type: 'PUT',
+                    data: $("#edit_export_type_form").serialize(),
+                    success: function(response) {
+                        loadExportTypes();
+                    }
+                });
+
+            }
+
+            function submitExportFilterForm(visit_ids, form_type_id, modility_id, print_options_values){
                 var query = {
-                        visit_ids: $('#export_visit_ids').val(),
-                        form_type_id: $('#export_form_type_id').val(),
-                        modility_id: $('#export_modility_id').val(),
-                        print_options_values: $('#print_options_values').val(),
+                        "visit_ids": visit_ids,
+                        "form_type_id": form_type_id,
+                        "modility_id": modility_id,
+                        "print_options_values": print_options_values,
                         "_token": "{{ csrf_token() }}"
                     }
                 var url = "{{ route('formDataExport.export') }}?" + $.param(query);
                 window.location = url;
             }
+
     </script>
     @endpush

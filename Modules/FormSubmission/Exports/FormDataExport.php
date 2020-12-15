@@ -21,7 +21,7 @@ class FormDataExport implements FromView
     public function __construct($request)
     {
         $this->study_id = session('current_study');
-        $this->visit_ids = $request->input('visit_ids', []);
+        $this->visit_ids = explode(',', $request->input('visit_ids', []));
         $this->modility_id = $request->input('modility_id', '');
         $this->form_type_id = $request->input('form_type_id', '');
         $this->print_options_values = $request->input('print_options_values', 'option_values');
@@ -35,7 +35,7 @@ class FormDataExport implements FromView
             'site_id' => 'Site ID',
             'site_name' => 'Site Name',
             'site_code' => 'Site Code',
-            'subject' => 'Subject',
+            'subject_id' => 'Subject',
             'study_eye' => 'Study EYE',
             'visit' => 'Visit',
             'visit_date' => 'Visit Date',
@@ -95,7 +95,7 @@ class FormDataExport implements FromView
 
                     $permanentTds = [
                         'study' => $study->study_short_name,
-                        'cohort' => Study::getDiseaseCohort($study),
+                        'cohort' => Subject::getDiseaseCohort($subject),
                         'site_id' => $studySite->study_site_id,
                         'site_name' => $site->site_name,
                         'site_code' => $site->site_code,
@@ -146,7 +146,7 @@ class FormDataExport implements FromView
                                     $fieldType = $question->form_field_type->field_type;
 
                                     if (
-                                        ($this->print_options_values == 'option_titles') &&
+                                        ($this->print_options_values == 'Option Titles') &&
                                         (
                                             ($fieldType == 'Radio') ||
                                             ($fieldType == 'Checkbox') ||

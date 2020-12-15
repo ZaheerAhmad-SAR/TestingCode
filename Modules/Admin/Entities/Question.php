@@ -82,4 +82,9 @@ class Question extends Model
     {
         return $this->hasMany(QuestionValidation::class, 'question_id', 'id');
     }
+
+    public function questionComments()
+    {
+        return $this->hasMany(QuestionComments::class, 'question_id', 'id');
+    }
 }

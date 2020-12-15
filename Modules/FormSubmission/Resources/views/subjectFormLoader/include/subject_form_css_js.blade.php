@@ -770,6 +770,72 @@
                 });
             }
 
+            function loadQuestionCommentPopup(studyId, subjectId, phaseId, stepId, sectionId, questionId) {
+                $("#questionCommentPopup").modal('show');
+                $.ajax({
+                    url: "{{ route('questionComment.loadQuestionCommentPopup') }}",
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        'subjectId': subjectId,
+                        'studyId': studyId,
+                        'phaseId': phaseId,
+                        'stepId': stepId,
+                        'sectionId': sectionId,
+                        'questionId': questionId,
+                    },
+                    success: function(response) {
+                        $('#questionCommentDiv').empty();
+                        $("#questionCommentDiv").html(response);
+                    }
+                });
+            }
+
+            function loadAddQuestionCommentForm(studyId, subjectId, phaseId, stepId, sectionId, questionId) {
+                $("#questionCommentPopup").modal('hide');
+                $("#addQuestionCommentPopup").modal('show');
+                $.ajax({
+                    url: "{{ route('questionComment.loadAddQuestionCommentForm') }}",
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        'subjectId': subjectId,
+                        'studyId': studyId,
+                        'phaseId': phaseId,
+                        'stepId': stepId,
+                        'sectionId': sectionId,
+                        'questionId': questionId,
+                    },
+                    success: function(response) {
+                        $('#addQuestionCommentDiv').empty();
+                        $("#addQuestionCommentDiv").html(response);
+                    }
+                });
+            }
+
+            function submitAddQuestionCommentForm(e) {
+                e.preventDefault();
+                var studyId = $('#addQuestionCommentForm #studyId').val();
+                var subjectId = $('#addQuestionCommentForm #subjectId').val();
+                var phaseId = $('#addQuestionCommentForm #phaseId').val();
+                var stepId = $('#addQuestionCommentForm #stepId').val();
+                var sectionId = $('#addQuestionCommentForm #sectionId').val();
+                var questionId = $('#addQuestionCommentForm #questionId').val();
+
+                $("#assignPhasesToSubjectPopup").modal('hide');
+                $.ajax({
+                    url: "{{ route('questionComment.submitAddQuestionCommentForm') }}",
+                    type: 'POST',
+                    data: $("#addQuestionCommentForm").serialize(),
+                    success: function(response) {
+                        $('#addQuestionCommentDiv').empty();
+                        $("#addQuestionCommentPopup").modal('hide');
+                        loadQuestionCommentPopup(studyId, subjectId, phaseId, stepId, sectionId, questionId)
+                    }
+                });
+
+            }
+
             function reloadPage(waitSeconds) {
                 startWait();
                 var seconds = waitSeconds * 1000;
