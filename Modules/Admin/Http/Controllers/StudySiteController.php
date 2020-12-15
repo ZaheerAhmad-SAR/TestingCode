@@ -109,8 +109,22 @@ class StudySiteController extends Controller
     {
             //dd($request->all());
             $others = '';
+
             $sites = $request->check_sites != null ? $request->check_sites : [];
-            $current_study =  \Session::get('current_study');
+        $current_study =  \Session::get('current_study');
+
+        foreach($sites as $key => $item)
+            {
+                $row = StudySite::where('site_id',$key)->delete();
+                $result = StudySite::create([
+                    'id'    => Str::uuid(),
+                    'site_id' =>$key,
+                    'study_id'=>$current_study,
+                ]);
+            }
+
+
+
 
             // get event data
             $oldStudySite = StudySite::select(\DB::raw('CONCAT(sites.site_name, " - ", sites.site_code) AS site_name_code'))
@@ -119,14 +133,14 @@ class StudySiteController extends Controller
             ->pluck('site_name_code')
             ->toArray();
 
-            $study = Study::find($current_study);
+            //$study = Study::find($current_study);
 
-            $syncSites = $study != null ? $study->studySites()->sync($sites) : [];
+            //$syncSites = $study != null ? $study->studySites()->sync($sites) : [];
 
             // log event details
             $logEventDetails = eventDetails($current_study, 'Study Site', 'Update', $request->ip(), $oldStudySite);
 
-            return response()->json([$sites]);
+            return back();
     }
 
     public function checkSiteExist(Request $request)
