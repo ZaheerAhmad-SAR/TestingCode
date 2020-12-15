@@ -131,6 +131,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('annotation/add_annotation', 'AnnotationController@store_new_annotation')->name('annotation.addAnnotation');
     Route::post('sites/checkIfSiteIsExist', 'SiteController@checkIfSiteIsExist')->name('sites.checkIfSiteIsExist');
     Route::get('studySite/assignedSites', 'StudySiteController@assignedSites')->name('studySite.assignedSites');
+    Route::post('studySite/removeAssignedSites', 'StudySiteController@removeAssignedSites')->name('studySite.removeAssignedSites');
 });
 Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::resource('studies', 'StudyController');
@@ -150,7 +151,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::post('modalities/update', 'ModilityController@update')->name('modalities.update');
     // routes for subject
     Route::resource('subjects', 'SubjectController');
-   
+
     //Route::resource('studyrole','StudyRoleController');
 
     // routes for form managment

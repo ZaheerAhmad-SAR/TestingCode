@@ -111,7 +111,7 @@ class StudySiteController extends Controller
             $others = '';
 
             $sites = $request->check_sites != null ? $request->check_sites : [];
-        $current_study =  \Session::get('current_study');
+            $current_study =  \Session::get('current_study');
 
         foreach($sites as $key => $item)
             {
@@ -141,6 +141,18 @@ class StudySiteController extends Controller
             $logEventDetails = eventDetails($current_study, 'Study Site', 'Update', $request->ip(), $oldStudySite);
 
             return back();
+    }
+
+    public function removeAssignedSites(Request $request)
+    {
+        $sites = $request->check_sites != null ? $request->check_sites : [];
+        $current_study =  \Session::get('current_study');
+
+        foreach($sites as $key => $item)
+        {
+            $row = StudySite::where('site_id',$key)->where('study_id',$current_study)->delete();
+        }
+        return back();
     }
 
     public function checkSiteExist(Request $request)
