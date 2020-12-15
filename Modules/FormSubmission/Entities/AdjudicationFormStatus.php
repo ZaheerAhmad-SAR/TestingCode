@@ -3,6 +3,7 @@
 namespace Modules\FormSubmission\Entities;
 
 use App\User;
+use Modules\Admin\Entities\FormType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -25,6 +26,11 @@ class AdjudicationFormStatus extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'form_adjudicated_by_id', 'id');
+    }
+
+    public function formType()
+    {
+        return $this->belongsTo(FormType::class, 'form_type_id', 'id')->withDefault();
     }
 
     public function getUser($field)

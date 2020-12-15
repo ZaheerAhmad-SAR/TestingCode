@@ -1,4 +1,3 @@
-@if($step->is_active == 1 || $isPreview === true)
 @if (count($section->questions))
 <fieldset class="{{ $studyClsStr }} {{ $stepClsStr }} {{ $skipLogicStepIdStr }} {{ $skipLogicSectionIdStr }} {{ $sectionClsStr }}">
     <div class="card p-2 mb-1">
@@ -13,10 +12,8 @@
                 'section_id'=>$section->id,
                 'question_id'=>$question->id,
                 'field_id'=>$question->formfields->id,
+                'form_filled_by_user_id'=>$formFilledByUserId,
                 ];
-                if($step->form_type_id == 2){
-                    $getAnswerArray['form_filled_by_user_id'] = auth()->user()->id;
-                }
                 $answer = $question->getAnswer($getAnswerArray);
 
                 $field_name = buildFormFieldName($question->formFields->variable_name);
@@ -42,7 +39,4 @@
             @endforeach
     </div>
 </fieldset>
-@endif
-@else
-<div class="alert alert-danger" role="alert">Form is in draft mode</div>
 @endif

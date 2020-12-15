@@ -36,6 +36,7 @@ trait JSQuestionSkipLogic
 
         return '
         function ' . $checkFunctionName . $questionIdStr . '(){
+            console.log(\'' . $checkFunctionName . $questionIdStr . '\');
             ' . $questionSkipLogicStr . '
         }';
     }
@@ -175,6 +176,8 @@ trait JSQuestionSkipLogic
             $questionSkipLogicStr .= '
 
             function ' . $functionName . $skipLogicIdStr . '(){
+
+                console.log(\'' . $functionName . $skipLogicIdStr . '\');
 
                 var stepIdStr = \'' . $stepIdStr . '\';
                 var fieldVal = ' . $getValueFunctionName . '(stepIdStr, \'' . $fieldName . '\', \'' . $fieldId . '\');

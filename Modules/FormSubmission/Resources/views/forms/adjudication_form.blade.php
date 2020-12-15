@@ -32,7 +32,7 @@
     ];
 
     @endphp
-    @if ($step->form_type_id == 2 && \Modules\FormSubmission\Entities\FormStatus::isAllGradersGradedThatForm($step, $getGradingFormStatusArray))
+    @if (($step->formType->form_type == 'Grading' || $step->formType->form_type == 'Eligibility') && \Modules\FormSubmission\Entities\FormStatus::isAllGradersGradedThatForm($step, $getGradingFormStatusArray))
         @include('formsubmission::forms.adjudication_section_loop', $dataArray)
     @endif
 @endif

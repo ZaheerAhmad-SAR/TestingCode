@@ -69,7 +69,8 @@
                                    <?php $check_value[] = $logic->option_value; ?>
                                 @endif
                             @endforeach
-                            <input type="checkbox" name="option_value[]" onclick="git_steps_for_checks('{{$options_value[$key]}}','{{$key}}','{{$q_id}}','{{$value}}')" value="{{$options_value[$key]}}" @if(in_array($options_value[$key], $check_value)) checked="checked" @endif> &nbsp; {{$value}}
+                            {{$options->question_text}} &nbsp;
+                            <input type="checkbox" name="option_value[]" onclick="git_steps_for_checks('{{$options_value[$key]}}','{{$key}}','{{$q_id}}','{{$value}}')" value="{{$options_value[$key]}}" @if(in_array($options_value[$key], $check_value)) checked="checked" @endif> &nbsp; {{$value}} 
                        </div>
                    </div>
                </div>

@@ -10,7 +10,7 @@
     )
         <button type="button" class="btn btn-warning" name="edit_form_button_{{ $stepIdStr }}"
             id="edit_form_button_{{ $stepIdStr }}"
-            onclick="openFormForEditing('{{ $stepIdStr }}', '{{ $stepClsStr }}', {{ $formStatusObj->form_type_id }}, '{{ buildGradingStatusIdClsStr($formStatusObj->id) }}');"
+            onclick="openFormForEditing('{{ $stepIdStr }}', '{{ $stepClsStr }}', '{{ $formStatusObj->formType->form_type }}', '{{ buildGradingStatusIdClsStr($formStatusObj->id) }}');"
             style="display: {{ $formStatusObj->form_status == 'resumable' ? 'none' : 'block' }};">
             Edit Form
         </button>
@@ -32,7 +32,7 @@
         </button>
     @endif
 
-    @include('formsubmission::forms.next_previous.print_form')
+    @include('formsubmission::forms.next_previous.print_form', ['formStatus'=>$formStatusObj->form_status])
 
 </div>
 @if($isPreview === false)

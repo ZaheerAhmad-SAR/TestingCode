@@ -8,7 +8,7 @@ $getFormQCStatusArray = [
 'form_type_id' => $step->form_type_id,
 ];
 @endphp
-    @if ($step->form_type_id == 1)
+    @if ($step->formType->form_type == 'QC')
         <a class="badge p-1 {{ $badgeCls }} m-1  {{ $stepClsStr }}  {{ $skipLogicStepIdStr }}" href="javascript:void(0);"
             onclick="showSections('step_sections_{{ $stepIdStr }}'); updateCurrentStepId('{{ $step->phase->id }}', '{{ $step->step_id }}', 'no');">
             {{ $step->formType->form_type . ' ' . $step->modility->modility_name }}
