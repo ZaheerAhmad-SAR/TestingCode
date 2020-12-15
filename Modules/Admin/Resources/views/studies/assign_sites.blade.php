@@ -182,7 +182,7 @@
                                         <th>City</th>
                                         <th>State</th>
                                         <th>Country</th>
-{{--                                        <th style="width: 5%;">Status</th>--}}
+                                        <th style="width: 5%;">Status</th>
                                     </tr>
 
                                     </thead>
@@ -201,7 +201,9 @@
                                                 <td>{{ucfirst($site->site_city)}}</td>
                                                 <td>{{ucfirst($site->site_state)}}</td>
                                                 <td>{{ucfirst($site->site_country)}}</td>
-{{--                                                <td><span class="badge badge-success">Yes</span></td>--}}
+                                                <td>
+                                                    {!! \Modules\Admin\Entities\StudySite::checkAssignedStudySite(\Session::get('current_study'), $site->id) !!}
+                                                </td>
                                             </tr>
                                         @endforeach
 
