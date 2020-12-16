@@ -44,16 +44,16 @@ class SiteController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'site_code:required|unique',
-            'site_name:required',
-            'site_country:required',
-            'site_address:required',
-            'site_city:required',
-            'site_state:required',
-            'site_phone:required|numeric|max:15',
-            'site_email:required|email',
-        ]);
+//        $request->validate([
+//            'site_code:required|unique',
+//            'site_name:required',
+//            'site_country:required',
+//            'site_address:required',
+//            'site_city:required',
+//            'site_state:required',
+//            'site_phone:required|numeric|max:15',
+//            'site_email:required|email',
+//        ]);
 
         $id = Str::uuid();
             $site = Site::create([

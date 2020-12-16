@@ -69,7 +69,7 @@
                 <div class="card">
 
                     <div class="form-group col-md-12 mt-3">
-                        <button type="button" class="btn btn-primary assign-sites" data-url="{{ route('studySite.update') }}">Assign Modality</button>
+                        <button type="button" class="btn btn-primary assign-sites" data-url="{{ route('studySite.update') }}">Assign Sites</button>
 
                             <button type="button" class="btn btn-primary remove-sites" data-url="{{route('studySite.removeAssignedSites')}}">Remove Sites</button>
 
@@ -174,7 +174,11 @@
                         </div>
                         <!-- row ends -->
                     </form>
-
+{{--                    @if(Session::has('message'))--}}
+{{--                        <div class="alert alert-success" role="alert">--}}
+{{--                            {{ Session::get('message') }} --}}
+{{--                        </div>--}}
+{{--                    @endif--}}
                     <div class="card-body">
 
                         <div class="table-responsive">

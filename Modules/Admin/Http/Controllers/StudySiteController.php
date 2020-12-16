@@ -139,8 +139,9 @@ class StudySiteController extends Controller
 
             // log event details
             $logEventDetails = eventDetails($current_study, 'Study Site', 'Update', $request->ip(), $oldStudySite);
+          \Illuminate\Support\Facades\Session::flash('message', 'This is a message!');
 
-            return back();
+        return back();
     }
 
     public function removeAssignedSites(Request $request)
