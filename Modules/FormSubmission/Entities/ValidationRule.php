@@ -4,10 +4,12 @@ namespace Modules\FormSubmission\Entities;
 
 use Modules\FormSubmission\Scopes\RuleActiveScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Admin\Entities\Question;
 
 class ValidationRule extends Model
 {
+    use SoftDeletes;
     protected $table = 'validation_rules';
     protected $keyType = 'string';
     protected $fillable = ['rule', 'title', 'description', 'rule_group', 'is_active', 'is_related_to_other_field'];

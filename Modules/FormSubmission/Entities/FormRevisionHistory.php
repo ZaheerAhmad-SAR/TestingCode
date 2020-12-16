@@ -5,9 +5,11 @@ namespace Modules\FormSubmission\Entities;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FormRevisionHistory extends Model
 {
+    use SoftDeletes;
     protected $table = 'form_revision_history';
     protected $fillable = ['id', 'form_submit_status_id', 'edit_reason_text'];
     protected $keyType = 'string';

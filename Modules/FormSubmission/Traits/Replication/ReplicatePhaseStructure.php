@@ -10,8 +10,14 @@ use Modules\Admin\Scopes\StudyStructureWithoutRepeatedScope;
 trait ReplicatePhaseStructure
 {
     use QuestionReplication;
+    use QuestionValidationTrait;
+    use QuestionSkipLogic;
+    use QuestionDependencyTrait;
     use SectionReplication;
     use StepReplication;
+    use QuestionAnnotationDescription;
+    use QuestionFormField;
+    use QuestionAdjudicationRequiredStatusTrait;
 
     private function replicatePhaseStructure($phaseId, $isReplicating = true)
     {
@@ -80,6 +86,12 @@ trait ReplicatePhaseStructure
                     /******************************* */
 
                     $this->addReplicatedQuestionAdjudicationStatus($question, $newQuestionId, $isReplicating);
+
+                    /******************************* */
+                    /* Replicate Question Skip Logic */
+                    /******************************* */
+
+                    //$this->addQuestionSkipLogicToReplicatedQuestion($question->id, $newQuestionId);
                 }
             }
         }

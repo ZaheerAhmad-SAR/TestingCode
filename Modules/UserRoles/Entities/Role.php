@@ -4,13 +4,15 @@ namespace Modules\UserRoles\Entities;
 
 use App\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Admin\Entities\RoleStudy;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\PhaseStep;
 
 class Role extends Model
 {
-    protected $fillable = ['id','name','description','role_type','created_by'];
+    use SoftDeletes;
+    protected $fillable = ['id', 'name', 'description', 'role_type', 'created_by'];
     public $incrementing = false;
     public $keyType = 'string';
 
@@ -22,8 +24,8 @@ class Role extends Model
     public function permissions()
     {
         return $this->belongsToMany('Modules\UserRoles\Entities\Permission');
-//        return $this->belongsToMany('Modules\UserRoles\Entities\Permission','permission_role','permission_id','role_id');
-//        $this->belongsToMany('App\Included','included_tour', 'tour_id', 'included_id');
+        //        return $this->belongsToMany('Modules\UserRoles\Entities\Permission','permission_role','permission_id','role_id');
+        //        $this->belongsToMany('App\Included','included_tour', 'tour_id', 'included_id');
     }
 
     public function study()
@@ -40,7 +42,4 @@ class Role extends Model
     {
         return $this->belongsToMany(PhaseStep::class, 'phase_steps_roles', 'role_id', 'phase_id');
     }
-
-
-
 }

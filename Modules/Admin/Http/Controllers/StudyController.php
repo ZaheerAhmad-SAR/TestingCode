@@ -38,6 +38,11 @@ use Modules\UserRoles\Entities\RolePermission;
 use Modules\Admin\Entities\RoleStudyUser;
 use Modules\UserRoles\Entities\UserRole;
 use Illuminate\Support\Str;
+use Modules\Admin\Entities\AssignWork;
+use Modules\Admin\Entities\QuestionComments;
+use Modules\FormSubmission\Entities\ExportType;
+use Modules\FormSubmission\Entities\QuestionAdjudicationRequired;
+use Modules\Queries\Entities\QueryNotification;
 use Modules\UserRoles\Entities\StudyRoleUsers;
 
 use function GuzzleHttp\Promise\all;
@@ -1398,15 +1403,30 @@ class StudyController extends Controller
     public function destroy(Request $request, $id)
     {
         // log event details
-        $logEventDetails = eventDetails($id, 'Study', 'Delete', $request->ip(), []);
+        eventDetails($id, 'Study', 'Delete', $request->ip(), []);
 
-        $study = Study::where('id', $id)->delete();
-
-        $studysites = StudySite::where('study_id', '=', $id)->get();
-        foreach ($studysites as $studysite) {
-            $studysite->delete();
-        }
-
+        Study::where('id', $id)->delete();
+        Subject::where('study_id', $id)->delete();
+        AdjudicationFormStatus::where('study_id', $id)->delete();
+        Annotation::where('study_id', $id)->delete();
+        Answer::where('study_id', $id)->delete();
+        ExportType::where('study_id', $id)->delete();
+        FinalAnswer::where('study_id', $id)->delete();
+        FormStatus::where('study_id', $id)->delete();
+        QuestionAdjudicationRequired::where('study_id', $id)->delete();
+        QuestionComments::where('study_id', $id)->delete();
+        StudyStructure::where('study_id', $id)->delete();
+        AssignWork::where('study_id', $id)->delete();
+        DiseaseCohort::where('study_id', $id)->delete();
+        Preference::where('study_id', $id)->delete();
+        Query::where('study_id', $id)->delete();
+        QueryNotification::where('study_id', $id)->delete();
+        StudySite::where('study_id', $id)->delete();
+        RoleStudyUser::where('study_id', $id)->delete();
+        StudyRoleUsers::where('study_id', $id)->delete();
+        StudyUser::where('study_id', $id)->delete();
+        TrailLog::where('study_id', $id)->delete();
+        UserRole::where('study_id', $id)->delete();
         return \response()->json(['sucess' => 'Study deleted successfully.']);
     }
 }

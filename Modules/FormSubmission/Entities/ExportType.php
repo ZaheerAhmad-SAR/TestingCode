@@ -27,6 +27,11 @@ class ExportType extends Model
         return $this->belongsTo(Modility::class, 'modility_id', 'id')->withDefault();
     }
 
+    public function exportTypeUsage()
+    {
+        return $this->hasMany(ExportTypeUsage::class, 'export_type_id', 'id');
+    }
+
     public static function getPhaseNames($phaseIdsString)
     {
         $phaseIdsArray = explode(',', $phaseIdsString);

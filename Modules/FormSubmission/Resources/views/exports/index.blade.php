@@ -21,15 +21,68 @@
         <div class="row">
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
-                    <div class="card-header  justify-content-between align-items-center">
-                        <h4 class="card-title">Export Data</h4>
-                    </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-2">
-                            <button  onclick="showExportTypesModal();" class="btn btn-warning">Export Data</button>
+                                <button  onclick="showAddExportTypeModal();" class="btn btn-success">Add Export Type</button>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header  justify-content-between align-items-center">
+                        <h4 class="card-title">Export Types</h4>
+                    </div>
+                    <div class="card-body">
+                            <div class="tab-content clearfix">
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Title</th>
+                                                <th scope="col">Phases</th>
+                                                <th scope="col">Form Type</th>
+                                                <th scope="col">Modality</th>
+                                                <th scope="col">Title / Value</th>
+                                                <th scope="col">Last exported by</th>
+                                                <th scope="col"></th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($exportTypes as $exportType)
+                                            @php
+                                            $exportTypeUsage = Modules\FormSubmission\Entities\ExportTypeUsage::where('export_type_id', $exportType->id)->orderBy('created_at', 'desc')->first();
+                                            $exportedByName = '';
+                                            $exportedAt = '';
+                                            if(null !== $exportTypeUsage){
+                                                $dataExportedBy = App\User::find($exportTypeUsage->data_exported_by_id);
+                                                $exportedByName = $dataExportedBy->name;
+                                                $exportedAt = $exportTypeUsage->created_at->format('m-d-Y h:i:s');
+                                            }
+
+                                            @endphp
+                                                <tr id="{{ $exportType->id }}">
+                                                    <td>{{ $exportType->export_type_title }}</td>
+                                                    <td>{{ \Modules\FormSubmission\Entities\ExportType::getPhaseNames($exportType->phase_ids) }}
+                                                    </td>
+                                                    <td>{{ $exportType->formType->form_type }}</td>
+                                                    <td>{{ $exportType->modality->modility_name }}</td>
+                                                    <td>{{ $exportType->titles_values }}</td>
+                                                    <td>{{ $exportedByName }}<br>{{ $exportedAt }}</td>
+                                                    <td>
+                                                        <i class="fas fa-edit" onclick="loadEditExportTypeForm('{{ $exportType->id }}');"></i>
+                                                        &nbsp;&nbsp;
+                                                        <i class="fas fa-trash-alt" onclick="removeEditExportType('{{ $exportType->id }}');"></i>
+                                                    </td>
+                                                    <td><button type="button" onclick="submitExportFilterForm('{{ $exportType->id }}', '{{ $exportType->phase_ids }}', '{{ $exportType->form_type_id }}', '{{ $exportType->modility_id }}', '{{ $exportType->titles_values }}');" class="btn btn-info">Export Data</button></td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                    {{ $exportTypes->links() }}
+                                </div>
+                            </div>
                     </div>
                 </div>
             </div>
@@ -59,6 +112,7 @@
             }
 
             function showAddExportTypeModal(){
+                $('#export_filters_modal').modal('show');
                 loadAddExportTypeForm();
             }
 
@@ -77,6 +131,7 @@
             }
 
             function loadEditExportTypeForm(exportTypeId){
+                $('#export_filters_modal').modal('show');
                 $.ajax({
                     url: "{{route('exportType.loadEditExportTypeForm')}}",
                     type: 'POST',
@@ -92,17 +147,20 @@
             }
 
             function removeEditExportType(exportTypeId){
-                $.ajax({
-                    url: "{{route('exportType.removeEditExportType')}}",
-                    type: 'DELETE',
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        "exportTypeId": exportTypeId
-                    },
-                    success: function(response){
-                        $('#'+exportTypeId).remove();
-                    }
-                });
+                var result = confirm("Are you sure?");
+                if (result) {
+                    $.ajax({
+                        url: "{{route('exportType.removeEditExportType')}}",
+                        type: 'DELETE',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            "exportTypeId": exportTypeId
+                        },
+                        success: function(response){
+                            reloadPage(1);
+                        }
+                    });
+                }
             }
 
             function submitAddExportTypeForm(e) {
@@ -112,7 +170,7 @@
                     type: 'POST',
                     data: $("#add_export_type_form").serialize(),
                     success: function(response) {
-                        loadExportTypes();
+                        reloadPage(1);
                     }
                 });
 
@@ -125,14 +183,15 @@
                     type: 'PUT',
                     data: $("#edit_export_type_form").serialize(),
                     success: function(response) {
-                        loadExportTypes();
+                        reloadPage(1);
                     }
                 });
 
             }
 
-            function submitExportFilterForm(visit_ids, form_type_id, modility_id, print_options_values){
+            function submitExportFilterForm(export_type_id, visit_ids, form_type_id, modility_id, print_options_values){
                 var query = {
+                        "export_type_id": export_type_id,
                         "visit_ids": visit_ids,
                         "form_type_id": form_type_id,
                         "modility_id": modility_id,
@@ -141,6 +200,13 @@
                     }
                 var url = "{{ route('formDataExport.export') }}?" + $.param(query);
                 window.location = url;
+            }
+
+            function reloadPage(waitSeconds) {
+                var seconds = waitSeconds * 1000;
+                setTimeout(function() {
+                    location.reload();
+                }, seconds);
             }
 
     </script>

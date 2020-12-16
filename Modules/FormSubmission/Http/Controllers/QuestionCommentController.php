@@ -22,7 +22,7 @@ class QuestionCommentController extends Controller
         ];
         $questionComments = QuestionComments::getQuestionComments($getQuestionCommentsArray);
 
-        echo view('formsubmission::subjectFormLoader.include.questionCommentsListing')
+        echo view('formsubmission::question_comments.questionCommentsListing')
             ->with('questionComments', $questionComments)
             ->with('subjectId', $request->subjectId)
             ->with('studyId', $request->studyId)
@@ -34,7 +34,7 @@ class QuestionCommentController extends Controller
 
     public function loadAddQuestionCommentForm(Request $request)
     {
-        echo view('formsubmission::subjectFormLoader.include.addQuestionCommentForm')
+        echo view('formsubmission::question_comments.addQuestionCommentForm')
             ->with('subjectId', $request->subjectId)
             ->with('studyId', $request->studyId)
             ->with('phaseId', $request->phaseId)

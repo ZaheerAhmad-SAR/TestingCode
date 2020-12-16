@@ -1,6 +1,6 @@
 @php
 $dataArray = ['question'=> $question, 'field_name'=> $field_name,
-    'questionIdStr'=> $questionIdStr, 'skipLogicQuestionIdStr'=> $skipLogicQuestionIdStr, 'fieldId'=> $fieldId, 'answer'=> $answer, 'is_required'=> $is_required];
+    'questionIdStr'=> $questionIdStr, 'fieldId'=> $fieldId, 'answer'=> $answer];
 @endphp
 @if ($fieldType == 'Radio')
     @include('formsubmission::print.print_form_fields.radio_field', $dataArray)

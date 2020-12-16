@@ -7,4 +7,4 @@
         }
     }
 @endphp
-<div id="{{ $fieldId }}" class="form-control-ocap bg-transparent {{ $skipLogicQuestionIdStr }}">{!! $linkStr !!}</div>
+<div id="{{ $fieldId }}" class="form-control-ocap bg-transparent">{!! $linkStr !!}</div>
