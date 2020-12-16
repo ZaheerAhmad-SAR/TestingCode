@@ -12,7 +12,7 @@
         .select2-container--default
         .select2-selection--single {
             background-color: #fff;
-             border: transparent !important;
+            border: transparent !important;
             border-radius: 4px;
         }
         .select2-selection__rendered {
@@ -25,7 +25,22 @@
             border-radius: .25rem;
             transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
         }
+
+        .select2-container--default.select2-container--focus .select2-selection--multiple {
+            border: solid black 1px;
+            outline: 0;
+        }
+
+        .select2-container--default .select2-selection--multiple {
+            background-color: white;
+            border: 1px solid #485e9029 !important; 
+            border-radius: 4px;
+            cursor: text;
+        }
     </style>
+
+    <link rel="stylesheet" href="{{ asset('public/dist/vendors/summernote/summernote-bs4.css') }}">
+
     <!-- date range picker -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
@@ -124,7 +139,7 @@
                                 <tbody>
                                     @if(!$getTransmissions->isEmpty())
                                     @foreach($getTransmissions as $transmission)
-                                        <tr>
+                                        <tr style="background: {{ $transmission->rowColor }}">
                                             <td> 
                                                 {{$transmission->Photographer_First_Name}} 
                                             </td>
@@ -140,38 +155,60 @@
                                                 </span> 
                                             </td>
                                             
-                                            <td>  
-                                                <a href="#" id="view-transmission" class="" data-id="" title="Edit Certifaction Photographer Details" data-url="" style="color: #17a2b8 !important">
-                                                    {{$transmission->Transmission_Number}}
-                                                </a> &nbsp; | &nbsp;
+                                            <td>
 
-                                                @if($transmission->status == 'accepted')
+                                            @if ($transmission->linkedTransmission != null)
 
-                                                    <span class="badge badge-success">{{$transmission->status}}
+                                            @foreach($transmission->linkedTransmission as $linkedTransmission)
+
+                                                <a href="{{ route('certification-photographer.edit', encrypt($linkedTransmission['id']))}}" id="view-transmission" class="" data-id="" title="Edit Certifaction Photographer Details" data-url="" style="color: #17a2b8 !important;">
+                                                    <strong>
+                                                    {{ $linkedTransmission['Transmission_Number'] }}
+                                                    </strong>
+                                                </a>
+
+                                                &nbsp; | &nbsp;
+
+                                                <span class="text-dark">
+                                                    <strong> {{$linkedTransmission['status']}} </strong>
+                                                </span>
+
+                                                {{--
+
+                                                @if($linkedTransmission['status'] == 'accepted')
+
+                                                    <span class="badge badge-success" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
                                                     </span>
 
-                                                @elseif($transmission->status == 'pending')
+                                                @elseif($linkedTransmission['status'] == 'pending')
 
-                                                    <span class="badge badge-primary">{{$transmission->status}}
+                                                    <span class="badge badge-primary" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
                                                     </span>
 
-                                                @elseif($transmission->status == 'rejected')
+                                                @elseif($linkedTransmission['status'] == 'rejected')
 
-                                                    <span class="badge badge-danger">{{$transmission->status}}
+                                                    <span class="badge badge-danger" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
                                                     </span>
 
-                                                @elseif($transmission->status == 'deficient')
+                                                @elseif($linkedTransmission['status'] == 'deficient')
 
-                                                    <span class="badge badge-warning">{{$transmission->status}}
+                                                    <span class="badge badge-warning" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
                                                     </span>
 
-                                                @elseif($transmission->status == 'duplicate')
+                                                @elseif($linkedTransmission['status'] == 'duplicate')
 
-                                                    <span class="badge badge-dark">{{$transmission->status}}
+                                                    <span class="badge badge-dark" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
                                                     </span>
 
                                                 @endif
+                                                --}}
+                                                <br>
+                                                <br>
+                                            @endforeach
 
+                                            @else
+                                                N/A
+                                            @endif
                                                 <!-- |
                                                 <i class="fas fa-edit"> </i> -->
 
@@ -213,12 +250,11 @@
 
             </div>
         </div>
-        <!-- END: Card DATA
+        <!-- END: Card DATA -->
     </div>
 
-
+    {{--
     <!-- transmission status modal  -->
-    <!-- Modal -->
     <div class="modal fade" id="transmission-status-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content" style="border-color: #1e3d73;">
@@ -228,7 +264,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-            <form action="#" method="POST" class="transmission-status-form">
+            <form action="{{ route('update-photographer-transmission-status')}}" method="POST" class="transmission-status-form">
                 @csrf
               <div class="modal-body">
                     <input type="hidden" name="hidden_transmission_id" value="">
@@ -239,14 +275,33 @@
                             <option value="pending">Pending</option>
                             <option value="accepted">Accepted</option>
                             <option value="rejected">Reject</option>
-                            <option value="onhold">On-Hold</option>
-                            <option value="query_opened">Open Query</option>
+                            <option value="deficient">Deficient</option>
+                            <option value="duplicate">Duplicate</option>
                         </select>
                     </div>
 
                     <div class="form-group col-md-12">
-                        <label>Comments / Query Text for site coordinator</label>
-                        <textarea class="form-control" name="comment" value="" rows="4" required=""></textarea>
+                        <label class="edit_users">Email To</label>
+                        <Select class="form-control user_email" name="user_email[]" id="user_email" multiple>
+
+                        </Select>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                            
+                        <label for="inputState">Templates</label>
+                        <select id="template" name="template" class="form-control" required>
+                            <option value="">All Templates</option>
+                             @foreach($getTemplates as $template)
+                             <option value="{{ $template->template_id }}">{{ $template->template_title }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-12 comment-div" style="display: none;">
+                        <label>Comments</label>
+                        <textarea class="form-control summernote" name="comment" value="" rows="4"></textarea>
+                        <span class="edit-error-field" style="display: none; color: red;">Please fill comment field.</span>
                     </div>
               </div>
               <div class="modal-footer">
@@ -257,10 +312,12 @@
         </div>
       </div>
     </div>
-
-
+    <!-- Modal ends -->
+    --}}
 @endsection
 @section('script')
+
+<script src="{{ asset('public/dist/vendors/summernote/summernote-bs4.js') }}"></script>
 
 <!-- date range picker -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
@@ -272,24 +329,6 @@
 
 <script type="text/javascript">
 
- 
-
-    // initialize date range picker
-    $('input[name="visit_date"]').daterangepicker({
-        autoUpdateInput: false,
-        locale: {
-            cancelLabel: 'Clear'
-        }
-    });
-
-    $('input[name="visit_date"]').on('apply.daterangepicker', function(ev, picker) {
-        $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
-    });
-
-    $('input[name="visit_date"]').on('cancel.daterangepicker', function(ev, picker) {
-        $(this).val('');
-    });
-
     // reset filter form
     $('.reset-filter').click(function(){
         // reset values
@@ -299,15 +338,6 @@
         $('.filter-form').submit();
     });
 
-    // function transmissionStatus(transmissionId, transmissionStatus) {
-
-    //     // assign transmission id
-    //     $('.transmission-status-form').find($('input[name="hidden_transmission_id"]')).val(transmissionId);
-    //     // assign status
-    //     $('.transmission-status-form').find($('select[name="status"]')).val(transmissionStatus);
-    //     $('.transmission-status-form').find($('textarea[name="comment"]')).val('');
-    //     $('#transmission-status-modal').modal('show');
-    // }
 
 </script>
 

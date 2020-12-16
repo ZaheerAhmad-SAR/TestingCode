@@ -67,6 +67,10 @@
                                         @foreach($getParentModalities as $key => $modility)
                                         @php
                                             $getId = $modility->id;
+
+                                            $deviceTransmissionNumber = isset($getAllowedNo->device->$getId) ? $getAllowedNo->device->$getId : 0;
+
+                                            $photographerTransmissionNumber = isset($getAllowedNo->photographer->$getId) ? $getAllowedNo->photographer->$getId : 0;
                                         @endphp
                                         <div class="col-md-4" style="margin-bottom: 10px;">
                                             @if($key == 0)
@@ -79,14 +83,14 @@
                                             @if($key == 0)
                                             <label for="Phone">Devices Transmission No.</label>
                                             @endif
-                                            <input type="number" class="form-control" name="allowed_no_transmission[device][{{$modility->id}}]" id="allowed_no_transmission" value="{{ $getAllowedNo->device->$getId }}" required>
+                                            <input type="number" class="form-control" name="allowed_no_transmission[device][{{$modility->id}}]" id="allowed_no_transmission" value="{{ $deviceTransmissionNumber }}" required>
                                         </div>
 
                                         <div class="col-md-4">
                                             @if($key == 0)
                                             <label for="Phone">Photographer Transmission No.</label>
                                             @endif
-                                            <input type="number" class="form-control" name="allowed_no_transmission[photographer][{{$modility->id}}]" id="allowed_no_transmission" value="{{ $getAllowedNo->photographer->$getId }}" required>
+                                            <input type="number" class="form-control" name="allowed_no_transmission[photographer][{{$modility->id}}]" id="allowed_no_transmission" value="{{ $photographerTransmissionNumber }}" required>
                                         </div>
                                         @endforeach
 

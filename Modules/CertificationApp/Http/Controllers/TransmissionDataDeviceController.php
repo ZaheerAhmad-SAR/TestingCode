@@ -6,6 +6,19 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\CertificationApp\Entities\TransmissionDataDevice;
+use Modules\CertificationApp\Entities\CertificationTemplate;
+use Modules\Admin\Entities\Modility;
+use Modules\Admin\Entities\ChildModilities;
+use Modules\CertificationApp\Entities\StudySetup;
+use Modules\Admin\Entities\Study;
+use Modules\Admin\Entities\Site;
+use Modules\CertificationApp\Entities\DeviceTransmissionUpdateDetail;
+use Modules\Admin\Entities\StudySite;
+use Modules\Admin\Entities\PrimaryInvestigator;
+use Modules\Admin\Entities\Photographer;
+use Mail;
+use Session;
+use Illuminate\Support\Str;
 
 
 class TransmissionDataDeviceController extends Controller
@@ -43,13 +56,85 @@ class TransmissionDataDeviceController extends Controller
            $getTransmissions = $getTransmissions->where('Site_Name', 'like', '%' . $request->site . '%');
         }
 
+        if ($request->submitter_name != '') {
+
+           $getTransmissions = $getTransmissions->where('Request_MadeBy_FirstName', 'like', '%' . $request->submitter_name . '%');
+        }
+
         if ($request->status != '') {
 
            $getTransmissions = $getTransmissions->where('status', $request->status);
         }
 
-        $getTransmissions = $getTransmissions->orderBy('id', 'desc')
-                                             ->paginate(50);
+        $getTransmissions = $getTransmissions->groupBy(['StudyI_ID', 'Request_MadeBy_Email', 'Requested_certification', 'Site_ID'])
+                                            ->orderBy('id', 'desc')->orderBy('id', 'desc')
+                                            ->paginate(50);
+
+        // loop through the data and get row color and transmission details for each entry
+        foreach($getTransmissions as $key => $transmission) {
+
+            // get the no. of accepted transmission accepted for this study and modality
+            $acceptedTransmissions = TransmissionDataDevice::where('StudyI_ID', $transmission->StudyI_ID)
+                    ->where('Request_MadeBy_Email', $transmission->Request_MadeBy_Email)
+                    ->where('Requested_certification', $transmission->Requested_certification)
+                    ->where('Site_ID', $transmission->Site_ID)
+                    ->where('status', 'accepted')
+                    ->get()
+                    ->count();
+
+            // first get the modility ID
+            $getModalityID = Modility::where('modility_name', $transmission->Requested_certification)->first();
+
+            $getModalityID = $getModalityID != null ? $getModalityID->id : 0;
+
+            // get study ID
+            $getStudyID = Study::where('study_code', $transmission->StudyI_ID)->first();
+
+            $getStudyID = $getStudyID != null ? $getStudyID->id : 0;
+            
+            // check no. of transmission for study and modility in setup table
+            $getTransmissionNo = StudySetup::where('study_id', $getStudyID)->first();
+
+            if ($getTransmissionNo != null) {
+
+                // decode the count column
+                $decodedNumberColumn = json_decode($getTransmissionNo->allowed_no_transmission);
+
+                if (isset($decodedNumberColumn->device->$getModalityID)) {
+
+                    // compare the counts
+                    if($acceptedTransmissions >= $decodedNumberColumn->device->$getModalityID) {
+
+                        $transmission->rowColor = 'rgba(76, 175, 80, 0.5)';
+
+                    } else {
+
+                        $transmission->rowColor = '';
+
+                    } // accepted number ends
+
+                } else {
+
+                    $transmission->rowColor = '';
+
+                } // index isset ends
+
+            } else {
+
+                $transmission->rowColor = '';
+            } // study setup ends
+
+            $getLinkedTransmissions = TransmissionDataDevice::select('id', 'Transmission_Number', 'status')
+                                    ->where('StudyI_ID', $transmission->StudyI_ID)
+                                    ->where('Request_MadeBy_Email', $transmission->Request_MadeBy_Email)
+                                    ->where('Requested_certification', $transmission->Requested_certification)
+                                    ->where('Site_ID', $transmission->Site_ID)
+                                    ->get()
+                                    ->toArray();
+
+            $transmission->linkedTransmission = $getLinkedTransmissions;
+
+        } // loop ends
 
         return view('certificationapp::certificate_device.index', compact('getTransmissions'));
     }
@@ -90,7 +175,24 @@ class TransmissionDataDeviceController extends Controller
      */
     public function edit($id)
     {
-        return view('certificationapp::edit');
+        $findTransmission = TransmissionDataDevice::where('id', decrypt($id))->first();
+
+         // get studies
+        $systemStudies = Study::get();
+
+        // get all sites
+        $getSites =Site::get();
+
+        // get modality
+        $getModalities = Modility::get();
+
+        // get all the transmission updates
+        $getTransmissionUpdates = DeviceTransmissionUpdateDetail::where('transmission_id', decrypt($id))->get();
+
+        // get templates for email
+        $getTemplates = CertificationTemplate::select('id as template_id', 'title as template_title')->get();
+
+        return view('certificationapp::certificate_device.edit', compact('findTransmission', 'systemStudies', 'getSites', 'getModalities', 'getTransmissionUpdates', 'getTemplates'));
     }
 
     /**
@@ -101,7 +203,148 @@ class TransmissionDataDeviceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+
+        // find the transmission
+        $findTransmission = TransmissionDataDevice::find(decrypt($id));
+        
+        // study ID
+        if($request->StudyI_ID != "") {
+
+            $findTransmission->StudyI_ID = $request->StudyI_ID;
+
+            // get study Name
+            $getStudy = Study::where('study_code', $request->StudyI_ID)->first();
+            $findTransmission->Study_Name = $getStudy->study_short_name;
+
+        }
+        
+        // get site id
+        if ($request->Site_ID != "") {
+
+            $siteID = explode('/', $request->Site_ID);
+            $findTransmission->transmission_site_id = $siteID[0];
+            $findTransmission->Site_ID = $siteID[1];
+
+            // get site name
+            $siteName = Site::where('site_code', $siteID[1])->first();
+            $findTransmission->Site_Name= $siteName->site_name;
+
+        }
+
+        // get modality name and madality_id
+        if ($request->Requested_certification != "") {
+
+            $modilityName = explode('/', $request->Requested_certification);
+            $findTransmission->transmission_modility_id = $modilityName[0];
+            $findTransmission->Requested_certification = $modilityName[1];
+        }
+
+        // status
+        $findTransmission->status = $request->status;
+        $findTransmission->save();
+
+        // check for status and also store update details in transmission update table
+        $transmissionUpdateDetails = new DeviceTransmissionUpdateDetail;
+        $transmissionUpdateDetails->user_id = \Auth::user()->id;
+        $transmissionUpdateDetails->user_name = \Auth::user()->name;
+        $transmissionUpdateDetails->transmission_id = $findTransmission->id;
+        $transmissionUpdateDetails->reason_for_change = $request->reason_for_change;
+        $transmissionUpdateDetails->save();
+
+        // make array for changings dynamic variable in the text editor
+        $variables = [$findTransmission->Request_MadeBy_FirstName, $findTransmission->Request_MadeBy_LastName, $findTransmission->StudyI_ID, $findTransmission->Study_Name, $findTransmission->Site_ID, $findTransmission->Requested_certification, $findTransmission->Transmission_Number, $findTransmission->status, $findTransmission->Device_Category, $findTransmission->Device_manufacturer, $findTransmission->Device_Model, $findTransmission->Device_Serial];
+
+        $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[modality_name]]', '[[transmission_number]]', '[[status]]', '[[device_category]]', '[[device_manufacturer]]', '[[device_model]]', '[[device_serial]]'];
+
+        $data = [];
+        $data['email_body'] = str_replace($labels, $variables, $request->comment);
+        $senderEmail = $request->photographer_user_email;
+        $ccEmail = $request->cc_email;
+
+        // send email to users
+        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $findTransmission)
+        {
+            $message->subject($findTransmission->Study_Name.' '.$findTransmission->StudyI_ID.' | Photographer Request# '.$findTransmission->Transmission_Number.' | '. $findTransmission->Site_ID.' | '. $findTransmission->Requested_certification);
+            $message->to($senderEmail);
+            $message->cc($ccEmail);
+        });
+
+        // look for sites and photographer and insert in database accordingly
+        $transmissionDataStatus = $this->transmissionStatus($findTransmission);
+
+        Session::flash('success', 'Device transmission information updated successfully.');
+
+        return redirect(route('certification-device.edit',  $id));
+
+    }
+
+    public function transmissionStatus($findTransmission) {
+
+            //get study
+            $getStudy = Study::where('study_code', $findTransmission->StudyI_ID)->first();
+
+            // get site
+            $getSite = Site::where('site_code', $findTransmission->Site_ID)->first();
+
+            if ($getSite == null) {
+                // insert site
+                $getSite = new Site;
+                $getSite->id = Str::uuid();
+                $getSite->site_code = $findTransmission->Site_ID;
+                $getSite->site_name = $findTransmission->Site_Name;
+                $getSite->site_address = $findTransmission->Site_st_address;
+                $getSite->site_city = $findTransmission->Site_city;
+                $getSite->site_state = $findTransmission->Site_state;
+                $getSite->site_country = $findTransmission->Site_country;
+                $getSite->save();
+
+            } // site check is end
+
+            // check site study relation
+            $getSiteStudy = StudySite::where('study_id', $getStudy->id)
+                                        ->where('site_id', $getSite->id)
+                                        ->first();
+
+            if ($getSiteStudy == null) {
+                // insert study site
+                $getSiteStudy = new StudySite;
+                $getSiteStudy->id = Str::uuid();
+                $getSiteStudy->study_id = $getStudy->id;
+                $getSiteStudy->site_id = $getSite->id;
+                $getSiteStudy->save();
+
+            } // site study check is end
+
+            // get Primary Investigator
+            $getPrimaryInvestigator = PrimaryInvestigator::where('site_id', $getSite->id)
+                                                          ->where('first_name', $findTransmission->PI_Name)
+                                                          ->first();
+
+            if ($getPrimaryInvestigator == null) {
+                // insert primary investigator
+                $getPrimaryInvestigator = new PrimaryInvestigator;
+                $getPrimaryInvestigator->id = Str::uuid();
+                $getPrimaryInvestigator->site_id = $getSite->id;
+                $getPrimaryInvestigator->first_name = $findTransmission->PI_Name;
+                $getPrimaryInvestigator->save();
+            } // primary investigator check ends
+
+            // get Photographer
+            $getPhotographer = Photographer::where('site_id', $getSite->id)
+                                            ->where('email', $findTransmission->Request_MadeBy_Email)
+                                            ->first();
+
+            if ($getPhotographer == null) {
+                // insert photographer
+                $getPhotographer = new Photographer;
+                $getPhotographer->id = Str::uuid();
+                $getPhotographer->site_id = $getSite->id;
+                $getPhotographer->first_name = $findTransmission->Request_MadeBy_FirstName;
+                $getPhotographer->last_name = $findTransmission->Request_MadeBy_LastName;
+                $getPhotographer->email = $findTransmission->Request_MadeBy_Email;
+                $getPhotographer->save();
+
+            } // photographer check is end
     }
 
     /**
