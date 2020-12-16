@@ -85,6 +85,11 @@
                             </div>
 
                             <div class="form-group col-md-3">
+                                <label for="submitter">Submitter Name</label>
+                                <input type="text" name="submitter_name" id="submitter_name" class="form-control filter-form-data" value="{{ request()->submitter_name }}" placeholder="Submitter Name">
+                            </div>
+
+                            <div class="form-group col-md-3">
                                 <label for="inputState"> Transmission Status</label>
                                 <select id="status" name="status" class="form-control filter-form-data">
                                     <option value="">All Status</option>
@@ -112,58 +117,94 @@
                             <table class="table table-bordered" id="laravel_crud">
                                 <thead class="table-secondary">
                                     <tr>
-                                        <th>Transmission#</th>
+                                        <th>Submitter Name</th>
+                                        <th>Certification</th>
                                         <th>Study</th>
                                         <th>Device Category</th>
                                         <th>Device Serial</th>
                                         <th>Site</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
+                                        <th>Certification Status</th>
+                                        <th>Transmission#</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @if(!$getTransmissions->isEmpty())
                                     @foreach($getTransmissions as $transmission)
-                                        <tr>
-                                            <td>  
-                                                <a href="#" id="view-transmission" class="" data-id="" title="Edit Certifaction Device Details" data-url="" style="color: #17a2b8 !important">
-                                                    {{$transmission->Transmission_Number}}
-                                                </a>
-                                            </td>
+                                        <tr style="background: {{ $transmission->rowColor }}">
+                                            <td> {{$transmission->Request_MadeBy_FirstName}} </td>
+                                            <td> {{$transmission->Requested_certification}} </td>
                                             <td> {{$transmission->Study_Name}} </td>
                                             <td> {{$transmission->Device_Category}} </td>
                                             <td> {{$transmission->Device_Serial}}</td>
                                             <td> {{$transmission->Site_Name}} </td>
+
                                             <td> 
-                                                @if($transmission->status == 'accepted')
-
-                                                    <span class="badge badge-success">{{$transmission->status}}
-                                                    </span>
-
-                                                @elseif($transmission->status == 'pending')
-
-                                                    <span class="badge badge-primary">{{$transmission->status}}
-                                                    </span>
-
-                                                @elseif($transmission->status == 'rejected')
-
-                                                    <span class="badge badge-danger">{{$transmission->status}}
-                                                    </span>
-
-                                                @elseif($transmission->status == 'deficient')
-
-                                                    <span class="badge badge-warning">{{$transmission->status}}
-                                                    </span>
-
-                                                @elseif($transmission->status == 'duplicate')
-
-                                                    <span class="badge badge-dark">{{$transmission->status}}
-                                                    </span>
-
-
-                                                @endif 
+                                                <span class="badge badge-dark">
+                                                    Generate Certificate
+                                                </span> 
                                             </td>
 
+                                            <td>
+
+                                            @if ($transmission->linkedTransmission != null)
+
+                                            @foreach($transmission->linkedTransmission as $linkedTransmission)
+
+                                                <a href="{{ route('certification-device.edit', encrypt($linkedTransmission['id']))}}" id="view-transmission" class="" data-id="" title="Edit Certifaction Device Details" data-url="" style="color: #17a2b8 !important;">
+                                                    <strong>
+                                                    {{ $linkedTransmission['Transmission_Number'] }}
+                                                    </strong>
+                                                </a>
+
+                                                &nbsp; | &nbsp;
+
+                                                <span class="text-dark">
+                                                    <strong> {{$linkedTransmission['status']}} </strong>
+                                                </span>
+
+                                                {{--
+
+                                                @if($linkedTransmission['status'] == 'accepted')
+
+                                                    <span class="badge badge-success" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
+                                                    </span>
+
+                                                @elseif($linkedTransmission['status'] == 'pending')
+
+                                                    <span class="badge badge-primary" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
+                                                    </span>
+
+                                                @elseif($linkedTransmission['status'] == 'rejected')
+
+                                                    <span class="badge badge-danger" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
+                                                    </span>
+
+                                                @elseif($linkedTransmission['status'] == 'deficient')
+
+                                                    <span class="badge badge-warning" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
+                                                    </span>
+
+                                                @elseif($linkedTransmission['status'] == 'duplicate')
+
+                                                    <span class="badge badge-dark" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
+                                                    </span>
+
+                                                @endif
+                                                --}}
+                                                <br>
+                                                <br>
+                                            @endforeach
+
+                                            @else
+                                                N/A
+                                            @endif
+                                                <!-- |
+                                                <i class="fas fa-edit"> </i> -->
+
+                                            </td>
+
+
+                                            {{--
                                             <td>
 
                                                 &nbsp; &nbsp;
@@ -183,6 +224,7 @@
                                                 </div>
                                                  <!-- gear dropdown -->
                                             </td>
+                                            --}}
                                             
                                         </tr>
                                     @endforeach
@@ -205,48 +247,6 @@
     </div>
 
 
-    <!-- transmission status modal  -->
-    <!-- Modal -->
-    <div class="modal fade" id="transmission-status-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content" style="border-color: #1e3d73;">
-          <div class="modal-header bg-primary" style="color: #fff">
-            <h5 class="modal-title" id="exampleModalLabel">Change Transmission Status</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"  style="color: #fff">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-            <form action="#" method="POST" class="transmission-status-form">
-                @csrf
-              <div class="modal-body">
-                    <input type="hidden" name="hidden_transmission_id" value="">
-                    <div class="form-group col-md-12">
-                        <label>Change Status</label>
-                        <select name="status" id="status" class="form-control" required="required">
-                            <option value="">Select Status</option>
-                            <option value="pending">Pending</option>
-                            <option value="accepted">Accepted</option>
-                            <option value="rejected">Reject</option>
-                            <option value="onhold">On-Hold</option>
-                            <option value="query_opened">Open Query</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group col-md-12">
-                        <label>Comments / Query Text for site coordinator</label>
-                        <textarea class="form-control" name="comment" value="" rows="4" required=""></textarea>
-                    </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Change Status</button>
-              </div>
-            </form>
-        </div>
-      </div>
-    </div>
-
-
 @endsection
 @section('script')
 
@@ -260,24 +260,6 @@
 
 <script type="text/javascript">
 
- 
-
-    // initialize date range picker
-    $('input[name="visit_date"]').daterangepicker({
-        autoUpdateInput: false,
-        locale: {
-            cancelLabel: 'Clear'
-        }
-    });
-
-    $('input[name="visit_date"]').on('apply.daterangepicker', function(ev, picker) {
-        $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
-    });
-
-    $('input[name="visit_date"]').on('cancel.daterangepicker', function(ev, picker) {
-        $(this).val('');
-    });
-
     // reset filter form
     $('.reset-filter').click(function(){
         // reset values
@@ -286,16 +268,6 @@
         // submit the filter form
         $('.filter-form').submit();
     });
-
-    // function transmissionStatus(transmissionId, transmissionStatus) {
-
-    //     // assign transmission id
-    //     $('.transmission-status-form').find($('input[name="hidden_transmission_id"]')).val(transmissionId);
-    //     // assign status
-    //     $('.transmission-status-form').find($('select[name="status"]')).val(transmissionStatus);
-    //     $('.transmission-status-form').find($('textarea[name="comment"]')).val('');
-    //     $('#transmission-status-modal').modal('show');
-    // }
 
 </script>
 
