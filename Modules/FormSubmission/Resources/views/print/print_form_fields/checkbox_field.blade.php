@@ -13,7 +13,7 @@ $option_names = [html_entity_decode($question->formFields->text_info)];
 $answersArray = explode(',', $answer->answer);
 $options = array_combine ( $option_names , $option_values );
 @endphp
-<div id="{{ $fieldId }}" class="form-control-ocap bg-transparent {{ $skipLogicQuestionIdStr }}">
+<div id="{{ $fieldId }}" class="form-control-ocap bg-transparent">
 @foreach ($options as $option_name => $option_value)
     @if(in_array($option_value, $answersArray))
     {{ $option_name }}<br>

@@ -45,16 +45,22 @@
                             </div>
                             <div class="form-group row">
                                 <label for="Required" class="col-sm-2 col-form-label">Required </label>
-                                <div class="col-sm-4">
+                                <div class="col-sm-2">
                                     <input type="radio" name="is_required" id="is_required_no_calc" value="no"> No
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <input type="radio" name="is_required" id="is_required_yes_calc" value="yes" checked> Yes
                                 </div>
-                                <div class="col-sm-1">Exports: </div>
-                                <div class="col-sm-5">
+                                <div class="col-sm-2">Exports: </div>
+                                <div class="col-sm-2">
                                     <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_no_calc" value="no"> No
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_yes_calc" value="yes" checked> Yes
+                                </div>
+                                <div class="col-sm-2">Show to Grader: </div>
+                                <div class="col-sm-2">
+                                    <input type="radio" name="is_show_to_grader" id="is_show_to_grader_no_calc" value="no"> No
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="is_show_to_grader" id="is_show_to_grader_yes_calc" value="yes" checked> Yes
                                 </div>
                             </div>
 
@@ -154,6 +160,7 @@
             text_info = row.find('input.text_info').val()
             is_required = row.find('input.is_required').val()
             is_exportable_to_xls = row.find('input.is_exportable_to_xls').val()
+            is_show_to_grader = row.find('input.is_show_to_grader').val()
             custom_formula = row.find('input.custom_formula').val()
             step_id = $('#steps').val();
             show_available_variable_names(step_id);
@@ -176,6 +183,11 @@
                 $('#is_exportable_to_xls_yes_calc').prop('checked', true);
             } else {
                 $('#is_exportable_to_xls_no_calc').prop('checked', true);
+            }
+            if (is_show_to_grader == 'yes') {
+                $('#is_show_to_grader_yes_calc').prop('checked', true);
+            } else {
+                $('#is_show_to_grader_no_calc').prop('checked', true);
             }
             $('#calculate_Modal').modal('show');
         }else {

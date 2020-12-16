@@ -357,4 +357,5 @@
         @include('formsubmission::subjectFormLoader.include.validation_rules_functions_js')
         @include('formsubmission::question_comments.addQuestionCommentPopup')
         @include('formsubmission::question_comments.questionCommentPopup')
+        @include('formsubmission::qc_question_to_show.qcQuestionsToShowPopup')
     @stop
