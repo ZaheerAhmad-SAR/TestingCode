@@ -84,33 +84,33 @@
                             @php
                                 $current_study =  \Session::get('current_study');
                             @endphp
-                     <form action="{{route('studySite.update')}}" method="get" class="form-1 filter-form">
+                     <form action="{{route('studySite.assignedSites')}}" method="get" class="form-1 filter-form">
 
                         <div class="form-row" style="padding: 10px;">
 
                             <input type="hidden" name="form_1" value="1" class="form-control">
 
-                            <div class="form-group col-md-5">
+                            <div class="form-group col-md-3">
                                 <label for="inputState">Site Code</label>
                                 <select id="site_code" name="site_code" class="form-control filter-form-data">
                                     <option value="">All Site Code</option>
                                     @foreach($sites as $site)
-                                    <option @if(request()->site_code == $site->id) selected @endif value="{{ $site->id }}">{{ $site->site_code }}</option>
+                                    <option @if(request()->site_code == $site->id) selected @endif value="{{ $site->site_code }}">{{ $site->site_code }}</option>
                                     @endforeach
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-5">
+                            <div class="form-group col-md-3">
                                 <label for="inputState">Site Name</label>
                                 <select id="site_name" name="site_name" class="form-control filter-form-data">
                                     <option value="">All Site Name</option>
                                     @foreach($sites as $site)
-                                    <option @if(request()->site_name == $site->id) selected @endif value="{{ $site->id }}">{{ $site->site_name }}</option>
+                                    <option @if(request()->site_name == $site->id) selected @endif value="{{ $site->site_name }}">{{ $site->site_name }}</option>
                                     @endforeach
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-5">
+                            <div class="form-group col-md-3">
                                 <label for="inputState">Site Address</label>
                                 <select id="site_address" name="site_address" class="form-control filter-form-data">
                                     <option value="">All Site Address</option>
@@ -118,11 +118,11 @@
                                         $addressSites = Modules\Admin\Entities\Site::select('id','site_address')->groupBy('site_address')->get();
                                     @endphp
                                     @foreach($addressSites as $addressSite)
-                                    <option @if(request()->site_address == $addressSite->id) selected @endif value="{{ $addressSite->id }}">{{ $addressSite->site_address }}</option>
+                                    <option @if(request()->site_address == $addressSite->id) selected @endif value="{{ $addressSite->site_address }}">{{ $addressSite->site_address }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-md-5">
+                            <div class="form-group col-md-3">
                                 <label for="inputState">Site city</label>
                                 <select id="site_city" name="site_city" class="form-control filter-form-data">
                                     <option value="">All Site City</option>
@@ -130,11 +130,11 @@
                                         $citySites = Modules\Admin\Entities\Site::select('id','site_city')->groupBy('site_city')->get();
                                     @endphp
                                     @foreach($citySites as $citySite)
-                                    <option @if(request()->site_city == $citySite->id) selected @endif value="{{ $citySite->id }}">{{ $citySite->site_city }}</option>
+                                    <option @if(request()->site_city == $citySite->id) selected @endif value="{{ $citySite->site_city }}">{{ $citySite->site_city }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-md-5">
+                            <div class="form-group col-md-3">
                                 <label for="inputState">Site State</label>
                                 <select id="site_state" name="site_state" class="form-control filter-form-data">
                                     <option value="">All Site State</option>
@@ -142,11 +142,11 @@
                                         $stateSites = Modules\Admin\Entities\Site::select('id','site_state')->groupBy('site_state')->get();
                                     @endphp
                                     @foreach($stateSites as $stateSite)
-                                    <option @if(request()->site_state == $stateSite->id) selected @endif value="{{ $stateSite->id }}">{{ $stateSite->site_state }}</option>
+                                    <option @if(request()->site_state == $stateSite->id) selected @endif value="{{ $stateSite->site_state }}">{{ $stateSite->site_state }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-md-5">
+                            <div class="form-group col-md-3">
                                 <label for="inputState">Site Country</label>
                                 <select id="site_country" name="site_country" class="form-control filter-form-data">
                                     <option value="">All Site Country</option>
@@ -154,16 +154,16 @@
                                         $countrySites = Modules\Admin\Entities\Site::select('id','site_country')->groupBy('site_country')->get();
                                     @endphp
                                     @foreach($countrySites as $countrySite)
-                                    <option @if(request()->site_country == $countrySite->id) selected @endif value="{{ $countrySite->id }}">{{ $countrySite->site_country }}</option>
+                                    <option @if(request()->site_country == $countrySite->id) selected @endif value="{{ $countrySite->site_country }}">{{ $countrySite->site_country }}</option>
                                     @endforeach
                                 </select>
                             </div>
-                            <div class="form-group col-md-5">
-                                <label for="inputState">Text </label>
-                                <div id="bloodhound">
-                                    <input class="typeahead form-control rounded" type="text" placeholder="">
-                                </div>
-                            </div>
+{{--                            <div class="form-group col-md-3">--}}
+{{--                                <label for="inputState">Text </label>--}}
+{{--                                <div id="bloodhound">--}}
+{{--                                    <input class="typeahead form-control rounded" type="text" placeholder="">--}}
+{{--                                </div>--}}
+{{--                            </div>--}}
                             <div class="form-group col-md-2 mt-4">
                                <!--  <button type="button" class="btn btn-primary reset-filter-1">Reset</button> -->
                                 <button type="submit" class="btn btn-primary btn-lng"> <i class="fas fa-filter" aria-hidden="true"></i>Filter</button>
