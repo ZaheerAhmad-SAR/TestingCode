@@ -62,7 +62,7 @@
                             <button class="btn btn-outline-warning reset-filter"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
                             <button type="submit" class="btn btn-primary submit-filter"><i class="fas fa-filter" aria-hidden="true"></i> Filter</button>
                         </div>
-                    </div>    
+                    </div>
                 </form>
             </div>
         </div>
@@ -344,7 +344,7 @@
                                         <div class="{!! ($errors->has('email')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Email</label>
-                                            <input type="email" pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$" class="form-control" id="pi_email"
+                                            <input type="email" class="form-control" id="pi_email"
                                                    name="pi_email" value="{{old('pi_email')}}" required/>
                                             @error('email')
                                             <span class="input-danger small">
@@ -456,7 +456,7 @@
                                         <div class="{!! ($errors->has('c_email')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Email</label>
-                                            <input type="email" pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$" class="form-control" id="c_email"
+                                            <input type="email" class="form-control" id="c_email"
                                                    name="c_email" value="{{old('email')}}" required/>
                                             @error('c_email')
                                             <span class="input-danger small">
@@ -571,7 +571,7 @@
                                             class="{!! ($errors->has('photographer_email')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Email</label>
-                                            <input type="email" pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$" class="form-control" id="photographer_email"
+                                            <input type="email"  class="form-control" id="photographer_email"
                                                    name="photographer_email" value="{{old('photographer_email')}}" required/>
                                             @error('photographer_email')
                                             <span class="input-danger small">
@@ -684,7 +684,7 @@
                                         <div class="{!! ($errors->has('others_email')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Email</label>
-                                            <input type="email" pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$" class="form-control" id="others_email"
+                                            <input type="email" class="form-control" id="others_email"
                                                    name="others_email" value="{{old('others_email')}}" required/>
                                             @error('others_email')
                                             <span class="input-danger small">
