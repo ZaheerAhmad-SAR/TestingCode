@@ -19,18 +19,6 @@ class FormDataExportController extends Controller
         return view('formsubmission::exports.index');
     }
 
-    public function filterForm(Request $request)
-    {
-        $visit_ids = Answer::where('study_id', 'like', session('current_study'))->pluck('study_structures_id')->toArray();
-        $visits = StudyStructure::whereIn('id', $visit_ids)->get();
-        $formTypes = FormType::all();
-        $modalities = Modility::all();
-        echo view('formsubmission::exports.export_filter_form')
-            ->with('visits', $visits)
-            ->with('formTypes', $formTypes)
-            ->with('modalities', $modalities);
-    }
-
     public function export(Request $request)
     {
         $study = Study::find(session('current_study'));
