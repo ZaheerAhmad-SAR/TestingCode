@@ -14,7 +14,7 @@
                 'question_id'=>$question->id,
                 'field_id'=>$question->formfields->id,
                 ];
-                if($step->form_type_id == 2){
+                if($step->formType->form_type == 'Grading' || $step->formType->form_type == 'Eligibility'){
                     $getAnswerArray['form_filled_by_user_id'] = auth()->user()->id;
                 }
                 $answer = $question->getAnswer($getAnswerArray);

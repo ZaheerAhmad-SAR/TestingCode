@@ -1,4 +1,4 @@
-@if (canGrading(['index']))
+@if (canEligibility(['index']))
 @php
 $getGradingFormStatusArray = [
 'subject_id' => $subjectId,
@@ -9,7 +9,7 @@ $getGradingFormStatusArray = [
 'modility_id' => $step->modility_id,
 ];
 @endphp
-    @if ($step->formType->form_type == 'Grading')
+    @if ($step->formType->form_type == 'Eligibility')
         <a class="badge p-1 {{ $badgeCls }} m-1  {{ $stepClsStr }} {{ $skipLogicStepIdStr }}" href="javascript:void(0);"
             onclick="showSections('step_sections_{{ $stepIdStr }}'); updateCurrentStepId('{{ $step->phase->id }}', '{{ $step->step_id }}', 'no');">
             {{ $step->formType->form_type . ' ' . $step->modility->modility_name }}

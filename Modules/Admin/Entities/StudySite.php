@@ -25,8 +25,19 @@ class StudySite extends Model
     }
 
 
+    public static function checkAssignedStudySite($study_id, $site_id)
+    {
+        $checkAssignedSite = self::where('study_id', $study_id)
+            ->where('site_id', $site_id)
+            ->first();
+        // check if this modality is already assigned to study
+        if ($checkAssignedSite != null)
+        {
+            return '<span class="badge badge-success">Yes</span>';
+        }
+        else
+        {
+            return '<span class="badge badge-primary">No</span>';
+        } // check ends
+    }
 }
-
-
-
-

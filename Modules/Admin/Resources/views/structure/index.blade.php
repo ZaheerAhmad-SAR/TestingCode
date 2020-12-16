@@ -88,6 +88,7 @@
                             <input type="hidden" class="step_id" value="{{$step_value->step_id}}">
                             <input type="hidden" class="step_phase_id" value="{{$step_value->phase_id}}">
                             <input type="hidden" class="form_type_id" value="{{$step_value->form_type_id}}">
+                            <input type="hidden" class="form_type" value="{{$step_value->formType->form_type}}">
                             <input type="hidden" class="modility_id" value="{{$step_value->modility_id}}">
                             <input type="hidden" class="step_name" value="{{$step_value->step_name}}">
                             <input type="hidden" class="step_position" value="{{$step_value->step_position}}">

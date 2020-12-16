@@ -51,8 +51,17 @@ Route::group(['middleware' => ['auth', 'web']], function () {
 
     // Form Data Export
     Route::get('formDataExport/index', 'FormDataExportController@index')->name('formDataExport.index');
+    Route::post('exportType/loadExportTypes', 'ExportTypeController@loadExportTypes')->name('exportType.loadExportTypes');
+    Route::post('exportType/loadAddExportTypeForm', 'ExportTypeController@loadAddExportTypeForm')->name('exportType.loadAddExportTypeForm');
+    Route::post('exportType/loadEditExportTypeForm', 'ExportTypeController@loadEditExportTypeForm')->name('exportType.loadEditExportTypeForm');
+    Route::post('exportType/submitAddExportTypeForm', 'ExportTypeController@submitAddExportTypeForm')->name('exportType.submitAddExportTypeForm');
+    Route::put('exportType/submitEditExportTypeForm', 'ExportTypeController@submitEditExportTypeForm')->name('exportType.submitEditExportTypeForm');
+    Route::delete('exportType/removeEditExportType', 'ExportTypeController@removeEditExportType')->name('exportType.removeEditExportType');
+
     Route::post('formDataExport/loadExportFilterForm', 'FormDataExportController@filterForm')->name('formDataExport.loadExportFilterForm');
     Route::get('formDataExport/export', 'FormDataExportController@export')->name('formDataExport.export');
-    Route::post('formDataExport/filterVisits', 'FormDataExportController@filterVisits')->name('formDataExport.filterVisits');
-    Route::post('formDataExport/filterSteps', 'FormDataExportController@filterSteps')->name('formDataExport.filterSteps');
+
+    Route::post('questionComment/loadQuestionCommentPopup', 'QuestionCommentController@loadQuestionCommentPopup')->name('questionComment.loadQuestionCommentPopup');
+    Route::post('questionComment/loadAddQuestionCommentForm', 'QuestionCommentController@loadAddQuestionCommentForm')->name('questionComment.loadAddQuestionCommentForm');
+    Route::post('questionComment/submitAddQuestionCommentForm', 'QuestionCommentController@submitAddQuestionCommentForm')->name('questionComment.submitAddQuestionCommentForm');
 });
