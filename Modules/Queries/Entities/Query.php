@@ -4,10 +4,12 @@ namespace Modules\Queries\Entities;
 
 use App\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use phpDocumentor\Reflection\Types\Self_;
 
 class Query extends Model
 {
+    use SoftDeletes;
     protected $table = 'queries';
     protected $fillable = [
         'id', 'messages', 'parent_query_id', 'queried_remarked_by_id', 'module_id',

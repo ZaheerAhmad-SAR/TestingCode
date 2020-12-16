@@ -26,6 +26,9 @@
 // save certification template
 	Route::post('certification-template', 'CertificationPreferencesController@saveTemplate')->name('save-certification-template');
 
+// get template data ajax
+	Route::get('get-template-data', 'CertificationPreferencesController@getTemplateData')->name('get-template-data');
+
 // update certification template
 	Route::post('update-certification-template', 'CertificationPreferencesController@updateTemplate')->name('update-certification-template');
 
@@ -37,6 +40,15 @@
 
 // post preferences remove modality
 	Route::post('preferences/remove-assign-modality/{study_id}', 'CertificationPreferencesController@removeAssignModality')->name('preferences.remove-assign-modality');
+
+// get preferences assign devices
+	Route::get('preferences/assign-device/{study_id}', 'CertificationPreferencesController@assignDevice')->name('preferences.assign-device');
+
+// post preferences assign device
+	Route::post('preferences/save-assign-device/{study_id}', 'CertificationPreferencesController@saveAssignDevice')->name('preferences.save-assign-device');
+
+// post preferences remove device
+	Route::post('preferences/remove-assign-device/{study_id}', 'CertificationPreferencesController@removeAssignDevice')->name('preferences.remove-assign-device');
 
 // get preferences study setup
 	Route::get('preferences/study-setup/{study_id}', 'CertificationPreferencesController@studySetup')->name('preferences.study-setup');
@@ -52,6 +64,12 @@
 
 // certificate photographer
     Route::resource('certification-photographer', 'TransmissionDataPhotographerController');
+
+// update photographer transmission status
+    // Route::post('update-photographer-transmission-status', 'TransmissionDataPhotographerController@updatePhotographerTransmissionStatus')->name('update-photographer-transmission-status');
+
+// get study setup email ajax
+	Route::get('get-study-setup-emails', 'TransmissionDataPhotographerController@getStudySetupEmail')->name('get-study-setup-emails');
 
 
 Route::group(['middleware' => ['auth', 'web']], function () {

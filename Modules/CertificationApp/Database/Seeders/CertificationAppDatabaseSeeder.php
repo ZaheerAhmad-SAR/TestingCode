@@ -4,6 +4,7 @@ namespace Modules\CertificationApp\Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CertificationAppDatabaseSeeder extends Seeder
 {

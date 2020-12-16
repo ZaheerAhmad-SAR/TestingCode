@@ -6,6 +6,7 @@ use Modules\Admin\Scopes\PhaseStepOrderByScope;
 use Modules\Admin\Scopes\ActivePhaseStepScope;
 use Modules\UserRoles\Entities\Role;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\Study;
 use Modules\FormSubmission\Entities\Answer;
@@ -13,7 +14,6 @@ use Modules\FormSubmission\Entities\FormVersion;
 use Modules\FormSubmission\Entities\SubjectsPhases;
 use Modules\FormSubmission\Traits\JSQuestionDataValidation;
 use Modules\FormSubmission\Traits\JSStepCalculatedFields;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PhaseSteps extends Model
 {

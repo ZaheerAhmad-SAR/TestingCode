@@ -133,6 +133,12 @@
                                                                 <i class="fas fa-question-circle" aria-hidden="true">
                                                                 </i> Assign Modality</a>
                                                         </span>
+
+                                                        <span class="dropdown-item">
+                                                            <a href="{{ route ('preferences.assign-device', encrypt($study->id)) }}" data-id="">
+                                                                <i class="fas fa-question-circle" aria-hidden="true">
+                                                                </i> Assign Device</a>
+                                                        </span>
                                                        
 
                                                          <span class="dropdown-item">

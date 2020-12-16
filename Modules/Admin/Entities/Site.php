@@ -3,9 +3,11 @@
 namespace Modules\Admin\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Site extends Model
 {
+    use SoftDeletes;
     protected $keyType = 'string';
 
     protected $fillable = [
@@ -24,25 +26,28 @@ class Site extends Model
         return $this->belongsToMany(Study::class)->withPivot('study_id', 'site_id');
     }
 
-    public function study(){
+    public function study()
+    {
         return $this->belongsToMany(Study::class, 'site_study', 'site_id', 'study_id');
-
     }
 
     public function devices()
     {
-        return $this->belongsToMany(Device::class,'device_site');
+        return $this->belongsToMany(Device::class, 'device_site');
     }
 
-    public function subjects(){
+    public function subjects()
+    {
         return $this->hasMany(Subject::class, 'site_id', 'id');
     }
 
-    public function primaryInvestigator(){
-        return $this->hasMany(PrimaryInvestigator::class,'site_id','id');
+    public function primaryInvestigator()
+    {
+        return $this->hasMany(PrimaryInvestigator::class, 'site_id', 'id');
     }
 
-    public function studySite(){
+    public function studySite()
+    {
         return $this->hasOne(StudySite::class);
     }
 }

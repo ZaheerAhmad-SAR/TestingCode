@@ -3,11 +3,12 @@
 namespace Modules\FormSubmission\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
-use Modules\Admin\Entities\PhaseSteps;
 
 class SubjectsPhases extends Model
 {
+    use SoftDeletes;
 
     protected $table = 'subjects_phases';
     protected $keyType = 'string';

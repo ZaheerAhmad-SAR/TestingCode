@@ -62,7 +62,7 @@
                             <button class="btn btn-outline-warning reset-filter"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
                             <button type="submit" class="btn btn-primary submit-filter"><i class="fas fa-filter" aria-hidden="true"></i> Filter</button>
                         </div>
-                    </div>    
+                    </div>
                 </form>
             </div>
         </div>
@@ -169,7 +169,7 @@
                                                 <div class="{!! ($errors->has('site_code')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                                     <label >Site Code <span class="required"></span> <span class="space_msg" style="font-size: 9px;color: red;"></span></label>
-                                                    <input autofocus type="input" class="form-control variable_name_ques"
+                                                    <input autofocus type="text" class="form-control variable_name_ques"
                                                            name="site_code"  id="site_code"
                                                            value="{{old('site_code')}}"  required onchange="siteCodeValue(this);"/>
                                                     <p id="site_code_uniqe"></p>
@@ -183,7 +183,7 @@
                                             <div class="col-md-6">
                                                 <div class="{!! ($errors->has('site_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
                                                     <label class="required">Site Name</label>
-                                                    <input type="input" class="form-control"
+                                                    <input type="text" class="form-control"
                                                            name="site_name" id="site_name"
                                                            value="{{old('site_name')}}" required/>
                                                     @error('site_name')
@@ -287,7 +287,7 @@
                                         <div class="{!! ($errors->has('first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">First Name</label>
-                                            <input type="input" class="form-control" id="pi_first_name"
+                                            <input type="text" class="form-control" id="pi_first_name"
                                                    name="pi_first_name" value="{{old('pi_first_name')}}" required/>
                                             @error('pi_first_name')
                                             <span class="input-danger small">
@@ -301,7 +301,7 @@
                                             class="{!! ($errors->has('mid_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label>Middle Name</label>
-                                            <input type="input" class="form-control" id="pi_mid_name"
+                                            <input type="text" class="form-control" id="pi_mid_name"
                                                    name="pi_mid_name" value="{{old('pi_mid_name')}}"/>
                                             @error('mid_name')
                                             <span class="input-danger small">
@@ -315,7 +315,7 @@
                                         <div class="{!! ($errors->has('last_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Last Name</label>
-                                            <input type="input" class="form-control" id="pi_last_name"
+                                            <input type="text" class="form-control" id="pi_last_name"
                                                    name="pi_last_name" value="{{old('pi_last_name')}}" required/>
                                             @error('last_name')
                                             <span class="input-danger small">
@@ -330,7 +330,7 @@
                                             class="{!! ($errors->has('phone')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label>Phone</label>
-                                            <input type="input" class="form-control" id="pi_phone"
+                                            <input type="text" class="form-control" id="pi_phone"
                                                    name="pi_phone" value="{{old('pi_phone')}}"/>
                                             @error('phone')
                                             <span class="input-danger small">
@@ -344,7 +344,7 @@
                                         <div class="{!! ($errors->has('email')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Email</label>
-                                            <input type="email" pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$" class="form-control" id="pi_email"
+                                            <input type="email" class="form-control" id="pi_email"
                                                    name="pi_email" value="{{old('pi_email')}}" required/>
                                             @error('email')
                                             <span class="input-danger small">
@@ -399,7 +399,7 @@
                                         <div class="{!! ($errors->has('c_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">First Name</label>
-                                            <input type="input" class="form-control" id="c_first_name"
+                                            <input type="text" class="form-control" id="c_first_name"
                                                    name="c_first_name" value="{{old('c_first_name')}}" required/>
                                             @error('c_first_name')
                                             <span class="input-danger small">
@@ -413,7 +413,7 @@
                                             class="{!! ($errors->has('c_mid_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label>Middle Name</label>
-                                            <input type="input" class="form-control" id="c_mid_name"
+                                            <input type="text" class="form-control" id="c_mid_name"
                                                    name="c_mid_name" value="{{old('c_mid_name')}}"/>
                                             @error('c_mid_name')
                                             <span class="input-danger small">
@@ -427,7 +427,7 @@
                                         <div class="{!! ($errors->has('last_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Last Name</label>
-                                            <input type="input" class="form-control" id="c_last_name"
+                                            <input type="text" class="form-control" id="c_last_name"
                                                    name="c_last_name" value="{{old('c_last_name')}}" required/>
                                             @error('c_last_name')
                                             <span class="input-danger small">
@@ -442,7 +442,7 @@
                                             class="{!! ($errors->has('c_phone')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label>Phone</label>
-                                            <input type="input" class="form-control" id="c_phone"
+                                            <input type="text" class="form-control" id="c_phone"
                                                    name="c_phone" value="{{old('c_phone')}}"/>
                                             @error('c_phone')
                                             <span class="input-danger small">
@@ -456,7 +456,7 @@
                                         <div class="{!! ($errors->has('c_email')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Email</label>
-                                            <input type="email" pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$" class="form-control" id="c_email"
+                                            <input type="email" class="form-control" id="c_email"
                                                    name="c_email" value="{{old('email')}}" required/>
                                             @error('c_email')
                                             <span class="input-danger small">
@@ -512,7 +512,7 @@
                                         <div class="{!! ($errors->has('photographer_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">First Name</label>
-                                            <input type="input" class="form-control" id="photographer_first_name"
+                                            <input type="text" class="form-control" id="photographer_first_name"
                                                    name="photographer_first_name" value="{{old('photographer_first_name')}}" required/>
                                             @error('photographer_first_name')
                                             <span class="input-danger small">
@@ -526,7 +526,7 @@
                                             class="{!! ($errors->has('photographer_mid_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label>Middle Name</label>
-                                            <input type="input" class="form-control" id="photographer_mid_name"
+                                            <input type="text" class="form-control" id="photographer_mid_name"
                                                    name="photographer_mid_name" value="{{old('photographer_mid_name')}}"/>
                                             @error('photographer_mid_name')
                                             <span class="input-danger small">
@@ -541,7 +541,7 @@
                                             class="{!! ($errors->has('photographer_last_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Last Name</label>
-                                            <input type="input" class="form-control" id="photographer_last_name"
+                                            <input type="text" class="form-control" id="photographer_last_name"
                                                    name="photographer_last_name" value="{{old('photographer_last_name')}}" required/>
                                             @error('photographer_last_name')
                                             <span class="input-danger small">
@@ -556,7 +556,7 @@
                                             class="{!! ($errors->has('photographer_phone')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label>Phone</label>
-                                            <input type="input" class="form-control" id="photographer_phone"
+                                            <input type="text" class="form-control" id="photographer_phone"
                                                    name="photographer_phone" value="{{old('photographer_phone')}}"/>
                                             @error('photographer_phone')
                                             <span class="input-danger small">
@@ -571,7 +571,7 @@
                                             class="{!! ($errors->has('photographer_email')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Email</label>
-                                            <input type="email" pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$" class="form-control" id="photographer_email"
+                                            <input type="email"  class="form-control" id="photographer_email"
                                                    name="photographer_email" value="{{old('photographer_email')}}" required/>
                                             @error('photographer_email')
                                             <span class="input-danger small">
@@ -627,7 +627,7 @@
                                         <div class="{!! ($errors->has('others_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">First Name </label>
-                                            <input type="input" class="form-control" id="others_first_name"
+                                            <input type="text" class="form-control" id="others_first_name"
                                                    name="others_first_name" value="{{old('others_first_name')}}" required/>
                                             @error('others_first_name')
                                             <span class="input-danger small">
@@ -641,7 +641,7 @@
                                             class="{!! ($errors->has('others_mid_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label>Middle Name</label>
-                                            <input type="input" class="form-control" id="others_mid_name"
+                                            <input type="text" class="form-control" id="others_mid_name"
                                                    name="others_mid_name" value="{{old('others_mid_name')}}"/>
                                             @error('others_mid_name')
                                             <span class="input-danger small">
@@ -655,7 +655,7 @@
                                         <div class="{!! ($errors->has('others_last_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Last Name</label>
-                                            <input type="input" class="form-control" id="others_last_name"
+                                            <input type="text" class="form-control" id="others_last_name"
                                                    name="others_last_name" value="{{old('others_last_name')}}" required/>
                                             @error('others_last_name')
                                             <span class="input-danger small">
@@ -670,7 +670,7 @@
                                             class="{!! ($errors->has('others_phone')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label>Phone</label>
-                                            <input type="input" class="form-control" id="others_phone"
+                                            <input type="text" class="form-control" id="others_phone"
                                                    name="others_phone" value="{{old('others_phone')}}"/>
                                             @error('others_phone')
                                             <span class="input-danger small">
@@ -684,7 +684,7 @@
                                         <div class="{!! ($errors->has('others_email')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Email</label>
-                                            <input type="email" pattern="^([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$" class="form-control" id="others_email"
+                                            <input type="email" class="form-control" id="others_email"
                                                    name="others_email" value="{{old('others_email')}}" required/>
                                             @error('others_email')
                                             <span class="input-danger small">
