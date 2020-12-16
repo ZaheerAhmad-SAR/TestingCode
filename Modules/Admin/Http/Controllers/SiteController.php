@@ -18,9 +18,29 @@ class SiteController extends Controller
      * Display a listing of the resource.
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $sites = Site::paginate(20);
+        //$sites = Site::paginate(20);
+        $sites = Site::query();
+        if ($request->site_code != '') {
+            $sites = $sites->where('site_code','like', '%'.$request->site_code.'%');
+        }
+        if ($request->site_name != '') {
+            $sites = $sites->where('site_name','like', '%'.$request->site_name.'%');
+        }
+        if ($request->site_city != '') {
+            $sites = $sites->where('site_city','like', '%'.$request->site_city.'%');
+        }
+        if ($request->site_state != '') {
+            $sites = $sites->where('site_state','like', '%'.$request->site_state.'%');
+        }
+        if ($request->site_country != '') {
+            $sites = $sites->where('site_country','like', '%'.$request->site_country.'%');
+        }
+        if ($request->site_phone != '') {
+            $sites = $sites->where('site_phone','like', '%'.$request->site_phone.'%');
+        }
+        $sites = $sites->paginate(20);
         $siteForTransmissions = Site::all();
         $photographers = Photographer::all();
         $coordinators = Coordinator::all();
