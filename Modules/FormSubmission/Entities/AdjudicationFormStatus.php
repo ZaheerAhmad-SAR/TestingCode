@@ -5,8 +5,8 @@ namespace Modules\FormSubmission\Entities;
 use App\User;
 use Modules\Admin\Entities\FormType;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class AdjudicationFormStatus extends Model
 {

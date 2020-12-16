@@ -3,9 +3,11 @@
 namespace Modules\UserRoles\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class UserRole extends Model
 {
+    use SoftDeletes;
     protected $fillable = ['id', 'user_id', 'role_id', 'study_id'];
     public $incrementing = false;
     public $keyType = 'string';

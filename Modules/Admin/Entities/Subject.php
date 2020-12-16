@@ -2,9 +2,9 @@
 
 namespace Modules\Admin\Entities;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\FormSubmission\Entities\SubjectsPhases;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Subject extends Model
 {

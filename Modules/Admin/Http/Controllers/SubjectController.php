@@ -8,11 +8,21 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Modules\Admin\Entities\AdjudicationFormStatus;
+use Modules\Admin\Entities\AssignWork;
 use Modules\Admin\Entities\DiseaseCohort;
+use Modules\Admin\Entities\QuestionComments;
 use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\StudySite;
 use Modules\Admin\Entities\Subject;
+use Modules\FormSubmission\Entities\Answer;
+use Modules\FormSubmission\Entities\FinalAnswer;
+use Modules\FormSubmission\Entities\FormStatus;
+use Modules\FormSubmission\Entities\QuestionAdjudicationRequired;
+use Modules\FormSubmission\Entities\SubjectsPhases;
+use Modules\Queries\Entities\Query;
+use Modules\Queries\Entities\QueryNotification;
 
 class SubjectController extends Controller
 {
@@ -134,9 +144,9 @@ class SubjectController extends Controller
     public function update(Request $request, $id)
     {
         $getDuplicateSubject = Subject::where('id', '!=', $request->edit_id)
-                                        ->where('subject_id', $request->subject_id)
-                                        ->first();
-        if($getDuplicateSubject != null) {
+            ->where('subject_id', $request->subject_id)
+            ->first();
+        if ($getDuplicateSubject != null) {
             \Session::flash('error', 'Duplicate subject ID.');
             return redirect()->back();
         }
@@ -184,40 +194,47 @@ class SubjectController extends Controller
     public function destroy(Request $request, $id)
     {
         // log event details
-        $logEventDetails = eventDetails($id, 'Subject', 'Delete', $request->ip(), []);
-
-        $subject = Subject::where('id', $id)->delete();
-
+        eventDetails($id, 'Subject', 'Delete', $request->ip(), []);
+        Subject::where('id', $id)->delete();
+        AdjudicationFormStatus::where('subject_id', $id)->delete();
+        Answer::where('subject_id', $id)->delete();
+        AssignWork::where('subject_id', $id)->delete();
+        FinalAnswer::where('subject_id', $id)->delete();
+        FormStatus::where('subject_id', $id)->delete();
+        Query::where('subject_id', $id)->delete();
+        QueryNotification::where('subject_id', $id)->delete();
+        QuestionAdjudicationRequired::where('subject_id', $id)->delete();
+        QuestionComments::where('subject_id', $id)->delete();
+        SubjectsPhases::where('subject_id', $id)->delete();
         return \response()->json(['sucess' => 'Subject deleted successfully.']);
     }
 
-    public function checkSubject(Request $request) {
+    public function checkSubject(Request $request)
+    {
 
         if ($request->ajax()) {
             // if add function
-            if($request->type == 'add') {
+            if ($request->type == 'add') {
 
                 $checkSubject = Subject::where('study_id', \Session::get('current_study'))
-                                        ->where('subject_id', $request->subject_id)
-                                        ->first();
-                if($checkSubject != null) {
+                    ->where('subject_id', $request->subject_id)
+                    ->first();
+                if ($checkSubject != null) {
                     return 'error';
                 } else {
                     return 'success';
                 }
-
             } elseif ($request->type == 'update') {
 
                 $checkSubject = Subject::where('study_id', \Session::get('current_study'))
-                                        ->where('id', '!=', $request->edit_id)
-                                        ->where('subject_id', $request->subject_id)
-                                        ->first();
-                if($checkSubject != null) {
+                    ->where('id', '!=', $request->edit_id)
+                    ->where('subject_id', $request->subject_id)
+                    ->first();
+                if ($checkSubject != null) {
                     return 'error';
                 } else {
                     return 'success';
                 }
-
             } // type if ends
         } // ajax if ends
     } // function ends
