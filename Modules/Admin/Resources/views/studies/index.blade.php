@@ -13,7 +13,7 @@
         <div class="row ">
             <div class="col-12  align-self-center">
                 <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
-                    <div class="w-sm-100 mr-auto"><h4 id="querySection" class="mb-0">Studies Listing</h4></div>
+                    <div class="w-sm-100 mr-auto"><h4 id="querySection" class="mb-0">Studies</h4></div>
 
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                         <li class="breadcrumb-item"><a href="{{route('dashboard.index')}}">Home</a></li>
@@ -31,6 +31,36 @@
             @endif
         </div>
         <!-- END: Breadcrumbs-->
+        <div class="card">
+            <div class="card-body">
+                <form action="{{route('studies.index')}}" method="get" class="filter-form">
+                    @csrf
+                    <div class="form-row" style="padding: 10px;">
+                        <div class="form-group col-md-4">
+                            <input type="text" name="study_code" class="form-control" placeholder="Via Study Code">
+                        </div>
+                         <div class="form-group col-md-4">
+                           <input type="text" name="study_short_name" class="form-control" placeholder="Via Study Short Name">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <input type="text" class="form-control" name="study_sponsor" placeholder="Via Sponsor Name">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <select name="study_status" class="form-control">
+                                <option value="">Status</option>
+                                <option value="Development">Development</option>
+                                <option value="Live">Live</option>
+                                <option value="Archived">Archived</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4" style="text-align: right;">
+                            <button class="btn btn-outline-warning reset-filter"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
+                            <button type="submit" class="btn btn-primary submit-filter"><i class="fas fa-filter" aria-hidden="true"></i> Filter</button>
+                        </div>
+                    </div>    
+                </form>
+            </div>
+        </div>
         <!-- START: Card Data-->
         <div class="row">
             <div class="col-12 mt-3">
