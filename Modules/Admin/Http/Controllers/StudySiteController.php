@@ -14,6 +14,7 @@ use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\SiteStudyCoordinator;
 use Modules\Admin\Entities\StudySite;
 use Modules\Admin\Entities\Study;
+use Modules\UserRoles\Http\Requests\RoleRequest;
 use MongoDB\Driver\Query;
 use MongoDB\Driver\Session;
 
@@ -106,10 +107,24 @@ class StudySiteController extends Controller
 
     public function update(Request $request)
     {
-
+            //dd($request->all());
             $others = '';
-            $sites = $request->sites != null ? $request->sites : [];
+
+            $sites = $request->check_sites != null ? $request->check_sites : [];
             $current_study =  \Session::get('current_study');
+
+        foreach($sites as $key => $item)
+            {
+                $row = StudySite::where('site_id',$key)->delete();
+                $result = StudySite::create([
+                    'id'    => Str::uuid(),
+                    'site_id' =>$key,
+                    'study_id'=>$current_study,
+                ]);
+            }
+
+
+
 
             // get event data
             $oldStudySite = StudySite::select(\DB::raw('CONCAT(sites.site_name, " - ", sites.site_code) AS site_name_code'))
@@ -118,14 +133,26 @@ class StudySiteController extends Controller
             ->pluck('site_name_code')
             ->toArray();
 
-            $study = Study::find($current_study);
+            //$study = Study::find($current_study);
 
-            $syncSites = $study != null ? $study->studySites()->sync($sites) : [];
+            //$syncSites = $study != null ? $study->studySites()->sync($sites) : [];
 
             // log event details
             $logEventDetails = eventDetails($current_study, 'Study Site', 'Update', $request->ip(), $oldStudySite);
 
-            return response()->json([$sites]);
+            return back();
+    }
+
+    public function removeAssignedSites(Request $request)
+    {
+        $sites = $request->check_sites != null ? $request->check_sites : [];
+        $current_study =  \Session::get('current_study');
+
+        foreach($sites as $key => $item)
+        {
+            $row = StudySite::where('site_id',$key)->where('study_id',$current_study)->delete();
+        }
+        return back();
     }
 
     public function checkSiteExist(Request $request)
@@ -133,6 +160,12 @@ class StudySiteController extends Controller
         if (Site::where('site_code', $request->post('siteCode'))->first()) {
             return response()->json(['success'=>'Site Code already Exist']);
         }
+    }
+
+    public function assignedSites(Request $request)
+    {
+        $sites = Site::paginate(20);
+        return view('admin::studies.assign_sites',compact('sites'));
     }
 
     public function updateStudySite(Request $request)

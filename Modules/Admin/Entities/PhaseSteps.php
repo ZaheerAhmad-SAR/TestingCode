@@ -89,6 +89,7 @@ class PhaseSteps extends Model
         }
         if (canAdjudication(['index'])) {
             $formTypeArray[] = 2;
+            $formTypeArray[] = 3;
         } else {
             $formTypeArray[] = 4;
         }
@@ -163,5 +164,13 @@ class PhaseSteps extends Model
             $count += $step->graders_number;
         }
         return $count;
+    }
+
+    public static function getEligibilityStep($phaseId, $modilityId)
+    {
+        return self::where('form_type_id', 3)
+            ->where('phase_id', $phaseId)
+            ->where('modility_id', $modilityId)
+            ->first();
     }
 }

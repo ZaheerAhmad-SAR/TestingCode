@@ -22,7 +22,7 @@
         </button>
     @endif
 
-
+    @include('formsubmission::forms.next_previous.print_form', ['formStatus'=>$adjudicationFormStatusObj->adjudication_status])
 </div>
 <div class="row">
     <div class="col-md-12" id="adjudication_form_edit_div_{{ $stepIdStr }}"
