@@ -56,7 +56,7 @@ class StudyController extends Controller
      * Display a listing of the resource.
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
         session([
             'current_study' => '',
@@ -114,9 +114,38 @@ class StudyController extends Controller
             (hasPermission(\auth()->user(), 'systemtools.index')) ||
             (hasPermission(\auth()->user(), 'studytools.index'))
         ) {
-            $studies = Study::whereIn('id', array_unique($studiesIDs))->get();
+
+            $studies = Study::whereIn('id', array_unique($studiesIDs));
+            if ($request->study_code != '') {
+                $studies = $studies->where('study_code','like', '%'.$request->study_code.'%');
+            }
+            if ($request->study_short_name != '') {
+                $studies = $studies->where('study_short_name','like', '%'.$request->study_short_name.'%');
+            }
+            if ($request->study_status != '') {
+                $studies = $studies->where('study_status', $request->study_status);
+            }
+            if ($request->study_sponsor != '') {
+                $studies = $studies->where('study_sponsor','like', '%'.$request->study_sponsor.'%');
+            }
+            $studies = $studies->get();
+
         } else {
-            $studies = Study::where('study_status', 'Live')->whereIn('id', array_unique($studiesIDs))->get();
+
+            $studies = Study::where('study_status', 'Live')->whereIn('id', array_unique($studiesIDs));
+            if ($request->study_code != '') {
+                $studies = $studies->where('study_code','like', '%'.$request->study_code.'%');
+            }
+            if ($request->study_short_name != '') {
+                $studies = $studies->where('study_short_name','like', '%'.$request->study_short_name.'%');
+            }
+            if ($request->study_status != '') {
+                $studies = $studies->where('study_status', $request->study_status);
+            }
+            if ($request->study_sponsor != '') {
+                $studies = $studies->where('study_sponsor','like', '%'.$request->study_sponsor.'%');
+            }
+            $studies = $studies->get();
         }
 
 

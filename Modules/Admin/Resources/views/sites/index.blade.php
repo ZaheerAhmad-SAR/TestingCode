@@ -35,7 +35,37 @@
             </div>
         </div>
         <!-- END: Breadcrumbs-->
-
+        <div class="card">
+            <div class="card-body">
+                <form action="{{route('sites.index')}}" method="get" class="filter-form">
+                    @csrf
+                    <div class="form-row" style="padding: 10px;">
+                        <div class="form-group col-md-3">
+                            <input type="text" name="site_code" class="form-control" placeholder="Site Code">
+                        </div>
+                         <div class="form-group col-md-3">
+                           <input type="text" name="site_name" class="form-control" placeholder="Site Name">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" name="site_city" placeholder="Site City">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" name="site_state" placeholder="Site State">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" name="site_country" placeholder="Site Country">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" name="site_phone" placeholder="Site Contact">
+                        </div>
+                        <div class="form-group col-md-3" style="text-align: right;">
+                            <button class="btn btn-outline-warning reset-filter"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
+                            <button type="submit" class="btn btn-primary submit-filter"><i class="fas fa-filter" aria-hidden="true"></i> Filter</button>
+                        </div>
+                    </div>    
+                </form>
+            </div>
+        </div>
         <!-- START: Card Data-->
         <div class="row">
             <div class="col-12 col-sm-12 mt-3">
