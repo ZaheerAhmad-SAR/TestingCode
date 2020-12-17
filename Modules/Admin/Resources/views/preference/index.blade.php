@@ -75,7 +75,7 @@
                                                     <p><br>
                                                         <strong>Usage (for developers):</strong><br>
                                                         <code>
-                                                            use Module\Admin\Entities\Preference;<br>
+                                                            use Modules\Admin\Entities\Preference;<br>
                                                             if(Preference::getPreference('{{ $preference->preference_title }}') == '{{ $preference->preference_value }}'){ // code goes here } </code>
                                                     </p>
                                                 @else
@@ -88,7 +88,7 @@
                                                         <p><br>
                                                             <strong>Usage (for developers):</strong><br>
                                                             <code>
-                                                                use Module\Admin\Entities\Preference;<br>
+                                                                use Modules\Admin\Entities\Preference;<br>
                                                                 $variableName = Preference::getPreference('{{ $preference->preference_title }}');</code>
                                                         </p>
                                                 @endif

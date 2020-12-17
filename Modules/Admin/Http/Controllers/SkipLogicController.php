@@ -238,15 +238,15 @@ class SkipLogicController extends Controller
     {
         $activate_sections_array = [];
         $function_string = '';
-        if($request->option_value != 'q_type_num'){
+        if($request->option_value == 'q_type_num' || $request->option_value == 'q_type_text'){
+            $where = array(
+                "id" =>$request->question_id,
+            );
+        }else{
            $where = array(
                 "question_id" =>$request->question_id,
                 "option_title" =>$request->option_title,
                 "option_value" =>$request->option_value
-            );
-        }else{
-           $where = array(
-                "id" =>$request->question_id,
             );
         }
         $if_exists_record = skipLogic::where($where)->first();
@@ -288,15 +288,15 @@ class SkipLogicController extends Controller
     {
         $deactivate_sections_array = [];
         $function_string = '';
-        if($request->option_value != 'q_type_num'){
+        if($request->option_value == 'q_type_num' || $request->option_value == 'q_type_text'){
+            $where = array(
+                "id" =>$request->question_id,
+            );
+        }else{
            $where = array(
                 "question_id" =>$request->question_id,
                 "option_title" =>$request->option_title,
                 "option_value" =>$request->option_value
-            );
-        }else{
-           $where = array(
-                "id" =>$request->question_id,
             );
         }
         $if_exists_record = skipLogic::where($where)->first();
@@ -337,15 +337,15 @@ class SkipLogicController extends Controller
     {
         $activate_questions_array = [];
         $function_string = '';
-        if($request->option_value != 'q_type_num'){
+        if($request->option_value == 'q_type_num' || $request->option_value == 'q_type_text'){
+            $where = array(
+                "id" =>$request->question_id,
+            );
+        }else{
            $where = array(
                 "question_id" =>$request->question_id,
                 "option_title" =>$request->option_title,
                 "option_value" =>$request->option_value
-            );
-        }else{
-           $where = array(
-                "id" =>$request->question_id,
             );
         }
         $if_exists_record = skipLogic::where($where)->first();
@@ -383,15 +383,15 @@ class SkipLogicController extends Controller
     {
         $deactivate_questions_array = [];
         $function_str = '';
-        if($request->option_value != 'q_type_num'){
+        if($request->option_value == 'q_type_num' || $request->option_value == 'q_type_text'){
+            $where = array(
+                "id" =>$request->question_id,
+            );
+        }else{
            $where = array(
                 "question_id" =>$request->question_id,
                 "option_title" =>$request->option_title,
                 "option_value" =>$request->option_value
-            );
-        }else{
-           $where = array(
-                "id" =>$request->question_id,
             );
         }
         $if_exists_record = skipLogic::where($where)->first();

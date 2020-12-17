@@ -58,6 +58,7 @@
                        <div class="card-body">
                             <div class="col-md-6" style="display: inline-block;">
                                 <div class="">
+                                    <label>{{$question_label->question_text}}</label>
                                     <input type="number" class="form-control" name="number_value[]" placeholder="Enter Number values " value="" required>
                                 </div>
                             </div>

@@ -3,10 +3,12 @@
 namespace Modules\Admin\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use App\User;
 
 class TransmissionUpdateDetail extends Model
 {
+    use SoftDeletes;
     //
     protected $table = 'transmission_update_details';
 

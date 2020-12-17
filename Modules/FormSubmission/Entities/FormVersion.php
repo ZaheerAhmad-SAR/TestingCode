@@ -3,11 +3,13 @@
 namespace Modules\FormSubmission\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Modules\Admin\Entities\PhaseSteps;
 
 class FormVersion extends Model
 {
+    use SoftDeletes;
     protected $table = 'form_version';
     protected $fillable = ['id', 'step_id', 'form_questions', 'form_version_num', 'created_at', 'updated_at'];
     protected $keyType = 'string';

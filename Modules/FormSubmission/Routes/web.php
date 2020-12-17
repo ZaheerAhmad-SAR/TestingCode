@@ -61,6 +61,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('formDataExport/loadExportFilterForm', 'FormDataExportController@filterForm')->name('formDataExport.loadExportFilterForm');
     Route::get('formDataExport/export', 'FormDataExportController@export')->name('formDataExport.export');
 
+    Route::post('qcQuestionToShow/openShowQuestionsToGraderPopUp', 'QcQuestionToShowController@openShowQuestionsToGraderPopUp')->name('qcQuestionToShow.openShowQuestionsToGraderPopUp');
     Route::post('questionComment/loadQuestionCommentPopup', 'QuestionCommentController@loadQuestionCommentPopup')->name('questionComment.loadQuestionCommentPopup');
     Route::post('questionComment/loadAddQuestionCommentForm', 'QuestionCommentController@loadAddQuestionCommentForm')->name('questionComment.loadAddQuestionCommentForm');
     Route::post('questionComment/submitAddQuestionCommentForm', 'QuestionCommentController@submitAddQuestionCommentForm')->name('questionComment.submitAddQuestionCommentForm');
