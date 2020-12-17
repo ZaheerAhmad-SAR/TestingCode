@@ -469,12 +469,6 @@
                 $("#waitModal").modal('show');
             }
 
-            function wait() {
-                while (start_wait == 'yes') {
-                    console.log('wait');
-                }
-            }
-
             function endWait() {
                 $("#waitModal").modal('hide');
             }
@@ -912,7 +906,6 @@
             }
 
             function reloadPage(waitSeconds) {
-                startWait();
                 var seconds = waitSeconds * 1000;
                 setTimeout(function() {
                     location.reload();
