@@ -269,18 +269,24 @@
                                 </div>
                                 <div class="form-group row">
                                     <label for="Required" class="col-sm-2 col-form-label">Required </label>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-2">
                                         <input type="radio" name="is_required" id="required_yes" value="no"> No
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <input type="radio" name="is_required" id="required_no" value="yes" checked> Yes
                                     </div>
                                     <div class="col-sm-2">Exports: </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-2">
                                         <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_no"
                                             value="no"> No &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_yes"
                                             value="yes" checked> Yes
                                     </div>
+                                    <div class="col-sm-2">Show to Grader: </div>
+                                <div class="col-sm-2">
+                                    <input type="radio" name="is_show_to_grader" id="is_show_to_grader_no" value="no"> No
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="is_show_to_grader" id="is_show_to_grader_yes" value="yes" checked> Yes
+                                </div>
                                 </div>
                                 <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Text/info: </label>
@@ -884,7 +890,7 @@
                     tId = ''
                     type = ''
                     type = $(this).attr('data-type');
-                    
+
                     ques_id = row.find('input.question_id').val()
                     ques_type = row.find('input.question_type').val()
                     ques_type_id = row.find('input.question_type_id').val()
@@ -898,6 +904,7 @@
                     text_info = row.find('input.text_info').val()
                     is_required = row.find('input.is_required').val()
                     is_exportable_to_xls = row.find('input.is_exportable_to_xls').val()
+                    is_show_to_grader = row.find('input.is_show_to_grader').val()
                     measurement_unit = row.find('input.measurement_unit').val()
                     field_width = row.find('input.field_width').val()
                     upper_limit = row.find('input.upper_limit').val()
@@ -915,7 +922,7 @@
                     adj_custom_value = row.find('input.adj_custom_value').val()
                     adj_id = row.find('input.adj_id').val();
                     $('#questionId_hide').val(ques_id);
-                    
+
                     $('#question_type').val(ques_type_id);
                     $('#question_type').trigger('change');
                     $('#section_id').val(section_id);
@@ -951,6 +958,11 @@
                     } else {
                         $('#is_exportable_to_xls_no').prop('checked', true);
                     }
+                    if (is_show_to_grader == 'yes') {
+                        $('#is_show_to_grader_yes').prop('checked', true);
+                    } else {
+                        $('#is_show_to_grader_no').prop('checked', true);
+                    }
                     $('#dependency_id').val(dependency_id);
                     if (dependency_status == 'yes') {
                         $('#field_dependent_yes').prop('checked', true);
@@ -978,7 +990,7 @@
                     }else{
                         $('.modal-title').html('Update Question')
                         $('#formfields').attr('action', "{{ route('forms.updateQuestion') }}");
-                    }   
+                    }
                     $('#addField').modal('show');
                     loadValidationRulesByQuestionId(ques_id);
                 } else {

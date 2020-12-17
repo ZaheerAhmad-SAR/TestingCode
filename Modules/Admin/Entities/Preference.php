@@ -3,10 +3,12 @@
 namespace Modules\Admin\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Admin\Scopes\PreferencesByStudy;
 
 class Preference extends Model
 {
+    use SoftDeletes;
     protected $table = 'preferences';
     protected $fillable = ['id', 'study_id', 'preference_title', 'preference_value', 'is_selectable', 'preference_options', 'created_at', 'updated_at'];
     protected $attributes = [

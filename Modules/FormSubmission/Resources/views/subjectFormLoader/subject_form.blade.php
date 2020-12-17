@@ -352,9 +352,10 @@
         @include('queries::queries.query_popup')
         @include('formsubmission::subjectFormLoader.include.subject_form_wait_popup')
         @include('formsubmission::subjectFormLoader.include.assignPhasesToSubjectPopup')
-        @include('formsubmission::subjectFormLoader.include.addQuestionCommentPopup')
-        @include('formsubmission::subjectFormLoader.include.questionCommentPopup')
         @include('formsubmission::subjectFormLoader.include.subject_form_css_js')
         @include('formsubmission::subjectFormLoader.include.subject_adjudication_form_css_js')
         @include('formsubmission::subjectFormLoader.include.validation_rules_functions_js')
+        @include('formsubmission::question_comments.addQuestionCommentPopup')
+        @include('formsubmission::question_comments.questionCommentPopup')
+        @include('formsubmission::qc_question_to_show.qcQuestionsToShowPopup')
     @stop

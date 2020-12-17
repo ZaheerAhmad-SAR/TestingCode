@@ -33,6 +33,7 @@
     @endif
 
     @include('formsubmission::forms.next_previous.print_form', ['formStatus'=>$formStatusObj->form_status])
+    @include('formsubmission::forms.next_previous.show_qc_questions_to_grader')
 
 </div>
 @if($isPreview === false)

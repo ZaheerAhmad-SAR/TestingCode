@@ -1,4 +1,8 @@
 <style>
+    .date-cls{
+        font-size: 10px;
+        color: #1e3d73;
+    }
     .disable_link {
         pointer-events: none;
     }

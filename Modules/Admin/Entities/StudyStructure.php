@@ -5,15 +5,17 @@ namespace Modules\Admin\Entities;
 use Modules\UserRoles\Entities\Role;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Scopes\StudyStructureOrderByScope;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Admin\Scopes\StudyStructureWithoutRepeatedScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StudyStructure extends Model
 {
     use SoftDeletes;
-    protected $fillable = ['id', 'study_id', 'name', 'position', 'duration',
-        'is_repeatable','parent_id','count','old_id', 'deleted_at'];
+    protected $fillable = [
+        'id', 'study_id', 'name', 'position', 'duration',
+        'is_repeatable', 'parent_id', 'count', 'old_id', 'deleted_at'
+    ];
     // protected $keyType = 'string';
     protected $casts = [
         'id' => 'string'

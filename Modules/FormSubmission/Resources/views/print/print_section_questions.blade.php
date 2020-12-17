@@ -18,20 +18,16 @@
 
                 $field_name = buildFormFieldName($question->formFields->variable_name);
                 $questionIdStr = buildSafeStr($question->id, '');
-                $skipLogicQuestionIdStr = buildSafeStr($question->id, 'skip_logic_');
 
                 $fieldId = $field_name . '_' . $questionIdStr;
                 $fieldType = $question->form_field_type->field_type;
-                $is_required = ($question->formFields->is_required == 'yes')? 'required':'';
-                $is_required_star = ($question->formFields->is_required == 'yes')? '<span class="text text-danger">*</span>':'';
-                $showOrHide = ($answer->answer == '-9999')? 'display:none;':'';
                 @endphp
-                 <div class="form-group" id="question_row_{{$questionIdStr}}" style="{{ $showOrHide }}">
-                 <label class="">{{ $question->question_text }} {!! $is_required_star !!}</label>
+                 <div class="form-group" id="question_row_{{$questionIdStr}}">
+                 <label class="">{{ $question->question_text }}</label>
                     <div class="row">
                         <div class="col-12">
                             @include('formsubmission::print.print_form_fields.print_form_field_checks', ['fieldType'=>$fieldType, 'question'=> $question, 'field_name'=> $field_name,
-                            'questionIdStr'=> $questionIdStr, 'skipLogicQuestionIdStr'=>$skipLogicQuestionIdStr, 'fieldId'=> $fieldId, 'answer'=> $answer, 'is_required'=> $is_required])
+                            'questionIdStr'=> $questionIdStr, 'fieldId'=> $fieldId, 'answer'=> $answer])
             </div>
 
         </div>

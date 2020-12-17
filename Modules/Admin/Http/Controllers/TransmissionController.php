@@ -375,7 +375,7 @@ class TransmissionController extends Controller
             ->get();
         }
 
-        // get step for this visit and aubject
+        // get step for this visit and subject
         $getStepForVisit = PhaseSteps::where('phase_id', $findTransmission->phase_id)
                                        ->where('modility_id', $findTransmission->modility_id)
                                        ->get()
@@ -531,6 +531,7 @@ class TransmissionController extends Controller
             if ($getSiteStudy == null) {
                 // insert study site
                 $getSiteStudy = new StudySite;
+                $getSiteStudy->id = Str::uuid();
                 $getSiteStudy->study_id = $getStudy->id;
                 $getSiteStudy->site_id = $getSite->id;
                 $getSiteStudy->save();

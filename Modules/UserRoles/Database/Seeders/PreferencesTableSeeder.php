@@ -5,6 +5,7 @@ namespace Modules\UserRoles\Database\Seeders;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Modules\Admin\Entities\Preference;
 use Modules\Admin\Entities\Study;
