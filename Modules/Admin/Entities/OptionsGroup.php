@@ -16,6 +16,7 @@ class OptionsGroup extends Model
         'option_layout',
         'option_name',
         'option_value',
+        'study_id'
     ];
 
     protected $attributes = [

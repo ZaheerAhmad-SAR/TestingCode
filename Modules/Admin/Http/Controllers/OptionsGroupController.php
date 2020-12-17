@@ -18,8 +18,11 @@ class OptionsGroupController extends Controller
      */
     public function index()
     {
+        $current_study =  \Session::get('current_study');
         $optionsGroups = OptionsGroup::paginate(20);
-        $optionsGroup = OptionsGroup::latest('created_at')->get();
+        //$optionsGroup = OptionsGroup::latest('created_at')->get();
+        $optionsGroup = OptionsGroup::where('study_id',$current_study)->orderBy('created_at','desc')->get();
+
         return view('admin::optionsgroup.index',compact('optionsGroups','optionsGroup'));
     }
 
@@ -40,6 +43,8 @@ class OptionsGroupController extends Controller
 
     public function store(Request $request)
     {
+        $current_study =  \Session::get('current_study');
+
         $input = $request->all();
         $input['option_name']   = $request->option_name;
         $input['option_value']  = $request->option_value;
@@ -52,7 +57,8 @@ class OptionsGroupController extends Controller
                 'option_group_description' => empty($request->option_group_description) ? Null : $request->option_group_description,
                 'option_layout' => empty($request->option_layout) ? Null : $request->option_layout,
                 'option_name'=>empty($name) ? Null :$name,
-                'option_value'=>empty($value) ? Null: $value
+                'option_value'=>empty($value) ? Null: $value,
+                'study_id'=>$current_study
             ]);
 
         $oldOption = [];
@@ -95,12 +101,14 @@ class OptionsGroupController extends Controller
      */
     public function update(Request $request)
     {
+
         // get old data for logs
         $oldOption = OptionsGroup::find($request->options_groups_id);
 
         $input = $request->all();
         $input['option_name']   = $request->option_name_edit;
         $input['option_value']  = $request->option_value_edit;
+        $input['study_id_edit']  = $request->study_id_edit;
         $name   = implode(',',(array)$input['option_name']);
         $value  = implode(',',(array)$input['option_value']);
         $data   = array
@@ -108,6 +116,7 @@ class OptionsGroupController extends Controller
             'option_group_name' => $request->option_group_name_edit,
             'option_group_description' => $request->option_group_description_edit,
             'option_layout' => $request->option_layout_edit,
+            'study_id'=> $request->study_id_edit,
             'option_name'=>empty($name) ? Null :$name,
             'option_value'=>empty($value) ? Null: $value
         );

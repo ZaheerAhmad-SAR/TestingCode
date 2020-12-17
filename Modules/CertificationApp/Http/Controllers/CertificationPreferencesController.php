@@ -8,8 +8,10 @@ use Illuminate\Routing\Controller;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\ChildModilities;
+use Modules\Admin\Entities\Device;
 
 use Modules\CertificationApp\Entities\StudyModility;
+use Modules\CertificationApp\Entities\StudyDevice;
 use Modules\CertificationApp\Entities\StudySetup;
 use Modules\CertificationApp\Entities\CertificationTemplate;
 
@@ -205,6 +207,85 @@ class CertificationPreferencesController extends Controller
 
     } // function end
 
+    public function assignDevice(Request $request) {
+
+        // get all devices
+        $getDevices = Device::query();
+
+        if ($request->device_name != '') {
+
+           $getDevices = $getDevices->where('device_name', 'like', '%' . $request->device_name . '%');
+        }
+
+        if ($request->device_manufacturer != '') {
+
+           $getDevices = $getDevices->where('device_manufacturer', 'like', '%' . $request->device_manufacturer . '%');
+        }
+
+        $getDevices = $getDevices->paginate(50);
+        
+        return view('certificationapp::certificate_preferences.assign_devices', compact('getDevices'));
+    }
+
+    public function saveAssignDevice(Request $request) {
+
+        // get input
+        $input = $request->all();
+
+        foreach($input['device_name'] as $key => $device) {
+
+            // check if checkbox is checked
+            if(isset($input['check_device'][$device])) {
+
+                $checkStudyDevice = StudyDevice::where('device_id', $device)
+                                                    ->where('study_id', decrypt($request->study_id))
+                                                    ->first();
+
+                // check if this device is already assigned to study
+                if ($checkStudyDevice == null) {
+
+                    $saveDevice = new StudyDevice;
+                    $saveDevice->id = Str::uuid();
+                    $saveDevice->device_id = $device;
+                    $saveDevice->study_id  = decrypt($request->study_id);
+                    $saveDevice->assign_by  = \Auth::user()->id;
+                    $saveDevice->save();
+
+                } // device check ends
+
+            } // checkbox checked condition ends
+
+        } // device loop ends
+
+        Session::flash('success', 'Devices assigned successfully.');
+
+        return redirect(route ('preferences.assign-device', $request->study_id));
+
+    } // function end
+
+    public function removeAssignDevice(Request $request) {
+
+        // get input
+        $input = $request->all();
+
+        foreach($input['device_name'] as $key => $device) {
+
+            // check if checkbox is checked
+            if(isset($input['check_device'][$device])) {
+
+                $checkStudyDevice = StudyDevice::where('device_id', $device)
+                                                ->where('study_id', decrypt($request->study_id))
+                                                ->delete();
+            } // check ends
+
+        } // loop ends
+
+        Session::flash('success', 'Devices removed successfully.');
+
+        return redirect(route ('preferences.assign-device', $request->study_id));
+
+    } // function end
+
     public function studySetup(Request $request) {
 
         // get study setups
@@ -226,7 +307,7 @@ class CertificationPreferencesController extends Controller
             $checkStudy = new StudySetup;
             $checkStudy->id = Str::uuid();
             $checkStudy->study_email = $request->study_email;
-            $checkStudy->study_cc_email = $request->study_cc_email;
+            $checkStudy->study_cc_email = preg_replace("/\s+/", "", $request->study_cc_email);
             $checkStudy->allowed_no_transmission = json_encode($request->allowed_no_transmission);
             $checkStudy->study_id = decrypt($request->study_id);
             $checkStudy->save();
@@ -234,7 +315,7 @@ class CertificationPreferencesController extends Controller
         } else {
 
             $checkStudy->study_email = $request->study_email;
-            $checkStudy->study_cc_email = $request->study_cc_email;
+            $checkStudy->study_cc_email = preg_replace("/\s+/", "", $request->study_cc_email);
             $checkStudy->allowed_no_transmission = json_encode($request->allowed_no_transmission);
             $checkStudy->study_id = decrypt($request->study_id);
             $checkStudy->save();
@@ -281,5 +362,19 @@ class CertificationPreferencesController extends Controller
         Session::flash('success', 'Template updated successfully.');
 
         return redirect(route ('certification-template'));
+    }
+
+    public function getTemplateData(Request $request) {
+
+        if($request->ajax()) {
+
+            $getTemplate = CertificationTemplate::select('id as template_id', 'title as template_title', 'body as template_body')
+            ->where('id', $request->template_id)
+            ->first();
+
+            // return response
+            return response()->json(['getTemplate' => $getTemplate]);
+
+        } // ajax ends
     }
 }

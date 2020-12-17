@@ -679,7 +679,9 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if(!$getTransmissionUpdates->isEmpty())
                                     @foreach($getTransmissionUpdates as $transmissionUpdates)
+                                    
                                         <tr>
                                             <td>
                                                 {{ date('d-M-Y', strtotime($transmissionUpdates->created_at)).' '.date('h:m:s', strtotime($transmissionUpdates->created_at)) }}
@@ -691,7 +693,13 @@
                                                 {{ $transmissionUpdates->comment }}
                                             </td>
                                         </tr>
+                                    
                                     @endforeach
+                                    @else
+                                    <tr>
+                                        <td style="text-align: center;" colspan="3">No record found.</td>
+                                    </tr>
+                                    @endif
                                 </tbody>
                             </table>
                          
