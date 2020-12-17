@@ -13,7 +13,7 @@
                     title: swalTitle,
                     text: message,
                     icon: messageType,
-                    dangerMode: true,
+                    //dangerMode: true,
                 });
             }
 
@@ -450,6 +450,7 @@
                 console.log('hideReasonField : ' + stepIdStr + ' - ' + stepClsStr + ' - ' + formType + ' - ' + formStatusIdStr + ' - ' + waitSeconds);
                 startWait();
                 var seconds = waitSeconds * 1000;
+                console.log('wait : ' + seconds);
                 setTimeout(function() {
                     $("#edit_form_div_" + stepIdStr).hide(500);
                     $('#edit_reason_text_' + stepIdStr).prop('required', false);
@@ -586,6 +587,16 @@
                 var formFilledByUserId = $('#form_master_' + stepIdStr + ' input[name="formFilledByUserId"]').val();
                 var current_user_id = '{{ auth()->user()->id }}';
 
+                console.log('formType : ' + formType);
+                console.log('canQualityControl : ' + canQualityControl);
+                console.log('formStatus : ' + formStatus);
+                console.log('formFilledByUserId : ' + formFilledByUserId);
+                console.log('current_user_id : ' + current_user_id);
+                console.log('canGrading : ' + canGrading);
+                console.log('canEligibility : ' + canEligibility);
+                console.log('numberOfGraders : ' + numberOfGraders);
+                console.log('numberOfAlreadyGradedPersons : ' + numberOfAlreadyGradedPersons);
+
                 if (
                     (formType == 'QC') &&
                     (canQualityControl == true)
@@ -595,9 +606,6 @@
                     }
                     if ((formStatus != 'no_status') && (formFilledByUserId == current_user_id)) {
                         canSubmit = true;
-                    }
-                    if ((formStatus == 'complete') && (isFormInEditMode == 'no')) {
-                        canSubmit = false;
                     }
                 }
 
@@ -907,6 +915,7 @@
 
             function reloadPage(waitSeconds) {
                 var seconds = waitSeconds * 1000;
+                console.log('wait : ' + seconds);
                 setTimeout(function() {
                     location.reload();
                 }, seconds);

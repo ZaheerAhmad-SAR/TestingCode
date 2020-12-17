@@ -6,8 +6,10 @@ $text_info = str_replace(array("\n", "\r"), '', html_entity_decode($question->fo
 <div class="d-flex mt-3 mt-md-0 ml-auto">
 <span class="ml-3" style="cursor: pointer;">
 <i class="fas fa-eye" style="margin-top: 12px;" onclick="showModal{{ $questionIdStr }}();"></i></span>
+@if(Modules\Admin\Entities\QuestionComments::hasComments($studyId, $subjectId, $phase->id, $step->step_id, $section->id, $question->id))
 <span class="ml-3" style="cursor: pointer;">
     <i class="fas fa-comments" style="margin-top: 12px;" onclick="loadQuestionCommentPopup('{{ $studyId }}', '{{ $subjectId }}', '{{ $phase->id }}', '{{ $step->step_id }}', '{{ $section->id }}', '{{ $question->id}}');"></i></span>
+@endif
 </div>
 @push('popup_modals')
 <!-- Modal -->

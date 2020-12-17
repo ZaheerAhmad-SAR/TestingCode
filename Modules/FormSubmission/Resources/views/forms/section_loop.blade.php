@@ -6,7 +6,7 @@ $transmissionNumber = \Modules\FormSubmission\Entities\SubjectsPhases::getTransm
 /**************************************/
 /**************************************/
 /**************************************/
-$current_user_id = auth()->user()->id;
+//$current_user_id = auth()->user()->id;
 
 $showForm = false;
 if ($step->formType->form_type == 'QC' && canQualityControl(['index'])){
@@ -165,7 +165,7 @@ if(null !== $formStatusObj){
                                     if(request('sectionId', '-') == $section->id){
                                         $showSection = 'active show';
                                     }
-                                    if($activeSection && request('sectionId', '-') == '-'){
+                                    if($activeSection){
                                         $showSection = 'active show';
                                     }
                                     @endphp
