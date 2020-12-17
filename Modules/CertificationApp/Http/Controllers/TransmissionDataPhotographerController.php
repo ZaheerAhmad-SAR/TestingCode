@@ -497,10 +497,59 @@ class TransmissionDataPhotographerController extends Controller
             // cc email
             $userEmails = $getStudyEmail != null ? explode(',', $getStudyEmail->study_cc_email) : [];
             // study email
-            $userEmails[] = $getStudyEmail != null ? $getStudyEmail->study_email : [];
+            $userEmails[] = $getStudyEmail != null ? $getStudyEmail->study_email : '';
 
-            return response()->json(['userEmails' => $userEmails]);
+            return response()->json(['userEmails' => array_filter($userEmails)]);
 
         } // ajax ends
     }
+
+    public function getTransmissionData(Request $request) {
+
+        if($request->ajax()) {
+
+            $ccEmails = [];
+
+            if ($request->type == 'photographer') {
+                
+                // find transmission
+                $findTransmission = TransmissionDataPhotographer::find($request->transmission_id);
+
+                // get study id
+                $getStudy = Study::where('study_code', $findTransmission->StudyI_ID)->first();
+
+                $getStudyEmail = StudySetup::where('study_id', $getStudy->id)->first();
+                // cc email
+                $ccEmails = $getStudyEmail != null ? explode(',', $getStudyEmail->study_cc_email) : [];
+                // study email
+                $ccEmails[] = $getStudyEmail != null ? $getStudyEmail->study_email : '';
+                // notification email
+                $ccEmails[] = $findTransmission->notification == 'Yes' ? $findTransmission->notification_list : '';
+                // submitter email
+                $submitterEmail = $findTransmission->Photographer_email;
+
+                // select all child modialities for this study transmission
+                $getChildModalities = ChildModilities::select('child_modilities.id', 'child_modilities.modility_name')
+                                                    ->leftjoin('study_modilities', 'study_modilities.child_modility_id', '=', 'child_modilities.id')
+                                                    ->where('study_modilities.study_id', $getStudy->id)
+                                                    ->where('study_modilities.parent_modility_id', $findTransmission->transmission_modility_id)
+                                                    ->get()->toArray();
+
+                // get accepted transmission for this study, modality, photographer and site
+                $getTransmissions = TransmissionDataPhotographer::select('id', 'Transmission_Number', 'status')
+                    ->where('StudyI_ID', $findTransmission->StudyI_ID)
+                    ->where('Photographer_email', $findTransmission->Photographer_email)
+                    ->where('Requested_certification', $findTransmission->Requested_certification)
+                    ->where('Site_ID', $findTransmission->Site_ID)
+                    ->where('status', 'accepted')
+                    ->get()
+                    ->toArray();
+            }
+            
+            return response()->json(['submitterEmail' => $submitterEmail, 'ccEmails' => array_filter($ccEmails), 'getChildModalities' => $getChildModalities, 'getTransmissions' => $getTransmissions]);
+
+        } // ajax ends
+    }
+
+
 }

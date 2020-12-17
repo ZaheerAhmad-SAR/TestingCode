@@ -97,6 +97,7 @@
 
                     <div class="card-body">
                         <form action="{{ route('certification-photographer.update', encrypt($findTransmission->id))}}" method="POST" class="transmission-form">
+                            <input type="hidden" name="notification" id="notification" value="{{$findTransmission->notification}}">
                             <div class="row">
                                 @csrf
                                 @method('PUT')
@@ -567,7 +568,10 @@
                             });
 
                             // put notification list emails as cc
-                            $('#cc_email').append('<option value="'+notificationList+'" selected>'+notificationList+'</option>');
+                            if ($('#notification').val() == 'Yes') {
+                                
+                                $('#cc_email').append('<option value="'+notificationList+'" selected>'+notificationList+'</option>');
+                            }
 
                         } else {
 

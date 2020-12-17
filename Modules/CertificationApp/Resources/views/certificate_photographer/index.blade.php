@@ -271,7 +271,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-            <form action="" method="POST" class="generate_certificate-form">
+            <form action="" method="POST" class="generate-certificate-form">
                 @csrf
               <div class="modal-body">
                     <input type="hidden" name="hidden_transmission_id" value="">
@@ -299,9 +299,7 @@
 
                     <!-- -------------------------------- original One ------------------------------- -->
                     <div class="form-group col-md-12 original-div" style="display: none;">
-                        <label>Select Transmission</label><br>
-                        <input type="checkbox" name="transmissions[]" value="20201216-071102359">
-                        <input type="checkbox" name="transmissions[]" value="20201216-071102359">
+                        <label><strong>Select Transmission:</strong></label><br>
                     </div>
 
                     <!-- ------------------------------------ grand father one -------------------------->
@@ -310,7 +308,15 @@
                         <textarea name="grandfather_id" id="grandfather_id" rows="3" class="form-control data-required"></textarea>
                     </div>
 
-                    <!-- ------------------------------------------------------------------------------------- -->
+                    <!-- --------------------------------------------------------------------------------- -->
+
+                    <div class="form-group col-md-12 suspend-certificate-div">
+                        <label>Certificate For<span class="field-required">*</span></label>
+                        <select name="certificate_for" id="certificate_for" class="form-control data-required" required="required">
+                            
+
+                        </select>
+                    </div>
 
                     <div class="form-group col-md-12">
                         <label class="edit_users">Email To<span class="field-required">*</span></label>
@@ -321,7 +327,7 @@
 
                      <div class="form-group col-md-12 suspend-certificate-div">
                         <label class="edit_users">CC Email<span class="field-required">*</span></label>
-                        <Select class="form-control cc_user_email data-required" name="cc_user_email" id="cc_user_email" required>
+                        <Select class="form-control cc_user_email data-required" name="cc_user_email" id="cc_user_email" required multiple>
 
                         </Select>
                     </div>
@@ -362,6 +368,14 @@
 
 <script type="text/javascript">
 
+    // initialize summer note
+    $('.summernote').summernote({
+        height: 150,
+
+    });
+
+    $('#cc_user_email').select2();
+
     // on status change
     $('#certification_status').change(function() {
         // if this is the value show all div other vice hide the other divs
@@ -381,12 +395,6 @@
         }
     });
 
-    // initialize summer note
-    $('.summernote').summernote({
-        height: 150,
-
-    });
-
     // reset filter form
     $('.reset-filter').click(function(){
         // reset values
@@ -396,12 +404,111 @@
         $('.filter-form').submit();
     });
 
-    function generateCertificate(transmissionID){
+    function generateCertificate(transmissionID) {
+
+        var transmission = '';
+        var childModalities = '';
+
+        // by default values
+        $('#certification_status').val('');
+        $('#issue_date').val('');
+
+        // remove transmission check boxes
+        $(".transmission-checkbox :checkbox").parent().remove();
+        // remove certification for drop down
+        $('#certificate_for').empty();
+        // empty user email
+        $('.user_email').empty();
+
+        // refresh the select2
+        $('#cc_user_email').empty();
+
+        // hide error message
+        $('.edit-error-field').css('display', 'none');
         
         // show modal
         $('#generate-certificate-modal').modal("show");
 
         // ajax call to bring data
+        $.ajax({
+            url: '{{ route("get-transmission-data") }}',
+            type: 'GET',
+            data: {
+                'transmission_id': transmissionID,
+                'type' : 'photographer',
+            },
+            success:function(data) {
+
+                // ------------------------------------- transmission start----------------------//
+                if (data.getTransmissions != null) {
+                    // loop through transmission#
+                    $.each(data.getTransmissions, function(index, value) {
+                                    
+                        transmission += '<label class="transmission-checkbox" style="display: block"><input type="checkbox"\ name="transmissions[]" \
+                        value="'+value.Transmission_Number+'">'+value.Transmission_Number+'</label>';
+                    
+                    });
+
+                    // append values
+                    $('.original-div').append(transmission);
+
+                } else {
+
+                    // remove all check boxes
+                    $(".transmission-checkbox :checkbox").parent().remove();
+                }
+
+                // ------------------------------------- transmission ends----------------------//
+
+                if(data.getChildModalities != null) {
+
+                    childModalities += '<option value="">Select Certificate</option>';
+                    // loop through transmission#
+                    $.each(data.getChildModalities, function(index, value) {
+
+                        
+                        childModalities += '<option value="'+value.id+'">'+value.modility_name+'</option>';
+                    });
+
+                    // append data
+                    $('#certificate_for').append(childModalities);
+
+                } else {
+
+                    $('#certificate_for').empty();
+                    $('#certificate_for').append('<option value="">Select Certificate</option>');
+                }
+
+                // ------------------------------------- modalities ends----------------------//
+
+                if(data.submitterEmail != '') {
+
+                    $('.user_email').append('<option value="'+data.submitterEmail+'">'+data.submitterEmail+'</option>');
+
+                } else {
+
+                    $('.user_email').empty();
+                }
+
+                // ------------------------------------- user email ends----------------------//
+
+                if(data.ccEmails != null) {
+
+                    $.each(data.ccEmails, function(index, value) {
+                                    
+                        $('#cc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+                    });
+
+                } else {
+
+                    $('#cc_user_email').empty();
+                }
+                // ------------------------------------- user cc email ends----------------------//
+               
+
+            } // success ends
+
+        }); // ajax ends
 
     }
 
@@ -417,7 +524,7 @@
             // remove required for this div
             $('#grandfather_id').attr('required', false);
 
-        } else {
+        } else if ($(this).val() == 'grandfathered') {
 
             // hide original div
             $('.original-div').css('display', 'none');
@@ -426,8 +533,32 @@
             // apply required for this div
             $('#grandfather_id').attr('required', true);
 
+        } else {
+
+            // hide original div
+            $('.original-div').css('display', 'none');
+            // hide grandfather div
+            $('.grandfather-div').css('display', 'none');
+            // remove required for this div
+            $('#grandfather_id').attr('required', false);
+
         }
 
+    });
+
+
+     // form submit
+    $('.generate-certificate-form').submit(function(e) {
+        
+        if($('.summernote').summernote('isEmpty')) {
+            // cancel submit
+            e.preventDefault(); 
+            $('.edit-error-field').css('display', 'block'); 
+
+        } else {
+
+            e.currentTarget;
+        }
     });
 
 </script>

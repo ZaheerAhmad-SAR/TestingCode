@@ -97,6 +97,7 @@
 
                     <div class="card-body">
                         <form action="{{ route('certification-device.update', encrypt($findTransmission->id))}}" method="POST" class="transmission-form">
+                            <input type="hidden" name="notification" id="notification" value="{{$findTransmission->notification}}">
                             <div class="row">
                                 @csrf
                                 @method('PUT')
@@ -108,8 +109,6 @@
 
                                     <input type="text" name="Transmission_Number" readonly="" value="{{ $findTransmission->Transmission_Number }}" id="Transmission_Number" class="form-control" required="required">
                                 </div>
-
-                                
 
                                 <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Study Name</label>
@@ -595,8 +594,11 @@
                                 $('#cc_email').append('<option value="'+value+'" selected>'+value+'</option>')
                             });
 
-                             // put notification list emails as cc
-                            $('#cc_email').append('<option value="'+notificationList+'" selected>'+notificationList+'</option>');
+                            // put notification list emails as cc
+                            if ($('#notification').val() == 'Yes') {
+                                
+                                $('#cc_email').append('<option value="'+notificationList+'" selected>'+notificationList+'</option>');
+                            }
 
                         } else {
 
