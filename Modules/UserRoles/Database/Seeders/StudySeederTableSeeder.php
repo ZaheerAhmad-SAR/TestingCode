@@ -5,6 +5,7 @@ namespace Modules\UserRoles\Database\Seeders;
 use App\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Date;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\RoleStudyUser;

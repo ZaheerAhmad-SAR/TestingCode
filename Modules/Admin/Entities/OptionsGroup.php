@@ -3,9 +3,11 @@
 namespace Modules\Admin\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OptionsGroup extends Model
 {
+    use SoftDeletes;
     protected $keyType = 'string';
     protected $fillable = [
         'id',
@@ -14,6 +16,7 @@ class OptionsGroup extends Model
         'option_layout',
         'option_name',
         'option_value',
+        'study_id'
     ];
 
     protected $attributes = [

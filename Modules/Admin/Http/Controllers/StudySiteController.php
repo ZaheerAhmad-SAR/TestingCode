@@ -139,8 +139,9 @@ class StudySiteController extends Controller
 
             // log event details
             $logEventDetails = eventDetails($current_study, 'Study Site', 'Update', $request->ip(), $oldStudySite);
+          \Illuminate\Support\Facades\Session::flash('message', 'This is a message!');
 
-            return back();
+        return back();
     }
 
     public function removeAssignedSites(Request $request)
@@ -164,7 +165,27 @@ class StudySiteController extends Controller
 
     public function assignedSites(Request $request)
     {
-        $sites = Site::paginate(20);
+        //dd($request->all());
+        $sites = Site::query();
+        if ($request->site_code != '') {
+            $sites = $sites->where('site_code','like', '%'.$request->site_code.'%');
+        }
+        if ($request->site_name != '') {
+            $sites = $sites->where('site_name','like', '%'.$request->site_name.'%');
+        }
+        if ($request->site_city != '') {
+            $sites = $sites->where('site_city','like', '%'.$request->site_city.'%');
+        }
+        if ($request->site_state != '') {
+            $sites = $sites->where('site_state','like', '%'.$request->site_state.'%');
+        }
+        if ($request->site_country != '') {
+            $sites = $sites->where('site_country','like', '%'.$request->site_country.'%');
+        }
+        if ($request->site_phone != '') {
+            $sites = $sites->where('site_phone','like', '%'.$request->site_phone.'%');
+        }
+        $sites = $sites->paginate(20);
         return view('admin::studies.assign_sites',compact('sites'));
     }
 

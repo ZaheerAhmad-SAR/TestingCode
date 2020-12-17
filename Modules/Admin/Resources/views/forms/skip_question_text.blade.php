@@ -61,6 +61,7 @@
                            <div class="card-body">
                                 <div class="col-md-6">
                                     <div class="form-group">
+                                        <label>{{$num_values->question_text}}</label>
                                         <input type="text" class="form-control" name="textbox_value[]" placeholder="Enter Text" value="" required>
                                     </div>
                                 </div>                           

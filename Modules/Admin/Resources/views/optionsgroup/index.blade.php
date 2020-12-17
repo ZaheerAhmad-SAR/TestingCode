@@ -148,6 +148,9 @@
                                     <div class="form-group col-md-9">
                                         <input type="text" class="form-control" id="option_group_description_edit" name="option_group_description_edit" value="">
                                     </div>
+                                    <div class="garage">
+                                        <input type="hidden" class="form-control" id="study_id_edit" name="study_id_edit" value="">
+                                    </div>
                                 </div>
                             <div class="form-group row">
                                 <div class="col-md-3">Option Layout <sup>*</sup></div>
@@ -276,6 +279,7 @@
                        $('#options_groups_id').val(parsedata.id);
                        $('#option_group_name_edit').val(parsedata.option_group_name);
                        $('#option_group_description_edit').val(parsedata.option_group_description);
+                       $('#study_id_edit').val(parsedata.study_id);
                        if (parsedata.option_layout =='vertical')
                        {
                            $("input[name=option_layout_edit][value=" + parsedata.option_layout + "]").prop('checked', true);

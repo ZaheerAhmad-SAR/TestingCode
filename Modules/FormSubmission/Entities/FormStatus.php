@@ -4,12 +4,12 @@ namespace Modules\FormSubmission\Entities;
 
 use App\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
 use Modules\FormSubmission\Traits\AdjudicationTrait;
 use Modules\FormSubmission\Scopes\FormStatusOrderByScope;
 use Modules\Admin\Entities\FormType;
 use Modules\Admin\Entities\PhaseSteps;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FormStatus extends Model
 {

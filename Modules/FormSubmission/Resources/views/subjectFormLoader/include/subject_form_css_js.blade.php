@@ -836,6 +836,25 @@
 
             }
 
+            function openShowQuestionsToGraderPopUp(studyId, subjectId, phaseId, stepId) {
+                $("#qcQuestionsToShowPopup").modal('show');
+                $.ajax({
+                    url: "{{ route('qcQuestionToShow.openShowQuestionsToGraderPopUp') }}",
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        'subjectId': subjectId,
+                        'studyId': studyId,
+                        'phaseId': phaseId,
+                        'stepId': stepId
+                    },
+                    success: function(response) {
+                        $('#qcQuestionsToShowDiv').empty();
+                        $("#qcQuestionsToShowDiv").html(response);
+                    }
+                });
+            }
+
             function reloadPage(waitSeconds) {
                 startWait();
                 var seconds = waitSeconds * 1000;

@@ -35,14 +35,18 @@ class FormController extends Controller
     public function index()
     {
         $phases = StudyStructure::select('*')->where('study_id', session('current_study'))->get();
-        $option_groups = OptionsGroup::all();
+        //$option_groups = OptionsGroup::all();
+        $current_study =  \Session::get('current_study');
+        $option_groups  = OptionsGroup::where('study_id',$current_study)->orderBy('created_at','desc')->get();
         $fields = FormFieldType::all();
         $annotations = Annotation::all();
         return view('admin::forms.index', compact('phases', 'option_groups', 'fields', 'annotations'));
     }
     public function getall_options()
     {
-        $options_dropdown = OptionsGroup::all();
+        $current_study =  \Session::get('current_study');
+        $options_dropdown = OptionsGroup::where('study_id',$current_study)->orderBy('created_at','desc')->get();
+        //$options_dropdown = OptionsGroup::all();
         $optionsData['data'] = $options_dropdown;
         echo json_encode($optionsData);
     }
@@ -151,6 +155,7 @@ class FormController extends Controller
             <input type="hidden" class="text_info" value="' . $ques_value->formFields->text_info . '">
             <input type="hidden" class="is_required" value="' . $ques_value->formFields->is_required . '">
             <input type="hidden" class="is_exportable_to_xls" value="' . $ques_value->formFields->is_exportable_to_xls . '">
+            <input type="hidden" class="is_show_to_grader" value="' . $ques_value->is_show_to_grader . '">
             <input type="hidden" class="field_width" value="' . $ques_value->formFields->field_width . '">
             <input type="hidden" class="measurement_unit" value="' . $ques_value->measurement_unit . '">
             <input type="hidden" class="lower_limit" value="' . $ques_value->formFields->lower_limit . '">
@@ -254,9 +259,8 @@ class FormController extends Controller
                 $question_contents .= '<span class="dropdown-item Edit_ques"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
             }
             $question_contents .= '<span class="dropdown-item delete_ques"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span><span class="dropdown-item change_ques_sort"><a href="#"><i class="fas fa-arrows-alt"></i>&nbsp; Change Sort # </a></span>';
-            if($ques_value->form_field_type->field_type =='Certification' || $ques_value->form_field_type->field_type =='Description' ||$ques_value->form_field_type->field_type =='Calculated'){
-
-            }else{
+            if ($ques_value->form_field_type->field_type == 'Certification' || $ques_value->form_field_type->field_type == 'Description' || $ques_value->form_field_type->field_type == 'Calculated') {
+            } else {
                 $question_contents .= '<span class="dropdown-item cloneQuestion" data-type="clone" style="cursor:pointer;"><i class="far fa-clone"></i>&nbsp; Clone</span>';
             }
             if ($ques_value->form_field_type->field_type == 'Radio') {
@@ -336,6 +340,7 @@ class FormController extends Controller
             'c_disk' => $request->c_disk,
             'measurement_unit' => $request->measurement_unit,
             'is_dependent' => $request->field_dependent,
+            'is_show_to_grader' => $request->is_show_to_grader,
             'dependent_on' => $request->dependent_on,
             'annotations' => $request->dependent_on,
             'certification_type' => $request->certification_type
@@ -373,6 +378,7 @@ class FormController extends Controller
         $questionObj->c_disk = $request->c_disk;
         $questionObj->measurement_unit = $request->measurement_unit;
         $questionObj->is_dependent = $request->field_dependent;
+        $questionObj->is_show_to_grader = $request->is_show_to_grader;
         $questionObj->dependent_on = $request->dependent_on;
         $questionObj->annotations = $request->dependent_on;
         $questionObj->certification_type = $request->certification_type;

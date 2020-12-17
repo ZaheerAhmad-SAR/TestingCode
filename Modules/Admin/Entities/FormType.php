@@ -4,9 +4,11 @@ namespace Modules\Admin\Entities;
 
 use Modules\Admin\Scopes\FormTypeOrderByScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FormType extends Model
 {
+    use SoftDeletes;
     protected $fillable = ['form_type'];
     protected $table = 'form_types';
 

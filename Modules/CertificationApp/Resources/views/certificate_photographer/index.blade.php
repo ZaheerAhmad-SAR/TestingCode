@@ -158,7 +158,7 @@
                                             <td> {{$transmission->Site_Name}} </td>
                                             
                                             <td> 
-                                                <a href="javascript:void()" id="generate-certification" data-id="" title="Generate Certificate" class="badge badge-dark" onClick="generateCertificate()">
+                                                <a href="javascript:void()" id="generate-certification" data-id="" title="Generate Certificate" class="badge badge-dark" onClick="generateCertificate('{{$transmission->id}}')">
                                                     Generate Certificate
                                                 </a>
                                             </td>
@@ -300,7 +300,7 @@
                     <!-- -------------------------------- original One ------------------------------- -->
                     <div class="form-group col-md-12 original-div" style="display: none;">
                         <label>Select Transmission</label><br>
-                        <input type="checkbox" name="transmissions[]" value="20201216-071102359">20201216-071102359
+                        <input type="checkbox" name="transmissions[]" value="20201216-071102359">
                         <input type="checkbox" name="transmissions[]" value="20201216-071102359">
                     </div>
 
@@ -396,10 +396,12 @@
         $('.filter-form').submit();
     });
 
-    function generateCertificate(){
+    function generateCertificate(transmissionID){
         
         // show modal
         $('#generate-certificate-modal').modal("show");
+
+        // ajax call to bring data
 
     }
 

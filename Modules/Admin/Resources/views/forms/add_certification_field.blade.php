@@ -54,17 +54,23 @@
                                 </div>
                                 <div class="form-group row">
                                     <label for="Required" class="col-sm-2 col-form-label">Required </label>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-2">
                                         <input type="radio" name="is_required" id="is_required_no_cert" value="no"> No
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <input type="radio" name="is_required" value="yes" id="is_required_yes_cert" checked> Yes
                                     </div>
                                     <div class="col-sm-2">Exports: </div>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-2">
                                         <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_no_cert" value="no"> No
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         <input type="radio" name="is_exportable_to_xls" value="yes" id="is_exportable_to_xls_yes_cert" checked> Yes
                                     </div>
+                                    <div class="col-sm-2">Show to Grader: </div>
+                                <div class="col-sm-2">
+                                    <input type="radio" name="is_show_to_grader" id="is_show_to_grader_no_cert" value="no"> No
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="is_show_to_grader" id="is_show_to_grader_yes_cert" value="yes" checked> Yes
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -117,6 +123,7 @@
                 second_question_id = row.find('input.second_question_id').val()
                 is_required = row.find('input.is_required').val()
                 is_exportable_to_xls = row.find('input.is_exportable_to_xls').val()
+                is_show_to_grader = row.find('input.is_show_to_grader').val()
                 make_decision = row.find('input.make_decision').val()
                 certification_type = row.find('input.certification_type').val()
                 calculate_with_costum_val = row.find('input.calculate_with_costum_val').val()
@@ -144,6 +151,11 @@
                     $('#is_exportable_to_xls_yes_cert').prop('checked', true);
                 } else {
                     $('#is_exportable_to_xls_no_cert').prop('checked', true);
+                }
+                if (is_show_to_grader == 'yes') {
+                    $('#is_show_to_grader_yes_cert').prop('checked', true);
+                } else {
+                    $('#is_show_to_grader_no_cert').prop('checked', true);
                 }
                 tId = setTimeout(function() {
                  $('#first_question_id_cert').val(first_question_id);

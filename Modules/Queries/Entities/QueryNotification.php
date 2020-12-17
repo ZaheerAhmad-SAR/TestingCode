@@ -4,13 +4,16 @@ namespace Modules\Queries\Entities;
 
 use App\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class QueryNotification extends Model
 {
+    use SoftDeletes;
     protected $table = 'query_notifications';
-    protected $fillable = ['id','site_name','cc_email','subject','email_body','email_attachment','notifications_status',
-        'parent_notification_id', 'notification_remarked_id', 'study_id','subject_id','transmission_number',
-        'vist_name','notifications_token','person_name','study_short_name'
+    protected $fillable = [
+        'id', 'site_name', 'cc_email', 'subject', 'email_body', 'email_attachment', 'notifications_status',
+        'parent_notification_id', 'notification_remarked_id', 'study_id', 'subject_id', 'transmission_number',
+        'vist_name', 'notifications_token', 'person_name', 'study_short_name'
     ];
     protected $keyType = 'string';
 
@@ -23,16 +26,12 @@ class QueryNotification extends Model
         $checkPersonName = $query->person_name;
 
 
-        if(!empty($checkUserEmail))
-        {
-            $result = User::where('email','=',$checkUserEmail)->first();
+        if (!empty($checkUserEmail)) {
+            $result = User::where('email', '=', $checkUserEmail)->first();
 
-            if (null=== $result)
-            {
+            if (null === $result) {
                 $profileImage = asset('public/images/download.png');
-            }
-            else
-            {
+            } else {
                 $profileImage = asset($result->profile_image);
             }
         }
@@ -68,15 +67,11 @@ class QueryNotification extends Model
         $profileImage = '';
         $checkUserEmail = $querySubmitedBy->notification_remarked_id;
 
-        if(!empty($checkUserEmail))
-        {
-            $result = User::where('email','=',$checkUserEmail)->first();
-            if (null=== $result)
-            {
+        if (!empty($checkUserEmail)) {
+            $result = User::where('email', '=', $checkUserEmail)->first();
+            if (null === $result) {
                 $profileImage = asset('public/images/download.png');
-            }
-            else
-            {
+            } else {
                 $profileImage = asset($result->profile_image);
             }
         }
@@ -101,4 +96,3 @@ class QueryNotification extends Model
                 </div><hr>';
     }
 }
-
