@@ -35,14 +35,18 @@ class FormController extends Controller
     public function index()
     {
         $phases = StudyStructure::select('*')->where('study_id', session('current_study'))->get();
-        $option_groups = OptionsGroup::all();
+        //$option_groups = OptionsGroup::all();
+        $current_study =  \Session::get('current_study');
+        $option_groups  = OptionsGroup::where('study_id',$current_study)->orderBy('created_at','desc')->get();
         $fields = FormFieldType::all();
         $annotations = Annotation::all();
         return view('admin::forms.index', compact('phases', 'option_groups', 'fields', 'annotations'));
     }
     public function getall_options()
     {
-        $options_dropdown = OptionsGroup::all();
+        $current_study =  \Session::get('current_study');
+        $options_dropdown = OptionsGroup::where('study_id',$current_study)->orderBy('created_at','desc')->get();
+        //$options_dropdown = OptionsGroup::all();
         $optionsData['data'] = $options_dropdown;
         echo json_encode($optionsData);
     }
