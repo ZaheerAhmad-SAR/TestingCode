@@ -147,13 +147,14 @@
                               <!--//////////////// row  ///////////////////////// -->
 
                                 <div class="form-group col-sm-3">
-                                    <label for="Name" class="control-label">Site ID</label>
+                                    <label for="Name" class="control-label">Site ID<span class="field-required">*</span></label>
                                 </div>
 
                                 <div class="form-group col-sm-3">
                                     <span class="span-text">{{ $findTransmission->Site_ID }}</span>
-                                    <select name="Site_ID" id="Site_ID" class="form-control">
+                                    <select name="Site_ID" id="Site_ID" class="form-control required-data">
                                         <option value="">Select Site</option>
+                                        <option value="add_new">Add New</option>
                                         @foreach($getSites as $site)
                                         <option @if($site->site_code == $findTransmission->Site_ID) selected @endif value="{{$site->id.'/'.$site->site_code}}">{{$site->site_code}}</option>
                                         @endforeach
@@ -222,6 +223,24 @@
 
                                 <div class="form-group col-sm-3">
                                     <input type="text" name="PI_Name" readonly="" value="{{ $findTransmission->PI_Name }}" id="PI_Name" class="form-control remove-readonly" required="required">
+                                </div>
+
+                                <!-- --------------- row --------------------- -->
+
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">PI Email</label>
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <input type="text" name="PI_email" readonly="" value="{{ $findTransmission->PI_email }}" id="PI_email" class="form-control remove-readonly" required="required">
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Notification Email</label>
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <input type="text" name="notification_list" readonly="" value="{{ $findTransmission->notification_list }}" id="notification_list" class="form-control remove-readonly" required="required">
                                 </div>
 
                                 <!--//////////////// row ///////////////////////////////// -->
@@ -526,6 +545,9 @@
                 // keep text editor empty
                 $('.summernote').summernote('code', '');
 
+                // get notification email as CC for this photographer
+                var notificationList = $('#notification_list').val();
+
                 $.ajax({
                     url: '{{ route("get-study-setup-emails") }}',
                     type: 'GET',
@@ -543,6 +565,9 @@
                                     
                                 $('#cc_email').append('<option value="'+value+'" selected>'+value+'</option>')
                             });
+
+                            // put notification list emails as cc
+                            $('#cc_email').append('<option value="'+notificationList+'" selected>'+notificationList+'</option>');
 
                         } else {
 

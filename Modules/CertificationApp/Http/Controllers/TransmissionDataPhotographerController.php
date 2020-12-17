@@ -219,7 +219,7 @@ class TransmissionDataPhotographerController extends Controller
         }
         
         // get site id
-        if ($request->Site_ID != "") {
+        if ($request->Site_ID != "" && $request->Site_ID != "add_new") {
 
             $siteID = explode('/', $request->Site_ID);
             $findTransmission->transmission_site_id = $siteID[0];
@@ -251,26 +251,8 @@ class TransmissionDataPhotographerController extends Controller
         $transmissionUpdateDetails->reason_for_change = $request->reason_for_change;
         $transmissionUpdateDetails->save();
 
-        // make array for changings dynamic variable in the text editor
-        $variables = [$findTransmission->Photographer_First_Name, $findTransmission->Photographer_Last_Name, $findTransmission->StudyI_ID, $findTransmission->Study_Name, $findTransmission->Site_ID, $findTransmission->Requested_certification, $findTransmission->Transmission_Number, $findTransmission->status];
-
-        $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[modality_name]]', '[[transmission_number]]', '[[status]]'];
-
-        $data = [];
-        $data['email_body'] = str_replace($labels, $variables, $request->comment);
-        $senderEmail = $request->photographer_user_email;
-        $ccEmail = $request->cc_email;
-
-        // send email to users
-        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $findTransmission)
-        {
-            $message->subject($findTransmission->Study_Name.' '.$findTransmission->StudyI_ID.' | Photographer Request# '.$findTransmission->Transmission_Number.' | '. $findTransmission->Site_ID.' | '. $findTransmission->Requested_certification);
-            $message->to($senderEmail);
-            $message->cc($ccEmail);
-        });
-
         // look for sites and photographer and insert in database accordingly
-        $transmissionDataStatus = $this->transmissionStatus($findTransmission);
+        $transmissionDataStatus = $this->transmissionStatus($findTransmission, $request);
 
         Session::flash('success', 'Photographer transmission information updated successfully.');
 
@@ -278,28 +260,54 @@ class TransmissionDataPhotographerController extends Controller
 
     }
 
-    public function transmissionStatus($findTransmission) {
+    public function transmissionStatus($findTransmission, $request) {
 
             //get study
             $getStudy = Study::where('study_code', $findTransmission->StudyI_ID)->first();
 
-            // get site
-            $getSite = Site::where('site_code', $findTransmission->Site_ID)->first();
+            // if user select add new site thing
+            if($request->Site_ID == "add_new") {
 
-            if ($getSite == null) {
-                // insert site
-                $getSite = new Site;
-                $getSite->id = Str::uuid();
-                $getSite->site_code = $findTransmission->Site_ID;
-                $getSite->site_name = $findTransmission->Site_Name;
-                $getSite->site_address = $findTransmission->Site_st_address;
-                $getSite->site_city = $findTransmission->Site_city;
-                $getSite->site_state = $findTransmission->Site_state;
-                $getSite->site_country = $findTransmission->Site_country;
-                $getSite->save();
+                $getSite = Site::where('site_code', $findTransmission->Site_ID)->first();
 
-            } // site check is end
+                if ($getSite == null) {
+                    // insert site
+                    $getSite = new Site;
+                    $getSite->id = Str::uuid();
+                    $getSite->site_code = $findTransmission->Site_ID;
+                    $getSite->site_name = $findTransmission->Site_Name;
+                    $getSite->site_address = $findTransmission->Site_st_address;
+                    $getSite->site_city = $findTransmission->Site_city;
+                    $getSite->site_state = $findTransmission->Site_state;
+                    $getSite->site_country = $findTransmission->Site_country;
+                    $getSite->save();
 
+                    // update site transmission ID in Photographer Transmission Table for future Reference
+                    $updatePhotographerTransmission = TransmissionDataPhotographer::where('Transmission_Number', $findTransmission->Transmission_Number)
+                    ->update(['transmission_site_id' => $getSite->id]);
+
+                } // site check is end
+
+            } elseif ($request->Site_ID != "add_new" && $request->Site_ID != "") {
+
+                $getSite = Site::where('site_code', $findTransmission->Site_ID)->first();
+
+                if ($getSite == null) {
+                    // insert site
+                    $getSite = new Site;
+                    $getSite->id = Str::uuid();
+                    $getSite->site_code = $findTransmission->Site_ID;
+                    $getSite->site_name = $findTransmission->Site_Name;
+                    $getSite->site_address = $findTransmission->Site_st_address;
+                    $getSite->site_city = $findTransmission->Site_city;
+                    $getSite->site_state = $findTransmission->Site_state;
+                    $getSite->site_country = $findTransmission->Site_country;
+                    $getSite->save();
+
+                } // site check is end
+               
+            }
+            
             // check site study relation
             $getSiteStudy = StudySite::where('study_id', $getStudy->id)
                                         ->where('site_id', $getSite->id)
@@ -318,6 +326,7 @@ class TransmissionDataPhotographerController extends Controller
             // get Primary Investigator
             $getPrimaryInvestigator = PrimaryInvestigator::where('site_id', $getSite->id)
                                                           ->where('first_name', $findTransmission->PI_Name)
+                                                          ->where('email', $findTransmission->PI_email)
                                                           ->first();
 
             if ($getPrimaryInvestigator == null) {
@@ -326,6 +335,7 @@ class TransmissionDataPhotographerController extends Controller
                 $getPrimaryInvestigator->id = Str::uuid();
                 $getPrimaryInvestigator->site_id = $getSite->id;
                 $getPrimaryInvestigator->first_name = $findTransmission->PI_Name;
+                $getPrimaryInvestigator->email = $findTransmission->PI_email;
                 $getPrimaryInvestigator->save();
             } // primary investigator check ends
 
@@ -346,6 +356,24 @@ class TransmissionDataPhotographerController extends Controller
                 $getPhotographer->save();
 
             } // photographer check is end
+
+        // make array for changings dynamic variable in the text editor
+        $variables = [$findTransmission->Photographer_First_Name, $findTransmission->Photographer_Last_Name, $findTransmission->StudyI_ID, $findTransmission->Study_Name, $getSite->site_code, $getSite->site_name, $getPrimaryInvestigator->first_name, $findTransmission->Requested_certification, $findTransmission->Transmission_Number, $findTransmission->status, \Auth::user()->name];
+
+        $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[pi_name]]', '[[modality_name]]', '[[transmission_number]]', '[[status]]', '[[sender_name]]'];
+
+        $data = [];
+        $data['email_body'] = str_replace($labels, $variables, $request->comment);
+        $senderEmail = $request->photographer_user_email;
+        $ccEmail = $request->cc_email;
+
+        // send email to users
+        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $findTransmission, $getSite)
+        {
+            $message->subject($findTransmission->Study_Name.' '.$findTransmission->StudyI_ID.' | Photographer Request# '.$findTransmission->Transmission_Number.' | '. $getSite->site_code.' | '. $findTransmission->Requested_certification);
+            $message->to($senderEmail);
+            $message->cc($ccEmail);
+        });
     }
 
     /**
@@ -401,6 +429,7 @@ class TransmissionDataPhotographerController extends Controller
             $saveData->Site_Name                    = $xml->Site_Name;
             $saveData->Site_ID                      = $xml->Site_ID;
             $saveData->PI_Name                      = $xml->PI_Name;
+            $saveData->PI_email                     = $xml->PI_email;
             $saveData->Site_st_address              = $xml->Site_st_address;
             $saveData->Site_city                    = $xml->Site_city;
             $saveData->Site_state                   = $xml->Site_state;
@@ -433,6 +462,8 @@ class TransmissionDataPhotographerController extends Controller
             $saveData->QC_folder                    = $xml->QC_folder;
             $saveData->CO_folder                    = $xml->CO_folder;
             $saveData->CO_email                     = json_encode($xml->CO_email);
+            $saveData->notification                 = $xml->notification;
+            $saveData->notification_list            = $xml->notification_list;
             $saveData->save();
 
             echo "Records inserted successfully.";
