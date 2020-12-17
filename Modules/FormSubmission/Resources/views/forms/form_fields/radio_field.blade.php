@@ -10,13 +10,14 @@ $option_values = [1];
 $option_names = [html_entity_decode($question->formFields->text_info)];
 }
 $options = array_combine ( $option_names , $option_values );
-$showFalseField = true;
+
+$showFalseField = false; // for laterly added questions
 @endphp
 @foreach ($options as $option_name => $option_value)
 @php
 $checked = ($answer->answer == $option_value) ? 'checked' : '';
-if($checked == 'checked' && $answer->answer != '-9999'){
-    $showFalseField = false;
+if($answer->answer == '-9999'){
+    $showFalseField = true;
 }
 @endphp
     <div
@@ -24,7 +25,7 @@ if($checked == 'checked' && $answer->answer != '-9999'){
         <input type="radio" name="{{ $field_name }}"
             onchange="validateAndSubmitField('{{ $stepIdStr }}', '{{ $sectionIdStr }}', '{{ $question->id }}', '{{ $questionIdStr }}', '{{ $step->formType->form_type }}', '{{ $field_name }}', '{{ $fieldId }}');"
             value="{{ $option_value }}" {{ $checked }}
-            class="custom-control-input {{ $skipLogicQuestionIdStr }} {{ 'skip_logic_' . $option_name . '_' . $option_value }} {{ $fieldId }}">
+            class="custom-control-input {{ $skipLogicQuestionIdStr }} {{ 'skip_logic_' . $questionIdStr . '_' . $option_value }} {{ $fieldId }}">
         <label class="custom-control-label" for="customCheck1">{{ $option_name }}</label>
     </div>
 @endforeach

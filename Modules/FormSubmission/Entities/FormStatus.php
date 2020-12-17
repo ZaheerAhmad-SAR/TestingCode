@@ -68,7 +68,7 @@ class FormStatus extends Model
 
     public static function getFormStatusObj($getFormStatusArray)
     {
-        return self::getFormStatusObjQuery($getFormStatusArray)->firstOrNew();
+        return self::getFormStatusObjQuery($getFormStatusArray)->select('form_filled_by_user_id', 'form_status')->firstOrNew();
     }
 
     public static function getFormStatusObjArray($getFormStatusArray)

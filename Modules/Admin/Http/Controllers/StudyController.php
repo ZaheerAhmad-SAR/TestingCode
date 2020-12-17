@@ -117,33 +117,32 @@ class StudyController extends Controller
 
             $studies = Study::whereIn('id', array_unique($studiesIDs));
             if ($request->study_code != '') {
-                $studies = $studies->where('study_code','like', '%'.$request->study_code.'%');
+                $studies = $studies->where('study_code', 'like', '%' . $request->study_code . '%');
             }
             if ($request->study_short_name != '') {
-                $studies = $studies->where('study_short_name','like', '%'.$request->study_short_name.'%');
+                $studies = $studies->where('study_short_name', 'like', '%' . $request->study_short_name . '%');
             }
             if ($request->study_status != '') {
                 $studies = $studies->where('study_status', $request->study_status);
             }
             if ($request->study_sponsor != '') {
-                $studies = $studies->where('study_sponsor','like', '%'.$request->study_sponsor.'%');
+                $studies = $studies->where('study_sponsor', 'like', '%' . $request->study_sponsor . '%');
             }
             $studies = $studies->get();
-
         } else {
 
             $studies = Study::where('study_status', 'Live')->whereIn('id', array_unique($studiesIDs));
             if ($request->study_code != '') {
-                $studies = $studies->where('study_code','like', '%'.$request->study_code.'%');
+                $studies = $studies->where('study_code', 'like', '%' . $request->study_code . '%');
             }
             if ($request->study_short_name != '') {
-                $studies = $studies->where('study_short_name','like', '%'.$request->study_short_name.'%');
+                $studies = $studies->where('study_short_name', 'like', '%' . $request->study_short_name . '%');
             }
             if ($request->study_status != '') {
                 $studies = $studies->where('study_status', $request->study_status);
             }
             if ($request->study_sponsor != '') {
-                $studies = $studies->where('study_sponsor','like', '%'.$request->study_sponsor.'%');
+                $studies = $studies->where('study_sponsor', 'like', '%' . $request->study_sponsor . '%');
             }
             $studies = $studies->get();
         }
@@ -341,7 +340,7 @@ class StudyController extends Controller
             }
 
             $subjects = $subjects->join('sites', 'sites.id', '=', 'subjects.site_id');
-            $subjects = $subjects->get();
+            $subjects = $subjects->orderBy('subject_id', 'asc')->get();
 
             $site_study = StudySite::where('study_id', '=', $id)
                 ->join('sites', 'sites.id', '=', 'site_study.site_id')

@@ -17,7 +17,6 @@ $transmissionNumber = \Modules\FormSubmission\Entities\SubjectsPhases::getTransm
                             $current_user_id = ($current_user_id ?? '');
                             $subjectId = ($subjectId ?? '');
                             $studyId = ($studyId ?? '');
-                            $studyClsStr = ($studyClsStr ?? '');
                             @endphp
                             @foreach ($sections as $key => $section)
                                 @php
@@ -45,7 +44,6 @@ $transmissionNumber = \Modules\FormSubmission\Entities\SubjectsPhases::getTransm
                                         $sectionIdStr = buildSafeStr($section->id, '');
                                         $sharedData = [
                                         'studyId' => $studyId,
-                                        'studyClsStr' => $studyClsStr,
                                         'subjectId' => $subjectId,
                                         'phase' => $phase,
                                         'step' => $step,

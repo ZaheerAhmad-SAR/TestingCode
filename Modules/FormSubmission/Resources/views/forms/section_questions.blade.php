@@ -1,6 +1,6 @@
 @if($step->is_active == 1 || $isPreview === true)
 @if (count($section->questions))
-<fieldset class="{{ $studyClsStr }} {{ $stepClsStr }} {{ $skipLogicStepIdStr }} {{ $skipLogicSectionIdStr }} {{ $sectionClsStr }}">
+<fieldset class="{{ $stepClsStr }} {{ $skipLogicStepIdStr }} {{ $skipLogicSectionIdStr }} {{ $sectionClsStr }}">
     <div class="card p-2 mb-1">
         <input type="hidden" name="sectionId[]" value="{{ $section->id }}" />
             @foreach ($section->questions as $question)
@@ -27,9 +27,8 @@
                 $fieldType = $question->form_field_type->field_type;
                 $is_required = ($question->formFields->is_required == 'yes')? 'required':'';
                 $is_required_star = ($question->formFields->is_required == 'yes')? '<span class="text text-danger">*</span>':'';
-                $showOrHide = ($answer->answer == '-9999')? 'display:none;':'';
                 @endphp
-                 <div class="form-group" id="question_row_{{$questionIdStr}}" style="{{ $showOrHide }}">
+                 <div class="form-group" id="question_row_{{ $questionIdStr }}">
                  <label class="">{{ $question->question_text }} {!! $is_required_star !!}</label>
                     <div class="row">
                         <div class="col-10">

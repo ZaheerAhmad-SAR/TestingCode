@@ -33,7 +33,7 @@ class Answer extends Model
 
     public static function getAnswer($answerArray)
     {
-        return self::getAnswerQuery($answerArray)->first();
+        return self::getAnswerQuery($answerArray)->select('answer')->first();
     }
 
     public static function getAnswersArray($answerArray)

@@ -98,27 +98,6 @@
                 })
             }
 
-            function validateAndSubmitAdjudicationForm_bk_123(stepIdStr, formStatusIdStr) {
-                if(canSubmitAdjudicationForm(stepIdStr)){
-                    if(needToPutAdjudicationFormInEditMode(stepIdStr) == false){
-                        const promise = validateAdjudicationForm(stepIdStr);
-                        promise
-                            .then((data) => {
-                                console.log(data);
-                                submitAdjudicationForm(stepIdStr, formStatusIdStr);
-                            })
-                            .catch((error) => {
-                                console.log(error);
-                                handleValidationErrors(error);
-                            });
-                    }else{
-                        showPutFormInEditModeError();
-                    }
-                }else{
-                    showPermissionError();
-                }
-            }
-
             function validateAndSubmitAdjudicationForm(stepIdStr, formStatusIdStr) {
                 if(canSubmitAdjudicationForm(stepIdStr)){
                     if(needToPutAdjudicationFormInEditMode(stepIdStr) == false){
@@ -142,31 +121,6 @@
                             }
                             submitAdjudicationFormField(stepIdStr, questionId, field_name, fieldId);
                         }
-                    }else{
-                        showPutFormInEditModeError();
-                    }
-                }else{
-                    showPermissionError();
-                }
-            }
-
-            function validateAndSubmitAdjudicationFormField_bk_123(stepIdStr, sectionIdStr, questionId, field_name, fieldId) {
-                if(canSubmitAdjudicationForm(stepIdStr)){
-                    if(needToPutAdjudicationFormInEditMode(stepIdStr) == false){
-                        const validationPromise = validateAdjudicationFormField(stepIdStr, questionId, field_name, fieldId);
-                        validationPromise
-                            .then((data) => {
-                                console.log(data)
-                                submitAdjudicationFormField(stepIdStr, questionId, field_name, fieldId);
-                            })
-                            .then((data) => {
-                                console.log(data)
-                                validateDependentFields(sectionIdStr, questionId, field_name, fieldId);
-                            })
-                            .catch((error) => {
-                                console.log(error)
-                                handleValidationErrors(error);
-                            });
                     }else{
                         showPutFormInEditModeError();
                     }
@@ -219,25 +173,62 @@
             }
 
             function getAdjudicationFormFieldValue(stepIdStr, field_name, fieldId) {
-                var field_val;
+                var field_val = '';
                 var checkedCheckBoxes = [];
                 if ($('#adjudication_form_' + stepIdStr + ' #' + fieldId).is("textarea")) {
-                    field_val = $('#' + fieldId).val();
+                    field_val = $('#adjudication_form_' + stepIdStr + ' #' + fieldId).val();
                 } else if ($('#adjudication_form_' + stepIdStr + ' #' + fieldId).is("select")) {
-                    field_val = $('#' + fieldId).find(":selected").val();
-                } else if ($('#adjudication_form_' + stepIdStr + ' input[name="' + field_name + '"]').attr('type') ==
-                    'radio') {
+                    field_val = $('#adjudication_form_' + stepIdStr + ' #' + fieldId).find(":selected").val();
+                } else if ($('#adjudication_form_' + stepIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
                     field_val = $('#adjudication_form_' + stepIdStr + ' input[name="' + field_name + '"]:checked').val();
-                } else if ($('#adjudication_form_' + stepIdStr + ' input[name="' + field_name + '[]"]').attr('type') ==
-                    'checkbox') {
-
+                } else if ($('#adjudication_form_' + stepIdStr + ' input[name="' + field_name + '[]"]').attr('type') == 'checkbox') {
                     $('#adjudication_form_' + stepIdStr + ' input[name="' + field_name + '[]"]:checked').each(function() {
                         checkedCheckBoxes.push($(this).val());
                     });
                     field_val = checkedCheckBoxes.join(",");
-
                 } else {
                     field_val = $('#adjudication_form_' + stepIdStr + ' input[name="' + field_name + '"]').val();
+                }
+                return field_val;
+            }
+
+            function getAdjudicationFormFieldValueForRequired(stepIdStr, field_name, fieldId) {
+                var field_val = '';
+                var field_val_for_disabled = 'disabledField';
+                var checkedCheckBoxes = [];
+                if ($('#adjudication_form_' + stepIdStr + ' #' + fieldId).is("textarea")) {
+                    if ($('#adjudication_form_' + stepIdStr + ' #' + fieldId).prop('disabled') == false) {
+                        field_val = $('#adjudication_form_' + stepIdStr + ' #' + fieldId).val();
+                    }else{
+                        field_val = field_val_for_disabled;
+                    }
+                } else if ($('#adjudication_form_' + stepIdStr + ' #' + fieldId).is("select")) {
+                    if ($('#adjudication_form_' + stepIdStr + ' #' + fieldId).prop('disabled') == false) {
+                        field_val = $('#adjudication_form_' + stepIdStr + ' #' + fieldId).find(":selected").val();
+                    }else{
+                        field_val = field_val_for_disabled;
+                    }
+                } else if ($('#adjudication_form_' + stepIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
+                    if ($('#adjudication_form_' + stepIdStr + ' input[name="' + field_name + '"]').prop('disabled') == false) {
+                        field_val = $('#adjudication_form_' + stepIdStr + ' input[name="' + field_name + '"]:checked').val();
+                    }else{
+                        field_val = field_val_for_disabled;
+                    }
+                } else if ($('#adjudication_form_' + stepIdStr + ' input[name="' + field_name + '[]"]').attr('type') == 'checkbox') {
+                    if ($('#adjudication_form_' + stepIdStr + ' input[name="' + field_name + '[]"]').prop('disabled') == false) {
+                        $('#adjudication_form_' + stepIdStr + ' input[name="' + field_name + '[]"]:checked').each(function() {
+                            checkedCheckBoxes.push($(this).val());
+                        });
+                        field_val = checkedCheckBoxes.join(",");
+                    }else{
+                        field_val = field_val_for_disabled;
+                    }
+                } else {
+                    if ($('#adjudication_form_' + stepIdStr + ' input[name="' + field_name + '"]').prop('disabled') == false) {
+                        field_val = $('#adjudication_form_' + stepIdStr + ' input[name="' + field_name + '"]').val();
+                    }else{
+                        field_val = field_val_for_disabled;
+                    }
                 }
                 return field_val;
             }

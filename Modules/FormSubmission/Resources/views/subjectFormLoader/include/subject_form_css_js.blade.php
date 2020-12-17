@@ -30,6 +30,7 @@
             function disableAllFormFields(id) {
                 console.log('disableAllFormFields : ' + id);
                 $("#" + id + " :input").prop('disabled', true);
+                $("#" + id + " textarea").prop('disabled', true);
                 $("#" + id + " select").prop('disabled', true);
             }
 
@@ -44,6 +45,7 @@
             function enableAllFormFields(id) {
                 console.log('enableAllFormFields : ' + id);
                 $("#" + id + " :input").prop('disabled', false);
+                $("#" + id + " textarea").prop('disabled', false);
                 $("#" + id + " select").prop('disabled', false);
             }
 
@@ -58,6 +60,9 @@
             function disableByClass(cls) {
                 console.log('disableByClass : ' + cls);
                 $("." + cls).prop('disabled', true);
+                $("." + cls + " :input").prop('disabled', true);
+                $("." + cls + " textarea").prop('disabled', true);
+                $("." + cls + " select").prop('disabled', true);
             }
 
             function disableLinkByClass(cls) {
@@ -65,16 +70,15 @@
             }
 
             function globalDisableByClass(stepCounter, studyClsStr, stepClsStr) {
-                //if (stepCounter < $('#already_global_disabled').val()) {
                 $("." + studyClsStr).prop('disabled', true);
-                // $('#already_global_disabled').val(stepCounter);
-                //enableByClass(stepClsStr);
-                //}
             }
 
             function enableByClass(cls) {
                 console.log('enableByClass : ' + cls);
                 $("." + cls).prop('disabled', false);
+                $("." + cls + " :input").prop('disabled', false);
+                $("." + cls + " select").prop('disabled', false);
+                $("." + cls + " textarea").prop("disabled", false);
             }
 
             function enableLinkByClass(cls) {
@@ -300,15 +304,15 @@
                     if(file.files.length == 0 && divHtml == '' ){
                         field_val = '';
                     }else{
-                        field_val = 'has files';
+                        field_val = 'hasFiles';
                     }
                 }else if ($('#form_' + stepIdStr + ' #' + fieldId).is("textarea")) {
                     field_val = $('#form_' + stepIdStr + ' #' + fieldId).val();
                 } else if ($('#form_' + stepIdStr + ' #' + fieldId).is("select")) {
                     field_val = $('#form_' + stepIdStr + ' #' + fieldId).find(":selected").val();
-                } else if ($('#form_' + stepIdStr + ' input[name="' + field_name + '"]').attr('type') == 'radio') {
+                } else if ($('#form_' + stepIdStr + ' input[name="' + field_name + '"]').prop('type') == 'radio') {
                     field_val = $('#form_' + stepIdStr + ' input[name="' + field_name + '"]:checked').val();
-                } else if ($('#form_' + stepIdStr + ' input[name="' + field_name + '[]"]').attr('type') == 'checkbox') {
+                } else if ($('#form_' + stepIdStr + ' input[name="' + field_name + '[]"]').prop('type') == 'checkbox') {
 
                     $('#form_' + stepIdStr + ' input[name="' + field_name + '[]"]:checked').each(function() {
                         checkedCheckBoxes.push($(this).val());
@@ -317,6 +321,58 @@
 
                 } else {
                     field_val = $('#form_' + stepIdStr + ' input[name="' + field_name + '"]').val();
+                }
+                return field_val;
+            }
+
+            function getFormFieldValueForRequired(stepIdStr, field_name, fieldId) {
+                var field_val = '';
+                var field_val_for_disabled = 'disabledField';
+                var checkedCheckBoxes = [];
+
+                if ($('#' + fieldId + '_' + stepIdStr).prop('type') == "file") {
+                    if ($('#' + fieldId + '_' + stepIdStr).prop('disabled') == false) {
+                        var file = document.getElementById(fieldId + '_' + stepIdStr);
+                        var divHtml = document.getElementById('file_upload_files_div_' + fieldId).innerHTML;
+                        if(file.files.length == 0 && divHtml == '' ){
+                            field_val = '';
+                        }
+                    }else{
+                        field_val = field_val_for_disabled;
+                    }
+                }else if ($('#form_' + stepIdStr + ' #' + fieldId).is("textarea")) {
+                    if ($('#form_' + stepIdStr + ' #' + fieldId).prop('disabled') == false) {
+                        field_val = $('#form_' + stepIdStr + ' #' + fieldId).val();
+                    }else{
+                        field_val = field_val_for_disabled;
+                    }
+                } else if ($('#form_' + stepIdStr + ' #' + fieldId).is("select")) {
+                    if ($('#form_' + stepIdStr + ' #' + fieldId).prop('disabled') == false) {
+                        field_val = $('#form_' + stepIdStr + ' #' + fieldId).find(":selected").val();
+                    }else{
+                        field_val = field_val_for_disabled;
+                    }
+                } else if ($('#form_' + stepIdStr + ' input[name="' + field_name + '"]').prop('type') == 'radio') {
+                    if ($('#form_' + stepIdStr + ' input[name="' + field_name + '"]').prop('disabled') == false) {
+                        field_val = $('#form_' + stepIdStr + ' input[name="' + field_name + '"]:checked').val();
+                    }else{
+                        field_val = field_val_for_disabled;
+                    }
+                } else if ($('#form_' + stepIdStr + ' input[name="' + field_name + '[]"]').prop('type') == 'checkbox') {
+                    if ($('#form_' + stepIdStr + ' input[name="' + field_name + '[]"]').prop('disabled') == false) {
+                        $('#form_' + stepIdStr + ' input[name="' + field_name + '[]"]:checked').each(function() {
+                            checkedCheckBoxes.push($(this).val());
+                        });
+                        field_val = checkedCheckBoxes.join(",");
+                    }else{
+                        field_val = field_val_for_disabled;
+                    }
+                } else {
+                    if($('#form_' + stepIdStr + ' input[name="' + field_name + '"]').prop('disabled') == false){
+                        field_val = $('#form_' + stepIdStr + ' input[name="' + field_name + '"]').val();
+                    }else{
+                        field_val = field_val_for_disabled;
+                    }
                 }
                 return field_val;
             }

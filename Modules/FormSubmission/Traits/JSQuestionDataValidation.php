@@ -85,7 +85,7 @@ trait JSQuestionDataValidation
 
 
         $functionName = ($isForAdjudication) ? 'validateAdjudicationQuestion' : 'validateQuestion';
-        $getValueFunctionName = ($isForAdjudication) ? 'getAdjudicationFormFieldValue' : 'getFormFieldValue';
+        $getValueFunctionName = ($isForAdjudication) ? 'getAdjudicationFormFieldValueForRequired' : 'getFormFieldValueForRequired';
 
         $mainQuestionValidationStr .= '
                 function ' . $functionName . $questionIdStr . '(isFormValid, stepIdStr){
