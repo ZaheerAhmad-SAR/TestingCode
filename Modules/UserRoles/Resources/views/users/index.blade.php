@@ -72,7 +72,7 @@
                                         <td>{{($user->email)}}</td>
                                         <td>{{ \App\User::getUserRolesString($user) }}</td>
                                         <td>{{!empty($user->google2fa_secret)?'Enabled':'Disabled'}}</td>
-                                        <td>{{ ((int)$user->is_active == 1)? 'Active':'InActive' }}</td>
+                                        <td id="userActiveTD_{{$user->id}}">{{ ((int)$user->is_active == 1)? 'Active':'InActive' }}</td>
                                         <td>
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
@@ -130,7 +130,7 @@
                                         <td>{{($user->email)}}</td>
                                         <td>{{ \App\User::getUserRolesString($user) }}</td>
                                         <td>{{!empty($user->google2fa_secret)?'Enabled':'Disabled'}}</td>
-                                        <td>{{ ((int)$user->is_active == 1)? 'Active':'InActive' }}</td>
+                                        <td id="userActiveTD_{{$user->id}}">{{ ((int)$user->is_active == 1)? 'Active':'InActive' }}</td>
                                         <td>
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>

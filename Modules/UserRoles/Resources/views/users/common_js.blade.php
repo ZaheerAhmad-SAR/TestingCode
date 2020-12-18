@@ -12,6 +12,7 @@ function submitActivateUserRequest(userId) {
             var spanHtml = '<span class="dropdown-item inActivateUser" onclick="submitInActivateUserRequest(\'' +
                 userId + '\');"><i class="far fa-pause-circle"></i>&nbsp; Inactivate User</span>';
             $('#userActiveStatusDiv_' + userId).html(spanHtml);
+            $('#userActiveTD_' + userId).html('Active');
         }
     });
 }
@@ -28,6 +29,7 @@ function submitInActivateUserRequest(userId) {
             var spanHtml = '<span class="dropdown-item activateUser" onclick="submitActivateUserRequest(\'' +
                 userId + '\');"><i class="far fa-play-circle"></i>&nbsp; Activate User</span>';
             $('#userActiveStatusDiv_' + userId).html(spanHtml);
+            $('#userActiveTD_' + userId).html('InActive');
         }
     });
 }
