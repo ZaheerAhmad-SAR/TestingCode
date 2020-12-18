@@ -37,6 +37,7 @@ class SubjectFormLoaderController extends Controller
             ->get();
         /*****************/
 
+        session(['subject_id' => $subjectId]);
         session(['stepToActivateStr' => '']);
         return view('formsubmission::subjectFormLoader.subject_form')
             ->with('isPreview', false)

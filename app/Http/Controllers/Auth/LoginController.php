@@ -46,6 +46,36 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
+    public function login(Request $request)
+    {
+        $this->validateLogin($request);
+
+        // If the class is using the ThrottlesLogins trait, we can automatically throttle
+        // the login attempts for this application. We'll key this by the username and
+        // the IP address of the client making these requests into this application.
+        if (
+            method_exists($this, 'hasTooManyLoginAttempts') &&
+            $this->hasTooManyLoginAttempts($request)
+        ) {
+            $this->fireLockoutEvent($request);
+
+            return $this->sendLockoutResponse($request);
+        }
+
+        if ($this->attemptLogin($request)) {
+            if ((int)auth()->user()->is_active == 1) {
+                return $this->sendLoginResponse($request);
+            }
+        }
+
+        // If the login attempt was unsuccessful we will increment the number of attempts
+        // to login and redirect the user back to the login form. Of course, when this
+        // user surpasses their maximum number of attempts they will get locked out.
+        $this->incrementLoginAttempts($request);
+
+        return $this->sendFailedLoginResponse($request);
+    }
+
 
     private function authenticated(Request $request, Authenticatable $user)
     {
@@ -58,24 +88,21 @@ class LoginController extends Controller
             $check_info = UserSystemInfo::where('user_id', '=', $user->id)->get();
             if (count($check_info) > 0) {
                 foreach ($check_info as $info) {
-                    if (!empty($info->browser_name )&& $info->browser_name == $getbrowser && $info->remember_flag == 1) {
+                    if (!empty($info->browser_name) && $info->browser_name == $getbrowser && $info->remember_flag == 1) {
                         $info->remember_flag = '1';
                         $info->save();
                         return redirect(route('studies.index'));
-                    }
-                    elseif (!empty($info->browser_name && $info->browser_name == $getbrowser )) {
+                    } elseif (!empty($info->browser_name && $info->browser_name == $getbrowser)) {
                         Auth::logout();
                         $request->session()->put('2fa:user:id', $user->id);
                         return view('2fa/validate', compact('user'));
-                    }
-                    elseif (empty($info->browser_name)) {
+                    } elseif (empty($info->browser_name)) {
                         $info->browser_name = $getbrowser;
                         $info->save();
                         Auth::logout();
                         $request->session()->put('2fa:user:id', $user->id);
                         return view('2fa/validate', compact('user', 'secret'));
-                    }
-                    elseif($info->browser_name != $getbrowser){
+                    } elseif ($info->browser_name != $getbrowser) {
                         $qr_flag = $user->qr_flag;
 
                         $info->browser_name = $getbrowser;
@@ -88,9 +115,7 @@ class LoginController extends Controller
                         return view('2fa/validate', compact('user', 'qr_flag'));
                     }
                 }
-            }
-            else
-            {
+            } else {
                 Auth::logout();
                 $system_info = new UserSystemInfo();
                 $system_info->user_id = $user->id;
@@ -123,15 +148,14 @@ class LoginController extends Controller
         //get user id and create cache key
         $userId = $request->session()->pull('2fa:user:id');
         $key    = $userId . ':' . $request->totp;
-        if($request->remember_browser == 'on'){
+        if ($request->remember_browser == 'on') {
             $getbrowser = UserSystemInfoHelper::get_browsers();
-            $system_info = UserSystemInfo::where('browser_name','=',$getbrowser)->where('user_id','=',$userId)->first();
+            $system_info = UserSystemInfo::where('browser_name', '=', $getbrowser)->where('user_id', '=', $userId)->first();
             $system_info->remember_flag = '1';
             $system_info->save();
-        }
-        else{
+        } else {
             $getbrowser = UserSystemInfoHelper::get_browsers();
-            $system_info = UserSystemInfo::where('browser_name','=',$getbrowser)->where('user_id','=',$userId)->first();
+            $system_info = UserSystemInfo::where('browser_name', '=', $getbrowser)->where('user_id', '=', $userId)->first();
             $system_info->remember_flag = '0';
             $system_info->save();
         }
@@ -143,5 +167,4 @@ class LoginController extends Controller
 
         return redirect(route('studies.index'));/*->intended($this->redirectTo);*/
     }
-
 }

@@ -84,6 +84,11 @@ function isThisUserHasSystemRole($user)
 
 function hasPermission($user, $routeName)
 {
+    if ((int)$user->is_active == 0) {
+        Illuminate\Support\Facades\Auth::logout();
+        return false;
+    }
+
     if (isThisUserSuperAdmin($user)) {
         return true;
     }

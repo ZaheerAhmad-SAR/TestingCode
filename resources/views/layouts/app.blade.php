@@ -67,6 +67,9 @@
                   100% { transform: rotate(360deg); }
                 }
             /*For loader*/
+            .dropdown-item{
+                cursor: pointer;
+            }
         </style>
     </head>
 
