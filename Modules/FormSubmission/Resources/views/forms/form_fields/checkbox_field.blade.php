@@ -12,20 +12,20 @@ $option_names = [html_entity_decode($question->formFields->text_info)];
 }
 $answersArray = explode(',', $answer->answer);
 $options = array_combine ( $option_names , $option_values );
-$showFalseField = true;
+$showFalseField = false;
 @endphp
 @foreach ($options as $option_name => $option_value)
     @php
     $checked = in_array($option_value, $answersArray) ? 'checked' : '';
-    if($checked == 'checked' && $answer->answer != '-9999'){
-    $showFalseField = false;
+    if($answer->answer == '-9999'){
+    $showFalseField = true;
     }
     @endphp
     <div
         class="custom-control custom-checkbox {{ $optionGroup->option_layout == 'horizontal' ? 'custom-control-inline' : '' }}">
         <input type="checkbox" name="{{ $field_name }}[]"
             onchange="validateAndSubmitField('{{ $stepIdStr }}', '{{ $sectionIdStr }}', '{{ $question->id }}', '{{ $questionIdStr }}', '{{ $step->formType->form_type }}', '{{ $field_name }}', '{{ $fieldId }}');"
-            value="{{ $option_value }}" {{ $checked }} class="custom-control-input {{ $skipLogicQuestionIdStr }} {{ 'skip_logic_' . $option_name . '_' . $option_value }}">
+            value="{{ $option_value }}" {{ $checked }} class="custom-control-input {{ $skipLogicQuestionIdStr }} {{ 'skip_logic_' . $questionIdStr . '_' . $option_value }}">
         <label class="custom-control-label" for="customCheck1">{{ $option_name }}</label>
     </div>
 @endforeach

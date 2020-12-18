@@ -3,6 +3,11 @@
     <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
         @include('queries::queries.query_popup_span_form', ['queryParams'=>$queryParams, 'study_id'=> (isset($study) && null !== $study)? $study->id:''])
+        <span class="dropdown-item">
+            <a href="javascript:void(0);" onclick="loadAddQuestionCommentForm('{{ $studyId }}', '{{ $subjectId }}', '{{ $phase->id }}', '{{ $step->step_id }}', '{{ $section->id }}', '{{ $question->id }}');">
+                <i class="fas fa-comments" aria-hidden="true">
+                </i> Add Comment</a>
+        </span>
     </div>
     @if(\Modules\Queries\Entities\Query::questionHasQuery($queryParams))
         <div class="showQueries">

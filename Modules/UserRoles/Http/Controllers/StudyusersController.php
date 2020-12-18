@@ -34,16 +34,12 @@ class StudyusersController extends Controller
         $roles  =   Role::where('role_type', '=', 'study_role')->get();
 
         $enrolledUserIds = RoleStudyUser::where('study_id', '=', session('current_study'))->pluck('user_id')->toArray();
-        $studyusers = $enrolledusers = User::where('id', '!=', \auth()->user()->id)
-            ->whereIn('id', $enrolledUserIds)
-            ->get();
+        $studyusers = User::whereIn('id', $enrolledUserIds)->get();
 
-        $users = User::where('id', '!=', \auth()->user()->id)
-            ->whereIn('id', $idsOfUsersWithStudyRole)
-            ->whereNotIn('id', $enrolledUserIds)
-            ->get();
+        $remaining_users = User::whereIn('id', $idsOfUsersWithStudyRole)
+            ->whereNotIn('id', $enrolledUserIds)->get();
 
-        return view('userroles::users.studyUsers', compact('roles', 'enrolledusers', 'studyusers', 'users'));
+        return view('userroles::users.studyUsers', compact('roles', 'studyusers', 'remaining_users'));
     }
 
     /**
@@ -210,10 +206,10 @@ class StudyusersController extends Controller
 
         //get old Roles
         $getUserOldRoles = Role::leftjoin('study_role_users', 'study_role_users.role_id', '=', 'roles.id')
-                                        ->where('study_role_users.study_id', 'like', session('current_study'))
-                                        ->where('study_role_users.user_id', 'like',  $id)
-                                        ->pluck('roles.name')
-                                        ->toArray();
+            ->where('study_role_users.study_id', 'like', session('current_study'))
+            ->where('study_role_users.user_id', 'like',  $id)
+            ->pluck('roles.name')
+            ->toArray();
 
         $oldUser->role = $getUserOldRoles != null ? implode(',', $getUserOldRoles) : '';
 

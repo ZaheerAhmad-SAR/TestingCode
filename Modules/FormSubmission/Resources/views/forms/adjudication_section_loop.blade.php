@@ -20,7 +20,6 @@ if(
         $current_user_id = ($current_user_id ?? '');
         $subjectId = ($subjectId ?? '');
         $studyId = ($studyId ?? '');
-        $studyClsStr = ($studyClsStr ?? '');
 
         $getAdjudicationFormStatusArray = [
         //'form_adjudicated_by_id' => $current_user_id,
@@ -112,7 +111,6 @@ if(
                                         $skipLogicSectionIdStr = buildSafeStr($section->id, 'skip_logic_');
                                         $sharedData = [
                                         'studyId' => $studyId,
-                                        'studyClsStr' => $studyClsStr,
                                         'subjectId' => $subjectId,
                                         'phase' => $phase,
                                         'step' => $step,
