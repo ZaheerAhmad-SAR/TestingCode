@@ -199,4 +199,12 @@ class Query extends Model
         }
         return $queryCheck;
     }
+
+    public static function isThereOpenQueryAgainstStep($getQueryArray)
+    {
+        $queryCount = self::getFormQueryObjQuery($getQueryArray)
+            ->where('query_status', '!=', 'close')
+            ->count();
+        return (bool)$queryCount;
+    }
 }

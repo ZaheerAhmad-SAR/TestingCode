@@ -39,9 +39,18 @@ use Modules\Admin\Entities\RoleStudyUser;
 use Modules\UserRoles\Entities\UserRole;
 use Illuminate\Support\Str;
 use Modules\Admin\Entities\AssignWork;
+use Modules\Admin\Entities\FormFields;
+use Modules\Admin\Entities\PhaseSteps;
+use Modules\Admin\Entities\Question;
 use Modules\Admin\Entities\QuestionComments;
+use Modules\Admin\Entities\QuestionDependency;
+use Modules\Admin\Entities\QuestionOption;
+use Modules\Admin\Entities\QuestionValidation;
+use Modules\Admin\Entities\Section;
+use Modules\Admin\Entities\SkipLogic;
 use Modules\FormSubmission\Entities\ExportType;
 use Modules\FormSubmission\Entities\QuestionAdjudicationRequired;
+use Modules\FormSubmission\Traits\Replication\QuestionSkipLogic;
 use Modules\Queries\Entities\QueryNotification;
 use Modules\UserRoles\Entities\StudyRoleUsers;
 
@@ -114,39 +123,24 @@ class StudyController extends Controller
             (hasPermission(\auth()->user(), 'systemtools.index')) ||
             (hasPermission(\auth()->user(), 'studytools.index'))
         ) {
-
             $studies = Study::whereIn('id', array_unique($studiesIDs));
-            if ($request->study_code != '') {
-                $studies = $studies->where('study_code', 'like', '%' . $request->study_code . '%');
-            }
-            if ($request->study_short_name != '') {
-                $studies = $studies->where('study_short_name', 'like', '%' . $request->study_short_name . '%');
-            }
-            if ($request->study_status != '') {
-                $studies = $studies->where('study_status', $request->study_status);
-            }
-            if ($request->study_sponsor != '') {
-                $studies = $studies->where('study_sponsor', 'like', '%' . $request->study_sponsor . '%');
-            }
-            $studies = $studies->get();
         } else {
-
             $studies = Study::where('study_status', 'Live')->whereIn('id', array_unique($studiesIDs));
-            if ($request->study_code != '') {
-                $studies = $studies->where('study_code', 'like', '%' . $request->study_code . '%');
-            }
-            if ($request->study_short_name != '') {
-                $studies = $studies->where('study_short_name', 'like', '%' . $request->study_short_name . '%');
-            }
-            if ($request->study_status != '') {
-                $studies = $studies->where('study_status', $request->study_status);
-            }
-            if ($request->study_sponsor != '') {
-                $studies = $studies->where('study_sponsor', 'like', '%' . $request->study_sponsor . '%');
-            }
-            $studies = $studies->get();
         }
 
+        if ($request->study_code != '') {
+            $studies = $studies->where('study_code', 'like', '%' . $request->study_code . '%');
+        }
+        if ($request->study_short_name != '') {
+            $studies = $studies->where('study_short_name', 'like', '%' . $request->study_short_name . '%');
+        }
+        if ($request->study_status != '') {
+            $studies = $studies->where('study_status', $request->study_status);
+        }
+        if ($request->study_sponsor != '') {
+            $studies = $studies->where('study_sponsor', 'like', '%' . $request->study_sponsor . '%');
+        }
+        $studies = $studies->get();
 
         return view('admin::studies.index', compact('sites', 'users', 'studies'));
     }
@@ -1414,7 +1408,14 @@ class StudyController extends Controller
         FormStatus::where('study_id', $id)->delete();
         QuestionAdjudicationRequired::where('study_id', $id)->delete();
         QuestionComments::where('study_id', $id)->delete();
+
+        $phases = StudyStructure::where('study_id', 'like', $id)->get();
+        foreach ($phases as $phase) {
+            $this->deleteTreeAgainstPhase($phase->id);
+            $this->deletePhase($phase);
+        }
         StudyStructure::where('study_id', $id)->delete();
+
         AssignWork::where('study_id', $id)->delete();
         DiseaseCohort::where('study_id', $id)->delete();
         Preference::where('study_id', $id)->delete();
@@ -1426,6 +1427,54 @@ class StudyController extends Controller
         StudyUser::where('study_id', $id)->delete();
         TrailLog::where('study_id', $id)->delete();
         UserRole::where('study_id', $id)->delete();
+        return \response()->json(['sucess' => 'Study deleted successfully.']);
+    }
+
+    public function permanentlyDeleteStudyAndItsRecord($id)
+    {
+        Study::where('id', $id)->withTrashed()->forceDelete();
+        Subject::where('study_id', $id)->withTrashed()->forceDelete();
+        AdjudicationFormStatus::where('study_id', $id)->withTrashed()->forceDelete();
+        Annotation::where('study_id', $id)->withTrashed()->forceDelete();
+        Answer::where('study_id', $id)->withTrashed()->forceDelete();
+        ExportType::where('study_id', $id)->withTrashed()->forceDelete();
+        FinalAnswer::where('study_id', $id)->withTrashed()->forceDelete();
+        FormStatus::where('study_id', $id)->withTrashed()->forceDelete();
+        QuestionAdjudicationRequired::where('study_id', $id)->withTrashed()->forceDelete();
+        QuestionComments::where('study_id', $id)->withTrashed()->forceDelete();
+
+
+        $phases = StudyStructure::where('study_id', 'like', $id)->withTrashed()->get();
+        foreach ($phases as $phase) {
+            $this->deleteTreeAgainstPhase($phase->id);
+            $this->deletePhase($phase);
+        }
+        StudyStructure::where('study_id', $id)->withTrashed()->forceDelete();
+
+        AssignWork::where('study_id', $id)->withTrashed()->forceDelete();
+        DiseaseCohort::where('study_id', $id)->withTrashed()->forceDelete();
+        Preference::where('study_id', $id)->withTrashed()->forceDelete();
+        Query::where('study_id', $id)->withTrashed()->forceDelete();
+        QueryNotification::where('study_id', $id)->withTrashed()->forceDelete();
+        StudySite::where('study_id', $id)->withTrashed()->forceDelete();
+        RoleStudyUser::where('study_id', $id)->withTrashed()->forceDelete();
+        StudyRoleUsers::where('study_id', $id)->withTrashed()->forceDelete();
+        StudyUser::where('study_id', $id)->withTrashed()->forceDelete();
+        TrailLog::where('study_id', $id)->withTrashed()->forceDelete();
+        UserRole::where('study_id', $id)->withTrashed()->forceDelete();
+
+
+        StudyStructure::onlyTrashed()->forceDelete();
+        PhaseSteps::onlyTrashed()->forceDelete();
+        Section::onlyTrashed()->forceDelete();
+        Question::onlyTrashed()->forceDelete();
+        FormFields::onlyTrashed()->forceDelete();
+        QuestionDependency::onlyTrashed()->forceDelete();
+        QuestionValidation::onlyTrashed()->forceDelete();
+        SkipLogic::onlyTrashed()->forceDelete();
+        QuestionComments::onlyTrashed()->forceDelete();
+        QuestionOption::onlyTrashed()->forceDelete();
+
         return \response()->json(['sucess' => 'Study deleted successfully.']);
     }
 }
