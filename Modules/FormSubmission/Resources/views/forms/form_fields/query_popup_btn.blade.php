@@ -11,7 +11,7 @@ if(isset($queryParams)){
     <div class="col-md-6"></div>
     <div class="col-md-6 text-right">
 
-        @if(\Modules\Queries\Entities\Query::questionHasQuery($queryParams))
+        @if(\Modules\Queries\Entities\Query::formHasQuery($queryParams))
 
             <div class="formQueries">
         <span class="ml-3" style="cursor: pointer;">

@@ -317,7 +317,7 @@
     <script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('public/dist/js/datatable.script.js') }}"></script>
-    <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
+    <script src="{{ asset("js/jquery.quicksearch.js") }}" type="text/javascript"></script>
 
 
 
