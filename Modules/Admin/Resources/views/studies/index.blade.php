@@ -57,7 +57,7 @@
                             <button class="btn btn-outline-warning reset-filter"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
                             <button type="submit" class="btn btn-primary submit-filter"><i class="fas fa-filter" aria-hidden="true"></i> Filter</button>
                         </div>
-                    </div>    
+                    </div>
                 </form>
             </div>
         </div>
@@ -762,7 +762,7 @@
     <link rel="stylesheet" href="{{ asset("dist/vendors/fancybox/jquery.fancybox.min.css") }}">
 @endsection
 @section('script')
-    <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
+    <script src="{{ asset("js/jquery.quicksearch.js") }}" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
 
     <script type="text/javascript">
