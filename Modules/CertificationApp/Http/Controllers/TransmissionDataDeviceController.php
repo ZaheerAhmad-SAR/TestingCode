@@ -137,7 +137,10 @@ class TransmissionDataDeviceController extends Controller
 
         } // loop ends
 
-        return view('certificationapp::certificate_device.index', compact('getTransmissions'));
+        // get templates for email
+        $getTemplates = CertificationTemplate::select('id as template_id', 'title as template_title')->get();
+
+        return view('certificationapp::certificate_device.index', compact('getTransmissions', 'getTemplates'));
     }
 
     /**

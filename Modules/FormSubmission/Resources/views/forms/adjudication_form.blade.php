@@ -18,7 +18,6 @@
 
     $dataArray = [
     'studyId'=>$studyId,
-    'studyClsStr'=>$studyClsStr,
     'subjectId'=>$subjectId,
     'phase'=>$phase,
     'step'=>$step,

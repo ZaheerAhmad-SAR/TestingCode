@@ -1,5 +1,5 @@
 @if (count($section->questions))
-<fieldset class="{{ $studyClsStr }} {{ $stepClsStr }} {{ $skipLogicStepIdStr }} {{ $skipLogicSectionIdStr }} {{ $sectionClsStr }}">
+<fieldset class="{{ $stepClsStr }} {{ $skipLogicStepIdStr }} {{ $skipLogicSectionIdStr }} {{ $sectionClsStr }}">
     <div class="card p-2 mb-1">
         <input type="hidden" name="sectionId[]" value="{{ $section->id }}" />
             @foreach ($section->questions as $question)

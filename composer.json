@@ -10,6 +10,7 @@
     "require": {
         "php": "^7.2.5",
         "bacon/bacon-qr-code": "1.0.3",
+        "barryvdh/laravel-dompdf": "^0.8.7",
         "bmatovu/laravel-xml": "^3.0",
         "doctrine/dbal": "^2.11",
         "emadadly/laravel-uuid": "^1.3",

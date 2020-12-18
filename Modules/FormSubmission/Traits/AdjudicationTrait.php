@@ -153,7 +153,7 @@ trait AdjudicationTrait
     public static function checkAdjudicationForNumber($questionAdjudicationStatusObj, $numberOfAnswers, $answersArray, $decimalPoint)
     {
         $isQuestionAdjudicationRequired = false;
-        $finalAnswer = 0;
+        $finalAnswer = '';
         $valDifference = 0;
         $isPercentage = 'no';
         $retArray = [];
@@ -186,7 +186,7 @@ trait AdjudicationTrait
                 $valDifference = $retArray['valDifference'];
             }
         }
-        if ($isQuestionAdjudicationRequired == false && $finalAnswer == 0) {
+        if ($isQuestionAdjudicationRequired == false && $finalAnswer == '') {
             $finalAnswer = number_format((float)$averageOfSumOfAnswers, $decimalPoint);
         }
 
@@ -202,7 +202,7 @@ trait AdjudicationTrait
     {
         $retArray = [
             'isQuestionAdjudicationRequired' => false,
-            'finalAnswer' => 0,
+            'finalAnswer' => '',
             'valDifference' => 0,
             'isPercentage' => 'no',
         ];
@@ -218,7 +218,7 @@ trait AdjudicationTrait
     {
 
         $isQuestionAdjudicationRequired = false;
-        $finalAnswer = 0;
+        $finalAnswer = '';
         $countedArray = array_count_values($answersArray);
 
         if ($questionAdjudicationStatusObj->adj_status == 'yes') {
@@ -279,7 +279,7 @@ trait AdjudicationTrait
 
         $isQuestionAdjudicationRequired = false;
         $valDifference = 0;
-        $finalAnswer = 0;
+        $finalAnswer = '';
         $valuesInRange = [];
 
         if ($numberOfAnswers == 1) {
@@ -356,7 +356,7 @@ trait AdjudicationTrait
     {
         $isQuestionAdjudicationRequired = false;
         $valDifference = 0;
-        $finalAnswer = 0;
+        $finalAnswer = '';
         $valuesInRange = [];
 
         if ($numberOfAnswers == 1) {

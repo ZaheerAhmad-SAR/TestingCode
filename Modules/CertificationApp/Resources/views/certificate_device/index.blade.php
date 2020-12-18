@@ -282,7 +282,7 @@
             <form action="" method="POST" class="generate-certificate-form">
                 @csrf
               <div class="modal-body">
-                    <input type="hidden" name="hidden_transmission_id" value="">
+                    <input type="hidden" name="hidden_transmission_id" class="hidden_transmission_id" value="">
                     
                     <div class="form-group col-md-12">
                         <label>Change Status<span class="field-required">*</span></label>
@@ -290,9 +290,9 @@
                             <option value="">Select Status</option>
                             <option value="provisional">Provisionally Certified</option>
                             <option value="full">Full</option>
-                            <option value="suspended">Suspended</option>
+                            <!-- <option value="suspended">Suspended</option>
                             <option value="expired">Expired</option>
-                            <option value="audit">In Audit</option>
+                            <option value="audit">In Audit</option> -->
                         </select>
                     </div>
 
@@ -344,6 +344,17 @@
                         <Select class="form-control cc_user_email data-required" name="cc_user_email" id="cc_user_email" required multiple>
 
                         </Select>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                                            
+                        <label for="inputState">Templates</label>
+                        <select id="template" name="template" class="form-control">
+                            <option value="">Select Template</option>
+                             @foreach($getTemplates as $template)
+                             <option value="{{ $template->template_id }}">{{ $template->template_title }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <div class="form-group col-md-12 comment-div">
@@ -473,6 +484,9 @@
         var transmission = '';
         var childModalities = '';
 
+        // assign transmission ID
+        $('.hidden_transmission_id').val(transmissionID);
+
         // by default values
         $('#certification_status').val('');
         $('#issue_date').val('');
@@ -575,6 +589,33 @@
         }); // ajax ends
 
     }
+
+    $('#template').change(function() {
+
+        $.ajax({
+            url: '{{ route("get-template-data") }}',
+            type: 'GET',
+            data: {
+                'template_id': $(this).val(),
+            },
+            success:function(data) {
+
+                if(data.getTemplate != null) {
+
+                    // assign body
+                    $('.summernote').summernote('code', data.getTemplate.template_body);
+
+                } else {
+
+                    // assign body
+                    $('.summernote').summernote('code', '');
+                }
+                
+            } // success ends
+
+        }); // ajax ends
+
+    });  // change function ends
 
 </script>
 

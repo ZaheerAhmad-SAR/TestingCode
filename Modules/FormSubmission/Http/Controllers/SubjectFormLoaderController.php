@@ -20,7 +20,6 @@ class SubjectFormLoaderController extends Controller
     {
         /***************/
         $studyId = isset($studyId) ? $studyId : 0;
-        $studyClsStr = buildSafeStr($studyId, 'study_cls_');
         $study = Study::find($studyId);
 
         $subjectId = isset($subjectId) ? $subjectId : 0;
@@ -44,7 +43,6 @@ class SubjectFormLoaderController extends Controller
             ->with('subjectId', $subjectId)
             ->with('studyId', $studyId)
             ->with('visitPhases', $visitPhases)
-            ->with('studyClsStr', $studyClsStr)
             ->with('study', $study)
             ->with('subject', $subject)
             ->with('site', $site)

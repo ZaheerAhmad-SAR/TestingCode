@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class StudyModility extends Model
 {
 
-    //use SoftDeletes;
+    use SoftDeletes;
     protected $table = 'study_modilities';
 
     protected $fillable = [];

@@ -20,7 +20,7 @@ $getAdjudicationRequiredQuestionIdsArray = [
 ];
 $adjudicationRequiredQuestionIdsArray = \Modules\FormSubmission\Entities\QuestionAdjudicationRequired::getAdjudicationRequiredQuestionsArray($getAdjudicationRequiredQuestionIdsArray);
 @endphp
-<fieldset id="fieldset_adjudication_{{ $stepIdStr }}" class="{{ $studyClsStr }} {{ $adjStepClsStr }}  {{ $skipLogicStepIdStr }} {{ $skipLogicSectionIdStr }} {{ $sectionClsStr }}">
+<fieldset id="fieldset_adjudication_{{ $stepIdStr }}" class="{{ $adjStepClsStr }}  {{ $skipLogicStepIdStr }} {{ $skipLogicSectionIdStr }} {{ $sectionClsStr }}">
     <div class="card p-2 mb-1">
         <input type="hidden" name="sectionId[]" value="{{ $section->id }}" />
             @foreach ($section->questions as $question)

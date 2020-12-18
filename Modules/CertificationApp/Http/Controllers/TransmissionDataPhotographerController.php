@@ -15,12 +15,14 @@ use Modules\CertificationApp\Entities\StudySetup;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\Site;
 use Modules\CertificationApp\Entities\PhotographerTransmissionUpdateDetail;
+use Modules\CertificationApp\Entities\CertificationData;
 use Modules\Admin\Entities\StudySite;
 use Modules\Admin\Entities\PrimaryInvestigator;
 use Modules\Admin\Entities\Photographer;
 use Mail;
 use Session;
 use Illuminate\Support\Str;
+use PDF;
 
 class TransmissionDataPhotographerController extends Controller
 {
@@ -510,6 +512,7 @@ class TransmissionDataPhotographerController extends Controller
         if($request->ajax()) {
 
             $ccEmails = [];
+            $parentModality = [];
 
             if ($request->type == 'photographer') {
                 
@@ -535,6 +538,15 @@ class TransmissionDataPhotographerController extends Controller
                                                     ->where('study_modilities.study_id', $getStudy->id)
                                                     ->where('study_modilities.parent_modility_id', $findTransmission->transmission_modility_id)
                                                     ->get()->toArray();
+
+                // parent modality
+                $parentModality = array(
+                    'id' => $findTransmission->transmission_modility_id,
+                    'modility_name' => $findTransmission->Requested_certification,
+                );
+
+                $getChildModalities[] = $parentModality;
+
 
                 // get accepted transmission for this study, modality, photographer and site
                 $getTransmissions = TransmissionDataPhotographer::select('id', 'Transmission_Number', 'status')
@@ -566,10 +578,28 @@ class TransmissionDataPhotographerController extends Controller
 
                 // select all child modialities for this study transmission
                 $getChildModalities = ChildModilities::select('child_modilities.id', 'child_modilities.modility_name')
-                                                    ->leftjoin('study_modilities', 'study_modilities.child_modility_id', '=', 'child_modilities.id')
-                                                    ->where('study_modilities.study_id', $getStudy->id)
-                                                    ->where('study_modilities.parent_modility_id', $findTransmission->transmission_modility_id)
-                                                    ->get()->toArray();
+                                ->leftjoin('study_modilities', 'study_modilities.child_modility_id', '=', 'child_modilities.id')
+                                ->where('study_modilities.study_id', $getStudy->id)
+                                ->where('study_modilities.parent_modility_id', $findTransmission->transmission_modility_id)
+                                ->get()->toArray();
+
+                // parent modality
+                $parentModality = array(
+                    'id' => $findTransmission->transmission_modility_id,
+                    'modility_name' => $findTransmission->Requested_certification,
+                );
+
+                $getChildModalities[] = $parentModality;
+
+                // get accepted transmission for this study, modality, photographer and site
+                $getTransmissions = TransmissionDataDevice::select('id', 'Transmission_Number', 'status')
+                    ->where('StudyI_ID', $findTransmission->StudyI_ID)
+                    ->where('Request_MadeBy_Email', $findTransmission->Request_MadeBy_Email)
+                    ->where('Requested_certification', $findTransmission->Requested_certification)
+                    ->where('Site_ID', $findTransmission->Site_ID)
+                    ->where('status', 'accepted')
+                    ->get()
+                    ->toArray();
 
             } // type check ends
             
@@ -578,5 +608,112 @@ class TransmissionDataPhotographerController extends Controller
         } // ajax ends
     }
 
+    public function generatePhotographerCertificate(Request $request) {
+
+        // find Transmission
+        $findTransmission = TransmissionDataPhotographer::find($request->hidden_transmission_id);
+
+        $newCertificateID = Str::uuid();
+        $generateCertificate = new CertificationData;
+        $generateCertificate->id = $newCertificateID;
+        $generateCertificate->certificate_id = 'OIIRC-01-'.substr(md5(microtime()), 0, 8);
+        
+        // get photographer ID
+        $getPhotographer = Photographer::where('site_id', $findTransmission->transmission_site_id)
+                                        ->where('email', $request->user_email)
+                                        ->first();
+
+        $generateCertificate->photographer_id = $getPhotographer->id;
+        $generateCertificate->photographer_email = $getPhotographer->email;
+        $generateCertificate->cc_emails = json_encode($request->cc_user_email);
+
+        // get study information
+        $getStudy = Study::where('study_code', $findTransmission->StudyI_ID)->first();
+
+        $generateCertificate->study_id = $getStudy->id;
+        $generateCertificate->study_name = $getStudy->study_short_name;
+
+        // get site information
+        $getSite = Site::where('id', $findTransmission->transmission_site_id)->first();
+
+        $generateCertificate->site_id = $getSite->id;
+        $generateCertificate->site_name = $getSite->site_name;
+
+        $generateCertificate->device_model = $findTransmission->Device_Model;
+
+        // get modality information
+        $getModality = Modility::where('id', $request->certificate_for)->first();
+        //check in child modilities
+        if($getModality == null) {
+
+            $getModality = ChildModilities::where('id', $request->certificate_for)->first();
+        }
+
+        $generateCertificate->modility_id = $getModality->id;
+        $generateCertificate->certificate = $getModality->modility_name;
+        $generateCertificate->certificate_for = $getModality->modility_name;
+
+        // certificate status
+        $generateCertificate->certificate_status = $request->certification_status;
+        $generateCertificate->certificate_type = $request->certificate_type;
+
+        if ($request->certificate_type == 'original') {
+
+            $generateCertificate->transmissions = ($request->transmissions != null) ? json_encode($request->transmissions) : json_encode([]);
+        
+        } elseif ($request->certificate_type == 'grandfathered') {
+
+            $generateCertificate->grandfather_certificate_id = $request->grandfather_id;
+        }
+        
+        // issue date
+        $generateCertificate->issue_date = \Carbon\Carbon::parse($request->issue_date);
+        $generateCertificate->expiry_date = \Carbon\Carbon::parse($request->issue_date)->addYears(2);
+
+        // certification Officer Info
+        $generateCertificate->certification_officer_id = \Auth::user()->id;
+        //$generateCertificate->certification_file_name = $filename;
+
+        $generateCertificate->transmission_type = 'photographer_transmission';
+        $generateCertificate->validity = 'yes';
+        $generateCertificate->save();
+
+        // get study email to pass to pdf
+        $getStudyEmail = StudySetup::where('study_id', $getStudy->id)->first();
+
+        $file_name = uniqid().'_photographer.pdf';
+        $path = storage_path('certificates_pdf/photographer');
+        // generate pdf
+        $pdf = PDF::loadView('certificationapp::certificate_pdf.photographer_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('a4')->save($path.'/'.$file_name);
+        
+
+        // make array for changings dynamic variable in the text editor
+        $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, $findTransmission->PI_Name, $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date];
+
+        $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[pi_name]]', '[[modality_name]]', '[[certificate_id]]', '[[sender_name]]', '[[certificate_status]]', '[[certificate_type]]', '[[issue_date]]', '[[expiry_date]]'];
+
+        $data = [];
+        $data['email_body'] = str_replace($labels, $variables, $request->comment);
+        $senderEmail = $generateCertificate->photographer_email;
+        $ccEmail = $generateCertificate->cc_emails != '' ? json_decode($generateCertificate->cc_emails) : '';
+
+        // send email to users
+        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $generateCertificate, $findTransmission, $getSite, $getStudy, $getModality, $path, $file_name)
+        {
+            $message->subject($getStudy->study_short_name.' '.$getStudy->study_code.' | Photographer Certification# '.$generateCertificate->certificate_id.' | '. $getSite->site_code.' | '. $getModality->modility_name);
+            $message->to($senderEmail);
+            $message->cc($ccEmail);
+            $message->attach($path.'/'.$file_name);
+        });
+
+        // update the file name in database
+        $upateFileName = CertificationData::where('id', $newCertificateID)
+                                            ->update(['certificate_file_name' => $file_name]);
+
+        Session::flash('success', 'Certicate generated successfully.');
+
+        // return back
+        return redirect()->back();
+    }
 
 }
