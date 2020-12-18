@@ -54,13 +54,14 @@
                             <table class="table table-bordered editable-table" id="laravel_crud">
                                     <thead>
                                         <tr>
-                                            <th scope="col" colspan="5">System Users</th>
+                                            <th scope="col" colspan="6">System Users</th>
                                         </tr>
                                         <tr>
                                         <th scope="col">Name</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Roles</th>
                                         <th scope="col">2 Factor Auth</th>
+                                        <th scope="col">Is Active?</th>
                                         <th scope="col">Actions</th>
                                     </tr>
                                     </thead>
@@ -71,6 +72,7 @@
                                         <td>{{($user->email)}}</td>
                                         <td>{{ \App\User::getUserRolesString($user) }}</td>
                                         <td>{{!empty($user->google2fa_secret)?'Enabled':'Disabled'}}</td>
+                                        <td id="userActiveTD_{{$user->id}}">{{ ((int)$user->is_active == 1)? 'Active':'InActive' }}</td>
                                         <td>
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
@@ -110,13 +112,14 @@
                             <table class="table table-bordered editable-table" id="laravel_crud">
                                     <thead>
                                         <tr>
-                                            <th scope="col" colspan="5">Study Users</th>
+                                            <th scope="col" colspan="6">Study Users</th>
                                         </tr>
                                     <tr>
                                         <th scope="col">Name</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Roles</th>
                                         <th scope="col">2 Factor Auth</th>
+                                        <th scope="col">Is Active?</th>
                                         <th scope="col">Actions</th>
                                     </tr>
                                     </thead>
@@ -127,6 +130,7 @@
                                         <td>{{($user->email)}}</td>
                                         <td>{{ \App\User::getUserRolesString($user) }}</td>
                                         <td>{{!empty($user->google2fa_secret)?'Enabled':'Disabled'}}</td>
+                                        <td id="userActiveTD_{{$user->id}}">{{ ((int)$user->is_active == 1)? 'Active':'InActive' }}</td>
                                         <td>
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
