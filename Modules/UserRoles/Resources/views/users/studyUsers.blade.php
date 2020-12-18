@@ -414,42 +414,8 @@
                 });
 
             }
-
-            function submitActivateUserRequest(userId) {
-            $.ajax({
-                url: 'systemUser/activate_user/',
-                type: 'POST',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'POST',
-                    'userId': userId,
-                },
-                success: function(res) {
-                    var spanHtml = '<span class="dropdown-item inActivateUser" onclick="submitInActivateUserRequest(\'' +
-                        userId + '\');"><i class="far fa-pause-circle"></i>&nbsp; Inactivate User</span>';
-                    $('#userActiveStatusDiv_' + userId).html(spanHtml);
-                }
-            });
-        }
-        function submitInActivateUserRequest(userId) {
-            $.ajax({
-                url: 'systemUser/inactivate_user/',
-                type: 'POST',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'POST',
-                    'userId': userId,
-                },
-                success: function(res) {
-                    var spanHtml = '<span class="dropdown-item activateUser" onclick="submitActivateUserRequest(\'' +
-                        userId + '\');"><i class="far fa-play-circle"></i>&nbsp; Activate User</span>';
-                    $('#userActiveStatusDiv_' + userId).html(spanHtml);
-                }
-            });
-        }
-
-
     </script>
+    @include('userroles::users.common_js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
 @stop
