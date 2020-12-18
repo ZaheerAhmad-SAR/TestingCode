@@ -223,8 +223,36 @@
 <!-- queries-model-form end -->
 
 
+<div class="modal fade" tabindex="-1" role="dialog" id="close-question-table-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
+    <div class="modal-dialog  modal-lg modal-dialog-centered" role="document" style="max-width: 1000px;">
+        <div class="modal-content">
+            <div class="alert alert-danger" style="display:none"></div>
+            <div class="modal-header ">
+                <p class="modal-title">All Close Question Queries</p>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table id="example" class="display table dataTable table-striped table-bordered" >
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Query Subject</th>
+                            <th>Submited By</th>
+                            <th>Assigned To</th>
+                            <th>Created Date</th>
+                            <th>Status</th>
+                            <th>History</th>
+                        </tr>
+                        </thead>
+                        <tbody class="queriesclosequestionList"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" tabindex="-1" role="dialog" id="show-question-table-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
-    <div class="modal-dialog  modal-lg modal-dialog-centered" role="document">
+    <div class="modal-dialog  modal-lg modal-dialog-centered" role="document" style="max-width: 1000px;">
         <div class="modal-content">
             <div class="alert alert-danger" style="display:none"></div>
             <div class="modal-header ">
@@ -235,7 +263,7 @@
                     <table id="example" class="display table dataTable table-striped table-bordered" >
                         <thead>
                         <tr>
-                            <th>id</th>
+                            <th>ID</th>
                             <th>Query Subject</th>
                             <th>Submited By</th>
                             <th>Assigned To</th>
@@ -280,30 +308,22 @@
     </div>
 </div>
 
-<div class="modal fade" tabindex="-1" role="dialog" id="reply-question-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
+<div class="modal fade" tabindex="-1" role="dialog" id="question-history_modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" style="max-width: 1000px;" role="document">
         <div class="modal-content">
             <div class="alert alert-danger" style="display:none"></div>
             <div class="modal-header">
-                <p class="modal-title"> Question Details</p>
+                <p class="modal-title"> Question History</p>
                 <span class="queryCurrentStatus text-center"></span>
             </div>
             <div class="modal-body">
-                <form id="replyQuestionForm" name="replyQuestionForm">
+                <form id="historyCloseQuestionForm" name="historyCloseQuestionForm">
                     <div class="tab-content clearfix">
                         @csrf
                         <div class="replyInput"></div>
-                        <div class="col-sm-12">
-                            <div class="replyClick" style="text-align: right;">
-                                    <span style="cursor: pointer;">
-                                        <i class="fa fa-reply"></i> &nbsp; reply
-                                        </span>
-                            </div>
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                        <button type="button" class="btn btn-outline-primary" id="replyquestion"><i class="fa fa-save"></i> Send</button>
                     </div>
                 </form>
             </div>
@@ -340,6 +360,7 @@
         </div>
     </div>
 </div>
+
 
 @push('styles')
 <!-- Queries Model style sheet start -->
@@ -458,6 +479,26 @@
         }
 
 
+        function showCloseQuestionQueries(study_id, subject_id,
+          study_structures_id, phase_steps_id,
+          section_id, question_id, field_id,
+          form_type_id, modility_id, module){
+            $('#study_id').val(study_id);
+            $('#question_id').val(question_id);
+            $('#phase_steps_id').val(phase_steps_id);
+            $('#section_id').val(section_id);
+            $('#subject_id').val(subject_id);
+            $('#study_structures_id').val(study_structures_id);
+            $('#field_id').val(field_id);
+            $('#modility_id').val(modility_id);
+            $('#module').val(module);
+            $('#form_type_id').val(form_type_id);
+            openCloseQuestionTableView(question_id);
+            //$('#reply-modal').modal('show');
+            //showQuestions(question_id);
+        }
+
+
         function getAllFormQueryData(study_id, subject_id,
           study_structures_id, phase_steps_id,
           section_id, question_id, field_id,
@@ -481,6 +522,10 @@
         $('#show-question-table-modal').modal('show');
     });
 
+    $('.showCloseQuestionPopUp').click(function () {
+        $('#close-question-table-modal').modal('show');
+    });
+
     $('.showAllFormQueries').click(function () {
         $('#show-form-table-modal').modal('show');
     });
@@ -499,6 +544,23 @@
             {
                 $('.queriesquestionList').html('');
                 $('.queriesquestionList').html(response);
+            }
+        });
+    }
+
+    function openCloseQuestionTableView(question_id) {
+        $.ajax({
+            url:"{{route('queries.loadAllCloseQuestionById')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'POST',
+                'question_id'      :question_id,
+            },
+            success: function(response)
+            {
+                $('.queriesclosequestionList').html('');
+                $('.queriesclosequestionList').html(response);
             }
         });
     }
@@ -556,6 +618,13 @@
         $('#show-question-table-modal').modal('hide');
     });
 
+    $('body').on('click', '.historyCloseQuestionQueries', function () {
+        var query_id     = $(this).attr('data-id');
+        $('#question-history_modal').modal('show');
+        showQuestions(query_id);
+        $('#close-question-table-modal').modal('hide');
+    });
+
 
     function showQuestions(query_id) {
         $.ajax({
@@ -587,6 +656,7 @@
         var query_type           = $("#query_type").val();
         var query_status         = $("#query_status").val();
         var subject_question     = $("#subject_question").val();
+        var query_level_question = $("#query_level_question").val();
 
         var study_id             = $("#study_id").val();
         var subject_id           = $("#subject_id").val();
@@ -607,6 +677,7 @@
         formData.append('query_type', query_type);
         formData.append('query_status', query_status);
         formData.append('subject_question', subject_question);
+        formData.append('query_level_question', query_level_question);
 
         formData.append('study_id', study_id);
         formData.append('subject_id', subject_id);
@@ -721,6 +792,7 @@
                 $("#queriesQuestionForm")[0].reset();
                 $("#usersSelectOptionList").html('');
                 $('#queries-modal-question').modal('hide');
+                location.reload();
                 // window.setTimeout(function () {
                 //     window.location.reload();
                 // }, 100);
@@ -728,6 +800,10 @@
         });
 
     });
+
+    $('#queries-modal-question').on('hidden.bs.modal', function () {
+        $(this).find('form').trigger('reset');
+    })
 
 
     $("#formForQueries").on('submit', function(e) {
