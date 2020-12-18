@@ -60,7 +60,7 @@
     @endpush
     <div class="card collapse row-{{$value->step_id}}-de-{{$index}} de_sections_list_{{$value->step_id}}_{{$index}}">
         {{-- Load Sections here for deactivate --}}
-          @include('admin::forms.deactivate_sections')  
+          @include('admin::forms.skiplogic_by_options.deactivate_sections')  
         {{-- Load Sections here for deactivate end here --}}
     </div>
 

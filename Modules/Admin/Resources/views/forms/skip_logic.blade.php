@@ -35,7 +35,7 @@
                         <button type="button" class="btn-secondry" style="border-radius: 50%;height: 20px;width: 20px;border-color: black;"></button> Sections
                     </div>
                     <div class="col-md-3">
-                        <button type="button" class="btn-danger" style="border-radius: 50%;height: 20px;width: 20px;border-color: black;"></button> Questions
+                        <button type="button" class="btn-info" style="border-radius: 50%;height: 20px;width: 20px;border-color: black;"></button> Questions
                     </div>
                     <div class="col-md-3">
                         <button type="button" class="btn-info" style="border-radius: 50%;height: 20px;width: 20px;border-color: black;background-color:white;"></button> Options
@@ -70,8 +70,8 @@
                </div>
             </div>
             <div class="row append_data_{{$options_value[$index]}}">
-                @include('admin::forms.activate_forms')
-                @include('admin::forms.deactivate_forms')
+                @include('admin::forms.skiplogic_by_options.activate_forms')
+                @include('admin::forms.skiplogic_by_options.deactivate_forms')
             </div>
             @endforeach
             </div>

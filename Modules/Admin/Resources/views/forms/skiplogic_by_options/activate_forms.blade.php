@@ -62,7 +62,7 @@ if(in_array($value->step_id, $activate_forms_array)){ $checked = 'checked'; }els
     @endpush
 <div class="card collapse row-{{$value->step_id}}-ac-{{$index}} sections_list_{{$value->step_id}}_{{$index}}">
 {{-- Load Sections here for activate --}}
-   @include('admin::forms.activate_sections') 
+   @include('admin::forms.skiplogic_by_options.activate_sections') 
 {{-- Load Sections here for activate end here --}}
 </div>
     
