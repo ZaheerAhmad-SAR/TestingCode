@@ -161,9 +161,9 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="Name" class="col-sm-3 col-form-label">Duration in days</label>
+                                <label for="Name" class="col-sm-3 col-form-label">Offset</label>
                                 <div class="col-sm-9">
-                                    <input type="number" class="form-control" name="duration" id="phase_duration" value=""  placeholder="Duration in days">
+                                    <input type="number" class="form-control" name="duration" id="phase_duration" value=""  placeholder="Offset">
 
                                 </div>
                             </div>
