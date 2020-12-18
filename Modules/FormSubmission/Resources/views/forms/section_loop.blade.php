@@ -35,7 +35,9 @@ if(
     $showStep = 'block';
 }
 @endphp
+
 <div class="all_step_sections step_sections_{{ $stepIdStr }}" style="display: {{ $showStep }};">
+@if($step->is_active == 1 || $isPreview === true)
 @php
 $getFormStatusArray = [
     'subject_id' => $subjectId,
@@ -185,7 +187,13 @@ if(null !== $formStatusObj){
         </div>
     </div>
 </div>
+@else
+<div class="alert alert-danger" role="alert">Form is in draft mode</div>
+@endif
 </div>
+
+
+@if($step->is_active == 1 || $isPreview === true)
 @push('script')
 <script>
     function submitStepForm{{ $stepIdStr }}(stepIdStr, stepClsStr) {
@@ -240,4 +248,5 @@ $runStepCalculatedFunctionsStr = Modules\Admin\Entities\PhaseSteps::runCalculate
         }
     </script>
 @endpush
+@endif
 @endif

@@ -79,6 +79,15 @@
                                                     <a href="{{route('studyusers.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
                                                         <i class="far fa-edit"></i>&nbsp; Delete </a>
                                                     </span>
+                                                    @if (hasPermission(auth()->user(), 'systemtools.index'))
+                                                    <div id="userActiveStatusDiv_{{$user->id}}">
+                                                        @if($user->is_active == 0)
+                                                        <span class="dropdown-item activateUser" onclick="submitActivateUserRequest('{{ $user->id }}');"><i class="far fa-play-circle"></i>&nbsp; Activate User</span>
+                                                        @else
+                                                        <span class="dropdown-item inActivateUser" onclick="submitInActivateUserRequest('{{ $user->id }}');"><i class="far fa-pause-circle"></i>&nbsp; Inactivate User</span>
+                                                        @endif
+                                                    </div>
+                                                    @endif
                                                         </div>
                                                     </div>
                                                 </td>
@@ -405,6 +414,41 @@
                 });
 
             }
+
+            function submitActivateUserRequest(userId) {
+            $.ajax({
+                url: 'systemUser/activate_user/',
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'userId': userId,
+                },
+                success: function(res) {
+                    var spanHtml = '<span class="dropdown-item inActivateUser" onclick="submitInActivateUserRequest(\'' +
+                        userId + '\');"><i class="far fa-pause-circle"></i>&nbsp; Inactivate User</span>';
+                    $('#userActiveStatusDiv_' + userId).html(spanHtml);
+                }
+            });
+        }
+        function submitInActivateUserRequest(userId) {
+            $.ajax({
+                url: 'systemUser/inactivate_user/',
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'userId': userId,
+                },
+                success: function(res) {
+                    var spanHtml = '<span class="dropdown-item activateUser" onclick="submitActivateUserRequest(\'' +
+                        userId + '\');"><i class="far fa-play-circle"></i>&nbsp; Activate User</span>';
+                    $('#userActiveStatusDiv_' + userId).html(spanHtml);
+                }
+            });
+        }
+
+
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
     <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>

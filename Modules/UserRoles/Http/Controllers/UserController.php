@@ -100,11 +100,12 @@ class UserController extends Controller
         }
         $assigned_roles = [];
         $add_or_edit = 'Add';
+        $readOnly = '';
         $route = route('users.store');
         $method = 'POST';
         $submitFunction = 'submitAddUserForm();';
 
-        return view('userroles::users.popups.userform', compact('user', 'unassigned_roles', 'assigned_roles', 'add_or_edit', 'route', 'method', 'submitFunction'));
+        return view('userroles::users.popups.userform', compact('user', 'unassigned_roles', 'assigned_roles', 'add_or_edit', 'readOnly', 'route', 'method', 'submitFunction'));
     }
 
     /**
@@ -264,11 +265,15 @@ class UserController extends Controller
         }
 
         $add_or_edit = 'Edit';
+        $readOnly = '';
+        if (!hasPermission(\auth()->user(), 'systemtools.index')) {
+            $readOnly = 'readonly';
+        }
         $route = route('users.update', $id);
         $method = 'PUT';
         $submitFunction = 'submitEditUserForm();';
 
-        return view('userroles::users.popups.userform', compact('user', 'unassigned_roles', 'assigned_roles', 'add_or_edit', 'route', 'method', 'submitFunction'));
+        return view('userroles::users.popups.userform', compact('user', 'unassigned_roles', 'assigned_roles', 'add_or_edit', 'readOnly', 'route', 'method', 'submitFunction'));
     }
 
     /**
@@ -330,9 +335,9 @@ class UserController extends Controller
 
         //get old Roles
         $getUserOldRoles = Role::leftjoin('user_roles', 'user_roles.role_id', '=', 'roles.id')
-                                ->where('user_roles.user_id', $id)
-                                ->pluck('roles.name')
-                                ->toArray();
+            ->where('user_roles.user_id', $id)
+            ->pluck('roles.name')
+            ->toArray();
 
         $oldUser->role = $getUserOldRoles != null ? implode(',', $getUserOldRoles) : '';
 
