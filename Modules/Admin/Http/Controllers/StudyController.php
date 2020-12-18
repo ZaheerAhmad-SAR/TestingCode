@@ -1408,7 +1408,14 @@ class StudyController extends Controller
         FormStatus::where('study_id', $id)->delete();
         QuestionAdjudicationRequired::where('study_id', $id)->delete();
         QuestionComments::where('study_id', $id)->delete();
+
+        $phases = StudyStructure::where('study_id', 'like', $id)->get();
+        foreach ($phases as $phase) {
+            $this->deleteTreeAgainstPhase($phase->id);
+            $this->deletePhase($phase);
+        }
         StudyStructure::where('study_id', $id)->delete();
+
         AssignWork::where('study_id', $id)->delete();
         DiseaseCohort::where('study_id', $id)->delete();
         Preference::where('study_id', $id)->delete();
