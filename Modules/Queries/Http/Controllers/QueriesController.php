@@ -91,6 +91,14 @@ class QueriesController extends Controller
 
     }
 
+    public function loadAllCloseQuestionById(Request $request)
+    {
+        $question_id = $request->question_id;
+        $records = Query::where('query_status','=','close')->where('question_id','like',$question_id)->where('parent_query_id','like',0)->get();
+        echo  view('queries::queries.question.queries_close_questions_table_view',compact('records'));
+
+    }
+
     public function loadFormByPhaseId(Request $request)
     {
         $phase_steps_id = $request->phase_steps_id;
@@ -154,6 +162,7 @@ class QueriesController extends Controller
         Query::where('id',$find['id'])->update($queryStatusArray);
         $reply            = $request->post('reply');
         $query_subject    = $request->post('subject_question');
+        $query_level_q    = $request->post('query_level_question');
 
         $query_url        = $request->post('query_url');
         $query_type       = $request->post('query_type');
@@ -199,7 +208,8 @@ class QueriesController extends Controller
             'field_id'=>$field_id,
             'form_type_id'=>$form_type_id,
             'modility_id'=>$modility_id,
-            'module_name'=>$module_name
+            'module_name'=>$module_name,
+            'query_level'=>$query_level_q
         ]);
         return response()->json([$query,'success'=>'Question response is successfully save!!!!','reply_id'=>$id]);
 
@@ -349,6 +359,7 @@ class QueriesController extends Controller
             'study_id'=>$study_id,
             'query_status'=> 'open',
             'query_type' =>$queryAssignedTo,
+            'query_level'=> 'question',
             'query_url'=>$query_url,
             'query_subject'=>$query_subject,
             'question_id'=>$question_id,
