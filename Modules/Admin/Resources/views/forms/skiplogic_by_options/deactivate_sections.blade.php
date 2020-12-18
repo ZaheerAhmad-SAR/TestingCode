@@ -1,5 +1,5 @@
 @php
-    $activate_sections_array = [];
+    $deactivate_sections_array = [];
     $where = array(
         "question_id" =>$q_id,
         "option_value" =>$options_value[$index]
@@ -10,6 +10,7 @@
     }
     $section = Modules\Admin\Entities\Section::select('*')->where('phase_steps_id', $value->step_id)->orderBy('sort_number', 'asc')->get();
 @endphp
+@if(count($section) > 0)
 @foreach ($section as $key => $value)
     @php
     if(in_array($value->id, $deactivate_sections_array)){ $checked = 'checked'; }else{ $checked = ''; }
@@ -26,7 +27,7 @@
                             </div>
                         </td>
                         <td colspan="5">
-                           <input type="checkbox" name="deactivate_sections[{{$index}}][]" value="{{$value->id}}"  class="deactivate_section_{{$value->id}}_{{$index}}"  onclick="disabled_opposite('{{$value->id}}','activate_section_','{{$index}}','deactivate_section_')" {{$checked}}>{{$value->name}}
+                           <input type="checkbox" name="deactivate_sections[{{$index}}][]" value="{{$value->id}}"  class="deactivate_section_{{$value->id}}_{{$index}}"  onclick="disabled_opposite('{{$value->id}}','activate_section_','{{$index}}','deactivate_section_')" {{$checked}}> &nbsp;&nbsp;{{$value->name}}
                         </td>
                     </tr>
                 </tbody>
@@ -44,7 +45,18 @@
     @endpush
     <div class="card-body collapse row-{{$value->id}}-de-{{$index}} de_questions_list_{{$value->id}}_{{$index}}" style="padding: 0;">
         {{-- Load Questions here for activate --}}
-        @include('admin::forms.deactivate_questions')
+        @include('admin::forms.skiplogic_by_options.deactivate_questions')
         {{-- Load Questions end here for activate --}}
     </div>
 @endforeach
+@else
+    <div class="card-body" style="padding: 0;">
+        <div class="table-responsive ">
+            <table class="table table-bordered" style="margin-bottom:0px;background-color: #EFEFEF;color: black;">
+                <tbody>
+                    <tr><td colspan="6">Sections Not found</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+@endif

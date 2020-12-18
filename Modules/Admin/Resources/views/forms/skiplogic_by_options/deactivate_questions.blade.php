@@ -10,13 +10,14 @@
     }
     $questions = Modules\Admin\Entities\Question::select('*')->where('section_id', $value->id)->orderBy('question_sort', 'asc')->get();
 @endphp
+@if(count($questions) > 0)
 @foreach ($questions as $key => $value)
     @php
         if(in_array($value->id, $deactivate_questions_array)){ $checked = 'checked'; }else{ $checked = ''; }
     @endphp
         <div class="card-body" style="padding: 0;">
             <div class="table-responsive ">
-                <table class="table table-bordered" style="margin-bottom:0px;background-color: #F64E60;color:black;">
+                <table class="table table-bordered" style="margin-bottom:0px;background-color: #17A2B8;color:#fff;">
                     <tbody>
                         <tr>
                             <td class="sec_id" style="display: none;">{{$value->id}}</td>
@@ -26,7 +27,7 @@
                                 </div>
                             </td>
                             <td colspan="5"> 
-                                <input type="checkbox" name="deactivate_questions[{{$index}}][]" value="{{$value->id}}" class="deactivate_question_{{$value->id}}_{{$index}}"  onclick="disabled_opposite('{{$value->id}}','activate_question_','{{$index}}','deactivate_question_');" {{$checked}}>{{$value->question_text}}
+                                <input type="checkbox" name="deactivate_questions[{{$index}}][]" value="{{$value->id}}" class="deactivate_question_{{$value->id}}_{{$index}}"  onclick="disabled_opposite('{{$value->id}}','activate_question_','{{$index}}','deactivate_question_');" {{$checked}}> &nbsp;&nbsp;{{$value->question_text}}
                             </td>
                         </tr>
                     </tbody>
@@ -47,8 +48,19 @@
                 <tbody class="de_options_list_{{$value->id}}_{{$index}}">
                 </tbody>
                     {{-- Load options here for activate start --}}
-                    @include('admin::forms.deactivate_options')
+                    @include('admin::forms.skiplogic_by_options.deactivate_options')
                     {{-- Load options here for activate end --}}
             </table> 
         </div>
 @endforeach
+@else
+    <div class="card-body" style="padding: 0;">
+        <div class="table-responsive ">
+            <table class="table table-bordered" style="margin-bottom:0px;background-color: #F64E60;color:black;">
+                <tbody>
+                    <tr><td colspan="6">Questions Not found</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+@endif
