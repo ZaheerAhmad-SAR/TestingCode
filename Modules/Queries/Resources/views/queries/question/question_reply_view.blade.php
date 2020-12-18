@@ -60,6 +60,7 @@
     <input type="hidden" name="query_id" id="query_id" value="{{ $query->id }}">
     <input type="hidden" name="query_url" id="query_url" value="{{ $query->query_url }}">
     <input type="hidden" name="subject_question" id="subject_question" value="{{ $query->query_subject }}">
+    <input type="hidden" name="query_level_question" id="query_level_question" value="{{ $query->query_level }}">
 </div>
 
 {{--<script src="{{ asset('dist/vendors/summernote/summernote-bs4.js') }}"></script>--}}
