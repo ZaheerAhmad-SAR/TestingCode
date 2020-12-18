@@ -71,6 +71,9 @@
 // get study setup email ajax
 	Route::get('get-study-setup-emails', 'TransmissionDataPhotographerController@getStudySetupEmail')->name('get-study-setup-emails');
 
+// get transmission data for Certification geneartion ajax
+	Route::get('get-transmission-data', 'TransmissionDataPhotographerController@getTransmissionData')->name('get-transmission-data');
+
 
 Route::group(['middleware' => ['auth', 'web']], function () {
     

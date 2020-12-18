@@ -616,7 +616,7 @@ class TransmissionController extends Controller
 
         ///////////////////// Subject /////////////////////////////////////////
 
-            // if  new_subject status is 1 insert new subject and change ne_subject status to 0
+            // if  new_subject status is 1 insert new subject and change new_subject status to 0
             if ($findTransmission->new_subject == "1") {
 
                 // get subject

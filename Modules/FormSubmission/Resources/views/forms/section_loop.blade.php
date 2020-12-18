@@ -6,7 +6,7 @@ $transmissionNumber = \Modules\FormSubmission\Entities\SubjectsPhases::getTransm
 /**************************************/
 /**************************************/
 /**************************************/
-$current_user_id = auth()->user()->id;
+//$current_user_id = auth()->user()->id;
 
 $showForm = false;
 if ($step->formType->form_type == 'QC' && canQualityControl(['index'])){
@@ -90,7 +90,6 @@ if(null !== $formStatusObj){
                                 $current_user_id = ($current_user_id ?? '');
                                 $subjectId = ($subjectId ?? '');
                                 $studyId = ($studyId ?? '');
-                                $studyClsStr = ($studyClsStr ?? '');
                                 $activeSection = true;
                                 @endphp
                                 @foreach ($sections as $section)
@@ -106,7 +105,6 @@ if(null !== $formStatusObj){
                                 @endphp
                                     <li class="nav-item mr-auto mb-4">
                                         <a class="nav-link p-0
-                                    {{ $studyClsStr }}
                                     {{ $stepClsStr }}
                                     {{ $sectionClsStr }}
                                     {{ $showSection }}
@@ -146,7 +144,6 @@ if(null !== $formStatusObj){
                                     $sectionIdStr = buildSafeStr($section->id, '');
                                     $sharedData = [
                                     'studyId' => $studyId,
-                                    'studyClsStr' => $studyClsStr,
                                     'subjectId' => $subjectId,
                                     'phase' => $phase,
                                     'step' => $step,
@@ -168,7 +165,7 @@ if(null !== $formStatusObj){
                                     if(request('sectionId', '-') == $section->id){
                                         $showSection = 'active show';
                                     }
-                                    if($activeSection && request('sectionId', '-') == '-'){
+                                    if($activeSection){
                                         $showSection = 'active show';
                                     }
                                     @endphp

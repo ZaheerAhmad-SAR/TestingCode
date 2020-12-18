@@ -33,7 +33,7 @@ trait JSQuestionDataValidation
 
         if ($question->formFields->is_required == 'yes') {
             $questionValidationStr .= '
-                    isFormValid = mustRequired(isFormValid, fieldTitle, fieldVal);
+                    isFormValid = mustRequired(isFormValid, fieldTitle, fieldVal, questionRowId);
                     ';
         }
         //dd($question->questionValidations);
@@ -47,7 +47,7 @@ trait JSQuestionDataValidation
             if ($validationRule->is_range == 1 || (int)$validationRule->num_params == 2) {
                 if (!empty($questionValidation->parameter_1) && !empty($questionValidation->parameter_2)) {
                     $validationRuleStr .= $validationRule->rule;
-                    $validationRuleStr .= '(isFormValid, fieldTitle, fieldVal, ' . $questionValidation->parameter_1 . ',' . $questionValidation->parameter_2 . ', \'' . $messageType . '\', \'' . $message . '\');';
+                    $validationRuleStr .= '(isFormValid, fieldTitle, fieldVal, questionRowId, ' . $questionValidation->parameter_1 . ',' . $questionValidation->parameter_2 . ', \'' . $messageType . '\', \'' . $message . '\');';
                 } else {
                     $validationRuleStr .= 'abortValidationWithError();';
                 }
@@ -56,7 +56,7 @@ trait JSQuestionDataValidation
                     !empty($questionValidation->parameter_1)
                 ) {
                     $validationRuleStr .= $validationRule->rule;
-                    $validationRuleStr .= '(isFormValid, fieldTitle, fieldVal, ' . $questionValidation->parameter_1 . ', \'' . $messageType . '\', \'' . $message . '\');';
+                    $validationRuleStr .= '(isFormValid, fieldTitle, fieldVal, questionRowId, ' . $questionValidation->parameter_1 . ', \'' . $messageType . '\', \'' . $message . '\');';
                 } else {
                     $validationRuleStr .= 'abortValidationWithError();';
                 }
@@ -65,12 +65,12 @@ trait JSQuestionDataValidation
                     !empty($questionValidation->parameter_1)
                 ) {
                     $validationRuleStr .= $validationRule->rule;
-                    $validationRuleStr .= '(isFormValid, fieldTitle, fieldVal, ' . $questionValidation->parameter_1 . ', \'' . $messageType . '\', \'' . $message . '\');';
+                    $validationRuleStr .= '(isFormValid, fieldTitle, fieldVal, questionRowId, ' . $questionValidation->parameter_1 . ', \'' . $messageType . '\', \'' . $message . '\');';
                 } else {
                     $validationRuleStr .= 'abortValidationWithError();';
                 }
             } else {
-                $validationRuleStr .= $validationRule->rule . '(isFormValid, fieldTitle, fieldVal, messageType, message);';
+                $validationRuleStr .= $validationRule->rule . '(isFormValid, fieldTitle, fieldVal, questionRowId, messageType, message);';
             }
             $questionValidationStr .= '
                     isFormValid = ' . $validationRuleStr;
@@ -85,7 +85,8 @@ trait JSQuestionDataValidation
 
 
         $functionName = ($isForAdjudication) ? 'validateAdjudicationQuestion' : 'validateQuestion';
-        $getValueFunctionName = ($isForAdjudication) ? 'getAdjudicationFormFieldValue' : 'getFormFieldValue';
+        $getValueFunctionName = ($isForAdjudication) ? 'getAdjudicationFormFieldValueForRequired' : 'getFormFieldValueForRequired';
+        $questionRowId = ($isForAdjudication) ? 'adjudication_question_row_' . $questionIdStr : 'question_row_' . $questionIdStr;
 
         $mainQuestionValidationStr .= '
                 function ' . $functionName . $questionIdStr . '(isFormValid, stepIdStr){
@@ -93,6 +94,7 @@ trait JSQuestionDataValidation
                         var fieldName = "' . $fieldName . '";
                         var fieldId = "' . $fieldId . '";
                         var fieldTitle = "' . $fieldTitle . '";
+                        var questionRowId = "' . $questionRowId . '";
                         ' . $messageTypeStr . '
 
                         var fieldVal = ' . $getValueFunctionName . '(stepIdStr, fieldName, fieldId);

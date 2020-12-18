@@ -43,4 +43,18 @@ class QuestionComments extends Model
         $questionCommentQuery = self::getQuestionCommentQuery($getQuestionCommentArray);
         return $questionCommentQuery->get();
     }
+
+    public static function hasComments($studyId, $subjectId, $phaseId, $stepId, $sectionId, $questionId)
+    {
+        $getQuestionCommentsArray = [
+            'subject_id' => $subjectId,
+            'study_id' => $studyId,
+            'study_structures_id' => $phaseId,
+            'phase_steps_id' => $stepId,
+            'section_id' => $sectionId,
+            'question_id' => $questionId,
+        ];
+        $questionCommentQuery = self::getQuestionCommentQuery($getQuestionCommentsArray);
+        return (bool)$questionCommentQuery->count();
+    }
 }

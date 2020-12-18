@@ -13,6 +13,12 @@
         padding: 5px;
     }
 
+    .validation-border{
+        border: #C30 1px solid;
+        border-radius: 5px;
+        padding: 5px;
+    }
+
     .hr-line{
         border-top: #808B96 1px dashed;
     }

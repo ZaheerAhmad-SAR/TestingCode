@@ -57,8 +57,9 @@ class SubjectFormSubmissionController extends Controller
 
             // get form type
             $formType = $step->formType->form_type .= ' Form';
-
-            eventDetails($trailLogDataArray['trail_log'], $formType, $formAddOrEdit, request()->ip, []);
+            if (!empty($trailLogArray['trail_log'])) {
+                eventDetails($trailLogDataArray['trail_log'], $formType, $formAddOrEdit, request()->ip, []);
+            }
             /********************* */
             echo json_encode($formStatusArray);
         }
@@ -99,7 +100,10 @@ class SubjectFormSubmissionController extends Controller
         $formVersion = PhaseSteps::getFormVersion($step->step_id);
 
         $formDataArray = [];
-        $finalFormDataArray = [];
+        $finalFormDataArray = [
+            'form_data' => '',
+            'trail_log' => '',
+        ];
         $trailLogArray = [];
         $answerFixedArray = [];
         $answerFixedArray['study_id'] = $request->studyId;

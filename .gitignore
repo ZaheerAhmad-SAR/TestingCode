@@ -22,6 +22,6 @@ yarn-error.log
 /resources/views/layouts/app.blade.php
 /resources/views/layouts/home.blade.php
 /Modules/UserRoles/Resources/views/dashboard.blade.php
-composer.lock
 /public/query_attachments/
 /public/images/
+composer.lock
