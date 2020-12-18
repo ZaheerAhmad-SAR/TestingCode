@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StudySetup extends Model
 {
-    use SoftDeletes;
+    //use SoftDeletes;
     protected $fillable = [];
 }
