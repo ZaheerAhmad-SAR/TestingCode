@@ -6,6 +6,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Modules\CertificationApp\Entities\TransmissionDataPhotographer;
+use Modules\CertificationApp\Entities\TransmissionDataDevice;
 use Modules\CertificationApp\Entities\TestPhotographerTransmission;
 use Modules\CertificationApp\Entities\CertificationTemplate;
 use Modules\Admin\Entities\Modility;
@@ -544,7 +545,33 @@ class TransmissionDataPhotographerController extends Controller
                     ->where('status', 'accepted')
                     ->get()
                     ->toArray();
-            }
+
+            } elseif ($request->type == 'device') {
+
+                // find transmission
+                $findTransmission = TransmissionDataDevice::find($request->transmission_id);
+
+                // get study id
+                $getStudy = Study::where('study_code', $findTransmission->StudyI_ID)->first();
+
+                $getStudyEmail = StudySetup::where('study_id', $getStudy->id)->first();
+                // cc email
+                $ccEmails = $getStudyEmail != null ? explode(',', $getStudyEmail->study_cc_email) : [];
+                // study email
+                $ccEmails[] = $getStudyEmail != null ? $getStudyEmail->study_email : '';
+                // notification email
+                $ccEmails[] = $findTransmission->notification == 'Yes' ? $findTransmission->notification_list : '';
+                // submitter email
+                $submitterEmail = $findTransmission->Request_MadeBy_Email;
+
+                // select all child modialities for this study transmission
+                $getChildModalities = ChildModilities::select('child_modilities.id', 'child_modilities.modility_name')
+                                                    ->leftjoin('study_modilities', 'study_modilities.child_modility_id', '=', 'child_modilities.id')
+                                                    ->where('study_modilities.study_id', $getStudy->id)
+                                                    ->where('study_modilities.parent_modility_id', $findTransmission->transmission_modility_id)
+                                                    ->get()->toArray();
+
+            } // type check ends
             
             return response()->json(['submitterEmail' => $submitterEmail, 'ccEmails' => array_filter($ccEmails), 'getChildModalities' => $getChildModalities, 'getTransmissions' => $getTransmissions]);
 
