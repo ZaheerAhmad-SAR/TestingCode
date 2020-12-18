@@ -1,4 +1,3 @@
-@if($step->is_active == 1 || $isPreview === true)
 @if (count($section->questions))
 <fieldset class="{{ $stepClsStr }} {{ $skipLogicStepIdStr }} {{ $skipLogicSectionIdStr }} {{ $sectionClsStr }}">
     <div class="card p-2 mb-1">
@@ -58,7 +57,4 @@
             @endforeach
     </div>
 </fieldset>
-@endif
-@else
-<div class="alert alert-danger" role="alert">Form is in draft mode</div>
 @endif
