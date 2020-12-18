@@ -168,6 +168,7 @@ class SystemusersController extends Controller
         $user = User::find($request->userId);
         $user->is_active = 1;
         $user->update();
+        echo 'activate_user';
     }
 
     public function inactivate_user(Request $request)
@@ -175,5 +176,6 @@ class SystemusersController extends Controller
         $user = User::find($request->userId);
         $user->is_active = 0;
         $user->update();
+        echo 'inactivate_user';
     }
 }
