@@ -330,6 +330,36 @@
         </div>
     </div>
 </div>
+<div class="modal fade" tabindex="-1" role="dialog" id="reply-question-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" style="max-width: 1000px;" role="document">
+        <div class="modal-content">
+            <div class="alert alert-danger" style="display:none"></div>
+            <div class="modal-header">
+                <p class="modal-title"> Question Details</p>
+                <span class="queryCurrentStatus text-center"></span>
+            </div>
+            <div class="modal-body">
+                <form id="replyQuestionForm" name="replyQuestionForm">
+                    <div class="tab-content clearfix">
+                        @csrf
+                        <div class="replyInput"></div>
+                        <div class="col-sm-12">
+                            <div class="replyClick" style="text-align: right;">
+                                    <span style="cursor: pointer;">
+                                        <i class="fa fa-reply"></i> &nbsp; reply
+                                        </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                        <button type="button" class="btn btn-outline-primary" id="replyquestion"><i class="fa fa-save"></i> Send</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade" tabindex="-1" role="dialog" id="reply-form-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" style="max-width: 1000px;" role="document">
         <div class="modal-content">
@@ -613,20 +643,42 @@
 
     $('body').on('click', '.replyQuestionQuery', function () {
         var query_id     = $(this).attr('data-id');
+
         $('#reply-question-modal').modal('show');
-        showQuestions(query_id);
         $('#show-question-table-modal').modal('hide');
+        showQuestions(query_id);
+
     });
 
     $('body').on('click', '.historyCloseQuestionQueries', function () {
         var query_id     = $(this).attr('data-id');
         $('#question-history_modal').modal('show');
-        showQuestions(query_id);
+        showCloseQuestions(query_id);
         $('#close-question-table-modal').modal('hide');
     });
 
 
     function showQuestions(query_id) {
+        $.ajax({
+            url:"{{route('queries.showQuestionsById')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'POST',
+                'query_id'      :query_id,
+            },
+            success: function(response)
+            {
+                $('.replyInput').html('');
+                $('.replyInput').html(response);
+                var query_status = $( "#query_status option:selected" ).text();
+                $('.queryCurrentStatus').text('Status: '+query_status);
+                $('.replyClick').css('display','');
+            }
+        });
+    }
+
+    function showCloseQuestions(query_id) {
         $.ajax({
             url:"{{route('queries.showQuestionsById')}}",
             type: 'POST',
