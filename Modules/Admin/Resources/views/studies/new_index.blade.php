@@ -718,7 +718,8 @@
     <link rel="stylesheet" href="{{ asset("dist/vendors/fancybox/jquery.fancybox.min.css") }}">
 @endsection
 @section('script')
-    <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
+
+<script src="{{ asset("js/jquery.quicksearch.js") }}" type="text/javascript"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
 
     <script type="text/javascript">

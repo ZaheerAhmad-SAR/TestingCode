@@ -54,11 +54,12 @@ class StudyusersController extends Controller
 
         $assigned_roles = [];
         $add_or_edit = 'Add';
+        $readOnly = '';
         $route = route('studyusers.store');
         $method = 'POST';
         $submitFunction = 'submitAddUserForm();';
 
-        return view('userroles::users.popups.userform', compact('user', 'unassigned_roles', 'assigned_roles', 'add_or_edit', 'route', 'method', 'submitFunction'));
+        return view('userroles::users.popups.userform', compact('user', 'unassigned_roles', 'assigned_roles', 'add_or_edit', 'readOnly', 'route', 'method', 'submitFunction'));
     }
 
     /**
@@ -185,11 +186,16 @@ class StudyusersController extends Controller
         }
 
         $add_or_edit = 'Edit';
+        $readOnly = '';
+        if (!hasPermission(\auth()->user(), 'systemtools.index')) {
+            $readOnly = 'readonly';
+        }
+
         $route = route('studyusers.update', $id);
         $method = 'PUT';
         $submitFunction = 'submitEditUserForm();';
 
-        return view('userroles::users.popups.userform', compact('user', 'unassigned_roles', 'assigned_roles', 'add_or_edit', 'route', 'method', 'submitFunction'));
+        return view('userroles::users.popups.userform', compact('user', 'unassigned_roles', 'assigned_roles', 'add_or_edit', 'readOnly', 'route', 'method', 'submitFunction'));
     }
 
     /**
@@ -244,15 +250,16 @@ class StudyusersController extends Controller
             return response()->json(['errors' => $validator->errors()->first()]);
         } else {
             $user   =  User::find($id);
-            $user->update([
-                'name'  =>  $request->name,
-                'email' =>  $request->email,
-                'password'  =>  Hash::make($request->password),
-                'role_id'   =>  !empty($request->roles) ? $request->roles[0] : 2
-            ]);
-
+            if (hasPermission(\auth()->user(), 'systemtools.index')) {
+                $user->name = $request->name;
+                $user->email = $request->email;
+                if (!empty($request->password)) {
+                    $user->password = Hash::make($request->password);
+                }
+                $user->role_id = !empty($request->roles) ? $request->roles[0] : 2;
+                $user->update();
+            }
             $this->updateRoles($request, $user);
-
             // log event details
             $logEventDetails = eventDetails($user->id, 'User', 'Update', $request->ip(), $oldUser, false);
 

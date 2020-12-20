@@ -1,4 +1,4 @@
-    <div class="modal-header">
+<div class="modal-header">
         <p class="modal-title">{{ $add_or_edit }} User</p>
     </div>
     <form action="{{ $route }}" enctype="multipart/form-data" method="POST" class="user-store-form"
@@ -20,17 +20,17 @@
                     <div class="form-group row" style="margin-top: 10px;">
                         <label for="Name" class="col-md-3">Name</label>
                         <input type="text" class="form-control col-md-8" required="required" id="name" name="name"
-                            value="{{ $user->name }}">
+                            value="{{ $user->name }}" {{ $readOnly }}>
                     </div>
                     <div class="form-group row">
                         <label for="Email" class="col-md-3">Email</label>
                         <input type="email" class="form-control col-md-8" name="email" id="email" required="required"
-                            value="{{ $user->email }}">
+                            value="{{ $user->email }}" {{ $readOnly }}>
                     </div>
                     <div class="form-group row">
                         <label for="password" class="col-md-3">Password</label>
                         <input type="password" autocomplete="off" class="form-control col-md-8" required="required" id="password"
-                            name="password" value="">
+                            name="password" {{ $readOnly }}>
                         <p id="passwordHelpBlock" class="form-text text-muted col-md-12">
                             Your password must be 8 characters long, should contain at-least 1 Uppercase, 1
                             Lowercase, 1 Numeric and 1 special character.
@@ -40,7 +40,7 @@
                         <label for="C-Password" class="col-md-3">Confirm Password</label>
                         <input type="password" autocomplete="off" class="form-control col-md-8" required="required"
                             id="password_confirmation" name="password_confirmation"
-                            value="">
+                            value="" {{ $readOnly }}>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="nav-Modalities" role="tabpanel" aria-labelledby="nav-Validation-tab">

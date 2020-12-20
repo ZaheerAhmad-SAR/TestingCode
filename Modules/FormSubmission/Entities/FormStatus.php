@@ -10,6 +10,7 @@ use Modules\FormSubmission\Traits\AdjudicationTrait;
 use Modules\FormSubmission\Scopes\FormStatusOrderByScope;
 use Modules\Admin\Entities\FormType;
 use Modules\Admin\Entities\PhaseSteps;
+use Modules\Queries\Entities\Query;
 
 class FormStatus extends Model
 {
@@ -144,6 +145,28 @@ class FormStatus extends Model
         $imgSpanStepSkipLogicClsStr = buildSafeStr($step->step_id, 'img_step_status_skip_logic_');
         $spanStr = '<span class="' . $imgSpanStepClsStr . ' ' . $imgSpanStepSkipLogicClsStr . '" ' . $info . '>';
         $spanStr .= self::makeFormStatusSpanImage($formStatus) . '</span>';
+
+        /********************************** */
+        $spanStr .= self::makeQuerySpan($step);
+        /********************************** */
+
+        return $spanStr;
+    }
+
+    public static function makeQuerySpan($step)
+    {
+        $spanStr = '';
+        /********************************** */
+        $getQueryArray = [
+            'study_id' => session('current_study'),
+            'subject_id' => session('subject_id'),
+            'study_structures_id' => $step->phase->id,
+            'phase_steps_id' => $step->step_id,
+        ];
+        if (Query::isThereOpenQueryAgainstStep($getQueryArray)) {
+            $spanStr .= '<span class="" data-toggle="popover" data-trigger="hover" data-content="Has query"><img src="' . url('images/query.png') . '"/></span>';
+        }
+        /********************************** */
         return $spanStr;
     }
 
@@ -211,6 +234,10 @@ class FormStatus extends Model
         $spanStr = '<span class="' . $imgSpanClsStr . ' ' . $imgSpanStepSkipLogicClsStr . '" ' . $info . '>';
 
         $spanStr .= self::makeFormStatusSpanImage($formStatus) . '</span>';
+
+        /********************************** */
+        $spanStr .= self::makeQuerySpan($step);
+        /********************************** */
         return $spanStr;
     }
 

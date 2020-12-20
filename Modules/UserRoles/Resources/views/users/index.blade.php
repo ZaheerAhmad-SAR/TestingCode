@@ -54,13 +54,14 @@
                             <table class="table table-bordered editable-table" id="laravel_crud">
                                     <thead>
                                         <tr>
-                                            <th scope="col" colspan="5">System Users</th>
+                                            <th scope="col" colspan="6">System Users</th>
                                         </tr>
                                         <tr>
                                         <th scope="col">Name</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Roles</th>
                                         <th scope="col">2 Factor Auth</th>
+                                        <th scope="col">Is Active?</th>
                                         <th scope="col">Actions</th>
                                     </tr>
                                     </thead>
@@ -71,6 +72,7 @@
                                         <td>{{($user->email)}}</td>
                                         <td>{{ \App\User::getUserRolesString($user) }}</td>
                                         <td>{{!empty($user->google2fa_secret)?'Enabled':'Disabled'}}</td>
+                                        <td id="userActiveTD_{{$user->id}}">{{ ((int)$user->is_active == 1)? 'Active':'InActive' }}</td>
                                         <td>
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
@@ -84,6 +86,18 @@
                                                     <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
                                                         <i class="fa fa-trash"></i>&nbsp; Delete </a>
                                                     </span>
+
+
+                                                    @if (hasPermission(auth()->user(), 'systemtools.index'))
+                                                    <div id="userActiveStatusDiv_{{$user->id}}">
+                                                        @if($user->is_active == 0)
+                                                        <span class="dropdown-item activateUser" onclick="submitActivateUserRequest('{{ $user->id }}');"><i class="far fa-play-circle"></i>&nbsp; Activate User</span>
+                                                        @else
+                                                        <span class="dropdown-item inActivateUser" onclick="submitInActivateUserRequest('{{ $user->id }}');"><i class="far fa-pause-circle"></i>&nbsp; Inactivate User</span>
+                                                        @endif
+                                                    </div>
+                                                    @endif
+
                                                 </div>
                                             </div>
                                         </td>
@@ -98,13 +112,14 @@
                             <table class="table table-bordered editable-table" id="laravel_crud">
                                     <thead>
                                         <tr>
-                                            <th scope="col" colspan="5">Study Users</th>
+                                            <th scope="col" colspan="6">Study Users</th>
                                         </tr>
                                     <tr>
                                         <th scope="col">Name</th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Roles</th>
                                         <th scope="col">2 Factor Auth</th>
+                                        <th scope="col">Is Active?</th>
                                         <th scope="col">Actions</th>
                                     </tr>
                                     </thead>
@@ -115,6 +130,7 @@
                                         <td>{{($user->email)}}</td>
                                         <td>{{ \App\User::getUserRolesString($user) }}</td>
                                         <td>{{!empty($user->google2fa_secret)?'Enabled':'Disabled'}}</td>
+                                        <td id="userActiveTD_{{$user->id}}">{{ ((int)$user->is_active == 1)? 'Active':'InActive' }}</td>
                                         <td>
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
@@ -128,6 +144,15 @@
                                                     <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
                                                         <i class="fa fa-trash"></i>&nbsp; Delete </a>
                                                     </span>
+                                                    @if (hasPermission(auth()->user(), 'systemtools.index'))
+                                                    <div id="userActiveStatusDiv_{{$user->id}}">
+                                                        @if($user->is_active == 0)
+                                                        <span class="dropdown-item activateUser" onclick="submitActivateUserRequest('{{ $user->id }}');"><i class="far fa-play-circle"></i>&nbsp; Activate User</span>
+                                                        @else
+                                                        <span class="dropdown-item inActivateUser" onclick="submitInActivateUserRequest('{{ $user->id }}');"><i class="far fa-pause-circle"></i>&nbsp; Inactivate User</span>
+                                                        @endif
+                                                    </div>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </td>
@@ -298,6 +323,7 @@ function setMultiselect() {
 
             }
     </script>
+     @include('userroles::users.common_js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
-    <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
+    <script src="{{ asset("js/jquery.quicksearch.js") }}" type="text/javascript"></script>
 @stop

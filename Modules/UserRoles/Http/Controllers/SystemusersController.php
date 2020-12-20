@@ -131,23 +131,24 @@ class SystemusersController extends Controller
      */
     public function update(UserRequest $request, $id)
     {
+        if (hasPermission(\auth()->user(), 'systemtools.index')) {
+            $user   =   User::find($id);
+            $user->name = $request->name;
+            $user->email = $request->email;
+            if (!empty($request->password)) {
+                $user->password = Hash::make($request->password);
+            }
+            $user->role_id = !empty($request->roles) ? $request->roles[0] : 2;
+            $user->update();
 
-
-        $user   =   User::find($id);
-        $user->update([
-            'name'  =>  $request->name,
-            'email' =>  $request->email,
-            'password'  =>  Hash::make($request->password),
-            'role_id'   =>  !empty($request->roles) ? $request->roles[0] : 2
-        ]);
-        $userroles  = UserRole::where('user_id', $user->id)->get();
-        foreach ($userroles as $role_id) {
-            $role_id->delete();
+            $userroles  = UserRole::where('user_id', $user->id)->get();
+            foreach ($userroles as $role_id) {
+                $role_id->delete();
+            }
+            foreach ($request->roles as $role) {
+                UserRole::createUserRole($user->id, $role);
+            }
         }
-        foreach ($request->roles as $role) {
-            UserRole::createUserRole($user->id, $role);
-        }
-
         return redirect()->route('users.index');
     }
 
@@ -160,5 +161,21 @@ class SystemusersController extends Controller
     {
         dd('delete');
         $user = User::find($id);
+    }
+
+    public function activate_user(Request $request)
+    {
+        $user = User::find($request->userId);
+        $user->is_active = 1;
+        $user->update();
+        echo 'activate_user';
+    }
+
+    public function inactivate_user(Request $request)
+    {
+        $user = User::find($request->userId);
+        $user->is_active = 0;
+        $user->update();
+        echo 'inactivate_user';
     }
 }

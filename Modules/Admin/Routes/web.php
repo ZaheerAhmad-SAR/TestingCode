@@ -87,8 +87,8 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('skiplogic/add_skip_logic', 'SkipLogicController@add_skipLogic')->name('skiplogic.apply_skip_logic');
     // skip logic on cohort
     Route::get('skiplogic/skip_logic_cohort/{id}', 'SkipLogicController@skip_logic_cohort')->name('skiplogic.skiponcohort');
-     Route::post('skiplogic/skip_via_cohort', 'SkipLogicController@git_steps_for_checks_deactivate_cohort')->name('skiplogic.get_steps_skip_logic_deactivate_via_cohort');
-     Route::post('skiplogic/add_skip_logic_cohort_based', 'SkipLogicController@add_skipLogic_cohort_based')->name('skiplogic.apply_skip_logic_cohort_based');
+    Route::post('skiplogic/skip_via_cohort', 'SkipLogicController@git_steps_for_checks_deactivate_cohort')->name('skiplogic.get_steps_skip_logic_deactivate_via_cohort');
+    Route::post('skiplogic/add_skip_logic_cohort_based', 'SkipLogicController@add_skipLogic_cohort_based')->name('skiplogic.apply_skip_logic_cohort_based');
     // skip logic
     // routes for skip logic on Questions with type Number
     // Start
@@ -252,6 +252,8 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('others/{id}/showOtherBySiteId', 'OtherController@showOtherBySiteId')->name('others.showOtherBySiteId');
     Route::post('others/update', 'OtherController@update')->name('others.update');
     Route::get('others/{id}/destroy', 'OtherController@destroy')->name('others.destroy');
+
+    Route::get('study/permanentlyDeleteStudyAndItsRecord/{id}', 'StudyController@permanentlyDeleteStudyAndItsRecord')->name('study.permanentlyDeleteStudyAndItsRecord');
 });
 
 Route::post('tinymce-image_upload', 'TinyMceController@uploadImage')->name('tinymce.image_upload');

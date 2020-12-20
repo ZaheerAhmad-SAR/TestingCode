@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddIsShowToGraderToQuestionTable extends Migration
+class AddIsActiveInUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddIsShowToGraderToQuestionTable extends Migration
      */
     public function up()
     {
-        Schema::table('question', function (Blueprint $table) {
-            $table->enum('is_show_to_grader', array('no', 'yes'))->default('no')->nullable();
+        Schema::table('users', function (Blueprint $table) {
+            $table->tinyInteger('is_active')->default(1);
         });
     }
 
@@ -25,7 +25,7 @@ class AddIsShowToGraderToQuestionTable extends Migration
      */
     public function down()
     {
-        Schema::table('question', function (Blueprint $table) {
+        Schema::table('users', function (Blueprint $table) {
             //
         });
     }
