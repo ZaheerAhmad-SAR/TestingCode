@@ -5,17 +5,6 @@
             $(this).toggleClass("fa-chevron-circle-right fa-chevron-circle-down");
         });
         // reset filter form
-        $('.reset-filter').click(function(){
-            // reset values
-            $('.filter-form').trigger("reset");
-            $('.filter-form-data').val("").trigger("change")
-            // submit the filter form
-            $('.filter-form').submit();
-        });
-        // selct initialize
-        $('.user_name').select2();
-        $('select[name="event_section"]').select2();
-        $('select[name="event_study"]').select2();
     </script>
     <script type="text/javascript" id="activate_deactivate">
     </script>
