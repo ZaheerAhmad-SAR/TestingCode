@@ -42,84 +42,11 @@ class SkipLogicController extends Controller
     }
     public function skip_logic_cohort($id){
         $disease_cohorts = DiseaseCohort::where('study_id', '=', $id)->get();
+        $cohort_skiplogic = CohortSkipLogic::where('study_id', '=', $id)->get();
         $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->get();
-        return view('admin::studies.skip_logic_cohort', compact('all_study_steps','disease_cohorts'));
+        return view('admin::studies.skip_logic_cohort', compact('all_study_steps','disease_cohorts','cohort_skiplogic'));
     }
   
-    public function git_steps_for_checks_deactivate_cohort(Request $request){
-        $activate_forms_array = [];
-        $deactivate_forms_array = [];
-        $function_string_ac = '';
-        $function_string_de = '';
-        //$view = return view('admin::forms.skip_sections');
-        $where = array(
-            "question_id" =>$request->question_id,
-            "option_title" =>$request->option_title,
-            "option_value" =>$request->option_value
-        );
-        $if_exists_record = skipLogic::where($where)->first();
-        if(null !==$if_exists_record){
-            $activate_forms_array = explode(',', $if_exists_record->activate_forms);
-            $deactivate_forms_array = explode(',', $if_exists_record->deactivate_forms);
-        }
-        $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->first();
-       
-        $step_contents_deactive = '<div class="col-12 col-sm-12 mt-3 current_div_de">
-                    <div class="card">
-                        <div class="card-body" style="padding: 0;">
-                            <div class="table-responsive">
-                                <table class="table table-bordered" style="margin-bottom:0px;">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 15%">Expand</th>
-                                            <th colspan="5">Deactivate Modality,Sections,Question</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div>
-                    </div>';
-
-        foreach ($all_study_steps->studySteps as $key => $value) {
-            if(in_array($value->step_id, $deactivate_forms_array)){ $checked = 'checked'; }else{ $checked = ''; }
-            $step_contents_deactive .= '<div class="card">
-                                <div class="card-body" style="padding: 0;">
-                                    <div class="table-responsive">
-                                        <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;background-color: #1E3D73;color: white;">
-                                        <tbody>
-                                            <tr>
-                                                <td class="step_id" style="display: none;">' . $value->step_id . '</td>
-                                                <td style="text-align: center;width: 15%">
-                                                  <div class="btn-group btn-group-sm" role="group">
-                                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-'.$value->step_id.'-de-'.$request->index.'" onclick="deactivate_checks(\'' . $value->step_id . '\',\'de_sections_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');" style="font-size: 20px;"></i>
-                                                  </div>
-                                                </td>
-                                                <td colspan="5"><input type="checkbox" name="deactivate_forms[' .$request->index. '][]" value="'.$value->step_id.'" '.$checked.' class="deactivate_step_'.$value->step_id.'_'.$request->index.'" onclick="disabled_opposite(\'' . $value->step_id . '\',\'activate_step_\',\''.$request->index.'\',\'deactivate_step_\')"> &nbsp;&nbsp; '.$value->step_name.'('.$value->formType->form_type.'-'.$value->modility->modility_name.')</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-
-              <div class="card collapse row-'.$value->step_id.'-de-'.$request->index.' de_sections_list_'.$value->step_id.'_'.$request->index.'">';
-
-            $step_contents_deactive .= '</div>';
-            $function_string_de .='disabled_opposite(\'' . $value->step_id . '\',\'activate_step_\',\''.$request->index.'\',\'deactivate_step_\');';
-            $function_string_de .= 'deactivate_checks(\'' . $value->step_id . '\',\'de_sections_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');';
-
-        }
-
-        $step_contents_deactive .= '</div>';
-        // $step_contents =  $step_contents_deactive;
-        $function_string = $function_string_de . $function_string_ac;
-        $content_array = array(
-            'html_str' => $step_contents_deactive,
-            'function_str' => $function_string
-        );
-        return json_encode($content_array);
-    }
-   
     public function add_skipLogic(Request $request)
     {
         $skip_ques = [];
@@ -201,14 +128,13 @@ class SkipLogicController extends Controller
                 // Deactivate Questions options
                 if(isset($request->deactivate_options[$i]) && count($request->deactivate_options[$i]) > 0){
                   for($j = 0; $j < count($request->deactivate_options[$i]); $j++) {
-                    $op_content = explode('_', $request->deactivate_options[$i][$j]);
+                    $op_content = explode('<<=!=>>', $request->deactivate_options[$i][$j]);
                     $skip_options = [
                         'id' => Str::uuid(),
                         'cohort_skiplogic_id' => $cohort_skiplogic_id,
                         'study_id' => $request->study_id,
                         'value' => $op_content[0],
-                        'title' => $op_content[1],
-                        'option_question_id' => $op_content[2],
+                        'option_question_id' => $op_content[1]
                         ];
                     CohortSkipLogicOption::insert($skip_options);
                   }
@@ -216,14 +142,13 @@ class SkipLogicController extends Controller
                 // Activate Questions options
                 if(isset($request->activate_options[$i]) && count($request->activate_options[$i]) > 0){
                    for($j = 0; $j < count($request->activate_options[$i]); $j++) {
-                    $op_content = explode('_', $request->activate_options[$i][$j]);
+                    $op_content = explode('<<=!=>>', $request->activate_options[$i][$j]);
                     $skip_options = [
                         'id' => Str::uuid(),
                         'cohort_skiplogic_id' => $cohort_skiplogic_id,
                         'study_id' => $request->study_id,
                         'value' => $op_content[0],
-                        'title' => $op_content[1],
-                        'option_question_id' => $op_content[2],
+                        'option_question_id' => $op_content[1]
                         ];
                     CohortSkipLogicOption::insert($skip_options);
                   }
