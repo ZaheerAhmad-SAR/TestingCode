@@ -1,16 +1,11 @@
 @php
     $deactivate_questions_array = [];
-    if($questionsType =='radio'){
-        $where = array(
-            "question_id" =>$q_id,
-            "option_value" =>$options_value[$index]
-        );
-    }else{
-        $where = array(
-            "question_id" =>$q_id
-        );
-    }
-    $if_exists_record = Modules\Admin\Entities\skipLogic::where($where)->first();
+    $where = array(
+        "study_id" =>$studyId,
+        "cohort_name" =>$diseaseName,
+        "cohort_id" =>$diseaseid
+    );
+    $if_exists_record = Modules\Admin\Entities\CohortSkipLogic::where($where)->first();
     if(null !==$if_exists_record){
         $deactivate_questions_array = explode(',', $if_exists_record->deactivate_questions);
     }
@@ -33,28 +28,19 @@
                                 </div>
                             </td>
                             <td colspan="5"> 
-                                <input type="checkbox" name="deactivate_questions[{{$index}}][]" value="{{$value->id}}" class="deactivate_question_{{$value->id}}_{{$index}}"  onclick="disabled_opposite('{{$value->id}}','activate_question_','{{$index}}','deactivate_question_');" {{$checked}}> &nbsp;&nbsp;{{$value->question_text}}
+                                <input type="checkbox" name="deactivate_questions[{{$index}}][]" value="{{$value->id}}" {{$checked}}> &nbsp;&nbsp;{{$value->question_text}}
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
-         @push('script_last')
-        <script>
-            $(document).ready(function() {
-                @php
-                    echo "disabled_opposite('$value->id','activate_question_','$index','deactivate_question_',);";
-                @endphp
-            })
-        </script>
-    @endpush
         <div class="card-body collapse row-{{$value->id}}-de-{{$index}} " style="padding: 0;">
             <table class="table table-bordered" style="margin-bottom:0px;">
                 <tbody class="de_options_list_{{$value->id}}_{{$index}}">
                 </tbody>
                     {{-- Load options here for activate start --}}
-                    @include('admin::forms.skiplogic_by_options.deactivate_options')
+                    @include('admin::forms.skip_logic_view_cohort.deactivate_options')
                     {{-- Load options here for activate end --}}
             </table> 
         </div>

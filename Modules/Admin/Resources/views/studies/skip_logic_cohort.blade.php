@@ -26,7 +26,7 @@
         </div>
         <div class="card">
             <div class="card-header  justify-content-between align-items-center">
-                <h4 class="card-title">Skip Logic Via Cohort based</h4>
+                <h4 class="card-title">Skip Logic Using Cohort based</h4>
             </div>
             <div class="card-body">
                 <div class="row">
@@ -37,7 +37,7 @@
                         <button type="button" class="btn-secondry" style="border-radius: 50%;height: 20px;width: 20px;border-color: black;"></button> Sections
                     </div>
                     <div class="col-md-3">
-                        <button type="button" class="btn-danger" style="border-radius: 50%;height: 20px;width: 20px;border-color: black;"></button> Questions
+                        <button type="button" class="btn-info" style="border-radius: 50%;height: 20px;width: 20px;border-color: black;"></button> Questions
                     </div>
                     <div class="col-md-3">
                         <button type="button" class="btn-info" style="border-radius: 50%;height: 20px;width: 20px;border-color: black;background-color:white;"></button> Options
@@ -48,76 +48,55 @@
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
         <form action="{{route('skiplogic.apply_skip_logic_cohort_based')}}" enctype="multipart/form-data" method="POST">
+            @php 
+                $questionsType ='cohort';
+                $check_value = [];
+                $studyId = request('id');
+            @endphp
+            @foreach($cohort_skiplogic as $cohort)
+                @if($cohort->cohort_id !='')
+                   <?php $check_value[] = $cohort->cohort_id; ?>
+                @endif
+            @endforeach
             @csrf
-            {{-- {{dd(request('id'))}} --}}
-          
             <input type="hidden" name="study_id" value="{{request('id')}}">
-
-            @foreach($disease_cohorts as $key => $value)
+            @foreach($disease_cohorts as $index => $value)
+            @php 
+                $diseaseName = $value->name;
+                $diseaseid = $value->id;
+            @endphp
             <div class="row">
                <div class="col-12 col-sm-12 mt-3">
                    <div class="card">
                        <div class="card-body">
                             <input type="hidden" name="cohort_name[]" value="{{$value->name}}">
-                            <input type="checkbox" name="cohort_id[]" onclick="git_steps_for_checks_deactivate_cohort('{{$value->id}}','{{$key}}','{{request('id')}}','{{$value->name}}')" value="{{$value->id}}">  {{$value->name}}
+                            <input type="checkbox" name="cohort_id[]" value="{{$value->id}}" @if(in_array($value->id, $check_value)) checked="checked" @endif>  {{$value->name}}
                        </div>
                    </div>
                </div>
             </div>
             <div class="row append_data_{{$value->id}}">
+                @include('admin::forms.skip_logic_view_cohort.deactivate_forms')
             </div>
-            @push('script_last')
-           
-            @endpush
             @endforeach
             </div>
             <div class="modal-footer">
-                {{-- <a href="{{route('studies.index')}}">
+                <a href="{{route('studies.index')}}">
                     <button type="button" class="btn btn-outline-danger"><i class="far fa-arrow-alt-circle-left"></i> Back to Listing</button>
-                </a> --}}
+                </a>
                 <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
             </div>
         </form>
         <!-- END: Card DATA-->
     </div>
 @endsection
-
-@include('admin::forms.edit_crf')
-@include('admin::forms.script_skip_logic')
-@include('admin::forms.common_script_skip_logic')
-    @section('styles')
-    <style type="text/css">
-            /*.table{table-layout: fixed;}*/
-            .select2-container--default
-            .select2-selection--single {
-                background-color: #fff;
-                 border: transparent !important;
-                border-radius: 4px;
-            }
-            .select2-selection__rendered {
-                font-weight: 400;
-                line-height: 1.5;
-                color: #495057 !important;
-                background-color: #fff;
-                background-clip: padding-box;
-                border: 1px solid #ced4da;
-                border-radius: .25rem;
-                transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-            }
-        </style>
-        <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
-        <!-- select2 -->
-        <link rel="stylesheet" href="{{ asset('public/dist/vendors/select2/css/select2.min.css') }}"/>
-        <link rel="stylesheet" href="{{ asset('public/dist/vendors/select2/css/select2-bootstrap.min.css') }}"/>
-    @endsection
-    @section('script')
-    <script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script>
-    <script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
-    <!-- select2 -->
-    <script src="{{ asset('public/dist/vendors/select2/js/select2.full.min.js') }}"></script>
-    <script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
- 
-@push('script_last')
-    
-@endpush
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
+@endsection
+@section('script')
+    <script type="text/javascript">
+        $('.detail-icon').click(function(e){
+            $(this).toggleClass("fa-chevron-circle-right fa-chevron-circle-down");
+        });
+    </script>
 @endsection

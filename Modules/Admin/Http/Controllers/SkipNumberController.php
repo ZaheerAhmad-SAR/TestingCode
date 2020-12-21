@@ -33,185 +33,6 @@ class SkipNumberController extends Controller
         $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->get();
         return view('admin::forms.skip_question_num', compact('question_label','num_values','all_study_steps'));
     }
-    // get sections to activate Sections with Question having type Number
-    public function sections_skip_logic(Request $request,$id)
-    {
-        $activate_sections_array = [];
-        $section = Section::select('*')->where('phase_steps_id', $id)->orderBy('sort_number', 'asc')->get();
-        $section_contents = '';
-        foreach ($section as $key => $value) {
-            $section_contents .= '<div class="card-body" style="padding: 0;">
-                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;background-color: #EFEFEF;color: black;">
-                                    <tbody>';
-            $section_contents .= '<tr class=""><td class="sec_id" style="display: none;">'.$value->id.'</td><td style="text-align: center;width:15%;">
-                                      <div class="btn-group btn-group-sm" role="group">
-                                        <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-' .$value->id.'-ac-'.$request->index.'" style="font-size: 20px; color: #1e3d73;" onclick="question_for_activate(\'' . $value->id . '\',\'ac_questions_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\')"></i>
-                                      </div>
-                                    </td><td  colspan="5"> <input type="checkbox" name="activate_sections[' .$request->index. '][]" value="' . $value->id . '" class="activate_section_'.$value->id.'_'.$request->index.'" onclick="disabled_opposite(\''.$value->id.'\',\'deactivate_section_\',\''.$request->index.'\',\'activate_section_\')"> ' . $value->name . '</td>';
-            $section_contents .= '</tr>';
-            $section_contents .= '</tbody>
-                                </table>
-                                 </div>
-                            </div>
-                            <div class="card-body collapse row-'.$value->id.'-ac-'.$request->index.' ac_questions_list_'.$value->id.'_'.$request->index.'" style="padding: 0;">
-
-                           </div>';
-        }
-
-        $section_array = array(
-            'html_str' => $section_contents
-        );
-        return json_encode($section_array);
-    }
-    // end function here
-    // get sections to deactivate Sections with Question having type Number
-    public function sections_skip_logic_deactivate(Request $request,$id)
-    {
-        $deactivate_sections_array = [];
-        $section = Section::select('*')->where('phase_steps_id', $id)->orderBy('sort_number', 'asc')->get();
-        $section_contents = '';
-        foreach ($section as $key => $value) {
-            $section_contents .= '<div class="card-body" style="padding: 0;">
-                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;background-color: #EFEFEF;color: black;">
-                                    <tbody>';
-            $section_contents .= '<tr class=""><td class="sec_id" style="display: none;">' . $value->id . '</td><td style="text-align: center;width:15%;">
-                                      <div class="btn-group btn-group-sm" role="group">
-                                        <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" onclick="question_for_deactivate(\'' . $value->id . '\',\'de_questions_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');" data-target=".row-'.$value->id.'-de-'.$request->index.'" style="font-size: 20px; color: #1e3d73;"></i>
-                                      </div>
-                                    </td><td  colspan="5"> <input type="checkbox" name="deactivate_sections[' .$request->index. '][]" value="' . $value->id . '"  class="deactivate_section_'.$value->id.'_'.$request->index.'"  onclick="disabled_opposite(\''.$value->id.'\',\'activate_section_\',\''.$request->index.'\',\'deactivate_section_\')" > ' . $value->name . '</td>';
-            $section_contents .= '</tr>';
-            $section_contents .= '</tbody>
-                                </table>
-                                 </div>
-                            </div>
-                            <div class="card-body collapse row-'.$value->id.'-de-'.$request->index.' de_questions_list_'.$value->id.'_'.$request->index.'" style="padding: 0;">
-                            </div>';
-        }
-
-        $section_array = array(
-            'html_str' => $section_contents
-        );
-        return json_encode($section_array);
-    }
-    // end function here
-
-    //---------------------------------------------------
-    // get all question for skip with against specific section
-    public function questions_skip_logic(Request $request, $id)
-    {
-        $activate_questions_array = [];
-
-        $questions = Question::select('*')->where('section_id', $id)->orderBy('question_sort', 'asc')->get();
-        $options_ac_contents = '';
-        foreach ($questions as $key => $value) {
-            $options_ac_contents .= '<div class="card-body" style="padding: 0;">
-                            <div class="table-responsive "><table class="table table-bordered" style="margin-bottom:0px;background-color: #F64E60;color:black;">
-                                    <tbody>';
-            $options_ac_contents .= '<tr><td class="sec_id" style="display: none;">'.$value->id.'</td><td style="text-align: center;width:15%;">
-                                      <div class="btn-group btn-group-sm" role="group">
-                                        <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-'.$value->id.'-ac-'.$request->index.'" style="font-size: 20px; color: #ffffff;" onclick="question_options_activate(\''.$value->id.'\',\'ac_options_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\')"></i>
-                                      </div>
-                                    </td><td colspan="5"> <input type="checkbox" name="activate_questions[' .$request->index. '][]" value="' . $value->id . '" class="activate_question_'.$value->id.'_'.$request->index.'"  onclick="disabled_opposite(\''.$value->id.'\',\'deactivate_question_\',\''.$request->index.'\',\'activate_question_\')" > ' . $value->question_text . '</td>';
-            $options_ac_contents .= '</tr></tbody></table></div></div>';
-            $options_ac_contents .= '<div class="card-body collapse row-'.$value->id.'-ac-'.$request->index.' " style="padding: 0;">
-                                <table class="table table-bordered" style="margin-bottom:0px;">
-                                    <tbody class="ac_options_list_'.$value->id.'_'.$request->index.'">
-                                    </tbody>
-                                </table> </div>';
-
-        }
-        $options_ac_array = array(
-            'html_str' => $options_ac_contents
-        );
-        return json_encode($options_ac_array);
-    }
-    // End function
-    //---------------------------------------------------
-    //---------------------------------------------------
-    // get all question for skip with against specific section for deactivate
-    public function questions_skip_logic_deactivate(Request $request, $id)
-    {
-        $deactivate_questions_array = [];
-        $questions = Question::select('*')->where('section_id', $id)->orderBy('question_sort', 'asc')->get();
-        $question_contents = '';
-        foreach ($questions as $key => $value) {
-            $question_contents .= '<div class="card-body" style="padding: 0;background-color: #F64E60;color:black;">
-                                    <table class="table table-bordered" style="margin-bottom:0px;">
-                                    <tbody>';
-            $question_contents .= '<tr><td class="sec_id" style="display: none;">' . $value->id . '</td>
-                                    <td style="text-align: center;width:15%;">
-                                        <div class="btn-group btn-group-sm" role="group">
-                                            <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" style="font-size: 20px; color: #ffffff;" onclick="question_options_deactivate(\''.$value->id.'\',\'de_options_list_\',\''.$request->index.'\',\''.$request->question_id.'\',\''.$request->option_value.'\',\''.$request->option_title.'\');" data-target=".row-'.$value->id.'-de-'.$request->index.'">
-                                            </i>
-                                      </div>
-                                    </td>
-                                    <td  colspan="5"><input type="checkbox" name="deactivate_questions['.$request->index.'][]" value="'.$value->id.'"  class="deactivate_question_'.$value->id.'_'.$request->index.'"  onclick="disabled_opposite(\''.$value->id.'\',\'activate_question_\',\''.$request->index.'\',\'deactivate_question_\')"> '.$value->question_text.'</td>';
-            $question_contents .= '</tr>';
-            $question_contents .= '</tbody></table></div>';
-            $question_contents .= '<div class="card-body collapse row-'.$value->id.'-de-'.$request->index.' " style="padding: 0;">
-                            <div class="table-responsive"><table class="table table-bordered" style="margin-bottom:0px;">
-                                    <tbody class="de_options_list_'.$value->id.'_'.$request->index.'">
-
-                                    </tbody>
-                                </table>  </div></div>';
-
-        }
-        $question_contents_array = array(
-            'html_str' => $question_contents
-        );
-        return json_encode($question_contents_array);
-    }
-    // End function
-    //---------------------------------------------------
-    //---------------------------------------------------
-    // get all options to skip on Number field
-    public function options_skip_logic_activate(Request $request,$id)
-    {
-        $questions = Question::where('id', $request->id)->with('optionsGroup')->first();
-        $options_contents = '';
-        $options_value = explode(',', $questions->optionsGroup->option_value);
-        $options_name = explode(',', $questions->optionsGroup->option_name);
-        if(null !== $questions->optionsGroup){
-            if(count($options_name) >= 2){
-                foreach ($options_name as $key => $value) {
-                    $options_contents .= '<tr>
-                                            <td style="text-align: center;width:15%;">
-                                               <input type="checkbox" name="activate_options['.$request->index.'][]" value="'.$options_value[$key].'<<=!=>>'.$questions->id.'" class="activate_option_'.$questions->id.$value.'_'.$request->index.'"  onclick="disabled_opposite(\''.$questions->id.$value.'\',\'deactivate_option_\',\''.$request->index.'\',\'activate_option_\')">
-                                            </td>
-                                            <td colspan="5">'.$value.'</td>';
-                    $options_contents .= '</tr>';
-                }
-            }else{
-                $options_contents .='<tr><td colspan="6">Records Not found</td></tr>';
-            }
-        }
-        return Response($options_contents);
-    }
-    // end function
-    // start function
-    public function options_skip_logic_deactivate(Request $request, $id)
-    {
-        $questions = Question::where('id', $request->id)->with('optionsGroup')->first();
-        $options_contents = '';
-        $options_value = explode(',', $questions->optionsGroup->option_value);
-        $options_name = explode(',', $questions->optionsGroup->option_name);
-        if(null !== $questions->optionsGroup){
-            if(count($options_name) >= 2){
-                foreach ($options_name as $key => $value) {
-                    $options_contents .= '<tr>
-                                            <td style="text-align: center;width:15%;">
-                                               <input type="checkbox" name="deactivate_options['.$request->index.'][]" value="'.$options_value[$key].'<<=!=>>'.$questions->id.'" class="deactivate_option_'.$questions->id.$value.'_'.$request->index.'" onclick="disabled_opposite(\''.$questions->id.$value.'\',\'activate_option_\',\''.$request->index.'\',\'deactivate_option_\')">
-                                            </td>
-                                            <td colspan="5">'.$value.'</td>';
-                    $options_contents .= '</tr>';
-                }
-            }else{
-                $options_contents .='<tr><td colspan="6">Records Not found</td></tr>';
-            }
-        }
-        return Response($options_contents);
-    }
-    //---------------------------------------------------
     // Add skip conditions on Questions with type Number
     public function add_skipLogic_num(Request $request)
     {
@@ -301,7 +122,6 @@ class SkipNumberController extends Controller
                 // Deactivate Questions options
                 if(isset($request->deactivate_options[$i]) && count($request->deactivate_options[$i]) > 0){
                   for($j = 0; $j < count($request->deactivate_options[$i]); $j++) {
-                    $skiplogic_id = Str::uuid();
                     $op_content = explode('<<=!=>>', $request->deactivate_options[$i][$j]);
                     $skip_options = [
                         'id' => Str::uuid(),
@@ -318,7 +138,7 @@ class SkipNumberController extends Controller
                 // Activate Questions options
                 if(isset($request->activate_options[$i]) && count($request->activate_options[$i]) > 0){
                    for($j = 0; $j < count($request->activate_options[$i]); $j++) {
-                    $op_content = explode('_', $request->activate_options[$i][$j]);
+                    $op_content = explode('<<=!=>>', $request->activate_options[$i][$j]);
                     $skip_options = [
                         'id' => Str::uuid(),
                         'skip_logic_id' => $skiplogic_id,
@@ -394,8 +214,9 @@ class SkipNumberController extends Controller
     public function update_skip_checks_text($id)
     {
         $num_values = skipLogic::where('id', $id)->first();
+        $question_info = Question::where('id', $num_values->question_id)->first();
         $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->get();
-        return view('admin::forms.update_skip_question_text', compact('num_values','all_study_steps'));
+        return view('admin::forms.update_skip_question_text', compact('question_info','num_values','all_study_steps'));
     }
     // insert updated checks and deleted previous logic
     public function update_skip_checks_on_textbox(Request $request)
