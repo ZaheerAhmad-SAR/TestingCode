@@ -336,24 +336,47 @@
             <div class="alert alert-danger" style="display:none"></div>
             <div class="modal-header">
                 <p class="modal-title"> Question Details</p>
-                <span class="queryCurrentStatus text-center"></span>
+                <span class="queryQuestionCurrentStatus text-center"></span>
             </div>
             <div class="modal-body">
-                <form id="replyQuestionForm" name="replyQuestionForm">
-                    <div class="tab-content clearfix">
+                <form id="replyQuestionForm" name="replyQuestionForm" enctype="multipart/form-data">
                         @csrf
                         <div class="replyInput"></div>
-                        <div class="col-sm-12">
-                            <div class="replyClick" style="text-align: right;">
-                                    <span style="cursor: pointer;">
-                                        <i class="fa fa-reply"></i> &nbsp; reply
-                                        </span>
-                            </div>
+                    <div class="form-group row questionTextarea" style="display: none;">
+                        <label for="question" class="col-sm-2 col-form-label">Enter your Query</label>
+                        <div class="col-sm-10">
+                            <textarea class="form-control" name="message_query_for_reply" id="message_query_for_reply"></textarea>
                         </div>
                     </div>
+                    <div class="form-group row questionFile" style="display: none;" >
+                        <label for="Attachment" class="col-sm-2 col-form-label">Attachment:</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" type="file" name="question_file"  id="question_file">
+                        </div>
+                    </div>
+
+                    <div class="form-group row queryStatus" style="display:none;">
+                        <label for="Status" class="col-sm-2 col-form-label">Status</label>
+                        <div class="col-sm-10">
+                            <select class="form-control" id="query_status" name="query_status">
+                                <option value="open">open</option>
+                                <option value="confirmed" >Confirmed</option>
+                                <option value="unconfirmed">UnConfirmed</option>
+                                <option value="in progress">Inprogress</option>
+                                <option value="close">close</option>
+                            </select>
+                        </div>
+                    </div>
+
+                        <div class="col-sm-12">
+                            <div class="replyQuestionButton" style="text-align: right;">
+                                    <span style="cursor: pointer;"><i class="fa fa-reply"></i> &nbsp; reply </span>
+                            </div>
+                        </div>
+
                     <div class="modal-footer">
                         <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                        <button type="button" class="btn btn-outline-primary" id="replyquestion"><i class="fa fa-save"></i> Send</button>
+                        <button type="submit" class="btn btn-outline-primary" id="replyquestion"><i class="fa fa-save"></i> Send</button>
                     </div>
                 </form>
             </div>
@@ -642,8 +665,11 @@
     }
 
     $('body').on('click', '.replyQuestionQuery', function () {
-        var query_id     = $(this).attr('data-id');
-
+        var query_id           = $(this).attr('data-id');
+        var questionStatusValue = $(this).attr('data-value');
+        $('.queryQuestionCurrentStatus').html('');
+        $('.queryQuestionCurrentStatus').text('Status: '+questionStatusValue);
+        $('#query_status').val(questionStatusValue);
         $('#reply-question-modal').modal('show');
         $('#show-question-table-modal').modal('hide');
         showQuestions(query_id);
@@ -669,61 +695,64 @@
             },
             success: function(response)
             {
-                $('.replyInput').html('');
+                //$('.replyInput').html('');
                 $('.replyInput').html(response);
                 var query_status = $( "#query_status option:selected" ).text();
-                $('.queryCurrentStatus').text('Status: '+query_status);
+                $('.queryQuestionCurrentStatus').text('Status: '+query_status);
                 $('.replyClick').css('display','');
             }
         });
     }
 
-    function showCloseQuestions(query_id) {
-        $.ajax({
-            url:"{{route('queries.showQuestionsById')}}",
-            type: 'POST',
-            data: {
-                "_token": "{{ csrf_token() }}",
-                "_method": 'POST',
-                'query_id'      :query_id,
-            },
-            success: function(response)
-            {
-                $('.replyInput').html('');
-                $('.replyInput').html(response);
-                var query_status = $( "#query_status option:selected" ).text();
-                $('.queryCurrentStatus').text('Status: '+query_status);
-                $('.replyClick').css('display','');
-            }
+    {{--function showCloseQuestions(query_id) {--}}
+    {{--    $.ajax({--}}
+    {{--        url:"{{route('queries.showQuestionsById')}}",--}}
+    {{--        type: 'POST',--}}
+    {{--        data: {--}}
+    {{--            "_token": "{{ csrf_token() }}",--}}
+    {{--            "_method": 'POST',--}}
+    {{--            'query_id'      :query_id,--}}
+    {{--        },--}}
+    {{--        success: function(response)--}}
+    {{--        {--}}
+    {{--            $('.replyInput').html('');--}}
+    {{--            $('.replyInput').html(response);--}}
+    {{--            var query_status = $( "#query_status option:selected" ).text();--}}
+    {{--            $('.queryCurrentStatus').text('Status: '+query_status);--}}
+    {{--            $('.replyClick').css('display','');--}}
+    {{--        }--}}
+    {{--    });--}}
+    {{--}--}}
+
+
+        $("#replyQuestionForm").on('submit', function(e) {
+            e.preventDefault();
+        $.ajaxSetup({
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
         });
-    }
+        var message_query_for_reply = $("#message_query_for_reply").val();
+        var query_id                = $("#query_id").val();
+        var query_url               = $("#query_url").val();
+        var query_type              = $("#query_type").val();
+        var query_status            = $("#query_status").val();
+        var subject_question        = $("#subject_question").val();
+        var query_level_question    = $("#query_level_question").val();
 
-    $('#replyquestion').click(function (e){
-        $.ajaxSetup({ headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
-        e.preventDefault();
-
-        var reply                = $("#reply").val();
-        var query_id             = $("#query_id").val();
-        var query_url            = $("#query_url").val();
-        var query_type           = $("#query_type").val();
-        var query_status         = $("#query_status").val();
-        var subject_question     = $("#subject_question").val();
-        var query_level_question = $("#query_level_question").val();
-
-        var study_id             = $("#study_id").val();
-        var subject_id           = $("#subject_id").val();
-        var phase_steps_id       = $("#phase_steps_id").val();
-        var section_id           = $("#section_id").val();
-        var question_id          = $("#question_id").val();
-        var field_id             = $("#field_id").val();
-        var form_type_id         = $("#form_type_id").val();
-        var modility_id          = $("#modility_id").val();
-        var module_name          = $("#module_name").val();
-        var study_structures_id  = $("#study_structures_id").val();
+        var study_id                = $("#study_id").val();
+        var subject_id              = $("#subject_id").val();
+        var phase_steps_id          = $("#phase_steps_id").val();
+        var section_id              = $("#section_id").val();
+        var question_id             = $("#question_id").val();
+        var field_id                = $("#field_id").val();
+        var form_type_id            = $("#form_type_id").val();
+        var modility_id             = $("#modility_id").val();
+        var module_name             = $("#module_name").val();
+        var study_structures_id     = $("#study_structures_id").val();
 
 
-        var formData             = new FormData();
-        formData.append('reply', reply);
+        var formData = new FormData();
+        formData.append('message_query_for_reply', message_query_for_reply);
         formData.append('query_id', query_id);
         formData.append('query_url', query_url);
         formData.append('query_type', query_type);
@@ -754,13 +783,16 @@
             processData:false,
             success: function (results)
             {
-                // $('.commentsInput').css('display','none');
-                $('.replyClick').css('display','');
                 var query_id = results[0].parent_query_id;
                 showQuestions(query_id);
-                //$("#replyForm")[0].reset();
-                //$('#summernote').summernote('disable');
-                //$("#reply").summernote("reset");
+                //$('.replyClick').css('display','');
+                $('.replyQuestionButton').css('display','');
+                $('.questionTextarea').css('display','none');
+                $('#message_query_for_reply').val('');
+                $('#question_file').val('');
+                $('.questionFile').css('display','none');
+                $('.queryStatus').css('display','none');
+
             },
             error: function (results) {
                 console.error('Error:', results);
@@ -768,11 +800,12 @@
         });
     });
 
-    $('body').on('click', '.replyClick', function () {
-        $('.commentsInput').css('display','');
-        $('.queryAttachments').css('display','');
+    $('body').on('click', '.replyQuestionButton', function () {
+        $('.replyQuestionButton').css('display','none');
+        $('.questionTextarea').css('display','');
+        $('.questionFile').css('display','');
         $('.queryStatus').css('display','');
-        $('.replyClick').css('display','none');
+
     });
 
 
