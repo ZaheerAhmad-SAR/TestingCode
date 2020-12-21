@@ -907,6 +907,10 @@
         $(this).find('form').trigger('reset');
     })
 
+    $('#reply-question-modal').on('hidden.bs.modal', function () {
+        $(this).find('form').trigger('reset');
+    })
+
 
     $("#formForQueries").on('submit', function(e) {
 
