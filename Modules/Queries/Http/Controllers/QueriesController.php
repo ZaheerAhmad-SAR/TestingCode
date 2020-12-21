@@ -154,13 +154,13 @@ class QueriesController extends Controller
 
     public function queryQuestionReply(Request $request)
     {
-
+        //dd($request->all());
         $query_status     = $request->post('query_status'); // return the status value
         $query_id         = $request->post('query_id');
         $find             = Query::find($query_id);
         $queryStatusArray = array('query_status'=>$query_status);
         Query::where('id',$find['id'])->update($queryStatusArray);
-        $reply            = $request->post('reply');
+        $message_reply    = $request->post('message_query_for_reply');
         $query_subject    = $request->post('subject_question');
         $query_level_q    = $request->post('query_level_question');
 
@@ -194,7 +194,7 @@ class QueriesController extends Controller
             'id'=>$id,
             'queried_remarked_by_id'=>\auth()->user()->id,
             'parent_query_id'=> $query_id,
-            'messages'=>$reply,
+            'messages'=>$message_reply,
             'query_type' =>$query_type,
             'query_url'=>$query_url,
             'query_subject'=>$query_subject,
