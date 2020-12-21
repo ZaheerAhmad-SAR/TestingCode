@@ -1432,49 +1432,52 @@ class StudyController extends Controller
 
     public function permanentlyDeleteStudyAndItsRecord($id)
     {
-        Study::where('id', $id)->withTrashed()->forceDelete();
-        Subject::where('study_id', $id)->withTrashed()->forceDelete();
-        AdjudicationFormStatus::where('study_id', $id)->withTrashed()->forceDelete();
-        Annotation::where('study_id', $id)->withTrashed()->forceDelete();
-        Answer::where('study_id', $id)->withTrashed()->forceDelete();
-        ExportType::where('study_id', $id)->withTrashed()->forceDelete();
-        FinalAnswer::where('study_id', $id)->withTrashed()->forceDelete();
-        FormStatus::where('study_id', $id)->withTrashed()->forceDelete();
-        QuestionAdjudicationRequired::where('study_id', $id)->withTrashed()->forceDelete();
-        QuestionComments::where('study_id', $id)->withTrashed()->forceDelete();
+        if (isThisUserSuperAdmin(auth()->user())) {
+
+            Study::where('id', $id)->withTrashed()->forceDelete();
+            Subject::where('study_id', $id)->withTrashed()->forceDelete();
+            AdjudicationFormStatus::where('study_id', $id)->withTrashed()->forceDelete();
+            Annotation::where('study_id', $id)->withTrashed()->forceDelete();
+            Answer::where('study_id', $id)->withTrashed()->forceDelete();
+            ExportType::where('study_id', $id)->withTrashed()->forceDelete();
+            FinalAnswer::where('study_id', $id)->withTrashed()->forceDelete();
+            FormStatus::where('study_id', $id)->withTrashed()->forceDelete();
+            QuestionAdjudicationRequired::where('study_id', $id)->withTrashed()->forceDelete();
+            QuestionComments::where('study_id', $id)->withTrashed()->forceDelete();
 
 
-        $phases = StudyStructure::where('study_id', 'like', $id)->withTrashed()->get();
-        foreach ($phases as $phase) {
-            $this->deleteTreeAgainstPhase($phase->id);
-            $this->deletePhase($phase);
+            $phases = StudyStructure::where('study_id', 'like', $id)->withTrashed()->get();
+            foreach ($phases as $phase) {
+                $this->deleteTreeAgainstPhase($phase->id);
+                $this->deletePhase($phase);
+            }
+            StudyStructure::where('study_id', $id)->withTrashed()->forceDelete();
+
+            AssignWork::where('study_id', $id)->withTrashed()->forceDelete();
+            DiseaseCohort::where('study_id', $id)->withTrashed()->forceDelete();
+            Preference::where('study_id', $id)->withTrashed()->forceDelete();
+            Query::where('study_id', $id)->withTrashed()->forceDelete();
+            QueryNotification::where('study_id', $id)->withTrashed()->forceDelete();
+            StudySite::where('study_id', $id)->withTrashed()->forceDelete();
+            RoleStudyUser::where('study_id', $id)->withTrashed()->forceDelete();
+            StudyRoleUsers::where('study_id', $id)->withTrashed()->forceDelete();
+            StudyUser::where('study_id', $id)->withTrashed()->forceDelete();
+            TrailLog::where('study_id', $id)->withTrashed()->forceDelete();
+            UserRole::where('study_id', $id)->withTrashed()->forceDelete();
+
+
+            StudyStructure::onlyTrashed()->forceDelete();
+            PhaseSteps::onlyTrashed()->forceDelete();
+            Section::onlyTrashed()->forceDelete();
+            Question::onlyTrashed()->forceDelete();
+            FormFields::onlyTrashed()->forceDelete();
+            QuestionDependency::onlyTrashed()->forceDelete();
+            QuestionValidation::onlyTrashed()->forceDelete();
+            SkipLogic::onlyTrashed()->forceDelete();
+            QuestionComments::onlyTrashed()->forceDelete();
+            QuestionOption::onlyTrashed()->forceDelete();
+
+            return \response()->json(['sucess' => 'Study deleted successfully.']);
         }
-        StudyStructure::where('study_id', $id)->withTrashed()->forceDelete();
-
-        AssignWork::where('study_id', $id)->withTrashed()->forceDelete();
-        DiseaseCohort::where('study_id', $id)->withTrashed()->forceDelete();
-        Preference::where('study_id', $id)->withTrashed()->forceDelete();
-        Query::where('study_id', $id)->withTrashed()->forceDelete();
-        QueryNotification::where('study_id', $id)->withTrashed()->forceDelete();
-        StudySite::where('study_id', $id)->withTrashed()->forceDelete();
-        RoleStudyUser::where('study_id', $id)->withTrashed()->forceDelete();
-        StudyRoleUsers::where('study_id', $id)->withTrashed()->forceDelete();
-        StudyUser::where('study_id', $id)->withTrashed()->forceDelete();
-        TrailLog::where('study_id', $id)->withTrashed()->forceDelete();
-        UserRole::where('study_id', $id)->withTrashed()->forceDelete();
-
-
-        StudyStructure::onlyTrashed()->forceDelete();
-        PhaseSteps::onlyTrashed()->forceDelete();
-        Section::onlyTrashed()->forceDelete();
-        Question::onlyTrashed()->forceDelete();
-        FormFields::onlyTrashed()->forceDelete();
-        QuestionDependency::onlyTrashed()->forceDelete();
-        QuestionValidation::onlyTrashed()->forceDelete();
-        SkipLogic::onlyTrashed()->forceDelete();
-        QuestionComments::onlyTrashed()->forceDelete();
-        QuestionOption::onlyTrashed()->forceDelete();
-
-        return \response()->json(['sucess' => 'Study deleted successfully.']);
     }
 }

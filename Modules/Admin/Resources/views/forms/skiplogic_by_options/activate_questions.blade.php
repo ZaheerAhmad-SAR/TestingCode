@@ -1,9 +1,15 @@
  @php
     $activate_questions_array = [];
+    if($questionsType =='radio'){
         $where = array(
             "question_id" =>$q_id,
             "option_value" =>$options_value[$index]
         );
+    }else{
+        $where = array(
+            "question_id" =>$q_id
+        );
+    }
     $if_exists_record = Modules\Admin\Entities\skipLogic::where($where)->first();
     if(null !==$if_exists_record){
         $activate_questions_array = explode(',', $if_exists_record->activate_questions);
@@ -21,7 +27,7 @@
             <table class="table table-bordered" style="margin-bottom:0px;background-color: #17A2B8;color:#fff;">
                 <tbody>
                     <tr>
-                        <td class="sec_id" style="display: none;">'.$value->id.'</td>
+                        <td class="sec_id" style="display: none;">{{$value->id}}</td>
                         <td style="text-align: center;width:15%;">
                             <div class="btn-group btn-group-sm" role="group">
                                 <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->id}}-ac-{{$index}}" style="font-size: 20px;color:white;" id="ac_question_{{$value->id}}">
@@ -58,7 +64,7 @@
 @else
     <div class="card-body" style="padding: 0;">
         <div class="table-responsive ">
-            <table class="table table-bordered" style="margin-bottom:0px;background-color: #F64E60;color:black;">
+            <table class="table table-bordered" style="margin-bottom:0px;background-color: #17A2B8;color:#fff;">
                 <tbody>
                     <tr><td colspan="6">Questions Not found</td></tr>
                 </tbody>

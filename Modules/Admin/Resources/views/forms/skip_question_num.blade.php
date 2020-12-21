@@ -50,6 +50,10 @@
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
         <form action="{{route('skipNumber.apply_skip_logic_num')}}" enctype="multipart/form-data" method="POST">
+            @php
+              $q_id = request('id');
+              $index = 0;
+            @endphp
             @csrf
             <input type="hidden" name="question_id" value="{{request('id')}}">
             <div class="row">
@@ -93,7 +97,7 @@
                         </div>
                     </div>           
         @foreach ($all_study_steps as $key => $value)
-        @foreach($value->studySteps as $index => $value)
+        @foreach($value->studySteps as $indexx => $value)
             {{-- @if(in_array($value->step_id, $activate_forms_array)){ $checked = 'checked'; }@else{ $checked = ''; }@endif --}}
                     <div class="card">
                         <div class="card-body" style="padding: 0;">
@@ -104,7 +108,7 @@
                                         <td class="step_id" style="display: none;">{{$value->step_id}}</td>
                                         <td style="text-align: center;width: 15%">
                                           <div class="btn-group btn-group-sm" role="group">
-                                            <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" onclick="activate_checks('{{$value->step_id}}','sections_list_','{{$key}}','{{request('id')}}');" data-target=".row-{{$value->step_id}}-ac-{{$key}}" style="font-size: 20px;"></i>
+                                            <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-ac-{{$key}}" style="font-size: 20px;"></i>
                                           </div>
                                         </td>
                                         <td colspan="5"> <input type="checkbox" name="activate_forms[{{$key}}][]" value="{{$value->step_id}}" class="activate_step_{{$value->step_id}}_{{$key}}" onclick="disabled_opposite('{{$value->step_id}}','deactivate_step_','{{$key}}','activate_step_')"> &nbsp;&nbsp;{{$value->step_name}}({{$value->formType->form_type }}- {{ $value->modility->modility_name}})</td>
@@ -115,6 +119,7 @@
                     </div>
                 </div>
                 <div class="card collapse row-{{$value->step_id}}-ac-{{$key}} sections_list_{{$value->step_id}}_{{$key}}">
+                    @include('admin::forms.skiplogic_by_text_and_number.activate_sections')
                 </div>
         @endforeach
         @endforeach
@@ -135,18 +140,18 @@
                         </div>
                     </div>
         @foreach ($all_study_steps as $key => $value)
-        @foreach($value->studySteps as $index => $value)
+        @foreach($value->studySteps as $indexx => $value)
             {{-- if(in_array($value->step_id, $deactivate_forms_array)){ $checked = 'checked'; }else{ $checked = ''; } --}}
             <div class="card">
                 <div class="card-body" style="padding: 0;">
                     <div class="table-responsive">
-                        <table class="table table-bordered" id="laravel_crud" style="margin-bottom:0px;background-color: #1E3D73;color: white;">
+                        <table class="table table-bordered" style="margin-bottom:0px;background-color: #1E3D73;color: white;">
                         <tbody>
                             <tr>
                                 <td class="step_id" style="display: none;">{{$value->step_id}}</td>
                                 <td style="text-align: center;width: 15%">
                                   <div class="btn-group btn-group-sm" role="group">
-                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-de-{{$key}}" onclick="deactivate_checks('{{$value->step_id}}','de_sections_list_','{{$key}}','{{request('id')}}');" style="font-size: 20px;"></i>
+                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-de-{{$key}}"></i>
                                   </div>
                                 </td>
                                 <td colspan="5"><input type="checkbox" name="deactivate_forms[{{$key}}][]" value="{{$value->step_id}}" class="deactivate_step_{{$value->step_id}}_{{$key}}" onclick="disabled_opposite('{{$value->step_id}}','activate_step_','{{$key}}','deactivate_step_')"> &nbsp;&nbsp;{{$value->step_name}}({{$value->formType->form_type }}- {{ $value->modility->modility_name}})</td>
@@ -157,6 +162,7 @@
             </div>
         </div>
         <div class="card collapse row-{{$value->step_id}}-de-{{$key}} de_sections_list_{{$value->step_id}}_{{$key}}">
+            @include('admin::forms.skiplogic_by_text_and_number.deactivate_sections')
         </div>
         @endforeach
         @endforeach
@@ -199,7 +205,7 @@
                                    <div class="d-flex mt-3 mt-md-0 ml-auto">
                                         <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                         <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                            <span class="dropdown-item"><a href="{{route('skipNumber.updateSkipNum',$skip_logic['id'])}}"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
+                                            <span class="dropdown-item"><a href="{{route('skipNumber.updateSkipNum',$skip_logic->id)}}"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
                                             {{-- <span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span> --}}
                                         </div>
                                     </div>

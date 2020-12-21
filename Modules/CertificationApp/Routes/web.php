@@ -65,6 +65,9 @@
 // certificate photographer
     Route::resource('certification-photographer', 'TransmissionDataPhotographerController');
 
+// generate photographer certificate
+	Route::post('generate-phptographer-certificate', 'TransmissionDataPhotographerController@generatePhotographerCertificate')->name('generate-phptographer-certificate');
+
 // update photographer transmission status
     // Route::post('update-photographer-transmission-status', 'TransmissionDataPhotographerController@updatePhotographerTransmissionStatus')->name('update-photographer-transmission-status');
 

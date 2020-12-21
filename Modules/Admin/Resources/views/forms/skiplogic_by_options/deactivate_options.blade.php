@@ -1,7 +1,14 @@
 @php
     $skip_logic_id = '';
 	$questions = Modules\Admin\Entities\Question::where('id', $value->id)->with('optionsGroup')->first();
-    $skip_logic = Modules\Admin\Entities\SkipLogic::where('question_id', $q_id)->where('option_title',$option)->first();
+    if($questionsType =='radio'){
+        $skip_logic = Modules\Admin\Entities\SkipLogic::where('question_id', $q_id)->where('option_title',$option)->first();
+    }elseif($questionsType =='textbox'){
+        $skip_logic = Modules\Admin\Entities\SkipLogic::where('question_id', $q_id)->where('textbox_value',$num_values->textbox_value)->first();
+    }else{
+        $skip_logic = Modules\Admin\Entities\SkipLogic::where('question_id', $q_id)->where('number_value',$num_values->number_value)->first();
+    }
+
      if(null !==$skip_logic){
         $skip_logic_id = $skip_logic->id;
     }
@@ -12,14 +19,31 @@
     @if(count($options_name) >= 2)
         @foreach ($options_name as $key => $value) 
             @php
-                $where = array(
-                    "question_id" =>$q_id,
-                    "option_question_id" =>$questions->id,
-                    "skip_logic_id" =>$skip_logic_id,
-                    "value" =>$options_value[$key],
-                    "type" => 'deactivate',
-                    "option_depend_on_question_type" => 'radio'
-                );
+               if($questionsType =='textbox'){
+                    $where = array(
+                        "option_question_id" =>$questions->id,
+                        "skip_logic_id" =>$skip_logic_id,
+                        "value" =>$options_value[$key],
+                        "type" => 'deactivate',
+                        "option_depend_on_question_type" => 'textbox'
+                    );
+                }elseif($questionsType =='number'){
+                    $where = array(
+                        "option_question_id" =>$questions->id,
+                        "skip_logic_id" =>$skip_logic_id,
+                        "value" =>$options_value[$key],
+                        "type" => 'deactivate',
+                        "option_depend_on_question_type" => 'number'
+                    );
+                }else{
+                    $where = array(
+                        "option_question_id" =>$questions->id,
+                        "skip_logic_id" =>$skip_logic_id,
+                        "value" =>$options_value[$key],
+                        "type" => 'deactivate',
+                        "option_depend_on_question_type" => 'radio'
+                    );
+                }
             	$if_exists_record = Modules\Admin\Entities\QuestionOption::where($where)->first();
 	            if(null !==$if_exists_record && ($if_exists_record->value == $options_value[$key])){
 	                $checked = "checked";

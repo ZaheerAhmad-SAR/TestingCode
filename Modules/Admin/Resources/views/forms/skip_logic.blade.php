@@ -46,6 +46,7 @@
         <form action="{{route('skiplogic.apply_skip_logic')}}" enctype="multipart/form-data" method="POST">
             @csrf
             @php
+            $questionsType ='radio';
             $check_value = [];
             $q_id = request('id');
             $options_value = explode(',', $options->optionsGroup->option_value);
@@ -89,6 +90,11 @@
     <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
     @endsection
     @section('script')
+    <script type="text/javascript">
+        $('.detail-icon').click(function(e){
+            $(this).toggleClass("fa-chevron-circle-right fa-chevron-circle-down");
+        });
+    </script>
 @push('script_last')
 @endpush
 @endsection

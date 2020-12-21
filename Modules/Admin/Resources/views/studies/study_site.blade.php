@@ -130,7 +130,7 @@
     </div>
 @endsection
 @section('script')
-    <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
+    <script src="{{ asset("js/jquery.quicksearch.js") }}" type="text/javascript"></script>
     <script type="text/javascript">
         $('.edit-study-sites').click(function (){
             $('.studySiteId').removeAttr("disabled");

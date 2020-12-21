@@ -1,9 +1,15 @@
 @php
     $deactivate_sections_array = [];
-    $where = array(
-        "question_id" =>$q_id,
-        "option_value" =>$options_value[$index]
-    );
+    if($questionsType =='radio'){
+        $where = array(
+            "question_id" =>$q_id,
+            "option_value" =>$options_value[$index]
+        );
+    }else{
+        $where = array(
+            "question_id" =>$q_id
+        );
+    }
     $if_exists_record = Modules\Admin\Entities\skipLogic::where($where)->first();
     if(null !== $if_exists_record){
         $deactivate_sections_array = explode(',', $if_exists_record->deactivate_sections);

@@ -1,9 +1,15 @@
 @php
     $deactivate_questions_array = [];
+    if($questionsType =='radio'){
         $where = array(
             "question_id" =>$q_id,
             "option_value" =>$options_value[$index]
         );
+    }else{
+        $where = array(
+            "question_id" =>$q_id
+        );
+    }
     $if_exists_record = Modules\Admin\Entities\skipLogic::where($where)->first();
     if(null !==$if_exists_record){
         $deactivate_questions_array = explode(',', $if_exists_record->deactivate_questions);
@@ -56,7 +62,7 @@
 @else
     <div class="card-body" style="padding: 0;">
         <div class="table-responsive ">
-            <table class="table table-bordered" style="margin-bottom:0px;background-color: #F64E60;color:black;">
+            <table class="table table-bordered" style="margin-bottom:0px;background-color: #17A2B8;color:#fff;">
                 <tbody>
                     <tr><td colspan="6">Questions Not found</td></tr>
                 </tbody>

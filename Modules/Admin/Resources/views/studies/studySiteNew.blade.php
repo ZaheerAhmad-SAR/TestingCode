@@ -781,7 +781,7 @@
             <script src="{{ asset("dist/vendors/datatable/editor/mindmup-editabletable.js") }}"></script>
             <script src="{{ asset("dist/vendors/datatable/editor/numeric-input-example.js") }}"></script>
             <script src="{{ asset("dist/js/datatableedit.script.js") }}"></script>
-            <script src="http://loudev.com/js/jquery.quicksearch.js" type="text/javascript"></script>
+            <script src="{{ asset("js/jquery.quicksearch.js") }}" type="text/javascript"></script>
             <script src="{{ asset("dist/vendors/select2/js/select2.full.min.js") }}"></script>
             <script src="{{ asset("dist/js/select2.script.js") }}"></script>
             <script type="text/javascript">

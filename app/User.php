@@ -11,6 +11,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\TrailLog;
 use Modules\Admin\Entities\TransmissionUpdateDetail;
+use Modules\CertificationApp\Entities\CertificationData;
+
 use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\Role;
 use Modules\Admin\Entities\RoleStudyUser;
@@ -233,5 +235,10 @@ class User extends Authenticatable
     public function transmissionDetails()
     {
         return $this->hasMany(TransmissionUpdateDetail::class);
+    }
+
+    public function certificationOfficer()
+    {
+        return $this->hasMany(CertificationData::class);
     }
 }

@@ -252,6 +252,8 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('others/{id}/showOtherBySiteId', 'OtherController@showOtherBySiteId')->name('others.showOtherBySiteId');
     Route::post('others/update', 'OtherController@update')->name('others.update');
     Route::get('others/{id}/destroy', 'OtherController@destroy')->name('others.destroy');
+
+    Route::get('study/permanentlyDeleteStudyAndItsRecord/{id}', 'StudyController@permanentlyDeleteStudyAndItsRecord')->name('study.permanentlyDeleteStudyAndItsRecord');
 });
 
 Route::post('tinymce-image_upload', 'TinyMceController@uploadImage')->name('tinymce.image_upload');
