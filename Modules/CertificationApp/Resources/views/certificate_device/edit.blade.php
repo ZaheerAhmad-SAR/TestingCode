@@ -632,32 +632,32 @@
     }); // document ready
 
     // get template data on change
-        $('#template').change(function() {
+    $('#template').change(function() {
 
-            $.ajax({
-                url: '{{ route("get-template-data") }}',
-                type: 'GET',
-                data: {
-                    'template_id': $(this).val(),
-                },
-                success:function(data) {
+        $.ajax({
+            url: '{{ route("get-template-data") }}',
+            type: 'GET',
+            data: {
+                'template_id': $(this).val(),
+            },
+            success:function(data) {
 
-                    if(data.getTemplate != null) {
+                if(data.getTemplate != null) {
 
-                        // assign body
-                        $('.summernote').summernote('code', data.getTemplate.template_body);
+                    // assign body
+                    $('.summernote').summernote('code', data.getTemplate.template_body);
 
-                    } else {
+                } else {
 
-                        // assign body
-                        $('.summernote').summernote('code', '');
-                    }
-                    
-                } // success ends
+                    // assign body
+                    $('.summernote').summernote('code', '');
+                }
+                
+            } // success ends
 
-            }); // ajax ends
+        }); // ajax ends
 
-        });  // change function ends
+    });  // change function ends
 
 </script>
 
