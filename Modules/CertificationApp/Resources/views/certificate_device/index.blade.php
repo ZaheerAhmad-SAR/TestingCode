@@ -161,10 +161,33 @@
                                             <td> {{$transmission->Device_Serial}}</td>
                                             <td> {{$transmission->Site_Name}} </td>
 
-                                            <td> 
+                                            <td>
+                                                @if ($transmission->certificateStatus == 'provisional')
+
+                                                <a href="javascript:void()" id="generate-certification" data-id="" title="Provisional Certified" class="badge badge-warning">
+                                                    Provisional Certified
+                                                </a>
+
+                                                @elseif($transmission->certificateStatus == 'full')
+
+                                                 <a href="javascript:void()" id="generate-certification" data-id="" title="Full Certified" class="badge badge-success">
+                                                    Full Certified
+                                                </a>
+
+                                                @elseif($transmission->certificateStatus == 'allowed')
+
                                                 <a href="javascript:void()" id="generate-certification" data-id="" title="Generate Certificate" class="badge badge-dark" onClick="generateCertificate('{{$transmission->id}}')">
                                                     Generate Certificate
                                                 </a>
+
+                                                @elseif($transmission->certificateStatus == 'not_allowed')
+
+                                                <a href="javascript:void()" id="generate-certification" data-id="" title="Atleast one transmission should be accepted" class="badge badge-danger">
+                                                    Generate Certificate
+                                                </a>
+
+                                                @endif
+                                               
                                             </td>
 
                                             <td>
@@ -182,38 +205,16 @@
                                                 &nbsp; | &nbsp;
 
                                                 <span class="text-dark">
-                                                    <strong> {{$linkedTransmission['status']}} </strong>
+                                                    <strong style="color: #17a2b8 !important;"> {{$linkedTransmission['status']}} </strong>
                                                 </span>
 
-                                                {{--
+                                                &nbsp; | &nbsp;
+                                                
+                                                <span>
+                                                    <a href="javascript:void(0)" class="" title="Archive Transmission" data-url="">
+                                                        <i class="fas fa-archive" onClick="archiveTransmission('{{encrypt($linkedTransmission['id'])}}', '{{ route('archive-device-transmission', encrypt($linkedTransmission['id'])) }}')" data-url="" style="color: #17a2b8 !important;"></i>
+                                                </span>
 
-                                                @if($linkedTransmission['status'] == 'accepted')
-
-                                                    <span class="badge badge-success" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
-                                                    </span>
-
-                                                @elseif($linkedTransmission['status'] == 'pending')
-
-                                                    <span class="badge badge-primary" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
-                                                    </span>
-
-                                                @elseif($linkedTransmission['status'] == 'rejected')
-
-                                                    <span class="badge badge-danger" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
-                                                    </span>
-
-                                                @elseif($linkedTransmission['status'] == 'deficient')
-
-                                                    <span class="badge badge-warning" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
-                                                    </span>
-
-                                                @elseif($linkedTransmission['status'] == 'duplicate')
-
-                                                    <span class="badge badge-dark" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
-                                                    </span>
-
-                                                @endif
-                                                --}}
                                                 <br>
                                                 <br>
                                             @endforeach
@@ -279,7 +280,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-            <form action="" method="POST" class="generate-certificate-form">
+            <form action="{{ route('generate-device-certificate') }}" method="POST" class="generate-certificate-form">
                 @csrf
               <div class="modal-body">
                     <input type="hidden" name="hidden_transmission_id" class="hidden_transmission_id" value="">
@@ -341,7 +342,7 @@
 
                      <div class="form-group col-md-12 suspend-certificate-div">
                         <label class="edit_users">CC Email<span class="field-required">*</span></label>
-                        <Select class="form-control cc_user_email data-required" name="cc_user_email" id="cc_user_email" required multiple>
+                        <Select class="form-control cc_user_email data-required" name="cc_user_email[]" id="cc_user_email" required multiple>
 
                         </Select>
                     </div>
@@ -430,56 +431,7 @@
         $('.filter-form').submit();
     });
 
-        // certification type change
-    $('#certificate_type').change(function() {
-
-        if($(this).val() == 'original') {
-
-            // show original div
-            $('.original-div').css('display', 'block');
-            // hide grandfather div
-            $('.grandfather-div').css('display', 'none');
-            // remove required for this div
-            $('#grandfather_id').attr('required', false);
-
-        } else if ($(this).val() == 'grandfathered') {
-
-            // hide original div
-            $('.original-div').css('display', 'none');
-            // show grandfather div
-            $('.grandfather-div').css('display', 'block');
-            // apply required for this div
-            $('#grandfather_id').attr('required', true);
-
-        } else {
-
-            // hide original div
-            $('.original-div').css('display', 'none');
-            // hide grandfather div
-            $('.grandfather-div').css('display', 'none');
-            // remove required for this div
-            $('#grandfather_id').attr('required', false);
-
-        }
-
-    });
-
-
-     // form submit
-    $('.generate-certificate-form').submit(function(e) {
-        
-        if($('.summernote').summernote('isEmpty')) {
-            // cancel submit
-            e.preventDefault(); 
-            $('.edit-error-field').css('display', 'block'); 
-
-        } else {
-
-            e.currentTarget;
-        }
-    });
-
-       function generateCertificate(transmissionID) {
+    function generateCertificate(transmissionID) {
 
         var transmission = '';
         var childModalities = '';
@@ -590,6 +542,55 @@
 
     }
 
+        // certification type change
+    $('#certificate_type').change(function() {
+
+        if($(this).val() == 'original') {
+
+            // show original div
+            $('.original-div').css('display', 'block');
+            // hide grandfather div
+            $('.grandfather-div').css('display', 'none');
+            // remove required for this div
+            $('#grandfather_id').attr('required', false);
+
+        } else if ($(this).val() == 'grandfathered') {
+
+            // hide original div
+            $('.original-div').css('display', 'none');
+            // show grandfather div
+            $('.grandfather-div').css('display', 'block');
+            // apply required for this div
+            $('#grandfather_id').attr('required', true);
+
+        } else {
+
+            // hide original div
+            $('.original-div').css('display', 'none');
+            // hide grandfather div
+            $('.grandfather-div').css('display', 'none');
+            // remove required for this div
+            $('#grandfather_id').attr('required', false);
+
+        }
+
+    });
+
+
+     // form submit
+    $('.generate-certificate-form').submit(function(e) {
+        
+        if($('.summernote').summernote('isEmpty')) {
+            // cancel submit
+            e.preventDefault(); 
+            $('.edit-error-field').css('display', 'block'); 
+
+        } else {
+
+            e.currentTarget;
+        }
+    });
+
     $('#template').change(function() {
 
         $.ajax({
@@ -616,6 +617,15 @@
         }); // ajax ends
 
     });  // change function ends
+
+    // to archive a transmission
+    function archiveTransmission(transmissionID, transmissionRoute) {
+
+        if (confirm('Do you really wants to move this transmission to archive?')) {
+
+            window.location.href = transmissionRoute;
+        } 
+    }
 
 </script>
 

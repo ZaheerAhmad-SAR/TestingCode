@@ -291,8 +291,11 @@ class CertificationPreferencesController extends Controller
         // get study setups
         $checkStudy = StudySetup::where('study_id', decrypt($request->study_id))->first();
 
-        // get parent modalities
-        $getParentModalities = Modility::all();
+        // get parent modalities that are assigned to this study
+        $getParentModalities = Modility::leftjoin('study_modilities', 'study_modilities.parent_modility_id', '=', 'modilities.id')
+        ->where('study_modilities.study_id', decrypt($request->study_id))
+        ->groupBy('study_modilities.parent_modility_id')
+        ->get();
 
         return view('certificationapp::certificate_preferences.study_setup', compact('checkStudy', 'getParentModalities'));
 

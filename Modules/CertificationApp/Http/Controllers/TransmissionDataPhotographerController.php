@@ -64,7 +64,8 @@ class TransmissionDataPhotographerController extends Controller
            $getTransmissions = $getTransmissions->where('status', $request->status);
         }
 
-        $getTransmissions = $getTransmissions->groupBy(['StudyI_ID', 'Photographer_email', 'Requested_certification', 'Site_ID'])
+        $getTransmissions = $getTransmissions->where('archive_transmission', 'no')
+                                            ->groupBy(['StudyI_ID', 'Photographer_email', 'Requested_certification', 'Site_ID'])
                                             ->orderBy('id', 'desc')
                                             ->paginate(50);
 
@@ -77,19 +78,28 @@ class TransmissionDataPhotographerController extends Controller
                     ->where('Requested_certification', $transmission->Requested_certification)
                     ->where('Site_ID', $transmission->Site_ID)
                     ->where('status', 'accepted')
+                    ->where('archive_transmission', 'no')
                     ->get()
                     ->count();
 
             // first get the modility ID
             $getModalityID = Modility::where('modility_name', $transmission->Requested_certification)->first();
-
             $getModalityID = $getModalityID != null ? $getModalityID->id : 0;
 
             // get study ID
             $getStudyID = Study::where('study_code', $transmission->StudyI_ID)->first();
-
             $getStudyID = $getStudyID != null ? $getStudyID->id : 0;
-            
+
+            // get Site ID
+            $getSiteID = Site::where('site_code', $transmission->Site_ID)->first();
+            $getSiteID = $getSiteID != null ? $getSiteID->id : 0;
+
+            // get photographer ID
+            $getPhotographerID = Photographer::where('email', $transmission->Photographer_email)
+                                               ->where('site_id', $getSiteID)
+                                               ->first();
+            $getPhotographerID = $getPhotographerID != null ? $getPhotographerID->id : 0;
+
             // check no. of transmission for study and modility in setup table
             $getTransmissionNo = StudySetup::where('study_id', $getStudyID)->first();
 
@@ -122,16 +132,40 @@ class TransmissionDataPhotographerController extends Controller
                 $transmission->rowColor = '';
             } // study setup ends
 
+            $certificateStatus = '';
+
+            // check if this transmission has already been certified for this modality and study
+            $certifiedTransmission = CertificationData::where('study_id', $getStudyID)
+                                                        ->where('modility_id', $getModalityID)
+                                                        ->where('photographer_id', $getPhotographerID)
+                                                        ->where('site_id', $getSiteID)
+                                                        ->where('transmission_type', 'photographer_transmission')
+                                                        ->first();
+
+            if ($certifiedTransmission != null) {
+
+                // check for provisional or full certificate
+                $certificateStatus = $certifiedTransmission->certificate_status == 'provisional' ? 'provisional' : 'full'; 
+
+            } else {
+
+                // look for number of counts
+                $certificateStatus = $acceptedTransmissions > 0 ? 'allowed' : 'not_allowed';
+            }
+
             // get linked transmissions
             $getLinkedTransmissions = TransmissionDataPhotographer::select('id', 'Transmission_Number', 'status')
                     ->where('StudyI_ID', $transmission->StudyI_ID)
                     ->where('Photographer_email', $transmission->Photographer_email)
                     ->where('Requested_certification', $transmission->Requested_certification)
                     ->where('Site_ID', $transmission->Site_ID)
+                    ->where('archive_transmission', 'no')
                     ->get()
                     ->toArray();
 
             $transmission->linkedTransmission = $getLinkedTransmissions;
+            // assign status
+            $transmission->certificateStatus = $certificateStatus;
 
         } // loop ends
 
@@ -555,6 +589,7 @@ class TransmissionDataPhotographerController extends Controller
                     ->where('Requested_certification', $findTransmission->Requested_certification)
                     ->where('Site_ID', $findTransmission->Site_ID)
                     ->where('status', 'accepted')
+                    ->where('archive_transmission', 'no')
                     ->get()
                     ->toArray();
 
@@ -598,6 +633,7 @@ class TransmissionDataPhotographerController extends Controller
                     ->where('Requested_certification', $findTransmission->Requested_certification)
                     ->where('Site_ID', $findTransmission->Site_ID)
                     ->where('status', 'accepted')
+                    ->where('archive_transmission', 'no')
                     ->get()
                     ->toArray();
 
@@ -616,7 +652,6 @@ class TransmissionDataPhotographerController extends Controller
         $newCertificateID = Str::uuid();
         $generateCertificate = new CertificationData;
         $generateCertificate->id = $newCertificateID;
-        $generateCertificate->certificate_id = 'OIIRC-01-'.substr(md5(microtime()), 0, 8);
         
         // get photographer ID
         $getPhotographer = Photographer::where('site_id', $findTransmission->transmission_site_id)
@@ -660,10 +695,16 @@ class TransmissionDataPhotographerController extends Controller
         if ($request->certificate_type == 'original') {
 
             $generateCertificate->transmissions = ($request->transmissions != null) ? json_encode($request->transmissions) : json_encode([]);
+
+            $generateCertificate->certificate_id = 'OIIRC-01-'.substr(md5(microtime()), 0, 8).'-O';
+
         
         } elseif ($request->certificate_type == 'grandfathered') {
 
             $generateCertificate->grandfather_certificate_id = $request->grandfather_id;
+
+            $generateCertificate->certificate_id = 'OIIRC-01-'.substr(md5(microtime()), 0, 8).'-G';
+
         }
         
         // issue date
@@ -681,16 +722,16 @@ class TransmissionDataPhotographerController extends Controller
         // get study email to pass to pdf
         $getStudyEmail = StudySetup::where('study_id', $getStudy->id)->first();
 
-        $file_name = uniqid().'_photographer.pdf';
+        $file_name = $generateCertificate->certificate_id.'_'.$getModality->modility_name.'_photographer.pdf';
         $path = storage_path('certificates_pdf/photographer');
         // generate pdf
-        $pdf = PDF::loadView('certificationapp::certificate_pdf.photographer_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('a4')->save($path.'/'.$file_name);
+        $pdf = PDF::loadView('certificationapp::certificate_pdf.certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('a4')->save($path.'/'.$file_name);
         
 
         // make array for changings dynamic variable in the text editor
-        $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, $findTransmission->PI_Name, $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date];
+        $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, $findTransmission->PI_Name, $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id];
 
-        $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[pi_name]]', '[[modality_name]]', '[[certificate_id]]', '[[sender_name]]', '[[certificate_status]]', '[[certificate_type]]', '[[issue_date]]', '[[expiry_date]]'];
+        $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[pi_name]]', '[[modality_name]]', '[[certificate_id]]', '[[sender_name]]', '[[certificate_status]]', '[[certificate_type]]', '[[issue_date]]', '[[expiry_date]]', '[[grandfather_certificate_id]]'];
 
         $data = [];
         $data['email_body'] = str_replace($labels, $variables, $request->comment);
@@ -716,4 +757,15 @@ class TransmissionDataPhotographerController extends Controller
         return redirect()->back();
     }
 
+    public function archivePhotographerTransmission(Request $request, $transmissionID) {
+
+        $findTransmission = TransmissionDataPhotographer::find(decrypt($transmissionID));
+        $findTransmission->archive_transmission = 'yes';
+        $findTransmission->save();
+
+        Session::flash('success', 'Transmission moved to arcive successfully.');
+
+        return redirect()->back();
+
+    }
 }

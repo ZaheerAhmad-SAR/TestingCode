@@ -66,7 +66,10 @@
     Route::resource('certification-photographer', 'TransmissionDataPhotographerController');
 
 // generate photographer certificate
-	Route::post('generate-phptographer-certificate', 'TransmissionDataPhotographerController@generatePhotographerCertificate')->name('generate-phptographer-certificate');
+	Route::post('generate-photographer-certificate', 'TransmissionDataPhotographerController@generatePhotographerCertificate')->name('generate-photographer-certificate');
+
+// generate device certificate
+	Route::post('generate-device-certificate', 'TransmissionDataDeviceController@generateDeviceCertificate')->name('generate-device-certificate');
 
 // update photographer transmission status
     // Route::post('update-photographer-transmission-status', 'TransmissionDataPhotographerController@updatePhotographerTransmissionStatus')->name('update-photographer-transmission-status');
@@ -76,6 +79,12 @@
 
 // get transmission data for Certification geneartion ajax
 	Route::get('get-transmission-data', 'TransmissionDataPhotographerController@getTransmissionData')->name('get-transmission-data');
+
+// archive photographer transmission
+	Route::get('archive-photographer-transmission/{transmission_id}', 'TransmissionDataPhotographerController@archivePhotographerTransmission')->name('archive-photographer-transmission');
+
+// archive device transmission
+	Route::get('archive-device-transmission/{transmission_id}', 'TransmissionDataDeviceController@archiveDeviceTransmission')->name('archive-device-transmission');
 
 
 Route::group(['middleware' => ['auth', 'web']], function () {
