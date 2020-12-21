@@ -59,32 +59,42 @@
                     <form action="{{route('transmissions.index')}}" method="get" class="filter-form">
                         <div class="form-row" style="padding: 10px;">
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-4">
                                 <label for="trans_id">Transmission#</label>
                                 <input type="text" name="trans_id" id="trans_id" class="form-control filter-form-data" value="{{ request()->trans_id }}" placeholder="Transmission#">
                             </div>
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-4">
+                                <label for="inputState"> Study </label>
+                                <select id="study_id" name="study_id" class="form-control filter-form-data">
+                                    <option value="">All Studies</option>
+                                    @foreach($getStudies as $study)
+                                    <option @if ($study->study_code == request()->study_id) selected @endif value="{{ $study->study_code}}"> {{ $study->study_short_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-4">
                                 <label for="suject_id">Subject ID</label>
                                 <input type="text" name="subject_id" id="subject_id" class="form-control filter-form-data" value="{{ request()->subject_id }}" placeholder="Subject ID">
                             </div>
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-4">
                                 <label for="visit_name">Visit Name</label>
                                 <input type="text" name="visit_name" id="visit_name" class="form-control filter-form-data" value="{{ request()->visit_name }}" placeholder="Visit Name">
                             </div>
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-4">
                                 <label for="dt">Visit Date</label>
                                 <input type="text" name="visit_date" id="visit_date" class="form-control visit_date filter-form-data" value="{{ request()->visit_date }}">
                             </div>
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-4">
                                 <label for="imagine_modality">Imagine Modality</label>
                                 <input type="text" name="imagine_modality" id="imagine_modality" class="form-control filter-form-data" value="{{ request()->imagine_modality }}" placeholder="Imagine Modality">
                             </div>
 
-                             <div class="form-group col-md-2">
+                            <div class="form-group col-md-4">
                                 <label for="inputState"> Modality </label>
                                 <select id="modility_id" name="modility_id" class="form-control filter-form-data">
                                     <option value="">All Modality</option>
@@ -94,7 +104,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-3">
                                 <label for="inputState"> Processed Status</label>
                                 <select id="is_read" name="is_read" class="form-control filter-form-data">
                                     <option value="">All Processed Status</option>
@@ -356,6 +366,7 @@
 
 <script type="text/javascript">
 
+    $('#study_id').select2();
     //// Transmission Query  Work start
 
     $('.creatNewTransmissionsForQueries').click(function () {
