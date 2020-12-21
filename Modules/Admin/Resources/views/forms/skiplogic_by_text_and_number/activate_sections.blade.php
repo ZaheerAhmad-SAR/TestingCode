@@ -1,26 +1,9 @@
-@php
-    $activate_sections_array = [];
-    if($questionsType =='radio'){
-        $where = array(
-            "question_id" =>$q_id,
-            "option_value" =>$options_value[$index]
-        );
-    }else{
-        $where = array(
-            "question_id" =>$q_id
-        );
-    }
-    $if_exists_record = Modules\Admin\Entities\skipLogic::where($where)->first();
-    if(null !== $if_exists_record){
-        $activate_sections_array = explode(',', $if_exists_record->activate_sections);
-    }
-    $section = Modules\Admin\Entities\Section::select('*')->where('phase_steps_id', $value->step_id)->orderBy('sort_number', 'asc')->get();
+@php 
+$section = Modules\Admin\Entities\Section::select('*')->where('phase_steps_id', $value->step_id)->orderBy('sort_number', 'asc')->get();
 @endphp
 @if(count($section) > 0)
 @foreach ($section as $key => $value)
-    @php
-    if(in_array($value->id, $activate_sections_array)){ $checked = 'checked'; }else{ $checked = ''; }
-    @endphp
+   
     <div class="card-body" style="padding: 0;">
         <div class="table-responsive ">
             <table class="table table-bordered" style="margin-bottom:0px;background-color: #EFEFEF;color: black;">
@@ -34,25 +17,16 @@
                         </td>
                         <td colspan="5">
                         {{--   --}}
-                           <input type="checkbox" name="activate_sections[{{$index}}][]" value="{{$value->id}}"  class="activate_section_{{$value->id}}_{{$index}}"  onclick="disabled_opposite('{{$value->id}}','deactivate_section_','{{$index}}','activate_section_')" {{$checked}}> &nbsp;&nbsp;{{$value->name}}
+                           <input type="checkbox" name="activate_sections[{{$index}}][]" value="{{$value->id}}"  class="activate_section_{{$value->id}}_{{$index}}"  onclick="disabled_opposite('{{$value->id}}','deactivate_section_','{{$index}}','activate_section_')"> &nbsp;&nbsp;{{$value->name}}
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-     @push('script_last')
-        <script>
-            $(document).ready(function() {
-                @php
-                    echo "disabled_opposite('$value->id','deactivate_section_','$index','activate_section_');";
-                @endphp
-            })
-        </script>
-    @endpush
     <div class="card-body collapse row-{{$value->id}}-ac-{{$index}} ac_questions_list_{{$value->id}}_{{$index}}" style="padding: 0;">
         {{-- include activate questions --}}
-        @include('admin::forms.skiplogic_by_options.activate_questions')
+        @include('admin::forms.skiplogic_by_text_and_number.activate_questions')
     </div>
    
 @endforeach
