@@ -48,6 +48,10 @@ class TransmissionController extends Controller
            $getTransmissions = $getTransmissions->where('Transmission_Number', 'like', '%' . $request->trans_id . '%');
         }
 
+        if ($request->study_id != '') {
+            $getTransmissions = $getTransmissions->where('StudyI_ID', $request->study_id);
+        }
+
         if ($request->subject_id != '') {
 
            $getTransmissions = $getTransmissions->where('Subject_ID', 'like', '%' . $request->subject_id . '%');
@@ -94,7 +98,10 @@ class TransmissionController extends Controller
         // get modality
         $getModalities = Modility::get();
 
-        return view('admin::transmission_details', compact('getTransmissions', 'getModalities'));
+        // get studies
+        $getStudies = Study::get();
+
+        return view('admin::transmission_details', compact('getTransmissions', 'getModalities', 'getStudies'));
     }
 
     public function studyTransmissions(Request $request)

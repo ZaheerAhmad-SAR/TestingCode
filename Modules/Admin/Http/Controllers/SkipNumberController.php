@@ -29,9 +29,11 @@ class SkipNumberController extends Controller
     public function skip_question_on_number($id)
     {
         $question_label = Question::where('id', $id)->first();
+        $section = Section::where('id',$question_label->section_id)->first();
+        $step = PhaseSteps::where('step_id',$section->phase_steps_id)->first();
         $num_values = Question::where('id', $id)->with('skiplogic')->get();
         $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->get();
-        return view('admin::forms.skip_question_num', compact('question_label','num_values','all_study_steps'));
+        return view('admin::forms.skip_question_num', compact('question_label','num_values','all_study_steps','step'));
     }
     // Add skip conditions on Questions with type Number
     public function add_skipLogic_num(Request $request)
@@ -93,8 +95,12 @@ class SkipNumberController extends Controller
     public function update_skip_checks($id)
     {
         $num_values = skipLogic::where('id', $id)->first();
+        $question_id = $num_values->question_id;
+        $question = Question::where('id',$question_id)->first();
+        $section = Section::where('id',$question->section_id)->first();
+        $step = PhaseSteps::where('step_id',$section->phase_steps_id)->first();
         $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->get();
-        return view('admin::forms.update_skip_question_num', compact('num_values','all_study_steps'));
+        return view('admin::forms.update_skip_question_num', compact('num_values','all_study_steps','step'));
     }
     public function update_skip_checks_on_number(Request $request)
     {
@@ -214,9 +220,13 @@ class SkipNumberController extends Controller
     public function update_skip_checks_text($id)
     {
         $num_values = skipLogic::where('id', $id)->first();
+        $question_id = $num_values->question_id;
+        $question = Question::where('id',$question_id)->first();
+        $section = Section::where('id',$question->section_id)->first();
+        $step = PhaseSteps::where('step_id',$section->phase_steps_id)->first();
         $question_info = Question::where('id', $num_values->question_id)->first();
         $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->get();
-        return view('admin::forms.update_skip_question_text', compact('question_info','num_values','all_study_steps'));
+        return view('admin::forms.update_skip_question_text', compact('question_info','num_values','all_study_steps','step'));
     }
     // insert updated checks and deleted previous logic
     public function update_skip_checks_on_textbox(Request $request)

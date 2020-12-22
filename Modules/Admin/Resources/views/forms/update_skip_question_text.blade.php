@@ -50,6 +50,7 @@
         <!-- START: Card Data-->
         <form action="{{route('skipNumber.updateSkipTextboxChecks')}}" enctype="multipart/form-data" method="POST">
             @php
+                $phase_id = $step->phase_id;
                 $q_id = $num_values->question_id;
                 $index = 0;
                 if($num_values->textbox_value !=''){
@@ -94,6 +95,7 @@
                     </div>           
         @foreach ($all_study_steps as $key => $value)
         @foreach($value->studySteps as $indexx => $value)
+        @if($phase_id == $value->phase_id)
         @php 
             $activate_forms_array = explode(',', $num_values->activate_forms);
             if(in_array($value->step_id, $activate_forms_array)){ $checked = 'checked'; }else{ $checked = ''; }
@@ -129,6 +131,7 @@
                      })
                  </script>
                 @endpush
+        @endif
         @endforeach
         @endforeach
         </div>
@@ -149,6 +152,7 @@
                     </div>
         @foreach ($all_study_steps as $key => $value)
         @foreach($value->studySteps as $indexx => $value)
+        @if($phase_id == $value->phase_id)
          @php 
             $deactivate_forms_array = explode(',', $num_values->deactivate_forms);
             if(in_array($value->step_id, $deactivate_forms_array)){ $checked = 'checked'; }else{ $checked = ''; }
@@ -184,6 +188,7 @@
                  })
              </script>
             @endpush
+        @endif
         @endforeach
         @endforeach
         </div>
@@ -196,9 +201,11 @@
         <!-- END: Card DATA-->
 
 @endsection
-@include('admin::forms.script_skip_logic')
 @include('admin::forms.common_script_skip_logic')
-    @section('styles')
- 
-    @section('script')
+@section('script')
+    <script type="text/javascript">
+        $('.detail-icon').click(function(e){
+            $(this).toggleClass("fa-chevron-circle-right fa-chevron-circle-down");
+        });
+    </script>
 @endsection

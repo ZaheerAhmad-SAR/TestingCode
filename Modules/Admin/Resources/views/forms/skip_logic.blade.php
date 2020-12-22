@@ -46,6 +46,7 @@
         <form action="{{route('skiplogic.apply_skip_logic')}}" enctype="multipart/form-data" method="POST">
             @csrf
             @php
+            $phase_id = $step->phase_id;
             $questionsType ='radio';
             $check_value = [];
             $q_id = request('id');
@@ -95,6 +96,4 @@
             $(this).toggleClass("fa-chevron-circle-right fa-chevron-circle-down");
         });
     </script>
-@push('script_last')
-@endpush
 @endsection

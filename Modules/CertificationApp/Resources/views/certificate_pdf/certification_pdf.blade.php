@@ -100,15 +100,7 @@ h1, h3,p {     margin-top: 5px;margin-bottom: 0px;
 		</tr>
 		<tr>
 			<td align="center">
-				<p style="font-weight: bold;padding-left:5%;font-family: play">Certificate ID: {{ $generateCertificate->certificate_id}} (
-
-				@if($generateCertificate->certificate_type == 'original')
-						"O"
-
-				@elseif($generateCertificate->certificate_type == 'grandfathered')
-						"G"
-				@endif
-				)<br>
+				<p style="font-weight: bold;padding-left:5%;font-family: play">Certificate ID: {{ $generateCertificate->certificate_id}} <br>
 				
 				@if($generateCertificate->certificate_type == 'original' && $generateCertificate->transmissions != '')
 

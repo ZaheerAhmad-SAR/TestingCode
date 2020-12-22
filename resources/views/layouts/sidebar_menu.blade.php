@@ -341,28 +341,28 @@
                 @endif
 
             @endif
-
-            @if(session('current_study'))
-            <li class="dropdown">
-                <ul>
-                    <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Certification Data</a>
-                        <ul class="sub-menu">
-                            <li  class="@if(is_active('photographer.index')) {{ ' active' }} @endif">
-                                <a href="{{route('photographer.index')}}">
-                                    <i class="fas fa-list"></i> Photographers List
-                                </a>
-                            </li>
-                            <li class="@if(is_active('devices_certify.index')) {{ ' active' }} @endif">
-                                <a href="{{route('devices_certify.index')}}">
-                                    <i class="fas fa-list"></i> Devices List
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
+            @if(hasPermission(auth()->user(),'certification.index'))
+                @if(session('current_study'))
+                <li class="dropdown">
+                    <ul>
+                        <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Certification Data</a>
+                            <ul class="sub-menu">
+                                <li  class="@if(is_active('photographer.index')) {{ ' active' }} @endif">
+                                    <a href="{{route('photographer.index')}}">
+                                        <i class="fas fa-list"></i> Photographers List
+                                    </a>
+                                </li>
+                                <li class="@if(is_active('devices_certify.index')) {{ ' active' }} @endif">
+                                    <a href="{{route('devices_certify.index')}}">
+                                        <i class="fas fa-list"></i> Devices List
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                @endif
             @endif
-            
             @if(hasPermission(auth()->user(),'data_management.index'))
                 @if(session('current_study'))
                     <li class="dropdown">

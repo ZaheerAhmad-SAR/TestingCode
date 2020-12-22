@@ -15,8 +15,8 @@
                             <input type="hidden" name="step_id" id="step_id_for_clone">
                             @foreach($phases as $key => $phase)
                             <div class="form-group row">
-                                <label for="Name" class="col-sm-3 col-form-label">{{$phase->name}}</label>
-                                <div class="col-sm-1">
+                                <label for="Name" class="col-sm-4 col-form-label">{{$phase->name}}</label>
+                                <div class="col-sm-2">
                                     <input type="checkbox" name="phase[]" value="{{$phase->id}}" style="margin-top: 10px;">
                                 </div>
                             </div>
