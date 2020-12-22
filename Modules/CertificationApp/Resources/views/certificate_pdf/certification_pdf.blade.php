@@ -9,7 +9,7 @@
 h1, h3,p {     margin-top: 5px;margin-bottom: 0px;
 }
 </style>
-<body style="background: #f7f7f7; margin:-8%, -4% 0 -4%; height: 150%">
+<body style="background: #f7f7f7; margin:-8%, -4% 0 -4%; height: 150%; border: 2px solid red">
 	<table align="center" style="width: 100%;">
 		<tr>
 			<td align="center">&nbsp;</td>
@@ -20,8 +20,12 @@ h1, h3,p {     margin-top: 5px;margin-bottom: 0px;
 		<tr>
 			<td align="center">&nbsp;</td>
 		</tr>
-		<tr><td align="center"><img src="https://certifyme.oirrc.net/asset/img/Logo.PNG" style="width: 25%;"> </td>
+		<tr>
+			<td align="center">
+				<img src="{{ asset('public/occap_email_logo.png')}}" style="width: 25%; padding-bottom: 5px;"> 
+			</td>
 		</tr>
+
 		<tr>
 			<td align="center" style="">
 				<h3 style="font-family: play">The Ocular Imaging Research and Reading Center</h3>
