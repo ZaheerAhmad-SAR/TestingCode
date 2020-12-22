@@ -9,22 +9,8 @@
                 </i> Add Comment</a>
         </span>
     </div>
-    @if(\Modules\Queries\Entities\Query::questionHasQuery($queryParams))
-        <div class="showQueries">
-        <span class="ml-3" style="cursor: pointer;">
-            @php
-                $dataStr = '';
-                if(isset($queryParams)){
-                    $dataStr = "'" . implode("', '", $queryParams)."'";
-                }
-            @endphp
-            <i class="fas fa-question-circle showAllQuestionQueries" onclick="getAllQuestionQueryData({{ $dataStr }});"  style="margin-top: 12px; position: absolute;left: 0; color: red;"></i>
-        </span>
-        </div>
-        @endif
-
-{{--    @if(\Modules\Queries\Entities\Query::questionStatusHasClose($queryParams))--}}
-{{--        <div class="closeQuestion">--}}
+{{--    @if(\Modules\Queries\Entities\Query::questionHasQuery($queryParams))--}}
+{{--        <div class="showQueries">--}}
 {{--        <span class="ml-3" style="cursor: pointer;">--}}
 {{--            @php--}}
 {{--                $dataStr = '';--}}
@@ -32,11 +18,44 @@
 {{--                    $dataStr = "'" . implode("', '", $queryParams)."'";--}}
 {{--                }--}}
 {{--            @endphp--}}
-
-{{--            <i class="fas fa-check-circle showCloseQuestionPopUp" onclick="showCloseQuestionQueries({{ $dataStr }});"  style="margin-top: 12px; position: absolute;left: 17px;"></i>--}}
+{{--            <i class="fas fa-question-circle showAllQuestionQueries" onclick="getAllQuestionQueryData({{ $dataStr }});"  style="margin-top: 12px; position: absolute;left: 0; color: red;"></i>--}}
 {{--        </span>--}}
 {{--        </div>--}}
 {{--        @endif--}}
+     @if(\Modules\Queries\Entities\Query::questionHasQuery($queryParams)>0)
+    @if(\Modules\Queries\Entities\Query::questionStatusHasClose($queryParams)===true)
+        <div class="showQueries">
+        <span class="ml-3" style="cursor: pointer;">
+            @php
+                $dataStr = '';
+                if(isset($queryParams)){
+                    $dataStr = "'" . implode("', '", $queryParams)."'";
+
+                }
+                //echo 'true';
+            @endphp
+
+            <i class="fas fa-question-circle showAllQuestionQueries" onclick="getAllQuestionQueryData({{ $dataStr }});"  style="margin-top: 12px; position: absolute;left: 0; color: red;"></i>
+        </span>
+        </div>
+    @else
+
+        <div class="closeQuestion">
+        <span class="ml-3" style="cursor: pointer;">
+            @php
+                $dataStr = '';
+                if(isset($queryParams)){
+                    $dataStr = "'" . implode("', '", $queryParams)."'";
+                }
+
+            //echo('false');
+            @endphp
+            <i class="fas fa-check-circle showCloseQuestionPopUp" onclick="showCloseQuestionQueries({{ $dataStr }});"  style="margin-top: 12px; position: absolute;left: 17px; color: green;"></i>
+
+        </span>
+        </div>
+        @endif
+    @endif
 
 </div>
 @endif
