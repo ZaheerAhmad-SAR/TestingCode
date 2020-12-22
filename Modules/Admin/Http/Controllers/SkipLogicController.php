@@ -32,13 +32,17 @@ class SkipLogicController extends Controller
     public function skip_question_on_click($id)
     {
         $options = Question::where('id', $id)->with('optionsGroup', 'skiplogic')->first();
-        return view('admin::forms.skip_logic', compact('options'));
+        $section = Section::where('id',$options->section_id)->first();
+        $step = PhaseSteps::where('step_id',$section->phase_steps_id)->first();
+        return view('admin::forms.skip_logic', compact('options','step'));
     }
     public function skip_question_on_text($id)
     {
         $num_values = Question::where('id', $id)->with('skiplogic')->first();
-        $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->get();
-        return view('admin::forms.skip_question_text', compact('num_values','all_study_steps'));
+        $section = Section::where('id',$num_values->section_id)->first();
+        $step = PhaseSteps::where('step_id',$section->phase_steps_id)->first();
+        $all_study_steps = PhaseSteps::where('phase_id', $step->phase_id)->get();
+        return view('admin::forms.skip_question_text', compact('num_values','all_study_steps','step'));
     }
     public function skip_logic_cohort($id){
         $disease_cohorts = DiseaseCohort::where('study_id', '=', $id)->get();

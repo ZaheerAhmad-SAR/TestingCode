@@ -31,7 +31,7 @@
                                 <option value="">Select Site</option>
                                 @if(!empty($site_study))
                                     @foreach($site_study as $site)
-                                        <option class="dropdown" value="{{$site->id}}">{{$site->site_name}}</option>
+                                        <option class="dropdown" value="{{$site->id}}">{{$site->site_name}}--{{$site->site_code}}</option>
                                     @endforeach
                                 @endif
                             </select>
@@ -171,8 +171,9 @@
                                 <select name="site_id" id="site_id" class="form-control">
                                     <option value="">Select Subject Site</option>
                                     @if(!empty($site_study))
+
                                         @foreach($site_study as $site)
-                                            <option class="dropdown" value="{{$site->id}}">{{$site->site_name}}</option>
+                                            <option class="dropdown" value="{{$site->id}}">{{$site->site_name}}-{{$site->site_code}}</option>
                                         @endforeach
                                     @endif
                                 </select>
@@ -258,7 +259,7 @@
                                     <option value="">Select Subject Site</option>
                                     @if(!empty($site_study))
                                         @foreach($site_study as $site)
-                                            <option class="dropdown" value="{{$site->id}}">{{$site->site_name}}</option>
+                                            <option class="dropdown" value="{{$site->id}}">{{$site->site_name}}--{{$site->site_code}}</option>
                                         @endforeach
                                     @endif
                                 </select>

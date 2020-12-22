@@ -9,6 +9,15 @@
                 <form action="{{ route('forms.addQuestions') }}" enctype="multipart/form-data" method="POST"
                     id="form_certify">
                     @csrf
+                    <nav>
+                        <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link active" id="nav-Basic-tab" data-toggle="tab" href="#nav-Basic"
+                                role="tab" aria-controls="nav-home" aria-selected="true">Basic</a>
+                            <a class="nav-item nav-link" id="nav-Dependencies-tab" data-toggle="tab"
+                                href="#nav-Dependencies" role="tab" aria-controls="nav-contact"
+                                aria-selected="false">Dependencies</a>
+                        </div>
+                    </nav>
                     <div class="modal-body">
                         <div id="exTab1">
                             <div class="tab-content clearfix">
