@@ -32,7 +32,7 @@ class SkipNumberController extends Controller
         $section = Section::where('id',$question_label->section_id)->first();
         $step = PhaseSteps::where('step_id',$section->phase_steps_id)->first();
         $num_values = Question::where('id', $id)->with('skiplogic')->get();
-        $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->get();
+        $all_study_steps = PhaseSteps::where('phase_id', $step->phase_id)->get();
         return view('admin::forms.skip_question_num', compact('question_label','num_values','all_study_steps','step'));
     }
     // Add skip conditions on Questions with type Number
@@ -99,7 +99,7 @@ class SkipNumberController extends Controller
         $question = Question::where('id',$question_id)->first();
         $section = Section::where('id',$question->section_id)->first();
         $step = PhaseSteps::where('step_id',$section->phase_steps_id)->first();
-        $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->get();
+        $all_study_steps = PhaseSteps::where('phase_id', $step->phase_id)->get();
         return view('admin::forms.update_skip_question_num', compact('num_values','all_study_steps','step'));
     }
     public function update_skip_checks_on_number(Request $request)
@@ -225,7 +225,7 @@ class SkipNumberController extends Controller
         $section = Section::where('id',$question->section_id)->first();
         $step = PhaseSteps::where('step_id',$section->phase_steps_id)->first();
         $question_info = Question::where('id', $num_values->question_id)->first();
-        $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->get();
+        $all_study_steps = PhaseSteps::where('phase_id', $step->phase_id)->get();
         return view('admin::forms.update_skip_question_text', compact('question_info','num_values','all_study_steps','step'));
     }
     // insert updated checks and deleted previous logic
