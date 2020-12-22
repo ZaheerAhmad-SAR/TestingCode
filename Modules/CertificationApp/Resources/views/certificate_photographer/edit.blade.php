@@ -157,7 +157,7 @@
                                         <option value="">Select Site</option>
                                         <option value="add_new">Add New</option>
                                         @foreach($getSites as $site)
-                                        <option @if($site->site_code == $findTransmission->Site_ID) selected @endif value="{{$site->id.'/'.$site->site_code}}">{{$site->site_code}}</option>
+                                        <option @if($site->site_code == $findTransmission->Site_ID) selected @endif value="{{$site->id.'/'.$site->site_code}}">{{$site->site_code.' - '.$site->site_name}}</option>
                                         @endforeach
                                     </select>
                                 </div>

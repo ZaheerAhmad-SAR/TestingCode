@@ -83,14 +83,14 @@
                                             @if($key == 0)
                                             <label for="Phone">Devices Transmission No.</label>
                                             @endif
-                                            <input type="number" class="form-control" name="allowed_no_transmission[device][{{$modility->id}}]" id="allowed_no_transmission" value="{{ $deviceTransmissionNumber }}" required>
+                                            <input type="number" class="form-control" name="allowed_no_transmission[device][{{$modility->id}}]" id="allowed_no_transmission" value="{{ $deviceTransmissionNumber }}" min="0" required>
                                         </div>
 
                                         <div class="col-md-4">
                                             @if($key == 0)
                                             <label for="Phone">Photographer Transmission No.</label>
                                             @endif
-                                            <input type="number" class="form-control" name="allowed_no_transmission[photographer][{{$modility->id}}]" id="allowed_no_transmission" value="{{ $photographerTransmissionNumber }}" required>
+                                            <input type="number" class="form-control" name="allowed_no_transmission[photographer][{{$modility->id}}]" id="allowed_no_transmission" value="{{ $photographerTransmissionNumber }}" min="0" required>
                                         </div>
                                         @endforeach
 
@@ -108,14 +108,14 @@
                                             @if($key == 0)
                                             <label for="Phone">Devices Transmission No.</label>
                                             @endif
-                                            <input type="number" class="form-control" name="allowed_no_transmission[device][{{$modility->id}}]" id="allowed_no_transmission" value="1" required>
+                                            <input type="number" class="form-control" name="allowed_no_transmission[device][{{$modility->id}}]" id="allowed_no_transmission" value="1" min="0" required>
                                         </div>
 
                                         <div class="col-md-4">
                                             @if($key == 0)
                                             <label for="Phone">Photographer Transmission No.</label>
                                             @endif
-                                            <input type="number" class="form-control" name="allowed_no_transmission[photographer][{{$modility->id}}]" id="allowed_no_transmission" value="2" required>
+                                            <input type="number" class="form-control" name="allowed_no_transmission[photographer][{{$modility->id}}]" id="allowed_no_transmission" value="2" min="0" required>
                                         </div>
                                         @endforeach
 

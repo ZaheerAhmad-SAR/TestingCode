@@ -157,10 +157,33 @@
                                            
                                             <td> {{$transmission->Site_Name}} </td>
                                             
-                                            <td> 
+                                            <td>
+                                                @if ($transmission->certificateStatus == 'provisional')
+
+                                                <a href="javascript:void()" id="generate-certification" data-id="" title="Provisional Certified" class="badge badge-warning">
+                                                    Provisional Certified
+                                                </a>
+
+                                                @elseif($transmission->certificateStatus == 'full')
+
+                                                 <a href="javascript:void()" id="generate-certification" data-id="" title="Full Certified" class="badge badge-success">
+                                                    Full Certified
+                                                </a>
+
+                                                @elseif($transmission->certificateStatus == 'allowed')
+
                                                 <a href="javascript:void()" id="generate-certification" data-id="" title="Generate Certificate" class="badge badge-dark" onClick="generateCertificate('{{$transmission->id}}')">
                                                     Generate Certificate
                                                 </a>
+
+                                                @elseif($transmission->certificateStatus == 'not_allowed')
+
+                                                <a href="javascript:void()" id="generate-certification" data-id="" title="Atleast one transmission should be accepted" class="badge badge-danger">
+                                                    Generate Certificate
+                                                </a>
+
+                                                @endif
+
                                             </td>
                                             
                                             <td>
@@ -178,38 +201,16 @@
                                                 &nbsp; | &nbsp;
 
                                                 <span class="text-dark">
-                                                    <strong> {{$linkedTransmission['status']}} </strong>
+                                                    <strong style="color: #17a2b8 !important;"> {{$linkedTransmission['status']}} </strong>
                                                 </span>
 
-                                                {{--
+                                                &nbsp; | &nbsp;
+                                                
+                                                <span>
+                                                    <a href="javascript:void(0)" class="" title="Archive Transmission" data-url="">
+                                                        <i class="fas fa-archive" onClick="archiveTransmission('{{encrypt($linkedTransmission['id'])}}', '{{ route('archive-photographer-transmission', encrypt($linkedTransmission['id'])) }}')" data-url="" style="color: #17a2b8 !important;"></i>
+                                                </span>
 
-                                                @if($linkedTransmission['status'] == 'accepted')
-
-                                                    <span class="badge badge-success" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
-                                                    </span>
-
-                                                @elseif($linkedTransmission['status'] == 'pending')
-
-                                                    <span class="badge badge-primary" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
-                                                    </span>
-
-                                                @elseif($linkedTransmission['status'] == 'rejected')
-
-                                                    <span class="badge badge-danger" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
-                                                    </span>
-
-                                                @elseif($linkedTransmission['status'] == 'deficient')
-
-                                                    <span class="badge badge-warning" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
-                                                    </span>
-
-                                                @elseif($linkedTransmission['status'] == 'duplicate')
-
-                                                    <span class="badge badge-dark" onClick="changeStatus('{{ $linkedTransmission['id'] }}', '{{ $linkedTransmission['status'] }}')">{{$linkedTransmission['status']}}
-                                                    </span>
-
-                                                @endif
-                                                --}}
                                                 <br>
                                                 <br>
                                             @endforeach
@@ -271,7 +272,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-            <form action="{{ route('generate-phptographer-certificate') }}" method="POST" class="generate-certificate-form">
+            <form action="{{ route('generate-photographer-certificate') }}" method="POST" class="generate-certificate-form">
                 @csrf
               <div class="modal-body">
                     <input type="hidden" name="hidden_transmission_id" class="hidden_transmission_id" value="">
@@ -561,7 +562,7 @@
     });
 
 
-     // form submit
+    // form submit
     $('.generate-certificate-form').submit(function(e) {
         
         if($('.summernote').summernote('isEmpty')) {
@@ -601,6 +602,15 @@
         }); // ajax ends
 
     });  // change function ends
+
+    // to archive a transmission
+    function archiveTransmission(transmissionID, transmissionRoute) {
+
+        if (confirm('Do you really wants to move this transmission to archive?')) {
+
+            window.location.href = transmissionRoute;
+        } 
+    }
 
 </script>
 
