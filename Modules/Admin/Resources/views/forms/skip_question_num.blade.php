@@ -51,6 +51,7 @@
         <!-- START: Card Data-->
         <form action="{{route('skipNumber.apply_skip_logic_num')}}" enctype="multipart/form-data" method="POST">
             @php
+              $phase_id = $step->phase_id;
               $q_id = request('id');
               $index = 0;
             @endphp
@@ -97,8 +98,8 @@
                         </div>
                     </div>           
         @foreach ($all_study_steps as $key => $value)
-        @foreach($value->studySteps as $indexx => $value)
-            {{-- @if(in_array($value->step_id, $activate_forms_array)){ $checked = 'checked'; }@else{ $checked = ''; }@endif --}}
+            @foreach($value->studySteps as $indexx => $value)
+                @if($phase_id == $value->phase_id)
                     <div class="card">
                         <div class="card-body" style="padding: 0;">
                             <div class="table-responsive">
@@ -116,12 +117,13 @@
                                 </tbody>
                             </table>
                         </div>
+                        </div>
                     </div>
-                </div>
-                <div class="card collapse row-{{$value->step_id}}-ac-{{$key}} sections_list_{{$value->step_id}}_{{$key}}">
-                    @include('admin::forms.skiplogic_by_text_and_number.activate_sections')
-                </div>
-        @endforeach
+                    <div class="card collapse row-{{$value->step_id}}-ac-{{$key}} sections_list_{{$value->step_id}}_{{$key}}">
+                        @include('admin::forms.skiplogic_by_text_and_number.activate_sections')
+                    </div>
+                @endif    
+            @endforeach
         @endforeach
         </div>
         <div class="col-12 col-sm-6 mt-3 current_div_de">
@@ -140,31 +142,32 @@
                         </div>
                     </div>
         @foreach ($all_study_steps as $key => $value)
-        @foreach($value->studySteps as $indexx => $value)
-            {{-- if(in_array($value->step_id, $deactivate_forms_array)){ $checked = 'checked'; }else{ $checked = ''; } --}}
-            <div class="card">
-                <div class="card-body" style="padding: 0;">
-                    <div class="table-responsive">
-                        <table class="table table-bordered" style="margin-bottom:0px;background-color: #1E3D73;color: white;">
-                        <tbody>
-                            <tr>
-                                <td class="step_id" style="display: none;">{{$value->step_id}}</td>
-                                <td style="text-align: center;width: 15%">
-                                  <div class="btn-group btn-group-sm" role="group">
-                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-de-{{$key}}"></i>
-                                  </div>
-                                </td>
-                                <td colspan="5"><input type="checkbox" name="deactivate_forms[{{$key}}][]" value="{{$value->step_id}}" class="deactivate_step_{{$value->step_id}}_{{$key}}" onclick="disabled_opposite('{{$value->step_id}}','activate_step_','{{$key}}','deactivate_step_')"> &nbsp;&nbsp;{{$value->step_name}}({{$value->formType->form_type }}- {{ $value->modility->modility_name}})</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            @foreach($value->studySteps as $indexx => $value)
+                @if($phase_id == $value->phase_id)
+                    <div class="card">
+                        <div class="card-body" style="padding: 0;">
+                            <div class="table-responsive">
+                                <table class="table table-bordered" style="margin-bottom:0px;background-color: #1E3D73;color: white;">
+                                <tbody>
+                                    <tr>
+                                        <td class="step_id" style="display: none;">{{$value->step_id}}</td>
+                                        <td style="text-align: center;width: 15%">
+                                          <div class="btn-group btn-group-sm" role="group">
+                        <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-de-{{$key}}"></i>
+                                          </div>
+                                        </td>
+                                        <td colspan="5"><input type="checkbox" name="deactivate_forms[{{$key}}][]" value="{{$value->step_id}}" class="deactivate_step_{{$value->step_id}}_{{$key}}" onclick="disabled_opposite('{{$value->step_id}}','activate_step_','{{$key}}','deactivate_step_')"> &nbsp;&nbsp;{{$value->step_name}}({{$value->formType->form_type }}- {{ $value->modility->modility_name}})</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-        <div class="card collapse row-{{$value->step_id}}-de-{{$key}} de_sections_list_{{$value->step_id}}_{{$key}}">
-            @include('admin::forms.skiplogic_by_text_and_number.deactivate_sections')
-        </div>
-        @endforeach
+                <div class="card collapse row-{{$value->step_id}}-de-{{$key}} de_sections_list_{{$value->step_id}}_{{$key}}">
+                    @include('admin::forms.skiplogic_by_text_and_number.deactivate_sections')
+                </div>
+            @endif
+            @endforeach
         @endforeach
         </div>
             </div>
@@ -222,39 +225,11 @@
 </div>
  {{-- listing here for logics --}}
 @endsection
-@include('admin::forms.edit_crf')
-@include('admin::forms.script_skip_logic_num')
+@section('script')
 @include('admin::forms.common_script_skip_logic')
-    @section('styles')
-    <style type="text/css">
-            /*.table{table-layout: fixed;}*/
-            .select2-container--default
-            .select2-selection--single {
-                background-color: #fff;
-                 border: transparent !important;
-                border-radius: 4px;
-            }
-            .select2-selection__rendered {
-                font-weight: 400;
-                line-height: 1.5;
-                color: #495057 !important;
-                background-color: #fff;
-                background-clip: padding-box;
-                border: 1px solid #ced4da;
-                border-radius: .25rem;
-                transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-            }
-        </style>
-        <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
-        <!-- select2 -->
-        <link rel="stylesheet" href="{{ asset('public/dist/vendors/select2/css/select2.min.css') }}"/>
-        <link rel="stylesheet" href="{{ asset('public/dist/vendors/select2/css/select2-bootstrap.min.css') }}"/>
-    @endsection
-    @section('script')
-    <script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script>
-    <script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
-    <!-- select2 -->
-    <script src="{{ asset('public/dist/vendors/select2/js/select2.full.min.js') }}"></script>
-    <script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
-
+    <script type="text/javascript">
+        $('.detail-icon').click(function(e){
+            $(this).toggleClass("fa-chevron-circle-right fa-chevron-circle-down");
+        });
+    </script>  
 @endsection

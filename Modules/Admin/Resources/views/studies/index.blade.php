@@ -37,13 +37,13 @@
                     @csrf
                     <div class="form-row" style="padding: 10px;">
                         <div class="form-group col-md-4">
-                            <input type="text" name="study_code" class="form-control" placeholder="Via Study Code">
+                            <input type="text" name="study_code" class="form-control" placeholder="Study Code">
                         </div>
                          <div class="form-group col-md-4">
-                           <input type="text" name="study_short_name" class="form-control" placeholder="Via Study Short Name">
+                           <input type="text" name="study_short_name" class="form-control" placeholder="Study Short Name">
                         </div>
                         <div class="form-group col-md-4">
-                            <input type="text" class="form-control" name="study_sponsor" placeholder="Via Sponsor Name">
+                            <input type="text" class="form-control" name="study_sponsor" placeholder="Sponsor Name">
                         </div>
                         <div class="form-group col-md-4">
                             <select name="study_status" class="form-control">
@@ -184,7 +184,7 @@
                                                         </span> --}}
                                                         <span class="dropdown-item">
                                                             <a href="{{route('skiplogic.skiponcohort',$study->id)}}" target="_blank">
-                                                                <i class="fa fa-plus"></i> Cohort Sitting
+                                                                <i class="fa fa-plus"></i> Cohort Setting
                                                             </a>
                                                         </span>
                                                     </div>

@@ -307,7 +307,7 @@ class StudyController extends Controller
             ]);
             $id = $study->id;
 
-            $studies  =   UserRole::select('user_roles.*', 'users.*', 'studies.*')
+            $studies  =  UserRole::select('user_roles.*', 'users.*', 'studies.*')
                 ->join('users', 'users.id', '=', 'user_roles.user_id')
                 ->join('studies', 'studies.id', '=', 'user_roles.study_id')
                 ->where('users.id', '=', \auth()->user()->id)
@@ -338,9 +338,8 @@ class StudyController extends Controller
 
             $site_study = StudySite::where('study_id', '=', $id)
                 ->join('sites', 'sites.id', '=', 'site_study.site_id')
-                ->select('sites.site_name', 'sites.id')
-                ->get();
-
+                ->select('sites.site_name', 'sites.id','sites.site_code')
+                ->get();  
             $diseaseCohort = DiseaseCohort::where('study_id', '=', $id)->get();
             return view('admin::studies.show', compact('study', 'studies', 'subjects', 'currentStudy', 'site_study', 'diseaseCohort'));
         } else {

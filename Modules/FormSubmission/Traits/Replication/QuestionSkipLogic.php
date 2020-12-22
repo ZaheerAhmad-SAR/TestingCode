@@ -10,6 +10,7 @@ use Modules\Admin\Entities\QuestionOption;
 
 trait QuestionSkipLogic
 {
+
     private function addReplicatedQuestionSkipLogic($questionSkipLogic, $replicatedQuestionId)
     {
         $newQuestionSkipLogicId = Str::uuid();
