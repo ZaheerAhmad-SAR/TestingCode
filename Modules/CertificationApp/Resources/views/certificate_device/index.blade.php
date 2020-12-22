@@ -162,25 +162,25 @@
                                             <td> {{$transmission->Site_Name}} </td>
 
                                             <td>
-                                                @if ($transmission->certificateStatus == 'provisional')
+                                                @if ($transmission->certificateStatus['status'] == 'provisional')
 
-                                                <a href="javascript:void()" id="generate-certification" data-id="" title="Provisional Certified" class="badge badge-warning">
+                                                <a href="javascript:void()" id="generate-certification" data-id="" title="Provisional Certified" class="badge badge-warning" onClick="generateCertificate('{{$transmission->id}}', '{{ $transmission->certificateStatus['certificate_id'] }}', '{{ route('update-device-provisonal-certificate')}}', 'Provisional')">
                                                     Provisional Certified
                                                 </a>
 
-                                                @elseif($transmission->certificateStatus == 'full')
+                                                @elseif($transmission->certificateStatus['status'] == 'full')
 
                                                  <a href="javascript:void()" id="generate-certification" data-id="" title="Full Certified" class="badge badge-success">
                                                     Full Certified
                                                 </a>
 
-                                                @elseif($transmission->certificateStatus == 'allowed')
+                                                @elseif($transmission->certificateStatus['status'] == 'allowed')
 
-                                                <a href="javascript:void()" id="generate-certification" data-id="" title="Generate Certificate" class="badge badge-dark" onClick="generateCertificate('{{$transmission->id}}')">
+                                                <a href="javascript:void()" id="generate-certification" data-id="" title="Generate Certificate" class="badge badge-dark" onClick="generateCertificate('{{$transmission->id}}', '{{ $transmission->certificateStatus['certificate_id'] }}', 'NO URL','Generate')">
                                                     Generate Certificate
                                                 </a>
 
-                                                @elseif($transmission->certificateStatus == 'not_allowed')
+                                                @elseif($transmission->certificateStatus['status'] == 'not_allowed')
 
                                                 <a href="javascript:void()" id="generate-certification" data-id="" title="Atleast one transmission should be accepted" class="badge badge-danger">
                                                     Generate Certificate
@@ -284,6 +284,7 @@
                 @csrf
               <div class="modal-body">
                     <input type="hidden" name="hidden_transmission_id" class="hidden_transmission_id" value="">
+                    <input type="hidden" name="hidden_device_certification_id" class="hidden_device_certification_id" value="">
                     
                     <div class="form-group col-md-12">
                         <label>Change Status<span class="field-required">*</span></label>
@@ -431,7 +432,13 @@
         $('.filter-form').submit();
     });
 
-    function generateCertificate(transmissionID) {
+     function generateCertificate(transmissionID, certificateID, route, type) {
+
+        if(type == 'Provisional') {
+            // chnage form action and assign certification ID
+            $('.generate-certificate-form').attr('action', route);
+            $('.hidden_device_certification_id').val(certificateID);
+        }
 
         var transmission = '';
         var childModalities = '';
@@ -441,9 +448,15 @@
 
         // by default values
         $('#certification_status').val('');
+        $('#certificate_type').val('');
         $('#issue_date').val('');
 
+        // remove required from grand father
+        $('.grandfather-div').css('display', 'none');
+        $('#grandfather_id').attr('required', false);
+
         // remove transmission check boxes
+        $('.original-div').css('display', 'none');
         $(".transmission-checkbox :checkbox").parent().remove();
         // remove certification for drop down
         $('#certificate_for').empty();
