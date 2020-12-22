@@ -86,7 +86,7 @@ class QueriesController extends Controller
     public function loadAllQuestionById(Request $request)
     {
         $question_id = $request->question_id;
-        $records = Query::where('query_status','!=','close')->where('question_id','like',$question_id)->where('parent_query_id','like',0)->get();
+        $records = Query::where('query_status','!=','new')->where('question_id','like',$question_id)->where('parent_query_id','like',0)->get();
         echo  view('queries::queries.question.queries_questions_table_view',compact('records'));
 
     }
@@ -154,13 +154,13 @@ class QueriesController extends Controller
 
     public function queryQuestionReply(Request $request)
     {
-
+        //dd($request->all());
         $query_status     = $request->post('query_status'); // return the status value
         $query_id         = $request->post('query_id');
         $find             = Query::find($query_id);
         $queryStatusArray = array('query_status'=>$query_status);
         Query::where('id',$find['id'])->update($queryStatusArray);
-        $reply            = $request->post('reply');
+        $message_reply    = $request->post('message_query_for_reply');
         $query_subject    = $request->post('subject_question');
         $query_level_q    = $request->post('query_level_question');
 
@@ -194,7 +194,7 @@ class QueriesController extends Controller
             'id'=>$id,
             'queried_remarked_by_id'=>\auth()->user()->id,
             'parent_query_id'=> $query_id,
-            'messages'=>$reply,
+            'messages'=>$message_reply,
             'query_type' =>$query_type,
             'query_url'=>$query_url,
             'query_subject'=>$query_subject,

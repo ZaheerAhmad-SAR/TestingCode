@@ -16,30 +16,19 @@
     @endforeach
 
 </div>
-<div class="form-group row commentsInput" style="display: none;">
-    <label for="Name" class="col-sm-2 col-form-label">Enter your Query</label>
-    <div class="col-sm-10">
-        <textarea class="form-control" name="reply" id="reply"></textarea>
-    </div>
-</div>
-<div class="form-group row queryAttachments" style="display: none;" >
-    <label for="Attachment" class="col-sm-2 col-form-label">Attachment:</label>
-    <div class="col-sm-10">
-        <input class="form-control" type="file" name="question_file"  id="question_file">
-    </div>
-</div>
- <div class="form-group row queryStatus" style="display:none;">
-     <label for="Status" class="col-sm-2 col-form-label">Status</label>
-     <div class="col-sm-10">
-         <select class="form-control" id="query_status" name="query_status">
-             <option value="open" {{$query->query_status== 'open'? 'selected="selected"' : ''}}>open</option>
-             <option value="confirmed" {{$query->query_status== 'confirmed'? 'selected="selected"' : ''}}>Confirmed</option>
-             <option value="unconfirmed" {{$query->query_status== 'unconfirmed'? 'selected="selected"' : ''}}>UnConfirmed</option>
-             <option value="in progress" {{$query->query_status== 'in progress'? 'selected="selected"' : ''}}>Inprogress</option>
-             <option value="close" {{$query->query_status== 'close'? 'selected="selected"' : ''}}>close</option>
-             </select>
-         </div>
- </div>
+
+{{-- <div class="form-group row queryStatus" style="display:none;">--}}
+{{--     <label for="Status" class="col-sm-2 col-form-label">Status</label>--}}
+{{--     <div class="col-sm-10">--}}
+{{--         <select class="form-control" id="query_status" name="query_status">--}}
+{{--             <option value="open" {{$query->query_status=== 'open'? 'selected="selected"' : ''}}>open</option>--}}
+{{--             <option value="confirmed" {{$query->query_status=== 'confirmed'? 'selected="selected"' : ''}}>Confirmed</option>--}}
+{{--             <option value="unconfirmed" {{$query->query_status=== 'unconfirmed'? 'selected="selected"' : ''}}>UnConfirmed</option>--}}
+{{--             <option value="in progress" {{$query->query_status=== 'in progress'? 'selected="selected"' : ''}}>Inprogress</option>--}}
+{{--             <option value="close" {{$query->query_status=== 'close'? 'selected="selected"' : ''}}>close</option>--}}
+{{--             </select>--}}
+{{--         </div>--}}
+{{-- </div>--}}
 
 
 
@@ -63,5 +52,3 @@
     <input type="hidden" name="query_level_question" id="query_level_question" value="{{ $query->query_level }}">
 </div>
 
-{{--<script src="{{ asset('dist/vendors/summernote/summernote-bs4.js') }}"></script>--}}
-{{--<script src="{{ asset('dist/js/summernote.script.js') }}"></script>--}}
