@@ -96,7 +96,7 @@ class CloneStepsController extends Controller
                 /* Replicate Question Data Validation */
                 /******************************* */
 
-                $this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId);
+                $this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId, $isReplicating);
 
                 /******************************* */
                 /* Replicate Question Dependency */
@@ -109,6 +109,18 @@ class CloneStepsController extends Controller
                 /******************************* */
 
                 $this->addReplicatedQuestionAdjudicationStatus($question, $newQuestionId, $isReplicating);
+
+                /******************************* */
+                /* Replicate Question Skip Logic */
+                /******************************* */
+
+                $this->updateSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
+
+                /******************************* */
+                /* Replicate Question Option Skip Logic */
+                /******************************* */
+
+                $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
             }
         }
     }

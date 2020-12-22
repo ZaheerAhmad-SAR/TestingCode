@@ -470,6 +470,7 @@ class StudyController extends Controller
         $replica = Study::create([
             'id'    => $id,
             'parent_id' => $study_id,
+            'replicating_or_cloning' => 'cloning',
             'study_short_name'  =>  $request->study_short_name,
             'study_title' => $request->study_title,
             'study_status'  => 'Development',
@@ -556,6 +557,7 @@ class StudyController extends Controller
                             'duration' => $phase->duration,
                             'is_repeatable' => $phase->is_repeatable,
                             'parent_id' => $phase->parent_id,
+                            'replicating_or_cloning' => 'cloning',
                             'count' => $phase->count
                         ]);
                     }
@@ -570,6 +572,7 @@ class StudyController extends Controller
                             'duration' => $phase->duration,
                             'is_repeatable' => $phase->is_repeatable,
                             'parent_id' => $replica_phase_id->id,
+                            'replicating_or_cloning' => 'cloning',
                             'count' => $phase->count
                         ]);
                     }
@@ -586,6 +589,7 @@ class StudyController extends Controller
                             'is_out_of_window'  => $subjectPhase->is_out_of_window,
                         ]);
                     }
+
                     foreach ($phase->steps as $step) {
                         $isReplicating = false;
                         $newStepId = $this->addReplicatedStep($step, $replica_phase_id->id, $isReplicating);
@@ -614,7 +618,7 @@ class StudyController extends Controller
                                 /* Replicate Question Data Validation */
                                 /******************************* */
 
-                                $this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId);
+                                $this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId, $isReplicating);
 
                                 /******************************* */
                                 /* Replicate Question Dependency */
@@ -627,6 +631,18 @@ class StudyController extends Controller
                                 /******************************* */
 
                                 $this->addReplicatedQuestionAdjudicationStatus($question, $newQuestionId, $isReplicating);
+
+                                /******************************* */
+                                /* Replicate Question Skip Logic */
+                                /******************************* */
+
+                                $this->updateSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
+
+                                /******************************* */
+                                /* Replicate Question Option Skip Logic */
+                                /******************************* */
+
+                                $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
                             }
                         }
                     }
@@ -926,6 +942,7 @@ class StudyController extends Controller
         $replica = Study::create([
             'id'    => $id,
             'parent_id' => $study_id,
+            'replicating_or_cloning' => 'cloning',
             'study_short_name'  =>  $request->study_short_name,
             'study_title' => $request->study_title,
             'study_status'  => 'Development',
@@ -1011,6 +1028,7 @@ class StudyController extends Controller
                                 'duration' => $phase->duration,
                                 'is_repeatable' => $phase->is_repeatable,
                                 'parent_id' => $phase->parent_id,
+                                'replicating_or_cloning' => 'cloning',
                                 'count' => $phase->count
                             ]);
                         }
@@ -1025,6 +1043,7 @@ class StudyController extends Controller
                                 'duration' => $phase->duration,
                                 'is_repeatable' => $phase->is_repeatable,
                                 'parent_id' => $replica_phase_id->id,
+                                'replicating_or_cloning' => 'cloning',
                                 'count' => $phase->count
                             ]);
                         }
@@ -1040,6 +1059,7 @@ class StudyController extends Controller
                                 'form_type_id'  => $subjectPhase->form_type_id,
                             ]);
                         }
+
                         foreach ($phase->steps as $step) {
                             $isReplicating = false;
                             $newStepId = $this->addReplicatedStep($step, $replica_phase_id->id, $isReplicating);
@@ -1068,7 +1088,7 @@ class StudyController extends Controller
                                     /* Replicate Question Data Validation */
                                     /******************************* */
 
-                                    $this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId);
+                                    $this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId, $isReplicating);
 
                                     /******************************* */
                                     /* Replicate Question Dependency */
@@ -1081,6 +1101,18 @@ class StudyController extends Controller
                                     /******************************* */
 
                                     $this->addReplicatedQuestionAdjudicationStatus($question, $newQuestionId, $isReplicating);
+
+                                    /******************************* */
+                                    /* Replicate Question Skip Logic */
+                                    /******************************* */
+
+                                    $this->updateSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
+
+                                    /******************************* */
+                                    /* Replicate Question Option Skip Logic */
+                                    /******************************* */
+
+                                    $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
                                 }
                             }
                         }

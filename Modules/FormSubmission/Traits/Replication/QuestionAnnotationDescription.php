@@ -20,7 +20,9 @@ trait QuestionAnnotationDescription
 
     private function updateQuestionAnnotationDescriptionToReplicatedVisits($questionId)
     {
-        $replicatedQuestions = Question::where('parent_id', 'like', $questionId)->get();
+        $replicatedQuestions = Question::where('parent_id', 'like', $questionId)
+            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->get();
         foreach ($replicatedQuestions as $replicatedQuestion) {
             $questionAnnotationDescriptions = AnnotationDescription::where('question_id', 'like', $questionId)->get();
             foreach ($questionAnnotationDescriptions as $questionAnnotationDescription) {
@@ -40,7 +42,9 @@ trait QuestionAnnotationDescription
 
     private function deleteQuestionAnnotationDescriptionsToReplicatedVisits($questionId)
     {
-        $replicatedQuestions = Question::where('parent_id', 'like', $questionId)->get();
+        $replicatedQuestions = Question::where('parent_id', 'like', $questionId)
+            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->get();
         foreach ($replicatedQuestions as $replicatedQuestion) {
             AnnotationDescription::where('question_id', 'like', $replicatedQuestion->id)->delete();
         }

@@ -18,6 +18,6 @@ class StudyStructureWithoutRepeatedScope implements Scope
      */
     public function apply(Builder $builder, Model $model)
     {
-        $builder->where('study_structures.parent_id', 'no-parent');
+        $builder->where('study_structures.parent_id', 'no-parent')->where('study_structures.replicating_or_cloning', 'replicating');
     }
 }

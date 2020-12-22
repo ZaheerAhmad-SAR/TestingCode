@@ -29,6 +29,7 @@ use Modules\FormSubmission\Traits\Replication\ReplicatePhaseStructure;
 
 class SkipLogicController extends Controller
 {
+    use ReplicatePhaseStructure;
     public function skip_question_on_click($id)
     {
         $options = Question::where('id', $id)->with('optionsGroup', 'skiplogic')->first();
@@ -38,21 +39,22 @@ class SkipLogicController extends Controller
     {
         $num_values = Question::where('id', $id)->with('skiplogic')->first();
         $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->get();
-        return view('admin::forms.skip_question_text', compact('num_values','all_study_steps'));
+        return view('admin::forms.skip_question_text', compact('num_values', 'all_study_steps'));
     }
-    public function skip_logic_cohort($id){
+    public function skip_logic_cohort($id)
+    {
         $disease_cohorts = DiseaseCohort::where('study_id', '=', $id)->get();
         $cohort_skiplogic = CohortSkipLogic::where('study_id', '=', $id)->get();
         $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->get();
-        return view('admin::studies.skip_logic_cohort', compact('all_study_steps','disease_cohorts','cohort_skiplogic'));
+        return view('admin::studies.skip_logic_cohort', compact('all_study_steps', 'disease_cohorts', 'cohort_skiplogic'));
     }
-  
+
     public function add_skipLogic(Request $request)
     {
         $skip_ques = [];
         $skip_options = [];
         if (isset($request->option_value) && count($request->option_value) > 0) {
-            $where = array('question_id' =>$request->question_id);
+            $where = array('question_id' => $request->question_id);
             $remove_checks_if_already_exists = skipLogic::where($where)->delete();
             $remove_options_checks_if_exists = QuestionOption::where($where)->delete();
             for ($i = 0; $i < count($request->option_value); $i++) {
@@ -70,39 +72,41 @@ class SkipLogicController extends Controller
                     'deactivate_questions' => (isset($request->deactivate_questions[$i]) && $request->deactivate_questions[$i] != '') ? implode(',', $request->deactivate_questions[$i]) : ''
                 ];
                 // Deactivate Questions options
-                if(isset($request->deactivate_options[$i]) && count($request->deactivate_options[$i]) > 0){
-                  for($j = 0; $j < count($request->deactivate_options[$i]); $j++) {
-                    $op_content = explode('<<=!=>>', $request->deactivate_options[$i][$j]);
-                    $skip_options = [
-                        'id' => Str::uuid(),
-                        'skip_logic_id' => $skiplogic_id,
-                        'question_id' => $request->question_id,
-                        'value' => $op_content[0],
-                        'type' => 'deactivate',
-                        'option_question_id' => $op_content[1],
-                        'option_depend_on_question_type' => 'radio'
+                if (isset($request->deactivate_options[$i]) && count($request->deactivate_options[$i]) > 0) {
+                    for ($j = 0; $j < count($request->deactivate_options[$i]); $j++) {
+                        $op_content = explode('<<=!=>>', $request->deactivate_options[$i][$j]);
+                        $skip_options = [
+                            'id' => Str::uuid(),
+                            'skip_logic_id' => $skiplogic_id,
+                            'question_id' => $request->question_id,
+                            'value' => $op_content[0],
+                            'type' => 'deactivate',
+                            'option_question_id' => $op_content[1],
+                            'option_depend_on_question_type' => 'radio'
                         ];
-                    QuestionOption::insert($skip_options);
-                  }
+                        QuestionOption::insert($skip_options);
+                    }
                 }
                 // Activate Questions options
-                if(isset($request->activate_options[$i]) && count($request->activate_options[$i]) > 0){
-                   for($j = 0; $j < count($request->activate_options[$i]); $j++) {
-                    $op_content = explode('<<=!=>>', $request->activate_options[$i][$j]);
-                    $skip_options = [
-                        'id' => Str::uuid(),
-                        'skip_logic_id' => $skiplogic_id,
-                        'question_id' => $request->question_id,
-                        'value' => $op_content[0],
-                        'type' => 'activate',
-                        'option_question_id' => $op_content[1],
-                        'option_depend_on_question_type' => 'radio'
+                if (isset($request->activate_options[$i]) && count($request->activate_options[$i]) > 0) {
+                    for ($j = 0; $j < count($request->activate_options[$i]); $j++) {
+                        $op_content = explode('<<=!=>>', $request->activate_options[$i][$j]);
+                        $skip_options = [
+                            'id' => Str::uuid(),
+                            'skip_logic_id' => $skiplogic_id,
+                            'question_id' => $request->question_id,
+                            'value' => $op_content[0],
+                            'type' => 'activate',
+                            'option_question_id' => $op_content[1],
+                            'option_depend_on_question_type' => 'radio'
                         ];
-                    QuestionOption::insert($skip_options);
-                  }
+                        QuestionOption::insert($skip_options);
+                    }
                 }
                 skipLogic::insert($skip_ques);
             }
+            $this->updateSkipLogicsToReplicatedVisits($request->question_id);
+            $this->updateOptionSkipLogicsToReplicatedVisits($request->question_id);
         }
         return redirect()->route('skiplogic.skipLogic', $request->question_id)->with('message', 'Checks Applied Successfully!');
     }
@@ -110,8 +114,8 @@ class SkipLogicController extends Controller
     {
         $skip_ques = [];
         $skip_options = [];
-        if (isset($request->cohort_id) && count($request->cohort_id) > 0){
-            $where = array('study_id' =>$request->study_id);
+        if (isset($request->cohort_id) && count($request->cohort_id) > 0) {
+            $where = array('study_id' => $request->study_id);
             $remove_checks_if_already_exists = CohortSkipLogic::where($where)->delete();
             $remove_options_checks_if_exists = CohortSkipLogicOption::where($where)->delete();
             for ($i = 0; $i < count($request->cohort_id); $i++) {
@@ -126,32 +130,32 @@ class SkipLogicController extends Controller
                     'deactivate_questions' => (isset($request->deactivate_questions[$i]) && $request->deactivate_questions[$i] != '') ? implode(',', $request->deactivate_questions[$i]) : ''
                 ];
                 // Deactivate Questions options
-                if(isset($request->deactivate_options[$i]) && count($request->deactivate_options[$i]) > 0){
-                  for($j = 0; $j < count($request->deactivate_options[$i]); $j++) {
-                    $op_content = explode('<<=!=>>', $request->deactivate_options[$i][$j]);
-                    $skip_options = [
-                        'id' => Str::uuid(),
-                        'cohort_skiplogic_id' => $cohort_skiplogic_id,
-                        'study_id' => $request->study_id,
-                        'value' => $op_content[0],
-                        'option_question_id' => $op_content[1]
+                if (isset($request->deactivate_options[$i]) && count($request->deactivate_options[$i]) > 0) {
+                    for ($j = 0; $j < count($request->deactivate_options[$i]); $j++) {
+                        $op_content = explode('<<=!=>>', $request->deactivate_options[$i][$j]);
+                        $skip_options = [
+                            'id' => Str::uuid(),
+                            'cohort_skiplogic_id' => $cohort_skiplogic_id,
+                            'study_id' => $request->study_id,
+                            'value' => $op_content[0],
+                            'option_question_id' => $op_content[1]
                         ];
-                    CohortSkipLogicOption::insert($skip_options);
-                  }
+                        CohortSkipLogicOption::insert($skip_options);
+                    }
                 }
                 // Activate Questions options
-                if(isset($request->activate_options[$i]) && count($request->activate_options[$i]) > 0){
-                   for($j = 0; $j < count($request->activate_options[$i]); $j++) {
-                    $op_content = explode('<<=!=>>', $request->activate_options[$i][$j]);
-                    $skip_options = [
-                        'id' => Str::uuid(),
-                        'cohort_skiplogic_id' => $cohort_skiplogic_id,
-                        'study_id' => $request->study_id,
-                        'value' => $op_content[0],
-                        'option_question_id' => $op_content[1]
+                if (isset($request->activate_options[$i]) && count($request->activate_options[$i]) > 0) {
+                    for ($j = 0; $j < count($request->activate_options[$i]); $j++) {
+                        $op_content = explode('<<=!=>>', $request->activate_options[$i][$j]);
+                        $skip_options = [
+                            'id' => Str::uuid(),
+                            'cohort_skiplogic_id' => $cohort_skiplogic_id,
+                            'study_id' => $request->study_id,
+                            'value' => $op_content[0],
+                            'option_question_id' => $op_content[1]
                         ];
-                    CohortSkipLogicOption::insert($skip_options);
-                  }
+                        CohortSkipLogicOption::insert($skip_options);
+                    }
                 }
                 CohortSkipLogic::insert($skip_ques);
             }
