@@ -50,7 +50,6 @@
         <!-- START: Card Data-->
         <form action="{{route('skipNumber.updateSkipTextboxChecks')}}" enctype="multipart/form-data" method="POST">
             @php
-                $phase_id = $step->phase_id;
                 $q_id = $num_values->question_id;
                 $index = 0;
                 if($num_values->textbox_value !=''){
@@ -94,8 +93,6 @@
                         </div>
                     </div>           
         @foreach ($all_study_steps as $key => $value)
-        @foreach($value->studySteps as $indexx => $value)
-        @if($phase_id == $value->phase_id)
         @php 
             $activate_forms_array = explode(',', $num_values->activate_forms);
             if(in_array($value->step_id, $activate_forms_array)){ $checked = 'checked'; }else{ $checked = ''; }
@@ -112,7 +109,7 @@
                                             <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-ac-{{$key}}" style="font-size: 20px;"></i>
                                           </div>
                                         </td>
-                                        <td colspan="5"> <input type="checkbox" name="activate_forms[{{$key}}][]" value="{{$value->step_id}}" class="activate_step_{{$value->step_id}}_{{$key}}" onclick="disabled_opposite('{{$value->step_id}}','deactivate_step_','{{$key}}','activate_step_')" {{$checked}}> &nbsp;&nbsp;{{$value->step_name}}</td>
+                                        <td colspan="5"> <input type="checkbox" name="activate_forms[{{$index}}][]" value="{{$value->step_id}}" class="activate_step_{{$value->step_id}}_{{$key}}" onclick="disabled_opposite('{{$value->step_id}}','deactivate_step_','{{$key}}','activate_step_')" {{$checked}}> &nbsp;&nbsp;{{$value->step_name}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -131,8 +128,6 @@
                      })
                  </script>
                 @endpush
-        @endif
-        @endforeach
         @endforeach
         </div>
         <div class="col-12 col-sm-6 mt-3 current_div_de">
@@ -151,8 +146,6 @@
                         </div>
                     </div>
         @foreach ($all_study_steps as $key => $value)
-        @foreach($value->studySteps as $indexx => $value)
-        @if($phase_id == $value->phase_id)
          @php 
             $deactivate_forms_array = explode(',', $num_values->deactivate_forms);
             if(in_array($value->step_id, $deactivate_forms_array)){ $checked = 'checked'; }else{ $checked = ''; }
@@ -169,7 +162,7 @@
                                     <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-de-{{$key}}" style="font-size: 20px;"></i>
                                   </div>
                                 </td>
-                                <td colspan="5"><input type="checkbox" name="deactivate_forms[{{$key}}][]" value="{{$value->step_id}}"  class="deactivate_step_{{$value->step_id}}_{{$key}}" onclick="disabled_opposite('{{$value->step_id}}','activate_step_','{{$key}}','deactivate_step_')" {{$checked}}> &nbsp;&nbsp;{{$value->step_name}}</td>
+                                <td colspan="5"><input type="checkbox" name="deactivate_forms[{{$index}}][]" value="{{$value->step_id}}"  class="deactivate_step_{{$value->step_id}}_{{$key}}" onclick="disabled_opposite('{{$value->step_id}}','activate_step_','{{$key}}','deactivate_step_')" {{$checked}}> &nbsp;&nbsp;{{$value->step_name}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -188,8 +181,6 @@
                  })
              </script>
             @endpush
-        @endif
-        @endforeach
         @endforeach
         </div>
             </div>

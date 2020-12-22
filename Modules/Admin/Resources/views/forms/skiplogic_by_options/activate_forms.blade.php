@@ -9,7 +9,7 @@
     if(null !==$if_exists_record){
         $activate_forms_array = explode(',', $if_exists_record->activate_forms);
     }
-    $all_study_steps = Modules\Admin\Entities\Study::where('id', session('current_study'))->with('studySteps')->first();
+     $all_study_steps = Modules\Admin\Entities\PhaseSteps::where('phase_id', $phase_id)->get();
 @endphp
 {{-- Steps data loading Start here  --}}
 <div class="col-12 col-sm-6 mt-3">
@@ -28,8 +28,7 @@
         </div>
     </div>
 {{-- Steps data loading end here  --}}
-@foreach ($all_study_steps->studySteps as $key => $value)
-    @if($phase_id == $value->phase_id)
+@foreach ($all_study_steps as $key => $value)
         @php
         if(in_array($value->step_id, $activate_forms_array)){ $checked = 'checked'; }else{ $checked = ''; }
         @endphp
@@ -66,7 +65,6 @@
            @include('admin::forms.skiplogic_by_options.activate_sections') 
         {{-- Load Sections here for activate end here --}}
         </div>
-    @endif    
 @endforeach 
 </div>
             
