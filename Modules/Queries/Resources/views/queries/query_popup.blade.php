@@ -667,12 +667,29 @@
     $('body').on('click', '.replyQuestionQuery', function () {
         var query_id           = $(this).attr('data-id');
         var questionStatusValue = $(this).attr('data-value');
-        $('.queryQuestionCurrentStatus').html('');
-        $('.queryQuestionCurrentStatus').text('Status: '+questionStatusValue);
-        $('#query_status').val(questionStatusValue);
-        $('#reply-question-modal').modal('show');
-        $('#show-question-table-modal').modal('hide');
-        showQuestions(query_id);
+        if (questionStatusValue == 'close')
+        {
+            $('.queryQuestionCurrentStatus').html('');
+            $('.queryQuestionCurrentStatus').text('Status: '+questionStatusValue);
+            $('#query_status').val(questionStatusValue);
+            $('#reply-question-modal').modal('show');
+            $('#show-question-table-modal').modal('hide');
+            $('.replyQuestionButton').css('display','none');
+            $('#replyquestion').hide();
+            showQuestions(query_id);
+        }
+        else
+        {
+            $('.queryQuestionCurrentStatus').html('');
+            $('.queryQuestionCurrentStatus').text('Status: '+questionStatusValue);
+            $('#query_status').val(questionStatusValue);
+            $('#reply-question-modal').modal('show');
+            $('#show-question-table-modal').modal('hide');
+            $('.replyQuestionButton').css('display','');
+            $('#replyquestion').show();
+            showQuestions(query_id);
+        }
+
 
     });
 
@@ -704,25 +721,25 @@
         });
     }
 
-    {{--function showCloseQuestions(query_id) {--}}
-    {{--    $.ajax({--}}
-    {{--        url:"{{route('queries.showQuestionsById')}}",--}}
-    {{--        type: 'POST',--}}
-    {{--        data: {--}}
-    {{--            "_token": "{{ csrf_token() }}",--}}
-    {{--            "_method": 'POST',--}}
-    {{--            'query_id'      :query_id,--}}
-    {{--        },--}}
-    {{--        success: function(response)--}}
-    {{--        {--}}
-    {{--            $('.replyInput').html('');--}}
-    {{--            $('.replyInput').html(response);--}}
-    {{--            var query_status = $( "#query_status option:selected" ).text();--}}
-    {{--            $('.queryCurrentStatus').text('Status: '+query_status);--}}
-    {{--            $('.replyClick').css('display','');--}}
-    {{--        }--}}
-    {{--    });--}}
-    {{--}--}}
+    function showCloseQuestions(query_id) {
+        $.ajax({
+            url:"{{route('queries.showQuestionsById')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'POST',
+                'query_id'      :query_id,
+            },
+            success: function(response)
+            {
+                $('.replyInput').html('');
+                $('.replyInput').html(response);
+                var query_status = $( "#query_status option:selected" ).text();
+                $('.queryCurrentStatus').text('Status: '+query_status);
+                $('.replyClick').css('display','');
+            }
+        });
+    }
 
 
         $("#replyQuestionForm").on('submit', function(e) {
@@ -887,6 +904,10 @@
     });
 
     $('#queries-modal-question').on('hidden.bs.modal', function () {
+        $(this).find('form').trigger('reset');
+    })
+
+    $('#reply-question-modal').on('hidden.bs.modal', function () {
         $(this).find('form').trigger('reset');
     })
 

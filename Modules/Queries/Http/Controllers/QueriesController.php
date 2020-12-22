@@ -86,7 +86,7 @@ class QueriesController extends Controller
     public function loadAllQuestionById(Request $request)
     {
         $question_id = $request->question_id;
-        $records = Query::where('query_status','!=','close')->where('question_id','like',$question_id)->where('parent_query_id','like',0)->get();
+        $records = Query::where('query_status','!=','new')->where('question_id','like',$question_id)->where('parent_query_id','like',0)->get();
         echo  view('queries::queries.question.queries_questions_table_view',compact('records'));
 
     }
