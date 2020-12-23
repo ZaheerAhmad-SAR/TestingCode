@@ -154,7 +154,7 @@
                                     @if(!$getTransmissions->isEmpty())
                                     @foreach($getTransmissions as $transmission)
                                         <tr style="background: {{ $transmission->rowColor }}">
-                                            <td> {{$transmission->Request_MadeBy_FirstName}} </td>
+                                            <td> {{ $transmission->Request_MadeBy_FirstName.' '.$transmission->Request_MadeBy_LastName }} </td>
                                             <td> {{$transmission->Requested_certification}} </td>
                                             <td> {{$transmission->Study_Name}} </td>
                                             <td> {{$transmission->Device_Category}} </td>
@@ -312,13 +312,13 @@
                         <label><strong>Select Transmission:</strong></label><br>
                     </div>
 
-                    <!-- ------------------------------------ grand father one -------------------------->
+                    <!-- ------------------------------------ grand father one 
                     <div class="form-group col-md-12 grandfather-div" style="display: none;">
                         <label>GrandFather Certificate ID<span class="field-required">*</span></label>
                         <textarea name="grandfather_id" id="grandfather_id" rows="3" class="form-control data-required"></textarea>
                     </div>
 
-                    <!-- --------------------------------------------------------------------------------- -->
+                    <--------------------------------------------------------------------------------- -->
 
                     <div class="form-group col-md-12 suspend-certificate-div">
                         <label>Certificate For<span class="field-required">*</span></label>

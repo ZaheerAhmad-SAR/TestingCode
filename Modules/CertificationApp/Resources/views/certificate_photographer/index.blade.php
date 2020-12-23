@@ -150,7 +150,7 @@
                                     @foreach($getTransmissions as $transmission)
                                         <tr style="background: {{ $transmission->rowColor }}">
                                             <td> 
-                                                {{$transmission->Photographer_First_Name}} 
+                                                {{$transmission->Photographer_First_Name.' '. $transmission->Photographer_Last_Name}} 
                                             </td>
                                             <td> {{$transmission->Requested_certification}}</td>
                                            
@@ -247,7 +247,7 @@
                                     @endforeach
                                     @else
                                         <tr>
-                                           <td colspan="7" style="text-align: center">No record found.</td>
+                                           <td colspan="6" style="text-align: center">No record found.</td>
                                         </tr>
                                     @endif
                                 </tbody>
@@ -305,13 +305,13 @@
                         <label><strong>Select Transmission:</strong></label><br>
                     </div>
 
-                    <!-- ------------------------------------ grand father one -------------------------->
+                    <!-- ------------------------------------ grand father one 
                     <div class="form-group col-md-12 grandfather-div" style="display: none;">
                         <label>GrandFather Certificate ID<span class="field-required">*</span></label>
                         <textarea name="grandfather_id" id="grandfather_id" rows="3" class="form-control data-required"></textarea>
                     </div>
 
-                    <!-- --------------------------------------------------------------------------------- -->
+                    <------------------------------------------------------------------------- -->
 
                     <div class="form-group col-md-12 suspend-certificate-div">
                         <label>Certificate For<span class="field-required">*</span></label>
