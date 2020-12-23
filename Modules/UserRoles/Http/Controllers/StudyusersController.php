@@ -18,27 +18,33 @@ use Illuminate\Support\Facades\Validator;
 use Session;
 use Illuminate\Support\Str;
 
-
-
 class StudyusersController extends Controller
 {
     /**
      * Display a listing of the resource.
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        // dd($request->all());
         $currentStudy = session('current_study');
         $studyRoleIds = Role::where('role_type', '=', 'study_role')->pluck('id')->toArray();
         $idsOfUsersWithStudyRole = UserRole::whereIn('role_id', $studyRoleIds)->pluck('user_id')->toArray();
         $roles  =   Role::where('role_type', '=', 'study_role')->get();
-
         $enrolledUserIds = RoleStudyUser::where('study_id', '=', session('current_study'))->pluck('user_id')->toArray();
-        $studyusers = User::whereIn('id', $enrolledUserIds)->get();
-
+        $studyusers = User::whereIn('id', $enrolledUserIds);
+        if(isset($request->name) && $request->name !=''){
+            $studyusers = $studyusers->where('users.name','like', '%'.$request->name.'%');
+        }
+        if(isset($request->email) && $request->email !=''){
+            $studyusers = $studyusers->where('users.email','like', '%'.$request->email.'%');
+        }
+        if(isset($request->role_id) && $request->role_id !=''){
+            $studyusers = $studyusers->where('users.role_id', $request->role_id);
+        }
+        $studyusers = $studyusers->get();
         $remaining_users = User::whereIn('id', $idsOfUsersWithStudyRole)
             ->whereNotIn('id', $enrolledUserIds)->get();
-
         return view('userroles::users.studyUsers', compact('roles', 'studyusers', 'remaining_users'));
     }
 

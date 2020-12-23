@@ -49,6 +49,7 @@
         </div>
         <form action="{{route('skipNumber.updateSkipNumberChecks')}}" enctype="multipart/form-data" method="POST">
              @php
+                $phase_id = $step->phase_id;
                 $q_id = $num_values->question_id;
                 $index = 0;
                 if($num_values->textbox_value !=''){
@@ -111,7 +112,6 @@
                         </div>
                     </div>           
         @foreach ($all_study_steps as $key => $value)
-        @foreach($value->studySteps as $indexx => $value)
         @php 
             $activate_forms_array = explode(',', $num_values->activate_forms);
             if(in_array($value->step_id, $activate_forms_array)){ $checked = 'checked'; }else{ $checked = ''; }
@@ -128,7 +128,7 @@
                                             <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-ac-{{$key}}" style="font-size: 20px;"></i>
                                           </div>
                                         </td>
-                                        <td colspan="5"> <input type="checkbox" name="activate_forms[{{$key}}][]" value="{{$value->step_id}}" {{$checked}} class="activate_step_{{$value->step_id}}_{{$key}}" onclick="disabled_opposite('{{$value->step_id}}','deactivate_step_','{{$key}}','activate_step_')"> &nbsp;&nbsp;{{$value->step_name}}</td>
+                                        <td colspan="5"> <input type="checkbox" name="activate_forms[{{$index}}][]" value="{{$value->step_id}}" {{$checked}} class="activate_step_{{$value->step_id}}_{{$key}}" onclick="disabled_opposite('{{$value->step_id}}','deactivate_step_','{{$key}}','activate_step_')"> &nbsp;&nbsp;{{$value->step_name}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -150,7 +150,6 @@
                 @endpush
                 @endpush
         @endforeach
-        @endforeach
         </div>
         <div class="col-12 col-sm-6 mt-3 current_div_de">
                     <div class="card">
@@ -168,7 +167,6 @@
                         </div>
                     </div>
         @foreach ($all_study_steps as $key => $value)
-        @foreach($value->studySteps as $indexx => $value)
          @php 
             $deactivate_forms_array = explode(',', $num_values->deactivate_forms);
             if(in_array($value->step_id, $deactivate_forms_array)){ $checked = 'checked'; }else{ $checked = ''; }
@@ -185,7 +183,7 @@
                 <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$value->step_id}}-de-{{$key}}" style="font-size: 20px;"></i>
                                   </div>
                                 </td>
-                                <td colspan="5"><input type="checkbox" name="deactivate_forms[{{$key}}][]" value="{{$value->step_id}}" class="deactivate_step_{{$value->step_id}}_{{$key}}" {{$checked}} onclick="disabled_opposite('{{$value->step_id}}','activate_step_','{{$key}}','deactivate_step_');" > &nbsp;&nbsp;{{$value->step_name}}</td>
+                                <td colspan="5"><input type="checkbox" name="deactivate_forms[{{$index}}][]" value="{{$value->step_id}}" class="deactivate_step_{{$value->step_id}}_{{$key}}" {{$checked}} onclick="disabled_opposite('{{$value->step_id}}','activate_step_','{{$key}}','deactivate_step_');" > &nbsp;&nbsp;{{$value->step_name}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -205,7 +203,6 @@
              </script>
             @endpush
         @endforeach
-        @endforeach
         </div>
             </div>
             </div>
@@ -216,39 +213,14 @@
         <!-- END: Card DATA-->
 
 @endsection
-@include('admin::forms.edit_crf')
-@include('admin::forms.script_skip_logic')
 @include('admin::forms.common_script_skip_logic')
     @section('styles')
-    <style type="text/css">
-            /*.table{table-layout: fixed;}*/
-            .select2-container--default
-            .select2-selection--single {
-                background-color: #fff;
-                 border: transparent !important;
-                border-radius: 4px;
-            }
-            .select2-selection__rendered {
-                font-weight: 400;
-                line-height: 1.5;
-                color: #495057 !important;
-                background-color: #fff;
-                background-clip: padding-box;
-                border: 1px solid #ced4da;
-                border-radius: .25rem;
-                transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-            }
-        </style>
         <link rel="stylesheet" href="{{ asset('public/dist/vendors/quill/quill.snow.css') }}" />
-        <!-- select2 -->
-        <link rel="stylesheet" href="{{ asset('public/dist/vendors/select2/css/select2.min.css') }}"/>
-        <link rel="stylesheet" href="{{ asset('public/dist/vendors/select2/css/select2-bootstrap.min.css') }}"/>
     @endsection
     @section('script')
-    <script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script>
-    <script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
-    <!-- select2 -->
-    <script src="{{ asset('public/dist/vendors/select2/js/select2.full.min.js') }}"></script>
-    <script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
-
+    <script type="text/javascript">
+        $('.detail-icon').click(function(e){
+            $(this).toggleClass("fa-chevron-circle-right fa-chevron-circle-down");
+        });
+    </script>
 @endsection

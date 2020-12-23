@@ -158,8 +158,7 @@ class QueriesController extends Controller
         $query_status     = $request->post('query_status'); // return the status value
         $query_id         = $request->post('query_id');
         $find             = Query::find($query_id);
-        $queryStatusArray = array('query_status'=>$query_status);
-        Query::where('id',$find['id'])->update($queryStatusArray);
+
         $message_reply    = $request->post('message_query_for_reply');
         $query_subject    = $request->post('subject_question');
         $query_level_q    = $request->post('query_level_question');
@@ -211,6 +210,11 @@ class QueriesController extends Controller
             'module_name'=>$module_name,
             'query_level'=>$query_level_q
         ]);
+
+        $queryStatusArray = array('query_status'=>$query_status);
+        $queryStatusArrayChild = array('query_status'=>$query_status);
+        Query::where('id',$find['id'])->update($queryStatusArray);
+        Query::where('parent_query_id',$find['id'])->update($queryStatusArrayChild);
         return response()->json([$query,'success'=>'Question response is successfully save!!!!','reply_id'=>$id]);
 
     }

@@ -13,7 +13,12 @@ use Modules\Admin\Entities\StudyStructure;
 
 trait QuestionSkipLogic
 {
+<<<<<<< HEAD
     private function addQuestionSkipLogicToReplicatedQuestion($skipLogic, $replicatedQuestionId, $isReplicating = true)
+=======
+
+    private function addReplicatedQuestionSkipLogic($questionSkipLogic, $replicatedQuestionId)
+>>>>>>> d0b9af20adff6ca9bacee79817f2c574e1c18aa5
     {
         $replicating_or_cloning = 'cloning';
         if ($isReplicating === true) {

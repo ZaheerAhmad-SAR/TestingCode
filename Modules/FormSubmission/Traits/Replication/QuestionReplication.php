@@ -21,6 +21,7 @@ use Modules\Queries\Entities\Query;
 
 trait QuestionReplication
 {
+
     private function addReplicatedQuestion($question, $newSectionId, $isReplicating = true)
     {
         $replicating_or_cloning = 'cloning';
