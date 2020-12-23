@@ -92,6 +92,49 @@
 // archive device transmission
 	Route::get('archive-device-transmission/{transmission_id}', 'TransmissionDataDeviceController@archiveDeviceTransmission')->name('archive-device-transmission');
 
+// certified Photographer
+	Route::get('certified-photographer', 'TransmissionDataPhotographerController@certifiedPhotographer')->name('certified-photographer');
+
+// check Photographer/device Grandfather Certificate
+	Route::get('check-grandfather-certificate', 'TransmissionDataPhotographerController@checkGrandfatherCertificate')->name('check-grandfather-certificate');
+
+// generate photographer grandfather certificate
+	Route::post('generate-photographer-grandfather-certificate', 'TransmissionDataPhotographerController@generatePhotographerGrandfatherCertificate')->name('generate-photographer-grandfather-certificate');
+
+// certified Device
+	Route::get('certified-device', 'TransmissionDataDeviceController@certifiedDevice')->name('certified-device');
+
+// generate device grandfather certificate
+	Route::post('generate-device-grandfather-certificate', 'TransmissionDataDeviceController@generateDeviceGrandfatherCertificate')->name('generate-device-grandfather-certificate');
+
+// display photographer certificate PDF
+	Route::get('photographer-certificate-pdf/{file_name}', function($fileName) {
+
+		$path = storage_path('certificates_pdf/photographer/'.$fileName);
+
+		return Response::make(file_get_contents($path), 200, [
+
+		    'Content-Type' => 'application/pdf',
+			'Content-Disposition' => 'inline; filename="'.$fileName.'"'
+
+		]);
+
+	})->name('photographer-certificate-pdf');
+
+// display device certificate PDF
+	Route::get('device-certificate-pdf/{file_name}', function($fileName) {
+
+		$path = storage_path('certificates_pdf/device/'.$fileName);
+
+		return Response::make(file_get_contents($path), 200, [
+
+		    'Content-Type' => 'application/pdf',
+			'Content-Disposition' => 'inline; filename="'.$fileName.'"'
+
+		]);
+
+	})->name('device-certificate-pdf');
+
 
 Route::group(['middleware' => ['auth', 'web']], function () {
     

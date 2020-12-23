@@ -251,6 +251,37 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="close-form-query-table-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
+    <div class="modal-dialog  modal-lg modal-dialog-centered" role="document" style="max-width: 1000px;">
+        <div class="modal-content">
+            <div class="alert alert-danger" style="display:none"></div>
+            <div class="modal-header ">
+                <p class="modal-title">All Close Form Queries</p>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table id="example" class="display table dataTable table-striped table-bordered" >
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Query Subject</th>
+                            <th>Submited By</th>
+                            <th>Assigned To</th>
+                            <th>Created Date</th>
+                            <th>Status</th>
+                            <th>History</th>
+                        </tr>
+                        </thead>
+                        <tbody class="queriesCloseFormList"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <div class="modal fade" tabindex="-1" role="dialog" id="show-question-table-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
     <div class="modal-dialog  modal-lg modal-dialog-centered" role="document" style="max-width: 1000px;">
         <div class="modal-content">
@@ -330,6 +361,30 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" tabindex="-1" role="dialog" id="form-history_modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" style="max-width: 1000px;" role="document">
+        <div class="modal-content">
+            <div class="alert alert-danger" style="display:none"></div>
+            <div class="modal-header">
+                <p class="modal-title"> Form Query History</p>
+                <span class="queryFormCurrentStatus text-center"></span>
+            </div>
+            <div class="modal-body">
+                <form id="historyCloseForm" name="historyCloseForm">
+                    <div class="tab-content clearfix">
+                        @csrf
+                        <div class="historyCloseQueryListDetails"></div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-danger" data-dismiss="modal" id="addqueries-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" tabindex="-1" role="dialog" id="reply-question-modal" aria-labelledby="exampleModalQueries" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable" style="max-width: 1000px;" role="document">
         <div class="modal-content">
@@ -397,7 +452,7 @@
                         @csrf
                         <div class="formInput"></div>
                         <div class="col-sm-12">
-                            <div class="replyClick" style="text-align: right;">
+                            <div class="replyFormButton" style="text-align: right;">
                                     <span style="cursor: pointer;">
                                         <i class="fa fa-reply"></i> &nbsp; reply
                                         </span>
@@ -552,6 +607,26 @@
         }
 
 
+        function showCloseFormQueries(study_id, subject_id,
+          study_structures_id, phase_steps_id,
+          section_id, question_id, field_id,
+          form_type_id, modility_id, module){
+            $('#study_id').val(study_id);
+            $('#question_id').val(question_id);
+            $('#phase_steps_id').val(phase_steps_id);
+            $('#section_id').val(section_id);
+            $('#subject_id').val(subject_id);
+            $('#study_structures_id').val(study_structures_id);
+            $('#field_id').val(field_id);
+            $('#modility_id').val(modility_id);
+            $('#module').val(module);
+            $('#form_type_id').val(form_type_id);
+            openCloseFormTableView(phase_steps_id);
+            //$('#reply-modal').modal('show');
+            //showQuestions(question_id);
+        }
+
+
         function getAllFormQueryData(study_id, subject_id,
           study_structures_id, phase_steps_id,
           section_id, question_id, field_id,
@@ -578,6 +653,11 @@
     $('.showCloseQuestionPopUp').click(function () {
         $('#close-question-table-modal').modal('show');
     });
+
+    $('.showCloseFormQueryPopUp').click(function () {
+        $('#close-form-query-table-modal').modal('show');
+    });
+
 
     $('.showAllFormQueries').click(function () {
         $('#show-form-table-modal').modal('show');
@@ -617,6 +697,24 @@
             }
         });
     }
+
+    function openCloseFormTableView(phase_steps_id) {
+        $.ajax({
+            url:"{{route('queries.loadAllCloseFormPhaseById')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'POST',
+                'phase_steps_id'      :phase_steps_id,
+            },
+            success: function(response)
+            {
+                $('.queriesCloseFormList').html('');
+                $('.queriesCloseFormList').html(response);
+            }
+        });
+    }
+
 
     function openFormTableView(phase_steps_id) {
         $.ajax({
@@ -700,6 +798,17 @@
         $('#close-question-table-modal').modal('hide');
     });
 
+    $('body').on('click', '.historyCloseFormQueries', function () {
+        var query_id          = $(this).attr('data-id');
+        var FormCurrentStatus = $(this).attr('data-value');
+
+        $('.queryFormCurrentStatus').html('');
+        $('.queryFormCurrentStatus').text('Status: '+FormCurrentStatus);
+        $('#form-history_modal').modal('show');
+        showCloseFormQueriesById(query_id);
+        $('#close-form-query-table-modal').modal('hide');
+    });
+
 
     function showQuestions(query_id) {
         $.ajax({
@@ -737,6 +846,24 @@
                 var query_status = $( "#query_status option:selected" ).text();
                 $('.queryCurrentStatus').text('Status: '+query_status);
                 $('.replyClick').css('display','');
+            }
+        });
+    }
+
+    function showCloseFormQueriesById(query_id) {
+
+        $.ajax({
+            url:"{{route('queries.showFormByQueryId')}}",
+            type: 'POST',
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'POST',
+                'query_id'      :query_id,
+            },
+            success: function(response)
+            {
+                $('.historyCloseQueryListDetails').html('');
+                $('.historyCloseQueryListDetails').html(response);
             }
         });
     }
@@ -822,6 +949,14 @@
         $('.questionTextarea').css('display','');
         $('.questionFile').css('display','');
         $('.queryStatus').css('display','');
+
+    });
+
+    $('body').on('click', '.replyFormButton', function () {
+        $('.replyFormButton').css('display','none');
+        $('.formQueryTextarea').css('display','');
+        $('.formQueryFile').css('display','');
+        $('.formQueryStatus').css('display','');
 
     });
 
@@ -981,6 +1116,7 @@
                 $("#formForQueries")[0].reset();
                 $("#formQueryUserDropDownList").html('');
                 $('#queries-modal-form').modal('hide');
+                location.reload();
                 // window.setTimeout(function () {
                 //     window.location.reload();
                 // }, 100);
@@ -1010,6 +1146,7 @@
         var subjectFormInput       = $("#subjectFormInput").val();
         var formReply              = $("#formReply").val();
         var formStatusInput        = $("#formStatusInput").val();
+        var queryLeveFormInput     = $("#queryLeveFormInput").val();
 
         var formData = new FormData();
 
@@ -1029,6 +1166,7 @@
         formData.append('subjectFormInput', subjectFormInput);
         formData.append('formReply',formReply);
         formData.append('formStatusInput', formStatusInput);
+        formData.append('queryLeveFormInput', queryLeveFormInput);
 
         // Attach file name = form_file
         formData.append("formFileInput", $("#formFileInput")[0].files[0]);
@@ -1043,7 +1181,7 @@
             success: function(results)
             {
                 console.log(results);
-                $('.replyClick').css('display','');
+                $('.replyFormButton').css('display','');
                 var query_id = results[0].parent_query_id;
                 showForm(query_id);
             }

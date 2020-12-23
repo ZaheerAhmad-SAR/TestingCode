@@ -422,10 +422,22 @@
                                 </a>
                             </li>
 
+                            <li class="@if(is_active('certified-device')) {{ ' active' }} @endif">
+                                <a href="{{route('certified-device')}}">
+                                    <i class="fas fa-list"></i> Certified Devices
+                                </a>
+                            </li>
+
                             
                             <li  class="@if(is_active('certification-photographer')) {{ ' active' }} @endif">
                                 <a href="{{route('certification-photographer.index')}}">
-                                    <i class="fas fa-list"></i> Certification Photo
+                                    <i class="fas fa-list"></i> Certification Photographers
+                                </a>
+                            </li>
+
+                            <li  class="@if(is_active('certified-photographer')) {{ ' active' }} @endif">
+                                <a href="{{route('certified-photographer')}}">
+                                    <i class="fas fa-list"></i> Certified Photographers
                                 </a>
                             </li>
 
