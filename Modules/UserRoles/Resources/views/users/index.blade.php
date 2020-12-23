@@ -21,8 +21,34 @@
                     @endforeach
                 </ul>
             </div>
-    @endif
-
+        @endif
+        <div class="card">
+            <div class="card-body">
+                <form action="{{route('users.index')}}" method="get" class="filter-form">
+                    @csrf
+                    <div class="form-row" style="padding: 10px;">
+                        <div class="form-group col-md-3">
+                            <input type="text" name="name" class="form-control" placeholder="Name">
+                        </div>
+                         <div class="form-group col-md-3">
+                            <input type="text" name="email" class="form-control" placeholder="Email">
+                        </div>
+                        <div class="form-group col-md-3">
+                           <select class="form-control" name="role_id">
+                               <option value="">Role</option>
+                               @foreach($allroles as $key => $role)
+                                <option value="{{$role->id}}">{{$role->name}}</option>
+                               @endforeach
+                           </select>
+                        </div>
+                        <div class="form-group col-md-3" style="text-align: right;">
+                            <button class="btn btn-outline-warning reset-filter"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
+                            <button type="submit" class="btn btn-primary submit-filter"><i class="fas fa-filter" aria-hidden="true"></i> Filter</button>
+                        </div>
+                    </div>    
+                </form>
+            </div>
+        </div>
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
         <div class="row">
