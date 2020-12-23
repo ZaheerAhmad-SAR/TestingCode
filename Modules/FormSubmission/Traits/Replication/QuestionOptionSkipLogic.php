@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use Modules\Admin\Entities\Question;
 use Modules\Admin\Entities\OptionSkipLogic;
 use Modules\Admin\Entities\QuestionOption;
+use Modules\Admin\Entities\StudyStructure;
 
 trait QuestionOptionSkipLogic
 {
@@ -27,8 +28,10 @@ trait QuestionOptionSkipLogic
         /*
         Question ID Update
         */
+        $replicatedPhaseId = StudyStructure::getPhaseIdByQuestionId($replicatedQuestionId);
         $replicatedQuestion = Question::where('parent_id', 'like', $optionSkipLogic->option_question_id)
             ->where('replicating_or_cloning', 'like', 'replicating')
+            ->whereIn('id', StudyStructure::getQuestionIdsInPhaseArray($replicatedPhaseId))
             ->first();
         $newOptionSkipLogic->option_question_id = $replicatedQuestion->id;
 
@@ -44,7 +47,7 @@ trait QuestionOptionSkipLogic
         foreach ($replicatedQuestions as $replicatedQuestion) {
             $optionSkipLogics = QuestionOption::where('question_id', 'like', $questionId)->get();
             foreach ($optionSkipLogics as $optionSkipLogic) {
-                $this->addQuestionOptionsSkipLogicToReplicatedQuestion($optionSkipLogic, $replicatedQuestion->id, true);
+                $this->addQuestionOptionsSkipLogicToReplicatedQuestion($optionSkipLogic, $replicatedQuestion->id, $isReplicating);
             }
         }
     }

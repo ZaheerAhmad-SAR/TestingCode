@@ -40,10 +40,20 @@ class CloneStepsController extends Controller
             'count' =>  $phase->count,
         ]);
         $new_phase = StudyStructure::find($id);
-        $new_phase_id = $new_phase->id;
+        $newPhaseId = $new_phase->id;
         $all_steps = PhaseSteps::where('phase_id', $request->phase_id)->get();
         foreach ($all_steps as $step) {
-            $this->steps_data($step->step_id, $new_phase_id);
+            $this->steps_data($step->step_id, $newPhaseId);
+        }
+        /******************************* */
+        /*** Replicate Cohort Skip Logic */
+        /******************************* */
+        foreach ($phase->cohortSkipLogics as $cohortSkipLogic) {
+            $this->addPhaseSkipLogicToReplicatedPhase($cohortSkipLogic, $newPhaseId, false);
+        }
+
+        foreach ($phase->questionOptionsCohortSkipLogics as $cohortSkipLogic) {
+            $this->addPhaseOptionsSkipLogicToReplicatedPhase($cohortSkipLogic, $newPhaseId, false);
         }
         return redirect()->route('study.index')->with('message', 'Phase Cloned Successfully!');
     }

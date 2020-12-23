@@ -12,7 +12,9 @@ trait ReplicatePhaseStructure
     use QuestionReplication;
     use QuestionValidationTrait;
     use QuestionSkipLogic;
+    use CohortSkipLogicTrait;
     use QuestionOptionSkipLogic;
+    use CohortOptionSkipLogic;
     use QuestionDependencyTrait;
     use SectionReplication;
     use StepReplication;
@@ -51,6 +53,7 @@ trait ReplicatePhaseStructure
         }
         $newPhase->save();
         /******************************** */
+
 
         /******************************* */
         /***  Replicate Phase Steps **** */
@@ -111,6 +114,18 @@ trait ReplicatePhaseStructure
                 }
             }
         }
+
+        /******************************* */
+        /*** Replicate Cohort Skip Logic */
+        /******************************* */
+        foreach ($phase->cohortSkipLogics as $cohortSkipLogic) {
+            $this->addPhaseSkipLogicToReplicatedPhase($cohortSkipLogic, $newPhaseId, $isReplicating);
+        }
+
+        foreach ($phase->questionOptionsCohortSkipLogics as $cohortSkipLogic) {
+            $this->addPhaseOptionsSkipLogicToReplicatedPhase($cohortSkipLogic, $newPhaseId, $isReplicating);
+        }
+
         return $newPhaseId;
     }
 

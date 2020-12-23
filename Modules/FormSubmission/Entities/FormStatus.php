@@ -100,6 +100,11 @@ class FormStatus extends Model
                 $retStr .= self::makeGraderFormStatusSpan($step, $formStatusObj);
             }
         }
+
+        /********************************** */
+        $retStr .= self::makeQuerySpan($step);
+        /********************************** */
+
         return $retStr;
     }
 
@@ -229,15 +234,10 @@ class FormStatus extends Model
             $imgSpanStepSkipLogicClsStr = buildSafeStr($step->step_id, 'img_step_status_skip_logic_');
         }
 
-
-
         $spanStr = '<span class="' . $imgSpanClsStr . ' ' . $imgSpanStepSkipLogicClsStr . '" ' . $info . '>';
 
         $spanStr .= self::makeFormStatusSpanImage($formStatus) . '</span>';
 
-        /********************************** */
-        $spanStr .= self::makeQuerySpan($step);
-        /********************************** */
         return $spanStr;
     }
 

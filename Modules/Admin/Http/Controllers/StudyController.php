@@ -646,6 +646,16 @@ class StudyController extends Controller
                             }
                         }
                     }
+                    /******************************* */
+                    /*** Replicate Cohort Skip Logic */
+                    /******************************* */
+                    foreach ($phase->cohortSkipLogics as $cohortSkipLogic) {
+                        $this->addPhaseSkipLogicToReplicatedPhase($cohortSkipLogic, $replica_phase_id->id, false);
+                    }
+
+                    foreach ($phase->questionOptionsCohortSkipLogics as $cohortSkipLogic) {
+                        $this->addPhaseOptionsSkipLogicToReplicatedPhase($cohortSkipLogic, $replica_phase_id->id, false);
+                    }
                 }
                 if ($request->answers == 'on') {
                     $answers = Answer::where('study_id', '=', $mystudy->id)->get();
@@ -1115,6 +1125,16 @@ class StudyController extends Controller
                                     $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
                                 }
                             }
+                        }
+                        /******************************* */
+                        /*** Replicate Cohort Skip Logic */
+                        /******************************* */
+                        foreach ($phase->cohortSkipLogics as $cohortSkipLogic) {
+                            $this->addPhaseSkipLogicToReplicatedPhase($cohortSkipLogic, $replica_phase_id->id, false);
+                        }
+
+                        foreach ($phase->questionOptionsCohortSkipLogics as $cohortSkipLogic) {
+                            $this->addPhaseOptionsSkipLogicToReplicatedPhase($cohortSkipLogic, $replica_phase_id->id, false);
                         }
                     }
                     if ($request->answers == 'on') {

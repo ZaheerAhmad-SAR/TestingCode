@@ -5,15 +5,14 @@ namespace Modules\FormSubmission\Traits\Replication;
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use Modules\Admin\Entities\PhaseSteps;
-use Modules\Admin\Entities\Question;
-use Modules\Admin\Entities\SkipLogic;
-use Modules\Admin\Entities\QuestionOption;
-use Modules\Admin\Entities\Section;
 use Modules\Admin\Entities\StudyStructure;
+use Modules\Admin\Entities\Question;
+use Modules\Admin\Entities\CohortSkipLogic;
+use Modules\Admin\Entities\Section;
 
-trait QuestionSkipLogic
+trait CohortSkipLogicTrait
 {
-    private function addQuestionSkipLogicToReplicatedQuestion($skipLogic, $replicatedQuestionId, $isReplicating = true)
+    private function addPhaseSkipLogicToReplicatedPhase($skipLogic, $replicatedPhaseId, $isReplicating = true)
     {
         $replicating_or_cloning = 'cloning';
         if ($isReplicating === true) {
@@ -23,12 +22,10 @@ trait QuestionSkipLogic
         $newSkipLogicId = Str::uuid();
         $newSkipLogic = $skipLogic->replicate();
         $newSkipLogic->id = $newSkipLogicId;
-        $newSkipLogic->question_id = $replicatedQuestionId;
+        $newSkipLogic->phase_id = $replicatedPhaseId;
 
         $newSkipLogic->parent_id = $skipLogic->id;
         $newSkipLogic->replicating_or_cloning = $replicating_or_cloning;
-
-        $replicatedPhaseId = StudyStructure::getPhaseIdByQuestionId($replicatedQuestionId);
 
         // Update activate form ids
         $stepIdsArray = StudyStructure::getStepIdsInPhaseArray($replicatedPhaseId);
@@ -108,33 +105,33 @@ trait QuestionSkipLogic
         $newSkipLogic->save();
     }
 
-    private function updateSkipLogicsToReplicatedVisits($questionId, $isReplicating = true)
+    private function updateSkipLogicsToReplicatedVisits($phaseId, $isReplicating = true)
     {
-        $this->deleteSkipLogicsToReplicatedVisits($questionId);
-        $replicatedQuestions = Question::where('parent_id', 'like', $questionId)
+        $this->deleteSkipLogicsToReplicatedVisits($phaseId);
+        $replicatedPhases = StudyStructure::where('parent_id', 'like', $phaseId)
             ->where('replicating_or_cloning', 'like', 'replicating')
             ->get();
-        foreach ($replicatedQuestions as $replicatedQuestion) {
-            $skipLogics = SkipLogic::where('question_id', 'like', $questionId)->get();
+        foreach ($replicatedPhases as $replicatedPhase) {
+            $skipLogics = CohortSkipLogic::where('phase_id', 'like', $phaseId)->get();
             foreach ($skipLogics as $skipLogic) {
-                $this->addQuestionSkipLogicToReplicatedQuestion($skipLogic, $replicatedQuestion->id, true);
+                $this->addPhaseSkipLogicToReplicatedPhase($skipLogic, $replicatedPhase->id, $isReplicating);
             }
         }
     }
 
-    private function deleteSkipLogicsToReplicatedVisits($questionId)
+    private function deleteSkipLogicsToReplicatedVisits($phaseId)
     {
-        $replicatedQuestions = Question::where('parent_id', 'like', $questionId)
+        $replicatedPhases = StudyStructure::where('parent_id', 'like', $phaseId)
             ->where('replicating_or_cloning', 'like', 'replicating')
             ->get();
-        foreach ($replicatedQuestions as $replicatedQuestion) {
-            SkipLogic::where('question_id', 'like', $replicatedQuestion->id)->delete();
+        foreach ($replicatedPhases as $replicatedPhase) {
+            CohortSkipLogic::where('phase_id', 'like', $replicatedPhase->id)->delete();
         }
     }
 
-    private function deleteQuestionSkipLogics($questionId)
+    private function deletePhaseSkipLogics($phaseId)
     {
-        $this->deleteSkipLogicsToReplicatedVisits($questionId);
-        SkipLogic::where('question_id', $questionId)->delete();
+        $this->deleteSkipLogicsToReplicatedVisits($phaseId);
+        CohortSkipLogic::where('phase_id', $phaseId)->delete();
     }
 }
