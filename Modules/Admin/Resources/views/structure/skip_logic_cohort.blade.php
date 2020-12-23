@@ -51,7 +51,7 @@
             @php 
                 $questionsType ='cohort';
                 $check_value = [];
-                $studyId = request('id');
+                $phase_id = request('id');
             @endphp
             @foreach($cohort_skiplogic as $cohort)
                 @if($cohort->cohort_id !='')
@@ -59,7 +59,8 @@
                 @endif
             @endforeach
             @csrf
-            <input type="hidden" name="study_id" value="{{request('id')}}">
+            <input type="hidden" name="phase_id" value="{{request('id')}}">
+            <input type="hidden" name="study_id" value="{{session('current_study')}}">
             @foreach($disease_cohorts as $index => $value)
             @php 
                 $diseaseName = $value->name;
@@ -81,7 +82,7 @@
             @endforeach
             </div>
             <div class="modal-footer">
-                <a href="{{route('studies.index')}}">
+                <a href="{{route('study.index')}}">
                     <button type="button" class="btn btn-outline-danger"><i class="far fa-arrow-alt-circle-left"></i> Back to Listing</button>
                 </a>
                 <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>

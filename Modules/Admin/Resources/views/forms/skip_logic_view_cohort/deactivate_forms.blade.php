@@ -1,7 +1,7 @@
 @php
     $deactivate_forms_array = [];
     $where = array(
-        "study_id" =>$studyId,
+        "phase_id" =>$phase_id,
         "cohort_name" =>$value->name,
         "cohort_id" =>$value->id
     );
@@ -9,8 +9,7 @@
     if(null !==$if_exists_record){
         $deactivate_forms_array = explode(',', $if_exists_record->deactivate_forms);
     }
-    $all_study_steps = Modules\Admin\Entities\Study::where('id', $studyId)->with('studySteps')->first();
-
+    $all_study_steps = Modules\Admin\Entities\PhaseSteps::where('phase_id', $phase_id)->get();
 @endphp
 <div class="col-12 col-sm-12 mt-3">
     <div class="card">
@@ -27,7 +26,7 @@
             </div>
         </div>
     </div> 
-    @foreach ($all_study_steps->studySteps as $key => $value)
+    @foreach ($all_study_steps as $key => $value)
     @php    
     if(in_array($value->step_id, $deactivate_forms_array)){ $checked = 'checked'; }else{ $checked = ''; }
     @endphp

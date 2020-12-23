@@ -50,7 +50,7 @@ class UserController extends Controller
 
         return Base32::encodeUpper($randomBytes);
     }
-    public function index()
+    public function index(Request $request)
     {
 
         if (isThisUserSuperAdmin(\auth()->user())) {
@@ -64,9 +64,18 @@ class UserController extends Controller
         $currentStudyId = session('current_study');
 
         $userIdsOfSystemRoles = UserRole::whereIn('role_id', $systemRoleIds)->pluck('user_id')->toArray();
-        $users = User::whereIn('id', $userIdsOfSystemRoles)
-            //->where('id', '!=', \auth()->user()->id)
-            ->orderBy('name', 'asc')->get();
+        $users = User::whereIn('id', $userIdsOfSystemRoles);
+        if(isset($request->name) && $request->name !=''){
+            $users = $users->where('users.name','like', '%'.$request->name.'%');
+        }
+        if(isset($request->email) && $request->email !=''){
+            $users = $users->where('users.email','like', '%'.$request->email.'%');
+        }
+        if(isset($request->role_id) && $request->role_id !=''){
+            $users = $users->where('users.role_id', 'like', '%'.$request->role_id.'%');
+        }    
+        $users->orderBy('name', 'asc')->get();    
+        $users = $users->orderBy('name', 'asc')->get();
 
         $studyRoleIds = Role::where('role_type', '=', 'study_role')->pluck('id')->toArray();
         $userIdsOfStudyRoles = UserRole::whereIn('role_id', $studyRoleIds)->pluck('user_id')->toArray();
@@ -79,10 +88,8 @@ class UserController extends Controller
         } else {
             $studyusers = User::whereIn('id', $userIdsOfStudyRoles)->where('id', '!=', \auth()->user()->id)->get();
         }
-
-
-
-        return view('userroles::users.index', compact('users', 'roles', 'studyusers'));
+        $allroles = Role::all();
+        return view('userroles::users.index', compact('users', 'roles', 'studyusers','allroles'));
     }
 
     /**

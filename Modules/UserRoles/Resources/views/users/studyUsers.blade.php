@@ -27,7 +27,7 @@
                         <div class="form-group col-md-3">
                            <select class="form-control" name="role_id">
                                <option value="">Role</option>
-                               @foreach($roles as $key => $role)
+                               @foreach($allroles as $key => $role)
                                 <option value="{{$role->id}}">{{$role->name}}</option>
                                @endforeach
                            </select>
