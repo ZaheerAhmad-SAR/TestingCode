@@ -182,11 +182,6 @@
                                                                 <i class="fa fa-object-group" aria-hidden="true"></i> Modalities
                                                             </a>
                                                         </span> --}}
-                                                        <span class="dropdown-item">
-                                                            <a href="{{route('skiplogic.skiponcohort',$study->id)}}" target="_blank">
-                                                                <i class="fa fa-plus"></i> Cohort Setting
-                                                            </a>
-                                                        </span>
                                                     </div>
                                                 </div>
                                                 @endif
