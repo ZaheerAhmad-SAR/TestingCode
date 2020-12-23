@@ -62,7 +62,7 @@ class SkipLogicController extends Controller
             $remove_checks_if_already_exists = skipLogic::where($where)->delete();
             $remove_options_checks_if_exists = QuestionOption::where($where)->delete();
             for ($i = 0; $i < count($request->option_value); $i++) {
-                $skiplogic_id = Str::uuid();
+                $skiplogic_id = (string)Str::uuid();
                 $skip_ques = [
                     'id' => $skiplogic_id,
                     'question_id' => $request->question_id,
@@ -80,7 +80,7 @@ class SkipLogicController extends Controller
                     for ($j = 0; $j < count($request->deactivate_options[$i]); $j++) {
                         $op_content = explode('<<=!=>>', $request->deactivate_options[$i][$j]);
                         $skip_options = [
-                            'id' => Str::uuid(),
+                            'id' => (string)Str::uuid(),
                             'skip_logic_id' => $skiplogic_id,
                             'question_id' => $request->question_id,
                             'value' => $op_content[0],
@@ -96,7 +96,7 @@ class SkipLogicController extends Controller
                     for ($j = 0; $j < count($request->activate_options[$i]); $j++) {
                         $op_content = explode('<<=!=>>', $request->activate_options[$i][$j]);
                         $skip_options = [
-                            'id' => Str::uuid(),
+                            'id' => (string)Str::uuid(),
                             'skip_logic_id' => $skiplogic_id,
                             'question_id' => $request->question_id,
                             'value' => $op_content[0],
@@ -123,7 +123,7 @@ class SkipLogicController extends Controller
             $remove_checks_if_already_exists = CohortSkipLogic::where($where)->delete();
             $remove_options_checks_if_exists = CohortSkipLogicOption::where($where)->delete();
             for ($i = 0; $i < count($request->cohort_id); $i++) {
-                $cohort_skiplogic_id = Str::uuid();
+                $cohort_skiplogic_id = (string)Str::uuid();
                 $skip_ques = [
                     'id' => $cohort_skiplogic_id,
                     'phase_id' => $request->phase_id,
@@ -139,7 +139,7 @@ class SkipLogicController extends Controller
                     for ($j = 0; $j < count($request->deactivate_options[$i]); $j++) {
                         $op_content = explode('<<=!=>>', $request->deactivate_options[$i][$j]);
                         $skip_options = [
-                            'id' => Str::uuid(),
+                            'id' => (string)Str::uuid(),
                             'cohort_skiplogic_id' => $cohort_skiplogic_id,
                             'phase_id' => $request->phase_id,
                             'study_id' => $request->study_id,
@@ -154,7 +154,7 @@ class SkipLogicController extends Controller
                     for ($j = 0; $j < count($request->activate_options[$i]); $j++) {
                         $op_content = explode('<<=!=>>', $request->activate_options[$i][$j]);
                         $skip_options = [
-                            'id' => Str::uuid(),
+                            'id' => (string)Str::uuid(),
                             'cohort_skiplogic_id' => $cohort_skiplogic_id,
                             'phase_id' => $request->phase_id,
                             'study_id' => $request->study_id,

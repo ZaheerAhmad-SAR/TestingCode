@@ -44,7 +44,7 @@ class SkipNumberController extends Controller
         $skip_options = [];
         if (isset($request->number_value) && count($request->number_value) > 0) {
             for ($i = 0; $i < count($request->number_value); $i++) {
-                $skiplogic_id = Str::uuid();
+                $skiplogic_id = (string)Str::uuid();
                 $skip_ques = [
                     'id' => $skiplogic_id,
                     'question_id' => $request->question_id,
@@ -62,7 +62,7 @@ class SkipNumberController extends Controller
                     for ($j = 0; $j < count($request->deactivate_options[$i]); $j++) {
                         $op_content = explode('<<=!=>>', $request->deactivate_options[$i][$j]);
                         $skip_options = [
-                            'id' => Str::uuid(),
+                            'id' => (string)Str::uuid(),
                             'skip_logic_id' => $skiplogic_id,
                             'question_id' => $request->question_id,
                             'value' => $op_content[0],
@@ -78,7 +78,7 @@ class SkipNumberController extends Controller
                     for ($j = 0; $j < count($request->activate_options[$i]); $j++) {
                         $op_content = explode('<<=!=>>', $request->activate_options[$i][$j]);
                         $skip_options = [
-                            'id' => Str::uuid(),
+                            'id' => (string)Str::uuid(),
                             'skip_logic_id' => $skiplogic_id,
                             'question_id' => $request->question_id,
                             'value' => $op_content[0],
@@ -116,7 +116,7 @@ class SkipNumberController extends Controller
             $remove_checks_if_already_exists = skipLogic::where($where)->delete();
             $remove_options_checks_if_exists = QuestionOption::where($where)->delete();
             for ($i = 0; $i < count($request->number_value); $i++) {
-                $skiplogic_id = Str::uuid();
+                $skiplogic_id = (string)Str::uuid();
                 $skip_ques = [
                     'id' => $skiplogic_id,
                     'question_id' => $num_values->question_id,
@@ -134,7 +134,7 @@ class SkipNumberController extends Controller
                     for ($j = 0; $j < count($request->deactivate_options[$i]); $j++) {
                         $op_content = explode('<<=!=>>', $request->deactivate_options[$i][$j]);
                         $skip_options = [
-                            'id' => Str::uuid(),
+                            'id' => (string)Str::uuid(),
                             'skip_logic_id' => $skiplogic_id,
                             'question_id' => $num_values->question_id,
                             'value' => $op_content[0],
@@ -150,7 +150,7 @@ class SkipNumberController extends Controller
                     for ($j = 0; $j < count($request->activate_options[$i]); $j++) {
                         $op_content = explode('<<=!=>>', $request->activate_options[$i][$j]);
                         $skip_options = [
-                            'id' => Str::uuid(),
+                            'id' => (string)Str::uuid(),
                             'skip_logic_id' => $skiplogic_id,
                             'question_id' => $num_values->question_id,
                             'value' => $op_content[0],
@@ -175,7 +175,7 @@ class SkipNumberController extends Controller
         $skip_options = [];
         if (isset($request->textbox_value) && count($request->textbox_value) > 0) {
             for ($i = 0; $i < count($request->textbox_value); $i++) {
-                $skiplogic_id = Str::uuid();
+                $skiplogic_id = (string)Str::uuid();
                 $skip_ques = [
                     'id' => $skiplogic_id,
                     'question_id' => $request->question_id,
@@ -192,7 +192,7 @@ class SkipNumberController extends Controller
                     for ($j = 0; $j < count($request->deactivate_options[$i]); $j++) {
                         $op_content = explode('<<=!=>>', $request->deactivate_options[$i][$j]);
                         $skip_options = [
-                            'id' => Str::uuid(),
+                            'id' => (string)Str::uuid(),
                             'skip_logic_id' => $skiplogic_id,
                             'question_id' => $request->question_id,
                             'value' => $op_content[0],
@@ -208,7 +208,7 @@ class SkipNumberController extends Controller
                     for ($j = 0; $j < count($request->activate_options[$i]); $j++) {
                         $op_content = explode('<<=!=>>', $request->activate_options[$i][$j]);
                         $skip_options = [
-                            'id' => Str::uuid(),
+                            'id' => (string)Str::uuid(),
                             'skip_logic_id' => $skiplogic_id,
                             'question_id' => $request->question_id,
                             'value' => $op_content[0],
@@ -250,7 +250,7 @@ class SkipNumberController extends Controller
             $remove_options_checks_if_exists = QuestionOption::where($where)->delete();
 
             for ($i = 0; $i < count($request->textbox_value); $i++) {
-                $skiplogic_id = Str::uuid();
+                $skiplogic_id = (string)Str::uuid();
                 $skip_ques = [
                     'id' => $skiplogic_id,
                     'question_id' => $num_values->question_id,
@@ -267,7 +267,7 @@ class SkipNumberController extends Controller
                     for ($j = 0; $j < count($request->deactivate_options[$i]); $j++) {
                         $op_content = explode('<<=!=>>', $request->deactivate_options[$i][$j]);
                         $skip_options = [
-                            'id' => Str::uuid(),
+                            'id' => (string)Str::uuid(),
                             'skip_logic_id' => $skiplogic_id,
                             'question_id' => $num_values->question_id,
                             'value' => $op_content[0],
@@ -283,7 +283,7 @@ class SkipNumberController extends Controller
                     for ($j = 0; $j < count($request->activate_options[$i]); $j++) {
                         $op_content = explode('<<=!=>>', $request->activate_options[$i][$j]);
                         $skip_options = [
-                            'id' => Str::uuid(),
+                            'id' => (string)Str::uuid(),
                             'skip_logic_id' => $skiplogic_id,
                             'question_id' => $num_values->question_id,
                             'value' => $op_content[0],

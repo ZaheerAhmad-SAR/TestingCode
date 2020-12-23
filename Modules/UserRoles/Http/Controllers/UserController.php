@@ -73,8 +73,8 @@ class UserController extends Controller
         }
         if(isset($request->role_id) && $request->role_id !=''){
             $users = $users->where('users.role_id', 'like', '%'.$request->role_id.'%');
-        }    
-        $users->orderBy('name', 'asc')->get();    
+        }
+        $users->orderBy('name', 'asc')->get();
         $users = $users->orderBy('name', 'asc')->get();
 
         $studyRoleIds = Role::where('role_type', '=', 'study_role')->pluck('id')->toArray();
@@ -165,7 +165,7 @@ class UserController extends Controller
                 } else {
 
                     // unique ID
-                    $id = Str::uuid();
+                    $id = (string)Str::uuid();
 
                     $user = User::create([
                         'id' => $id,
@@ -213,7 +213,7 @@ class UserController extends Controller
         } else {
 
             $study_user = RoleStudyUser::create([
-                'id'    => Str::uuid(),
+                'id'    => (string)Str::uuid(),
                 'user_id' => $request->study_user,
                 'role_id'   => $request->user_role,
                 'study_id'  => session('current_study')
@@ -519,7 +519,7 @@ class UserController extends Controller
 
             Invitation::where('email', 'like', $request->input('email'))->delete();
             Invitation::create([
-                'id'    => Str::uuid(),
+                'id'    => (string)Str::uuid(),
                 'token' => $token,
                 'role_id'   => $request->roles,
                 'email' => $request->input('email')

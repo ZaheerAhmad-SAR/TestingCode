@@ -21,7 +21,7 @@ trait StepReplication
         if ($isReplicating === true) {
             $replicating_or_cloning = 'replicating';
         }
-        $newStepId = Str::uuid();
+        $newStepId = (string)Str::uuid();
         $newStep = $step->replicate();
         $newStep->step_id = $newStepId;
         $newStep->phase_id = $newPhaseId;
@@ -60,7 +60,7 @@ trait StepReplication
     private function addReplicatedStepFormVersion($stepFormVersion, $replicatedStepId)
     {
 
-        $newStepFormVersionId = Str::uuid();
+        $newStepFormVersionId = (string)Str::uuid();
         $newStepFormVersion = $stepFormVersion->replicate();
         $newStepFormVersion->id = $newStepFormVersionId;
         $newStepFormVersion->step_id = $replicatedStepId;
@@ -174,7 +174,7 @@ trait StepReplication
                             //-------------------------------------
 
                             $defaultAnswerArray = [
-                                'id' => Str::uuid(),
+                                'id' => (string)Str::uuid(),
                                 'study_id' => session('current_study'),
                                 'form_filled_by_user_id' => $previousAnswer->form_filled_by_user_id,
                                 'subject_id' => $previousAnswer->subject_id,

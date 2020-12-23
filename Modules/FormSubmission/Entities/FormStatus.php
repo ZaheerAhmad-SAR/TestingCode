@@ -165,7 +165,7 @@ class FormStatus extends Model
         $getQueryArray = [
             'study_id' => session('current_study'),
             'subject_id' => session('subject_id'),
-            'study_structures_id' => $step->phase->id,
+            'study_structures_id' => $step->phase_id,
             'phase_steps_id' => $step->step_id,
         ];
         if (Query::isThereOpenQueryAgainstStep($getQueryArray)) {
@@ -303,7 +303,7 @@ class FormStatus extends Model
 
     public static function insertFormStatus($request, $formStatusArray)
     {
-        $id = Str::uuid();
+        $id = (string)Str::uuid();
         $formStatusData = [
             'id' => $id,
             'form_type_id' => $request->formTypeId,

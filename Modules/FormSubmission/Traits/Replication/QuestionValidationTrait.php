@@ -16,7 +16,7 @@ trait QuestionValidationTrait
             $replicating_or_cloning = 'replicating';
         }
 
-        $newQuestionValidationId = Str::uuid();
+        $newQuestionValidationId = (string)Str::uuid();
         $newQuestionValidation = $questionValidation->replicate();
         $newQuestionValidation->id = $newQuestionValidationId;
         $newQuestionValidation->question_id = $replicatedQuestionId;

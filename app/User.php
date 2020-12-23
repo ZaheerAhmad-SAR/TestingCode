@@ -21,7 +21,9 @@ use Modules\UserRoles\Entities\UserSystemInfo;
 
 class User extends Authenticatable
 {
-    use Notifiable, SoftDeletes;
+    use Notifiable;
+    use SoftDeletes;
+
     //public $incrementing = false;
 
     /**

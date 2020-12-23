@@ -11,7 +11,7 @@ trait QuestionAnnotationDescription
 {
     private function addReplicatedQuestionAnnotationDescription($questionAnnotationDescription, $replicatedQuestionId)
     {
-        $newQuestionAnnotationDescriptionId = Str::uuid();
+        $newQuestionAnnotationDescriptionId = (string)Str::uuid();
         $newQuestionAnnotationDescription = $questionAnnotationDescription->replicate();
         $newQuestionAnnotationDescription->id = $newQuestionAnnotationDescriptionId;
         $newQuestionAnnotationDescription->question_id = $replicatedQuestionId;

@@ -75,7 +75,7 @@ class SiteController extends Controller
 //            'site_email:required|email',
 //        ]);
 
-        $id = Str::uuid();
+        $id = (string)Str::uuid();
             $site = Site::create([
                 'id'    => $id,
                 'site_code'=> empty($request->site_code) ? Null : $request->site_code,

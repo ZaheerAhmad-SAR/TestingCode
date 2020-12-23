@@ -29,7 +29,7 @@ trait QuestionReplication
         if ($isReplicating === true) {
             $replicating_or_cloning = 'replicating';
         }
-        $newQuestionId = Str::uuid();
+        $newQuestionId = (string)Str::uuid();
         $newQuestion = $question->replicate();
         $newQuestion->id = $newQuestionId;
         $newQuestion->section_id = $newSectionId;
@@ -56,16 +56,14 @@ trait QuestionReplication
             ->where('replicating_or_cloning', 'like', 'replicating')
             ->withoutGlobalScopes()
             ->get();
-
+        $replicatedQuestionIdsArray = [];
         foreach ($replicatedPhases as $phase) {
             foreach ($phase->steps as $step) {
                 foreach ($step->sections as $section) {
                     if ($section->parent_id == $question->section_id) {
-                        $replicatedQuestionId = $this->addReplicatedQuestion($question, $section->id, $isReplicating);
+                        $replicatedQuestionIdsArray[] =$replicatedQuestionId = $this->addReplicatedQuestion($question, $section->id, $isReplicating);
                         $this->addReplicatedFormField($question, $replicatedQuestionId, $isReplicating);
                         $this->addQuestionValidationToReplicatedQuestion($question->id, $replicatedQuestionId, $isReplicating);
-                        $this->addQuestionSkipLogicToReplicatedQuestion($question, $replicatedQuestionId, $isReplicating);
-                        $this->addQuestionOptionsSkipLogicToReplicatedQuestion($question, $replicatedQuestionId, $isReplicating);
                         //$this->addQuestionAnnotationDescriptionToReplicatedQuestion($question->id, $replicatedQuestionId);
                         $this->addReplicatedQuestionDependency($question, $replicatedQuestionId, $isReplicating);
                         $this->addReplicatedQuestionAdjudicationStatus($question, $replicatedQuestionId, $isReplicating);
@@ -73,6 +71,11 @@ trait QuestionReplication
                 }
             }
         }
+        foreach($replicatedQuestionIdsArray as $replicatedQuestionId){
+            $this->addQuestionSkipLogicToReplicatedQuestion($question, $replicatedQuestionId, $isReplicating);
+            $this->addQuestionOptionsSkipLogicToReplicatedQuestion($question, $replicatedQuestionId, $isReplicating);
+        }
+
     }
 
     private function updateQuestionToReplicatedVisits($question)

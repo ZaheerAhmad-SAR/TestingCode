@@ -50,7 +50,7 @@ class OptionsGroupController extends Controller
         $input['option_value']  = $request->option_value;
         $name   = implode(',',(array)$input['option_name']);
         $value  = implode(',',(array)$input['option_value']);
-        $uniqueID = Str::uuid();
+        $uniqueID = (string)Str::uuid();
         $others = OptionsGroup::create([
                 'id' => $uniqueID,
                 'option_group_name' => $request->option_group_name,

@@ -25,7 +25,7 @@ trait JSCohortSkipLogic
         $functionName = ($isForAdjudication) ? 'cohortSkipLogicForAdjudication' : 'cohortSkipLogic';
         $checkFunctionName = ($isForAdjudication) ? 'checkCohortSkipLogicForAdjudication' : 'checkCohortSkipLogic';
 
-        foreach ($phase->cohortSkiplogic as $skipLogic) {
+        foreach ($phase->cohortSkiplogics as $skipLogic) {
             $skipLogicIdStr = buildSafeStr($skipLogic->id, '');
             $phaseSkipLogicStr .= '
             ' . $functionName . $skipLogicIdStr . '();
@@ -45,7 +45,7 @@ trait JSCohortSkipLogic
 
         $functionName = ($isForAdjudication) ? 'cohortSkipLogicForAdjudication' : 'cohortSkipLogic';
 
-        foreach ($phase->cohortSkiplogic as $skipLogic) {
+        foreach ($phase->cohortSkiplogics as $skipLogic) {
 
             $skipLogicIdStr = buildSafeStr($skipLogic->id, '');
 

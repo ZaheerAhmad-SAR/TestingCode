@@ -20,7 +20,7 @@ trait QuestionSkipLogic
             $replicating_or_cloning = 'replicating';
         }
 
-        $newSkipLogicId = Str::uuid();
+        $newSkipLogicId = (string)Str::uuid();
         $newSkipLogic = $skipLogic->replicate();
         $newSkipLogic->id = $newSkipLogicId;
         $newSkipLogic->question_id = $replicatedQuestionId;
@@ -39,7 +39,7 @@ trait QuestionSkipLogic
                 ->where('replicating_or_cloning', 'like', 'replicating')
                 ->whereIn('step_id', $stepIdsArray)
                 ->first();
-            $activateFormArray[] = $replicatedForm->id;
+            $activateFormArray[] = $replicatedForm->step_id;
         }
         $newSkipLogic->activate_forms = implode(',', $activateFormArray);
 
@@ -51,7 +51,7 @@ trait QuestionSkipLogic
                 ->where('replicating_or_cloning', 'like', 'replicating')
                 ->whereIn('step_id', $stepIdsArray)
                 ->first();
-            $deactivateFormArray[] = $replicatedForm->id;
+            $deactivateFormArray[] = $replicatedForm->step_id;
         }
         $newSkipLogic->deactivate_forms = implode(',', $deactivateFormArray);
 

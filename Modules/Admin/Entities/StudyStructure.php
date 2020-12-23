@@ -8,7 +8,7 @@ use Modules\Admin\Scopes\StudyStructureOrderByScope;
 use Modules\Admin\Scopes\StudyStructureWithoutRepeatedScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Modules\FormSubmission\Traits\Replication\CohortOptionSkipLogic;
+use Modules\Admin\Entities\CohortSkipLogicOption;
 use Modules\FormSubmission\Traits\JSCohortSkipLogic;
 
 class StudyStructure extends Model
@@ -109,7 +109,9 @@ class StudyStructure extends Model
     {
         $question = Question::find($questionId);
         $section = Section::find($question->section_id);
-        return PhaseSteps::where('step_id', $section->sphase_id)->pluck('step_id')->toArray();
+        $step = PhaseSteps::find($section->phase_steps_id);
+        $phase = self::where('id', $step->phase_id)->withOutGlobalScopes()->first();
+        return $phase->id;
     }
 
     public function cohortSkipLogics()
@@ -119,6 +121,6 @@ class StudyStructure extends Model
 
     public function questionOptionsCohortSkipLogics()
     {
-        return $this->hasMany(CohortOptionSkipLogic::class, 'phase_id', 'id');
+        return $this->hasMany(CohortSkipLogicOption::class, 'phase_id', 'id');
     }
 }

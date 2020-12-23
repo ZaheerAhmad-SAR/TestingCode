@@ -22,7 +22,7 @@ class AdjudicationFormRevisionHistory extends Model
     public static function putAdjudicationFormRevisionHistory($adjudicationFormRevisionDataArray, $adjudicationFormStatusId = 0)
     {
         $adjudicationFormRevisionHistory = new AdjudicationFormRevisionHistory();
-        $adjudicationFormRevisionHistory->id = Str::uuid();
+        $adjudicationFormRevisionHistory->id = (string)Str::uuid();
         $adjudicationFormRevisionHistory->adjudication_form_submit_status_id = $adjudicationFormStatusId;
         $adjudicationFormRevisionHistory->adjudication_form_edit_reason_text = $adjudicationFormRevisionDataArray['adjudication_form_edit_reason_text'];
         $adjudicationFormRevisionHistory->adjudication_form_data = json_encode($adjudicationFormRevisionDataArray['adjudication_form_data']);

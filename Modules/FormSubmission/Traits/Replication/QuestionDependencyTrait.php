@@ -18,7 +18,7 @@ trait QuestionDependencyTrait
                 $replicating_or_cloning = 'replicating';
             }
 
-            $newQuestionDependencyId = Str::uuid();
+            $newQuestionDependencyId = (string)Str::uuid();
             $newQuestionDependency = $questionDependency->replicate();
             $newQuestionDependency->id = $newQuestionDependencyId;
             $newQuestionDependency->question_id = $newQuestionId;

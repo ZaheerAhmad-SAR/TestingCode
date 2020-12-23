@@ -16,7 +16,7 @@ trait QuestionFormField
         }
         $formField = $question->formFields()->first();
 
-        $newFormFieldId = Str::uuid();
+        $newFormFieldId = (string)Str::uuid();
         $newFormField = $formField->replicate();
         $newFormField->id = $newFormFieldId;
         $newFormField->question_id = $newQuestionId;

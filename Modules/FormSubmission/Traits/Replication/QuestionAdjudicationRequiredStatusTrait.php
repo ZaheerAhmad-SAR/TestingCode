@@ -18,7 +18,7 @@ trait QuestionAdjudicationRequiredStatusTrait
             if ($isReplicating === true) {
                 $replicating_or_cloning = 'replicating';
             }
-            $newQuestionAdjudicationStatusId = Str::uuid();
+            $newQuestionAdjudicationStatusId = (string)Str::uuid();
             $newQuestionAdjudicationStatus = $questionAdjudicationStatus->replicate();
             $newQuestionAdjudicationStatus->id = $newQuestionAdjudicationStatusId;
             $newQuestionAdjudicationStatus->question_id = $newQuestionId;

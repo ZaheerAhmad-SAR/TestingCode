@@ -106,7 +106,7 @@ class TransmissionDataDeviceController extends Controller
                                                ->first();
 
             $getPhotographerID = $getPhotographerID != null ? $getPhotographerID->id : 0;
-            
+
             // check no. of transmission for study and modility in setup table
             $getTransmissionNo = StudySetup::where('study_id', $getStudyID)->first();
 
@@ -264,7 +264,7 @@ class TransmissionDataDeviceController extends Controller
 
         // find the transmission
         $findTransmission = TransmissionDataDevice::find(decrypt($id));
-        
+
         // study ID
         if($request->StudyI_ID != "") {
 
@@ -275,7 +275,7 @@ class TransmissionDataDeviceController extends Controller
             $findTransmission->Study_Name = $getStudy->study_short_name;
 
         }
-        
+
         // get site id
         if ($request->Site_ID != "" && $request->Site_ID != "add_new") {
 
@@ -343,7 +343,7 @@ class TransmissionDataDeviceController extends Controller
                 if ($getSite == null) {
                     // insert site
                     $getSite = new Site;
-                    $getSite->id = Str::uuid();
+                    $getSite->id = (string)Str::uuid();
                     $getSite->site_code = $findTransmission->Site_ID;
                     $getSite->site_name = $findTransmission->Site_Name;
                     $getSite->site_address = $findTransmission->Site_st_address;
@@ -365,7 +365,7 @@ class TransmissionDataDeviceController extends Controller
                 if ($getSite == null) {
                     // insert site
                     $getSite = new Site;
-                    $getSite->id = Str::uuid();
+                    $getSite->id = (string)Str::uuid();
                     $getSite->site_code = $findTransmission->Site_ID;
                     $getSite->site_name = $findTransmission->Site_Name;
                     $getSite->site_address = $findTransmission->Site_st_address;
@@ -375,7 +375,7 @@ class TransmissionDataDeviceController extends Controller
                     $getSite->save();
 
                 } // site check is end
-               
+
             }
 
             // check site study relation
@@ -386,7 +386,7 @@ class TransmissionDataDeviceController extends Controller
             if ($getSiteStudy == null) {
                 // insert study site
                 $getSiteStudy = new StudySite;
-                $getSiteStudy->id = Str::uuid();
+                $getSiteStudy->id = (string)Str::uuid();
                 $getSiteStudy->study_id = $getStudy->id;
                 $getSiteStudy->site_id = $getSite->id;
                 $getSiteStudy->save();
@@ -402,7 +402,7 @@ class TransmissionDataDeviceController extends Controller
             if ($getPrimaryInvestigator == null) {
                 // insert primary investigator
                 $getPrimaryInvestigator = new PrimaryInvestigator;
-                $getPrimaryInvestigator->id = Str::uuid();
+                $getPrimaryInvestigator->id = (string)Str::uuid();
                 $getPrimaryInvestigator->site_id = $getSite->id;
                 $getPrimaryInvestigator->first_name = $findTransmission->PI_Name;
                 $getPrimaryInvestigator->email = $findTransmission->PI_email;
@@ -417,7 +417,7 @@ class TransmissionDataDeviceController extends Controller
             if ($getPhotographer == null) {
                 // insert photographer
                 $getPhotographer = new Photographer;
-                $getPhotographer->id = Str::uuid();
+                $getPhotographer->id = (string)Str::uuid();
                 $getPhotographer->site_id = $getSite->id;
                 $getPhotographer->first_name = $findTransmission->Request_MadeBy_FirstName;
                 $getPhotographer->last_name = $findTransmission->Request_MadeBy_LastName;
@@ -434,7 +434,7 @@ class TransmissionDataDeviceController extends Controller
                 if ($getDevice == null) {
 
                     $getDevice = new Device;
-                    $getDevice->id = Str::uuid();
+                    $getDevice->id = (string)Str::uuid();
                     $getDevice->device_model = $findTransmission->Device_Model;
                     $getDevice->device_manufacturer = $findTransmission->Device_manufacturer;
                     $getDevice->save();
@@ -452,7 +452,7 @@ class TransmissionDataDeviceController extends Controller
                 if ($getDevice == null) {
 
                     $getDevice = new Device;
-                    $getDevice->id = Str::uuid();
+                    $getDevice->id = (string)Str::uuid();
                     $getDevice->device_model = $findTransmission->Device_Model;
                     $getDevice->device_manufacturer = $findTransmission->Device_manufacturer;
                     $getDevice->save();
@@ -492,7 +492,7 @@ class TransmissionDataDeviceController extends Controller
     }
 
     public function transmissionDataDevice(Request $request) {
-        
+
 
         // remove the upper section
         $explodeGetCFtPTrans = explode('<?xml', $request);
@@ -574,7 +574,7 @@ class TransmissionDataDeviceController extends Controller
         // find Transmission
         $findTransmission = TransmissionDataDevice::find($request->hidden_transmission_id);
 
-        $newCertificateID = Str::uuid();
+        $newCertificateID = (string)Str::uuid();
         $generateCertificate = new CertificationData;
         $generateCertificate->id = $newCertificateID;
 
@@ -644,7 +644,7 @@ class TransmissionDataDeviceController extends Controller
 
             $generateCertificate->certificate_id = 'OIIRC-02-'.substr(md5(microtime()), 0, 8).'-O';
 
-        
+
         } elseif ($request->certificate_type == 'grandfathered') {
 
             $generateCertificate->grandfather_certificate_id = $request->grandfather_id;
@@ -652,7 +652,7 @@ class TransmissionDataDeviceController extends Controller
             $generateCertificate->certificate_id = 'OIIRC-01-'.substr(md5(microtime()), 0, 8).'-G';
 
         }
-        
+
 
         // certification Officer Info
         $generateCertificate->certification_officer_id = \Auth::user()->id;
@@ -750,7 +750,7 @@ class TransmissionDataDeviceController extends Controller
 
             $generateCertificate->transmissions = ($request->transmissions != null) ? json_encode($request->transmissions) : json_encode([]);
 
-        
+
         } elseif ($request->certificate_type == 'grandfathered') {
 
             $generateCertificate->grandfather_certificate_id = $request->grandfather_id;

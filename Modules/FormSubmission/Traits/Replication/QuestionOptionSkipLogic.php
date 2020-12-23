@@ -18,7 +18,7 @@ trait QuestionOptionSkipLogic
             $replicating_or_cloning = 'replicating';
         }
 
-        $newOptionSkipLogicId = Str::uuid();
+        $newOptionSkipLogicId = (string)Str::uuid();
         $newOptionSkipLogic = $optionSkipLogic->replicate();
         $newOptionSkipLogic->id = $newOptionSkipLogicId;
         $newOptionSkipLogic->question_id = $replicatedQuestionId;

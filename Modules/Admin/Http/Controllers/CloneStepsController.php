@@ -29,7 +29,7 @@ class CloneStepsController extends Controller
     public function clone_phase(request $request)
     {
         $phase = StudyStructure::where('id', '=', $request->phase_id)->first();
-        $id    = Str::uuid();
+        $id    = (string)Str::uuid();
         $phase = StudyStructure::create([
             'id'    => $id,
             'study_id'    => session('current_study'),
@@ -71,7 +71,7 @@ class CloneStepsController extends Controller
     {
         $step = PhaseSteps::where('step_id', '=', $step_id)->first();
         ///// Clone to phases
-        $id    = Str::uuid();
+        $id    = (string)Str::uuid();
         PhaseSteps::create([
             'step_id'    => $id,
             'phase_id'    => $new_phase_id,

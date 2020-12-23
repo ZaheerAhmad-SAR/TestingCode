@@ -134,20 +134,21 @@ class StudyStructureController extends Controller
     // Store phases here
     public function store(Request $request)
     {
-        $id    = Str::uuid();
-        $phase = StudyStructure::create([
+        $id = (string)Str::uuid();
+        $phaseData = [
             'id'    => $id,
             'study_id'    => session('current_study'),
             'position'  =>  $request->position,
             'name' =>  $request->name,
             'duration' =>  $request->duration,
             'is_repeatable' =>  $request->is_repeatable,
-        ]);
-
+        ];
+        StudyStructure::create($phaseData);
+        $phase = StudyStructure::find($id);
         $oldPhase = [];
 
         // log event details
-        $logEventDetails = eventDetails($id, 'Phase', 'Add', $request->ip(), $oldPhase);
+        eventDetails($phase->id, 'Phase', 'Add', $request->ip(), $oldPhase);
 
         $data = [
             'success' => true,
@@ -159,7 +160,7 @@ class StudyStructureController extends Controller
     // store steps here
     public function store_steps(Request $request)
     {
-        $id    = Str::uuid();
+        $id    = (string)Str::uuid();
         PhaseSteps::create([
             'step_id'    => $id,
             'phase_id'    => $request->phase_id,

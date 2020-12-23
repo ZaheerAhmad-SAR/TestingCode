@@ -16,7 +16,7 @@ trait SectionReplication
         if ($isReplicating === true) {
             $replicating_or_cloning = 'replicating';
         }
-        $newSectionId = Str::uuid();
+        $newSectionId = (string)Str::uuid();
         $newSection = $section->replicate();
         $newSection->id = $newSectionId;
         $newSection->phase_steps_id = $newStepId;

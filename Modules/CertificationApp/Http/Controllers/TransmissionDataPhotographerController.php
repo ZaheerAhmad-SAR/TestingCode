@@ -253,7 +253,7 @@ class TransmissionDataPhotographerController extends Controller
 
         // find the transmission
         $findTransmission = TransmissionDataPhotographer::find(decrypt($id));
-        
+
         // study ID
         if($request->StudyI_ID != "") {
 
@@ -264,7 +264,7 @@ class TransmissionDataPhotographerController extends Controller
             $findTransmission->Study_Name = $getStudy->study_short_name;
 
         }
-        
+
         // get site id
         if ($request->Site_ID != "" && $request->Site_ID != "add_new") {
 
@@ -320,7 +320,7 @@ class TransmissionDataPhotographerController extends Controller
                 if ($getSite == null) {
                     // insert site
                     $getSite = new Site;
-                    $getSite->id = Str::uuid();
+                    $getSite->id = (string)Str::uuid();
                     $getSite->site_code = $findTransmission->Site_ID;
                     $getSite->site_name = $findTransmission->Site_Name;
                     $getSite->site_address = $findTransmission->Site_st_address;
@@ -342,7 +342,7 @@ class TransmissionDataPhotographerController extends Controller
                 if ($getSite == null) {
                     // insert site
                     $getSite = new Site;
-                    $getSite->id = Str::uuid();
+                    $getSite->id = (string)Str::uuid();
                     $getSite->site_code = $findTransmission->Site_ID;
                     $getSite->site_name = $findTransmission->Site_Name;
                     $getSite->site_address = $findTransmission->Site_st_address;
@@ -352,9 +352,9 @@ class TransmissionDataPhotographerController extends Controller
                     $getSite->save();
 
                 } // site check is end
-               
+
             }
-            
+
             // check site study relation
             $getSiteStudy = StudySite::where('study_id', $getStudy->id)
                                         ->where('site_id', $getSite->id)
@@ -363,7 +363,7 @@ class TransmissionDataPhotographerController extends Controller
             if ($getSiteStudy == null) {
                 // insert study site
                 $getSiteStudy = new StudySite;
-                $getSiteStudy->id = Str::uuid();
+                $getSiteStudy->id = (string)Str::uuid();
                 $getSiteStudy->study_id = $getStudy->id;
                 $getSiteStudy->site_id = $getSite->id;
                 $getSiteStudy->save();
@@ -379,7 +379,7 @@ class TransmissionDataPhotographerController extends Controller
             if ($getPrimaryInvestigator == null) {
                 // insert primary investigator
                 $getPrimaryInvestigator = new PrimaryInvestigator;
-                $getPrimaryInvestigator->id = Str::uuid();
+                $getPrimaryInvestigator->id = (string)Str::uuid();
                 $getPrimaryInvestigator->site_id = $getSite->id;
                 $getPrimaryInvestigator->first_name = $findTransmission->PI_Name;
                 $getPrimaryInvestigator->email = $findTransmission->PI_email;
@@ -394,7 +394,7 @@ class TransmissionDataPhotographerController extends Controller
             if ($getPhotographer == null) {
                 // insert photographer
                 $getPhotographer = new Photographer;
-                $getPhotographer->id = Str::uuid();
+                $getPhotographer->id = (string)Str::uuid();
                 $getPhotographer->site_id = $getSite->id;
                 $getPhotographer->first_name = $findTransmission->Photographer_First_Name;
                 $getPhotographer->last_name = $findTransmission->Photographer_Last_Name;
@@ -462,7 +462,7 @@ class TransmissionDataPhotographerController extends Controller
 
             $saveData = new TransmissionDataPhotographer;
             $saveData->data                         = $request;
-            $saveData->Transmission_Number          = $xml->Transmission_Number;  
+            $saveData->Transmission_Number          = $xml->Transmission_Number;
             $saveData->Salute                       = $xml->Salute;
             $saveData->Photographer_First_Name      = $xml->Photographer_First_Name;
             $saveData->Photographer_Last_Name       = $xml->Photographer_Last_Name;
@@ -559,7 +559,7 @@ class TransmissionDataPhotographerController extends Controller
             $parentModality = [];
 
             if ($request->type == 'photographer') {
-                
+
                 // find transmission
                 $findTransmission = TransmissionDataPhotographer::find($request->transmission_id);
 
@@ -648,7 +648,7 @@ class TransmissionDataPhotographerController extends Controller
                     ->toArray();
 
             } // type check ends
-            
+
             return response()->json(['submitterEmail' => $submitterEmail, 'ccEmails' => array_filter($ccEmails), 'getChildModalities' => $getChildModalities, 'getTransmissions' => $getTransmissions]);
 
         } // ajax ends
@@ -659,10 +659,10 @@ class TransmissionDataPhotographerController extends Controller
         // find Transmission
         $findTransmission = TransmissionDataPhotographer::find($request->hidden_transmission_id);
 
-        $newCertificateID = Str::uuid();
+        $newCertificateID = (string)Str::uuid();
         $generateCertificate = new CertificationData;
         $generateCertificate->id = $newCertificateID;
-        
+
         // get photographer ID
         $getPhotographer = Photographer::where('site_id', $findTransmission->transmission_site_id)
                                         ->where('email', $request->user_email)
@@ -724,7 +724,7 @@ class TransmissionDataPhotographerController extends Controller
 
             $generateCertificate->certificate_id = 'OIIRC-01-'.substr(md5(microtime()), 0, 8).'-O';
 
-        
+
         } elseif ($request->certificate_type == 'grandfathered') {
 
             $generateCertificate->grandfather_certificate_id = $request->grandfather_id;
@@ -748,7 +748,7 @@ class TransmissionDataPhotographerController extends Controller
         $path = storage_path('certificates_pdf/photographer');
         // generate pdf
         $pdf = PDF::loadView('certificationapp::certificate_pdf.certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('a4')->save($path.'/'.$file_name);
-        
+
 
         // make array for changings dynamic variable in the text editor
         $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, $findTransmission->PI_Name, $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id];
@@ -828,7 +828,7 @@ class TransmissionDataPhotographerController extends Controller
 
             $generateCertificate->transmissions = ($request->transmissions != null) ? json_encode($request->transmissions) : json_encode([]);
 
-        
+
         } elseif ($request->certificate_type == 'grandfathered') {
 
             $generateCertificate->grandfather_certificate_id = $request->grandfather_id;
@@ -858,7 +858,7 @@ class TransmissionDataPhotographerController extends Controller
         $path = storage_path('certificates_pdf/photographer');
         // generate pdf
         $pdf = PDF::loadView('certificationapp::certificate_pdf.certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('a4')->save($path.'/'.$file_name);
-        
+
 
         // make array for changings dynamic variable in the text editor
         $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, $findTransmission->PI_Name, $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id];
@@ -886,7 +886,7 @@ class TransmissionDataPhotographerController extends Controller
         Session::flash('success', 'Certicate generated successfully.');
 
         // return back
-        return redirect()->back(); 
+        return redirect()->back();
 
     }
 

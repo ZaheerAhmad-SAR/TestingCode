@@ -24,6 +24,8 @@ trait ReplicatePhaseStructure
 
     private function replicatePhaseStructure($phaseId, $isReplicating = true)
     {
+        $newQuestionIdsArray = [];
+
         $replicating_or_cloning = 'cloning';
         if ($isReplicating === true) {
             $replicating_or_cloning = 'replicating';
@@ -41,7 +43,7 @@ trait ReplicatePhaseStructure
 
         /*********  New Phase ********** */
         /******************************* */
-        $newPhaseId = Str::uuid();
+        $newPhaseId = (string)Str::uuid();
         $newPhase = $phase->replicate();
         $newPhase->id = $newPhaseId;
         $newPhase->parent_id = $phaseId;
@@ -74,7 +76,7 @@ trait ReplicatePhaseStructure
                 /******************************* */
                 foreach ($section->questions as $question) {
 
-                    $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId, $isReplicating);
+                    $newQuestionIdsArray[] = $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId, $isReplicating);
 
                     /******************************* */
                     /* Replicate Question Form Field */
@@ -89,30 +91,33 @@ trait ReplicatePhaseStructure
                     $this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId, $isReplicating);
 
                     /******************************* */
-                    /* Replicate Question Dependency */
-                    /******************************* */
-
-                    $this->addReplicatedQuestionDependency($question, $newQuestionId, $isReplicating);
-
-                    /******************************* */
                     /*Replicate Question Adjudication*/
                     /******************************* */
 
                     $this->addReplicatedQuestionAdjudicationStatus($question, $newQuestionId, $isReplicating);
-
-                    /******************************* */
-                    /* Replicate Question Skip Logic */
-                    /******************************* */
-
-                    $this->updateSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
-
-                    /******************************* */
-                    /* Replicate Question Option Skip Logic */
-                    /******************************* */
-
-                    $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
                 }
             }
+        }
+
+        foreach ($newQuestionIdsArray as $newQuestionId) {
+
+            /******************************* */
+            /* Replicate Question Dependency */
+            /******************************* */
+
+            $this->addReplicatedQuestionDependency($question, $newQuestionId, $isReplicating);
+
+            /******************************* */
+            /* Replicate Question Skip Logic */
+            /******************************* */
+
+            $this->updateSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
+
+            /******************************* */
+            /* Replicate Question Option Skip Logic */
+            /******************************* */
+
+            $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
         }
 
         /******************************* */

@@ -239,14 +239,12 @@
                                                             $activeStep = false;
                                                             @endphp
                                                         @endforeach
-                                                        @php
                                                         @if(
                                                             (\Modules\Admin\Entities\Preference::getPreference('VISIT_ACTIVATION') == 'Manual') &&
                                                             canQualityControl(['index', 'create', 'store', 'edit', 'update'])
                                                         )
-                                                            <br><span style="cursor: pointer;" onclick="unAssignPhaseToSubject('{{ $subjectId }}', '{{ $phase->id }}');" class="text text-warning">Deactivate Visit</span>
+                                                            <br><span style="cursor: pointer;" onclick="unAssignPhaseToSubject('{{ $subjectId }}', '{{ $phase->id }}');" class="text text-danger">Deactivate Visit</span>
                                                         @endif
-                                                        @endphp
                                                     @endif
                                                 </p>
                                             </div>
