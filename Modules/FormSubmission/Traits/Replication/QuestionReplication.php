@@ -4,6 +4,7 @@ namespace Modules\FormSubmission\Traits\Replication;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
+use Modules\Admin\Entities\CohortSkipLogic;
 use Modules\Admin\Entities\FormFields;
 use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\Question;
@@ -92,36 +93,6 @@ trait QuestionReplication
         foreach ($replicatedQuestions as $replicatedQuestion) {
             $replicatedQuestion->delete();
         }
-    }
-
-    private function deleteTreeAgainstPhase($phaseid)
-    {
-        $phase = StudyStructure::find($phaseid);
-        $steps = PhaseSteps::where('phase_id', $phaseid)->get();
-        foreach ($steps as $step) {
-            $this->deleteStepAndSectionsAgainstStep($step->step_id);
-        }
-        $phase->delete();
-    }
-
-    private function deleteStepAndSectionsAgainstStep($stepid)
-    {
-        $step = PhaseSteps::find($stepid);
-        $sections = Section::where('phase_steps_id', $stepid)->get();
-        foreach ($sections as $section) {
-            $this->deleteSectionAndQuestionsAgainstSection($section->id);
-        }
-        $step->delete();
-    }
-
-    private function deleteSectionAndQuestionsAgainstSection($sectionid)
-    {
-        $section = Section::find($sectionid);
-        $questions = Question::where('section_id', $sectionid)->get();
-        foreach ($questions as $question) {
-            $this->deleteQuestionAndItsRelatedValues($question->id);
-        }
-        $section->delete();
     }
 
     private function deleteQuestionAndItsRelatedValues($questionId)

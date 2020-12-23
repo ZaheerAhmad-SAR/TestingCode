@@ -163,6 +163,8 @@ class SkipLogicController extends Controller
                 }
                 CohortSkipLogic::insert($skip_ques);
             }
+            $this->updateCohortSkipLogicsToReplicatedVisits($request->phase_id);
+            $this->updateCohortOptionSkipLogicsToReplicatedVisits($request->phase_id);
         }
         return redirect()->route('skiplogic.skiponcohort', $request->study_id)->with('message', 'Checks Applied Successfully!');
     }

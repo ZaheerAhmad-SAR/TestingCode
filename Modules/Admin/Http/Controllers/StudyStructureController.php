@@ -238,7 +238,6 @@ class StudyStructureController extends Controller
     public function destroy($id)
     {
         $phase = StudyStructure::find($id);
-        $this->deleteTreeAgainstPhase($id);
         $this->deletePhase($phase);
     }
     public function destroySteps($step_id)

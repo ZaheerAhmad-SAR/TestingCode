@@ -105,9 +105,9 @@ trait CohortSkipLogicTrait
         $newSkipLogic->save();
     }
 
-    private function updateSkipLogicsToReplicatedVisits($phaseId, $isReplicating = true)
+    private function updateCohortSkipLogicsToReplicatedVisits($phaseId, $isReplicating = true)
     {
-        $this->deleteSkipLogicsToReplicatedVisits($phaseId);
+        $this->deleteCohortSkipLogicsToReplicatedVisits($phaseId);
         $replicatedPhases = StudyStructure::where('parent_id', 'like', $phaseId)
             ->where('replicating_or_cloning', 'like', 'replicating')
             ->get();
@@ -119,7 +119,7 @@ trait CohortSkipLogicTrait
         }
     }
 
-    private function deleteSkipLogicsToReplicatedVisits($phaseId)
+    private function deleteCohortSkipLogicsToReplicatedVisits($phaseId)
     {
         $replicatedPhases = StudyStructure::where('parent_id', 'like', $phaseId)
             ->where('replicating_or_cloning', 'like', 'replicating')
@@ -131,7 +131,7 @@ trait CohortSkipLogicTrait
 
     private function deletePhaseSkipLogics($phaseId)
     {
-        $this->deleteSkipLogicsToReplicatedVisits($phaseId);
+        $this->deleteCohortSkipLogicsToReplicatedVisits($phaseId);
         CohortSkipLogic::where('phase_id', $phaseId)->delete();
     }
 }

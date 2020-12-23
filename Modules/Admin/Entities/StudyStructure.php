@@ -9,10 +9,13 @@ use Modules\Admin\Scopes\StudyStructureWithoutRepeatedScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\FormSubmission\Traits\Replication\CohortOptionSkipLogic;
+use Modules\FormSubmission\Traits\JSCohortSkipLogic;
 
 class StudyStructure extends Model
 {
     use SoftDeletes;
+    use JSCohortSkipLogic;
+
     protected $fillable = [
         'id', 'study_id', 'name', 'position', 'duration',
         'is_repeatable', 'parent_id', 'replicating_or_cloning', 'count', 'old_id', 'deleted_at'

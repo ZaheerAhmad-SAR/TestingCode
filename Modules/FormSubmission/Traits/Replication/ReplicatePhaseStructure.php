@@ -155,6 +155,8 @@ trait ReplicatePhaseStructure
             ->get();
         foreach ($replicatedPhases as $replicatedPhase) {
             $replicatedPhase->delete();
+            $this->deletePhaseSkipLogics($replicatedPhase->id);
+            $this->deleteCohortPhaseOptionSkipLogics($replicatedPhase->id);
         }
     }
 
@@ -164,6 +166,8 @@ trait ReplicatePhaseStructure
         foreach ($phase->steps as $step) {
             $this->deleteStep($step);
         }
+        $this->deletePhaseSkipLogics($phase->id);
+        $this->deleteCohortPhaseOptionSkipLogics($phase->id);
         $phase->delete();
     }
 }
