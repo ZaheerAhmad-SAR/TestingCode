@@ -68,8 +68,14 @@
 // generate photographer certificate
 	Route::post('generate-photographer-certificate', 'TransmissionDataPhotographerController@generatePhotographerCertificate')->name('generate-photographer-certificate');
 
+// update photographer provisional certificate
+	Route::post('update-photographer-provisonal-certificate', 'TransmissionDataPhotographerController@updatePhotographerProvisonalCertificate')->name('update-photographer-provisonal-certificate');
+
 // generate device certificate
 	Route::post('generate-device-certificate', 'TransmissionDataDeviceController@generateDeviceCertificate')->name('generate-device-certificate');
+
+// update device provisional certificate
+	Route::post('update-device-provisonal-certificate', 'TransmissionDataDeviceController@updateDeviceProvisonalCertificate')->name('update-device-provisonal-certificate');
 
 // update photographer transmission status
     // Route::post('update-photographer-transmission-status', 'TransmissionDataPhotographerController@updatePhotographerTransmissionStatus')->name('update-photographer-transmission-status');
