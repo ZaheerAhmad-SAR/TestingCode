@@ -99,17 +99,12 @@ class SkipNumberController extends Controller
     public function update_skip_checks($id)
     {
         $num_values = skipLogic::where('id', $id)->first();
-<<<<<<< HEAD
-        $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->get();
-        return view('admin::forms.update_skip_question_num', compact('num_values', 'all_study_steps'));
-=======
         $question_id = $num_values->question_id;
         $question = Question::where('id',$question_id)->first();
         $section = Section::where('id',$question->section_id)->first();
         $step = PhaseSteps::where('step_id',$section->phase_steps_id)->first();
         $all_study_steps = PhaseSteps::where('phase_id', $step->phase_id)->get();
         return view('admin::forms.update_skip_question_num', compact('num_values','all_study_steps','step'));
->>>>>>> d0b9af20adff6ca9bacee79817f2c574e1c18aa5
     }
     public function update_skip_checks_on_number(Request $request)
     {
