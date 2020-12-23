@@ -61,7 +61,9 @@ class TransmissionDataDeviceController extends Controller
 
         if ($request->submitter_name != '') {
 
-           $getTransmissions = $getTransmissions->where('Request_MadeBy_FirstName', 'like', '%' . $request->submitter_name . '%');
+            $getTransmissions = $getTransmissions->where('Request_MadeBy_FirstName', 'like', "%$request->submitter_name%")
+                ->orWhereRaw("concat(Request_MadeBy_FirstName, ' ', Request_MadeBy_LastName) like '$request->submitter_name' ")
+                ->orWhere('Request_MadeBy_LastName', 'like', "$request->submitter_name");
         }
 
         if ($request->status != '') {
@@ -583,6 +585,7 @@ class TransmissionDataDeviceController extends Controller
                                         ->where('email', $request->user_email)
                                         ->first();
 
+
         $generateCertificate->photographer_id = $getPhotographer->id;
         $generateCertificate->photographer_email = $getPhotographer->email;
         $generateCertificate->cc_emails = json_encode($request->cc_user_email);
@@ -647,7 +650,7 @@ class TransmissionDataDeviceController extends Controller
         
         } elseif ($request->certificate_type == 'grandfathered') {
 
-            $generateCertificate->grandfather_certificate_id = $request->grandfather_id;
+            $generateCertificate->grandfather_certificate_id = 'Grandfater'.substr(md5(microtime()), 0, 8);
 
             $generateCertificate->certificate_id = 'OIIRC-01-'.substr(md5(microtime()), 0, 8).'-G';
 
@@ -750,11 +753,16 @@ class TransmissionDataDeviceController extends Controller
 
             $generateCertificate->transmissions = ($request->transmissions != null) ? json_encode($request->transmissions) : json_encode([]);
 
+            $generateCertificate->certificate_id = str_replace('-G', '-O', $generateCertificate->certificate_id);
+
+            $generateCertificate->grandfather_certificate_id = '';
+
         
         } elseif ($request->certificate_type == 'grandfathered') {
 
-            $generateCertificate->grandfather_certificate_id = $request->grandfather_id;
+            $generateCertificate->grandfather_certificate_id = 'Grandfater'.substr(md5(microtime()), 0, 8);
 
+            $generateCertificate->certificate_id = str_replace('-O', '-G', $generateCertificate->certificate_id);
         }
 
         $generateCertificate->user_input_device_id = $request->device_id;
@@ -820,6 +828,129 @@ class TransmissionDataDeviceController extends Controller
 
         Session::flash('success', 'Transmission moved to arcive successfully.');
 
+        return redirect()->back();
+
+    }
+
+    public function certifiedDevice(Request $request) {
+
+        $getCertifiedDevice = CertificationData::select('certification_data.*', 'photographers.first_name', 'photographers.last_name', 'photographers.email', 'photographers.phone', 'sites.site_name', 'sites.site_code', 'users.name as certification_officer_name')
+            ->leftjoin('photographers', 'photographers.id', '=', 'certification_data.photographer_id')
+            ->leftjoin('sites','sites.id', 'certification_data.site_id')
+            ->leftjoin('users', 'users.id', '=', 'certification_data.certification_officer_id')
+            ->where('certification_data.transmission_type', 'device_transmission')
+            ->orderBy('certification_data.created_at', 'desc')
+            ->paginate(50);
+
+        // get template
+        $getStudies = Study::get();
+
+        // get templates for email
+        $getTemplates = CertificationTemplate::select('id as template_id', 'title as template_title')->get();
+
+
+        return view('certificationapp::certificate_device.certified_device', compact('getCertifiedDevice', 'getStudies', 'getTemplates'));
+    }
+
+    public function generateDeviceGrandfatherCertificate(Request $request) {
+
+        $findCertificate = CertificationData::where('certificate_id', $request->certificate_id)->first();
+
+        $newCertificateID = Str::uuid();
+        $generateCertificate = new CertificationData;
+        $generateCertificate->id = $newCertificateID;
+
+        $generateCertificate->photographer_id = $findCertificate->photographer_id;
+        $generateCertificate->photographer_email = $findCertificate->photographer_email;
+        $generateCertificate->cc_emails = $findCertificate->cc_emails;
+
+        // get study information
+        $getStudy = Study::where('id', $request->study)->first();
+        $generateCertificate->study_id = $getStudy->id;
+        $generateCertificate->study_name = $getStudy->study_short_name;
+
+        $generateCertificate->site_id = $findCertificate->site_id;
+        $generateCertificate->site_name = $findCertificate->site_name;
+
+        $generateCertificate->device_id = $findCertificate->device_id;
+        $generateCertificate->device_model = $findCertificate->device_model;
+        $generateCertificate->device_serial_no = $findCertificate->device_serial_no;
+        $generateCertificate->user_input_device_id = $findCertificate->user_input_device_id;
+
+        $generateCertificate->modility_id = $findCertificate->modility_id;
+        $generateCertificate->certificate = $findCertificate->certificate;
+        $generateCertificate->certificate_for = $findCertificate->certificate_for;
+
+        // certificate status
+        $generateCertificate->certificate_status = $findCertificate->certificate_status;
+
+        // issue date
+        $generateCertificate->issue_date = $findCertificate->issue_date;
+        $generateCertificate->expiry_date = $findCertificate->expiry_date;
+
+        $generateCertificate->certificate_type = 'grandfathered';
+        $generateCertificate->grandfather_certificate_id = 'Grandfater'.substr(md5(microtime()), 0, 8);
+        $generateCertificate->certificate_id = 'OIIRC-01-'.substr(md5(microtime()), 0, 8).'-G';
+
+        // certification Officer Info
+        $generateCertificate->certification_officer_id = \Auth::user()->id;
+        //$generateCertificate->certification_file_name = $filename;
+
+        $generateCertificate->transmission_type = 'device_transmission';
+        $generateCertificate->validity = 'yes';
+        $generateCertificate->save();
+
+        /** ---------------------------- Email Section ---------------------------------- **/
+
+        $getModality = Modility::where('id', $generateCertificate->modility_id)->first();
+        //check in child modilities
+        if($getModality == null) {
+
+            $getModality = ChildModilities::where('id', $generateCertificate->modility_id)->first();
+        }
+        // get photographer ID
+        $getPhotographer = Photographer::find($generateCertificate->photographer_id);
+
+        // get study information
+        $getStudy = Study::find($generateCertificate->study_id);
+
+        // get site information
+        $getSite = Site::where('id', $generateCertificate->site_id)->first();
+
+        // get study email to pass to pdf
+        $getStudyEmail = StudySetup::where('study_id', $getStudy->id)->first();
+
+        $file_name = $generateCertificate->certificate_id.'_'.$getModality->modility_name.'_grandfathered_device.pdf';
+        $path = storage_path('certificates_pdf/device');
+        // generate pdf
+        $pdf = PDF::loadView('certificationapp::certificate_pdf.certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('a4')->save($path.'/'.$file_name);
+
+        // make array for changings dynamic variable in the text editor
+        $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, '', $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id, $generateCertificate->device_model, $generateCertificate->device_serial_no, $generateCertificate->user_input_device_id];
+
+        $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[pi_name]]', '[[modality_name]]', '[[certificate_id]]', '[[sender_name]]', '[[certificate_status]]', '[[certificate_type]]', '[[issue_date]]', '[[expiry_date]]', '[[grandfather_certificate_id]]', '[[device_model]]', '[[device_serial_no]]', '[[device_id]]'];
+
+        $data = [];
+        $data['email_body'] = str_replace($labels, $variables, $request->comment);
+        $senderEmail = $generateCertificate->photographer_email;
+        $ccEmail = $generateCertificate->cc_emails != '' ? json_decode($generateCertificate->cc_emails) : '';
+
+        // send email to users
+        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $generateCertificate, $getSite, $getStudy, $getModality, $path, $file_name)
+        {
+            $message->subject($getStudy->study_short_name.' '.$getStudy->study_code.' | Grandfather Device Certification# '.$generateCertificate->certificate_id.' | '. $getSite->site_code.' | '. $getModality->modility_name);
+            $message->to($senderEmail);
+            $message->cc($ccEmail);
+            $message->attach($path.'/'.$file_name);
+        });
+
+        // update the file name in database
+        $upateFileName = CertificationData::where('id', $newCertificateID)
+                                            ->update(['certificate_file_name' => $file_name]);
+
+        Session::flash('success', 'Certicate generated successfully.');
+
+        // return back
         return redirect()->back();
 
     }
