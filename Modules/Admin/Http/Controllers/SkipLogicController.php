@@ -47,10 +47,10 @@ class SkipLogicController extends Controller
     }
     public function skip_logic_cohort($id)
     {
-        $disease_cohorts = DiseaseCohort::where('study_id', '=', $id)->get();
-        $cohort_skiplogic = CohortSkipLogic::where('study_id', '=', $id)->get();
-        $all_study_steps = Study::where('id', session('current_study'))->with('studySteps')->get();
-        return view('admin::studies.skip_logic_cohort', compact('all_study_steps', 'disease_cohorts', 'cohort_skiplogic'));
+        $disease_cohorts = DiseaseCohort::where('study_id', '=', session('current_study'))->get();
+        $cohort_skiplogic = CohortSkipLogic::where('study_id', '=', session('current_study'))->get();
+        $all_study_steps = PhaseSteps::where('phase_id', $id)->get();
+        return view('admin::structure.skip_logic_cohort', compact('all_study_steps', 'disease_cohorts', 'cohort_skiplogic'));
     }
 
     public function add_skipLogic(Request $request)
@@ -119,13 +119,14 @@ class SkipLogicController extends Controller
         $skip_ques = [];
         $skip_options = [];
         if (isset($request->cohort_id) && count($request->cohort_id) > 0) {
-            $where = array('study_id' => $request->study_id);
+            $where = array('phase_id' => $request->phase_id);
             $remove_checks_if_already_exists = CohortSkipLogic::where($where)->delete();
             $remove_options_checks_if_exists = CohortSkipLogicOption::where($where)->delete();
             for ($i = 0; $i < count($request->cohort_id); $i++) {
                 $cohort_skiplogic_id = Str::uuid();
                 $skip_ques = [
                     'id' => $cohort_skiplogic_id,
+                    'phase_id' => $request->phase_id,
                     'study_id' => $request->study_id,
                     'cohort_name' => (isset($request->cohort_name[$i]) && $request->cohort_name[$i] != '') ? $request->cohort_name[$i] : '',
                     'cohort_id' => (isset($request->cohort_id[$i]) && $request->cohort_id[$i] != '') ? $request->cohort_id[$i] : '',
@@ -140,6 +141,7 @@ class SkipLogicController extends Controller
                         $skip_options = [
                             'id' => Str::uuid(),
                             'cohort_skiplogic_id' => $cohort_skiplogic_id,
+                            'phase_id' => $request->phase_id,
                             'study_id' => $request->study_id,
                             'value' => $op_content[0],
                             'option_question_id' => $op_content[1]
@@ -154,6 +156,7 @@ class SkipLogicController extends Controller
                         $skip_options = [
                             'id' => Str::uuid(),
                             'cohort_skiplogic_id' => $cohort_skiplogic_id,
+                            'phase_id' => $request->phase_id,
                             'study_id' => $request->study_id,
                             'value' => $op_content[0],
                             'option_question_id' => $op_content[1]
@@ -166,6 +169,6 @@ class SkipLogicController extends Controller
             $this->updateCohortSkipLogicsToReplicatedVisits($request->phase_id);
             $this->updateCohortOptionSkipLogicsToReplicatedVisits($request->phase_id);
         }
-        return redirect()->route('skiplogic.skiponcohort', $request->study_id)->with('message', 'Checks Applied Successfully!');
+        return redirect()->route('skiplogic.skiponcohort', $request->phase_id)->with('message', 'Checks Applied Successfully!');
     }
 }

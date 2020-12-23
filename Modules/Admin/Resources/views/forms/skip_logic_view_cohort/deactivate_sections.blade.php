@@ -1,7 +1,7 @@
 @php
     $deactivate_sections_array = [];
     $where = array(
-        "study_id" =>$studyId,
+        "phase_id" =>$phase_id,
         "cohort_name" =>$diseaseName,
         "cohort_id" =>$diseaseid
     );
@@ -10,6 +10,7 @@
     if(null !== $if_exists_record){
         $deactivate_sections_array = explode(',', $if_exists_record->deactivate_sections);
     }
+    
     $section = Modules\Admin\Entities\Section::select('*')->where('phase_steps_id', $value->step_id)->orderBy('sort_number', 'asc')->get();
 @endphp
 @if(count($section) > 0)

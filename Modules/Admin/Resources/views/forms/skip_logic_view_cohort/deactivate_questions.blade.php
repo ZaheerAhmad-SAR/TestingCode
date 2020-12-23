@@ -1,7 +1,7 @@
 @php
     $deactivate_questions_array = [];
     $where = array(
-        "study_id" =>$studyId,
+        "phase_id" =>$phase_id,
         "cohort_name" =>$diseaseName,
         "cohort_id" =>$diseaseid
     );
