@@ -1,7 +1,7 @@
 @php
     $skip_logic_id = '';
 	$questions = Modules\Admin\Entities\Question::where('id', $value->id)->with('optionsGroup')->first();
-    $skip_logic = Modules\Admin\Entities\CohortSkipLogic::where('study_id', $studyId)->where('cohort_id',$diseaseid)->first();
+    $skip_logic = Modules\Admin\Entities\CohortSkipLogic::where('phase_id', $phase_id)->where('cohort_id',$diseaseid)->first();
      if(null !==$skip_logic){
         $skip_logic_id = $skip_logic->id;
     }
@@ -13,7 +13,7 @@
         @foreach ($options_name as $key => $value) 
             @php
                 $where = array(
-                    "study_id" =>$studyId,
+                    "phase_id" =>$phase_id,
                     "option_question_id" =>$questions->id,
                     "cohort_skiplogic_id" =>$skip_logic_id,
                     "value" =>$options_value[$key]

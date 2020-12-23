@@ -61,6 +61,7 @@
                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                         <span class="dropdown-item edit_phase"><i class="far fa-edit"></i>&nbsp; Edit</span>
                                         <span class="dropdown-item clonePhase"><i class="far fa-clone"></i>&nbsp; Clone</span>
+                                        <span class="dropdown-item cohort_setting"><i class="fa fa-plus"></i> &nbsp; Cohort Setting</span>
                                         <span class="dropdown-item deletePhase"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                     </div>
                                 </div>
@@ -475,6 +476,14 @@ $(document).ready(function(){
                 }
             })
         }
+    })
+    // cohort settings
+    $('body').on('click','.cohort_setting',function(){
+        let row = $(this).closest('li.nav-item');
+        let id = row.find('input.phase_id').val();
+        let url = "{{ route('skiplogic.skiponcohort', ':id') }}";
+        url = url.replace(':id', id);
+        document.location.href=url;
     })
     // load add model for steps
     $('#add_steps').on('click',function(){
