@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Section extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $fillable = [
         'id',
         'phase_steps_id',

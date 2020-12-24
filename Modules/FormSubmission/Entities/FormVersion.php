@@ -9,7 +9,7 @@ use Modules\Admin\Entities\PhaseSteps;
 
 class FormVersion extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $table = 'form_version';
     protected $fillable = ['id', 'step_id', 'form_questions', 'form_version_num', 'created_at', 'updated_at'];
     protected $keyType = 'string';

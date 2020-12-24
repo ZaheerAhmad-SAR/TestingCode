@@ -17,7 +17,7 @@ use Modules\FormSubmission\Entities\SubjectsPhases;
 
 class Study extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $keyType = 'string';
     protected $fillable = [
         'id',

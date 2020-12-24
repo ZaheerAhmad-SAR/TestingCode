@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Site extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $keyType = 'string';
 
     protected $fillable = [

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Subject extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
 
     protected $fillable = ['id', 'old_id', 'study_id', 'subject_id', 'enrollment_date', 'study_eye', 'site_id', 'disease_cohort_id'];
     protected $keyType = 'string';

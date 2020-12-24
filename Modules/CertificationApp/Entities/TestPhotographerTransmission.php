@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TestPhotographerTransmission extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $fillable = [];
 }

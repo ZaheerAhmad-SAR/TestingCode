@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OptionsGroup extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $keyType = 'string';
     protected $fillable = [
         'id',

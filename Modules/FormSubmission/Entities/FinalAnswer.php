@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FinalAnswer extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $table = 'final_answer';
     protected $fillable = ['id', 'study_id', 'subject_id', 'study_structures_id', 'phase_steps_id', 'section_id', 'question_id', 'variable_name', 'field_id', 'answer', 'form_version_num'];
     protected $keyType = 'string';

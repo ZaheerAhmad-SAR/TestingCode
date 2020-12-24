@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class Answer extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $table = 'answer';
     protected $fillable = [
         'id', 'form_filled_by_user_id', 'grader_id', 'adjudicator_id', 'subject_id', 'study_id', 'study_structures_id',

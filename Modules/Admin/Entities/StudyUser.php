@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StudyUser extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected  $table = 'study_user';
     protected $fillable = ['id', 'study_id', 'user_id'];
     protected $keyType = 'string';

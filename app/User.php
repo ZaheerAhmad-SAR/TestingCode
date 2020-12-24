@@ -22,7 +22,7 @@ use Modules\UserRoles\Entities\UserSystemInfo;
 class User extends Authenticatable
 {
     use Notifiable;
-    use SoftDeletes;
+    use softDeletes;
 
     //public $incrementing = false;
 

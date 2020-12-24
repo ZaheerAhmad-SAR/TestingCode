@@ -9,7 +9,7 @@ use Modules\Admin\Scopes\QuestionValidationRulesOrderByScope;
 
 class QuestionValidation extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $keyType = 'string';
     protected $fillable = [
         'id', 'question_id', 'validation_rule_id', 'parameter_1', 'parameter_2', 'message_type', 'message', 'sort_order',

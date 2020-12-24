@@ -9,7 +9,7 @@ use Modules\Admin\Entities\Question;
 
 class ValidationRule extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $table = 'validation_rules';
     protected $keyType = 'string';
     protected $fillable = ['rule', 'title', 'description', 'rule_group', 'is_active', 'is_related_to_other_field'];

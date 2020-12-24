@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AdjudicationFormRevisionHistory extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $table = 'adjudication_form_revision_history';
     protected $fillable = ['id', 'adjudication_form_submit_status_id', 'adjudication_form_edit_reason_text'];
     protected $keyType = 'string';

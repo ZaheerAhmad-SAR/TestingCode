@@ -13,7 +13,7 @@ use Modules\FormSubmission\Traits\JSCohortSkipLogic;
 
 class StudyStructure extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     use JSCohortSkipLogic;
 
     protected $fillable = [

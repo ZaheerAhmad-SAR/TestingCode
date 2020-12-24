@@ -10,7 +10,7 @@ use Modules\Admin\Entities\StudyStructure;
 
 class ExportType extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $table = 'export_type';
     protected $fillable = [
         'id', 'study_id', 'phase_ids', 'form_type_id', 'modility_id', 'titles_values', 'export_type_title', 'created_at', 'updated_at', 'deleted_at'

@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
 use Modules\Admin\Entities\Question;
 use Modules\Admin\Entities\QuestionDependency;
+use Modules\Admin\Entities\StudyStructure;
 
 trait QuestionDependencyTrait
 {
@@ -28,8 +29,11 @@ trait QuestionDependencyTrait
             /*
             Dependent on Question ID Update
             */
-            $replicatedQuestion = Question::where('parent_id', 'like', $question->dep_on_question_id)
+            $phaseId = StudyStructure::getPhaseIdByQuestionId($newQuestionId);
+            $questionIds = StudyStructure::getQuestionIdsInPhaseArray($phaseId);
+            $replicatedQuestion = Question::where('parent_id', 'like', $questionDependency->dep_on_question_id)
                 ->where('replicating_or_cloning', 'like', 'replicating')
+                ->whereIn('id', $questionIds)
                 ->first();
             $newQuestionDependency->dep_on_question_id = $replicatedQuestion->id;
 

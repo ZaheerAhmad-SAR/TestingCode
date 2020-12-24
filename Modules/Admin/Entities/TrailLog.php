@@ -8,7 +8,7 @@ use App\User;
 
 class TrailLog extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     //
 
     public function users()

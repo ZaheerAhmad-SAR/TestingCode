@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class QuestionComments extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
 
     protected $table = 'question_comments';
     protected $fillable = ['id', 'comment_by_id', 'subject_id', 'study_id', 'study_structures_id', 'phase_steps_id', 'section_id', 'question_id', 'question_comment', 'created_at', 'updated_at', 'deleted_at'];

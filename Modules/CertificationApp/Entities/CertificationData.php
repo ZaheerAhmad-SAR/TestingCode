@@ -9,7 +9,7 @@ use App\User;
 
 class CertificationData extends Model
 {
-    //use SoftDeletes;
+    //use softDeletes;
     protected $fillable = [];
 
     protected $table = 'certification_data';

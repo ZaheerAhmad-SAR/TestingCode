@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class QueryUser extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $table = 'query_users';
     protected $fillable = ['id', 'user_id', 'query_id'];
     protected $keyType = 'string';

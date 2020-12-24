@@ -8,7 +8,7 @@ use App\User;
 
 class PhotographerTransmissionUpdateDetail extends Model
 {
-    //use SoftDeletes;
+    //use softDeletes;
     protected $fillable = [];
 
     public $timestamps = true;

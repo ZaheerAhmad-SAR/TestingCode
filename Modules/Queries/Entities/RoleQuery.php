@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class RoleQuery extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $table = 'role_queries';
     protected $fillable = ['id', 'roles_id', 'query_id'];
     protected $keyType = 'string';

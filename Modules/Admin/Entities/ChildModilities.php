@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ChildModilities extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $fillable = ['id', 'modility_name', 'modility_id', 'deleted_at'];
     protected $keyType = 'string';
     //protected $dates = ['deleted_at'];

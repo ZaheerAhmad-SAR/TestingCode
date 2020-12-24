@@ -10,7 +10,7 @@ use Modules\Admin\Entities\Modility;
 
 class ModalityPhases extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $table = 'modality_phases';
     protected $keyType = 'string';
     protected $fillable = ['id', 'phase_id', 'modility_id', 'form_type_id', 'Transmission_Number'];
