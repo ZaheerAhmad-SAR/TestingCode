@@ -14,7 +14,9 @@ class AddSkipLogicIdInQuestionOptionsTable extends Migration
     public function up()
     {
         Schema::table('question_options', function (Blueprint $table) {
-            $table->uuid('skip_logic_id')->nullable();
+            if (!Schema::hasColumn('question_options', 'skip_logic_id')) {
+                $table->uuid('skip_logic_id')->nullable();
+            }
         });
     }
 }
