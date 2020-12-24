@@ -322,7 +322,7 @@ class FormController extends Controller
     }
     public function add_questions(Request $request)
     {
-        $id    = Str::uuid();
+        $id    = (string)Str::uuid();
         Question::create([
             'id' => $id,
             'old_id'    => $id,
@@ -397,7 +397,7 @@ class FormController extends Controller
 
     private function createQuestionFormField($request, $questionObj)
     {
-        $id    = Str::uuid();
+        $id    = (string)Str::uuid();
         $form_field = FormFields::create([
             'id' => $id,
             'question_id' => $questionObj->id,
@@ -434,7 +434,7 @@ class FormController extends Controller
     private function createQuestionAdjudicationStatus($request, $questionObj)
     {
         if (isset($request->adj_status) && $request->adj_status == 'yes') {
-            $id    = Str::uuid();
+            $id    = (string)Str::uuid();
             $adjStatus = QuestionAdjudicationStatus::create([
                 'id' => $id,
                 'question_id' => $questionObj->id,
@@ -466,7 +466,7 @@ class FormController extends Controller
 
     private function createQuestionAnnotations($request, $questionObj)
     {
-        $id    = Str::uuid();
+        $id    = (string)Str::uuid();
         $annotation = [];
         if (isset($request->terminology_id) && count($request->terminology_id) > 0) {
             for ($i = 0; $i < count($request->terminology_id); $i++) {
@@ -485,7 +485,7 @@ class FormController extends Controller
     private function createQuestionDependencies($request, $questionObj)
     {
         if (isset($request->q_d_status) && $request->q_d_status == 'yes') {
-            $id    = Str::uuid();
+            $id    = (string)Str::uuid();
             $data = [
                 'id' => $id,
                 'question_id' => $questionObj->id,
@@ -521,7 +521,7 @@ class FormController extends Controller
 
         if (count((array)$request->validation_rules) > 0) {
             for ($counter = 0; $counter < count($request->validation_rules); $counter++) {
-                $id    = Str::uuid();
+                $id    = (string)Str::uuid();
                 $validation = [
                     'id' => $id,
                     'question_id' => $questionObj->id,

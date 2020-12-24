@@ -10,8 +10,8 @@ if(isset($queryParams)){
 <div class="row">
     <div class="col-md-6"></div>
     <div class="col-md-6 text-right">
-
-        @if(\Modules\Queries\Entities\Query::formHasQuery($queryParams))
+        @if(\Modules\Queries\Entities\Query::formHasQuery($queryParams)>0)
+        @if(\Modules\Queries\Entities\Query::formStatusHasClose($queryParams) === true)
 
             <div class="formQueries">
         <span class="ml-3" style="cursor: pointer;">
@@ -24,10 +24,35 @@ if(isset($queryParams)){
                  }
              @endphp
 
-            <i class="fas fa-question-circle showAllFormQueries"  onclick="getAllFormQueryData({{$dataStr}});"  style="margin-top: 12px;"></i>
+            <i class="fas fa-question-circle showAllFormQueries"  onclick="getAllFormQueryData({{$dataStr}});"  style="color: red;
+    position: absolute;
+    right: 24%;
+    bottom: 0%;
+    margin-bottom: 8px;"></i>
         </span>
             </div>
 
+            @else
+
+                <div class="closeForm">
+        <span class="ml-3" style="cursor: pointer;">
+            @php
+                $dataStr = '';
+                if(isset($queryParams)){
+                    $dataStr = "'" . implode("', '", $queryParams)."'";
+                }
+
+            //echo('false');
+            @endphp
+            <i class="fas fa-check-circle showCloseFormQueryPopUp" onclick="showCloseFormQueries({{ $dataStr }});"  style="position: absolute;
+    right: 24%;
+    bottom: 0%;
+    margin-bottom: 8px; color: green;"></i>
+
+        </span>
+                </div>
+
+        @endif
         @endif
         <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Queries</button>
             <div class="dropdown-menu p-0">

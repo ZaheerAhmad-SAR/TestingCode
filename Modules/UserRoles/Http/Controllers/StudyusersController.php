@@ -40,12 +40,13 @@ class StudyusersController extends Controller
             $studyusers = $studyusers->where('users.email','like', '%'.$request->email.'%');
         }
         if(isset($request->role_id) && $request->role_id !=''){
-            $studyusers = $studyusers->where('users.role_id', $request->role_id);
+            $studyusers = $studyusers->where('users.role_id','like', '%'. $request->role_id.'%');
         }
         $studyusers = $studyusers->get();
         $remaining_users = User::whereIn('id', $idsOfUsersWithStudyRole)
             ->whereNotIn('id', $enrolledUserIds)->get();
-        return view('userroles::users.studyUsers', compact('roles', 'studyusers', 'remaining_users'));
+        $allroles = Role::all();
+        return view('userroles::users.studyUsers', compact('roles', 'studyusers', 'remaining_users','allroles'));
     }
 
     /**
@@ -120,7 +121,7 @@ class StudyusersController extends Controller
                 } else {
 
                     // unique ID
-                    $id = Str::uuid();
+                    $id = (string)Str::uuid();
 
                     $user = User::create([
                         'id' => $id,
@@ -134,7 +135,7 @@ class StudyusersController extends Controller
                     if (!empty($request->roles)) {
                         foreach ($request->roles as $role) {
                             $roles = RoleStudyUser::create([
-                                'id' => Str::uuid(),
+                                'id' => (string)Str::uuid(),
                                 'user_id' => $user->id,
                                 'role_id' => $role,
                                 'study_id' => session('current_study'),
@@ -296,7 +297,7 @@ class StudyusersController extends Controller
             foreach ($request->roles as $role) {
                 if (!in_array($role, $currentRoleIds)) {
                     RoleStudyUser::create([
-                        'id'         => Str::uuid(),
+                        'id'         => (string)Str::uuid(),
                         'user_id'    =>  $user->id,
                         'role_id'    =>  $role,
                         'study_id'   => session('current_study'),

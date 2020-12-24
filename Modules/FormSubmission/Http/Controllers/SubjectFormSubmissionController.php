@@ -163,7 +163,7 @@ class SubjectFormSubmissionController extends Controller
                 $answerArray['form_version_num'] = $formVersion;
                 $answerObj->update($answerArray);
             } else {
-                $answerArray['id'] = Str::uuid();
+                $answerArray['id'] = (string)Str::uuid();
                 $answerArray['answer'] = $answer;
                 $answerArray['form_version_num'] = $formVersion;
                 $answerObj = Answer::create($answerArray);

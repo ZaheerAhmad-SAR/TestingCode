@@ -55,7 +55,7 @@ class ExportTypeController extends Controller
     public function submitAddExportTypeForm(Request $request)
     {
         $exportType = new ExportType();
-        $exportType->id = Str::uuid();
+        $exportType->id = (string)Str::uuid();
         $exportType->study_id = session('current_study');
         $exportType->phase_ids = implode(',', $request->phase_ids);
         $exportType->form_type_id = $request->form_type_id;

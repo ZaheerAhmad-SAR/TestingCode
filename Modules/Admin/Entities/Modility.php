@@ -13,8 +13,6 @@ class Modility extends Model
     protected $guarded = [];
     protected $keyType = 'string';
 
-    use SoftDeletes;
-
     //    public function children()
     //    {
     //        return $this->hasMany(ChildModilities::class,'id','modility_id');

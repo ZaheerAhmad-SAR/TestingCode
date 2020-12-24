@@ -26,7 +26,7 @@ class UserTableSeeder extends Seeder
         $role = Role::where('name', 'like', 'Super Admin')->first();
         $role_id = $role->id;
         if (null === $userCheck) {
-            $user_id = Str::uuid();
+            $user_id = (string)Str::uuid();
             User::create([
                 'id'    => $user_id,
                 'role_id'  => $role_id,

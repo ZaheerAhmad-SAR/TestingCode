@@ -39,7 +39,7 @@ class SubjectsPhases extends Model
     {
         foreach ($modalityIdsArray as $modalityId) {
             $data = [
-                'id' => Str::uuid(),
+                'id' => (string)Str::uuid(),
                 'subject_id' => $request->subject_id,
                 'phase_id' => $request->phase_id,
                 'visit_date' => $request->visit_date,

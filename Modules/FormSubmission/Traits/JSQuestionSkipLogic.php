@@ -151,10 +151,10 @@ trait JSQuestionSkipLogic
             $deActivateQuestionOptionsClsArray = [];
             foreach ($skipLogicOptions as $skipLogicOption) {
                 if ($skipLogicOption->type == 'activate') {
-                    $activateQuestionOptionsClsArray[] = buildSafeStr($skipLogicOption->option_question_id, 'skip_logic_' . $questionIdStr . '_' . $skipLogicOption->value);
+                    $activateQuestionOptionsClsArray[] = buildSafeStr($skipLogicOption->option_question_id, 'skip_logic_' . $skipLogicOption->value);
                 }
                 if ($skipLogicOption->type == 'deactivate') {
-                    $deActivateQuestionOptionsClsArray[] = buildSafeStr($skipLogicOption->option_question_id, 'skip_logic_' . $questionIdStr . '_' . $skipLogicOption->value);
+                    $deActivateQuestionOptionsClsArray[] = buildSafeStr($skipLogicOption->option_question_id, 'skip_logic_' . $skipLogicOption->value);
                 }
             }
 

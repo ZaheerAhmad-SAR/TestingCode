@@ -46,7 +46,7 @@ class QuestionCommentController extends Controller
     public function submitAddQuestionCommentForm(Request $request)
     {
         $questionComment = new QuestionComments();
-        $questionComment->id = Str::uuid();
+        $questionComment->id = (string)Str::uuid();
         $questionComment->comment_by_id = $request->commentById;
         $questionComment->study_id = $request->studyId;
         $questionComment->subject_id = $request->subjectId;

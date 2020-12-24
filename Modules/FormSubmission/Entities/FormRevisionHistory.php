@@ -22,7 +22,7 @@ class FormRevisionHistory extends Model
     public static function putFormRevisionHistory($formRevisionDataArray, $formStatusId = 0)
     {
         $formRevisionHistory = new FormRevisionHistory();
-        $formRevisionHistory->id = Str::uuid();
+        $formRevisionHistory->id = (string)Str::uuid();
         $formRevisionHistory->form_submit_status_id = $formStatusId;
         $formRevisionHistory->edit_reason_text = $formRevisionDataArray['edit_reason_text'];
         $formRevisionHistory->form_data = json_encode($formRevisionDataArray['form_data']);

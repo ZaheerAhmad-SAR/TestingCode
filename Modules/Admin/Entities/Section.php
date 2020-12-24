@@ -15,7 +15,7 @@ class Section extends Model
         'name',
         'description',
         'sort_number',
-        'parent_id',
+        'parent_id', 'replicating_or_cloning',
         'deleted_at'
     ];
 

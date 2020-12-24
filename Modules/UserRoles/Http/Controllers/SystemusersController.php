@@ -64,7 +64,7 @@ class SystemusersController extends Controller
         dd('system');
         if ($request->ajax()) {
             $userID = $request->user_id;
-            $id = Str::uuid();
+            $id = (string)Str::uuid();
             $user = User::updateOrCreate(
                 [
                     'id' => $id
@@ -79,13 +79,13 @@ class SystemusersController extends Controller
             if ($request->roles) {
                 foreach ($request->roles as $role) {
                     UserRole::updateOrCreate([
-                        'id'    => Str::uuid(),
+                        'id'    => (string)Str::uuid(),
                         'user_id'     => $user->id,
                         'role_id'   => $role
                     ]);
 
                     RoleStudyUser::updateOrCreate([
-                        'id'    => Str::uuid(),
+                        'id'    => (string)Str::uuid(),
                         'user_id'     => $user->id,
                         'role_id'   => $role,
                         'study_id' => ''

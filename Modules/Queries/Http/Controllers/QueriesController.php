@@ -99,6 +99,16 @@ class QueriesController extends Controller
 
     }
 
+    public function loadAllCloseFormPhaseById(Request $request)
+    {
+        $phase_steps_id = $request->phase_steps_id;
+
+        $records = Query::where('query_status','=','close')->where('phase_steps_id','like',$phase_steps_id)->where('parent_query_id','like',0)->get();
+        echo  view('queries::queries.form.queries_close_form_table_view',compact('records'));
+
+    }
+
+
     public function loadFormByPhaseId(Request $request)
     {
         $phase_steps_id = $request->phase_steps_id;
@@ -125,7 +135,7 @@ class QueriesController extends Controller
         $module_id        = $request->post('module_id');
         $query_url        = $request->post('query_url');
         $query_type       = $request->post('query_type');
-        $id               = Str::uuid();
+        $id               = (string)Str::uuid();
         $filePath = '';
         if ($request->has('query_file'))
         {
@@ -177,7 +187,7 @@ class QueriesController extends Controller
         $module_name      = $request->post('module_name');
         $study_structures = $request->post('study_structures_id');
 
-        $id               = Str::uuid();
+        $id               = (string)Str::uuid();
         $filePath = '';
         if ($request->has('question_file'))
         {
@@ -282,7 +292,7 @@ class QueriesController extends Controller
             }
         }
 
-        $id              = Str::uuid();
+        $id              = (string)Str::uuid();
         $query           = Query::create([
             'id'=>$id,
             'queried_remarked_by_id'=>\auth()->user()->id,
@@ -302,7 +312,7 @@ class QueriesController extends Controller
             {
                 $roles = (array)null;
                 QueryUser::create([
-                    'id' => Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'user_id' => $user,
                     'query_id' => $id
                 ]);
@@ -313,7 +323,7 @@ class QueriesController extends Controller
             foreach ($rolesArray as $role)
             {
                 RoleQuery::create([
-                    'id' => Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'roles_id' => $role,
                     'query_id' => $id
                 ]);
@@ -353,7 +363,7 @@ class QueriesController extends Controller
             $this->uploadOne($image, $folder, 'public', $name);
         }
 
-        $id              = Str::uuid();
+        $id              = (string)Str::uuid();
         $query           = Query::create([
             'id'=>$id,
             'queried_remarked_by_id'=>\auth()->user()->id,
@@ -382,7 +392,7 @@ class QueriesController extends Controller
             {
                 $roles = (array)null;
                 QueryUser::create([
-                    'id' => Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'user_id' => $user,
                     'query_id' => $id
                 ]);
@@ -393,7 +403,7 @@ class QueriesController extends Controller
             foreach ($rolesArray as $role)
             {
                 RoleQuery::create([
-                    'id' => Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'roles_id' => $role,
                     'query_id' => $id
                 ]);
@@ -404,6 +414,7 @@ class QueriesController extends Controller
     }
 
     public function storeFormQueries(Request $request){
+        //dd($request->all());
         $study_id            = $request->post('form_study_id');
         $question_id         = $request->post('form_question_id');
         $phase_steps_id      = $request->post('form_phase_steps_id');
@@ -432,7 +443,7 @@ class QueriesController extends Controller
             $this->uploadOne($image, $folder, 'public', $name);
         }
 
-        $id              = Str::uuid();
+        $id              = (string)Str::uuid();
         $query           = Query::create([
             'id'=>$id,
             'queried_remarked_by_id'=>\auth()->user()->id,
@@ -442,6 +453,7 @@ class QueriesController extends Controller
             'study_id'=>$study_id,
             'query_status'=> 'open',
             'query_type' =>$queryAssignedTo,
+            'query_level'=> 'form',
             'query_url'=>$query_url,
             'query_subject'=>$query_subject,
             'question_id'=>$question_id,
@@ -460,7 +472,7 @@ class QueriesController extends Controller
             {
                 $roles = (array)null;
                 QueryUser::create([
-                    'id' => Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'user_id' => $user,
                     'query_id' => $id
                 ]);
@@ -471,7 +483,7 @@ class QueriesController extends Controller
             foreach ($rolesArray as $role)
             {
                 RoleQuery::create([
-                    'id' => Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'roles_id' => $role,
                     'query_id' => $id
                 ]);
@@ -487,8 +499,7 @@ class QueriesController extends Controller
 
         $query_id         = $request->post('queryIdInput');
         $find             = Query::find($query_id);
-        $queryStatusArray = array('query_status'=>$query_status);
-        Query::where('id',$find['id'])->update($queryStatusArray);
+
         $study_id            = $request->post('studyIdInput');
         $question_id         = $request->post('questionIdInput');
         $phase_steps_id      = $request->post('phaseStepsIdInput');
@@ -505,6 +516,7 @@ class QueriesController extends Controller
         $query_subject       = $request->post('subjectFormInput');
         $query_url           = $request->post('queryUrlInput');
         $queryAssignedTo     = $request->post('queryTypeInput');
+        $queryLeveFormInput  = $request->post('queryLeveFormInput');
         $filePath            = '';
 
         if (!empty($request->file('formFileInput'))) {
@@ -515,7 +527,7 @@ class QueriesController extends Controller
             $this->uploadOne($image, $folder, 'public', $name);
         }
 
-        $id              = Str::uuid();
+        $id              = (string)Str::uuid();
         $query           = Query::create([
             'id'=>$id,
             'queried_remarked_by_id'=>\auth()->user()->id,
@@ -525,6 +537,7 @@ class QueriesController extends Controller
             'study_id'=>$study_id,
             'query_status'=> 'open',
             'query_type' =>$queryAssignedTo,
+            'query_level'=>$queryLeveFormInput,
             'query_url'=>$query_url,
             'query_subject'=>$query_subject,
             'question_id'=>$question_id,
@@ -538,6 +551,16 @@ class QueriesController extends Controller
             'query_attachments'=>$filePath
         ]);
 
+//        $queryStatusArray = array('query_status'=>$query_status);
+//        Query::where('id',$find['id'])->update($queryStatusArray);
+
+
+        $queryStatusArray = array('query_status'=>$query_status);
+        $queryStatusArrayChild = array('query_status'=>$query_status);
+        Query::where('id',$find['id'])->update($queryStatusArray);
+        Query::where('parent_query_id',$find['id'])->update($queryStatusArrayChild);
+
+
         return response()->json([$query,'success'=>'Queries is generate successfully!!!!']);
 
     }
@@ -550,8 +573,8 @@ class QueriesController extends Controller
     public function show($id)
     {
 
-        $users  =   User::where('id','!=',\auth()->user()->id)->get();
-        $queries = Query::all();
+        $users    = User::where('id','!=',\auth()->user()->id)->get();
+        $queries  = Query::all();
         return view('queries::queries.chat',compact('users','queries'));
     }
 

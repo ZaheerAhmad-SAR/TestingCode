@@ -89,7 +89,7 @@ trait AdjudicationTrait
                     'question_id' => $question->id,
                 ];
                 $questionAdjudicationRequiredArray_1 = [
-                    'id' => Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'val_difference' => $valDifference,
                     'is_percentage' => $isPercentage,
 
@@ -105,7 +105,7 @@ trait AdjudicationTrait
                     'field_id' => $question->formfields->id,
                 ];
                 $finalAnswerArray_1 = [
-                    'id' => Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'answer' => $finalAnswer,
                 ];
 
