@@ -498,7 +498,15 @@
           
         </ul>
         <!-- END: Menu-->
-    
+    <div class="btn-group dropup" style="margin-left: 15px;">
+     <button type="button" class="btn btn-primary dropdown-toggle position-fixed" data-toggle="dropdown">  <i class="icon-question"></i> Support</button>
+        <div class="dropdown-menu">
+            <a href="#" class="dropdown-item">Action</a>
+            <a href="#" class="dropdown-item">Another action</a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item">Separated link</a>
+        </div>
+    </div>
 
     </div>
 
