@@ -135,7 +135,7 @@ class QueriesController extends Controller
         $module_id        = $request->post('module_id');
         $query_url        = $request->post('query_url');
         $query_type       = $request->post('query_type');
-        $id               = Str::uuid();
+        $id               = (string)Str::uuid();
         $filePath = '';
         if ($request->has('query_file'))
         {
@@ -187,7 +187,7 @@ class QueriesController extends Controller
         $module_name      = $request->post('module_name');
         $study_structures = $request->post('study_structures_id');
 
-        $id               = Str::uuid();
+        $id               = (string)Str::uuid();
         $filePath = '';
         if ($request->has('question_file'))
         {
@@ -292,7 +292,7 @@ class QueriesController extends Controller
             }
         }
 
-        $id              = Str::uuid();
+        $id              = (string)Str::uuid();
         $query           = Query::create([
             'id'=>$id,
             'queried_remarked_by_id'=>\auth()->user()->id,
@@ -312,7 +312,7 @@ class QueriesController extends Controller
             {
                 $roles = (array)null;
                 QueryUser::create([
-                    'id' => Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'user_id' => $user,
                     'query_id' => $id
                 ]);
@@ -323,7 +323,7 @@ class QueriesController extends Controller
             foreach ($rolesArray as $role)
             {
                 RoleQuery::create([
-                    'id' => Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'roles_id' => $role,
                     'query_id' => $id
                 ]);
@@ -363,7 +363,7 @@ class QueriesController extends Controller
             $this->uploadOne($image, $folder, 'public', $name);
         }
 
-        $id              = Str::uuid();
+        $id              = (string)Str::uuid();
         $query           = Query::create([
             'id'=>$id,
             'queried_remarked_by_id'=>\auth()->user()->id,
@@ -392,7 +392,7 @@ class QueriesController extends Controller
             {
                 $roles = (array)null;
                 QueryUser::create([
-                    'id' => Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'user_id' => $user,
                     'query_id' => $id
                 ]);
@@ -403,7 +403,7 @@ class QueriesController extends Controller
             foreach ($rolesArray as $role)
             {
                 RoleQuery::create([
-                    'id' => Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'roles_id' => $role,
                     'query_id' => $id
                 ]);
@@ -443,7 +443,7 @@ class QueriesController extends Controller
             $this->uploadOne($image, $folder, 'public', $name);
         }
 
-        $id              = Str::uuid();
+        $id              = (string)Str::uuid();
         $query           = Query::create([
             'id'=>$id,
             'queried_remarked_by_id'=>\auth()->user()->id,
@@ -472,7 +472,7 @@ class QueriesController extends Controller
             {
                 $roles = (array)null;
                 QueryUser::create([
-                    'id' => Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'user_id' => $user,
                     'query_id' => $id
                 ]);
@@ -483,7 +483,7 @@ class QueriesController extends Controller
             foreach ($rolesArray as $role)
             {
                 RoleQuery::create([
-                    'id' => Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'roles_id' => $role,
                     'query_id' => $id
                 ]);
@@ -527,7 +527,7 @@ class QueriesController extends Controller
             $this->uploadOne($image, $folder, 'public', $name);
         }
 
-        $id              = Str::uuid();
+        $id              = (string)Str::uuid();
         $query           = Query::create([
             'id'=>$id,
             'queried_remarked_by_id'=>\auth()->user()->id,

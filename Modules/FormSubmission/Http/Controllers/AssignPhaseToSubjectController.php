@@ -55,10 +55,10 @@ class AssignPhaseToSubjectController extends Controller
 
 
     public function unAssignPhaseToSubject(Request $request)
-    { 
+    {
         /** ------------------ Amir code --------------------------**/
         $oldPhase = [];
-        
+
         // trail log
         $getSubjectPhase = SubjectsPhases::where('subject_id', 'like', $request->subjectId)->where('phase_id', 'like', $request->phaseId)->first();
 
@@ -70,7 +70,7 @@ class AssignPhaseToSubjectController extends Controller
         $subjectId = $request->subjectId;
         $phaseId = $request->phaseId;
         $phase = StudyStructure::where('id', 'like', $phaseId)->withoutGlobalScopes()->first();
-        if ($phase->parent_id != 'no-parent') {
+        if ($phase->parent_id != 'no-parent' && $phase->replicating_or_cloning == 'replicating') {
             $this->deletePhase($phase);
         }
 

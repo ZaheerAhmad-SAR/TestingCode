@@ -634,7 +634,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
             $getSubjectName = Subject::find($eventId->subject_id);
 
             //get phase name
-            $getPhaseName = StudyStructure::find($eventId->phase_id);
+            $getPhaseName = StudyStructure::where('id', $eventId->phase_id)->withOutGlobalScopes()->first();
 
             // set message for audit
             $auditMessage = Auth::user()->name . ' deactivated phase ' . $getPhaseName->name . '.';

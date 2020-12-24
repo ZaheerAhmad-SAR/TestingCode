@@ -29,7 +29,7 @@ class PermissionTableSeeder extends Seeder
                         $permission->update(['name' => $route->getName(), 'controller_name' => $permission_name]);
                     } else {
                         Permission::create([
-                            'id' => Str::uuid(),
+                            'id' => (string)Str::uuid(),
                             'name' => $route->getName(),
                             'for' => $route->getName(),
                             'controller_name' => $permission_name

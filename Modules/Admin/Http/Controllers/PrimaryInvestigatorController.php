@@ -40,7 +40,7 @@ class PrimaryInvestigatorController extends Controller
      */
     public function store(Request $request)
     {
-        $id = Str::uuid();
+        $id = (string)Str::uuid();
         $pi = PrimaryInvestigator::create([
             'id'    => $id,
             'site_id'=> $request->site_id,

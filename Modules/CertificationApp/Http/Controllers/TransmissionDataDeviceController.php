@@ -36,27 +36,27 @@ class TransmissionDataDeviceController extends Controller
 
         if ($request->trans_id != '') {
 
-           $getTransmissions = $getTransmissions->where('Transmission_Number', 'like', '%' . $request->trans_id . '%');
+            $getTransmissions = $getTransmissions->where('Transmission_Number', 'like', '%' . $request->trans_id . '%');
         }
 
         if ($request->study != '') {
 
-           $getTransmissions = $getTransmissions->where('Study_Name', 'like', '%' . $request->study . '%');
+            $getTransmissions = $getTransmissions->where('Study_Name', 'like', '%' . $request->study . '%');
         }
 
         if ($request->device_category != '') {
 
-           $getTransmissions = $getTransmissions->where('Device_Category', 'like', '%' . $request->device_category . '%');
+            $getTransmissions = $getTransmissions->where('Device_Category', 'like', '%' . $request->device_category . '%');
         }
 
         if ($request->device_serial != '') {
 
-           $getTransmissions = $getTransmissions->where('Device_Serial', 'like', '%' . $request->device_serial . '%');
+            $getTransmissions = $getTransmissions->where('Device_Serial', 'like', '%' . $request->device_serial . '%');
         }
 
         if ($request->site != '') {
 
-           $getTransmissions = $getTransmissions->where('Site_Name', 'like', '%' . $request->site . '%');
+            $getTransmissions = $getTransmissions->where('Site_Name', 'like', '%' . $request->site . '%');
         }
 
         if ($request->submitter_name != '') {
@@ -68,27 +68,27 @@ class TransmissionDataDeviceController extends Controller
 
         if ($request->status != '') {
 
-           $getTransmissions = $getTransmissions->where('status', $request->status);
+            $getTransmissions = $getTransmissions->where('status', $request->status);
         }
 
         $getTransmissions = $getTransmissions->where('archive_transmission', 'no')
-                                             ->groupBy(['StudyI_ID', 'Request_MadeBy_Email', 'Requested_certification', 'Site_ID', 'Device_Serial'])
-                                            ->orderBy('id', 'desc')->orderBy('id', 'desc')
-                                            ->paginate(50);
+            ->groupBy(['StudyI_ID', 'Request_MadeBy_Email', 'Requested_certification', 'Site_ID', 'Device_Serial'])
+            ->orderBy('id', 'desc')->orderBy('id', 'desc')
+            ->paginate(50);
 
         // loop through the data and get row color and transmission details for each entry
-        foreach($getTransmissions as $key => $transmission) {
+        foreach ($getTransmissions as $key => $transmission) {
 
             // get the no. of accepted transmission accepted for this study and modality
             $acceptedTransmissions = TransmissionDataDevice::where('StudyI_ID', $transmission->StudyI_ID)
-                                    ->where('Request_MadeBy_Email', $transmission->Request_MadeBy_Email)
-                                    ->where('Requested_certification', $transmission->Requested_certification)
-                                    ->where('Site_ID', $transmission->Site_ID)
-                                    ->where('Device_Serial', $transmission->Device_Serial)
-                                    ->where('status', 'accepted')
-                                    ->where('archive_transmission', 'no')
-                                    ->get()
-                                    ->count();
+                ->where('Request_MadeBy_Email', $transmission->Request_MadeBy_Email)
+                ->where('Requested_certification', $transmission->Requested_certification)
+                ->where('Site_ID', $transmission->Site_ID)
+                ->where('Device_Serial', $transmission->Device_Serial)
+                ->where('status', 'accepted')
+                ->where('archive_transmission', 'no')
+                ->get()
+                ->count();
 
             // first get the modility ID
             $getModalityID = Modility::where('modility_name', $transmission->Requested_certification)->first();
@@ -104,11 +104,11 @@ class TransmissionDataDeviceController extends Controller
 
             // get photographer ID
             $getPhotographerID = Photographer::where('email', $transmission->Request_MadeBy_Email)
-                                               ->where('site_id', $getSiteID)
-                                               ->first();
+                ->where('site_id', $getSiteID)
+                ->first();
 
             $getPhotographerID = $getPhotographerID != null ? $getPhotographerID->id : 0;
-            
+
             // check no. of transmission for study and modility in setup table
             $getTransmissionNo = StudySetup::where('study_id', $getStudyID)->first();
 
@@ -120,20 +120,17 @@ class TransmissionDataDeviceController extends Controller
                 if (isset($decodedNumberColumn->device->$getModalityID)) {
 
                     // compare the counts
-                    if($acceptedTransmissions >= $decodedNumberColumn->device->$getModalityID) {
+                    if ($acceptedTransmissions >= $decodedNumberColumn->device->$getModalityID) {
 
                         $transmission->rowColor = 'rgba(76, 175, 80, 0.5)';
-
                     } else {
 
                         $transmission->rowColor = '';
-
                     } // accepted number ends
 
                 } else {
 
                     $transmission->rowColor = '';
-
                 } // index isset ends
 
             } else {
@@ -151,43 +148,40 @@ class TransmissionDataDeviceController extends Controller
 
             // check if this transmission has already been certified for this modality and study
             $certifiedTransmission = CertificationData::select('id as certificate_id', 'certificate_status')
-                                                        ->where('study_id', $getStudyID)
-                                                        ->whereIn('modility_id', $getChildModalities)
-                                                        ->where('photographer_id', $getPhotographerID)
-                                                        ->where('site_id', $getSiteID)
-                                                        ->where('device_serial_no', $transmission->Device_Serial)
-                                                        ->where('transmission_type', 'device_transmission')
-                                                        ->first();
+                ->where('study_id', $getStudyID)
+                ->whereIn('modility_id', $getChildModalities)
+                ->where('photographer_id', $getPhotographerID)
+                ->where('site_id', $getSiteID)
+                ->where('device_serial_no', $transmission->Device_Serial)
+                ->where('transmission_type', 'device_transmission')
+                ->first();
 
             if ($certifiedTransmission != null) {
 
                 // check for provisional or full certificate
                 $certificateStatus['status'] = $certifiedTransmission->certificate_status == 'provisional' ? 'provisional' : 'full';
                 $certificateStatus['certificate_id'] = $certifiedTransmission->certificate_id;
-
             } else {
 
                 // look for number of counts
                 $certificateStatus['status'] = $acceptedTransmissions > 0 ? 'allowed' : 'not_allowed';
                 $certificateStatus['certificate_id'] = 0;
-
             }
 
             // get linked transmissions
             $getLinkedTransmissions = TransmissionDataDevice::select('id', 'Transmission_Number', 'status')
-                                    ->where('StudyI_ID', $transmission->StudyI_ID)
-                                    ->where('Request_MadeBy_Email', $transmission->Request_MadeBy_Email)
-                                    ->where('Requested_certification', $transmission->Requested_certification)
-                                    ->where('Site_ID', $transmission->Site_ID)
-                                    ->where('Device_Serial', $transmission->Device_Serial)
-                                    ->where('archive_transmission', 'no')
-                                    ->get()
-                                    ->toArray();
+                ->where('StudyI_ID', $transmission->StudyI_ID)
+                ->where('Request_MadeBy_Email', $transmission->Request_MadeBy_Email)
+                ->where('Requested_certification', $transmission->Requested_certification)
+                ->where('Site_ID', $transmission->Site_ID)
+                ->where('Device_Serial', $transmission->Device_Serial)
+                ->where('archive_transmission', 'no')
+                ->get()
+                ->toArray();
 
             $transmission->linkedTransmission = $getLinkedTransmissions;
             // assign status
             $transmission->certificateStatus = $certificateStatus;
-
         } // loop ends
 
         // get templates for email
@@ -234,11 +228,11 @@ class TransmissionDataDeviceController extends Controller
     {
         $findTransmission = TransmissionDataDevice::where('id', decrypt($id))->first();
 
-         // get studies
+        // get studies
         $systemStudies = Study::get();
 
         // get all sites
-        $getSites =Site::get();
+        $getSites = Site::get();
 
         // get modality
         $getModalities = Modility::get();
@@ -266,18 +260,17 @@ class TransmissionDataDeviceController extends Controller
 
         // find the transmission
         $findTransmission = TransmissionDataDevice::find(decrypt($id));
-        
+
         // study ID
-        if($request->StudyI_ID != "") {
+        if ($request->StudyI_ID != "") {
 
             $findTransmission->StudyI_ID = $request->StudyI_ID;
 
             // get study Name
             $getStudy = Study::where('study_code', $request->StudyI_ID)->first();
             $findTransmission->Study_Name = $getStudy->study_short_name;
-
         }
-        
+
         // get site id
         if ($request->Site_ID != "" && $request->Site_ID != "add_new") {
 
@@ -287,12 +280,11 @@ class TransmissionDataDeviceController extends Controller
 
             // get site name
             $siteName = Site::where('site_code', $siteID[1])->first();
-            $findTransmission->Site_Name= $siteName->site_name;
-
+            $findTransmission->Site_Name = $siteName->site_name;
         }
 
         // get dvice id
-        if($request->Device_Model != "" && $request->Device_Model != "add_new") {
+        if ($request->Device_Model != "" && $request->Device_Model != "add_new") {
 
             $modelID = explode('//', $request->Device_Model);
             $findTransmission->transmission_device_id = $modelID[0];
@@ -300,7 +292,7 @@ class TransmissionDataDeviceController extends Controller
 
             // get device name
             $deviceName = Device::where('device_model', $modelID[1])->first();
-            $findTransmission->Device_manufacturer= $deviceName->device_manufacturer;
+            $findTransmission->Device_manufacturer = $deviceName->device_manufacturer;
         }
 
         // get modality name and madality_id
@@ -329,158 +321,150 @@ class TransmissionDataDeviceController extends Controller
         Session::flash('success', 'Device transmission information updated successfully.');
 
         return redirect(route('certification-device.edit',  $id));
-
     }
 
-    public function transmissionStatus($findTransmission, $request) {
+    public function transmissionStatus($findTransmission, $request)
+    {
 
-            //get study
-            $getStudy = Study::where('study_code', $findTransmission->StudyI_ID)->first();
+        //get study
+        $getStudy = Study::where('study_code', $findTransmission->StudyI_ID)->first();
 
-            // if user select add new site thing
-            if($request->Site_ID == "add_new") {
+        // if user select add new site thing
+        if ($request->Site_ID == "add_new") {
 
-                $getSite = Site::where('site_code', $findTransmission->Site_ID)->first();
+            $getSite = Site::where('site_code', $findTransmission->Site_ID)->first();
 
-                if ($getSite == null) {
-                    // insert site
-                    $getSite = new Site;
-                    $getSite->id = Str::uuid();
-                    $getSite->site_code = $findTransmission->Site_ID;
-                    $getSite->site_name = $findTransmission->Site_Name;
-                    $getSite->site_address = $findTransmission->Site_st_address;
-                    $getSite->site_city = $findTransmission->Site_city;
-                    $getSite->site_state = $findTransmission->Site_state;
-                    $getSite->site_country = $findTransmission->Site_country;
-                    $getSite->save();
+            if ($getSite == null) {
+                // insert site
+                $getSite = new Site;
+                $getSite->id = (string)Str::uuid();
+                $getSite->site_code = $findTransmission->Site_ID;
+                $getSite->site_name = $findTransmission->Site_Name;
+                $getSite->site_address = $findTransmission->Site_st_address;
+                $getSite->site_city = $findTransmission->Site_city;
+                $getSite->site_state = $findTransmission->Site_state;
+                $getSite->site_country = $findTransmission->Site_country;
+                $getSite->save();
 
-                    // update site transmission ID in Photographer Transmission Table for future Reference
-                    $updatePhotographerTransmission = TransmissionDataDevice::where('Transmission_Number', $findTransmission->Transmission_Number)
+                // update site transmission ID in Photographer Transmission Table for future Reference
+                $updatePhotographerTransmission = TransmissionDataDevice::where('Transmission_Number', $findTransmission->Transmission_Number)
                     ->update(['transmission_site_id' => $getSite->id]);
+            } // site check is end
 
-                } // site check is end
+        } elseif ($request->Site_ID != "add_new" && $request->Site_ID != "") {
 
-            } elseif ($request->Site_ID != "add_new" && $request->Site_ID != "") {
+            $getSite = Site::where('site_code', $findTransmission->Site_ID)->first();
 
-                $getSite = Site::where('site_code', $findTransmission->Site_ID)->first();
+            if ($getSite == null) {
+                // insert site
+                $getSite = new Site;
+                $getSite->id = (string)Str::uuid();
+                $getSite->site_code = $findTransmission->Site_ID;
+                $getSite->site_name = $findTransmission->Site_Name;
+                $getSite->site_address = $findTransmission->Site_st_address;
+                $getSite->site_city = $findTransmission->Site_city;
+                $getSite->site_state = $findTransmission->Site_state;
+                $getSite->site_country = $findTransmission->Site_country;
+                $getSite->save();
+            } // site check is end
 
-                if ($getSite == null) {
-                    // insert site
-                    $getSite = new Site;
-                    $getSite->id = Str::uuid();
-                    $getSite->site_code = $findTransmission->Site_ID;
-                    $getSite->site_name = $findTransmission->Site_Name;
-                    $getSite->site_address = $findTransmission->Site_st_address;
-                    $getSite->site_city = $findTransmission->Site_city;
-                    $getSite->site_state = $findTransmission->Site_state;
-                    $getSite->site_country = $findTransmission->Site_country;
-                    $getSite->save();
+        }
 
-                } // site check is end
-               
-            }
+        // check site study relation
+        $getSiteStudy = StudySite::where('study_id', $getStudy->id)
+            ->where('site_id', $getSite->id)
+            ->first();
 
-            // check site study relation
-            $getSiteStudy = StudySite::where('study_id', $getStudy->id)
-                                        ->where('site_id', $getSite->id)
-                                        ->first();
+        if ($getSiteStudy == null) {
+            // insert study site
+            $getSiteStudy = new StudySite;
+            $getSiteStudy->id = (string)Str::uuid();
+            $getSiteStudy->study_id = $getStudy->id;
+            $getSiteStudy->site_id = $getSite->id;
+            $getSiteStudy->save();
+        } // site study check is end
 
-            if ($getSiteStudy == null) {
-                // insert study site
-                $getSiteStudy = new StudySite;
-                $getSiteStudy->id = Str::uuid();
-                $getSiteStudy->study_id = $getStudy->id;
-                $getSiteStudy->site_id = $getSite->id;
-                $getSiteStudy->save();
+        // get Primary Investigator
+        $getPrimaryInvestigator = PrimaryInvestigator::where('site_id', $getSite->id)
+            ->where('first_name', $findTransmission->PI_Name)
+            ->where('email', $findTransmission->PI_email)
+            ->first();
 
-            } // site study check is end
+        if ($getPrimaryInvestigator == null) {
+            // insert primary investigator
+            $getPrimaryInvestigator = new PrimaryInvestigator;
+            $getPrimaryInvestigator->id = (string)Str::uuid();
+            $getPrimaryInvestigator->site_id = $getSite->id;
+            $getPrimaryInvestigator->first_name = $findTransmission->PI_Name;
+            $getPrimaryInvestigator->email = $findTransmission->PI_email;
+            $getPrimaryInvestigator->save();
+        } // primary investigator check ends
 
-            // get Primary Investigator
-            $getPrimaryInvestigator = PrimaryInvestigator::where('site_id', $getSite->id)
-                                                          ->where('first_name', $findTransmission->PI_Name)
-                                                          ->where('email', $findTransmission->PI_email)
-                                                          ->first();
+        // get Photographer
+        $getPhotographer = Photographer::where('site_id', $getSite->id)
+            ->where('email', $findTransmission->Request_MadeBy_Email)
+            ->first();
 
-            if ($getPrimaryInvestigator == null) {
-                // insert primary investigator
-                $getPrimaryInvestigator = new PrimaryInvestigator;
-                $getPrimaryInvestigator->id = Str::uuid();
-                $getPrimaryInvestigator->site_id = $getSite->id;
-                $getPrimaryInvestigator->first_name = $findTransmission->PI_Name;
-                $getPrimaryInvestigator->email = $findTransmission->PI_email;
-                $getPrimaryInvestigator->save();
-            } // primary investigator check ends
+        if ($getPhotographer == null) {
+            // insert photographer
+            $getPhotographer = new Photographer;
+            $getPhotographer->id = (string)Str::uuid();
+            $getPhotographer->site_id = $getSite->id;
+            $getPhotographer->first_name = $findTransmission->Request_MadeBy_FirstName;
+            $getPhotographer->last_name = $findTransmission->Request_MadeBy_LastName;
+            $getPhotographer->email = $findTransmission->Request_MadeBy_Email;
+            $getPhotographer->save();
+        } // photographer check is end
 
-            // get Photographer
-            $getPhotographer = Photographer::where('site_id', $getSite->id)
-                                            ->where('email', $findTransmission->Request_MadeBy_Email)
-                                            ->first();
+        // if user select add new site thing
+        if ($request->Device_Model == "add_new") {
 
-            if ($getPhotographer == null) {
-                // insert photographer
-                $getPhotographer = new Photographer;
-                $getPhotographer->id = Str::uuid();
-                $getPhotographer->site_id = $getSite->id;
-                $getPhotographer->first_name = $findTransmission->Request_MadeBy_FirstName;
-                $getPhotographer->last_name = $findTransmission->Request_MadeBy_LastName;
-                $getPhotographer->email = $findTransmission->Request_MadeBy_Email;
-                $getPhotographer->save();
+            $getDevice = Device::where('device_model', $findTransmission->Device_Model)->first();
 
-            } // photographer check is end
+            if ($getDevice == null) {
 
-            // if user select add new site thing
-            if($request->Device_Model == "add_new") {
+                $getDevice = new Device;
+                $getDevice->id = (string)Str::uuid();
+                $getDevice->device_model = $findTransmission->Device_Model;
+                $getDevice->device_manufacturer = $findTransmission->Device_manufacturer;
+                $getDevice->save();
 
-                $getDevice = Device::where('device_model', $findTransmission->Device_Model)->first();
-
-                if ($getDevice == null) {
-
-                    $getDevice = new Device;
-                    $getDevice->id = Str::uuid();
-                    $getDevice->device_model = $findTransmission->Device_Model;
-                    $getDevice->device_manufacturer = $findTransmission->Device_manufacturer;
-                    $getDevice->save();
-
-                    // update device transmission ID in device Transmission Table for future Reference
-                    $updatePhotographerTransmission = TransmissionDataDevice::where('Transmission_Number', $findTransmission->Transmission_Number)
+                // update device transmission ID in device Transmission Table for future Reference
+                $updatePhotographerTransmission = TransmissionDataDevice::where('Transmission_Number', $findTransmission->Transmission_Number)
                     ->update(['transmission_device_id' => $getDevice->id]);
+            } // null check ends
 
-                } // null check ends
+        } elseif ($request->Device_Model != "" && $request->Device_Model != "add_new") {
 
-            } elseif ($request->Device_Model != "" && $request->Device_Model != "add_new") {
+            $getDevice = Device::where('device_model', $findTransmission->Device_Model)->first();
 
-                $getDevice = Device::where('device_model', $findTransmission->Device_Model)->first();
+            if ($getDevice == null) {
 
-                if ($getDevice == null) {
+                $getDevice = new Device;
+                $getDevice->id = (string)Str::uuid();
+                $getDevice->device_model = $findTransmission->Device_Model;
+                $getDevice->device_manufacturer = $findTransmission->Device_manufacturer;
+                $getDevice->save();
+            } // null check ends
 
-                    $getDevice = new Device;
-                    $getDevice->id = Str::uuid();
-                    $getDevice->device_model = $findTransmission->Device_Model;
-                    $getDevice->device_manufacturer = $findTransmission->Device_manufacturer;
-                    $getDevice->save();
+        } // add new device check ends
 
-                } // null check ends
+        // make array for changings dynamic variable in the text editor
+        $variables = [$findTransmission->Request_MadeBy_FirstName, $findTransmission->Request_MadeBy_LastName, $findTransmission->StudyI_ID, $findTransmission->Study_Name, $getSite->site_code, $getSite->site_name, $getPrimaryInvestigator->first_name, $findTransmission->Requested_certification, $findTransmission->Transmission_Number, $findTransmission->status, $getDevice->device_manufacturer, $getDevice->device_model, \Auth::user()->name];
 
-            } // add new device check ends
+        $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[pi_name]]', '[[modality_name]]', '[[transmission_number]]', '[[status]]', '[[device_manufacturer]]', '[[device_model]]', '[[sender_name]]'];
 
-            // make array for changings dynamic variable in the text editor
-            $variables = [$findTransmission->Request_MadeBy_FirstName, $findTransmission->Request_MadeBy_LastName, $findTransmission->StudyI_ID, $findTransmission->Study_Name, $getSite->site_code, $getSite->site_name, $getPrimaryInvestigator->first_name, $findTransmission->Requested_certification, $findTransmission->Transmission_Number, $findTransmission->status, $getDevice->device_manufacturer, $getDevice->device_model, \Auth::user()->name];
+        $data = [];
+        $data['email_body'] = str_replace($labels, $variables, $request->comment);
+        $senderEmail = $request->photographer_user_email;
+        $ccEmail = $request->cc_email;
 
-            $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[pi_name]]', '[[modality_name]]', '[[transmission_number]]', '[[status]]', '[[device_manufacturer]]', '[[device_model]]', '[[sender_name]]'];
-
-            $data = [];
-            $data['email_body'] = str_replace($labels, $variables, $request->comment);
-            $senderEmail = $request->photographer_user_email;
-            $ccEmail = $request->cc_email;
-
-            // send email to users
-            Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $findTransmission, $getSite, $getDevice)
-            {
-                $message->subject($findTransmission->Study_Name.' '.$findTransmission->StudyI_ID.' | Device Request# '.$findTransmission->Transmission_Number.' | '. $getSite->Site_ID.' | '. $findTransmission->Requested_certification);
-                $message->to($senderEmail);
-                $message->cc($ccEmail);
-            });
-
+        // send email to users
+        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function ($message) use ($senderEmail, $ccEmail, $findTransmission, $getSite, $getDevice) {
+            $message->subject($findTransmission->Study_Name . ' ' . $findTransmission->StudyI_ID . ' | Device Request# ' . $findTransmission->Transmission_Number . ' | ' . $getSite->Site_ID . ' | ' . $findTransmission->Requested_certification);
+            $message->to($senderEmail);
+            $message->cc($ccEmail);
+        });
     }
 
     /**
@@ -493,14 +477,15 @@ class TransmissionDataDeviceController extends Controller
         //
     }
 
-    public function transmissionDataDevice(Request $request) {
-        
+    public function transmissionDataDevice(Request $request)
+    {
+
 
         // remove the upper section
         $explodeGetCFtPTrans = explode('<?xml', $request);
 
         // concatinate xml with the remaining  xml
-        $xml = '<?xml'.$explodeGetCFtPTrans[1];
+        $xml = '<?xml' . $explodeGetCFtPTrans[1];
         // get xml data
         $xml    = simplexml_load_string($xml);
 
@@ -564,26 +549,26 @@ class TransmissionDataDeviceController extends Controller
             $saveData->save();
 
             echo "Records inserted successfully.";
-
         } else {
 
             echo 'Transmission Number already exists.';
         }
     }
 
-    public function generateDeviceCertificate(Request $request) {
+    public function generateDeviceCertificate(Request $request)
+    {
 
         // find Transmission
         $findTransmission = TransmissionDataDevice::find($request->hidden_transmission_id);
 
-        $newCertificateID = Str::uuid();
+        $newCertificateID = (string)Str::uuid();
         $generateCertificate = new CertificationData;
         $generateCertificate->id = $newCertificateID;
 
         // get photographer ID
         $getPhotographer = Photographer::where('site_id', $findTransmission->transmission_site_id)
-                                        ->where('email', $request->user_email)
-                                        ->first();
+            ->where('email', $request->user_email)
+            ->first();
 
 
         $generateCertificate->photographer_id = $getPhotographer->id;
@@ -603,7 +588,7 @@ class TransmissionDataDeviceController extends Controller
         $generateCertificate->site_name = $getSite->site_name;
 
         // get device information
-        $getDevice = Device:: where('id', $findTransmission->transmission_device_id)->first();
+        $getDevice = Device::where('id', $findTransmission->transmission_device_id)->first();
         $generateCertificate->device_id = $getDevice->id;
         $generateCertificate->device_model = $getDevice->device_model;
         $generateCertificate->device_serial_no = $findTransmission->Device_Serial;
@@ -612,7 +597,7 @@ class TransmissionDataDeviceController extends Controller
         // get modality information
         $getModality = Modility::where('id', $request->certificate_for)->first();
         //check in child modilities
-        if($getModality == null) {
+        if ($getModality == null) {
 
             $getModality = ChildModilities::where('id', $request->certificate_for)->first();
         }
@@ -625,18 +610,16 @@ class TransmissionDataDeviceController extends Controller
         $generateCertificate->certificate_status = $request->certification_status;
 
         // check if it is full or provisional
-        if($request->certification_status == 'provisional') {
+        if ($request->certification_status == 'provisional') {
 
-                // issue date
+            // issue date
             $generateCertificate->issue_date = \Carbon\Carbon::parse($request->issue_date);
             $generateCertificate->expiry_date = \Carbon\Carbon::parse($request->issue_date)->addMonths(3);
-
         } else {
 
             // issue date
             $generateCertificate->issue_date = \Carbon\Carbon::parse($request->issue_date);
             $generateCertificate->expiry_date = \Carbon\Carbon::parse($request->issue_date)->addYears(2);
-
         }
 
         $generateCertificate->certificate_type = $request->certificate_type;
@@ -645,17 +628,14 @@ class TransmissionDataDeviceController extends Controller
 
             $generateCertificate->transmissions = ($request->transmissions != null) ? json_encode($request->transmissions) : json_encode([]);
 
-            $generateCertificate->certificate_id = 'OIIRC-02-'.substr(md5(microtime()), 0, 8).'-O';
-
-        
+            $generateCertificate->certificate_id = 'OIIRC-02-' . substr(md5(microtime()), 0, 8) . '-O';
         } elseif ($request->certificate_type == 'grandfathered') {
 
-            $generateCertificate->grandfather_certificate_id = 'Grandfater'.substr(md5(microtime()), 0, 8);
+            $generateCertificate->grandfather_certificate_id = 'Grandfater' . substr(md5(microtime()), 0, 8);
 
-            $generateCertificate->certificate_id = 'OIIRC-01-'.substr(md5(microtime()), 0, 8).'-G';
-
+            $generateCertificate->certificate_id = 'OIIRC-01-' . substr(md5(microtime()), 0, 8) . '-G';
         }
-        
+
 
         // certification Officer Info
         $generateCertificate->certification_officer_id = \Auth::user()->id;
@@ -668,12 +648,12 @@ class TransmissionDataDeviceController extends Controller
         // get study email to pass to pdf
         $getStudyEmail = StudySetup::where('study_id', $getStudy->id)->first();
 
-        $file_name = $generateCertificate->certificate_id.'_'.$getModality->modility_name.'_device.pdf';
+        $file_name = $generateCertificate->certificate_id . '_' . $getModality->modility_name . '_device.pdf';
         $path = storage_path('certificates_pdf/device');
         // generate pdf
-        $pdf = PDF::loadView('certificationapp::certificate_pdf.certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('a4')->save($path.'/'.$file_name);
+        $pdf = PDF::loadView('certificationapp::certificate_pdf.certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('a4')->save($path . '/' . $file_name);
 
-          // make array for changings dynamic variable in the text editor
+        // make array for changings dynamic variable in the text editor
         $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, $findTransmission->PI_Name, $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id, $generateCertificate->device_model, $generateCertificate->device_serial_no, $generateCertificate->user_input_device_id];
 
         $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[pi_name]]', '[[modality_name]]', '[[certificate_id]]', '[[sender_name]]', '[[certificate_status]]', '[[certificate_type]]', '[[issue_date]]', '[[expiry_date]]', '[[grandfather_certificate_id]]', '[[device_model]]', '[[device_serial_no]]', '[[device_id]]'];
@@ -684,26 +664,25 @@ class TransmissionDataDeviceController extends Controller
         $ccEmail = $generateCertificate->cc_emails != '' ? json_decode($generateCertificate->cc_emails) : '';
 
         // send email to users
-        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $generateCertificate, $findTransmission, $getSite, $getStudy, $getModality, $path, $file_name)
-        {
-            $message->subject($getStudy->study_short_name.' '.$getStudy->study_code.' | Device Certification# '.$generateCertificate->certificate_id.' | '. $getSite->site_code.' | '. $getModality->modility_name);
+        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function ($message) use ($senderEmail, $ccEmail, $generateCertificate, $findTransmission, $getSite, $getStudy, $getModality, $path, $file_name) {
+            $message->subject($getStudy->study_short_name . ' ' . $getStudy->study_code . ' | Device Certification# ' . $generateCertificate->certificate_id . ' | ' . $getSite->site_code . ' | ' . $getModality->modility_name);
             $message->to($senderEmail);
             $message->cc($ccEmail);
-            $message->attach($path.'/'.$file_name);
+            $message->attach($path . '/' . $file_name);
         });
 
         // update the file name in database
         $upateFileName = CertificationData::where('id', $newCertificateID)
-                                            ->update(['certificate_file_name' => $file_name]);
+            ->update(['certificate_file_name' => $file_name]);
 
         Session::flash('success', 'Certicate generated successfully.');
 
         // return back
         return redirect()->back();
-
     }
 
-    public function updateDeviceProvisonalCertificate(Request $request) {
+    public function updateDeviceProvisonalCertificate(Request $request)
+    {
 
         // find transmission
         $findTransmission = TransmissionDataDevice::find($request->hidden_transmission_id);
@@ -715,12 +694,12 @@ class TransmissionDataDeviceController extends Controller
         $generateCertificate->cc_emails = json_encode($request->cc_user_email);
 
         // remove previous pdf certificate for this record
-        @unlink(storage_path('/certificates_pdf/device/'.$generateCertificate->certificate_file_name));
+        @unlink(storage_path('/certificates_pdf/device/' . $generateCertificate->certificate_file_name));
 
         // get modality information
         $getModality = Modility::where('id', $request->certificate_for)->first();
         //check in child modilities
-        if($getModality == null) {
+        if ($getModality == null) {
 
             $getModality = ChildModilities::where('id', $request->certificate_for)->first();
         }
@@ -733,18 +712,16 @@ class TransmissionDataDeviceController extends Controller
         $generateCertificate->certificate_status = $request->certification_status;
 
         // check if it is full or provisional
-        if($request->certification_status == 'provisional') {
+        if ($request->certification_status == 'provisional') {
 
-                // issue date
+            // issue date
             $generateCertificate->issue_date = \Carbon\Carbon::parse($request->issue_date);
             $generateCertificate->expiry_date = \Carbon\Carbon::parse($request->issue_date)->addMonths(3);
-
         } else {
 
             // issue date
             $generateCertificate->issue_date = \Carbon\Carbon::parse($request->issue_date);
             $generateCertificate->expiry_date = \Carbon\Carbon::parse($request->issue_date)->addYears(2);
-
         }
 
         $generateCertificate->certificate_type = $request->certificate_type;
@@ -756,11 +733,9 @@ class TransmissionDataDeviceController extends Controller
             $generateCertificate->certificate_id = str_replace('-G', '-O', $generateCertificate->certificate_id);
 
             $generateCertificate->grandfather_certificate_id = '';
-
-        
         } elseif ($request->certificate_type == 'grandfathered') {
 
-            $generateCertificate->grandfather_certificate_id = 'Grandfater'.substr(md5(microtime()), 0, 8);
+            $generateCertificate->grandfather_certificate_id = 'Grandfater' . substr(md5(microtime()), 0, 8);
 
             $generateCertificate->certificate_id = str_replace('-O', '-G', $generateCertificate->certificate_id);
         }
@@ -785,10 +760,10 @@ class TransmissionDataDeviceController extends Controller
         // get study email to pass to pdf
         $getStudyEmail = StudySetup::where('study_id', $getStudy->id)->first();
 
-        $file_name = $generateCertificate->certificate_id.'_'.$getModality->modility_name.'_device.pdf';
+        $file_name = $generateCertificate->certificate_id . '_' . $getModality->modility_name . '_device.pdf';
         $path = storage_path('certificates_pdf/device');
         // generate pdf
-        $pdf = PDF::loadView('certificationapp::certificate_pdf.certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('a4')->save($path.'/'.$file_name);
+        $pdf = PDF::loadView('certificationapp::certificate_pdf.certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('a4')->save($path . '/' . $file_name);
 
         // make array for changings dynamic variable in the text editor
         $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, $findTransmission->PI_Name, $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id, $generateCertificate->device_model, $generateCertificate->device_serial_no, $generateCertificate->user_input_device_id];
@@ -801,26 +776,25 @@ class TransmissionDataDeviceController extends Controller
         $ccEmail = $generateCertificate->cc_emails != '' ? json_decode($generateCertificate->cc_emails) : '';
 
         // send email to users
-        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $generateCertificate, $findTransmission, $getSite, $getStudy, $getModality, $path, $file_name)
-        {
-            $message->subject($getStudy->study_short_name.' '.$getStudy->study_code.' | Device Certification# '.$generateCertificate->certificate_id.' | '. $getSite->site_code.' | '. $getModality->modility_name);
+        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function ($message) use ($senderEmail, $ccEmail, $generateCertificate, $findTransmission, $getSite, $getStudy, $getModality, $path, $file_name) {
+            $message->subject($getStudy->study_short_name . ' ' . $getStudy->study_code . ' | Device Certification# ' . $generateCertificate->certificate_id . ' | ' . $getSite->site_code . ' | ' . $getModality->modility_name);
             $message->to($senderEmail);
             $message->cc($ccEmail);
-            $message->attach($path.'/'.$file_name);
+            $message->attach($path . '/' . $file_name);
         });
 
         // update the file name in database
         $upateFileName = CertificationData::where('id', $generateCertificate->id)
-                                            ->update(['certificate_file_name' => $file_name]);
+            ->update(['certificate_file_name' => $file_name]);
 
         Session::flash('success', 'Certicate generated successfully.');
 
         // return back
         return redirect()->back();
-
     }
 
-    public function archiveDeviceTransmission(Request $request, $transmissionID) {
+    public function archiveDeviceTransmission(Request $request, $transmissionID)
+    {
 
         $findTransmission = TransmissionDataDevice::find(decrypt($transmissionID));
         $findTransmission->archive_transmission = 'yes';
@@ -829,14 +803,14 @@ class TransmissionDataDeviceController extends Controller
         Session::flash('success', 'Transmission moved to arcive successfully.');
 
         return redirect()->back();
-
     }
 
-    public function certifiedDevice(Request $request) {
+    public function certifiedDevice(Request $request)
+    {
 
         $getCertifiedDevice = CertificationData::select('certification_data.*', 'photographers.first_name', 'photographers.last_name', 'photographers.email', 'photographers.phone', 'sites.site_name', 'sites.site_code', 'users.name as certification_officer_name')
             ->leftjoin('photographers', 'photographers.id', '=', 'certification_data.photographer_id')
-            ->leftjoin('sites','sites.id', 'certification_data.site_id')
+            ->leftjoin('sites', 'sites.id', 'certification_data.site_id')
             ->leftjoin('users', 'users.id', '=', 'certification_data.certification_officer_id')
             ->where('certification_data.transmission_type', 'device_transmission')
             ->orderBy('certification_data.created_at', 'desc')
@@ -852,7 +826,8 @@ class TransmissionDataDeviceController extends Controller
         return view('certificationapp::certificate_device.certified_device', compact('getCertifiedDevice', 'getStudies', 'getTemplates'));
     }
 
-    public function generateDeviceGrandfatherCertificate(Request $request) {
+    public function generateDeviceGrandfatherCertificate(Request $request)
+    {
 
         $findCertificate = CertificationData::where('certificate_id', $request->certificate_id)->first();
 
@@ -889,8 +864,8 @@ class TransmissionDataDeviceController extends Controller
         $generateCertificate->expiry_date = $findCertificate->expiry_date;
 
         $generateCertificate->certificate_type = 'grandfathered';
-        $generateCertificate->grandfather_certificate_id = 'Grandfater'.substr(md5(microtime()), 0, 8);
-        $generateCertificate->certificate_id = 'OIIRC-01-'.substr(md5(microtime()), 0, 8).'-G';
+        $generateCertificate->grandfather_certificate_id = 'Grandfater' . substr(md5(microtime()), 0, 8);
+        $generateCertificate->certificate_id = 'OIIRC-01-' . substr(md5(microtime()), 0, 8) . '-G';
 
         // certification Officer Info
         $generateCertificate->certification_officer_id = \Auth::user()->id;
@@ -904,7 +879,7 @@ class TransmissionDataDeviceController extends Controller
 
         $getModality = Modility::where('id', $generateCertificate->modility_id)->first();
         //check in child modilities
-        if($getModality == null) {
+        if ($getModality == null) {
 
             $getModality = ChildModilities::where('id', $generateCertificate->modility_id)->first();
         }
@@ -920,10 +895,10 @@ class TransmissionDataDeviceController extends Controller
         // get study email to pass to pdf
         $getStudyEmail = StudySetup::where('study_id', $getStudy->id)->first();
 
-        $file_name = $generateCertificate->certificate_id.'_'.$getModality->modility_name.'_grandfathered_device.pdf';
+        $file_name = $generateCertificate->certificate_id . '_' . $getModality->modility_name . '_grandfathered_device.pdf';
         $path = storage_path('certificates_pdf/device');
         // generate pdf
-        $pdf = PDF::loadView('certificationapp::certificate_pdf.certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('a4')->save($path.'/'.$file_name);
+        $pdf = PDF::loadView('certificationapp::certificate_pdf.certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('a4')->save($path . '/' . $file_name);
 
         // make array for changings dynamic variable in the text editor
         $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, '', $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id, $generateCertificate->device_model, $generateCertificate->device_serial_no, $generateCertificate->user_input_device_id];
@@ -936,22 +911,20 @@ class TransmissionDataDeviceController extends Controller
         $ccEmail = $generateCertificate->cc_emails != '' ? json_decode($generateCertificate->cc_emails) : '';
 
         // send email to users
-        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $generateCertificate, $getSite, $getStudy, $getModality, $path, $file_name)
-        {
-            $message->subject($getStudy->study_short_name.' '.$getStudy->study_code.' | Grandfather Device Certification# '.$generateCertificate->certificate_id.' | '. $getSite->site_code.' | '. $getModality->modility_name);
+        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function ($message) use ($senderEmail, $ccEmail, $generateCertificate, $getSite, $getStudy, $getModality, $path, $file_name) {
+            $message->subject($getStudy->study_short_name . ' ' . $getStudy->study_code . ' | Grandfather Device Certification# ' . $generateCertificate->certificate_id . ' | ' . $getSite->site_code . ' | ' . $getModality->modility_name);
             $message->to($senderEmail);
             $message->cc($ccEmail);
-            $message->attach($path.'/'.$file_name);
+            $message->attach($path . '/' . $file_name);
         });
 
         // update the file name in database
         $upateFileName = CertificationData::where('id', $newCertificateID)
-                                            ->update(['certificate_file_name' => $file_name]);
+            ->update(['certificate_file_name' => $file_name]);
 
         Session::flash('success', 'Certicate generated successfully.');
 
         // return back
         return redirect()->back();
-
     }
 }

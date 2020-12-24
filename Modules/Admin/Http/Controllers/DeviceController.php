@@ -53,7 +53,7 @@ class DeviceController extends Controller
         if ($request->ajax()) {
 
             $deviceID = $request->device_id;
-            
+
             if($deviceID  != '') {
 
                 // get old device data
@@ -71,7 +71,7 @@ class DeviceController extends Controller
 
                     foreach ($request->modalities as $modality) {
                         DeviceModility::create([
-                            'id'    => Str::uuid(),
+                            'id'    => (string)Str::uuid(),
                             'device_id'     => $deviceID,
                             'modility_id'   => $modality
 
@@ -84,7 +84,7 @@ class DeviceController extends Controller
 
             } else {
 
-                $id = Str::uuid();
+                $id = (string)Str::uuid();
 
                 $device = new Device;
                 $device->id = $id;
@@ -96,7 +96,7 @@ class DeviceController extends Controller
                 if ($request->modalities != null) {
                     foreach ($request->modalities as $modality) {
                         DeviceModility::create([
-                            'id'    => Str::uuid(),
+                            'id'    => (string)Str::uuid(),
                             'device_id'     => $device->id,
                             'modility_id'   => $modality
 
@@ -112,7 +112,7 @@ class DeviceController extends Controller
             } // get device check ends
             return \response()->json($device);
         } // ajax ends
-        
+
     }
 
     /**

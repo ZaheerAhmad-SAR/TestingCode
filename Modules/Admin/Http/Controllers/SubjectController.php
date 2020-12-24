@@ -66,7 +66,7 @@ class SubjectController extends Controller
     public function store(Request $request)
     {
         //dd($request->all());
-        $subjectID = Str::uuid();
+        $subjectID = (string)Str::uuid();
         $subject = Subject::create([
             'id'    => $subjectID,
             'old_id'    => $subjectID,

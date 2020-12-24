@@ -57,7 +57,7 @@ class ModilityController extends Controller
      */
     public function store(Request $request)
     {
-        $id = Str::uuid();
+        $id = (string)Str::uuid();
 
         if ($request->parent_yes == 1)
         {
@@ -207,7 +207,7 @@ class ModilityController extends Controller
 
             $clone = $modalities->replicate();
 
-            $id = Str::uuid();
+            $id = (string)Str::uuid();
 
                 $modility = Modility::create([
                     'id'    => $id,
@@ -219,9 +219,9 @@ class ModilityController extends Controller
 
             foreach ($modalities->children as $child)
             {
-                    $child_id = Str::uuid();
+                    $child_id = (string)Str::uuid();
                     $child = ChildModilities::create([
-                        'id'    => Str::uuid(),
+                        'id'    => (string)Str::uuid(),
                         'modility_name'=>$child->modility_name,
                         'modility_id' =>$latest_modility->id
                     ]);

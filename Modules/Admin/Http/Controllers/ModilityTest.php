@@ -50,7 +50,7 @@ class ModilityTest extends TestCase
 //
         $this->withExceptionHandling();
 //
-        $id = Str::uuid();
+        $id = (string)Str::uuid();
         $response = $this->post('/modalities',[
 
             'id' => $this->faker->$id,
@@ -68,7 +68,7 @@ class ModilityTest extends TestCase
 
         $this->withExceptionHandling();
 //        $this->actingAs(factory(Modility::class)->create());
-        $id = Str::uuid();
+        $id = (string)Str::uuid();
 
 
         $response = $this->post('/modalities',[
