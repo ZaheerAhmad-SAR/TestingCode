@@ -16,10 +16,7 @@ class StudyStructure extends Model
     use SoftDeletes;
     use JSCohortSkipLogic;
 
-    protected $fillable = [
-        'id', 'study_id', 'name', 'position', 'duration',
-        'is_repeatable', 'parent_id', 'replicating_or_cloning', 'count', 'old_id', 'deleted_at'
-    ];
+    protected $fillable = ['id', 'study_id', 'name', 'position', 'duration','window','is_repeatable', 'parent_id', 'replicating_or_cloning', 'count', 'old_id', 'deleted_at'];
     // protected $keyType = 'string';
     protected $casts = [
         'id' => 'string'
