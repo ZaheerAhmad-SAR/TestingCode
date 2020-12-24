@@ -314,7 +314,7 @@
                 @endif
 
             @endif
-            
+
             @if(hasPermission(auth()->user(),'adjudication.create') && hasPermission(auth()->user(),'adjudication.edit'))
 
                 @if(session('current_study'))
@@ -411,6 +411,22 @@
                 @endif
             @endif
 
+
+            <li class="dropdown">
+                <ul>
+                    <li class="dropdown"><a href="#"><i class="fas fa-bug"></i>Bugs Reporting</a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="{{route('bug-reporting.index')}}">
+                                    List
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+
+
              <li class="dropdown">
                 <ul>
                     <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Certification App</a>
@@ -428,7 +444,8 @@
                                 </a>
                             </li>
 
-                            
+
+
                             <li  class="@if(is_active('certification-photographer')) {{ ' active' }} @endif">
                                 <a href="{{route('certification-photographer.index')}}">
                                     <i class="fas fa-list"></i> Certification Photographers
@@ -452,7 +469,7 @@
                                     <i class="fas fa-list"></i> Template
                                 </a>
                             </li>
-                            
+
                         </ul>
                     </li>
                 </ul>
@@ -493,11 +510,12 @@
                     </ul>
                 </li>
                 @endif
-                
+
             @endif
-          
+
         </ul>
         <!-- END: Menu-->
+
     <div class="btn-group dropup" style="margin-left: 15px;">
      <button type="button" class="btn btn-primary dropdown-toggle position-fixed" data-toggle="dropdown">  <i class="icon-question"></i> Support</button>
         <div class="dropdown-menu">
@@ -508,6 +526,9 @@
         </div>
     </div>
 
+
     </div>
 
 </div>
+
+
