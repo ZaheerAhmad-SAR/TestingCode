@@ -16,19 +16,19 @@
     @endforeach
 
 </div>
-<div class="form-group row commentsInput" style="display: none;">
+<div class="form-group row formQueryTextarea" style="display: none;">
     <label for="Name" class="col-sm-2 col-form-label">Enter your Query</label>
     <div class="col-sm-10">
         <textarea class="form-control" name="formReply" id="formReply"></textarea>
     </div>
 </div>
-<div class="form-group row queryAttachments" style="display: none;" >
+<div class="form-group row formQueryFile" style="display: none;" >
     <label for="Attachment" class="col-sm-2 col-form-label">Attachment:</label>
     <div class="col-sm-10">
         <input class="form-control" type="file" name="formFileInput"  id="formFileInput">
     </div>
 </div>
- <div class="form-group row queryStatus" style="display:none;">
+ <div class="form-group row formQueryStatus" style="display:none;">
      <label for="Status" class="col-sm-2 col-form-label">Status</label>
      <div class="col-sm-10">
          <select class="form-control" id="formStatusInput" name="formStatusInput">
@@ -60,7 +60,6 @@
     <input type="hidden" name="queryIdInput" id="queryIdInput" value="{{ $query->id }}">
     <input type="hidden" name="queryUrlInput" id="queryUrlInput" value="{{ $query->query_url }}">
     <input type="hidden" name="subjectFormInput" id="subjectFormInput" value="{{ $query->query_subject }}">
+    <input type="hidden" name="queryLeveFormInput" id="queryLeveFormInput" value="{{ $query->query_level }}">
 </div>
 
-{{--<script src="{{ asset('dist/vendors/summernote/summernote-bs4.js') }}"></script>--}}
-{{--<script src="{{ asset('dist/js/summernote.script.js') }}"></script>--}}

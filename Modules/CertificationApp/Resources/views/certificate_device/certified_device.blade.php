@@ -81,11 +81,90 @@
         <div class="row">
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
-                   {{--
-                    <form action="{{route('certified-Device')}}" method="get" class="filter-form">
+                   
+                    <form action="{{route('certified-device')}}" method="get" class="filter-form">
                         <div class="form-row" style="padding: 10px;">
 
-                          
+                            <div class="form-group col-md-3">
+                                <label for="certify_id">Certificate ID</label>
+                                <input type="text" name="certify_id" id="certify_id" class="form-control filter-form-data" value="{{ request()->certify_id }}" placeholder="Certification ID">
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="study">Study Name</label>
+                                <input type="text" name="study_name" id="study_name" class="form-control filter-form-data" value="{{ request()->study_name }}" placeholder="Study Name">
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="site">Site Name</label>
+                                <input type="text" name="site_name" id="site_name" class="form-control filter-form-data" value="{{ request()->site_name }}" placeholder="Site Name">
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="device_model">Device Model</label>
+                                <input type="text" name="device_model" id="device_model" class="form-control filter-form-data" value="{{ request()->device_model }}" placeholder="Device Model">
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="device_serial_no">Device Serial#</label>
+                                <input type="text" name="device_serial_no" id="device_serial_no" class="form-control filter-form-data" value="{{ request()->device_serial_no }}" placeholder="Device Serial#">
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="site">Site Name</label>
+                                <input type="text" name="site_name" id="site_name" class="form-control filter-form-data" value="{{ request()->site_name }}" placeholder="Site Name">
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label>Modality</label>
+                                <select name="modility_id" id="modility_id" class="form-control filter-form-data">
+                                    <option value="">Select Modality</option>
+                                    @foreach($getParentModality as $parentModality)
+                                    <option value="{{ $parentModality->id }}" @if(request()->modility_id == $parentModality->id) selected @endif >{{ $parentModality->modility_name }}</option>
+                                    @endforeach
+
+                                    @foreach($getChildModality as $childModality)
+                                    <option value="{{ $childModality->id }}" @if(request()->modility_id == $childModality->id) selected @endif >{{ $childModality->modility_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                           <!--  <div class="form-group col-md-3">
+                                <label for="inputState"> Certificate Status</label>
+                                <select id="certificate_status" name="certificate_status" class="form-control filter-form-data">
+                                    <option value="">All Status</option>
+                                    <option @if(request()->certificate_status == 'full') selected @endif value="full">Full</option>
+                                     <option @if(request()->certificate_status == 'provisional') selected @endif value="provisional">Provisional</option>
+                                </select>
+                            </div> -->
+
+                            <div class="form-group col-md-3">
+                                <label for="inputState"> Certificate Type</label>
+                                <select id="certificate_type" name="certificate_type" class="form-control filter-form-data">
+                                    <option value="">All Type</option>
+                                    <option @if(request()->certificate_type == 'original') selected @endif value="original">Original</option>
+                                     <option @if(request()->certificate_type == 'grandfathered') selected @endif value="grandfathered">Grandfather</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="inputState"> Validity </label>
+                                <select id="validity" name="validity" class="form-control filter-form-data">
+                                    <option value="">Both</option>
+                                    <option @if(request()->validity == 'no') selected @endif value="no">No</option>
+                                     <option @if(request()->validity == 'yes') selected @endif value="yes">Yes</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="dt">Issue Date</label>
+                                <input type="text" name="issue_date" id="issue_date" class="form-control issue_date filter-form-data" value="{{ request()->issue_date }}">
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="dt">Expiry Date</label>
+                                <input type="text" name="expiry_date" id="expiry_date" class="form-control expiry_date filter-form-data" value="{{ request()->expiry_date }}">
+                            </div>
 
                             <div class="form-group col-md-2 mt-4">
                                 <button type="button" class="btn btn-primary reset-filter">Reset</button>
@@ -95,7 +174,7 @@
                         </div>
                         <!-- row ends -->
                     </form>
-                   --}}
+                   
                    <hr>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -104,7 +183,7 @@
                                 <thead class="table-secondary">
                                     <tr>
                                         <th>Certificate ID</th>
-                                        <th>Device Category</th>
+                                        <th>Device Model</th>
                                         <th>Device Serial#</th>
                                         <th>Study</th>
                                         <th>Site Name</th>
@@ -150,7 +229,7 @@
 
                                             @if($certifiedDevice->certificate_status != 'provisional' && $certifiedDevice->certificate_type != 'grandfathered')
 
-                                            <a href="javascript:void(0)" onClick="generateGrandfatherCertificate('{{$certifiedDevice->certificate_id}}')">
+                                            <a href="javascript:void(0)" onClick="generateGrandfatherCertificate('{{$certifiedDevice->certificate_id}}', '{{ $certifiedDevice->photographer_email}}', '{{ $certifiedDevice->cc_emails }}', '{{ $certifiedDevice->bcc_emails }}')">
                                                 <i class="fas fa-pen" title="Generate Grandfather Certificate" style="color: #17a2b8 !important;">
                                                 
                                                 </i>
@@ -184,7 +263,7 @@
                                     @endif
                                 </tbody>
                             </table>
-                            {{ $getCertifiedDevice->links() }}
+                            {{ $getCertifiedDevice->appends(['certify_id' => \Request::get('certify_id'), 'study_name' => \Request::get('study_name'), 'photographer_name' => \Request::get('photographer_name'), 'site_name' => \Request::get('site_name'), 'device_model' => \Request::get('device_model'), 'device_serial_no' => \Request::get('device_serial_no'), 'modility_id' => \Request::get('modility_id'), 'certificate_type' => \Request::get('certificate_type'), 'validity' => \Request::get('validity'), 'issue_date' => \Request::get('issue_date'), 'expiry_date' => \Request::get('expiry_date')])->links() }}
 
                         </div>
                     </div>
@@ -321,6 +400,27 @@
                 </div>
 
                 <div class="form-group col-md-12">
+                    <label class="edit_users">Email To<span class="field-required">*</span></label>
+                    <Select class="form-control user_email" name="user_email" id="user_email" required>
+
+                    </Select>
+                </div>
+
+                <div class="form-group col-md-12 suspend-certificate-div">
+                    <label class="edit_users">CC Email</label>
+                    <Select class="form-control cc_user_email data-required" name="cc_user_email[]" id="cc_user_email" multiple>
+
+                    </Select>
+                </div>
+
+                <div class="form-group col-md-12">
+                    <label class="edit_users">BCC Email</label>
+                    <Select class="form-control bcc_user_email" name="bcc_user_email[]" id="bcc_user_email" multiple="multiple">
+
+                    </Select>
+                </div>
+
+                <div class="form-group col-md-12">
                                             
                     <label for="inputState">Templates</label>
                     <select id="template" name="template" class="form-control">
@@ -369,6 +469,49 @@
 <script type="text/javascript">
 
     $('#study').select2();
+    $('#cc_user_email').select2();
+    $('#bcc_user_email').select2();
+    $('#modility_id').select2();
+
+         // reset filter form
+    $('.reset-filter').click(function(){
+        // reset values
+        $('.filter-form').trigger("reset");
+        $('.filter-form-data').val("").trigger("change")
+        // submit the filter form
+        $('.filter-form').submit();
+    });
+
+    // initialize date range picker
+    $('input[name="issue_date"]').daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            cancelLabel: 'Clear'
+        }
+    });
+
+    $('input[name="issue_date"]').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+    });
+
+    $('input[name="issue_date"]').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
+
+    $('input[name="expiry_date"]').daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            cancelLabel: 'Clear'
+        }
+    });
+
+    $('input[name="expiry_date"]').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+    });
+
+    $('input[name="expiry_date"]').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
 
     // initialize summer note
     $('.summernote').summernote({
@@ -396,7 +539,32 @@
     } // details function ends
 
     // grandfathering function
-    function generateGrandfatherCertificate(certificateID) {
+    function generateGrandfatherCertificate(certificateID, photographerEmail, ccEmail, bccEmail) {
+
+        // refresh the select2
+        $('#cc_user_email').empty();
+        $('#bcc_user_email').empty();
+
+        // assign email to email To input
+        $('.user_email').append('<option value="'+photographerEmail+'">'+photographerEmail+'</option>');
+
+        // assign cc and bcc emails
+        $.each(JSON.parse(ccEmail), function(index, value) {
+                                    
+            $('#cc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+        });
+
+        $.each(JSON.parse(bccEmail), function(index, value) {
+                                    
+            $('#bcc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+        });
+
+        // unselect study
+        $('#study').val("").trigger("change");
+        // unselect templete
+        $('#template').val(''); 
+        // empty text editor
+        $('.summernote').summernote('code', '');
 
         // assign Certificate ID
         $('#certificate_id').val(certificateID);

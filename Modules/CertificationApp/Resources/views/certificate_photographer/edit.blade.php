@@ -344,8 +344,22 @@
                                 </div>
 
                                 <div class="form-group col-md-9">
-                                    <textarea class="form-control required-data" required="required" name="reason_for_change" rows="4"></textarea>
+                                    <textarea class="form-control required-data" required="required" name="reason_for_change" id="reason_for_change" rows="4">{{ $findTransmission->status}}</textarea>
                                 </div>
+
+
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Pathology<span class="field-required">*</span></label>
+                                </div>
+                             
+                                 <div class="form-group col-md-9">
+                                    <label>Yes</label>
+                                    <input type="radio" class="pathology" name="pathology" value="yes" @if($findTransmission->pathology == 'yes') checked @endif>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <label>No</label>
+                                    <input type="radio" class="pathology" name="pathology" value="no" @if($findTransmission->pathology == 'no') checked @endif>
+                                </div>
+
 
                             <!-- ///////////////////////////// row ///////////////////// -->
 
@@ -392,7 +406,14 @@
 
                                     <div class="form-group col-md-12">
                                         <label class="edit_users">CC Email</label>
-                                        <Select class="form-control cc_email" name="cc_email[]" id="cc_email" multiple="multiple" required>
+                                        <Select class="form-control cc_email" name="cc_email[]" id="cc_email" multiple="multiple">
+
+                                        </Select>
+                                    </div>
+
+                                    <div class="form-group col-md-12">
+                                        <label class="edit_users">BCC Email</label>
+                                        <Select class="form-control bcc_email" name="bcc_email[]" id="bcc_email" multiple="multiple">
 
                                         </Select>
                                     </div>
@@ -413,6 +434,7 @@
                                         <textarea class="form-control summernote" name="comment" value="" rows="4"></textarea>
                                         <span class="edit-error-field" style="display: none; color: red;">Please fill comment field.</span>
                                     </div>
+
                                   </div>
 
                                   <div class="modal-footer">
@@ -519,6 +541,7 @@
    //$('select[name="photographer_user_email"]').select2();
    //$('select[name="template"]').select2();
    $('.cc_email').select2();
+   $('.bcc_email').select2();
 
     $('document').ready(function () {
 
@@ -559,7 +582,9 @@
                         
                         // refresh the select2
                         $('#cc_email').empty();
+                        $('#bcc_email').empty();
 
+                        // check for cc email
                         if(data.userEmails != null) {
 
                             $.each(data.userEmails, function(index, value) {
@@ -576,6 +601,20 @@
                         } else {
 
                             $('#cc_email').val("").trigger("change");
+                        }
+
+                        // check for bcc emails
+                        if(data.userBCCEmails != null) {
+
+                            $.each(data.userBCCEmails, function(index, value) {
+                                    
+                                $('#bcc_email').append('<option value="'+value+'" selected>'+value+'</option>')
+                            });
+
+                        } else {
+
+                            $('#bcc_email').val("").trigger("change");
+
                         }
                         
                     } // success ends
@@ -631,6 +670,12 @@
             }); // ajax ends
 
         });  // change function ends
+
+    // update reason for change value based on status
+    $('#status').change(function(){
+
+        $('#reason_for_change').val($(this).val());
+    });
 
 </script>
 
