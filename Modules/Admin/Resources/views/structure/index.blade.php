@@ -56,6 +56,7 @@
                                 <input type="hidden" class="phase_position" value="{{$phase->position}}">
                                 <input type="hidden" class="phase_duration" value="{{$phase->duration}}">
                                 <input type="hidden" class="is_repeatable" value="{{$phase->is_repeatable}}">
+                                <input type="hidden" class="window" value="{{$phase->window}}">
                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
                                     <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
@@ -166,6 +167,12 @@
                                 <div class="col-sm-9">
                                     <input type="number" class="form-control" name="duration" id="phase_duration" value=""  placeholder="Offset">
 
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="Name" class="col-sm-3 col-form-label">Window</label>
+                                <div class="col-sm-9">
+                                    <input type="number" class="form-control" name="window" id="phase_window" value="" placeholder="Window">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -399,6 +406,7 @@ $(document).ready(function(){
         var name = $('input#phase_name').val();
         var position = $('input#phase_position').val();
         var duration = $('input#phase_duration').val();
+        var windowfield = $('input#phase_window').val();
         var is_repeatable = $('input[name="is_repeatable"]:checked').val();
 
         if(name =='' || position =='' || duration ==''){
@@ -413,6 +421,7 @@ $(document).ready(function(){
                     'name': name,
                     'position': position,
                     'duration': duration,
+                    'window': windowfield,
                     'is_repeatable': is_repeatable
                     },
                 success: function(response){
@@ -431,8 +440,8 @@ $(document).ready(function(){
 
     $('body').on('click','.edit_phase',function(){
         $('.modal-title').html('Edit a Phase');
-        $('#addphase').trigger('reset');
-        $('#addphase').modal('show');
+        $('#add_edit_phase').trigger('reset');
+         $('#addphase').modal('show');
         var row = $(this).closest('li.nav-item');
         var id = row.find('input.phase_id').val();
         var study_id = row.find('input.phase_study_id').val();
@@ -440,17 +449,17 @@ $(document).ready(function(){
         var position = row.find('input.phase_position').val();
         var duration = row.find('input.phase_duration').val();
         var is_repeatable = row.find('input.is_repeatable').val();
-
+        var windowfield = row.find('input.window').val();
         $('#phase_id').val(id);
         $('#phase_position').val(position);
         $('#phase_name').val(name);
         $('#phase_duration').val(duration);
+        $('#phase_window').val(windowfield);
         if(is_repeatable == 1){
             $('#is_repeatable_1').prop('checked', true);
         }else{
             $('#is_repeatable_0').prop('checked', true);
         }
-
     })
     // delete Phase
     $('body').on('click','.deletePhase',function(){

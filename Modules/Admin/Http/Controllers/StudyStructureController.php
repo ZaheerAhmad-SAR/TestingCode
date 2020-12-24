@@ -141,7 +141,8 @@ class StudyStructureController extends Controller
             'position'  =>  $request->position,
             'name' =>  $request->name,
             'duration' =>  $request->duration,
-            'is_repeatable' =>  $request->is_repeatable,
+            'window' =>  $request->window,
+            'is_repeatable' =>  $request->is_repeatable
         ];
         StudyStructure::create($phaseData);
         $phase = StudyStructure::find($id);
@@ -222,17 +223,15 @@ class StudyStructureController extends Controller
     {
         // old phase
         $oldPhase = StudyStructure::where('id', $request->id)->first();
-
         $phase = StudyStructure::find($request->id);
         $phase->position  =  $request->position;
         $phase->name  =  $request->name;
         $phase->duration  =  $request->duration;
+        $phase->window  =  $request->window;
         $phase->is_repeatable  =  $request->is_repeatable;
         $phase->save();
-
         // log event details
         $logEventDetails = eventDetails($phase->id, 'Phase', 'Update', $request->ip(), $oldPhase);
-
         $this->updatePhaseToReplicatedVisits($phase);
     }
     // Delete Phase here
