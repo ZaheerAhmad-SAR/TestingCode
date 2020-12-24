@@ -37,24 +37,24 @@ class CoordinatorController extends Controller
      */
     public function store(Request $request)
     {
-        $id = Str::uuid();
+        $id = (string)Str::uuid();
         $coordinator = Coordinator::create([
             'id'    => $id,
-            'site_id'=> $request->site_id,
+            'site_id' => $request->site_id,
             'first_name' => $request->c_first_name,
             'mid_name' => empty($request->c_mid_name) ? Null : $request->c_mid_name,
             'last_name' => empty($request->c_last_name) ? Null : $request->c_last_name,
-            'phone'=> empty($request->c_phone) ? Null : $request->c_phone,
-            'email'=>empty($request->c_email)? Null : $request->c_email
+            'phone' => empty($request->c_phone) ? Null : $request->c_phone,
+            'email' => empty($request->c_email) ? Null : $request->c_email
         ]);
 
         $oldCoordinator = [];
 
         // log event details
         $logEventDetails = eventDetails($id, 'Coordinator', 'Add', $request->ip(), $oldCoordinator);
-   
 
-        return response()->json([$coordinator,'success'=>'Coordinator is added successfully!!!!']);
+
+        return response()->json([$coordinator, 'success' => 'Coordinator is added successfully!!!!']);
     }
 
     /**
@@ -80,7 +80,6 @@ class CoordinatorController extends Controller
             $record = Coordinator::find($id);
 
             return response()->json([$record]);
-
         }
     }
 
@@ -94,8 +93,8 @@ class CoordinatorController extends Controller
     {
         // get old data for logs
         $oldCoordinator = Coordinator::find($request->c_id);
-        
-        $data = array (
+
+        $data = array(
             'first_name' => $request->c_first_name,
             'mid_name' => $request->c_mid_name,
             'last_name' => $request->c_last_name,
@@ -106,14 +105,12 @@ class CoordinatorController extends Controller
 
         $c_site_id  = $request->c_site_id;
 
-        $allCoordinator = Coordinator::where('site_id',$c_site_id)->get();
+        $allCoordinator = Coordinator::where('site_id', $c_site_id)->get();
 
-         // log event details
+        // log event details
         $logEventDetails = eventDetails($request->c_id, 'Coordinator', 'Update', $request->ip(), $oldCoordinator);
 
         return response()->json($allCoordinator);
-
-
     }
 
     /**
@@ -121,27 +118,23 @@ class CoordinatorController extends Controller
      * @param int $id
      * @return Response
      */
-    public function destroy(Request $request,$id)
+    public function destroy(Request $request, $id)
     {
-        if ($request->ajax())
-        {
+        if ($request->ajax()) {
             $delete = Coordinator::find($id);
 
             $delete->delete();
-            return response()->json(['success'=>'Coordinator is deleted successfully.']);
+            return response()->json(['success' => 'Coordinator is deleted successfully.']);
         }
     }
 
-    public function showCoordinatorBySiteId(Request $request,$id)
+    public function showCoordinatorBySiteId(Request $request, $id)
     {
 
         if ($request->ajax()) {
 
-            $result    = Coordinator::where('site_id',$id)->get();
+            $result    = Coordinator::where('site_id', $id)->get();
             return response()->json([$result]);
-
         }
-
     }
-
 }

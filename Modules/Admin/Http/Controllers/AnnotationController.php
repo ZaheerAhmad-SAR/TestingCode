@@ -16,8 +16,8 @@ class AnnotationController extends Controller
      */
     public function index()
     {
-        $annotation = Annotation::select('*')->where('study_id',session('current_study'))->get();
-        return view('admin::annotation.index',compact('annotation'));
+        $annotation = Annotation::select('*')->where('study_id', session('current_study'))->get();
+        return view('admin::annotation.index', compact('annotation'));
     }
 
     /**
@@ -36,9 +36,9 @@ class AnnotationController extends Controller
      */
     public function store(Request $request)
     {
-        $id    = Str::uuid();
+        $id    = (string)Str::uuid();
         $annotation = Annotation::create([
-            'id' => $id, 
+            'id' => $id,
             'study_id' => session('current_study'),
             'label' => $request->annotation_name
         ]);
@@ -48,19 +48,21 @@ class AnnotationController extends Controller
         return redirect()->route('annotation.index');
     }
     // Add annotation from form during adding questions
-    public function store_new_annotation(Request $request){
-        $id    = Str::uuid();
+    public function store_new_annotation(Request $request)
+    {
+        $id    = (string)Str::uuid();
         $annotation = Annotation::create([
-            'id' => $id, 
+            'id' => $id,
             'study_id' => session('current_study'),
             'label' => $request->annotation_name
         ]);
         $oldAnnotation = [];
         // log event details
         $logEventDetails = eventDetails($id, 'Annotation', 'Add', $request->ip(), $oldAnnotation);
-        return response()->json([$annotation,'success'=>'others data is added successfully']);
+        return response()->json([$annotation, 'success' => 'others data is added successfully']);
     }
-    public function update_annotation(Request $request, $id='') {
+    public function update_annotation(Request $request, $id = '')
+    {
         // to get old record for logs
         $oldAnnotation = Annotation::find($request->annotation_id);
         $newAnnotation = Annotation::find($request->annotation_id);
@@ -72,20 +74,21 @@ class AnnotationController extends Controller
 
         return redirect()->route('annotation.index');
     }
-    public function get_allAnnotations($study_id){
+    public function get_allAnnotations($study_id)
+    {
 
-        $annotation = Annotation::select('*')->where('study_id',$study_id)->get();
+        $annotation = Annotation::select('*')->where('study_id', $study_id)->get();
         $annotationData['data'] = $annotation;
         echo json_encode($annotationData);
     }
     public function destroy($id)
     {
-        
     }
-    public function deleteAnnotation($id){
-       $annotation = Annotation::where('id',$id)->delete();
-       $Response['data'] = 'success';
-       echo json_encode($Response);  
+    public function deleteAnnotation($id)
+    {
+        $annotation = Annotation::where('id', $id)->delete();
+        $Response['data'] = 'success';
+        echo json_encode($Response);
     }
     /**
      * Show the specified resource.
@@ -124,5 +127,4 @@ class AnnotationController extends Controller
      * @param int $id
      * @return Renderable
      */
-   
 }

@@ -81,12 +81,14 @@
     <!-- START: Main Content-->
     <main style="min-height: calc(100vh - 140px);">
         @yield('content')
+       
     </main>
     <!-- END: Content-->
-
+ 
     <!-- START: Footer-->
     <footer class="site-footer">
-        2020 © OIRRC
+
+        2020 © OIRRC        {{  TagReleasenumber() }}
     </footer>
     <!-- END: Footer-->
 @stop

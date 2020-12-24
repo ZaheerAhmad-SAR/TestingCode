@@ -121,7 +121,7 @@ class AdjudicationFormStatus extends Model
 
     public static function insertAdjudicationFormStatus($request, $adjudicationFormStatusArray)
     {
-        $id = Str::uuid();
+        $id = (string)Str::uuid();
         $adjudicationFormStatusData = [
             'id' => $id,
             'adjudication_status' => 'incomplete',

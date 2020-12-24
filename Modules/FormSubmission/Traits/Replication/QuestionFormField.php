@@ -10,28 +10,33 @@ trait QuestionFormField
 {
     private function addReplicatedFormField($question, $newQuestionId, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
         $formField = $question->formFields()->first();
 
-        $newFormFieldId = Str::uuid();
+        $newFormFieldId = (string)Str::uuid();
         $newFormField = $formField->replicate();
         $newFormField->id = $newFormFieldId;
         $newFormField->question_id = $newQuestionId;
-        if ($isReplicating === true) {
-            $newFormField->parent_id = $formField->id;
-        }
+        $newFormField->parent_id = $formField->id;
+        $newFormField->replicating_or_cloning = $replicating_or_cloning;
         $newFormField->save();
     }
 
     private function updateReplicatedFormField($formField, $replicatedFormField)
     {
-        $formFieldAttributesArray = Arr::except($formField->attributesToArray(), ['id', 'question_id', 'parent_id']);
+        $formFieldAttributesArray = Arr::except($formField->attributesToArray(), ['id', 'question_id', 'parent_id', 'replicating_or_cloning']);
         $replicatedFormField->fill($formFieldAttributesArray);
         $replicatedFormField->update();
     }
 
     private function updateQuestionFormFieldToReplicatedVisits($formField)
     {
-        $replicatedFormFields = FormFields::where('parent_id', 'like', $formField->id)->get();
+        $replicatedFormFields = FormFields::where('parent_id', 'like', $formField->id)
+            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->get();
         foreach ($replicatedFormFields as $replicatedFormField) {
             $this->updateReplicatedFormField($formField, $replicatedFormField);
         }
@@ -40,7 +45,9 @@ trait QuestionFormField
     private function deleteQuestionFormFieldToReplicatedVisits($formField)
     {
         if (null !== $formField) {
-            $replicatedFormFields = FormFields::where('parent_id', 'like', $formField->id)->get();
+            $replicatedFormFields = FormFields::where('parent_id', 'like', $formField->id)
+                ->where('replicating_or_cloning', 'like', 'replicating')
+                ->get();
             foreach ($replicatedFormFields as $replicatedFormField) {
                 $replicatedFormField->delete();
             }

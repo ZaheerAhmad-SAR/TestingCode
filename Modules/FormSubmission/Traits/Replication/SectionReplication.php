@@ -12,20 +12,23 @@ trait SectionReplication
 {
     private function addReplicatedSection($section, $newStepId, $isReplicating = true)
     {
-        $newSectionId = Str::uuid();
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+        $newSectionId = (string)Str::uuid();
         $newSection = $section->replicate();
         $newSection->id = $newSectionId;
         $newSection->phase_steps_id = $newStepId;
-        if ($isReplicating === true) {
-            $newSection->parent_id = $section->id;
-        }
+        $newSection->parent_id = $section->id;
+        $newSection->replicating_or_cloning = $replicating_or_cloning;
         $newSection->save();
         return $newSectionId;
     }
 
     private function updateReplicatedSection($section, $replicatedSection)
     {
-        $sectionAttributesArray = Arr::except($section->attributesToArray(), ['id', 'phase_steps_id', 'parent_id']);
+        $sectionAttributesArray = Arr::except($section->attributesToArray(), ['id', 'phase_steps_id', 'parent_id', 'replicating_or_cloning']);
         $replicatedSection->fill($sectionAttributesArray);
         $replicatedSection->update();
     }
@@ -34,7 +37,10 @@ trait SectionReplication
         $stepObj = PhaseSteps::find($newSection->phase_steps_id);
         $phaseId = $stepObj->phase_id;
 
-        $replicatedPhases = StudyStructure::where('parent_id', 'like', $phaseId)->get();
+        $replicatedPhases = StudyStructure::where('parent_id', 'like', $phaseId)
+            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)
+            ->get();
         foreach ($replicatedPhases as $phase) {
             foreach ($phase->steps as $step) {
                 //parent_id of this step ==
@@ -47,7 +53,9 @@ trait SectionReplication
 
     private function updateSectionToReplicatedVisits($section)
     {
-        $replicatedSections = Section::where('parent_id', 'like', $section->id)->get();
+        $replicatedSections = Section::where('parent_id', 'like', $section->id)
+            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->get();
         foreach ($replicatedSections as $replicatedSection) {
             $this->updateReplicatedSection($section, $replicatedSection);
         }
@@ -55,7 +63,9 @@ trait SectionReplication
 
     private function deleteSectionToReplicatedVisits($section)
     {
-        $replicatedSection = Section::where('parent_id', 'like', $section->id)->get();
+        $replicatedSection = Section::where('parent_id', 'like', $section->id)
+            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->get();
         foreach ($replicatedSection as $replicatedSection) {
             $replicatedSection->delete();
         }

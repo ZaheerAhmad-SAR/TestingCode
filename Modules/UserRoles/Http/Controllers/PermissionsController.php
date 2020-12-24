@@ -40,7 +40,7 @@ class PermissionsController extends Controller
     public function store(PermissionRequest $request)
     {
         Permission::create([
-            'id'    => Str::uuid(),
+            'id'    => (string)Str::uuid(),
 
             'name'  =>  $request->name,
             'for'   =>  $request->for

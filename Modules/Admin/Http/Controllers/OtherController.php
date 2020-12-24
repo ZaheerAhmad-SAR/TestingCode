@@ -38,7 +38,7 @@ class OtherController extends Controller
      */
     public function store(Request $request)
     {
-        $id = Str::uuid();
+        $id = (string)Str::uuid();
         $others = Other::create([
             'id'    => $id,
             'site_id'=> $request->site_id,

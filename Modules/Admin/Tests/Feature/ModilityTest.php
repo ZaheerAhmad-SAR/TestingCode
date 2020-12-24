@@ -41,7 +41,7 @@ class ModilityTest extends TestCase
         $this->withoutMiddleware();
         $this->withExceptionHandling();
 
-        $id = Str::uuid();
+        $id = (string)Str::uuid();
 
         $response = $this->post('/modalities', [
             'id' => $id,
@@ -77,7 +77,7 @@ class ModilityTest extends TestCase
 
     public function test_user_can_login_with_correct_credentials()
     {
-        $user_id = Str::uuid();
+        $user_id = (string)Str::uuid();
         $user = factory(User::class)->create([
             'id'    => '808858de-c729-45d9-8552-dcec0642e08d',
             'password' => bcrypt($password = 'i-love-laravel'),
@@ -139,7 +139,7 @@ class ModilityTest extends TestCase
 
     public function testBasicExampleModilityName()
     {
-        $id = Str::uuid();
+        $id = (string)Str::uuid();
 
         $response = $this->withHeaders([
             'X-Header' => 'Value',
@@ -221,7 +221,7 @@ class ModilityTest extends TestCase
 
 //        $this->withExceptionHandling();
 //
-//        $id = Str::uuid();
+//        $id = (string)Str::uuid();
 //        $response = $this->post('/modalities',[
 //
 //            'id' => $this->faker->$id,
@@ -246,7 +246,7 @@ class ModilityTest extends TestCase
         $this->withoutMiddleware();
         $this->withExceptionHandling();
         $this->actingAs(factory(Modility::class)->create());
-        $id = Str::uuid();
+        $id = (string)Str::uuid();
 
 
         $response = $this->post('/modalities',[
@@ -275,7 +275,7 @@ class ModilityTest extends TestCase
     public function test_admin_can_create_devices(){
         $this->withoutMiddleware();
         $this->withExceptionHandling();
-        $id = Str::uuid();
+        $id = (string)Str::uuid();
 
         $modility = factory(Modility::class)->make([
             'id' => $id,
@@ -294,7 +294,7 @@ class ModilityTest extends TestCase
 
         $this->withoutMiddleware();
         $this->withExceptionHandling();
-        $id = Str::uuid();
+        $id = (string)Str::uuid();
 
         $study = factory(Study::class)->make([
             'id'    => $id,

@@ -183,7 +183,7 @@ class StudyController extends Controller
 
     public function store(Request $request)
     {
-        $id    = Str::uuid();
+        $id    = (string)Str::uuid();
         Study::create([
             'id'    => $id,
             'study_short_name'  =>  $request->study_short_name,
@@ -204,7 +204,7 @@ class StudyController extends Controller
         if ($request->disease_cohort_name != null) {
             for ($i = 0; $i < count($request->disease_cohort_name); $i++) {
                 $disease = [
-                    'id' => Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'study_id' => $study->id,
                     'name' => $request->disease_cohort_name[$i],
                 ];
@@ -339,7 +339,7 @@ class StudyController extends Controller
             $site_study = StudySite::where('study_id', '=', $id)
                 ->join('sites', 'sites.id', '=', 'site_study.site_id')
                 ->select('sites.site_name', 'sites.id','sites.site_code')
-                ->get();  
+                ->get();
             $diseaseCohort = DiseaseCohort::where('study_id', '=', $id)->get();
             return view('admin::studies.show', compact('study', 'studies', 'subjects', 'currentStudy', 'site_study', 'diseaseCohort'));
         } else {
@@ -416,7 +416,7 @@ class StudyController extends Controller
         if ($request->disease_cohort_name != null) {
             for ($i = 0; $i < count($request->disease_cohort_name); $i++) {
                 $disease = [
-                    'id' => Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'study_id' => $request->study_id,
                     'name' => $request->disease_cohort_name[$i],
                 ];
@@ -447,7 +447,7 @@ class StudyController extends Controller
             RoleStudyUser::where('study_id', 'like', $study->id)->whereIn('role_id', $studyAdminRoleId)->delete();
             foreach ($request->users as $user_id) {
                 RoleStudyUser::create([
-                    'id' => Str::uuid(),
+                    'id' => (string)Str::uuid(),
                     'study_id'   => $study->id,
                     'user_id'   => $user_id,
                     'role_id'   => $studyAdminRoleId[0]
@@ -469,6 +469,7 @@ class StudyController extends Controller
         $replica = Study::create([
             'id'    => $id,
             'parent_id' => $study_id,
+            'replicating_or_cloning' => 'cloning',
             'study_short_name'  =>  $request->study_short_name,
             'study_title' => $request->study_title,
             'study_status'  => 'Development',
@@ -513,7 +514,7 @@ class StudyController extends Controller
             }
             $site_coordinators = SiteStudyCoordinator::where('site_study_id', '=', $site->id)->get();
             foreach ($site_coordinators as $site_coordinator) {
-                $id = Str::uuid();
+                $id = (string)Str::uuid();
                 $coordinator =   SiteStudyCoordinator::create([
                     'id'    => $id,
                     'site_study_id'     => NULL,
@@ -555,6 +556,7 @@ class StudyController extends Controller
                             'duration' => $phase->duration,
                             'is_repeatable' => $phase->is_repeatable,
                             'parent_id' => $phase->parent_id,
+                            'replicating_or_cloning' => 'cloning',
                             'count' => $phase->count
                         ]);
                     }
@@ -569,13 +571,14 @@ class StudyController extends Controller
                             'duration' => $phase->duration,
                             'is_repeatable' => $phase->is_repeatable,
                             'parent_id' => $replica_phase_id->id,
+                            'replicating_or_cloning' => 'cloning',
                             'count' => $phase->count
                         ]);
                     }
                     $subjectPhases = SubjectsPhases::where('phase_id', '=', $phase->id)->get();
                     foreach ($subjectPhases as $subjectPhase) {
                         SubjectsPhases::create([
-                            'id'    => Str::uuid(),
+                            'id'    => (string)Str::uuid(),
                             'subject_id' => $replicate_subject_id->id,
                             'phase_id'  => $replica_phase_id->id,
                             'form_type_id'  => $subjectPhase->form_type_id,
@@ -585,6 +588,7 @@ class StudyController extends Controller
                             'is_out_of_window'  => $subjectPhase->is_out_of_window,
                         ]);
                     }
+
                     foreach ($phase->steps as $step) {
                         $isReplicating = false;
                         $newStepId = $this->addReplicatedStep($step, $replica_phase_id->id, $isReplicating);
@@ -613,7 +617,7 @@ class StudyController extends Controller
                                 /* Replicate Question Data Validation */
                                 /******************************* */
 
-                                $this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId);
+                                $this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId, $isReplicating);
 
                                 /******************************* */
                                 /* Replicate Question Dependency */
@@ -626,15 +630,37 @@ class StudyController extends Controller
                                 /******************************* */
 
                                 $this->addReplicatedQuestionAdjudicationStatus($question, $newQuestionId, $isReplicating);
+
+                                /******************************* */
+                                /* Replicate Question Skip Logic */
+                                /******************************* */
+
+                                $this->updateSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
+
+                                /******************************* */
+                                /* Replicate Question Option Skip Logic */
+                                /******************************* */
+
+                                $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
                             }
                         }
+                    }
+                    /******************************* */
+                    /*** Replicate Cohort Skip Logic */
+                    /******************************* */
+                    foreach ($phase->cohortSkipLogics as $cohortSkipLogic) {
+                        $this->addPhaseSkipLogicToReplicatedPhase($cohortSkipLogic, $replica_phase_id->id, false);
+                    }
+
+                    foreach ($phase->questionOptionsCohortSkipLogics as $cohortSkipLogic) {
+                        $this->addPhaseOptionsSkipLogicToReplicatedPhase($cohortSkipLogic, $replica_phase_id->id, false);
                     }
                 }
                 if ($request->answers == 'on') {
                     $answers = Answer::where('study_id', '=', $mystudy->id)->get();
                     foreach ($answers as $answer) {
                         $cloned_answer = Answer::create([
-                            'id' => Str::uuid(),
+                            'id' => (string)Str::uuid(),
                             'form_filled_by_user_id' => $answer->form_filled_by_user_id,
                             'grader_id' => $answer->grader_id,
                             'adjudicator_id' => $answer->adjudicator_id,
@@ -652,7 +678,7 @@ class StudyController extends Controller
                     $final_answers = FinalAnswer::where('study_id', '=', $mystudy->id)->get();
                     foreach ($final_answers as $final_answer) {
                         $cloned_answer_final = FinalAnswer::create([
-                            'id' => Str::uuid(),
+                            'id' => (string)Str::uuid(),
                             'study_id' => $replica_id->id,
                             'form_filled_by_user_id' => $final_answer->form_filled_by_user_id,
                             'grader_id' => $final_answer->grader_id,
@@ -686,7 +712,7 @@ class StudyController extends Controller
                 $annotations = Annotation::where('study_id', '=', $mystudy)->get();
                 foreach ($annotations as $annotation) {
                     Annotation::create([
-                        'id'    => Str::uuid(),
+                        'id'    => (string)Str::uuid(),
                         'study_id' => $replica_id->id,
                         'label' => $annotation->label,
                         'deleted_at' => $annotation->deleted_at,
@@ -695,7 +721,7 @@ class StudyController extends Controller
                     $annotation_descriptions = AnnotationDescription::where('annotation_id', '=', $annotation->id)->get();
                     foreach ($annotation_descriptions as $annotation_description) {
                         AnnotationDescription::create([
-                            'id'    => Str::uuid(),
+                            'id'    => (string)Str::uuid(),
                             'annotation_id' => $replica_annotation->id,
                             'value' => $annotation_description->value,
                             'question_id'   => $newQuestionId,
@@ -709,7 +735,7 @@ class StudyController extends Controller
                 $adjudicationformstatuses = AdjudicationFormStatus::where('study_id', '=', $mystudy->id)->get();
                 foreach ($adjudicationformstatuses as $adjudicationformstatus) {
                     AdjudicationFormStatus::create([
-                        'id' => Str::uuid(),
+                        'id' => (string)Str::uuid(),
                         'form_adjudicated_by_id' => $adjudicationformstatus->form_adjudicated_by_id,
                         'subject_id' => $replicate_subject_id->id,
                         'study_id' => $replica_id->id,
@@ -734,7 +760,7 @@ class StudyController extends Controller
                     $adjudicationformsrevisiontatuses = AdjudicationFormRevisionHistory::where('adjudication_form_submit_status_id', '=', $adjudicationformstatus->id)->get();
                     foreach ($adjudicationformsrevisiontatuses as $adjudicationformsrevisiontatus) {
                         AdjudicationFormRevisionHistory::create([
-                            'id' => Str::uuid(),
+                            'id' => (string)Str::uuid(),
                             'adjudication_form_submit_status_id' => $latest_adjudication->id,
                             'adjudication_form_edit_reason_text' => $adjudicationformsrevisiontatus->adjudication_form_edit_reason_text
                         ]);
@@ -742,7 +768,7 @@ class StudyController extends Controller
                 }
                 $formsubmitstatuses = FormStatus::where('study_id', '=', $mystudy->id)->get();
                 foreach ($formsubmitstatuses as $formsubmitstatus) {
-                    $id = Str::uuid();
+                    $id = (string)Str::uuid();
                     FormStatus::create([
                         'id' => $id,
                         'form_filled_by_user_id' => $formsubmitstatus->form_filled_by_user_id,
@@ -773,7 +799,7 @@ class StudyController extends Controller
                     $formrevisions = FormRevisionHistory::where('form_submit_status_id', '=', $formsubmitstatus)->get();
                     foreach ($formrevisions as $formrevision) {
                         FormRevisionHistory::create([
-                            'id'    => Str::uuid(),
+                            'id'    => (string)Str::uuid(),
                             'form_submit_status_id' => $replica_form_status_id->id,
                             'edit_reason_text'  => $formrevision->edit_reason_text
                         ]);
@@ -787,7 +813,7 @@ class StudyController extends Controller
              dd($transmissions);*/
             $transmissions = CrushFtpTransmission::where('StudyI_ID', '=', $mystudy->study_code)->get();
             foreach ($transmissions as $transmission) {
-                $id = Str::uuid();
+                $id = (string)Str::uuid();
                 CrushFtpTransmission::create([
                     'id' => $id,
                     'data'  => $transmission->data,
@@ -869,7 +895,7 @@ class StudyController extends Controller
         if ($request->auditTrail == 'on') {
             $auditTrails = TrailLog::where('study_id', '=', $mystudy)->get();
             foreach ($auditTrails as $auditTrail) {
-                $id = Str::uuid();
+                $id = (string)Str::uuid();
                 TrailLog::create([
                     'id'    => $id,
                     'user_id'   => $auditTrail->user_id,
@@ -891,7 +917,7 @@ class StudyController extends Controller
             $studyPrefrences = Preference::where('study_id', '=', $mystudy)->get();
             foreach ($studyPrefrences as $studyPrefrence) {
                 Preference::create([
-                    'id'        => Str::uuid(),
+                    'id'        => (string)Str::uuid(),
                     'preference_title'      => $studyPrefrence->preference_title,
                     'preference_value'      => $studyPrefrence->preference_value,
                     'is_selectable'      => $studyPrefrence->is_selectable,
@@ -925,6 +951,7 @@ class StudyController extends Controller
         $replica = Study::create([
             'id'    => $id,
             'parent_id' => $study_id,
+            'replicating_or_cloning' => 'cloning',
             'study_short_name'  =>  $request->study_short_name,
             'study_title' => $request->study_title,
             'study_status'  => 'Development',
@@ -969,7 +996,7 @@ class StudyController extends Controller
             }
             $site_coordinators = SiteStudyCoordinator::where('site_study_id', '=', $site->id)->get();
             foreach ($site_coordinators as $site_coordinator) {
-                $id = Str::uuid();
+                $id = (string)Str::uuid();
                 $coordinator =   SiteStudyCoordinator::create([
                     'id'    => $id,
                     'site_study_id'     => NULL,
@@ -1010,6 +1037,7 @@ class StudyController extends Controller
                                 'duration' => $phase->duration,
                                 'is_repeatable' => $phase->is_repeatable,
                                 'parent_id' => $phase->parent_id,
+                                'replicating_or_cloning' => 'cloning',
                                 'count' => $phase->count
                             ]);
                         }
@@ -1024,13 +1052,14 @@ class StudyController extends Controller
                                 'duration' => $phase->duration,
                                 'is_repeatable' => $phase->is_repeatable,
                                 'parent_id' => $replica_phase_id->id,
+                                'replicating_or_cloning' => 'cloning',
                                 'count' => $phase->count
                             ]);
                         }
                         $subjectPhases = SubjectsPhases::where('phase_id', '=', $phase->id)->get();
                         foreach ($subjectPhases as $subjectPhase) {
                             SubjectsPhases::create([
-                                'id'    => Str::uuid(),
+                                'id'    => (string)Str::uuid(),
                                 'subject_id' => $subjectPhase->subject_id,
                                 'phase_id'  => $replica_phase_id->id,
                                 'visit_date'    => $subjectPhase->visit_date,
@@ -1039,6 +1068,7 @@ class StudyController extends Controller
                                 'form_type_id'  => $subjectPhase->form_type_id,
                             ]);
                         }
+
                         foreach ($phase->steps as $step) {
                             $isReplicating = false;
                             $newStepId = $this->addReplicatedStep($step, $replica_phase_id->id, $isReplicating);
@@ -1067,7 +1097,7 @@ class StudyController extends Controller
                                     /* Replicate Question Data Validation */
                                     /******************************* */
 
-                                    $this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId);
+                                    $this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId, $isReplicating);
 
                                     /******************************* */
                                     /* Replicate Question Dependency */
@@ -1080,8 +1110,30 @@ class StudyController extends Controller
                                     /******************************* */
 
                                     $this->addReplicatedQuestionAdjudicationStatus($question, $newQuestionId, $isReplicating);
+
+                                    /******************************* */
+                                    /* Replicate Question Skip Logic */
+                                    /******************************* */
+
+                                    $this->updateSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
+
+                                    /******************************* */
+                                    /* Replicate Question Option Skip Logic */
+                                    /******************************* */
+
+                                    $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
                                 }
                             }
+                        }
+                        /******************************* */
+                        /*** Replicate Cohort Skip Logic */
+                        /******************************* */
+                        foreach ($phase->cohortSkipLogics as $cohortSkipLogic) {
+                            $this->addPhaseSkipLogicToReplicatedPhase($cohortSkipLogic, $replica_phase_id->id, false);
+                        }
+
+                        foreach ($phase->questionOptionsCohortSkipLogics as $cohortSkipLogic) {
+                            $this->addPhaseOptionsSkipLogicToReplicatedPhase($cohortSkipLogic, $replica_phase_id->id, false);
                         }
                     }
                     if ($request->answers == 'on') {
@@ -1089,7 +1141,7 @@ class StudyController extends Controller
                         $answers = Answer::where('study_id', '=', $mystudy->id)->get();
                         foreach ($answers as $answer) {
                             $cloned_answer = Answer::create([
-                                'id' => Str::uuid(),
+                                'id' => (string)Str::uuid(),
                                 'form_filled_by_user_id' => $answer->form_filled_by_user_id,
                                 'grader_id' => $answer->grader_id,
                                 'adjudicator_id' => $answer->adjudicator_id,
@@ -1108,7 +1160,7 @@ class StudyController extends Controller
                         $final_answers = FinalAnswer::where('study_id', '=', $mystudy->id)->get();
                         foreach ($final_answers as $final_answer) {
                             $cloned_answer_final = FinalAnswer::create([
-                                'id' => Str::uuid(),
+                                'id' => (string)Str::uuid(),
                                 'study_id' => $replica_id->id,
                                 'form_filled_by_user_id' => $final_answer->form_filled_by_user_id,
                                 'grader_id' => $final_answer->grader_id,
@@ -1154,7 +1206,7 @@ class StudyController extends Controller
                         $annotations = Annotation::where('study_id', '=', $mystudy)->get();
                         foreach ($annotations as $annotation) {
                             Annotation::create([
-                                'id'    => Str::uuid(),
+                                'id'    => (string)Str::uuid(),
                                 'study_id' => $replica_id->id,
                                 'label' => $annotation->label,
                                 'deleted_at' => $annotation->deleted_at,
@@ -1163,7 +1215,7 @@ class StudyController extends Controller
                             $annotation_descriptions = AnnotationDescription::where('annotation_id', '=', $annotation->id)->get();
                             foreach ($annotation_descriptions as $annotation_description) {
                                 AnnotationDescription::create([
-                                    'id'    => Str::uuid(),
+                                    'id'    => (string)Str::uuid(),
                                     'annotation_id' => $replica_annotation->id,
                                     'value' => $annotation_description->value,
                                     'question_id'   => $newQuestionId,
@@ -1176,7 +1228,7 @@ class StudyController extends Controller
                             $adjudicationformstatuses = AdjudicationFormStatus::where('study_structures_id', '=', $phase->id)->get();
                             foreach ($adjudicationformstatuses as $adjudicationformstatus) {
                                 AdjudicationFormStatus::create([
-                                    'id' => Str::uuid(),
+                                    'id' => (string)Str::uuid(),
                                     'form_adjudicated_by_id' => $adjudicationformstatus->form_adjudicated_by_id,
                                     'subject_id' => $adjudicationformstatus->subject_id,
                                     'study_id' => $replica_id->id,
@@ -1198,7 +1250,7 @@ class StudyController extends Controller
                                 $adjudicationformsrevisiontatuses = AdjudicationFormRevisionHistory::where('adjudication_form_submit_status_id', '=', $adjudicationformstatus->id)->get();
                                 foreach ($adjudicationformsrevisiontatuses as $adjudicationformsrevisiontatus) {
                                     AdjudicationFormRevisionHistory::create([
-                                        'id' => Str::uuid(),
+                                        'id' => (string)Str::uuid(),
                                         'adjudication_form_submit_status_id' => $latest_adjudication->id,
                                         'adjudication_form_edit_reason_text' => $adjudicationformsrevisiontatus->adjudication_form_edit_reason_text
                                     ]);
@@ -1207,7 +1259,7 @@ class StudyController extends Controller
                             $formsubmitstatuses = FormStatus::where('study_id', '=', $mystudy)->get();
                             foreach ($formsubmitstatuses as $formsubmitstatus) {
                                 FormStatus::create([
-                                    'id' => Str::uuid(),
+                                    'id' => (string)Str::uuid(),
                                     'form_filled_by_user_id' => $formsubmitstatus->form_filled_by_user_id,
                                     'form_filled_by_user_role_id' => $formsubmitstatus->form_filled_by_user_role_id,
                                     'subject_id' => $formsubmitstatus->subject_id,
@@ -1231,7 +1283,7 @@ class StudyController extends Controller
                                 $formrevisions = FormRevisionHistory::where('form_submit_status_id', '=', $formsubmitstatus)->get();
                                 foreach ($formrevisions as $formrevision) {
                                     FormRevisionHistory::create([
-                                        'id'    => Str::uuid(),
+                                        'id'    => (string)Str::uuid(),
                                         'form_submit_status_id' => $replica_form_status_id->id,
                                         'edit_reason_text'  => $formrevision->edit_reason_text
                                     ]);
@@ -1247,7 +1299,7 @@ class StudyController extends Controller
              dd($transmissions);*/
             $transmissions = CrushFtpTransmission::where('StudyI_ID', '=', $mystudy->study_code)->get();
             foreach ($transmissions as $transmission) {
-                $id = Str::uuid();
+                $id = (string)Str::uuid();
                 CrushFtpTransmission::create([
                     'id' => $id,
                     'data'  => $transmission->data,
@@ -1329,7 +1381,7 @@ class StudyController extends Controller
         if ($request->auditTrail == 'on') {
             $auditTrails = TrailLog::where('study_id', '=', $mystudy)->get();
             foreach ($auditTrails as $auditTrail) {
-                $id = Str::uuid();
+                $id = (string)Str::uuid();
                 TrailLog::create([
                     'id'    => $id,
                     'user_id'   => $auditTrail->user_id,
@@ -1351,7 +1403,7 @@ class StudyController extends Controller
             $studyPrefrences = Preference::where('study_id', '=', $mystudy)->get();
             foreach ($studyPrefrences as $studyPrefrence) {
                 Preference::create([
-                    'id'        => Str::uuid(),
+                    'id'        => (string)Str::uuid(),
                     'preference_title'      => $studyPrefrence->preference_title,
                     'preference_value'      => $studyPrefrence->preference_value,
                     'is_selectable'      => $studyPrefrence->is_selectable,
@@ -1363,7 +1415,7 @@ class StudyController extends Controller
         if ($request->studyQueries == 'on') {
             $queries = Query::where('module_id', '=', $mystudy)->get();
             foreach ($queries as $query) {
-                $id = Str::uuid();
+                $id = (string)Str::uuid();
                 if ($query->parent_query_id == NULL) {
                     Query::create([
                         'id'       => $id,

@@ -41,7 +41,7 @@ class SiteTest extends TestCase
 
         $this->withoutMiddleware();
         $this->withExceptionHandling();
-        $id = Str::uuid();
+        $id = (string)Str::uuid();
 
         $study = factory(Site::class)->make([
             'id'    => $id,
