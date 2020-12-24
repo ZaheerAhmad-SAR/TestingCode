@@ -26,6 +26,8 @@ Auth::routes(['register' => false]);
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::get('/vtag', 'VtagCOntroller@index')->name('vtag');
+
 
 
 

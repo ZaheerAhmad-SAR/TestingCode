@@ -86,7 +86,7 @@
 
     <!-- START: Footer-->
     <footer class="site-footer">
-        2020 © OIRRC
+        2020 © OIRRC        {{  TagReleasenumber() }}
     </footer>
     <!-- END: Footer-->
 @stop
