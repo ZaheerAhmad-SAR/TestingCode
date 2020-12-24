@@ -18,10 +18,15 @@ trait QuestionAnnotationDescription
         $newQuestionAnnotationDescription->save();
     }
 
-    private function updateQuestionAnnotationDescriptionToReplicatedVisits($questionId)
+    private function updateQuestionAnnotationDescriptionToReplicatedVisits($questionId, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         $replicatedQuestions = Question::where('parent_id', 'like', $questionId)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedQuestions as $replicatedQuestion) {
             $questionAnnotationDescriptions = AnnotationDescription::where('question_id', 'like', $questionId)->get();
@@ -40,19 +45,24 @@ trait QuestionAnnotationDescription
     }
 
 
-    private function deleteQuestionAnnotationDescriptionsToReplicatedVisits($questionId)
+    private function deleteQuestionAnnotationDescriptionsToReplicatedVisits($questionId, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         $replicatedQuestions = Question::where('parent_id', 'like', $questionId)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedQuestions as $replicatedQuestion) {
             AnnotationDescription::where('question_id', 'like', $replicatedQuestion->id)->delete();
         }
     }
 
-    private function deleteQuestionAnnotationDescriptions($questionId)
+    private function deleteQuestionAnnotationDescriptions($questionId, $isReplicating = true)
     {
-        $this->deleteQuestionAnnotationDescriptionsToReplicatedVisits($questionId);
+        $this->deleteQuestionAnnotationDescriptionsToReplicatedVisits($questionId, $isReplicating);
         AnnotationDescription::where('question_id', $questionId)->delete();
     }
 }

@@ -34,12 +34,16 @@ trait SectionReplication
     }
     private function addSectionToReplicatedVisits($newSection, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         $stepObj = PhaseSteps::find($newSection->phase_steps_id);
         $phaseId = $stepObj->phase_id;
 
         $replicatedPhases = StudyStructure::where('parent_id', 'like', $phaseId)
-            ->where('replicating_or_cloning', 'like', 'replicating')
-            ->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedPhases as $phase) {
             foreach ($phase->steps as $step) {
@@ -51,32 +55,42 @@ trait SectionReplication
         }
     }
 
-    private function updateSectionToReplicatedVisits($section)
+    private function updateSectionToReplicatedVisits($section, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         $replicatedSections = Section::where('parent_id', 'like', $section->id)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedSections as $replicatedSection) {
             $this->updateReplicatedSection($section, $replicatedSection);
         }
     }
 
-    private function deleteSectionToReplicatedVisits($section)
+    private function deleteSectionToReplicatedVisits($section, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         $replicatedSection = Section::where('parent_id', 'like', $section->id)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedSection as $replicatedSection) {
             $replicatedSection->delete();
         }
     }
 
-    private function deleteSection($section)
+    private function deleteSection($section, $isReplicating = true)
     {
         foreach ($section->questions as $question) {
-            $this->deleteQuestionAndItsRelatedValues($question->id);
+            $this->deleteQuestionAndItsRelatedValues($question->id, $isReplicating);
         }
-        $this->deleteSectionToReplicatedVisits($section);
+        $this->deleteSectionToReplicatedVisits($section, $isReplicating);
         $section->delete();
     }
 }

@@ -15,6 +15,7 @@ trait QuestionSkipLogic
 {
     private function addQuestionSkipLogicToReplicatedQuestion($skipLogic, $replicatedQuestionId, $isReplicating = true)
     {
+
         $replicating_or_cloning = 'cloning';
         if ($isReplicating === true) {
             $replicating_or_cloning = 'replicating';
@@ -36,7 +37,7 @@ trait QuestionSkipLogic
         $activateFormArray = [];
         foreach ($activateFormIds as $activateFormId) {
             $replicatedForm = PhaseSteps::where('parent_id', 'like', $activateFormId)
-                ->where('replicating_or_cloning', 'like', 'replicating')
+                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
                 ->whereIn('step_id', $stepIdsArray)
                 ->first();
             $activateFormArray[] = $replicatedForm->step_id;
@@ -48,7 +49,7 @@ trait QuestionSkipLogic
         $deactivateFormArray = [];
         foreach ($deactivateFormIds as $deactivateFormId) {
             $replicatedForm = PhaseSteps::where('parent_id', 'like', $deactivateFormId)
-                ->where('replicating_or_cloning', 'like', 'replicating')
+                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
                 ->whereIn('step_id', $stepIdsArray)
                 ->first();
             $deactivateFormArray[] = $replicatedForm->step_id;
@@ -61,7 +62,7 @@ trait QuestionSkipLogic
         $activateSectionArray = [];
         foreach ($activateSectionIds as $activateSectionId) {
             $replicatedSection = Section::where('parent_id', 'like', $activateSectionId)
-                ->where('replicating_or_cloning', 'like', 'replicating')
+                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
                 ->whereIn('id', $sectionIdsArray)
                 ->first();
             $activateSectionArray[] = $replicatedSection->id;
@@ -73,7 +74,7 @@ trait QuestionSkipLogic
         $deactivateSectionArray = [];
         foreach ($deactivateSectionIds as $deactivateSectionId) {
             $replicatedSection = Section::where('parent_id', 'like', $deactivateSectionId)
-                ->where('replicating_or_cloning', 'like', 'replicating')
+                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
                 ->whereIn('id', $sectionIdsArray)
                 ->first();
             $deactivateSectionArray[] = $replicatedSection->id;
@@ -86,7 +87,7 @@ trait QuestionSkipLogic
         $activateQuestionArray = [];
         foreach ($activateQuestionIds as $activateQuestionId) {
             $replicatedQuestion = Question::where('parent_id', 'like', $activateQuestionId)
-                ->where('replicating_or_cloning', 'like', 'replicating')
+                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
                 ->whereIn('id', $questionIdsArray)
                 ->first();
             $activateQuestionArray[] = $replicatedQuestion->id;
@@ -98,7 +99,7 @@ trait QuestionSkipLogic
         $deactivateQuestionArray = [];
         foreach ($deactivateQuestionIds as $deactivateQuestionId) {
             $replicatedQuestion = Question::where('parent_id', 'like', $deactivateQuestionId)
-                ->where('replicating_or_cloning', 'like', 'replicating')
+                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
                 ->whereIn('id', $questionIdsArray)
                 ->first();
             $deactivateQuestionArray[] = $replicatedQuestion->id;
@@ -110,9 +111,14 @@ trait QuestionSkipLogic
 
     private function updateSkipLogicsToReplicatedVisits($questionId, $isReplicating = true)
     {
-        $this->deleteSkipLogicsToReplicatedVisits($questionId);
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
+        $this->deleteSkipLogicsToReplicatedVisits($questionId, $isReplicating);
         $replicatedQuestions = Question::where('parent_id', 'like', $questionId)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedQuestions as $replicatedQuestion) {
             $skipLogics = SkipLogic::where('question_id', 'like', $questionId)->get();
@@ -122,19 +128,24 @@ trait QuestionSkipLogic
         }
     }
 
-    private function deleteSkipLogicsToReplicatedVisits($questionId)
+    private function deleteSkipLogicsToReplicatedVisits($questionId, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         $replicatedQuestions = Question::where('parent_id', 'like', $questionId)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedQuestions as $replicatedQuestion) {
             SkipLogic::where('question_id', 'like', $replicatedQuestion->id)->delete();
         }
     }
 
-    private function deleteQuestionSkipLogics($questionId)
+    private function deleteQuestionSkipLogics($questionId, $isReplicating = true)
     {
-        $this->deleteSkipLogicsToReplicatedVisits($questionId);
+        $this->deleteSkipLogicsToReplicatedVisits($questionId, $isReplicating);
         SkipLogic::where('question_id', $questionId)->delete();
     }
 }

@@ -34,7 +34,7 @@ class FormController extends Controller
      */
     public function index()
     {
-        $phases = StudyStructure::select('*')->where('study_id', session('current_study'))->get();
+        $phases = StudyStructure::where('study_id', session('current_study'))->withOutRepeated()->get();
         //$option_groups = OptionsGroup::all();
         $current_study =  \Session::get('current_study');
         $option_groups  = OptionsGroup::where('study_id', $current_study)->orderBy('created_at', 'desc')->get();
@@ -52,7 +52,7 @@ class FormController extends Controller
     }
     public function get_phases($id)
     {
-        $phases = StudyStructure::select('*')->where('study_id', session('current_study'))->get();
+        $phases = StudyStructure::where('study_id', session('current_study'))->withOutRepeated()->get();
         $data['data'] = $phases;
         echo json_encode($data);
     }
@@ -384,7 +384,7 @@ class FormController extends Controller
         $questionObj->certification_type = $request->certification_type;
         $questionObj->save();
 
-        $this->updateQuestionToReplicatedVisits($questionObj);
+        $this->updateQuestionToReplicatedVisits($questionObj, true);
 
         /**************************************************/
         $this->updateFormField($request);
@@ -429,7 +429,7 @@ class FormController extends Controller
         //$form_field->question_info = $request->question_info;
         $form_field->text_info = htmlentities($request->text_info);
         $form_field->save();
-        $this->updateQuestionFormFieldToReplicatedVisits($form_field);
+        $this->updateQuestionFormFieldToReplicatedVisits($form_field, true);
     }
     private function createQuestionAdjudicationStatus($request, $questionObj)
     {
@@ -458,7 +458,7 @@ class FormController extends Controller
             $adjStatus->custom_value = $request->custom_value;
             $adjStatus->save();
 
-            $this->updateQuestionAdjudicationStatusesToReplicatedVisits($adjStatus);
+            $this->updateQuestionAdjudicationStatusesToReplicatedVisits($adjStatus, true);
         } else {
             $this->createQuestionAdjudicationStatus($request, $questionObj);
         }
@@ -515,7 +515,7 @@ class FormController extends Controller
                 $dependencies->forceDelete();
             }
 
-            $this->updateQuestionDependenciesToReplicatedVisits($dependencies);
+            $this->updateQuestionDependenciesToReplicatedVisits($dependencies, true);
         } else {
             $this->createQuestionDependencies($request, $questionObj);
         }
@@ -543,11 +543,11 @@ class FormController extends Controller
         }
     }
 
-    private function updateQuestionValidation($request, $questionObj, $isReplicating = true)
+    private function updateQuestionValidation($request, $questionObj)
     {
-        $this->deleteQuestionValidations($questionObj->id);
+        $this->deleteQuestionValidations($questionObj->id, true);
         $this->createQuestionDatavalidations($request, $questionObj);
-        $this->updateQuestionValidationToReplicatedVisits($questionObj->id, $isReplicating);
+        $this->updateQuestionValidationToReplicatedVisits($questionObj->id, true);
     }
     /**
      * Show the specified resource.
@@ -567,7 +567,7 @@ class FormController extends Controller
 
     function deleteQuestion($questionId)
     {
-        $this->deleteQuestionAndItsRelatedValues($questionId);
+        $this->deleteQuestionAndItsRelatedValues($questionId, true);
         $Response['data'] = 'success';
         echo json_encode($Response);
     }

@@ -20,16 +20,22 @@ class StudyStructure extends Model
         'id', 'study_id', 'name', 'position', 'duration',
         'is_repeatable', 'parent_id', 'replicating_or_cloning', 'count', 'old_id', 'deleted_at'
     ];
+
     // protected $keyType = 'string';
     protected $casts = [
         'id' => 'string'
     ];
 
+    public function scopeWithOutRepeated($query)
+    {
+        return $query->where('study_structures.replicating_or_cloning', '!=', 'replicating');
+    }
+
     protected static function boot()
     {
         parent::boot();
         static::addGlobalScope(new StudyStructureOrderByScope);
-        static::addGlobalScope(new StudyStructureWithoutRepeatedScope);
+        //static::addGlobalScope(new StudyStructureWithoutRepeatedScope);
     }
 
     public function phases()
@@ -82,7 +88,6 @@ class StudyStructure extends Model
     public static function getStudyPhaseIdsArray($studyId)
     {
         return self::where('study_id', 'like', $studyId)
-            ->withOutGlobalScope(StudyStructureWithoutRepeatedScope::class)
             ->pluck('id')
             ->toArray();
     }
@@ -110,7 +115,7 @@ class StudyStructure extends Model
         $question = Question::find($questionId);
         $section = Section::find($question->section_id);
         $step = PhaseSteps::find($section->phase_steps_id);
-        $phase = self::where('id', $step->phase_id)->withOutGlobalScopes()->first();
+        $phase = self::find($step->phase_id);
         return $phase->id;
     }
 

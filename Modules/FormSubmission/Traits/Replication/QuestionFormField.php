@@ -32,21 +32,31 @@ trait QuestionFormField
         $replicatedFormField->update();
     }
 
-    private function updateQuestionFormFieldToReplicatedVisits($formField)
+    private function updateQuestionFormFieldToReplicatedVisits($formField, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         $replicatedFormFields = FormFields::where('parent_id', 'like', $formField->id)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedFormFields as $replicatedFormField) {
             $this->updateReplicatedFormField($formField, $replicatedFormField);
         }
     }
 
-    private function deleteQuestionFormFieldToReplicatedVisits($formField)
+    private function deleteQuestionFormFieldToReplicatedVisits($formField, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         if (null !== $formField) {
             $replicatedFormFields = FormFields::where('parent_id', 'like', $formField->id)
-                ->where('replicating_or_cloning', 'like', 'replicating')
+                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
                 ->get();
             foreach ($replicatedFormFields as $replicatedFormField) {
                 $replicatedFormField->delete();

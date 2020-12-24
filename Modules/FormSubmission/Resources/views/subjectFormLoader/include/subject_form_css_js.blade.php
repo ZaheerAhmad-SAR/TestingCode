@@ -914,11 +914,11 @@
             }
 
             function reloadPage(waitSeconds) {
-                var seconds = waitSeconds * 1000;
+                /*var seconds = waitSeconds * 1000;
                 console.log('wait : ' + seconds);
                 setTimeout(function() {
                     location.reload();
-                }, seconds);
+                }, seconds);*/
             }
         </script>
     @endpush

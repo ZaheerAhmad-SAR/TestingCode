@@ -462,6 +462,8 @@ class StudyController extends Controller
      */
     public function cloneStudy(Request $request)
     {
+        $isReplicating = false;
+
         $study_id = $request->study_ID;
         $mystudy = Study::with('users', 'subjects', 'diseaseCohort')
             ->find($study_id);
@@ -542,9 +544,7 @@ class StudyController extends Controller
                 $replicate_subject_id = Subject::select('id')->latest()->first();
             }
             if ($request->phasesSteps == 'on') {
-                $study_phases = StudyStructure::where('study_id', '=', $study_id)
-                    ->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)->get();
-                //  $study_phases = StudyStructure::where('study_id','=',$study_id)->get();
+                $study_phases = StudyStructure::where('study_id', '=', $study_id)->get();
                 foreach ($study_phases as $phase) {
                     $id = \Illuminate\Support\Str::uuid();
                     if ($phase->parent_id == 'no-parent') {
@@ -590,7 +590,7 @@ class StudyController extends Controller
                     }
                     $newQuestionIdsArray = [];
                     foreach ($phase->steps as $step) {
-                        $isReplicating = false;
+
                         $newStepId = $this->addReplicatedStep($step, $replica_phase_id->id, $isReplicating);
 
                         /******************************* */
@@ -641,23 +641,23 @@ class StudyController extends Controller
                         /* Replicate Question Skip Logic */
                         /******************************* */
 
-                        $this->updateSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
+                        $this->updateSkipLogicsToReplicatedVisits($question->id, $isReplicating);
 
                         /******************************* */
                         /* Replicate Question Option Skip Logic */
                         /******************************* */
 
-                        $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
+                        $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $isReplicating);
                     }
                     /******************************* */
                     /*** Replicate Cohort Skip Logic */
                     /******************************* */
                     foreach ($phase->cohortSkipLogics as $cohortSkipLogic) {
-                        $this->addPhaseSkipLogicToReplicatedPhase($cohortSkipLogic, $replica_phase_id->id, false);
+                        $this->addPhaseSkipLogicToReplicatedPhase($cohortSkipLogic, $replica_phase_id->id, $isReplicating);
                     }
 
                     foreach ($phase->questionOptionsCohortSkipLogics as $cohortSkipLogic) {
-                        $this->addPhaseOptionsSkipLogicToReplicatedPhase($cohortSkipLogic, $replica_phase_id->id, false);
+                        $this->addPhaseOptionsSkipLogicToReplicatedPhase($cohortSkipLogic, $replica_phase_id->id, $isReplicating);
                     }
                 }
                 if ($request->answers == 'on') {
@@ -945,12 +945,13 @@ class StudyController extends Controller
      */
     public function exportStudy(Request $request)
     {
+        $isReplicating = false;
         $study_id = $request->study_ID;
         $mystudy = Study::find($study_id);
         $disease_cohorts = DiseaseCohort::where('study_id', '=', $study_id)->get();
-        $study_phases = StudyStructure::where('study_id', '=', $study_id)->get();
 
         return \response()->xml(['study' => $mystudy->toArray($disease_cohorts)]);
+
         $id = \Illuminate\Support\Str::uuid();
         $replica = Study::create([
             'id'    => $id,
@@ -1027,9 +1028,7 @@ class StudyController extends Controller
                 ]);
                 $replicate_subject_id = Subject::select('id')->latest()->first();
                 if ($request->phasesSteps == 'on') {
-                    $study_phases = StudyStructure::where('study_id', '=', $study_id)
-                        ->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)->get();
-                    //  $study_phases = StudyStructure::where('study_id','=',$study_id)->get();
+                    $study_phases = StudyStructure::where('study_id', '=', $study_id)->get();
                     foreach ($study_phases as $phase) {
                         $id = \Illuminate\Support\Str::uuid();
                         if ($phase->parent_id == 'no-parent') {
@@ -1074,7 +1073,6 @@ class StudyController extends Controller
                         }
                         $newQuestionIdsArray = [];
                         foreach ($phase->steps as $step) {
-                            $isReplicating = false;
                             $newStepId = $this->addReplicatedStep($step, $replica_phase_id->id, $isReplicating);
 
                             /******************************* */
@@ -1124,23 +1122,23 @@ class StudyController extends Controller
                             /* Replicate Question Skip Logic */
                             /******************************* */
 
-                            $this->updateSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
+                            $this->updateSkipLogicsToReplicatedVisits($question->id, $isReplicating);
 
                             /******************************* */
                             /* Replicate Question Option Skip Logic */
                             /******************************* */
 
-                            $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
+                            $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $isReplicating);
                         }
                         /******************************* */
                         /*** Replicate Cohort Skip Logic */
                         /******************************* */
                         foreach ($phase->cohortSkipLogics as $cohortSkipLogic) {
-                            $this->addPhaseSkipLogicToReplicatedPhase($cohortSkipLogic, $replica_phase_id->id, false);
+                            $this->addPhaseSkipLogicToReplicatedPhase($cohortSkipLogic, $replica_phase_id->id, $isReplicating);
                         }
 
                         foreach ($phase->questionOptionsCohortSkipLogics as $cohortSkipLogic) {
-                            $this->addPhaseOptionsSkipLogicToReplicatedPhase($cohortSkipLogic, $replica_phase_id->id, false);
+                            $this->addPhaseOptionsSkipLogicToReplicatedPhase($cohortSkipLogic, $replica_phase_id->id, $isReplicating);
                         }
                     }
                     if ($request->answers == 'on') {
@@ -1470,7 +1468,7 @@ class StudyController extends Controller
         $phases = StudyStructure::where('study_id', 'like', $id)->get();
         foreach ($phases as $phase) {
             $this->deleteTreeAgainstPhase($phase->id);
-            $this->deletePhase($phase);
+            $this->deletePhase($phase, true);
         }
         StudyStructure::where('study_id', $id)->delete();
 
@@ -1507,7 +1505,7 @@ class StudyController extends Controller
             $phases = StudyStructure::where('study_id', 'like', $id)->withTrashed()->get();
             foreach ($phases as $phase) {
                 $this->deleteTreeAgainstPhase($phase->id);
-                $this->deletePhase($phase);
+                $this->deletePhase($phase, true);
             }
             StudyStructure::where('study_id', $id)->withTrashed()->forceDelete();
 

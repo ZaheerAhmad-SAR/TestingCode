@@ -48,20 +48,24 @@ trait QuestionReplication
 
     private function addQuestionToReplicatedVisits($question, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         $sectionObj = Section::find($question->section_id);
         $stepObj = PhaseSteps::find($sectionObj->phase_steps_id);
         $phaseId = $stepObj->phase_id;
 
         $replicatedPhases = StudyStructure::where('parent_id', 'like', $phaseId)
-            ->where('replicating_or_cloning', 'like', 'replicating')
-            ->withoutGlobalScopes()
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         $replicatedQuestionIdsArray = [];
         foreach ($replicatedPhases as $phase) {
             foreach ($phase->steps as $step) {
                 foreach ($step->sections as $section) {
                     if ($section->parent_id == $question->section_id) {
-                        $replicatedQuestionIdsArray[] =$replicatedQuestionId = $this->addReplicatedQuestion($question, $section->id, $isReplicating);
+                        $replicatedQuestionIdsArray[] = $replicatedQuestionId = $this->addReplicatedQuestion($question, $section->id, $isReplicating);
                         $this->addReplicatedFormField($question, $replicatedQuestionId, $isReplicating);
                         $this->addQuestionValidationToReplicatedQuestion($question->id, $replicatedQuestionId, $isReplicating);
                         //$this->addQuestionAnnotationDescriptionToReplicatedQuestion($question->id, $replicatedQuestionId);
@@ -71,47 +75,56 @@ trait QuestionReplication
                 }
             }
         }
-        foreach($replicatedQuestionIdsArray as $replicatedQuestionId){
+        foreach ($replicatedQuestionIdsArray as $replicatedQuestionId) {
             $this->addQuestionSkipLogicToReplicatedQuestion($question, $replicatedQuestionId, $isReplicating);
             $this->addQuestionOptionsSkipLogicToReplicatedQuestion($question, $replicatedQuestionId, $isReplicating);
         }
-
     }
 
-    private function updateQuestionToReplicatedVisits($question)
+    private function updateQuestionToReplicatedVisits($question, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         $replicatedQuestions = Question::where('parent_id', 'like', $question->id)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedQuestions as $replicatedQuestion) {
             $this->updateReplicatedQuestion($question, $replicatedQuestion);
         }
     }
 
-    private function deleteQuestionToReplicatedVisits($question)
+    private function deleteQuestionToReplicatedVisits($question, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         $replicatedQuestions = Question::where('parent_id', 'like', $question->id)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedQuestions as $replicatedQuestion) {
             $replicatedQuestion->delete();
         }
     }
 
-    private function deleteQuestionAndItsRelatedValues($questionId)
+    private function deleteQuestionAndItsRelatedValues($questionId, $isReplicating = true)
     {
         $question = Question::find($questionId);
         $formField = FormFields::where('question_id', $questionId)->first();
         $questionDependency = QuestionDependency::where('question_id', $questionId)->first();
         $questionAdjudicationStatus = QuestionAdjudicationStatus::where('question_id', $questionId)->first();
 
-        $this->deleteQuestionFormFieldToReplicatedVisits($formField);
-        $this->deleteQuestionValidations($questionId);
-        $this->deleteQuestionDependenciesToReplicatedVisits($questionDependency);
-        $this->deleteQuestionAdjudicationStatusesToReplicatedVisits($questionAdjudicationStatus);
-        //$this->deleteQuestionAnnotationDescriptions($questionId);
-        $this->deleteQuestionSkipLogics($questionId);
-        $this->deleteQuestionOptionSkipLogics($questionId);
+        $this->deleteQuestionFormFieldToReplicatedVisits($formField, $isReplicating);
+        $this->deleteQuestionValidations($questionId, $isReplicating);
+        $this->deleteQuestionDependenciesToReplicatedVisits($questionDependency, $isReplicating);
+        $this->deleteQuestionAdjudicationStatusesToReplicatedVisits($questionAdjudicationStatus, $isReplicating);
+        //$this->deleteQuestionAnnotationDescriptions($questionId, $isReplicating);
+        $this->deleteQuestionSkipLogics($questionId, $isReplicating);
+        $this->deleteQuestionOptionSkipLogics($questionId, $isReplicating);
 
         if (null !== $formField) {
             $formField->delete();

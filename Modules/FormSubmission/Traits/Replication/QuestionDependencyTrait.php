@@ -19,6 +19,16 @@ trait QuestionDependencyTrait
                 $replicating_or_cloning = 'replicating';
             }
 
+            /*
+            Dependent on Question ID Update
+            */
+            $phaseId = StudyStructure::getPhaseIdByQuestionId($newQuestionId);
+            $questionIds = StudyStructure::getQuestionIdsInPhaseArray($phaseId);
+            $replicatedQuestion = Question::where('parent_id', 'like', $questionDependency->dep_on_question_id)
+                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
+                ->whereIn('id', $questionIds)
+                ->first();
+
             $newQuestionDependencyId = (string)Str::uuid();
             $newQuestionDependency = $questionDependency->replicate();
             $newQuestionDependency->id = $newQuestionDependencyId;
@@ -26,15 +36,6 @@ trait QuestionDependencyTrait
             $newQuestionDependency->parent_id = $questionDependency->id;
             $newQuestionDependency->replicating_or_cloning = $replicating_or_cloning;
 
-            /*
-            Dependent on Question ID Update
-            */
-            $phaseId = StudyStructure::getPhaseIdByQuestionId($newQuestionId);
-            $questionIds = StudyStructure::getQuestionIdsInPhaseArray($phaseId);
-            $replicatedQuestion = Question::where('parent_id', 'like', $questionDependency->dep_on_question_id)
-                ->where('replicating_or_cloning', 'like', 'replicating')
-                ->whereIn('id', $questionIds)
-                ->first();
             $newQuestionDependency->dep_on_question_id = $replicatedQuestion->id;
 
             $newQuestionDependency->save();
@@ -48,21 +49,31 @@ trait QuestionDependencyTrait
         $replicatedQuestionDependency->update();
     }
 
-    private function updateQuestionDependenciesToReplicatedVisits($questionDependency)
+    private function updateQuestionDependenciesToReplicatedVisits($questionDependency, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         $replicatedQuestionDependencies = QuestionDependency::where('parent_id', 'like', $questionDependency->id)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedQuestionDependencies as $replicatedQuestionDependency) {
             $this->updateReplicatedQuestionDependency($questionDependency, $replicatedQuestionDependency);
         }
     }
 
-    private function deleteQuestionDependenciesToReplicatedVisits($questionDependency)
+    private function deleteQuestionDependenciesToReplicatedVisits($questionDependency, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         if (null !== $questionDependency) {
             $replicatedQuestionDependencies = QuestionDependency::where('parent_id', 'like', $questionDependency->id)
-                ->where('replicating_or_cloning', 'like', 'replicating')
+                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
                 ->get();
             foreach ($replicatedQuestionDependencies as $replicatedQuestionDependency) {
                 $replicatedQuestionDependency->delete();

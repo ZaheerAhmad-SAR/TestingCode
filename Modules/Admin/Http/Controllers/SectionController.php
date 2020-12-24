@@ -105,7 +105,7 @@ class SectionController extends Controller
         // log event details
         $logEventDetails = eventDetails($section->id, 'Section', 'Update', $request->ip(), $oldSection);
 
-        $this->updateSectionToReplicatedVisits($section);
+        $this->updateSectionToReplicatedVisits($section, true);
         $data = [
             'success' => true,
             'message' => 'Recode updated successfully'
@@ -120,6 +120,6 @@ class SectionController extends Controller
     public function destroy($id)
     {
         $section = Section::find($id);
-        $this->deleteSection($section);
+        $this->deleteSection($section, true);
     }
 }

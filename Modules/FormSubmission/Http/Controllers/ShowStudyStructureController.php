@@ -17,7 +17,7 @@ class ShowStudyStructureController extends Controller
             $question = Question::find($id);
             $section = Section::find($question->section_id);
             $step = PhaseSteps::find($section->phase_steps_id);
-            $phase = StudyStructure::where('id', $step->phase_id)->withOutGlobalScopes()->first();
+            $phase = StudyStructure::find($step->phase_id);
 
             dd($question, $section, $step, $phase);
         }
@@ -25,20 +25,20 @@ class ShowStudyStructureController extends Controller
         if ($type == 'section') {
             $section = Section::find($id);
             $step = PhaseSteps::find($section->phase_steps_id);
-            $phase = StudyStructure::where('id', $step->phase_id)->withOutGlobalScopes()->first();
+            $phase = StudyStructure::find($step->phase_id);
 
             dd($section, $step, $phase);
         }
 
         if ($type == 'step') {
             $step = PhaseSteps::find($id);
-            $phase = StudyStructure::where('id', $step->phase_id)->withOutGlobalScopes()->first();
+            $phase = StudyStructure::find($step->phase_id);
 
             dd($step, $phase);
         }
 
         if ($type == 'phase') {
-            $phase = StudyStructure::where('id', $id)->withOutGlobalScopes()->first();
+            $phase = StudyStructure::find($id);
 
             dd($phase);
         }

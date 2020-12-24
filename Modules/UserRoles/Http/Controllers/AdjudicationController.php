@@ -314,7 +314,7 @@ class AdjudicationController extends Controller
         $getFilterSubjects = Subject::select('id', 'subject_id')
             ->get();
         //get phases
-        $getFilterPhases = StudyStructure::select('id', 'name')
+        $getFilterPhases = StudyStructure::select('id', 'name')->withOutRepeated()
             ->orderBy('position')
             ->get();
         // get sites
@@ -564,7 +564,7 @@ class AdjudicationController extends Controller
         $getFilterSubjects = Subject::select('id', 'subject_id')
             ->get();
         //get phases
-        $getFilterPhases = StudyStructure::select('id', 'name')
+        $getFilterPhases = StudyStructure::select('id', 'name')->withOutRepeated()
             ->orderBy('position')
             ->get();
         // get sites

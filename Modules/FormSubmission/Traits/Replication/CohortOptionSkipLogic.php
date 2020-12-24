@@ -28,7 +28,7 @@ trait CohortOptionSkipLogic
         Phase ID Update
         */
         $replicatedQuestion = Question::where('parent_id', 'like', $optionSkipLogic->option_question_id)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->whereIn('id', StudyStructure::getQuestionIdsInPhaseArray($replicatedPhaseId))
             ->first();
         $newOptionSkipLogic->option_question_id = $replicatedQuestion->id;
@@ -38,9 +38,14 @@ trait CohortOptionSkipLogic
 
     private function updateCohortOptionSkipLogicsToReplicatedVisits($phaseId, $isReplicating = true)
     {
-        $this->deleteCohortOptionSkipLogicsToReplicatedVisits($phaseId);
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
+        $this->deleteCohortOptionSkipLogicsToReplicatedVisits($phaseId, $isReplicating);
         $replicatedPhases = StudyStructure::where('parent_id', 'like', $phaseId)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedPhases as $replicatedPhase) {
             $optionSkipLogics = CohortSkipLogicOption::where('phase_id', 'like', $phaseId)->get();
@@ -50,19 +55,23 @@ trait CohortOptionSkipLogic
         }
     }
 
-    private function deleteCohortOptionSkipLogicsToReplicatedVisits($phaseId)
+    private function deleteCohortOptionSkipLogicsToReplicatedVisits($phaseId, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
         $replicatedPhases = StudyStructure::where('parent_id', 'like', $phaseId)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedPhases as $replicatedPhase) {
             CohortSkipLogicOption::where('phase_id', 'like', $replicatedPhase->id)->delete();
         }
     }
 
-    private function deleteCohortPhaseOptionSkipLogics($phaseId)
+    private function deleteCohortPhaseOptionSkipLogics($phaseId, $isReplicating = true)
     {
-        $this->deleteCohortOptionSkipLogicsToReplicatedVisits($phaseId);
+        $this->deleteCohortOptionSkipLogicsToReplicatedVisits($phaseId, $isReplicating);
         CohortSkipLogicOption::where('phase_id', $phaseId)->delete();
     }
 }

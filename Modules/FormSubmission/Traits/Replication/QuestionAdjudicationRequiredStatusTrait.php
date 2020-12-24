@@ -35,21 +35,30 @@ trait QuestionAdjudicationRequiredStatusTrait
         $replicatedQuestionAdjudicationStatus->update();
     }
 
-    private function updateQuestionAdjudicationStatusesToReplicatedVisits($questionAdjudicationStatus)
+    private function updateQuestionAdjudicationStatusesToReplicatedVisits($questionAdjudicationStatus, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
         $replicatedQuestionAdjudicationStatuses = QuestionAdjudicationStatus::where('parent_id', 'like', $questionAdjudicationStatus->id)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedQuestionAdjudicationStatuses as $replicatedQuestionAdjudicationStatus) {
             $this->updateReplicatedQuestionAdjudicationStatus($questionAdjudicationStatus, $replicatedQuestionAdjudicationStatus);
         }
     }
 
-    private function deleteQuestionAdjudicationStatusesToReplicatedVisits($questionAdjudicationStatus)
+    private function deleteQuestionAdjudicationStatusesToReplicatedVisits($questionAdjudicationStatus, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         if (null !== $questionAdjudicationStatus) {
             $replicatedQuestionAdjudicationStatuses = QuestionAdjudicationStatus::where('parent_id', 'like', $questionAdjudicationStatus->id)
-                ->where('replicating_or_cloning', 'like', 'replicating')
+                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
                 ->get();
             foreach ($replicatedQuestionAdjudicationStatuses as $replicatedQuestionAdjudicationStatus) {
                 $replicatedQuestionAdjudicationStatus->delete();
