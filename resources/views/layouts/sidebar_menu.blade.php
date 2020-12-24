@@ -412,12 +412,13 @@
             @endif
 
 
+
             <li class="dropdown">
                 <ul>
                     <li class="dropdown"><a href="#"><i class="fas fa-bug"></i>Bugs Reporting</a>
                         <ul class="sub-menu">
                             <li>
-                                <a href="{{route('bug-reporting.index')}}">
+                                <a  href="{{route('bug-reporting.index')}}">
                                     List
                                 </a>
                             </li>
@@ -425,7 +426,6 @@
                     </li>
                 </ul>
             </li>
-
 
              <li class="dropdown">
                 <ul>
@@ -516,13 +516,110 @@
         </ul>
         <!-- END: Menu-->
 
+    <div class="btn-group dropup" style="margin-left: 15px;">
+     <button type="button" class="btn btn-primary dropdown-toggle position-fixed" data-toggle="dropdown">  <i class="icon-question"></i> Support</button>
+        <div class="dropdown-menu">
+            <a href="#" class="dropdown-item"  data-toggle="modal" data-target="#reportabugmodel"> <i class="fa fa-plus"></i> Report a Bug</a>
+            <a href="#" class="dropdown-item"><i class="fa fa-plus"></i> Another action</a>
+            <div class="dropdown-divider"></div>
+            <a href="#" class="dropdown-item"><i class="fa fa-plus"></i> Separated link</a>
+        </div>
+    </div>
+
+
     </div>
 
 </div>
+    <!-- Modal To add Option Groups -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="reportabugmodel">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header">
+                    <p class="modal-title">Report a Bug</p>
+                </div>
+                <form name="bugReportingForm" id="bugReportingForm">
+                    <div class="modal-body">
+                            <div class="tab-content clearfix">
 
-    
+                                <div class="form-group row">
+                                    <div class="col-md-3">Short Title</div>
+                                    <div class="form-group col-md-9">
+                                        <input type="text" name="shortTitle" id="shortTitle" class="form-control">
+                                    </div>
+                                </div>
 
+                                <div class="form-group row">
+                                    <div class="col-md-3">Enter Your Message</div>
+                                    <div class="form-group col-md-9">
+                                        <textarea class="form-control" name="yourMessage" id="yourMessage"></textarea>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <div class="col-md-3">Attach a File</div>
+                                    <div class="form-group col-md-9">
+                                        <input type="file" class="form-control" id="attachFile" name="attachFile">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label for="Name" class="col-md-3 col-form-label">Severity/Priority</label>
+                                    <div class="col-md-9">
+                                        <label class="radio-inline  col-form-label"><input type="radio" id="severity" name="severity" value="low"> Low</label> &nbsp;
+                                        <label class="radio-inline  col-form-label"><input type="radio" id="severity" name="severity" value="medium"> Medium</label>
+                                        <label class="radio-inline  col-form-label"><input type="radio" id="severity" name="severity" value="high"> High</label>
+                                    </div>
+                                </div>
+                            </div>
+                        <div class="modal-footer">
+                            <button id="bug-close-btn" class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Send</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
+    <!-- End -->
+ <script type="text/javascript">
 
-</div>
 
+        $("#bugReportingForm").on('submit', function(e) {
+            e.preventDefault();
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            var shortTitle  = $("#shortTitle").val();
+            var yourMessage = $("#yourMessage").val();
+            var query_url   =  document.URL;
+            var severity    = $("#severity").val();
+            var formData = new FormData();
+            formData.append('shortTitle', shortTitle);
+            formData.append('yourMessage', yourMessage);
+            formData.append('query_url', query_url);
+            formData.append('severity', severity);
+
+            // Attach file
+            formData.append("attachFile", $("#attachFile")[0].files[0]);
+
+            $.ajax({
+                url: "{{route('bug-reporting.store')}}",
+                type: "POST",
+                data: formData,
+                dataType: 'json',
+                contentType: false,
+                cache: false,
+                processData:false,
+                success: function (results) {
+                    console.log(results);
+                    $('#bugReportingForm').trigger("reset");
+                    location.reload();
+                },
+                error: function (results) {
+                    console.log('Error:', results);
+                }
+            });
+        });
+    </script>
