@@ -6,21 +6,25 @@
                 <div class="modal-header">
                     <p class="modal-title"></p>
                 </div>
-                <form action="{{ route('forms.addQuestions') }}" enctype="multipart/form-data" method="POST"
+                <form action="" enctype="multipart/form-data" method="POST"
                     id="form_certify">
                     @csrf
-                    <nav>
-                        <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
-                            <a class="nav-item nav-link active" id="nav-Basic-tab" data-toggle="tab" href="#nav-Basic"
-                                role="tab" aria-controls="nav-home" aria-selected="true">Basic</a>
-                            <a class="nav-item nav-link" id="nav-Dependencies-tab" data-toggle="tab"
-                                href="#nav-Dependencies" role="tab" aria-controls="nav-contact"
-                                aria-selected="false">Dependencies</a>
-                        </div>
-                    </nav>
+                    
                     <div class="modal-body">
-                        <div id="exTab1">
-                            <div class="tab-content clearfix">
+                        <nav>
+                            <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
+                                <a class="nav-item nav-link active" id="nav-Basic-tab-cert" data-toggle="tab" href="#nav-Basic-cert"
+                                    role="tab" aria-controls="nav-home" aria-selected="true">Basic</a>
+                                <a class="nav-item nav-link" id="nav-Dependencies-tab-cert" data-toggle="tab"
+                                    href="#nav-Dependencies-cert" role="tab" aria-controls="nav-contact"
+                                    aria-selected="false">Dependencies</a>
+                            </div>
+                        </nav>
+                        <div class="tab-content clearfix">
+                            <div class="tab-pane fade show active" id="nav-Basic-cert" role="tabpanel" aria-labelledby="nav-Basic-tab-cert">
+                                <div class="py-3 border-bottom border-primary">
+                                <span class="text-muted font-w-600">Define Basic Attribute of Question</span><br>
+                                </div>
                                 <div class="form-group row" style="margin-top: 10px;">
                                     <input type="hidden" name="id" id="question_id_cert" value="">
                                     <input type="hidden" name="field_id" id="form_field_id_cert" value="">
@@ -38,48 +42,95 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="C-DISC" class="col-sm-2 col-form-label">C-DISC </label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control" name="c_disk" id="c_disk_cert" value="">
-                                    </div>
-                                    <label for="label" class="col-sm-2 col-form-label"> Label </label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control" name="question_text" id="question_text_cert" value="">
-                                    </div>
+                                <label for="C-DISC" class="col-sm-2 col-form-label">C-DISC </label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" name="c_disk" id="c_disk_cert" value="">
+                                </div>
+                                <label for="label" class="col-sm-2 col-form-label"> Label </label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control" name="question_text" id="question_text_cert" value="">
+                                </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for='variable' class="col-sm-2 col-form-label">Variable name </label>
-                                    <div class="col-sm-4">
-                                        <input type="text" class="form-control variable_name variable_name_ques" name="variable_name" id="variable_name_cert" value="" onchange="check_if_name_exists(this)" required>
-                                    </div>
-                                    <label for="list" class="col-sm-2 col-form-label"> List type </label>
-                                    <div class="col-sm-4">
-                                        <select class="form-control" name="certification_type" id="certification_type">
-                                            <option value="">---Select---</option>
-                                            <option value="photographers">Photographer List</option>
-                                            <option value="devices">Device List</option>
-                                        </select>
-                                    </div>
+                                <label for='variable' class="col-sm-2 col-form-label">Variable name </label>
+                                <div class="col-sm-4">
+                                    <input type="text" class="form-control variable_name variable_name_ques" name="variable_name" id="variable_name_cert" value="" onchange="check_if_name_exists(this)" required>
+                                </div>
+                                <label for="list" class="col-sm-2 col-form-label"> List type </label>
+                                <div class="col-sm-4">
+                                    <select class="form-control" name="certification_type" id="certification_type">
+                                        <option value="">---Select---</option>
+                                        <option value="photographers">Photographer List</option>
+                                        <option value="devices">Device List</option>
+                                    </select>
+                                </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label for="Required" class="col-sm-2 col-form-label">Required </label>
-                                    <div class="col-sm-2">
-                                        <input type="radio" name="is_required" id="is_required_no_cert" value="no"> No
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <input type="radio" name="is_required" value="yes" id="is_required_yes_cert" checked> Yes
-                                    </div>
-                                    <div class="col-sm-2">Exports: </div>
-                                    <div class="col-sm-2">
-                                        <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_no_cert" value="no"> No
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <input type="radio" name="is_exportable_to_xls" value="yes" id="is_exportable_to_xls_yes_cert" checked> Yes
-                                    </div>
-                                    <div class="col-sm-2">Show to Grader: </div>
+                                <label for="Required" class="col-sm-2 col-form-label">Required </label>
                                 <div class="col-sm-2">
-                                    <input type="radio" name="is_show_to_grader" id="is_show_to_grader_no_cert" value="no"> No
+                                    <input type="radio" name="is_required" id="is_required_no_cert" value="no"> No
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <input type="radio" name="is_show_to_grader" id="is_show_to_grader_yes_cert" value="yes" checked> Yes
+                                    <input type="radio" name="is_required" value="yes" id="is_required_yes_cert" checked> Yes
                                 </div>
+                                <div class="col-sm-2">Exports: </div>
+                                <div class="col-sm-2">
+                                    <input type="radio" name="is_exportable_to_xls" id="is_exportable_to_xls_no_cert" value="no"> No
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <input type="radio" name="is_exportable_to_xls" value="yes" id="is_exportable_to_xls_yes_cert" checked> Yes
+                                </div>
+                                <div class="col-sm-2">Show to Grader: </div>
+                                <div class="col-sm-2">
+                                <input type="radio" name="is_show_to_grader" id="is_show_to_grader_no_cert" value="no"> No
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="radio" name="is_show_to_grader" id="is_show_to_grader_yes_cert" value="yes" checked> Yes
+                                </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="nav-Dependencies-cert" role="tabpanel"
+                                aria-labelledby="nav-Dependencies-tab-cert">
+                                <div class="py-3 border-bottom border-primary">
+                                    <span class="text-muted font-w-600">Define If Dependencies on any Question</span><br>
+                                </div>
+                                <div class="form-group row" style="margin-top: 10px;">
+                                    <div class="col-sm-2">Field is dependent: </div>
+                                    <div class="col-sm-10">
+                                        <input type="hidden" name="dependency_id" id="dependency_id">
+                                        <input type="radio" name="q_d_status" class="field_dependent"
+                                            id="field_dependent_no_cert" value="no" checked> No
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" name="q_d_status" class="field_dependent"
+                                            id="field_dependent_yes_cert" value="yes"> Yes
+                                    </div>
+                                </div>
+                                <div class="append_if_yes" style="display: none;">
+                                    <div class="form-group row">
+                                        <div class="col-sm-2"> Questions:</div>
+                                        <div class="col-sm-4">
+                                            <select name="dep_on_question_id" class="form-control select_ques_for_dep"
+                                                id="select_ques_for_dep_cert">
+                                                <option value="">---Select Question---</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2"> field operator:</div>
+                                        <div class="col-sm-4">
+                                            <select name="dependency_opertaor" id="dependency_operator_cert" class="form-control">
+                                                <option value="">---Select---</option>
+                                                <option value="==">Equal</option>
+                                                <option value=">=">Greater OR Equal</option>
+                                                <option value="<=">Less OR Equal</option>
+                                                <option value="!=">Not Equal</option>
+                                                <option value=">">Greater Than</option>
+                                                <option value="<">Less</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <div class="col-sm-2">Value:</div>
+                                        <div class="col-sm-4">
+                                            <input type="text" name="dependency_custom_value" id="dependency_custom_value_cert"
+                                                class="form-control">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -111,6 +162,20 @@
             showStepDeActivationAlert();
         }
     })
+    $('#section_id_cert').on('change', function() {
+        $('.field_dependent').trigger('change');
+    })
+    $('.field_dependent').on('change', function() {
+        var value = $(this).val();
+        var sec_id = $('#section_id_cert').val();
+        var ques_class = $('.select_ques_for_dep');
+        if (value == 'yes') {
+            $('.append_if_yes').css('display', 'block');
+            get_question_section_id(sec_id, ques_class);
+        } else {
+            $('.append_if_yes').css('display', 'none');
+        }
+    });
     $('body').on('click', '.edit_certify', function() {
 
                 $('#form_certify').trigger('reset');
@@ -136,6 +201,10 @@
                 make_decision = row.find('input.make_decision').val()
                 certification_type = row.find('input.certification_type').val()
                 calculate_with_costum_val = row.find('input.calculate_with_costum_val').val()
+                dependency_status = row.find('input.dependency_status').val()
+                dependency_question = row.find('input.dependency_question').val()
+                dependency_operator = row.find('input.dependency_operator').val()
+                dependency_custom_value = row.find('input.dependency_custom_value').val()
                 step_id = $('#steps').val();
                 $('#question_id_cert').val(ques_id);
                 $('#question_sort_cert').val(question_sort);
@@ -166,6 +235,18 @@
                 } else {
                     $('#is_show_to_grader_no_cert').prop('checked', true);
                 }
+                if (dependency_status == 'yes') {
+                    $('#field_dependent_yes_cert').prop('checked', true);
+                    $('.field_dependent').trigger('change');
+                } else {
+                    $('#field_dependent_no_cert').prop('checked', true);
+                    $('.append_if_yes').css('display', 'none');
+                }
+                $('#dependency_operator_cert').val(dependency_operator);
+                $('#dependency_custom_value_cert').val(dependency_custom_value);
+                tId = setTimeout(function() {
+                    $('#select_ques_for_dep_cert').val(dependency_question);
+                }, 4000);      
                 tId = setTimeout(function() {
                  $('#first_question_id_cert').val(first_question_id);
                  $('#second_question_id_cert').val(second_question_id);
