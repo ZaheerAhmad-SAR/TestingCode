@@ -28,6 +28,7 @@ class CloneStepsController extends Controller
     use ReplicatePhaseStructure;
     public function clone_phase(request $request)
     {
+        $isReplicating = false;
         $phase = StudyStructure::where('id', '=', $request->phase_id)->first();
         $id    = (string)Str::uuid();
         $phase = StudyStructure::create([
@@ -42,8 +43,31 @@ class CloneStepsController extends Controller
         $new_phase = StudyStructure::find($id);
         $newPhaseId = $new_phase->id;
         $all_steps = PhaseSteps::where('phase_id', $request->phase_id)->get();
+        $newQuestionIdsArray = [];
         foreach ($all_steps as $step) {
-            $this->steps_data($step->step_id, $newPhaseId);
+            $newQuestionIdsArray = array_merge($newQuestionIdsArray, $this->steps_data($step->step_id, $newPhaseId));
+        }
+
+        foreach ($newQuestionIdsArray as $questionId => $newQuestionId) {
+            $question = Question::find($questionId);
+
+            /******************************* */
+            /* Replicate Question Dependency */
+            /******************************* */
+
+            $this->addReplicatedQuestionDependency($question, $newQuestionId, $isReplicating);
+
+            /******************************* */
+            /* Replicate Question Skip Logic */
+            /******************************* */
+
+            $this->updateSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
+
+            /******************************* */
+            /* Replicate Question Option Skip Logic */
+            /******************************* */
+
+            $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
         }
         /******************************* */
         /*** Replicate Cohort Skip Logic */
@@ -59,16 +83,42 @@ class CloneStepsController extends Controller
     }
     public function clone_steps(request $request)
     {
+        $isReplicating = false;
+        $newQuestionIdsArray = [];
         if (isset($request->phase) && count($request->phase) > 0) {
             ///// Clone to phases
             for ($i = 0; $i < count($request->phase); $i++) {
-                $this->steps_data($request->step_id, $request->phase[$i]);
+                $newQuestionIdsArray = array_merge($newQuestionIdsArray, $this->steps_data($request->step_id, $request->phase[$i]));
+            }
+            foreach ($newQuestionIdsArray as $questionId => $newQuestionId) {
+                $question = Question::find($questionId);
+
+                /******************************* */
+                /* Replicate Question Dependency */
+                /******************************* */
+
+                $this->addReplicatedQuestionDependency($question, $newQuestionId, $isReplicating);
+
+                /******************************* */
+                /* Replicate Question Skip Logic */
+                /******************************* */
+
+                $this->updateSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
+
+                /******************************* */
+                /* Replicate Question Option Skip Logic */
+                /******************************* */
+
+                $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
             }
             return redirect()->route('study.index')->with('message', 'Cloned Successfully!');
         }
     }
     public function steps_data($step_id, $new_phase_id)
     {
+        $newQuestionIdsArray = [];
+        $isReplicating = false;
+
         $step = PhaseSteps::where('step_id', '=', $step_id)->first();
         ///// Clone to phases
         $id    = (string)Str::uuid();
@@ -86,7 +136,7 @@ class CloneStepsController extends Controller
             'form_version_num' =>  $step->form_version_num
         ]);
         foreach ($step->sections as $section) {
-            $isReplicating = false;
+
             $newSectionId = $this->addReplicatedSection($section, $id, $isReplicating);
 
             /******************************* */
@@ -94,7 +144,7 @@ class CloneStepsController extends Controller
             /******************************* */
             foreach ($section->questions as $question) {
 
-                $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId, $isReplicating);
+                $newQuestionIdsArray[$question->id] = $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId, $isReplicating);
 
                 /******************************* */
                 /* Replicate Question Form Field */
@@ -109,29 +159,12 @@ class CloneStepsController extends Controller
                 $this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId, $isReplicating);
 
                 /******************************* */
-                /* Replicate Question Dependency */
-                /******************************* */
-
-                $this->addReplicatedQuestionDependency($question, $newQuestionId, $isReplicating);
-
-                /******************************* */
                 /*Replicate Question Adjudication*/
                 /******************************* */
 
                 $this->addReplicatedQuestionAdjudicationStatus($question, $newQuestionId, $isReplicating);
-
-                /******************************* */
-                /* Replicate Question Skip Logic */
-                /******************************* */
-
-                $this->updateSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
-
-                /******************************* */
-                /* Replicate Question Option Skip Logic */
-                /******************************* */
-
-                $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
             }
         }
+        return $newQuestionIdsArray;
     }
 }

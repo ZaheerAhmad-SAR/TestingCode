@@ -4,6 +4,7 @@ namespace Modules\FormSubmission\Traits\Replication;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
+use Modules\Admin\Entities\Question;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Scopes\StudyStructureWithoutRepeatedScope;
 
@@ -76,7 +77,7 @@ trait ReplicatePhaseStructure
                 /******************************* */
                 foreach ($section->questions as $question) {
 
-                    $newQuestionIdsArray[] = $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId, $isReplicating);
+                    $newQuestionIdsArray[$question->id] = $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId, $isReplicating);
 
                     /******************************* */
                     /* Replicate Question Form Field */
@@ -99,7 +100,8 @@ trait ReplicatePhaseStructure
             }
         }
 
-        foreach ($newQuestionIdsArray as $newQuestionId) {
+        foreach ($newQuestionIdsArray as $questionId => $newQuestionId) {
+            $question = Question::find($questionId);
 
             /******************************* */
             /* Replicate Question Dependency */

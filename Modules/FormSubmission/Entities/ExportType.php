@@ -34,7 +34,7 @@ class ExportType extends Model
 
     public static function getPhaseNames($phaseIdsString)
     {
-        $phaseIdsArray = explode(',', $phaseIdsString);
+        $phaseIdsArray = array_filter(explode(',', $phaseIdsString));
         $phasesNamesArray = StudyStructure::whereIn('id', $phaseIdsArray)->pluck('name')->toArray();
         return implode(', ', $phasesNamesArray);
     }

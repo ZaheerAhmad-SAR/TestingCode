@@ -28,8 +28,8 @@
             {{-- {{dd(request('id'))}} --}}
             @php
                 $check_value = '';
-                $options_value = explode(',', $options->optionsGroup->option_value);
-                $options_name = explode(',', $options->optionsGroup->option_name);
+                $options_value = array_filter(explode(',', $options->optionsGroup->option_value);
+                $options_name = array_filter(explode(',', $options->optionsGroup->option_name);
             @endphp
             <input type="hidden" name="question_id" value="{{request('id')}}">
             @foreach($options_name as $key => $value)

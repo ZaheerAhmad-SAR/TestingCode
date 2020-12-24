@@ -338,7 +338,7 @@ class StudyController extends Controller
 
             $site_study = StudySite::where('study_id', '=', $id)
                 ->join('sites', 'sites.id', '=', 'site_study.site_id')
-                ->select('sites.site_name', 'sites.id','sites.site_code')
+                ->select('sites.site_name', 'sites.id', 'sites.site_code')
                 ->get();
             $diseaseCohort = DiseaseCohort::where('study_id', '=', $id)->get();
             return view('admin::studies.show', compact('study', 'studies', 'subjects', 'currentStudy', 'site_study', 'diseaseCohort'));
@@ -588,7 +588,7 @@ class StudyController extends Controller
                             'is_out_of_window'  => $subjectPhase->is_out_of_window,
                         ]);
                     }
-
+                    $newQuestionIdsArray = [];
                     foreach ($phase->steps as $step) {
                         $isReplicating = false;
                         $newStepId = $this->addReplicatedStep($step, $replica_phase_id->id, $isReplicating);
@@ -605,7 +605,7 @@ class StudyController extends Controller
                             /******************************* */
                             foreach ($section->questions as $question) {
 
-                                $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId, $isReplicating);
+                                $newQuestionIdsArray[$question->id] = $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId, $isReplicating);
 
                                 /******************************* */
                                 /* Replicate Question Form Field */
@@ -620,30 +620,34 @@ class StudyController extends Controller
                                 $this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId, $isReplicating);
 
                                 /******************************* */
-                                /* Replicate Question Dependency */
-                                /******************************* */
-
-                                $this->addReplicatedQuestionDependency($question, $newQuestionId, $isReplicating);
-
-                                /******************************* */
                                 /*Replicate Question Adjudication*/
                                 /******************************* */
 
                                 $this->addReplicatedQuestionAdjudicationStatus($question, $newQuestionId, $isReplicating);
-
-                                /******************************* */
-                                /* Replicate Question Skip Logic */
-                                /******************************* */
-
-                                $this->updateSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
-
-                                /******************************* */
-                                /* Replicate Question Option Skip Logic */
-                                /******************************* */
-
-                                $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
                             }
                         }
+                    }
+
+                    foreach ($newQuestionIdsArray as $questionId => $newQuestionId) {
+                        $question = Question::find($questionId);
+
+                        /******************************* */
+                        /* Replicate Question Dependency */
+                        /******************************* */
+
+                        $this->addReplicatedQuestionDependency($question, $newQuestionId, $isReplicating);
+
+                        /******************************* */
+                        /* Replicate Question Skip Logic */
+                        /******************************* */
+
+                        $this->updateSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
+
+                        /******************************* */
+                        /* Replicate Question Option Skip Logic */
+                        /******************************* */
+
+                        $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
                     }
                     /******************************* */
                     /*** Replicate Cohort Skip Logic */
@@ -1068,7 +1072,7 @@ class StudyController extends Controller
                                 'form_type_id'  => $subjectPhase->form_type_id,
                             ]);
                         }
-
+                        $newQuestionIdsArray = [];
                         foreach ($phase->steps as $step) {
                             $isReplicating = false;
                             $newStepId = $this->addReplicatedStep($step, $replica_phase_id->id, $isReplicating);
@@ -1085,7 +1089,7 @@ class StudyController extends Controller
                                 /******************************* */
                                 foreach ($section->questions as $question) {
 
-                                    $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId, $isReplicating);
+                                    $newQuestionIdsArray[$question->id] = $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId, $isReplicating);
 
                                     /******************************* */
                                     /* Replicate Question Form Field */
@@ -1100,30 +1104,33 @@ class StudyController extends Controller
                                     $this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId, $isReplicating);
 
                                     /******************************* */
-                                    /* Replicate Question Dependency */
-                                    /******************************* */
-
-                                    $this->addReplicatedQuestionDependency($question, $newQuestionId, $isReplicating);
-
-                                    /******************************* */
                                     /*Replicate Question Adjudication*/
                                     /******************************* */
 
                                     $this->addReplicatedQuestionAdjudicationStatus($question, $newQuestionId, $isReplicating);
-
-                                    /******************************* */
-                                    /* Replicate Question Skip Logic */
-                                    /******************************* */
-
-                                    $this->updateSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
-
-                                    /******************************* */
-                                    /* Replicate Question Option Skip Logic */
-                                    /******************************* */
-
-                                    $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
                                 }
                             }
+                        }
+                        foreach ($newQuestionIdsArray as $questionId => $newQuestionId) {
+                            $question = Question::find($questionId);
+
+                            /******************************* */
+                            /* Replicate Question Dependency */
+                            /******************************* */
+
+                            $this->addReplicatedQuestionDependency($question, $newQuestionId, $isReplicating);
+
+                            /******************************* */
+                            /* Replicate Question Skip Logic */
+                            /******************************* */
+
+                            $this->updateSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
+
+                            /******************************* */
+                            /* Replicate Question Option Skip Logic */
+                            /******************************* */
+
+                            $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
                         }
                         /******************************* */
                         /*** Replicate Cohort Skip Logic */
