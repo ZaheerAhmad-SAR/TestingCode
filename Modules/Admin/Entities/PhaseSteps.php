@@ -23,7 +23,7 @@ class PhaseSteps extends Model
 
     protected $fillable = [
         'step_id', 'phase_id', 'step_position', 'form_type', 'form_type_id', 'modility_id', 'step_name',
-        'step_description', 'graders_number', 'q_c', 'eligibility', 'parent_id', 'deleted_at'
+        'step_description', 'graders_number', 'q_c', 'eligibility', 'parent_id', 'replicating_or_cloning', 'deleted_at'
     ];
     // protected $key = 'string';
     protected $table = 'phase_steps';

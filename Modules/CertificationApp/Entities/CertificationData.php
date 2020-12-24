@@ -11,7 +11,7 @@ class CertificationData extends Model
 {
     //use SoftDeletes;
     protected $fillable = [];
-    
+
     protected $table = 'certification_data';
     public $timestamps = true;
 
@@ -20,5 +20,4 @@ class CertificationData extends Model
         //return $this->hasOne(User::class, 'user_id', 'id');
         return $this->belongsTo(User::class, 'certification_officer_id', 'id');
     }
-
 }

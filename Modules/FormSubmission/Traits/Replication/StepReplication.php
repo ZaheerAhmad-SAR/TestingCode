@@ -17,13 +17,16 @@ trait StepReplication
 
     private function addReplicatedStep($step, $newPhaseId, $isReplicating = true)
     {
-        $newStepId = Str::uuid();
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+        $newStepId = (string)Str::uuid();
         $newStep = $step->replicate();
         $newStep->step_id = $newStepId;
         $newStep->phase_id = $newPhaseId;
-        if ($isReplicating === true) {
-            $newStep->parent_id = $step->step_id;
-        }
+        $newStep->parent_id = $step->step_id;
+        $newStep->replicating_or_cloning = $replicating_or_cloning;
         $newStep->save();
         $this->addFormVersionToReplicatedStep($step->step_id, $newStepId);
         return $newStepId;
@@ -31,14 +34,16 @@ trait StepReplication
 
     private function updateReplicatedStep($step, $replicatedStep)
     {
-        $stepAttributesArray = Arr::except($step->attributesToArray(), ['step_id', 'phase_id', 'parent_id']);
+        $stepAttributesArray = Arr::except($step->attributesToArray(), ['step_id', 'phase_id', 'parent_id', 'replicating_or_cloning']);
         $replicatedStep->fill($stepAttributesArray);
         $replicatedStep->update();
     }
 
     private function addStepToReplicatedVisits($newStep, $isReplicating = true)
     {
-        $replicatedPhases = StudyStructure::where('parent_id', 'like', $newStep->phase_id)->withoutGlobalScopes()->get();
+        $replicatedPhases = StudyStructure::where('parent_id', 'like', $newStep->phase_id)
+            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->withoutGlobalScopes()->get();
         foreach ($replicatedPhases as $phase) {
             $this->addReplicatedStep($newStep, $phase->id, $isReplicating);
         }
@@ -55,7 +60,7 @@ trait StepReplication
     private function addReplicatedStepFormVersion($stepFormVersion, $replicatedStepId)
     {
 
-        $newStepFormVersionId = Str::uuid();
+        $newStepFormVersionId = (string)Str::uuid();
         $newStepFormVersion = $stepFormVersion->replicate();
         $newStepFormVersion->id = $newStepFormVersionId;
         $newStepFormVersion->step_id = $replicatedStepId;
@@ -64,7 +69,9 @@ trait StepReplication
 
     private function updateStepToReplicatedVisits($step)
     {
-        $replicatedSteps = PhaseSteps::where('parent_id', 'like', $step->step_id)->get();
+        $replicatedSteps = PhaseSteps::where('parent_id', 'like', $step->step_id)
+            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->get();
         foreach ($replicatedSteps as $replicatedStep) {
             $this->updateReplicatedStep($step, $replicatedStep);
         }
@@ -72,7 +79,9 @@ trait StepReplication
 
     private function deleteStepToReplicatedVisits($step)
     {
-        $replicatedSteps = PhaseSteps::where('parent_id', 'like', $step->step_id)->get();
+        $replicatedSteps = PhaseSteps::where('parent_id', 'like', $step->step_id)
+            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->get();
         foreach ($replicatedSteps as $replicatedStep) {
             FormStatus::where('phase_steps_id', $replicatedStep->step_id)->delete();
             AdjudicationFormStatus::where('phase_steps_id', $replicatedStep->step_id)->delete();
@@ -93,7 +102,9 @@ trait StepReplication
 
     private function activateStepToReplicatedVisits($step, $default_data_option)
     {
-        $replicatedSteps = PhaseSteps::where('parent_id', 'like', $step->step_id)->get();
+        $replicatedSteps = PhaseSteps::where('parent_id', 'like', $step->step_id)
+            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->get();
         foreach ($replicatedSteps as $replicatedStep) {
             $this->activateThisStep($replicatedStep, $default_data_option);
         }
@@ -102,7 +113,9 @@ trait StepReplication
 
     private function deActivateStepToReplicatedVisits($step)
     {
-        $replicatedSteps = PhaseSteps::where('parent_id', 'like', $step->step_id)->get();
+        $replicatedSteps = PhaseSteps::where('parent_id', 'like', $step->step_id)
+            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->get();
         foreach ($replicatedSteps as $replicatedStep) {
             $this->deActivateThisStep($replicatedStep);
         }
@@ -125,7 +138,9 @@ trait StepReplication
 
     private function putDefaultAnswersInNewQuestionsOfAllSteps($step)
     {
-        $replicatedSteps = PhaseSteps::where('parent_id', 'like', $step->step_id)->get();
+        $replicatedSteps = PhaseSteps::where('parent_id', 'like', $step->step_id)
+            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->get();
         foreach ($replicatedSteps as $replicatedStep) {
             $this->putDefaultAnswersInNewQuestions($replicatedStep);
         }
@@ -159,7 +174,7 @@ trait StepReplication
                             //-------------------------------------
 
                             $defaultAnswerArray = [
-                                'id' => Str::uuid(),
+                                'id' => (string)Str::uuid(),
                                 'study_id' => session('current_study'),
                                 'form_filled_by_user_id' => $previousAnswer->form_filled_by_user_id,
                                 'subject_id' => $previousAnswer->subject_id,

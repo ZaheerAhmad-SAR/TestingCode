@@ -24,7 +24,7 @@ class RoleTableSeeder extends Seeder
         $check_role = Role::where('name', 'like', 'Super Admin')->first();
         if (null === $check_role) {
             $check_role = Role::create([
-                'id' => Str::uuid(),
+                'id' => (string)Str::uuid(),
                 'name' => 'Super Admin',
                 'description' => 'Super Admin',
                 'role_type' => 'super_admin',
@@ -34,7 +34,7 @@ class RoleTableSeeder extends Seeder
         $check_role = Role::where('name', 'like', 'Basic')->first();
         if (null === $check_role) {
             Role::create([
-                'id' => Str::uuid(),
+                'id' => (string)Str::uuid(),
                 'name' => 'Basic',
                 'description' => 'Basic',
                 'role_type' => 'system_role',

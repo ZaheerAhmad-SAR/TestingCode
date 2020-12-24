@@ -438,10 +438,23 @@
                                 </a>
                             </li>
 
+                            <li class="@if(is_active('certified-device')) {{ ' active' }} @endif">
+                                <a href="{{route('certified-device')}}">
+                                    <i class="fas fa-list"></i> Certified Devices
+                                </a>
+                            </li>
+
+
 
                             <li  class="@if(is_active('certification-photographer')) {{ ' active' }} @endif">
                                 <a href="{{route('certification-photographer.index')}}">
-                                    <i class="fas fa-list"></i> Certification Photo
+                                    <i class="fas fa-list"></i> Certification Photographers
+                                </a>
+                            </li>
+
+                            <li  class="@if(is_active('certified-photographer')) {{ ' active' }} @endif">
+                                <a href="{{route('certified-photographer')}}">
+                                    <i class="fas fa-list"></i> Certified Photographers
                                 </a>
                             </li>
 
@@ -499,11 +512,60 @@
                 @endif
 
             @endif
+
         </ul>
         <!-- END: Menu-->
-        <ol class="breadcrumb bg-transparent align-self-center m-0 p-0 ml-auto">
-            <li class="breadcrumb-item"><a href="#">Application</a></li>
-            <li class="breadcrumb-item active">Calendar</li>
-        </ol>
+        <ul style="list-style:none; padding-left: 0px; margin-left: 10px;" class="myDIV">
+             <li >
+                <button type="button" class="btn btn-primary btn-floating ">
+  <i class="fas fa-question" > &nbsp Support</i>
+</button>
+            </li>
+        </ul>
+<div class="hide" style="background-color: #000000; height: 400px; margin-left: 100px; margin-bottom: 500px; vertical-align:top;"><ul >
+                                    <li class="">
+                                        <a href="http://localhost/ocap_new/users">
+                                            System Users
+                                        </a>
+                                    </li>
+                                     <li class="">
+                                        <a href="http://localhost/ocap_new/roles">
+                                            <i class="fal fa-user-tag"></i>
+                                            Roles
+                                        </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="http://localhost/ocap_new/sites">
+                                            <i class="fal fa-location-arrow"></i>
+                                            Sites
+                                        </a>
+                                    </li>
+                                    <li class="">
+                                        <a href="http://localhost/ocap_new/devices">
+                                            <i class="fal fa-calculator"></i>
+                                            Devices
+                                        </a>
+                                    </li>
+                                 <li class=" ">
+                                        <a href="http://localhost/ocap_new/modalities">
+                                            <i class="fal fa-mobile"></i>
+                                            Modalities
+                                        </a>
+                                    </li>
+
+                            </ul></div>
     </div>
+
 </div>
+<style>
+.hide {
+  display: none;
+}
+
+.myDIV:hover + .hide {
+  display: block;
+  color: red;
+  margin-left: 70px;
+  padding-bottom: 70px;
+}
+</style>

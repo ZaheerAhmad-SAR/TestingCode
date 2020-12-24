@@ -117,7 +117,7 @@ class StudySiteController extends Controller
             {
                 $row = StudySite::where('site_id',$key)->delete();
                 $result = StudySite::create([
-                    'id'    => Str::uuid(),
+                    'id'    => (string)Str::uuid(),
                     'site_id' =>$key,
                     'study_id'=>$current_study,
                 ]);
@@ -201,7 +201,7 @@ class StudySiteController extends Controller
     public function updatePrimaryInvestigator(Request $request)
     {
         $pi_id_value = $_POST['pi_id_value'];
-        $id = Str::uuid();
+        $id = (string)Str::uuid();
         $table_site_study_id   = $_POST['table_site_study_id'];
         $data      = array('primaryInvestigator_id' => $pi_id_value, 'id'   => $id);
         StudySite::where('id',$table_site_study_id)->update($data);
@@ -216,7 +216,7 @@ class StudySiteController extends Controller
         {
             $row = SiteStudyCoordinator::where('coordinator_id',$coordinator)->delete();
             $result = SiteStudyCoordinator::create([
-                'id'    => Str::uuid(),
+                'id'    => (string)Str::uuid(),
                 'site_study_id' =>$table_site_study_id,
                 'coordinator_id'=>$coordinator,
             ]);

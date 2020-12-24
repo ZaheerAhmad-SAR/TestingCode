@@ -12,6 +12,9 @@ trait ReplicatePhaseStructure
     use QuestionReplication;
     use QuestionValidationTrait;
     use QuestionSkipLogic;
+    use CohortSkipLogicTrait;
+    use QuestionOptionSkipLogic;
+    use CohortOptionSkipLogic;
     use QuestionDependencyTrait;
     use SectionReplication;
     use StepReplication;
@@ -21,8 +24,18 @@ trait ReplicatePhaseStructure
 
     private function replicatePhaseStructure($phaseId, $isReplicating = true)
     {
+        $newQuestionIdsArray = [];
+
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         $phase = StudyStructure::find($phaseId);
-        $lastChildPhase = StudyStructure::where('parent_id', $phaseId)->orderBy('created_at', 'desc')->first();
+        $lastChildPhase = StudyStructure::where('parent_id', $phaseId)
+            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->orderBy('created_at', 'desc')
+            ->first();
         $count = 1;
         if (null !== $lastChildPhase) {
             $count = $lastChildPhase->count + 1;
@@ -30,17 +43,19 @@ trait ReplicatePhaseStructure
 
         /*********  New Phase ********** */
         /******************************* */
-        $newPhaseId = Str::uuid();
+        $newPhaseId = (string)Str::uuid();
         $newPhase = $phase->replicate();
         $newPhase->id = $newPhaseId;
+        $newPhase->parent_id = $phaseId;
+        $newPhase->replicating_or_cloning = $replicating_or_cloning;
         if ($isReplicating === true) {
             $newPhase->is_repeatable = 0;
-            $newPhase->parent_id = $phaseId;
             $newPhase->count = $count;
             $newPhase->position = $count + 1;
         }
         $newPhase->save();
         /******************************** */
+
 
         /******************************* */
         /***  Replicate Phase Steps **** */
@@ -61,7 +76,7 @@ trait ReplicatePhaseStructure
                 /******************************* */
                 foreach ($section->questions as $question) {
 
-                    $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId, $isReplicating);
+                    $newQuestionIdsArray[] = $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId, $isReplicating);
 
                     /******************************* */
                     /* Replicate Question Form Field */
@@ -73,34 +88,55 @@ trait ReplicatePhaseStructure
                     /* Replicate Question Data Validation */
                     /******************************* */
 
-                    $this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId);
-
-                    /******************************* */
-                    /* Replicate Question Dependency */
-                    /******************************* */
-
-                    $this->addReplicatedQuestionDependency($question, $newQuestionId, $isReplicating);
+                    $this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId, $isReplicating);
 
                     /******************************* */
                     /*Replicate Question Adjudication*/
                     /******************************* */
 
                     $this->addReplicatedQuestionAdjudicationStatus($question, $newQuestionId, $isReplicating);
-
-                    /******************************* */
-                    /* Replicate Question Skip Logic */
-                    /******************************* */
-
-                    //$this->addQuestionSkipLogicToReplicatedQuestion($question->id, $newQuestionId);
                 }
             }
         }
+
+        foreach ($newQuestionIdsArray as $newQuestionId) {
+
+            /******************************* */
+            /* Replicate Question Dependency */
+            /******************************* */
+
+            $this->addReplicatedQuestionDependency($question, $newQuestionId, $isReplicating);
+
+            /******************************* */
+            /* Replicate Question Skip Logic */
+            /******************************* */
+
+            $this->updateSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
+
+            /******************************* */
+            /* Replicate Question Option Skip Logic */
+            /******************************* */
+
+            $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
+        }
+
+        /******************************* */
+        /*** Replicate Cohort Skip Logic */
+        /******************************* */
+        foreach ($phase->cohortSkipLogics as $cohortSkipLogic) {
+            $this->addPhaseSkipLogicToReplicatedPhase($cohortSkipLogic, $newPhaseId, $isReplicating);
+        }
+
+        foreach ($phase->questionOptionsCohortSkipLogics as $cohortSkipLogic) {
+            $this->addPhaseOptionsSkipLogicToReplicatedPhase($cohortSkipLogic, $newPhaseId, $isReplicating);
+        }
+
         return $newPhaseId;
     }
 
     private function updateReplicatedPhase($phase, $replicatedPhase)
     {
-        $phaseAttributesArray = Arr::except($phase->attributesToArray(), ['id', 'parent_id']);
+        $phaseAttributesArray = Arr::except($phase->attributesToArray(), ['id', 'parent_id', 'replicating_or_cloning']);
         $replicatedPhase->fill($phaseAttributesArray);
         $replicatedPhase->update();
     }
@@ -108,6 +144,7 @@ trait ReplicatePhaseStructure
     private function updatePhaseToReplicatedVisits($phase)
     {
         $replicatedPhases = StudyStructure::where('parent_id', 'like', $phase->id)
+            ->where('replicating_or_cloning', 'like', 'replicating')
             ->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)
             ->get();
         foreach ($replicatedPhases as $replicatedPhase) {
@@ -118,10 +155,13 @@ trait ReplicatePhaseStructure
     private function deletePhaseToReplicatedVisits($phase)
     {
         $replicatedPhases = StudyStructure::where('parent_id', 'like', $phase->id)
+            ->where('replicating_or_cloning', 'like', 'replicating')
             ->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)
             ->get();
         foreach ($replicatedPhases as $replicatedPhase) {
             $replicatedPhase->delete();
+            $this->deletePhaseSkipLogics($replicatedPhase->id);
+            $this->deleteCohortPhaseOptionSkipLogics($replicatedPhase->id);
         }
     }
 
@@ -131,6 +171,8 @@ trait ReplicatePhaseStructure
         foreach ($phase->steps as $step) {
             $this->deleteStep($step);
         }
+        $this->deletePhaseSkipLogics($phase->id);
+        $this->deleteCohortPhaseOptionSkipLogics($phase->id);
         $phase->delete();
     }
 }

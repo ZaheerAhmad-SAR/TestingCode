@@ -8,13 +8,17 @@ use Modules\Admin\Scopes\StudyStructureOrderByScope;
 use Modules\Admin\Scopes\StudyStructureWithoutRepeatedScope;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Admin\Entities\CohortSkipLogicOption;
+use Modules\FormSubmission\Traits\JSCohortSkipLogic;
 
 class StudyStructure extends Model
 {
     use SoftDeletes;
+    use JSCohortSkipLogic;
+
     protected $fillable = [
         'id', 'study_id', 'name', 'position', 'duration',
-        'is_repeatable', 'parent_id', 'count', 'old_id', 'deleted_at'
+        'is_repeatable', 'parent_id', 'replicating_or_cloning', 'count', 'old_id', 'deleted_at'
     ];
     // protected $keyType = 'string';
     protected $casts = [
@@ -81,5 +85,42 @@ class StudyStructure extends Model
             ->withOutGlobalScope(StudyStructureWithoutRepeatedScope::class)
             ->pluck('id')
             ->toArray();
+    }
+
+    public static function getStepIdsInPhaseArray($phaseId)
+    {
+        return PhaseSteps::where('phase_id', 'like', $phaseId)->pluck('step_id')->toArray();
+    }
+
+    public static function getSectionIdsInPhaseArray($phaseId)
+    {
+        $stepIds = PhaseSteps::where('phase_id', 'like', $phaseId)->pluck('step_id')->toArray();
+        return Section::whereIn('phase_steps_id', $stepIds)->pluck('id')->toArray();
+    }
+
+    public static function getQuestionIdsInPhaseArray($phaseId)
+    {
+        $stepIds = PhaseSteps::where('phase_id', 'like', $phaseId)->pluck('step_id')->toArray();
+        $sectionIds = Section::whereIn('phase_steps_id', $stepIds)->pluck('id')->toArray();
+        return Question::whereIn('section_id', $sectionIds)->pluck('id')->toArray();
+    }
+
+    public static function getPhaseIdByQuestionId($questionId)
+    {
+        $question = Question::find($questionId);
+        $section = Section::find($question->section_id);
+        $step = PhaseSteps::find($section->phase_steps_id);
+        $phase = self::where('id', $step->phase_id)->withOutGlobalScopes()->first();
+        return $phase->id;
+    }
+
+    public function cohortSkipLogics()
+    {
+        return $this->hasMany(CohortSkipLogic::class, 'phase_id', 'id');
+    }
+
+    public function questionOptionsCohortSkipLogics()
+    {
+        return $this->hasMany(CohortSkipLogicOption::class, 'phase_id', 'id');
     }
 }

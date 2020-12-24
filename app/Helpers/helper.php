@@ -634,7 +634,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
             $getSubjectName = Subject::find($eventId->subject_id);
 
             //get phase name
-            $getPhaseName = StudyStructure::find($eventId->phase_id);
+            $getPhaseName = StudyStructure::where('id', $eventId->phase_id)->withOutGlobalScopes()->first();
 
             // set message for audit
             $auditMessage = Auth::user()->name . ' deactivated phase ' . $getPhaseName->name . '.';
@@ -1266,4 +1266,21 @@ function return_bytes($size_str)
         default:
             return $size_str;
     }
+}
+
+function TagReleasenumber()
+{
+
+//$HEAD_hash = file_get_contents('.git/refs/heads/connectionvariables'); // or branch x
+
+// $files = glob('.git/refs/tags/*');
+// foreach(array_reverse($files) as $file) {
+//     $contents = file_get_contents($file);
+
+//     if($HEAD_hash === $contents)
+//     {
+//         return basename($file);
+//         exit;
+//     }
+// }
 }

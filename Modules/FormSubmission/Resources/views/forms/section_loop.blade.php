@@ -112,7 +112,7 @@ if(null !== $formStatusObj){
                                     {{ $showSection }}
                                     {{ $activeSection ? 'first_navlink_' . $stepIdStr : '' }}" data-toggle="tab"
                                             href="#tab{{ $section->id }}"
-                                            onclick="updateCurrentSectionId('{{ $section->step->phase->id }}', '{{ $section->step->step_id }}', '{{ $section->id }}');">
+                                            onclick="updateCurrentSectionId('{{ $section->step->phase_id }}', '{{ $section->step->step_id }}', '{{ $section->id }}');">
                                             <div class="d-flex">
                                                 <div class="mr-3 mb-0 h1">{{ $section->sort_number }}</div>
                                                 <div class="media-body align-self-center">

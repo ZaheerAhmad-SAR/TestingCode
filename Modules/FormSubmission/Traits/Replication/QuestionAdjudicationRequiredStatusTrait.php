@@ -14,28 +14,32 @@ trait QuestionAdjudicationRequiredStatusTrait
     {
         $questionAdjudicationStatus = $question->questionAdjudicationStatus()->first();
         if (null !== $questionAdjudicationStatus) {
-
-            $newQuestionAdjudicationStatusId = Str::uuid();
+            $replicating_or_cloning = 'cloning';
+            if ($isReplicating === true) {
+                $replicating_or_cloning = 'replicating';
+            }
+            $newQuestionAdjudicationStatusId = (string)Str::uuid();
             $newQuestionAdjudicationStatus = $questionAdjudicationStatus->replicate();
             $newQuestionAdjudicationStatus->id = $newQuestionAdjudicationStatusId;
             $newQuestionAdjudicationStatus->question_id = $newQuestionId;
-            if ($isReplicating === true) {
-                $newQuestionAdjudicationStatus->parent_id = $questionAdjudicationStatus->id;
-            }
+            $newQuestionAdjudicationStatus->parent_id = $questionAdjudicationStatus->id;
+            $newQuestionAdjudicationStatus->replicating_or_cloning = $replicating_or_cloning;
             $newQuestionAdjudicationStatus->save();
         }
     }
 
     private function updateReplicatedQuestionAdjudicationStatus($questionAdjudicationStatus, $replicatedQuestionAdjudicationStatus)
     {
-        $questionAdjudicationStatusAttributesArray = Arr::except($questionAdjudicationStatus->attributesToArray(), ['id', 'question_id', 'parent_id']);
+        $questionAdjudicationStatusAttributesArray = Arr::except($questionAdjudicationStatus->attributesToArray(), ['id', 'question_id', 'parent_id', 'replicating_or_cloning']);
         $replicatedQuestionAdjudicationStatus->fill($questionAdjudicationStatusAttributesArray);
         $replicatedQuestionAdjudicationStatus->update();
     }
 
     private function updateQuestionAdjudicationStatusesToReplicatedVisits($questionAdjudicationStatus)
     {
-        $replicatedQuestionAdjudicationStatuses = QuestionAdjudicationStatus::where('parent_id', 'like', $questionAdjudicationStatus->id)->get();
+        $replicatedQuestionAdjudicationStatuses = QuestionAdjudicationStatus::where('parent_id', 'like', $questionAdjudicationStatus->id)
+            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->get();
         foreach ($replicatedQuestionAdjudicationStatuses as $replicatedQuestionAdjudicationStatus) {
             $this->updateReplicatedQuestionAdjudicationStatus($questionAdjudicationStatus, $replicatedQuestionAdjudicationStatus);
         }
@@ -44,7 +48,9 @@ trait QuestionAdjudicationRequiredStatusTrait
     private function deleteQuestionAdjudicationStatusesToReplicatedVisits($questionAdjudicationStatus)
     {
         if (null !== $questionAdjudicationStatus) {
-            $replicatedQuestionAdjudicationStatuses = QuestionAdjudicationStatus::where('parent_id', 'like', $questionAdjudicationStatus->id)->get();
+            $replicatedQuestionAdjudicationStatuses = QuestionAdjudicationStatus::where('parent_id', 'like', $questionAdjudicationStatus->id)
+                ->where('replicating_or_cloning', 'like', 'replicating')
+                ->get();
             foreach ($replicatedQuestionAdjudicationStatuses as $replicatedQuestionAdjudicationStatus) {
                 $replicatedQuestionAdjudicationStatus->delete();
             }

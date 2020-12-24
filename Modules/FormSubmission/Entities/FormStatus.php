@@ -100,6 +100,11 @@ class FormStatus extends Model
                 $retStr .= self::makeGraderFormStatusSpan($step, $formStatusObj);
             }
         }
+
+        /********************************** */
+        $retStr .= self::makeQuerySpan($step);
+        /********************************** */
+
         return $retStr;
     }
 
@@ -160,7 +165,7 @@ class FormStatus extends Model
         $getQueryArray = [
             'study_id' => session('current_study'),
             'subject_id' => session('subject_id'),
-            'study_structures_id' => $step->phase->id,
+            'study_structures_id' => $step->phase_id,
             'phase_steps_id' => $step->step_id,
         ];
         if (Query::isThereOpenQueryAgainstStep($getQueryArray)) {
@@ -229,15 +234,10 @@ class FormStatus extends Model
             $imgSpanStepSkipLogicClsStr = buildSafeStr($step->step_id, 'img_step_status_skip_logic_');
         }
 
-
-
         $spanStr = '<span class="' . $imgSpanClsStr . ' ' . $imgSpanStepSkipLogicClsStr . '" ' . $info . '>';
 
         $spanStr .= self::makeFormStatusSpanImage($formStatus) . '</span>';
 
-        /********************************** */
-        $spanStr .= self::makeQuerySpan($step);
-        /********************************** */
         return $spanStr;
     }
 
@@ -303,7 +303,7 @@ class FormStatus extends Model
 
     public static function insertFormStatus($request, $formStatusArray)
     {
-        $id = Str::uuid();
+        $id = (string)Str::uuid();
         $formStatusData = [
             'id' => $id,
             'form_type_id' => $request->formTypeId,

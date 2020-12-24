@@ -35,7 +35,7 @@ class FormVersion extends Model
         }
         /***************************************/
         $formVersion = new FormVersion();
-        $formVersion->id = Str::uuid();
+        $formVersion->id = (string)Str::uuid();
         $formVersion->step_Id = $step->step_id;
         $formVersion->form_questions = json_encode($formQuestionArray);
         $formVersion->form_version_num = $newVersion;

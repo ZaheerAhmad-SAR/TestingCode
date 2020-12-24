@@ -37,7 +37,7 @@ class SectionController extends Controller
      */
     public function store(Request $request)
     {
-        $id    = Str::uuid();
+        $id    = (string)Str::uuid();
         Section::create([
             'id'    => $id,
             'phase_steps_id'    => $request->step_id,
