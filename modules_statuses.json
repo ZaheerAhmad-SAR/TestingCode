@@ -6,5 +6,6 @@
     "FormSubmission": true,
     "CertificationApp": true,
     "Model": true,
-    "TransmissionDataDevice": true
+    "TransmissionDataDevice": true,
+    "BugReporting": true
 }
