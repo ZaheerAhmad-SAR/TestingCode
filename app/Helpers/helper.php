@@ -1271,7 +1271,7 @@ function return_bytes($size_str)
 function TagReleasenumber()
 {
 
-$HEAD_hash = file_get_contents('.git/refs/heads/connectionvariables'); // or branch x
+$HEAD_hash = file_get_contents('.git/refs/heads/Laravel_7'); // or branch x
 
 $files = glob('.git/refs/tags/*');
 foreach(array_reverse($files) as $file) {
