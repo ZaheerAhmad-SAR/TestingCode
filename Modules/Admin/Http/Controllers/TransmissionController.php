@@ -504,7 +504,7 @@ class TransmissionController extends Controller
             if ($getStudy == null) {
                 // insert study
                 $getStudy = new Study;
-                $getStudy->id = Str::uuid();
+                $getStudy->id = (string)Str::uuid();
                 $getStudy->study_code = $findTransmission->StudyI_ID;
                 $getStudy->study_title = $findTransmission->Study_Name;
                 $getStudy->study_sponsor = $findTransmission->sponsor;
@@ -519,7 +519,7 @@ class TransmissionController extends Controller
             if ($getSite == null) {
                 // insert site
                 $getSite = new Site;
-                $getSite->id = Str::uuid();
+                $getSite->id = (string)Str::uuid();
                 $getSite->site_code = $findTransmission->Site_ID;
                 $getSite->site_name = $findTransmission->Site_Name;
                 $getSite->site_address = $findTransmission->Site_st_address;
@@ -538,7 +538,7 @@ class TransmissionController extends Controller
             if ($getSiteStudy == null) {
                 // insert study site
                 $getSiteStudy = new StudySite;
-                $getSiteStudy->id = Str::uuid();
+                $getSiteStudy->id = (string)Str::uuid();
                 $getSiteStudy->study_id = $getStudy->id;
                 $getSiteStudy->site_id = $getSite->id;
                 $getSiteStudy->save();
@@ -555,7 +555,7 @@ class TransmissionController extends Controller
             if ($getPrimaryInvestigator == null) {
                 // insert primary investigator
                 $getPrimaryInvestigator = new PrimaryInvestigator;
-                $getPrimaryInvestigator->id = Str::uuid();
+                $getPrimaryInvestigator->id = (string)Str::uuid();
                 $getPrimaryInvestigator->site_id = $getSite->id;
                 $getPrimaryInvestigator->first_name = $findTransmission->PI_FirstName;
                 $getPrimaryInvestigator->last_name = $findTransmission->PI_LastName;
@@ -573,7 +573,7 @@ class TransmissionController extends Controller
             if ($getPhotographer == null) {
                 // insert photographer
                 $getPhotographer = new Photographer;
-                $getPhotographer->id = Str::uuid();
+                $getPhotographer->id = (string)Str::uuid();
                 $getPhotographer->site_id = $getSite->id;
                 $getPhotographer->first_name = $findTransmission->photographer_full_name;
                 $getPhotographer->email = $findTransmission->photographer_email;
@@ -589,7 +589,7 @@ class TransmissionController extends Controller
             if ($getModality == null) {
                 // insert modility
                 $getModality = new Modility;
-                $getModality->id = Str::uuid();
+                $getModality->id = (string)Str::uuid();
                 $getModality->modility_name = $findTransmission->ImageModality;
                 $getModality->save();
             } // modility check is end
@@ -602,7 +602,7 @@ class TransmissionController extends Controller
             // if ($getDevices == null) {
             //     // insert modility
             //     $getDevices = new Device;
-            //     $getDevices->id = Str::uuid();
+            //     $getDevices->id = (string)Str::uuid();
             //     $getDevices->device_model = $findTransmission->device_model;
             //     $getDevices->save();
             // } // devices check is end
@@ -615,7 +615,7 @@ class TransmissionController extends Controller
             // if ($getDeviceModality == null) {
 
             //     $getDeviceModality = new DeviceModility;
-            //     $getDeviceModality->id = Str::uuid();
+            //     $getDeviceModality->id = (string)Str::uuid();
             //     $getDeviceModality->device_id = $getDevices->id;
             //     $getDeviceModality->modility_id = $getModality->id;
             //     $getDeviceModality->save();
@@ -634,7 +634,7 @@ class TransmissionController extends Controller
                 if ($getSubject == null) {
                     // insert subject
                     $getSubject = new Subject;
-                    $subjectID = Str::uuid();
+                    $subjectID = (string)Str::uuid();
                     $getSubject->id = $subjectID;
                     $getSubject->study_id = $getStudy->id;
                     $getSubject->subject_id = $findTransmission->Subject_ID;
@@ -663,7 +663,7 @@ class TransmissionController extends Controller
                 if ($getSubject == null) {
                     // insert subject
                     $getSubject = new Subject;
-                    $subjectID = Str::uuid();
+                    $subjectID = (string)Str::uuid();
                     $getSubject->id = $subjectID;
                     $getSubject->study_id = $getStudy->id;
                     $getSubject->subject_id = $findTransmission->Subject_ID;
@@ -693,7 +693,7 @@ class TransmissionController extends Controller
             if ($getPhase == null) {
                 // insert phase
                 $getPhase = new StudyStructure;
-                $phaseID = Str::uuid();
+                $phaseID = (string)Str::uuid();
                 $getPhase->id = $phaseID;
                 $getPhase->study_id = $getStudy->id;
                 $getPhase->name = $findTransmission->visit_name;
@@ -713,7 +713,7 @@ class TransmissionController extends Controller
             if ($getSubjectPhase == null) {
                 // insert into subject phases
                 $getSubjectPhase = new SubjectsPhases;
-                $getSubjectPhase->id = Str::uuid();
+                $getSubjectPhase->id = (string)Str::uuid();
                 $getSubjectPhase->subject_id = $getSubject->id;
                 $getSubjectPhase->phase_id = $getPhase->id;
                 $getSubjectPhase->visit_date = $findTransmission->visit_date;
@@ -777,8 +777,8 @@ class TransmissionController extends Controller
             $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
             $this->uploadOne($image, $folder, 'public', $name);
         }
-        $id    = Str::uuid();
-        $token = Str::uuid();
+        $id    = (string)Str::uuid();
+        $token = (string)Str::uuid();
 
         $data  = array(
             'Transmission_Number'=>$transmission_number_response,
@@ -860,8 +860,8 @@ class TransmissionController extends Controller
             }
 
         }
-        $id    = Str::uuid();
-        $token = Str::uuid();
+        $id    = (string)Str::uuid();
+        $token = (string)Str::uuid();
         $data  = array(
          'Transmission_Number'=>$transNumber,
          'query_subject'=>$query_subject,
@@ -929,7 +929,7 @@ class TransmissionController extends Controller
             $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
             $this->uploadOne($image, $folder, 'public', $name);
         }
-        $id    = Str::uuid();
+        $id    = (string)Str::uuid();
 
         QueryNotification::create([
             'id'=>$id,

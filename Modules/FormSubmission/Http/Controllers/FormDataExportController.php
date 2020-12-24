@@ -31,7 +31,7 @@ class FormDataExportController extends Controller
     {
 
         $exportTypeUsage = new ExportTypeUsage();
-        $exportTypeUsage->id = Str::uuid();
+        $exportTypeUsage->id = (string)Str::uuid();
         $exportTypeUsage->export_type_id = $request->export_type_id;
         $exportTypeUsage->data_exported_by_id = auth()->user()->id;
         $exportTypeUsage->save();

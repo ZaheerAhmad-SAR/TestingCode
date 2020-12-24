@@ -14,39 +14,35 @@ class StudyDevice extends Model
     {
 
         $checkAssignedDevices = self::where('device_id', $deviceId)
-                                    ->where('study_id', $studyId)
-                                    ->first();
+            ->where('study_id', $studyId)
+            ->first();
 
-            // check if this device is already assigned to study
-            if ($checkAssignedDevices != null) { 
+        // check if this device is already assigned to study
+        if ($checkAssignedDevices != null) {
 
-            	return '<span class="badge badge-success">Yes</span>';
+            return '<span class="badge badge-success">Yes</span>';
+        } else {
 
-            } else {
-
-            	return '<span class="badge badge-primary">No</span>';
-
-            } // check ends
+            return '<span class="badge badge-primary">No</span>';
+        } // check ends
 
     } // devices ends
 
     public static function checkAssignedUser($deviceId, $studyId)
     {
         $checkAssignedUser = self::select('users.name')
-        						->leftjoin('users', 'users.id', '=', 'study_devices.assign_by')
-								->where('device_id', $deviceId)
-                                ->where('study_id', $studyId)
-                                ->first();
+            ->leftjoin('users', 'users.id', '=', 'study_devices.assign_by')
+            ->where('device_id', $deviceId)
+            ->where('study_id', $studyId)
+            ->first();
 
-            // check if this modality is already assigned to study
-            if ($checkAssignedUser != null) {
+        // check if this modality is already assigned to study
+        if ($checkAssignedUser != null) {
 
-            	return $checkAssignedUser->name;
+            return $checkAssignedUser->name;
+        } else {
 
-            } else {
-
-            	return 'N/A';
-
-            } // check ends
+            return 'N/A';
+        } // check ends
     }
 }

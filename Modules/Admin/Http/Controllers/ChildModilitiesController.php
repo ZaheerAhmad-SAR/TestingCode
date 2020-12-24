@@ -32,7 +32,7 @@ class ChildModilitiesController extends Controller
     public function create()
     {
         $parent = Modility::all();
-        return view('admin::create',compact('parent'));
+        return view('admin::create', compact('parent'));
     }
 
     /**
@@ -42,12 +42,12 @@ class ChildModilitiesController extends Controller
      */
     public function store(Request $request)
     {
-        $id = Str::uuid();
+        $id = (string)Str::uuid();
         /*dd('chuld con'. ' ' ,$request->all());*/
         $child = ChildModilities::create([
             'id'    => $id,
-            'modility_name'=>$request->modility_name,
-            'modility_id' =>$request->parent_id
+            'modility_name' => $request->modility_name,
+            'modility_id' => $request->parent_id
         ]);
 
         $oldModality = [];
@@ -55,8 +55,7 @@ class ChildModilitiesController extends Controller
         // log event details
         $logEventDetails = eventDetails($id, 'Child Modality', 'Add', $request->ip(), $oldModality);
 
-        return response()->json(['Sucess'=>'Save succesfully']);
-
+        return response()->json(['Sucess' => 'Save succesfully']);
     }
 
     /**
@@ -74,10 +73,9 @@ class ChildModilitiesController extends Controller
      * @param int $id
      * @return Response
      */
-    public function edit(Request $request ,$id)
+    public function edit(Request $request, $id)
     {
-        if ($request->ajax())
-        {
+        if ($request->ajax()) {
 
             $childmodalities = ChildModilities::find($id);
 
@@ -89,7 +87,6 @@ class ChildModilitiesController extends Controller
             id='child_id' name='child_id' value ='$childmodalities->id'>";
 
             return Response($output);
-
         }
     }
 
@@ -103,7 +100,7 @@ class ChildModilitiesController extends Controller
     {
         $oldModality = ChildModilities::find($request->child_id);
 
-        $data = array (
+        $data = array(
             'modility_name' => $request->modility_name
         );
         ChildModilities::where('id', $request->child_id)->update($data);
@@ -111,7 +108,7 @@ class ChildModilitiesController extends Controller
         // log event details
         $logEventDetails = eventDetails($request->child_id, 'Child Modality', 'Update', $request->ip(), $oldModality);
 
-        return response()->json(['success'=>'Child Modility is Updated successfully.']);
+        return response()->json(['success' => 'Child Modility is Updated successfully.']);
     }
 
     /**
@@ -121,25 +118,22 @@ class ChildModilitiesController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if ($request->ajax())
-        {
+        if ($request->ajax()) {
             $delete = ChildModilities::find($id);
 
             $delete->delete();
 
-            return response()->json(['success'=>'Child is deleted successfully.']);
+            return response()->json(['success' => 'Child is deleted successfully.']);
         }
     }
 
-    public function restoreChild(Request $request,$id)
+    public function restoreChild(Request $request, $id)
     {
 
-        if ($request->ajax())
-        {
+        if ($request->ajax()) {
             $child = ChildModilities::withTrashed()->find($id)->restore();
 
-            return response()->json(['success'=>'Child is restore successfully.']);
+            return response()->json(['success' => 'Child is restore successfully.']);
         }
     }
-
 }

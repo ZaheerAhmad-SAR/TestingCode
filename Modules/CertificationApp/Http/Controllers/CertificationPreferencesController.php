@@ -163,7 +163,7 @@ class CertificationPreferencesController extends Controller
                 if ($checkStudyModality == null) {
 
                     $saveAssignModality = new StudyModility;
-                    $saveAssignModality->id = Str::uuid();
+                    $saveAssignModality->id = (string)Str::uuid();
                     $saveAssignModality->parent_modility_id = $parentModality;
                     $saveAssignModality->child_modility_id  = $input['child_modility_id'][$key];
                     $saveAssignModality->study_id  = decrypt($request->study_id);
@@ -223,7 +223,7 @@ class CertificationPreferencesController extends Controller
         }
 
         $getDevices = $getDevices->paginate(50);
-        
+
         return view('certificationapp::certificate_preferences.assign_devices', compact('getDevices'));
     }
 
@@ -245,7 +245,7 @@ class CertificationPreferencesController extends Controller
                 if ($checkStudyDevice == null) {
 
                     $saveDevice = new StudyDevice;
-                    $saveDevice->id = Str::uuid();
+                    $saveDevice->id = (string)Str::uuid();
                     $saveDevice->device_id = $device;
                     $saveDevice->study_id  = decrypt($request->study_id);
                     $saveDevice->assign_by  = \Auth::user()->id;
@@ -309,10 +309,12 @@ class CertificationPreferencesController extends Controller
         if ($checkStudy === null) {
 
             $checkStudy = new StudySetup;
+
             $checkStudy->id = Str::uuid();
             $checkStudy->study_email = $request->study_email != '' ?  $request->study_email : '';
             $checkStudy->study_cc_email = $request->study_cc_email != '' ? preg_replace("/\s+/", "", $request->study_cc_email) : '';
             $checkStudy->study_bcc_email = $request->study_bcc_email != '' ? preg_replace("/\s+/", "", $request->study_bcc_email) : '';
+
             $checkStudy->allowed_no_transmission = json_encode($request->allowed_no_transmission);
             $checkStudy->study_id = decrypt($request->study_id);
             $checkStudy->save();
@@ -347,7 +349,7 @@ class CertificationPreferencesController extends Controller
     public function saveTemplate(Request $request) {
 
         $saveTemplate = new CertificationTemplate;
-        $saveTemplate->id = Str::uuid();
+        $saveTemplate->id = (string)Str::uuid();
         $saveTemplate->title = $request->title;
         $saveTemplate->body = $request->body;
         $saveTemplate->created_by = \Auth::user()->id;

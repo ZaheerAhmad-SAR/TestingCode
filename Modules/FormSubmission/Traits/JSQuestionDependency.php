@@ -26,9 +26,10 @@ trait JSQuestionDependency
         $getValueFunctionName = ($isForAdjudication) ? 'getAdjudicationFormFieldValue' : 'getFormFieldValue';
 
         $questionDependency = $question->questionDependency;
-        if ($questionDependency->dep_on_question_id != 'not_any') {
-            $dependentOnQuestion = Question::find($questionDependency->dep_on_question_id);
 
+        if (null !== $questionDependency->dep_on_question_id && $questionDependency->dep_on_question_id != 'not_any') {
+
+            $dependentOnQuestion = Question::find($questionDependency->dep_on_question_id);
             $dependentOnFieldName = buildFormFieldName($dependentOnQuestion->formFields->variable_name);
             $dependentOnQuestionIdStr = buildSafeStr($dependentOnQuestion->id, '');
             $dependentOnFieldId = $dependentOnFieldName . '_' . $dependentOnQuestionIdStr;
@@ -40,7 +41,7 @@ trait JSQuestionDependency
                 //$(\'#form_' . $stepIdStr . ' #' . $fieldId . '\').val(-9999);
             });
             function ' . $functionName . $dependentOnQuestionIdStr . '(stepIdStr){
-                if(' . $getValueFunctionName . '(stepIdStr, \'' . $dependentOnFieldName . '\', \'' . $dependentOnFieldId . '\') ' . $questionDependency->opertaor . ' ' . $questionDependency->custom_value . '){
+                if(' . $getValueFunctionName . '(stepIdStr, \'' . $dependentOnFieldName . '\', \'' . $dependentOnFieldId . '\') ' . $questionDependency->opertaor . ' \'' . $questionDependency->custom_value . '\'){
                     enableAllFormFields(\'' . $questionRowIdStr . '\');
                     if($(\'#form_' . $stepIdStr . ' #' . $fieldId . '\').val() == -9999){
                         //$(\'#form_' . $stepIdStr . ' #' . $fieldId . '\').val(\'\');

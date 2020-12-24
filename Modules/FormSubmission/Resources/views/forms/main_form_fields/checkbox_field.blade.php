@@ -22,7 +22,7 @@ $checked = in_array($option_value, $answersArray) ? 'checked' : '';
         <input type="checkbox" name="{{ $field_name }}[]"
             onchange="validateAndSubmitAdjudicationFormField('{{ $stepIdStr }}', '{{ $sectionIdStr }}', '{{ $question->id }}', '{{ $questionIdStr }}', '{{ $field_name }}', '{{ $fieldId }}');"
             value="{{ $option_value }}" {{ $checked }}
-            class="custom-control-input {{ $skipLogicQuestionIdStr }} {{ 'skip_logic_' . $questionIdStr . '_' . $option_value }}">
+            class="custom-control-input {{ $skipLogicQuestionIdStr }} {{ buildSafeStr($question->id, 'skip_logic_' . $option_value) }}">
         <label class="custom-control-label" for="customCheck1">{{ $option_name }}</label>
     </div>
 @endforeach

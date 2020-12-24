@@ -134,20 +134,22 @@ class StudyStructureController extends Controller
     // Store phases here
     public function store(Request $request)
     {
-        $id    = Str::uuid();
-        $phase = StudyStructure::create([
+        $id = (string)Str::uuid();
+        $phaseData = [
             'id'    => $id,
             'study_id'    => session('current_study'),
             'position'  =>  $request->position,
             'name' =>  $request->name,
             'duration' =>  $request->duration,
-            'is_repeatable' =>  $request->is_repeatable,
-        ]);
-
+            'window' =>  $request->window,
+            'is_repeatable' =>  $request->is_repeatable
+        ];
+        StudyStructure::create($phaseData);
+        $phase = StudyStructure::find($id);
         $oldPhase = [];
 
         // log event details
-        $logEventDetails = eventDetails($id, 'Phase', 'Add', $request->ip(), $oldPhase);
+        eventDetails($phase->id, 'Phase', 'Add', $request->ip(), $oldPhase);
 
         $data = [
             'success' => true,
@@ -159,7 +161,7 @@ class StudyStructureController extends Controller
     // store steps here
     public function store_steps(Request $request)
     {
-        $id    = Str::uuid();
+        $id    = (string)Str::uuid();
         PhaseSteps::create([
             'step_id'    => $id,
             'phase_id'    => $request->phase_id,
@@ -221,24 +223,21 @@ class StudyStructureController extends Controller
     {
         // old phase
         $oldPhase = StudyStructure::where('id', $request->id)->first();
-
         $phase = StudyStructure::find($request->id);
         $phase->position  =  $request->position;
         $phase->name  =  $request->name;
         $phase->duration  =  $request->duration;
+        $phase->window  =  $request->window;
         $phase->is_repeatable  =  $request->is_repeatable;
         $phase->save();
-
         // log event details
         $logEventDetails = eventDetails($phase->id, 'Phase', 'Update', $request->ip(), $oldPhase);
-
         $this->updatePhaseToReplicatedVisits($phase);
     }
     // Delete Phase here
     public function destroy($id)
     {
         $phase = StudyStructure::find($id);
-        $this->deleteTreeAgainstPhase($id);
         $this->deletePhase($phase);
     }
     public function destroySteps($step_id)

@@ -83,14 +83,20 @@
                 <form  id="parentForm" name="parentForm">
                     <div class="modal-body">
                         <div id="exTab1">
+                            @csrf
                             <div class="tab-content clearfix">
-                                @csrf
+                                <input type="hidden" name="parent_yes" value="1">
                                 <div class="form-group row">
                                     <label for="Name" class="col-sm-3 col-form-label">Name</label>
                                     <div class="col-sm-9">
                                         <input type="text" class="form-control" id="modility_name" name="modility_name" placeholder="Enter Modility name" maxlength="50"  value="{{old('modility_name')}}" required/>
                                     </div>
-                                    <input type="hidden" name="parent_yes" value="1">
+                                </div>
+                                <div class="form-group row">
+                                    <label for="modility_abbreviation" class="col-sm-3 col-form-label">Abbreviation</label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control" id="modility_abbreviation" name="modility_abbreviation" placeholder="Enter Modility abbreviation" maxlength="50"  value="{{old('modility_abbreviation')}}" required/>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -114,17 +120,8 @@
                 <form  id="editParentForm" name="editParentForm">
                     <div class="modal-body">
                         <div id="exTab1">
-                            <div class="tab-content clearfix">
-                                @csrf
-
-                                <div class="form-group row">
-                                    <label for="Name" class="col-sm-3 col-form-label">Name</label>
-                                    <div class="col-sm-9" id="editParentClass">
-                                        <input type="text" class="form-control" id="modility_name" name="modility_name" placeholder="Enter Modility name" maxlength="50"  value="{{old('modility_name')}}" required/>
-                                    </div>
-                                    <input type="hidden" name="parent_yes" value="1">
-                                </div>
-                            </div>
+                            @csrf
+                            <div class="tab-content clearfix" id="editParentClass"></div>
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal" id="addphase-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>

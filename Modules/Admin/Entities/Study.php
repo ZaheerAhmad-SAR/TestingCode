@@ -21,7 +21,7 @@ class Study extends Model
     protected $keyType = 'string';
     protected $fillable = [
         'id',
-        'parent_id',
+        'parent_id', 'replicating_or_cloning',
         'study_short_name',
         'study_title',
         'study_status',

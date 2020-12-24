@@ -163,13 +163,6 @@
                                                 {{ $phase->name }}
                                                 {{ $phase->count > 0 ? ' - Repeated: ' . $phase->count : '' }}<br>
                                                 {{ $subjectPhaseDetail->visit_date->format('m-d-Y') }}
-
-                                                @if(
-                                                    (\Modules\Admin\Entities\Preference::getPreference('VISIT_ACTIVATION') == 'Manual') &&
-                                                    canQualityControl(['index', 'create', 'store', 'edit', 'update'])
-                                                )
-                                                    <br><span style="cursor: pointer;" onclick="unAssignPhaseToSubject('{{ $subjectId }}', '{{ $phase->id }}');" class="text text-warning">Deactivate Visit</span>
-                                                @endif
                                             </div>
                                             <div id="collapse{{ $phase->id }}"
                                                 class="card-body collapse-body-bg collapse {{ ($activePhase || request('phaseId', '-') == $phase->id) ? 'show' : '' }}"
@@ -246,6 +239,12 @@
                                                             $activeStep = false;
                                                             @endphp
                                                         @endforeach
+                                                        @if(
+                                                            (\Modules\Admin\Entities\Preference::getPreference('VISIT_ACTIVATION') == 'Manual') &&
+                                                            canQualityControl(['index', 'create', 'store', 'edit', 'update'])
+                                                        )
+                                                            <br><span style="cursor: pointer;" onclick="unAssignPhaseToSubject('{{ $subjectId }}', '{{ $phase->id }}');" class="text text-danger">Deactivate Visit</span>
+                                                        @endif
                                                     @endif
                                                 </p>
                                             </div>

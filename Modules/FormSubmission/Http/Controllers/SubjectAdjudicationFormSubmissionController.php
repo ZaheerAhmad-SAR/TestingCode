@@ -124,7 +124,7 @@ class SubjectAdjudicationFormSubmissionController extends Controller
                 $answerArray['answer'] = $answer;
                 $answerObj->update($answerArray);
             } else {
-                $answerArray['id'] = Str::uuid();
+                $answerArray['id'] = (string)Str::uuid();
                 $answerArray['answer'] = $answer;
                 $answerObj = FinalAnswer::create($answerArray);
             }
