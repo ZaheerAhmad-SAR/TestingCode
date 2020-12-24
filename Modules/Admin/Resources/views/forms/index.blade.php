@@ -295,8 +295,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
                             <div class="tab-pane fade" id="nav-Validation" role="tabpanel"
                                 aria-labelledby="nav-Validation-tab">
                                 <div class="py-3 border-bottom border-primary">
@@ -1147,7 +1145,7 @@
         // get Question
         function get_question_section_id(id, div_class) {
             div_class.html('');
-            var options = '<option value="">---Select Question---</option>';
+            var options = '';
             $.ajax({
                 url: 'forms/get_Questions/' + id,
                 type: 'post',
@@ -1158,6 +1156,8 @@
                     'id': id
                 },
                 success: function(response) {
+                    $('.select_ques_for_dep').html('');
+                    options += '<option value="">---Select Question---</option>';
                     $.each(response['data'], function(k, v) {
                         options += '<option value="' + v.id + '" >' + v.question_text + '</option>';
                     });
