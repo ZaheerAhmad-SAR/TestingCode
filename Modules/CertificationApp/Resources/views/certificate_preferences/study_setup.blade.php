@@ -40,12 +40,18 @@
                                 <div class="form-group row">
                                     <div class="form-group col-md-12">
                                         <label for="Email">Study Email</label>
-                                        <input type="email" class="form-control" name="study_email" id="study_email" required="required" @if($checkStudy != null) value="{{ $checkStudy->study_email}}" @else value="" @endif placeholder="e.g info@example.com">
+                                        <input type="email" class="form-control" name="study_email" id="study_email"  @if($checkStudy != null) value="{{ $checkStudy->study_email}}" @else value="" @endif placeholder="e.g info@example.com" required>
                                     </div>
 
                                     <div class="col-md-12">
                                         <label for="Phone">CC Email</label>
-                                        <input type="text" class="form-control" name="study_cc_email" id="study_cc_email" required="required" @if($checkStudy != null) value="{{ $checkStudy->study_cc_email}}" @else value="" @endif placeholder="e.g info@example.com,  johndoe@info.com">
+                                        <input type="text" class="form-control" name="study_cc_email" id="study_cc_email"  @if($checkStudy != null) value="{{ $checkStudy->study_cc_email}}" @else value="" @endif placeholder="e.g info@example.com,  johndoe@info.com">
+                                    <br>
+                                    </div>
+
+                                    <div class="col-md-12">
+                                        <label for="BCCEmail">BCC Email</label>
+                                        <input type="text" class="form-control" name="study_bcc_email" id="study_bcc_email"  @if($checkStudy != null) value="{{ $checkStudy->study_bcc_email}}" @else value="" @endif placeholder="e.g info@example.com,  johndoe@info.com">
                                     </div>
 
                                 </div>

@@ -287,11 +287,11 @@
                     <input type="hidden" name="hidden_device_certification_id" class="hidden_device_certification_id" value="">
                     
                     <div class="form-group col-md-12">
-                        <label>Change Status<span class="field-required">*</span></label>
+                        <label>Certifictaion Status<span class="field-required">*</span></label>
                         <select name="certification_status" id="certification_status" class="form-control" required="required">
                             <option value="">Select Status</option>
-                            <option value="provisional">Provisionally Certified</option>
-                            <option value="full">Full</option>
+                            <!-- <option value="provisional">Provisionally Certified</option> -->
+                            <option value="full" selected>Full</option>
                             <!-- <option value="suspended">Suspended</option>
                             <option value="expired">Expired</option>
                             <option value="audit">In Audit</option> -->
@@ -342,8 +342,15 @@
                     </div>
 
                      <div class="form-group col-md-12 suspend-certificate-div">
-                        <label class="edit_users">CC Email<span class="field-required">*</span></label>
-                        <Select class="form-control cc_user_email data-required" name="cc_user_email[]" id="cc_user_email" required multiple>
+                        <label class="edit_users">CC Email</label>
+                        <Select class="form-control cc_user_email data-required" name="cc_user_email[]" id="cc_user_email" multiple>
+
+                        </Select>
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        <label class="edit_users">BCC Email</label>
+                        <Select class="form-control bcc_user_email" name="bcc_user_email[]" id="bcc_user_email" multiple="multiple">
 
                         </Select>
                     </div>
@@ -403,25 +410,26 @@
     });
 
     $('#cc_user_email').select2();
+    $('#bcc_user_email').select2();
 
-    // on status change
-    $('#certification_status').change(function() {
-        // if this is the value show all div other vice hide the other divs
-        if($(this).val() == 'provisional' || $(this).val() == 'full') {
+    // // on status change
+    // $('#certification_status').change(function() {
+    //     // if this is the value show all div other vice hide the other divs
+    //     if($(this).val() == 'provisional' || $(this).val() == 'full') {
             
-            // show div
-            $('.suspend-certificate-div').css('display', 'block');
-            // and apply required
-            $('.data-required').attr('required', true);
+    //         // show div
+    //         $('.suspend-certificate-div').css('display', 'block');
+    //         // and apply required
+    //         $('.data-required').attr('required', true);
         
-        } else {
+    //     } else {
 
-            // show div
-            $('.suspend-certificate-div').css('display', 'none');
-            // and apply required
-            $('.data-required').attr('required', false);
-        }
-    });
+    //         // show div
+    //         $('.suspend-certificate-div').css('display', 'none');
+    //         // and apply required
+    //         $('.data-required').attr('required', false);
+    //     }
+    // });
 
     // reset filter form
     $('.reset-filter').click(function(){
@@ -447,7 +455,7 @@
         $('.hidden_transmission_id').val(transmissionID);
 
         // by default values
-        $('#certification_status').val('');
+        // $('#certification_status').val('');
         $('#certificate_type').val('');
         $('#issue_date').val('');
 
@@ -465,6 +473,7 @@
 
         // refresh the select2
         $('#cc_user_email').empty();
+        $('#bcc_user_email').empty();
 
         // hide error message
         $('.edit-error-field').css('display', 'none');
@@ -547,6 +556,19 @@
                     $('#cc_user_email').empty();
                 }
                 // ------------------------------------- user cc email ends----------------------//
+
+                if(data.bccEmails != null) {
+
+                    $.each(data.bccEmails, function(index, value) {
+                                
+                        $('#bcc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+                    });
+
+                } else {
+
+                    $('#bcc_user_email').empty();
+                }
+                // ------------------------------------- user bcc email ends----------------------//
                
 
             } // success ends

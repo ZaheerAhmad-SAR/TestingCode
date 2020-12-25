@@ -22,6 +22,7 @@ use Mail;
 use PDF;
 use Session;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 
 class TransmissionDataDeviceController extends Controller
@@ -454,17 +455,24 @@ class TransmissionDataDeviceController extends Controller
 
         $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[pi_name]]', '[[modality_name]]', '[[transmission_number]]', '[[status]]', '[[device_manufacturer]]', '[[device_model]]', '[[sender_name]]'];
 
-        $data = [];
-        $data['email_body'] = str_replace($labels, $variables, $request->comment);
-        $senderEmail = $request->photographer_user_email;
-        $ccEmail = $request->cc_email;
+            $data = [];
+            $data['email_body'] = str_replace($labels, $variables, $request->comment);
+            $senderEmail = $request->photographer_user_email;
+            $ccEmail = $request->cc_email != null ? $request->cc_email : '';
+            $bccEmail = $request->bcc_email != null ? $request->bcc_email : '';
 
-        // send email to users
-        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function ($message) use ($senderEmail, $ccEmail, $findTransmission, $getSite, $getDevice) {
-            $message->subject($findTransmission->Study_Name . ' ' . $findTransmission->StudyI_ID . ' | Device Request# ' . $findTransmission->Transmission_Number . ' | ' . $getSite->Site_ID . ' | ' . $findTransmission->Requested_certification);
-            $message->to($senderEmail);
-            $message->cc($ccEmail);
-        });
+            // send email to users
+            Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $bccEmail, $findTransmission, $getSite, $getDevice)
+            {
+                $message->subject($findTransmission->Study_Name.' '.$findTransmission->StudyI_ID.' | Device Request# '.$findTransmission->Transmission_Number.' | '. $getSite->Site_ID.' | '. $findTransmission->Requested_certification);
+                $message->to($senderEmail);
+                if($ccEmail != '') {
+                $message->cc($ccEmail);
+                }
+                if($bccEmail != '') {
+                    $message->bcc($bccEmail);
+                }
+            });
     }
 
     /**
@@ -574,6 +582,7 @@ class TransmissionDataDeviceController extends Controller
         $generateCertificate->photographer_id = $getPhotographer->id;
         $generateCertificate->photographer_email = $getPhotographer->email;
         $generateCertificate->cc_emails = json_encode($request->cc_user_email);
+        $generateCertificate->bcc_emails = json_encode($request->bcc_user_email);
 
         // get study information
         $getStudy = Study::where('study_code', $findTransmission->StudyI_ID)->first();
@@ -619,7 +628,9 @@ class TransmissionDataDeviceController extends Controller
 
             // issue date
             $generateCertificate->issue_date = \Carbon\Carbon::parse($request->issue_date);
-            $generateCertificate->expiry_date = \Carbon\Carbon::parse($request->issue_date)->addYears(2);
+            $generateCertificate->expiry_date = \Carbon\Carbon::parse($request->issue_date)->addYears(4);
+
+
         }
 
         $generateCertificate->certificate_type = $request->certificate_type;
@@ -628,14 +639,16 @@ class TransmissionDataDeviceController extends Controller
 
             $generateCertificate->transmissions = ($request->transmissions != null) ? json_encode($request->transmissions) : json_encode([]);
 
-            $generateCertificate->certificate_id = 'OIIRC-02-' . substr(md5(microtime()), 0, 8) . '-O';
+            $generateCertificate->certificate_id = 'OIRRC-01-'.substr(md5(microtime()), 0, 8).'-O';
+
+        
         } elseif ($request->certificate_type == 'grandfathered') {
 
-            $generateCertificate->grandfather_certificate_id = 'Grandfater' . substr(md5(microtime()), 0, 8);
+            $generateCertificate->grandfather_certificate_id = 'Grandfater'.substr(md5(microtime()), 0, 8);
 
-            $generateCertificate->certificate_id = 'OIIRC-01-' . substr(md5(microtime()), 0, 8) . '-G';
+            $generateCertificate->certificate_id = 'OIRRC-01-'.substr(md5(microtime()), 0, 8).'-G';
+
         }
-
 
         // certification Officer Info
         $generateCertificate->certification_officer_id = \Auth::user()->id;
@@ -662,13 +675,22 @@ class TransmissionDataDeviceController extends Controller
         $data['email_body'] = str_replace($labels, $variables, $request->comment);
         $senderEmail = $generateCertificate->photographer_email;
         $ccEmail = $generateCertificate->cc_emails != '' ? json_decode($generateCertificate->cc_emails) : '';
+        $bccEmail = $generateCertificate->bcc_emails != '' ? json_decode($generateCertificate->bcc_emails) : '';
 
         // send email to users
-        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function ($message) use ($senderEmail, $ccEmail, $generateCertificate, $findTransmission, $getSite, $getStudy, $getModality, $path, $file_name) {
-            $message->subject($getStudy->study_short_name . ' ' . $getStudy->study_code . ' | Device Certification# ' . $generateCertificate->certificate_id . ' | ' . $getSite->site_code . ' | ' . $getModality->modility_name);
+        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $bccEmail, $generateCertificate, $findTransmission, $getSite, $getStudy, $getModality, $path, $file_name)
+        {
+            $message->subject($getStudy->study_short_name.' '.$getStudy->study_code.' | Device Certification# '.$generateCertificate->certificate_id.' | '. $getSite->site_code.' | '. $getModality->modility_name);
             $message->to($senderEmail);
-            $message->cc($ccEmail);
-            $message->attach($path . '/' . $file_name);
+            if($ccEmail != null) {
+                $message->cc($ccEmail);
+            }
+
+            if($bccEmail != null) {
+                $message->bcc($bccEmail);
+            }
+            $message->attach($path.'/'.$file_name);
+
         });
 
         // update the file name in database
@@ -808,22 +830,103 @@ class TransmissionDataDeviceController extends Controller
     public function certifiedDevice(Request $request)
     {
 
-        $getCertifiedDevice = CertificationData::select('certification_data.*', 'photographers.first_name', 'photographers.last_name', 'photographers.email', 'photographers.phone', 'sites.site_name', 'sites.site_code', 'users.name as certification_officer_name')
+        $getCertifiedDevice = CertificationData::query();
+        $getCertifiedDevice = $getCertifiedDevice->select('certification_data.*', 'photographers.first_name', 'photographers.last_name', 'photographers.email', 'photographers.phone', 'sites.site_name', 'sites.site_code', 'users.name as certification_officer_name')
             ->leftjoin('photographers', 'photographers.id', '=', 'certification_data.photographer_id')
             ->leftjoin('sites', 'sites.id', 'certification_data.site_id')
             ->leftjoin('users', 'users.id', '=', 'certification_data.certification_officer_id')
-            ->where('certification_data.transmission_type', 'device_transmission')
-            ->orderBy('certification_data.created_at', 'desc')
-            ->paginate(50);
+            ->where('certification_data.transmission_type', 'device_transmission');
+
+            if ($request->certify_id != '') {
+
+               $getCertifiedDevice = $getCertifiedDevice->where('certification_data.certificate_id', 'like', '%' . $request->certify_id . '%');
+            }
+
+            if ($request->study_name != '') {
+
+               $getCertifiedDevice = $getCertifiedDevice->where('certification_data.study_name', 'like', '%' . $request->study_name . '%');
+            }
+
+
+            if ($request->site_name != '') {
+
+               $getCertifiedDevice = $getCertifiedDevice->where('certification_data.site_name', 'like', '%' . $request->site_name . '%');
+            }
+
+            if ($request->device_model != '') {
+
+               $getCertifiedDevice = $getCertifiedDevice->where('certification_data.device_model', 'like', '%' . $request->device_model . '%');
+            }
+
+            if ($request->device_serial_no != '') {
+
+               $getCertifiedDevice = $getCertifiedDevice->where('certification_data.device_serial_no', 'like', '%' . $request->device_serial_no . '%');
+            }
+
+            if ($request->modility_id != '') {
+
+               $getCertifiedDevice = $getCertifiedDevice->where('certification_data.modility_id', 'like', '%' . $request->modility_id . '%');
+            }
+
+            // if ($request->certificate_status != '') {
+
+            //    $getCertifiedDevice = $getCertifiedDevice->where('certification_data.certificate_status', 'like', '%' . $request->certificate_status . '%');
+            // }
+
+            if ($request->certificate_type != '') {
+
+               $getCertifiedDevice = $getCertifiedDevice->where('certification_data.certificate_type', 'like', '%' . $request->certificate_type . '%');
+            }
+
+            if ($request->validity != '') {
+
+               $getCertifiedDevice = $getCertifiedDevice->where('certification_data.validity', 'like', '%' . $request->validity . '%');
+            }
+
+            if ($request->issue_date != '') {
+
+                $issueDate = explode('-', $request->issue_date);
+                    $from   = Carbon::parse($issueDate[0])
+                                        ->startOfDay()        // 2018-09-29 00:00:00.000000
+                                        ->toDateTimeString(); // 2018-09-29 00:00:00
+
+                    $to     = Carbon::parse($issueDate[1])
+                                        ->endOfDay()          // 2018-09-29 23:59:59.000000
+                                        ->toDateTimeString(); // 2018-09-29 23:59:59
+
+                $getCertifiedDevice =  $getCertifiedDevice->whereBetween('certification_data.issue_date', [$from, $to]);
+            }
+
+            if ($request->expiry_date != '') {
+
+                $expiryDate = explode('-', $request->expiry_date);
+                    $from   = Carbon::parse($expiryDate[0])
+                                        ->startOfDay()        // 2018-09-29 00:00:00.000000
+                                        ->toDateTimeString(); // 2018-09-29 00:00:00
+
+                    $to     = Carbon::parse($expiryDate[1])
+                                        ->endOfDay()          // 2018-09-29 23:59:59.000000
+                                        ->toDateTimeString(); // 2018-09-29 23:59:59
+
+                $getCertifiedDevice =  $getCertifiedDevice->whereBetween('certification_data.expiry_date', [$from, $to]);
+            }
+
+
+            $getCertifiedDevice = $getCertifiedDevice->orderBy('certification_data.created_at', 'desc')
+                                                    ->paginate(50);
 
         // get template
         $getStudies = Study::get();
+
+        // get parent modality
+        $getParentModality = Modility::select('id', 'modility_name')->get();
+        $getChildModality = ChildModilities::select('id', 'modility_name')->get();
 
         // get templates for email
         $getTemplates = CertificationTemplate::select('id as template_id', 'title as template_title')->get();
 
 
-        return view('certificationapp::certificate_device.certified_device', compact('getCertifiedDevice', 'getStudies', 'getTemplates'));
+        return view('certificationapp::certificate_device.certified_device', compact('getCertifiedDevice', 'getStudies', 'getTemplates', 'getParentModality', 'getChildModality'));
     }
 
     public function generateDeviceGrandfatherCertificate(Request $request)
@@ -837,7 +940,8 @@ class TransmissionDataDeviceController extends Controller
 
         $generateCertificate->photographer_id = $findCertificate->photographer_id;
         $generateCertificate->photographer_email = $findCertificate->photographer_email;
-        $generateCertificate->cc_emails = $findCertificate->cc_emails;
+        $generateCertificate->cc_emails = json_encode($request->cc_user_email);
+        $generateCertificate->bcc_emails = json_encode($request->bcc_user_email);
 
         // get study information
         $getStudy = Study::where('id', $request->study)->first();
@@ -864,8 +968,10 @@ class TransmissionDataDeviceController extends Controller
         $generateCertificate->expiry_date = $findCertificate->expiry_date;
 
         $generateCertificate->certificate_type = 'grandfathered';
-        $generateCertificate->grandfather_certificate_id = 'Grandfater' . substr(md5(microtime()), 0, 8);
-        $generateCertificate->certificate_id = 'OIIRC-01-' . substr(md5(microtime()), 0, 8) . '-G';
+
+        $generateCertificate->grandfather_certificate_id = 'Grandfater'.substr(md5(microtime()), 0, 8);
+        $generateCertificate->certificate_id = 'OIRRC-01-'.substr(md5(microtime()), 0, 8).'-G';
+
 
         // certification Officer Info
         $generateCertificate->certification_officer_id = \Auth::user()->id;
@@ -909,13 +1015,21 @@ class TransmissionDataDeviceController extends Controller
         $data['email_body'] = str_replace($labels, $variables, $request->comment);
         $senderEmail = $generateCertificate->photographer_email;
         $ccEmail = $generateCertificate->cc_emails != '' ? json_decode($generateCertificate->cc_emails) : '';
+        $bccEmail = $generateCertificate->bcc_emails != '' ? json_decode($generateCertificate->bcc_emails) : '';
 
         // send email to users
-        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function ($message) use ($senderEmail, $ccEmail, $generateCertificate, $getSite, $getStudy, $getModality, $path, $file_name) {
-            $message->subject($getStudy->study_short_name . ' ' . $getStudy->study_code . ' | Grandfather Device Certification# ' . $generateCertificate->certificate_id . ' | ' . $getSite->site_code . ' | ' . $getModality->modility_name);
+        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $bccEmail, $generateCertificate, $getSite, $getStudy, $getModality, $path, $file_name)
+        {
+            $message->subject($getStudy->study_short_name.' '.$getStudy->study_code.' | Grandfather Device Certification# '.$generateCertificate->certificate_id.' | '. $getSite->site_code.' | '. $getModality->modility_name);
             $message->to($senderEmail);
-            $message->cc($ccEmail);
-            $message->attach($path . '/' . $file_name);
+            if($ccEmail != '') {
+                $message->cc($ccEmail);
+            }
+            if($bccEmail != '') {
+                $message->bcc($bccEmail);
+            }
+            $message->attach($path.'/'.$file_name);
+
         });
 
         // update the file name in database
