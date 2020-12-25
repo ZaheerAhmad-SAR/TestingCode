@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Date;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\RoleStudyUser;
 use Modules\UserRoles\Entities\UserRole;
-use Psy\Util\Str;
+use Illuminate\Support\Str;
 
 class StudySeederTableSeeder extends Seeder
 {
@@ -22,10 +22,10 @@ class StudySeederTableSeeder extends Seeder
     public function run()
     {
         Model::unguard();
-      /*  $study = Study::all();
+        /*  $study = Study::all();
         if (count($study) <= 0){
             $study = Study::create([
-                'id'    => \Illuminate\Support\Str::uuid(),
+                'id'    => (string)Str::uuid(),
                 'study_short_name'  =>  'Test Study',
                 'study_title' => 'Study Title',
                 'study_status'  => 'Development',
@@ -37,20 +37,19 @@ class StudySeederTableSeeder extends Seeder
                 'start_date' => Date::now(),
                 'end_date' => Date::now()->addYears(2),
                 'description'   =>  'Description will go here',
-                'user_id'       => \Illuminate\Support\Str::uuid()
+                'user_id'       => (string)Str::uuid()
             ]);
 
 
             $studyUser = User::all();
             if ($studyUser->name = 'admin'){
                 RoleStudyUser::create([
-                    'id'    => \Illuminate\Support\Str::uuid(),
+                    'id'    => (string)Str::uuid(),
                     'user_id'   => $studyUser->id,
                     'role_id'   => $studyUser->role_id,
                     'study_id'  => $study->id
                 ]);
             }
         }*/
-
     }
 }

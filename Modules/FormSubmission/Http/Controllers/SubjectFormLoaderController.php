@@ -33,7 +33,6 @@ class SubjectFormLoaderController extends Controller
         $subjectPhasesIdsArray = $subject->subjectPhasesArray();
         $visitPhases = StudyStructure::where('study_id', $studyId)
             ->whereIn('id', $subjectPhasesIdsArray)
-            ->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)
             ->get();
         /*****************/
 

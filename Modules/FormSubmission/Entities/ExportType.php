@@ -10,7 +10,7 @@ use Modules\Admin\Entities\StudyStructure;
 
 class ExportType extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $table = 'export_type';
     protected $fillable = [
         'id', 'study_id', 'phase_ids', 'form_type_id', 'modility_id', 'titles_values', 'export_type_title', 'created_at', 'updated_at', 'deleted_at'
@@ -34,8 +34,8 @@ class ExportType extends Model
 
     public static function getPhaseNames($phaseIdsString)
     {
-        $phaseIdsArray = explode(',', $phaseIdsString);
-        $phasesNamesArray = StudyStructure::whereIn('id', $phaseIdsArray)->pluck('name')->toArray();
+        $phaseIdsArray = array_filter(explode(',', $phaseIdsString));
+        $phasesNamesArray = StudyStructure::whereIn('id', $phaseIdsArray)->withOutRepeated()->pluck('name')->toArray();
         return implode(', ', $phasesNamesArray);
     }
 }

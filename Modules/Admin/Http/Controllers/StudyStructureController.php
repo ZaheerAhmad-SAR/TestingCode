@@ -21,7 +21,7 @@ class StudyStructureController extends Controller
      */
     public function index()
     {
-        $query = StudyStructure::select('*');
+        $query = StudyStructure::select('*')->withOutRepeated();
         $query->with('phases', 'study');
         if (null !== session('current_study') && !empty(session('current_study'))) {
             $query->where('study_id', session('current_study'));
@@ -35,7 +35,7 @@ class StudyStructureController extends Controller
     }
     public function get_steps()
     {
-        $query = StudyStructure::select('*');
+        $query = StudyStructure::select('*')->withOutRepeated();
         $query->with('phases', 'study');
         if (null !== session('current_study') && !empty(session('current_study'))) {
             $query->where('study_id', session('current_study'));
@@ -98,7 +98,7 @@ class StudyStructureController extends Controller
     }
     public function getallphases(Request $request)
     {
-        $query = StudyStructure::select('*');
+        $query = StudyStructure::select('*')->withOutRepeated();
         $query->with('phases', 'study');
         if (null !== session('current_study') && !empty(session('current_study'))) {
             $query->where('study_id', session('current_study'));
@@ -211,7 +211,7 @@ class StudyStructureController extends Controller
         $logEventDetails = eventDetails($request->step_id, 'Step', 'Update', $request->ip(), $oldStep);
 
 
-        $this->updateStepToReplicatedVisits($step);
+        $this->updateStepToReplicatedVisits($step, true);
 
         $data = [
             'success' => true,
@@ -222,7 +222,8 @@ class StudyStructureController extends Controller
     public function update(Request $request, $id = '')
     {
         // old phase
-        $oldPhase = StudyStructure::where('id', $request->id)->first();
+        $oldPhase = StudyStructure::find($request->id);
+
         $phase = StudyStructure::find($request->id);
         $phase->position  =  $request->position;
         $phase->name  =  $request->name;
@@ -232,13 +233,14 @@ class StudyStructureController extends Controller
         $phase->save();
         // log event details
         $logEventDetails = eventDetails($phase->id, 'Phase', 'Update', $request->ip(), $oldPhase);
-        $this->updatePhaseToReplicatedVisits($phase);
+
+        $this->updatePhaseToReplicatedVisits($phase, true);
     }
     // Delete Phase here
     public function destroy($id)
     {
         $phase = StudyStructure::find($id);
-        $this->deletePhase($phase);
+        $this->deletePhase($phase, true);
     }
     public function destroySteps($step_id)
     {
@@ -250,12 +252,12 @@ class StudyStructureController extends Controller
     {
         $default_data_option = $request->default_data_option;
         $step = PhaseSteps::find($step_id);
-        $this->activateStepToReplicatedVisits($step, $default_data_option);
+        $this->activateStepToReplicatedVisits($step, $default_data_option, true);
     }
 
     public function deActivateStep($step_id)
     {
         $step = PhaseSteps::find($step_id);
-        $this->deActivateStepToReplicatedVisits($step);
+        $this->deActivateStepToReplicatedVisits($step, true);
     }
 }

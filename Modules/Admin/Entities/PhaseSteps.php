@@ -17,7 +17,7 @@ use Modules\FormSubmission\Traits\JSStepCalculatedFields;
 
 class PhaseSteps extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     use JSQuestionDataValidation;
     use JSStepCalculatedFields;
 

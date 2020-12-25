@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DiseaseCohort extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $fillable = ['id', 'study_id', 'name'];
     protected $keyType = 'string';
 

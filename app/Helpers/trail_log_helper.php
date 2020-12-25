@@ -735,9 +735,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData)
         //get subject
         $subjectName = Subject::where('id', $eventData[1]['subject_id'])->first();
         // visit name
-        $visitName = StudyStructure::where('id', $eventData[1]['study_structures_id'])
-            ->withOutGlobalScope(StudyStructureWithoutRepeatedScope::class)
-            ->first();
+        $visitName = StudyStructure::find($eventData[1]['study_structures_id']);
 
         // get steps
         $stepName = PhaseSteps::where('step_id', $eventData[1]['phase_steps_id'])->first();

@@ -33,7 +33,7 @@ trait CohortSkipLogicTrait
         $deactivateFormArray = [];
         foreach ($deactivateFormIds as $deactivateFormId) {
             $replicatedForm = PhaseSteps::where('parent_id', 'like', $deactivateFormId)
-                ->where('replicating_or_cloning', 'like', 'replicating')
+                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
                 ->whereIn('step_id', $stepIdsArray)
                 ->first();
             $deactivateFormArray[] = $replicatedForm->step_id;
@@ -46,7 +46,7 @@ trait CohortSkipLogicTrait
         $deactivateSectionArray = [];
         foreach ($deactivateSectionIds as $deactivateSectionId) {
             $replicatedSection = Section::where('parent_id', 'like', $deactivateSectionId)
-                ->where('replicating_or_cloning', 'like', 'replicating')
+                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
                 ->whereIn('id', $sectionIdsArray)
                 ->first();
             $deactivateSectionArray[] = $replicatedSection->id;
@@ -59,7 +59,7 @@ trait CohortSkipLogicTrait
         $deactivateQuestionArray = [];
         foreach ($deactivateQuestionIds as $deactivateQuestionId) {
             $replicatedQuestion = Question::where('parent_id', 'like', $deactivateQuestionId)
-                ->where('replicating_or_cloning', 'like', 'replicating')
+                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
                 ->whereIn('id', $questionIdsArray)
                 ->first();
             $deactivateQuestionArray[] = $replicatedQuestion->id;
@@ -71,9 +71,14 @@ trait CohortSkipLogicTrait
 
     private function updateCohortSkipLogicsToReplicatedVisits($phaseId, $isReplicating = true)
     {
-        $this->deleteCohortSkipLogicsToReplicatedVisits($phaseId);
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
+        $this->deleteCohortSkipLogicsToReplicatedVisits($phaseId, $isReplicating);
         $replicatedPhases = StudyStructure::where('parent_id', 'like', $phaseId)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedPhases as $replicatedPhase) {
             $skipLogics = CohortSkipLogic::where('phase_id', 'like', $phaseId)->get();
@@ -83,19 +88,24 @@ trait CohortSkipLogicTrait
         }
     }
 
-    private function deleteCohortSkipLogicsToReplicatedVisits($phaseId)
+    private function deleteCohortSkipLogicsToReplicatedVisits($phaseId, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         $replicatedPhases = StudyStructure::where('parent_id', 'like', $phaseId)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedPhases as $replicatedPhase) {
             CohortSkipLogic::where('phase_id', 'like', $replicatedPhase->id)->delete();
         }
     }
 
-    private function deletePhaseSkipLogics($phaseId)
+    private function deletePhaseSkipLogics($phaseId, $isReplicating = true)
     {
-        $this->deleteCohortSkipLogicsToReplicatedVisits($phaseId);
+        $this->deleteCohortSkipLogicsToReplicatedVisits($phaseId, $isReplicating);
         CohortSkipLogic::where('phase_id', $phaseId)->delete();
     }
 }

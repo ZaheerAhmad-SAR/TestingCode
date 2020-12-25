@@ -7,17 +7,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\UserRoles\Entities\Permission;
 use Modules\Admin\Entities\RoleStudyUser;
-use Modules\UserRoles\Entities\UserRole;
-use Modules\Admin\Entities\Annontation;
 use Modules\Admin\Entities\StudyStructure;
-use Modules\Admin\Scopes\StudyStructureWithoutRepeatedScope;
 use Modules\FormSubmission\Entities\AdjudicationFormStatus;
 use Modules\FormSubmission\Entities\FormStatus;
 use Modules\FormSubmission\Entities\SubjectsPhases;
+use Modules\Admin\Scopes\PreferencesByStudy;
 
 class Study extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $keyType = 'string';
     protected $fillable = [
         'id',
@@ -51,6 +49,11 @@ class Study extends Model
     public function diseaseCohort()
     {
         return $this->hasMany(DiseaseCohort::class);
+    }
+
+    public function preferences()
+    {
+        return $this->hasMany(Preference::class, 'study_id', 'id')->withoutGlobalScope(PreferencesByStudy::class);
     }
 
     public function roles()

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class FormType extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $fillable = ['form_type'];
     protected $table = 'form_types';
 

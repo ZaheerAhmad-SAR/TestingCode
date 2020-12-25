@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class AdjudicationFormStatus extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $table = 'adjudication_form_status';
     protected $fillable = ['id', 'form_adjudicated_by_id', 'subject_id', 'study_id', 'study_structures_id', 'phase_steps_id', 'section_id', 'modility_id', 'adjudication_status'];
     protected $keyType = 'string';

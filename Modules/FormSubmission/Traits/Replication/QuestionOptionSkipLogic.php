@@ -30,7 +30,7 @@ trait QuestionOptionSkipLogic
         */
         $replicatedPhaseId = StudyStructure::getPhaseIdByQuestionId($replicatedQuestionId);
         $replicatedQuestion = Question::where('parent_id', 'like', $optionSkipLogic->option_question_id)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->whereIn('id', StudyStructure::getQuestionIdsInPhaseArray($replicatedPhaseId))
             ->first();
         $newOptionSkipLogic->option_question_id = $replicatedQuestion->id;
@@ -40,9 +40,14 @@ trait QuestionOptionSkipLogic
 
     private function updateOptionSkipLogicsToReplicatedVisits($questionId, $isReplicating = true)
     {
-        $this->deleteOptionSkipLogicsToReplicatedVisits($questionId);
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
+        $this->deleteOptionSkipLogicsToReplicatedVisits($questionId, $isReplicating);
         $replicatedQuestions = Question::where('parent_id', 'like', $questionId)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedQuestions as $replicatedQuestion) {
             $optionSkipLogics = QuestionOption::where('question_id', 'like', $questionId)->get();
@@ -52,19 +57,24 @@ trait QuestionOptionSkipLogic
         }
     }
 
-    private function deleteOptionSkipLogicsToReplicatedVisits($questionId)
+    private function deleteOptionSkipLogicsToReplicatedVisits($questionId, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         $replicatedQuestions = Question::where('parent_id', 'like', $questionId)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedQuestions as $replicatedQuestion) {
             QuestionOption::where('question_id', 'like', $replicatedQuestion->id)->delete();
         }
     }
 
-    private function deleteQuestionOptionSkipLogics($questionId)
+    private function deleteQuestionOptionSkipLogics($questionId, $isReplicating = true)
     {
-        $this->deleteOptionSkipLogicsToReplicatedVisits($questionId);
+        $this->deleteOptionSkipLogicsToReplicatedVisits($questionId, $isReplicating);
         QuestionOption::where('question_id', $questionId)->delete();
     }
 }

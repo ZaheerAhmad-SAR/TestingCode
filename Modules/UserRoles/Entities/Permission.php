@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Permission extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     public $incrementing = false;
 
     public $table = 'permissions';

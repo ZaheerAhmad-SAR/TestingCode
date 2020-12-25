@@ -14,7 +14,7 @@ use Modules\Queries\Entities\Query;
 
 class FormStatus extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     use AdjudicationTrait;
 
     protected $table = 'form_submit_status';

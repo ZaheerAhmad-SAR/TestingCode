@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class QuestionAdjudicationRequired extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $table = 'question_adjudication_required';
     protected $fillable = ['id', 'subject_id', 'study_id', 'study_structures_id', 'phase_steps_id', 'section_id', 'question_id', 'val_difference', 'is_percentage'];
     protected $keyType = 'string';

@@ -12,7 +12,7 @@ use Modules\FormSubmission\Traits\JSQuestionSkipLogic;
 
 class Question extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     use JSQuestionDependency;
     use JSQuestionSkipLogic;
 

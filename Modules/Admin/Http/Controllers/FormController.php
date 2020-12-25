@@ -34,10 +34,10 @@ class FormController extends Controller
      */
     public function index()
     {
-        $phases = StudyStructure::select('*')->where('study_id', session('current_study'))->get();
+        $phases = StudyStructure::where('study_id', session('current_study'))->withOutRepeated()->get();
         //$option_groups = OptionsGroup::all();
         $current_study =  \Session::get('current_study');
-        $option_groups  = OptionsGroup::where('study_id',$current_study)->orderBy('created_at','desc')->get();
+        $option_groups  = OptionsGroup::where('study_id', $current_study)->orderBy('created_at', 'desc')->get();
         $fields = FormFieldType::all();
         $annotations = Annotation::all();
         return view('admin::forms.index', compact('phases', 'option_groups', 'fields', 'annotations'));
@@ -45,14 +45,14 @@ class FormController extends Controller
     public function getall_options()
     {
         $current_study =  \Session::get('current_study');
-        $options_dropdown = OptionsGroup::where('study_id',$current_study)->orderBy('created_at','desc')->get();
+        $options_dropdown = OptionsGroup::where('study_id', $current_study)->orderBy('created_at', 'desc')->get();
         //$options_dropdown = OptionsGroup::all();
         $optionsData['data'] = $options_dropdown;
         echo json_encode($optionsData);
     }
     public function get_phases($id)
     {
-        $phases = StudyStructure::select('*')->where('study_id', session('current_study'))->get();
+        $phases = StudyStructure::where('study_id', session('current_study'))->withOutRepeated()->get();
         $data['data'] = $phases;
         echo json_encode($data);
     }
@@ -384,7 +384,7 @@ class FormController extends Controller
         $questionObj->certification_type = $request->certification_type;
         $questionObj->save();
 
-        $this->updateQuestionToReplicatedVisits($questionObj);
+        $this->updateQuestionToReplicatedVisits($questionObj, true);
 
         /**************************************************/
         $this->updateFormField($request);
@@ -429,7 +429,7 @@ class FormController extends Controller
         //$form_field->question_info = $request->question_info;
         $form_field->text_info = htmlentities($request->text_info);
         $form_field->save();
-        $this->updateQuestionFormFieldToReplicatedVisits($form_field);
+        $this->updateQuestionFormFieldToReplicatedVisits($form_field, true);
     }
     private function createQuestionAdjudicationStatus($request, $questionObj)
     {
@@ -458,7 +458,7 @@ class FormController extends Controller
             $adjStatus->custom_value = $request->custom_value;
             $adjStatus->save();
 
-            $this->updateQuestionAdjudicationStatusesToReplicatedVisits($adjStatus);
+            $this->updateQuestionAdjudicationStatusesToReplicatedVisits($adjStatus, true);
         } else {
             $this->createQuestionAdjudicationStatus($request, $questionObj);
         }
@@ -484,7 +484,7 @@ class FormController extends Controller
 
     private function createQuestionDependencies($request, $questionObj)
     {
-        if (isset($request->q_d_status) && $request->q_d_status == 'yes') {
+        if (isset($request->q_d_status) && $request->q_d_status == 'yes' && !empty($request->dep_on_question_id)) {
             $id    = (string)Str::uuid();
             $data = [
                 'id' => $id,
@@ -504,12 +504,18 @@ class FormController extends Controller
         // Question dependency update
         if (!empty($request->dependency_id) && $request->dependency_id != 'no-id-123') {
             $dependencies = QuestionDependency::where('id', $request->dependency_id)->first();
-            $dependencies->q_d_status = $request->q_d_status;
-            $dependencies->dep_on_question_id = $request->dep_on_question_id;
-            $dependencies->opertaor = $request->dependency_opertaor;
-            $dependencies->custom_value = $request->dependency_custom_value;
-            $dependencies->save();
-            $this->updateQuestionDependenciesToReplicatedVisits($dependencies);
+
+            if (!empty($request->dep_on_question_id)) {
+                $dependencies->q_d_status = $request->q_d_status;
+                $dependencies->dep_on_question_id = $request->dep_on_question_id;
+                $dependencies->opertaor = $request->dependency_opertaor;
+                $dependencies->custom_value = $request->dependency_custom_value;
+                $dependencies->save();
+            } else {
+                $dependencies->forceDelete();
+            }
+
+            $this->updateQuestionDependenciesToReplicatedVisits($dependencies, true);
         } else {
             $this->createQuestionDependencies($request, $questionObj);
         }
@@ -537,11 +543,11 @@ class FormController extends Controller
         }
     }
 
-    private function updateQuestionValidation($request, $questionObj, $isReplicating = true)
+    private function updateQuestionValidation($request, $questionObj)
     {
-        $this->deleteQuestionValidations($questionObj->id);
+        $this->deleteQuestionValidations($questionObj->id, true);
         $this->createQuestionDatavalidations($request, $questionObj);
-        $this->updateQuestionValidationToReplicatedVisits($questionObj->id, $isReplicating);
+        $this->updateQuestionValidationToReplicatedVisits($questionObj->id, true);
     }
     /**
      * Show the specified resource.
@@ -561,7 +567,7 @@ class FormController extends Controller
 
     function deleteQuestion($questionId)
     {
-        $this->deleteQuestionAndItsRelatedValues($questionId);
+        $this->deleteQuestionAndItsRelatedValues($questionId, true);
         $Response['data'] = 'success';
         echo json_encode($Response);
     }

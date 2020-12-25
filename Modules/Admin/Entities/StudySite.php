@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StudySite extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $table = 'site_study';
     protected $fillable = ['id', 'study_id', 'site_id', 'study_site_id', 'primaryInvestigator_id'];
     protected $keyType = 'string';

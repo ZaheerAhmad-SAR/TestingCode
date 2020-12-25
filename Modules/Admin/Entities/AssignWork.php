@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AssignWork extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $table = 'assign_work';
 }

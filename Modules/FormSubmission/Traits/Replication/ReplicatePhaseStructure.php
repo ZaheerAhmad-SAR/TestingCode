@@ -4,6 +4,7 @@ namespace Modules\FormSubmission\Traits\Replication;
 
 use Illuminate\Support\Str;
 use Illuminate\Support\Arr;
+use Modules\Admin\Entities\Question;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Scopes\StudyStructureWithoutRepeatedScope;
 
@@ -33,7 +34,7 @@ trait ReplicatePhaseStructure
 
         $phase = StudyStructure::find($phaseId);
         $lastChildPhase = StudyStructure::where('parent_id', $phaseId)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->orderBy('created_at', 'desc')
             ->first();
         $count = 1;
@@ -76,7 +77,7 @@ trait ReplicatePhaseStructure
                 /******************************* */
                 foreach ($section->questions as $question) {
 
-                    $newQuestionIdsArray[] = $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId, $isReplicating);
+                    $newQuestionIdsArray[$question->id] = $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId, $isReplicating);
 
                     /******************************* */
                     /* Replicate Question Form Field */
@@ -99,7 +100,8 @@ trait ReplicatePhaseStructure
             }
         }
 
-        foreach ($newQuestionIdsArray as $newQuestionId) {
+        foreach ($newQuestionIdsArray as $questionId => $newQuestionId) {
+            $question = Question::find($questionId);
 
             /******************************* */
             /* Replicate Question Dependency */
@@ -111,13 +113,13 @@ trait ReplicatePhaseStructure
             /* Replicate Question Skip Logic */
             /******************************* */
 
-            $this->updateSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
+            $this->updateSkipLogicsToReplicatedVisits($question->id, $isReplicating);
 
             /******************************* */
             /* Replicate Question Option Skip Logic */
             /******************************* */
 
-            $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $newQuestionId, $isReplicating);
+            $this->updateOptionSkipLogicsToReplicatedVisits($question->id, $isReplicating);
         }
 
         /******************************* */
@@ -141,38 +143,46 @@ trait ReplicatePhaseStructure
         $replicatedPhase->update();
     }
 
-    private function updatePhaseToReplicatedVisits($phase)
+    private function updatePhaseToReplicatedVisits($phase, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         $replicatedPhases = StudyStructure::where('parent_id', 'like', $phase->id)
-            ->where('replicating_or_cloning', 'like', 'replicating')
-            ->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedPhases as $replicatedPhase) {
             $this->updateReplicatedPhase($phase, $replicatedPhase);
         }
     }
 
-    private function deletePhaseToReplicatedVisits($phase)
+    private function deletePhaseToReplicatedVisits($phase, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         $replicatedPhases = StudyStructure::where('parent_id', 'like', $phase->id)
-            ->where('replicating_or_cloning', 'like', 'replicating')
-            ->withoutGlobalScope(StudyStructureWithoutRepeatedScope::class)
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedPhases as $replicatedPhase) {
             $replicatedPhase->delete();
-            $this->deletePhaseSkipLogics($replicatedPhase->id);
-            $this->deleteCohortPhaseOptionSkipLogics($replicatedPhase->id);
+            $this->deletePhaseSkipLogics($replicatedPhase->id, $isReplicating);
+            $this->deleteCohortPhaseOptionSkipLogics($replicatedPhase->id, $isReplicating);
         }
     }
 
-    private function deletePhase($phase)
+    private function deletePhase($phase, $isReplicating = true)
     {
-        $this->deletePhaseToReplicatedVisits($phase);
+        $this->deletePhaseToReplicatedVisits($phase, $isReplicating);
         foreach ($phase->steps as $step) {
             $this->deleteStep($step);
         }
-        $this->deletePhaseSkipLogics($phase->id);
-        $this->deleteCohortPhaseOptionSkipLogics($phase->id);
+        $this->deletePhaseSkipLogics($phase->id, $isReplicating);
+        $this->deleteCohortPhaseOptionSkipLogics($phase->id, $isReplicating);
         $phase->delete();
     }
 }

@@ -8,7 +8,7 @@ use Modules\Admin\Scopes\FormFieldTypeOrderByScope;
 
 class FormFieldType extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $fillable = [];
     protected $table = 'form_field_type';
 

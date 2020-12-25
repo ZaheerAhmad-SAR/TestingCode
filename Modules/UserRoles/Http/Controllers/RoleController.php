@@ -5,14 +5,14 @@ namespace Modules\UserRoles\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
-use Illuminate\Foundation\Validation\ValidatesRequests as Requests;
+use Illuminate\Foundation\Validation\ValidatesRequests;
 use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\RolePermission;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Http\Requests\RoleRequest;
 use Datatables;
-use Psy\Util\Str;
+use Illuminate\Support\Str;
 
 class RoleController extends Controller
 {
@@ -57,7 +57,7 @@ class RoleController extends Controller
     public function store(RoleRequest $request)
     {
         $role =  Role::create([
-            'id' => \Illuminate\Support\Str::uuid(),
+            'id' => (string)Str::uuid(),
             'name'  =>  $request->name,
             'description'   =>  $request->description,
             'role_type' => $request->role_type_name,
@@ -185,7 +185,7 @@ class RoleController extends Controller
         if ($request->study_view == 'on') {
             //dd('log store');
             $permissions = Permission::where('name', '=', 'studies.index')
-                                        ->get();
+                ->get();
 
             $this->createRolePermissions($role, $permissions);
         }
@@ -237,7 +237,7 @@ class RoleController extends Controller
         // if add/edit
         if ($request->grading_add == 'on' && $request->grading_edit == 'on') {
             $permissions = Permission::where('name', '=', 'gradingcontrol.grading-work-list')
-                                        ->get();
+                ->get();
             $this->createRolePermissions($role, $permissions);
         }
         //ends add/edit check
@@ -257,7 +257,7 @@ class RoleController extends Controller
         if ($request->study_tools == 'on' && $request->grading_view == 'on') {
 
             $permissions = Permission::where('name', 'grading.status')
-                                       ->get();
+                ->get();
             $this->createRolePermissions($role, $permissions);
         }
 
@@ -290,7 +290,6 @@ class RoleController extends Controller
                 ->get();
 
             $this->createRolePermissions($role, $permissions);
-
         } // check for add/edit ends
 
         if ($request->qualityControl_view == 'on') {

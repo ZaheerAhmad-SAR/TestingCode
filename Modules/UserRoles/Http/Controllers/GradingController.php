@@ -299,7 +299,7 @@ class GradingController extends Controller
         $getFilterSubjects = Subject::select('id', 'subject_id')
             ->get();
         //get phases
-        $getFilterPhases = StudyStructure::select('id', 'name')
+        $getFilterPhases = StudyStructure::select('id', 'name')->withOutRepeated()
             ->orderBy('position')
             ->get();
         // get sites
@@ -495,7 +495,7 @@ class GradingController extends Controller
         $getFilterSubjects = Subject::select('id', 'subject_id')
             ->get();
         //get phases
-        $getFilterPhases = StudyStructure::select('id', 'name')
+        $getFilterPhases = StudyStructure::select('id', 'name')->withOutRepeated()
             ->orderBy('position')
             ->get();
         // get sites
@@ -599,7 +599,7 @@ class GradingController extends Controller
                     // get subject name
                     $getSubjectName = Subject::where('id', $subject)->first();
                     //get phase name
-                    $getPhaseName = StudyStructure::where('id', $input['phase_id'][$key])->first();
+                    $getPhaseName = StudyStructure::find($input['phase_id'][$key]);
                     //get modality name
                     $getModilityName = Modility::where('id', $input['modility_id'])->first();
                     //get Form name
@@ -1122,7 +1122,7 @@ class GradingController extends Controller
         $getFilterSubjects = Subject::select('id', 'subject_id')
             ->get();
         //get phases
-        $getFilterPhases = StudyStructure::select('id', 'name')
+        $getFilterPhases = StudyStructure::select('id', 'name')->withOutRepeated()
             ->orderBy('position')
             ->get();
         // get sites
@@ -1328,7 +1328,7 @@ class GradingController extends Controller
         $getFilterSubjects = Subject::select('id', 'subject_id')
             ->get();
         //get phases
-        $getFilterPhases = StudyStructure::select('id', 'name')
+        $getFilterPhases = StudyStructure::select('id', 'name')->withOutRepeated()
             ->orderBy('position')
             ->get();
         // get sites

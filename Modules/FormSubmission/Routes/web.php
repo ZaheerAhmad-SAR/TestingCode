@@ -65,4 +65,6 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('questionComment/loadQuestionCommentPopup', 'QuestionCommentController@loadQuestionCommentPopup')->name('questionComment.loadQuestionCommentPopup');
     Route::post('questionComment/loadAddQuestionCommentForm', 'QuestionCommentController@loadAddQuestionCommentForm')->name('questionComment.loadAddQuestionCommentForm');
     Route::post('questionComment/submitAddQuestionCommentForm', 'QuestionCommentController@submitAddQuestionCommentForm')->name('questionComment.submitAddQuestionCommentForm');
+
+    Route::get('showStructure/{type}/{id}', 'ShowStudyStructureController@showStructure')->name('formDataExport.showStructure');
 });

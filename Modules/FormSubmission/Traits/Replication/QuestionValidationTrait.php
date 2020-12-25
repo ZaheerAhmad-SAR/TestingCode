@@ -27,10 +27,15 @@ trait QuestionValidationTrait
         $newQuestionValidation->save();
     }
 
-    private function updateQuestionValidationToReplicatedVisits($questionId)
+    private function updateQuestionValidationToReplicatedVisits($questionId, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         $replicatedQuestions = Question::where('parent_id', 'like', $questionId)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedQuestions as $replicatedQuestion) {
             $questionValidations = QuestionValidation::where('question_id', 'like', $questionId)->get();
@@ -48,19 +53,24 @@ trait QuestionValidationTrait
         }
     }
 
-    private function deleteQuestionValidationToReplicatedVisits($questionId)
+    private function deleteQuestionValidationToReplicatedVisits($questionId, $isReplicating = true)
     {
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+
         $replicatedQuestions = Question::where('parent_id', 'like', $questionId)
-            ->where('replicating_or_cloning', 'like', 'replicating')
+            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedQuestions as $replicatedQuestion) {
             QuestionValidation::where('question_id', 'like', $replicatedQuestion->id)->delete();
         }
     }
 
-    private function deleteQuestionValidations($questionId)
+    private function deleteQuestionValidations($questionId, $isReplicating = true)
     {
-        $this->deleteQuestionValidationToReplicatedVisits($questionId);
+        $this->deleteQuestionValidationToReplicatedVisits($questionId, $isReplicating);
         QuestionValidation::where('question_id', $questionId)->delete();
     }
 }

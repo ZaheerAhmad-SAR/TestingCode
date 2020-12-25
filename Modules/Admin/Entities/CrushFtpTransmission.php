@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CrushFtpTransmission extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $primaryKey = 'id'; // or null
 
     protected $fillable = [

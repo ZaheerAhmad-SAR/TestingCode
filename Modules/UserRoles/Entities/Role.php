@@ -11,7 +11,7 @@ use Modules\Admin\Entities\PhaseStep;
 
 class Role extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $fillable = ['id', 'name', 'description', 'role_type', 'created_by'];
     public $incrementing = false;
     public $keyType = 'string';

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Photographer extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $fillable = ['id', 'first_name', 'mid_name', 'last_name', 'site_id', 'phone', 'email'];
     public $incrementing = false;
     protected $keyType = 'string';

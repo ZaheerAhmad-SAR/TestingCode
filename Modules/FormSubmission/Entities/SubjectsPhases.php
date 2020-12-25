@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class SubjectsPhases extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
 
     protected $table = 'subjects_phases';
     protected $keyType = 'string';

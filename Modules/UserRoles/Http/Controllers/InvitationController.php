@@ -9,7 +9,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Mail;
 use Modules\UserRoles\Emails\InvitationMail;
 use Modules\UserRoles\Entities\Invitation;
-use Psy\Util\Str;
+use Illuminate\Support\Str;
 
 class InvitationController extends Controller
 {
@@ -31,21 +31,20 @@ class InvitationController extends Controller
 
         //create a new invite record
         $invite = Invitation::create([
-            'id'    => \Illuminate\Support\Str::uuid(),
+            'id'    => (string)Str::uuid(),
             'email' => $request->get('email'),
             'token' => $token,
             'role_id'   => $request->roles
         ]);
-        $user = User::where('email','=',$invite->email)->first();
-        if(empty($user)) {
+        $user = User::where('email', '=', $invite->email)->first();
+        if (empty($user)) {
             // send the email
             Mail::to($request->get('email'))->send(new InvitationMail($invite));
             return redirect()
                 ->back();
         }
         // redirect back where we came from
-        return redirect()->route('users.index')->with('message','Invitation already sent to the given email');
-
+        return redirect()->route('users.index')->with('message', 'Invitation already sent to the given email');
     }
 
     public function accept($token)
@@ -65,7 +64,6 @@ class InvitationController extends Controller
         // here you would probably log the user in and show them the dashboard, but we'll just prove it worked
 
         return 'Good job! Invite accepted!';
-
     }
 
 

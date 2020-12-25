@@ -23,10 +23,10 @@ class AssignPhaseToSubjectController extends Controller
     {
         $subject = Subject::find($request->subjectId);
         $subjectAssignedPhasesIdsArray = $subject->subjectPhasesArray();
-        $repeatablePhasesIdsArray = StudyStructure::where('is_repeatable', 1)->pluck('id')->toArray();
+        $repeatablePhasesIdsArray = StudyStructure::where('is_repeatable', 1)->withOutRepeated()->pluck('id')->toArray();
         $notToShowPhasesIdsArray = array_diff($subjectAssignedPhasesIdsArray, $repeatablePhasesIdsArray);
 
-        $visitPhases = StudyStructure::where('study_id', $request->studyId)->whereNotIn('id', $notToShowPhasesIdsArray)->get();
+        $visitPhases = StudyStructure::where('study_id', $request->studyId)->withOutRepeated()->whereNotIn('id', $notToShowPhasesIdsArray)->get();
 
         echo view('formsubmission::subjectFormLoader.assignPhasesToSubjectPopupForm')
             ->with('visitPhases', $visitPhases)
@@ -69,9 +69,9 @@ class AssignPhaseToSubjectController extends Controller
 
         $subjectId = $request->subjectId;
         $phaseId = $request->phaseId;
-        $phase = StudyStructure::where('id', 'like', $phaseId)->withoutGlobalScopes()->first();
-        if ($phase->parent_id != 'no-parent' && $phase->replicating_or_cloning == 'replicating') {
-            $this->deletePhase($phase);
+        $phase = StudyStructure::find($phaseId);
+        if ($phase->replicating_or_cloning == 'replicating') {
+            $this->deletePhase($phase, true);
         }
 
         SubjectsPhases::where('subject_id', 'like', $subjectId)->where('phase_id', 'like', $phaseId)->delete();

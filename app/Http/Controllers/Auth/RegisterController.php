@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Modules\UserRoles\Entities\Invitation;
 use Modules\UserRoles\Entities\UserRole;
-use Psy\Util\Str;
+use Illuminate\Support\Str;
 
 class RegisterController extends Controller
 {
@@ -69,7 +69,7 @@ class RegisterController extends Controller
         $invite = Invitation::where('token', $data['token'])->first();
         $user = User::where('email', 'like', $invite->email)->first();
         if (null === $user) {
-            $userId = \Illuminate\Support\Str::uuid();
+            $userId = (string)Str::uuid();
             User::create([
                 'id' => $userId,
                 'name' => $data['name'],

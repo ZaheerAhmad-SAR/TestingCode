@@ -634,7 +634,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
             $getSubjectName = Subject::find($eventId->subject_id);
 
             //get phase name
-            $getPhaseName = StudyStructure::where('id', $eventId->phase_id)->withOutGlobalScopes()->first();
+            $getPhaseName = StudyStructure::find($eventId->phase_id);
 
             // set message for audit
             $auditMessage = Auth::user()->name . ' deactivated phase ' . $getPhaseName->name . '.';
@@ -1068,9 +1068,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
         //get subject
         $subjectName = Subject::where('id', $eventData[1]['subject_id'])->first();
         // visit name
-        $visitName = StudyStructure::where('id', $eventData[1]['study_structures_id'])
-            ->withOutGlobalScope(StudyStructureWithoutRepeatedScope::class)
-            ->first();
+        $visitName = StudyStructure::find($eventData[1]['study_structures_id']);
 
         // get steps
         $stepName = PhaseSteps::where('step_id', $eventData[1]['phase_steps_id'])->first();
@@ -1270,16 +1268,18 @@ function return_bytes($size_str)
 
 function TagReleasenumber()
 {
-$HEAD_hash = file_get_contents('.git/refs/heads/Laravel_7'); // or branch x
-
-$files = glob('.git/refs/tags/*');
-foreach(array_reverse($files) as $file) {
-    $contents = file_get_contents($file);
-
-    if($HEAD_hash === $contents)
-    {
-        return basename($file);
-        exit;
-    }
 }
+function TagReleasenumberBk()
+{
+    $HEAD_hash = file_get_contents('.git/refs/heads/Laravel_7'); // or branch x
+
+    $files = glob('.git/refs/tags/*');
+    foreach (array_reverse($files) as $file) {
+        $contents = file_get_contents($file);
+
+        if ($HEAD_hash === $contents) {
+            return basename($file);
+            exit;
+        }
+    }
 }

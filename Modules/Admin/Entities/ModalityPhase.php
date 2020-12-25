@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ModalityPhase extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     //
 }

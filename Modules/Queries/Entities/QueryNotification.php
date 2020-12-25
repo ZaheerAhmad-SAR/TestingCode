@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class QueryNotification extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $table = 'query_notifications';
     protected $fillable = [
         'id', 'site_name', 'cc_email', 'subject', 'email_body', 'email_attachment', 'notifications_status',

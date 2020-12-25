@@ -8,7 +8,7 @@ use App\User;
 
 class TransmissionUpdateDetail extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     //
     protected $table = 'transmission_update_details';
 

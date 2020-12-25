@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Annotation extends Model
 {
-    use SoftDeletes;
+    use softDeletes;
     protected $keyType = 'string';
     protected $fillable = ['id', 'study_id', 'label', 'deleted_at'];
 }
