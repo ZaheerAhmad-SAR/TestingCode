@@ -21,7 +21,7 @@ class FormDataExport implements FromView
     public function __construct($request)
     {
         $this->study_id = session('current_study');
-        $this->visit_ids = array_filter(explode(',', $request->input('visit_ids', [])));
+        $this->visit_ids = arrayFilter(explode(',', $request->input('visit_ids', [])));
         $this->modility_id = $request->input('modility_id', '');
         $this->form_type_id = $request->input('form_type_id', '');
         $this->print_options_values = $request->input('print_options_values', 'option_values');
@@ -156,8 +156,8 @@ class FormDataExport implements FromView
                                         $option_values = [];
                                         $optionGroup = $question->optionGroup;
                                         if (!empty($optionGroup->option_value)) {
-                                            $option_values = array_filter(explode(',', $optionGroup->option_value));
-                                            $option_names = array_filter(explode(',', $optionGroup->option_name));
+                                            $option_values = arrayFilter(explode(',', $optionGroup->option_value));
+                                            $option_names = arrayFilter(explode(',', $optionGroup->option_name));
                                             $options = array_combine($option_values, $option_names);
                                             $answerVal = $options[$answer->answer];
                                         }

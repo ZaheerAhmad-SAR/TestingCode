@@ -42,7 +42,7 @@ class ExportTypeController extends Controller
         $modalities = Modility::all();
 
         $exportType = ExportType::find($request->exportTypeId);
-        $selectedPhaseIds = array_filter(explode(',', $exportType->phase_ids));
+        $selectedPhaseIds = arrayFilter(explode(',', $exportType->phase_ids));
 
         echo view('formsubmission::exports.edit_export_type_form')
             ->with('exportType', $exportType)
