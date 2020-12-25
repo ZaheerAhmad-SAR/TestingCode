@@ -10,7 +10,7 @@ use Modules\Admin\Entities\Other;
 use Modules\Admin\Entities\Photographer;
 use Modules\Admin\Entities\PrimaryInvestigator;
 use Modules\Admin\Entities\Site;
-use Psy\Util\Str;
+use Illuminate\Support\Str;
 
 class PhotographerController extends Controller
 {
@@ -40,22 +40,22 @@ class PhotographerController extends Controller
     public function store(Request $request)
     {
 
-        $id = \Illuminate\Support\Str::uuid();
+        $id = (string)Str::uuid();
         $photographer = Photographer::create([
             'id'    => $id,
-            'site_id'=> $request->site_id,
+            'site_id' => $request->site_id,
             'first_name' => $request->photographer_first_name,
             'mid_name' => empty($request->photographer_mid_name) ? Null : $request->photographer_mid_name,
             'last_name' => empty($request->photographer_last_name) ? Null : $request->photographer_last_name,
-            'phone'=> empty($request->photographer_phone) ? Null : $request->photographer_phone,
-            'email'=>empty($request->photographer_email)? Null : $request->photographer_email
+            'phone' => empty($request->photographer_phone) ? Null : $request->photographer_phone,
+            'email' => empty($request->photographer_email) ? Null : $request->photographer_email
         ]);
 
         $oldPhotographer = [];
         // log event details
         $logEventDetails = eventDetails($id, 'Photographer', 'Add', $request->ip(), $oldPhotographer);
 
-        return response()->json([$photographer,'success'=>'Photographer is added successfully']);
+        return response()->json([$photographer, 'success' => 'Photographer is added successfully']);
     }
 
     /**
@@ -78,7 +78,6 @@ class PhotographerController extends Controller
         if ($id) {
             $record = Photographer::find($id);
             return response()->json([$record]);
-
         }
     }
 
@@ -92,7 +91,7 @@ class PhotographerController extends Controller
     {
         // get old data for logs
         $oldPhotographer = Photographer::find($request->photo_id);
-        $data = array (
+        $data = array(
             'first_name' => $request->photographer_first_name,
             'mid_name' => $request->photographer_mid_name,
             'last_name' => $request->photographer_last_name,
@@ -103,14 +102,12 @@ class PhotographerController extends Controller
 
         $photographer_site_id  = $request->photographer_site_id;
 
-        $allphotographer    = Photographer::where('site_id',$photographer_site_id)->get();
+        $allphotographer    = Photographer::where('site_id', $photographer_site_id)->get();
 
-         // log event details
+        // log event details
         $logEventDetails = eventDetails($request->photo_id, 'Photographer', 'Update', $request->ip(), $oldPhotographer);
 
         return response()->json($allphotographer);
-
-
     }
 
     /**
@@ -118,21 +115,20 @@ class PhotographerController extends Controller
      * @param int $id
      * @return Response
      */
-    public function destroy(Request $request,$id)
+    public function destroy(Request $request, $id)
     {
-        if ($request->ajax())
-        {
+        if ($request->ajax()) {
             $delete = Photographer::find($id);
 
             $delete->delete();
-            return response()->json(['success'=>'Photographer is deleted successfully.']);
+            return response()->json(['success' => 'Photographer is deleted successfully.']);
         }
     }
 
-    public function showPhotographerBySiteId(Request $request,$id)
+    public function showPhotographerBySiteId(Request $request, $id)
     {
         if ($request->ajax()) {
-            $result    = Photographer::where('site_id',$id)->get();
+            $result    = Photographer::where('site_id', $id)->get();
             return response()->json([$result]);
         }
     }

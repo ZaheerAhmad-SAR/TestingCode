@@ -70,7 +70,7 @@ class AssignPhaseToSubjectController extends Controller
         $subjectId = $request->subjectId;
         $phaseId = $request->phaseId;
         $phase = StudyStructure::find($phaseId);
-        if ($phase->parent_id != 'no-parent' && $phase->replicating_or_cloning == 'replicating') {
+        if ($phase->replicating_or_cloning == 'replicating') {
             $this->deletePhase($phase, true);
         }
 

@@ -30,4 +30,9 @@ class Preference extends Model
         $preference = self::where('preference_title', 'like', $preference_title)->first();
         return $preference->preference_value;
     }
+
+    public function study()
+    {
+        return $this->belongsTo(Study::class, 'study_id', 'id');
+    }
 }

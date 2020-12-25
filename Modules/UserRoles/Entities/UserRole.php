@@ -4,6 +4,7 @@ namespace Modules\UserRoles\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class UserRole extends Model
 {
@@ -25,7 +26,7 @@ class UserRole extends Model
     {
         $userRoleCheck = UserRole::where('role_id', 'like', $roleId)->where('user_id', 'like', $userId)->first();
         if (null === $userRoleCheck) {
-            $id = \Illuminate\Support\Str::uuid();
+            $id = (string)Str::uuid();
             UserRole::create([
                 'id'    => $id,
                 'role_id' => $roleId,
