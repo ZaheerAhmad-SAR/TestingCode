@@ -2,8 +2,8 @@
 $option_names = [];
 $option_values = [];
 $optionGroup = $question->optionsGroup;
-$option_values = array_filter(explode(',', $optionGroup->option_value));
-$option_names = array_filter(explode(',', $optionGroup->option_name));
+$option_values = arrayFilter(explode(',', $optionGroup->option_value));
+$option_names = arrayFilter(explode(',', $optionGroup->option_name));
 $options = array_combine ( $option_names , $option_values );
 @endphp
 <select name="{{ $field_name }}" id="{{ $fieldId }}"

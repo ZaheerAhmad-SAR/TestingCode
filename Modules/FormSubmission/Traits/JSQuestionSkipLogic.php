@@ -61,7 +61,7 @@ trait JSQuestionSkipLogic
             $skipLogicIdStr = buildSafeStr($skipLogic->id, '');
 
             /*---------------------*/
-            $activateFormsArray = array_filter(explode(',', $skipLogic->activate_forms));
+            $activateFormsArray = arrayFilter(explode(',', $skipLogic->activate_forms));
             $activateFormsClsArray = [];
             foreach ($activateFormsArray as $id) {
                 $activateFormsClsArray[] = buildSafeStr($id, 'skip_logic_');
@@ -76,7 +76,7 @@ trait JSQuestionSkipLogic
             /*---------------------*/
 
             /*---------------------*/
-            $activateSectionsArray = array_filter(explode(',', $skipLogic->activate_sections));
+            $activateSectionsArray = arrayFilter(explode(',', $skipLogic->activate_sections));
             $activateSectionsClsArray = [];
             foreach ($activateSectionsArray as $id) {
                 $activateSectionsClsArray[] = buildSafeStr($id, 'skip_logic_');
@@ -90,7 +90,7 @@ trait JSQuestionSkipLogic
             /*---------------------*/
 
             /*---------------------*/
-            $activateQuestionsArray = array_filter(explode(',', $skipLogic->activate_questions));
+            $activateQuestionsArray = arrayFilter(explode(',', $skipLogic->activate_questions));
             $activateQuestionsClsArray = [];
             foreach ($activateQuestionsArray as $id) {
                 $activateQuestionsClsArray[] = buildSafeStr($id, 'skip_logic_');
@@ -104,7 +104,7 @@ trait JSQuestionSkipLogic
             /*---------------------*/
 
             /*---------------------*/
-            $deActivateFormsArray = array_filter(explode(',', $skipLogic->deactivate_forms));
+            $deActivateFormsArray = arrayFilter(explode(',', $skipLogic->deactivate_forms));
             $deActivateFormsClsArray = [];
             foreach ($deActivateFormsArray as $id) {
                 $deActivateFormsClsArray[] = buildSafeStr($id, 'skip_logic_');
@@ -118,7 +118,7 @@ trait JSQuestionSkipLogic
             /*---------------------*/
 
             /*---------------------*/
-            $deActivateSectionsArray = array_filter(explode(',', $skipLogic->deactivate_sections));
+            $deActivateSectionsArray = arrayFilter(explode(',', $skipLogic->deactivate_sections));
             $deActivateSectionsClsArray = [];
             foreach ($deActivateSectionsArray as $id) {
                 $deActivateSectionsClsArray[] = buildSafeStr($id, 'skip_logic_');
@@ -132,7 +132,7 @@ trait JSQuestionSkipLogic
             /*---------------------*/
 
             /*---------------------*/
-            $deActivateQuestionsArray = array_filter(explode(',', $skipLogic->deactivate_questions));
+            $deActivateQuestionsArray = arrayFilter(explode(',', $skipLogic->deactivate_questions));
             $deActivateQuestionsClsArray = [];
             foreach ($deActivateQuestionsArray as $id) {
                 $deActivateQuestionsClsArray[] = buildSafeStr($id, 'skip_logic_');

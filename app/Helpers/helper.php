@@ -1266,11 +1266,17 @@ function return_bytes($size_str)
     }
 }
 
+function arrayFilter($array)
+{
+    return array_filter($array, function ($value) {
+        return ($value !== null && $value !== false && $value !== '');
+    });
+}
+
 function TagReleasenumber()
 {
-}
-function TagReleasenumberBk()
-{
+    return 'Fix OCAP Version Issue';
+    /*
     $HEAD_hash = file_get_contents('.git/refs/heads/Laravel_7'); // or branch x
 
     $files = glob('.git/refs/tags/*');
@@ -1282,4 +1288,5 @@ function TagReleasenumberBk()
             exit;
         }
     }
+    */
 }
