@@ -292,7 +292,8 @@ class CertificationPreferencesController extends Controller
         $checkStudy = StudySetup::where('study_id', decrypt($request->study_id))->first();
 
         // get parent modalities that are assigned to this study
-        $getParentModalities = Modility::leftjoin('study_modilities', 'study_modilities.parent_modility_id', '=', 'modilities.id')
+        $getParentModalities = Modility::select('modilities.id', 'modilities.modility_name')
+        ->leftjoin('study_modilities', 'study_modilities.parent_modility_id', '=', 'modilities.id')
         ->where('study_modilities.study_id', decrypt($request->study_id))
         ->groupBy('study_modilities.parent_modility_id')
         ->get();
@@ -308,17 +309,21 @@ class CertificationPreferencesController extends Controller
         if ($checkStudy === null) {
 
             $checkStudy = new StudySetup;
-            $checkStudy->id = (string)Str::uuid();
-            $checkStudy->study_email = $request->study_email;
-            $checkStudy->study_cc_email = preg_replace("/\s+/", "", $request->study_cc_email);
+
+            $checkStudy->id = Str::uuid();
+            $checkStudy->study_email = $request->study_email != '' ?  $request->study_email : '';
+            $checkStudy->study_cc_email = $request->study_cc_email != '' ? preg_replace("/\s+/", "", $request->study_cc_email) : '';
+            $checkStudy->study_bcc_email = $request->study_bcc_email != '' ? preg_replace("/\s+/", "", $request->study_bcc_email) : '';
+
             $checkStudy->allowed_no_transmission = json_encode($request->allowed_no_transmission);
             $checkStudy->study_id = decrypt($request->study_id);
             $checkStudy->save();
 
         } else {
 
-            $checkStudy->study_email = $request->study_email;
-            $checkStudy->study_cc_email = preg_replace("/\s+/", "", $request->study_cc_email);
+            $checkStudy->study_email = $request->study_email != '' ?  $request->study_email : '';
+            $checkStudy->study_cc_email = $request->study_cc_email != '' ? preg_replace("/\s+/", "", $request->study_cc_email) : '';
+            $checkStudy->study_bcc_email = $request->study_bcc_email != '' ? preg_replace("/\s+/", "", $request->study_bcc_email) : '';
             $checkStudy->allowed_no_transmission = json_encode($request->allowed_no_transmission);
             $checkStudy->study_id = decrypt($request->study_id);
             $checkStudy->save();

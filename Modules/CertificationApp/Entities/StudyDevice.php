@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StudyDevice extends Model
 {
-    use softDeletes;
+    //use SoftDeletes;
     protected $fillable = [];
 
     public static function checkAssignedDevices($deviceId, $studyId)
