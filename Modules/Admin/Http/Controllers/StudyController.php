@@ -1468,7 +1468,6 @@ class StudyController extends Controller
 
         $phases = StudyStructure::where('study_id', 'like', $id)->get();
         foreach ($phases as $phase) {
-            $this->deleteTreeAgainstPhase($phase->id);
             $this->deletePhase($phase, true);
         }
         StudyStructure::where('study_id', $id)->delete();
@@ -1505,7 +1504,6 @@ class StudyController extends Controller
 
             $phases = StudyStructure::where('study_id', 'like', $id)->withTrashed()->get();
             foreach ($phases as $phase) {
-                $this->deleteTreeAgainstPhase($phase->id);
                 $this->deletePhase($phase, true);
             }
             StudyStructure::where('study_id', $id)->withTrashed()->forceDelete();
