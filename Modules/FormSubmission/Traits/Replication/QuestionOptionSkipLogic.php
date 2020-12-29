@@ -35,8 +35,8 @@ trait QuestionOptionSkipLogic
             ->first();
         if (null !== $replicatedQuestion) {
             $newOptionSkipLogic->option_question_id = $replicatedQuestion->id;
-            $newOptionSkipLogic->save();
         }
+        $newOptionSkipLogic->save();
     }
 
     private function updateOptionSkipLogicsToReplicatedVisits($questionId, $isReplicating = true)
