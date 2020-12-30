@@ -40,7 +40,9 @@ trait QuestionSkipLogic
                 ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
                 ->whereIn('step_id', $stepIdsArray)
                 ->first();
-            $activateFormArray[] = $replicatedForm->step_id;
+            if (null !== $replicatedForm) {
+                $activateFormArray[] = $replicatedForm->step_id;
+            }
         }
         $newSkipLogic->activate_forms = implode(',', $activateFormArray);
 
@@ -52,7 +54,9 @@ trait QuestionSkipLogic
                 ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
                 ->whereIn('step_id', $stepIdsArray)
                 ->first();
-            $deactivateFormArray[] = $replicatedForm->step_id;
+            if (null !== $replicatedForm) {
+                $deactivateFormArray[] = $replicatedForm->step_id;
+            }
         }
         $newSkipLogic->deactivate_forms = implode(',', $deactivateFormArray);
 
@@ -65,7 +69,9 @@ trait QuestionSkipLogic
                 ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
                 ->whereIn('id', $sectionIdsArray)
                 ->first();
-            $activateSectionArray[] = $replicatedSection->id;
+            if (null !== $replicatedSection) {
+                $activateSectionArray[] = $replicatedSection->id;
+            }
         }
         $newSkipLogic->activate_sections = implode(',', $activateSectionArray);
 
@@ -77,7 +83,9 @@ trait QuestionSkipLogic
                 ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
                 ->whereIn('id', $sectionIdsArray)
                 ->first();
-            $deactivateSectionArray[] = $replicatedSection->id;
+            if (null !== $replicatedSection) {
+                $deactivateSectionArray[] = $replicatedSection->id;
+            }
         }
         $newSkipLogic->deactivate_sections = implode(',', $deactivateSectionArray);
 
@@ -90,7 +98,9 @@ trait QuestionSkipLogic
                 ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
                 ->whereIn('id', $questionIdsArray)
                 ->first();
-            $activateQuestionArray[] = $replicatedQuestion->id;
+            if (null !== $replicatedQuestion) {
+                $activateQuestionArray[] = $replicatedQuestion->id;
+            }
         }
         $newSkipLogic->activate_questions = implode(',', $activateQuestionArray);
 
@@ -102,7 +112,9 @@ trait QuestionSkipLogic
                 ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
                 ->whereIn('id', $questionIdsArray)
                 ->first();
-            $deactivateQuestionArray[] = $replicatedQuestion->id;
+            if (null !== $replicatedQuestion) {
+                $deactivateQuestionArray[] = $replicatedQuestion->id;
+            }
         }
         $newSkipLogic->deactivate_questions = implode(',', $deactivateQuestionArray);
 

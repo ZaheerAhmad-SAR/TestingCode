@@ -35,9 +35,9 @@ trait QuestionDependencyTrait
             $newQuestionDependency->question_id = $newQuestionId;
             $newQuestionDependency->parent_id = $questionDependency->id;
             $newQuestionDependency->replicating_or_cloning = $replicating_or_cloning;
-
-            $newQuestionDependency->dep_on_question_id = $replicatedQuestion->id;
-
+            if (null !== $replicatedQuestion) {
+                $newQuestionDependency->dep_on_question_id = $replicatedQuestion->id;
+            }
             $newQuestionDependency->save();
         }
     }

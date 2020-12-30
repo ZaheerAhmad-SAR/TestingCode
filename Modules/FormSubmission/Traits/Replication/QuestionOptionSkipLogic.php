@@ -33,8 +33,9 @@ trait QuestionOptionSkipLogic
             ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->whereIn('id', StudyStructure::getQuestionIdsInPhaseArray($replicatedPhaseId))
             ->first();
-        $newOptionSkipLogic->option_question_id = $replicatedQuestion->id;
-
+        if (null !== $replicatedQuestion) {
+            $newOptionSkipLogic->option_question_id = $replicatedQuestion->id;
+        }
         $newOptionSkipLogic->save();
     }
 
