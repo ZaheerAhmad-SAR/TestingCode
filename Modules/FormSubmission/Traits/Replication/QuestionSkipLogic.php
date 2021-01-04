@@ -32,92 +32,96 @@ trait QuestionSkipLogic
         $replicatedPhaseId = StudyStructure::getPhaseIdByQuestionId($replicatedQuestionId);
 
         // Update activate form ids
-        $stepIdsArray = StudyStructure::getStepIdsInPhaseArray($replicatedPhaseId);
-        $activateFormIds = arrayFilter(explode(',', $skipLogic->activate_forms));
-        $activateFormArray = [];
-        foreach ($activateFormIds as $activateFormId) {
-            $replicatedForm = PhaseSteps::where('parent_id', 'like', $activateFormId)
-                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
-                ->whereIn('step_id', $stepIdsArray)
-                ->first();
-            if (null !== $replicatedForm) {
-                $activateFormArray[] = $replicatedForm->step_id;
+        if (null !== $replicatedPhaseId) {
+            $stepIdsArray = StudyStructure::getStepIdsInPhaseArray($replicatedPhaseId);
+            $activateFormIds = arrayFilter(explode(',', $skipLogic->activate_forms));
+            $activateFormArray = [];
+            foreach ($activateFormIds as $activateFormId) {
+                $replicatedForm = PhaseSteps::where('parent_id', 'like', $activateFormId)
+                    ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
+                    ->whereIn('step_id', $stepIdsArray)
+                    ->first();
+                if (null !== $replicatedForm) {
+                    $activateFormArray[] = $replicatedForm->step_id;
+                }
             }
-        }
-        $newSkipLogic->activate_forms = implode(',', $activateFormArray);
 
-        // Update deactivate form ids
-        $deactivateFormIds = arrayFilter(explode(',', $skipLogic->deactivate_forms));
-        $deactivateFormArray = [];
-        foreach ($deactivateFormIds as $deactivateFormId) {
-            $replicatedForm = PhaseSteps::where('parent_id', 'like', $deactivateFormId)
-                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
-                ->whereIn('step_id', $stepIdsArray)
-                ->first();
-            if (null !== $replicatedForm) {
-                $deactivateFormArray[] = $replicatedForm->step_id;
+            $newSkipLogic->activate_forms = implode(',', $activateFormArray);
+
+            // Update deactivate form ids
+            $deactivateFormIds = arrayFilter(explode(',', $skipLogic->deactivate_forms));
+            $deactivateFormArray = [];
+            foreach ($deactivateFormIds as $deactivateFormId) {
+                $replicatedForm = PhaseSteps::where('parent_id', 'like', $deactivateFormId)
+                    ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
+                    ->whereIn('step_id', $stepIdsArray)
+                    ->first();
+                if (null !== $replicatedForm) {
+                    $deactivateFormArray[] = $replicatedForm->step_id;
+                }
             }
-        }
-        $newSkipLogic->deactivate_forms = implode(',', $deactivateFormArray);
+            $newSkipLogic->deactivate_forms = implode(',', $deactivateFormArray);
 
-        // Update activate section ids
-        $sectionIdsArray = StudyStructure::getSectionIdsInPhaseArray($replicatedPhaseId);
-        $activateSectionIds = arrayFilter(explode(',', $skipLogic->activate_sections));
-        $activateSectionArray = [];
-        foreach ($activateSectionIds as $activateSectionId) {
-            $replicatedSection = Section::where('parent_id', 'like', $activateSectionId)
-                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
-                ->whereIn('id', $sectionIdsArray)
-                ->first();
-            if (null !== $replicatedSection) {
-                $activateSectionArray[] = $replicatedSection->id;
+
+
+            // Update activate section ids
+            $sectionIdsArray = StudyStructure::getSectionIdsInPhaseArray($replicatedPhaseId);
+            $activateSectionIds = arrayFilter(explode(',', $skipLogic->activate_sections));
+            $activateSectionArray = [];
+            foreach ($activateSectionIds as $activateSectionId) {
+                $replicatedSection = Section::where('parent_id', 'like', $activateSectionId)
+                    ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
+                    ->whereIn('id', $sectionIdsArray)
+                    ->first();
+                if (null !== $replicatedSection) {
+                    $activateSectionArray[] = $replicatedSection->id;
+                }
             }
-        }
-        $newSkipLogic->activate_sections = implode(',', $activateSectionArray);
+            $newSkipLogic->activate_sections = implode(',', $activateSectionArray);
 
-        // Update deactivate section ids
-        $deactivateSectionIds = arrayFilter(explode(',', $skipLogic->deactivate_sections));
-        $deactivateSectionArray = [];
-        foreach ($deactivateSectionIds as $deactivateSectionId) {
-            $replicatedSection = Section::where('parent_id', 'like', $deactivateSectionId)
-                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
-                ->whereIn('id', $sectionIdsArray)
-                ->first();
-            if (null !== $replicatedSection) {
-                $deactivateSectionArray[] = $replicatedSection->id;
+            // Update deactivate section ids
+            $deactivateSectionIds = arrayFilter(explode(',', $skipLogic->deactivate_sections));
+            $deactivateSectionArray = [];
+            foreach ($deactivateSectionIds as $deactivateSectionId) {
+                $replicatedSection = Section::where('parent_id', 'like', $deactivateSectionId)
+                    ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
+                    ->whereIn('id', $sectionIdsArray)
+                    ->first();
+                if (null !== $replicatedSection) {
+                    $deactivateSectionArray[] = $replicatedSection->id;
+                }
             }
-        }
-        $newSkipLogic->deactivate_sections = implode(',', $deactivateSectionArray);
+            $newSkipLogic->deactivate_sections = implode(',', $deactivateSectionArray);
 
-        // Update activate question ids
-        $questionIdsArray = StudyStructure::getQuestionIdsInPhaseArray($replicatedPhaseId);
-        $activateQuestionIds = arrayFilter(explode(',', $skipLogic->activate_questions));
-        $activateQuestionArray = [];
-        foreach ($activateQuestionIds as $activateQuestionId) {
-            $replicatedQuestion = Question::where('parent_id', 'like', $activateQuestionId)
-                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
-                ->whereIn('id', $questionIdsArray)
-                ->first();
-            if (null !== $replicatedQuestion) {
-                $activateQuestionArray[] = $replicatedQuestion->id;
+            // Update activate question ids
+            $questionIdsArray = StudyStructure::getQuestionIdsInPhaseArray($replicatedPhaseId);
+            $activateQuestionIds = arrayFilter(explode(',', $skipLogic->activate_questions));
+            $activateQuestionArray = [];
+            foreach ($activateQuestionIds as $activateQuestionId) {
+                $replicatedQuestion = Question::where('parent_id', 'like', $activateQuestionId)
+                    ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
+                    ->whereIn('id', $questionIdsArray)
+                    ->first();
+                if (null !== $replicatedQuestion) {
+                    $activateQuestionArray[] = $replicatedQuestion->id;
+                }
             }
-        }
-        $newSkipLogic->activate_questions = implode(',', $activateQuestionArray);
+            $newSkipLogic->activate_questions = implode(',', $activateQuestionArray);
 
-        // Update deactivate question ids
-        $deactivateQuestionIds = arrayFilter(explode(',', $skipLogic->deactivate_questions));
-        $deactivateQuestionArray = [];
-        foreach ($deactivateQuestionIds as $deactivateQuestionId) {
-            $replicatedQuestion = Question::where('parent_id', 'like', $deactivateQuestionId)
-                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
-                ->whereIn('id', $questionIdsArray)
-                ->first();
-            if (null !== $replicatedQuestion) {
-                $deactivateQuestionArray[] = $replicatedQuestion->id;
+            // Update deactivate question ids
+            $deactivateQuestionIds = arrayFilter(explode(',', $skipLogic->deactivate_questions));
+            $deactivateQuestionArray = [];
+            foreach ($deactivateQuestionIds as $deactivateQuestionId) {
+                $replicatedQuestion = Question::where('parent_id', 'like', $deactivateQuestionId)
+                    ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
+                    ->whereIn('id', $questionIdsArray)
+                    ->first();
+                if (null !== $replicatedQuestion) {
+                    $deactivateQuestionArray[] = $replicatedQuestion->id;
+                }
             }
+            $newSkipLogic->deactivate_questions = implode(',', $deactivateQuestionArray);
         }
-        $newSkipLogic->deactivate_questions = implode(',', $deactivateQuestionArray);
-
         $newSkipLogic->save();
     }
 
