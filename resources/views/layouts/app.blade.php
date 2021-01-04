@@ -70,6 +70,11 @@
             .dropdown-item{
                 cursor: pointer;
             }
+            .float-mrg{
+                float: right;
+                margin-top: 4px;
+                cursor: pointer;
+            }
         </style>
     </head>
 

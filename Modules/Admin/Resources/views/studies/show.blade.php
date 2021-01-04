@@ -82,11 +82,11 @@
                         <div class="table-responsive list">
                             <table class="table">
                                 <thead>
-                                <th>Subject ID</th>
-                                <th>Enrollment Date</th>
-                                <th>Site Name</th>
-                                <th>Disease Cohort</th>
-                                <th>Study Eye</th>
+                                <th>Subject ID <i class="fas fa-sort float-mrg"></i></th>
+                                <th>Enrollment Date <i class="fas fa-sort float-mrg"></i></th>
+                                <th>Site Name <i class="fas fa-sort float-mrg"></i></th>
+                                <th>Disease Cohort <i class="fas fa-sort float-mrg"></i></th>
+                                <th>Study Eye <i class="fas fa-sort float-mrg"></i></th>
                                 <th>Actions</th>
                                 </thead>
                                 <tbody>

@@ -148,13 +148,28 @@ class Study extends Model
     public static function getstudyAdminsName($id)
     {
         $userNames = '';
+        $remainingNames = '';
+        $num = 0;
+        $num2 = 0;
+        $count = 0;
         if (null !== Permission::getStudyAdminRole()) {
             $userIds = RoleStudyUser::where('study_id', 'LIKE', $id)->whereIn('role_id', Permission::getStudyAdminRole())->pluck('user_id')->toArray();
+            foreach ($userIds as  $userId) {
+                if($num != 0){
+                    $user = User::find($userId);
+                    $remainingNames .= $user->name.',';
+                    $count++;
+                }
+                $num++;
+            }
             foreach ($userIds as $userId) {
-                $user = User::find($userId);
-                $userNames .=  '<p style="border-bottom:1px solid gray;">';
-                $userNames .=  $user->name;
-                $userNames .=  '</p>';
+                if($num2 == 0){
+                    $user = User::find($userId);
+                    $userNames .=  '<p data-toggle="tooltip" data-placement="bottom" title="'.$remainingNames.'">';
+                    $userNames .=  $user->name; 
+                    $userNames .=  ' and '.$count.' more...</p>';
+                }
+                $num2++;
             }
         }
 
