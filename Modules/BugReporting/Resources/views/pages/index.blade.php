@@ -34,32 +34,52 @@
                         <div class="table-responsive">
                             <table class="table table-bordered">
                                 <tr>
+                                    <th>ID</th>
                                     <th>Title</th>
                                     <th>Message</th>
-                                    <th>Status</th>
+{{--                                    <th>Status</th>--}}
                                     <th>Priority</th>
-                                    <th>Url</th>
+                                    <th>Section Name</th>
                                     <th style="width: 5%;">Action</th>
                                 </tr>
-                                       @foreach($records as $record)
+                                <tbody>
+                                @if(!$records->isEmpty())
+                                    @php $count = 1; @endphp
+                                @foreach($records as $record)
 
                                         <tr>
+                                            <td>{{$count++}}</td>
                                             <td>{{$record['bug_title']}}</td>
                                             <td>{{$record['bug_message']}}</td>
-                                            <td>{{$record['bug_status']}}</td>
+{{--                                            <td>{{$record['bug_status']}}</td>--}}
                                             <td>{{$record['bug_priority']}}</td>
-                                            <td style="cursor: pointer;">{{$record['bug_url']}}</td>
+                                            @php
+                                            $str = '';
+                                            $str = $record['bug_url'];
+                                            $segment = explode("/",$str);
+
+                                            @endphp
+                                             <td style="cursor: pointer;">
+                                                <a target="_blank" href=" {{$record['bug_url']}}">{{ucwords($segment[3])}}</a>
+
+                                            </td>
                                             <td>
                                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                     <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                                        <span class="dropdown-item"><a href="#" class="editOptions" ><i class="far fa-edit"></i>&nbsp; Edit </a></span>
                                                         <span class="dropdown-item"><a href="#" class="deleteOptions"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span>
                                                     </div>
                                                 </div>
                                             </td>
                                         </tr>
                                 @endforeach
+                                @else
+                                    <tr>
+                                        <td colspan="100" style="text-align: center">No record found.</td>
+                                    </tr>
+
+                                @endif
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -96,5 +116,5 @@
     <script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('public/dist/vendors/datatable/buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('public/dist/js/datatable.script.js') }}"></script>
-   
+
 @stop
