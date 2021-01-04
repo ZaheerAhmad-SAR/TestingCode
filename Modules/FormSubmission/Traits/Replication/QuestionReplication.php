@@ -75,9 +75,15 @@ trait QuestionReplication
                 }
             }
         }
-        foreach ($replicatedQuestionIdsArray as $replicatedQuestionId) {
-            $this->addQuestionSkipLogicToReplicatedQuestion($question, $replicatedQuestionId, $isReplicating);
-            $this->addQuestionOptionsSkipLogicToReplicatedQuestion($question, $replicatedQuestionId, $isReplicating);
+        foreach ($replicatedQuestionIdsArray as $_replicatedQuestionId) {
+            $skipLogics = SkipLogic::where('question_id', 'like', $question->id)->get();
+            foreach ($skipLogics as $skipLogic) {
+                $this->addQuestionSkipLogicToReplicatedQuestion($skipLogic, $_replicatedQuestionId, $isReplicating);
+            }
+            $optionSkipLogics = QuestionOption::where('question_id', 'like', $question->id)->get();
+            foreach ($optionSkipLogics as $optionSkipLogic) {
+                $this->addQuestionOptionsSkipLogicToReplicatedQuestion($optionSkipLogic, $_replicatedQuestionId, $isReplicating);
+            }
         }
     }
 
