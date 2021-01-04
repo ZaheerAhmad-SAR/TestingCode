@@ -67,7 +67,7 @@
                                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                     <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                                        <span class="dropdown-item"><a href="#" class="deleteOptions"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span>
+                                                        <span class="dropdown-item"><a class="deletebugReporting" data-id="{{$record['id']}}"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span>
                                                     </div>
                                                 </div>
                                             </td>
@@ -104,6 +104,39 @@
     <link rel="stylesheet" href="{{ asset('public/dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css') }}">
 @stop
 @section('script')
+
+    <script type="text/javascript">
+
+
+        // Bug Delete function
+        $('body').on('click', '.deletebugReporting', function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            var parent_id = $(this).data("id");
+            var url = "{{URL('/bug-reporting')}}";
+            var newPath = url+ "/"+ parent_id+"/destroy/";
+            if( confirm("Are You sure want to delete !") ==true)
+            {
+                $.ajax({
+                    type: "GET",
+                    url: newPath,
+                    success: function (data) {
+                        console.log(data);
+                        location.reload();
+                    },
+                    error: function (data) {
+                        console.log('Error:', data);
+                    }
+                });
+            }
+
+        });
+
+    </script>
+
     <script src="{{ asset('public/dist/vendors/datatable/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('public/dist/vendors/datatable/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('public/dist/vendors/datatable/jszip/jszip.min.js') }}"></script>
