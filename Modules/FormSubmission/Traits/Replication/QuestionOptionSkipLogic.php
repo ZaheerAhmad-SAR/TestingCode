@@ -29,12 +29,14 @@ trait QuestionOptionSkipLogic
         Question ID Update
         */
         $replicatedPhaseId = StudyStructure::getPhaseIdByQuestionId($replicatedQuestionId);
-        $replicatedQuestion = Question::where('parent_id', 'like', $optionSkipLogic->option_question_id)
-            ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
-            ->whereIn('id', StudyStructure::getQuestionIdsInPhaseArray($replicatedPhaseId))
-            ->first();
-        if (null !== $replicatedQuestion) {
-            $newOptionSkipLogic->option_question_id = $replicatedQuestion->id;
+        if (null !== $replicatedPhaseId) {
+            $replicatedQuestion = Question::where('parent_id', 'like', $optionSkipLogic->option_question_id)
+                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
+                ->whereIn('id', StudyStructure::getQuestionIdsInPhaseArray($replicatedPhaseId))
+                ->first();
+            if (null !== $replicatedQuestion) {
+                $newOptionSkipLogic->option_question_id = $replicatedQuestion->id;
+            }
         }
         $newOptionSkipLogic->save();
     }
