@@ -4,7 +4,7 @@
 @stop
 @section('styles')
     <!-- <link rel="stylesheet" href="{{ asset('dist/vendors/tablesaw/tablesaw.css') }}"> -->
-    
+
 @stop
 
 @section('content')
@@ -27,7 +27,7 @@
             <div class="col-12 mt-3">
                 <div class="card">
 
-                     <div class="form-group col-md-12 mt-3">        
+                     <div class="form-group col-md-12 mt-3">
 
 
                         @if (!$getStudies->isEmpty())
@@ -73,8 +73,8 @@
                         </div>
                         <!-- row ends -->
                     </form>
-                
-                   
+
+
                     <div class="card-body">
                         <table class="table table-bordered" id="laravel_crud">
                             <thead class="table-secondary">
@@ -94,7 +94,7 @@
                                 <th>
                                     Sponsor
                                 </th>
-                                
+
                                 <th>
                                     Action
                                 </th>
@@ -127,7 +127,7 @@
                                                 <div class="d-flex mt-md-0 ml-auto" style="margin-top: -15px !important;">
                                                 <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog"></i></span>
                                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right" style="">
-                                                        
+
                                                         <span class="dropdown-item">
                                                             <a href="{{ route ('preferences.assign-modality', encrypt($study->id)) }}" data-id="">
                                                                 <i class="fas fa-question-circle" aria-hidden="true">
@@ -139,7 +139,7 @@
                                                                 <i class="fas fa-question-circle" aria-hidden="true">
                                                                 </i> Assign Device</a>
                                                         </span>
-                                                       
+
 
                                                          <span class="dropdown-item">
                                                             <a href="{{ route('preferences.study-setup', encrypt($study->id))}}" data-id="">
@@ -151,18 +151,18 @@
                                                  <!-- gear dropdown -->
                                             </td>
                                     </tr>
-                                   
+
                                 @endforeach
                                 @else
                                 <tr>
-                                    <td colspan="5" style="text-align: center">No record found.</td>
+                                    <td colspan="7" style="text-align: center">No record found.</td>
                                 </tr>
-                               
+
                                 @endif
                             </tbody>
                         </table>
                             {{ $getStudies->links() }}
-                        
+
                     </div>
                 </div>
 
@@ -175,7 +175,7 @@
 @section('script')
 
 <script type="text/javascript">
-    
+
     $('.reset-filter').click(function(){
         // reset values
         $('.filter-form').trigger("reset");

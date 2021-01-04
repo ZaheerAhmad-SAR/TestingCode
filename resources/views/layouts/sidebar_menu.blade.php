@@ -523,7 +523,7 @@
             <div class="dropdown-divider"></div>
             <a href="#" class="dropdown-item"><i class="fa fa-plus"></i>  User Manual</a>
             <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item"> <i class="fa fa-plus"></i>  OCAP v2020.1.0</a>
+            <a href="#" class="dropdown-item"> <i class="fa fa-plus"></i>  OCAP v2021.1.0</a>
         </div>
     </div>
 
@@ -582,10 +582,9 @@
         </div>
     </div>
     <!-- End -->
-@section('script')
+<script src="{{ asset('public/dist/vendors/jquery/jquery-3.3.1.min.js') }}"></script>
 
  <script type="text/javascript">
-
 
         $("#bugReportingForm").on('submit', function(e) {
 
@@ -598,7 +597,8 @@
             var shortTitle  = $("#shortTitle").val();
             var yourMessage = $("#yourMessage").val();
             var query_url   =  document.URL;
-            var severity    = $("#severity").val();
+            var severity  = $("input[name='severity']:checked").val();
+            console.log(severity);
             var formData = new FormData();
             formData.append('shortTitle', shortTitle);
             formData.append('yourMessage', yourMessage);
@@ -627,4 +627,4 @@
             });
         });
     </script>
-@stop
+

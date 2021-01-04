@@ -46,7 +46,7 @@ class StudyStructure extends Model
 
     static function phasesbyRoles($studyId, $userRoleIds)
     {
-        return self::whereHas('roles', function ($query) use ($userRoleIds) {
+        return StudyStructure::whereHas('roles', function ($query) use ($userRoleIds) {
             $query->whereIn('role_id', $userRoleIds);
         })
             ->where('study_id', $studyId)
@@ -83,7 +83,7 @@ class StudyStructure extends Model
 
     public static function getStudyPhaseIdsArray($studyId)
     {
-        return self::where('study_id', 'like', $studyId)
+        return StudyStructure::where('study_id', 'like', $studyId)
             ->pluck('id')
             ->toArray();
     }
@@ -111,8 +111,12 @@ class StudyStructure extends Model
         $question = Question::find($questionId);
         $section = Section::find($question->section_id);
         $step = PhaseSteps::find($section->phase_steps_id);
-        $phase = self::find($step->phase_id);
-        return $phase->id;
+        $phase = StudyStructure::find($step->phase_id);
+        if (null === $phase) {
+            return null;
+        } else {
+            return $phase->id;
+        }
     }
 
     public function cohortSkipLogics()

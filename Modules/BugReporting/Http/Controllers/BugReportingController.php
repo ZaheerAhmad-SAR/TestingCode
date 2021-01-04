@@ -39,7 +39,6 @@ class BugReportingController extends Controller
      */
     public function store(Request $request)
     {
-dd("i am here");
         $shortTitle       = $request->post('shortTitle');
         $yourMessage      = $request->post('yourMessage');
         $query_url        = $request->post('query_url');
@@ -108,8 +107,13 @@ dd("i am here");
      * @param int $id
      * @return Renderable
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
-        //
+       if ($request->ajax())
+       {
+           $delete = BugReport::find($id);
+           $delete->delete();
+           return response()->json(['success' => 'Bug  is deleted successfully.']);
+       }
     }
 }
