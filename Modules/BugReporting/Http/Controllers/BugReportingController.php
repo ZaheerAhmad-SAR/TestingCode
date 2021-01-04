@@ -107,8 +107,13 @@ class BugReportingController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function destroy($id)
+    public function destroy(Request $request,$id)
     {
-        //
+       if ($request->ajax())
+       {
+           $delete = BugReport::find($id);
+           $delete->delete();
+           return response()->json(['success' => 'Bug  is deleted successfully.']);
+       }
     }
 }

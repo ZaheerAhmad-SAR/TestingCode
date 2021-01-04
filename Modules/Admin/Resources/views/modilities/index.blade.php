@@ -468,7 +468,6 @@
         }
         childmodilitiesStore();
         // Parent Delete function
-        function modalitiesDestroy() {
             $('body').on('click', '.deleteParent', function () {
                 $.ajaxSetup({
                     headers: {
@@ -514,8 +513,7 @@
                 }
 
             });
-        }
-        modalitiesDestroy();
+
         // Child Delete function
         function childmodilitiesDestroy() {
             $('body').on('click', '.deleteChild', function () {
