@@ -132,6 +132,9 @@ class StudyController extends Controller
         if ($request->study_sponsor != '') {
             $studies = $studies->where('study_sponsor', 'like', '%' . $request->study_sponsor . '%');
         }
+        if ($request->id !='') {
+            $studies = $studies->orderBy('id', $request->id);
+        }
         $studies = $studies->get();
 
         return view('admin::studies.index', compact('sites', 'users', 'studies'));

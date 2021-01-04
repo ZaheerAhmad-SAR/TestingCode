@@ -26,6 +26,8 @@
             <div class="card-body">
                 <form action="{{route('users.index')}}" method="get" class="filter-form">
                     @csrf
+                    <input type="hidden" name="sort_by_name" id="sort_by_name" value="ASC">
+                    <input type="hidden" name="sort_by_email" id="sort_by_email" value="ASC">
                     <div class="form-row" style="padding: 10px;">
                         <div class="form-group col-md-3">
                             <input type="text" name="name" class="form-control" placeholder="Name">
@@ -83,7 +85,7 @@
                                             <th scope="col" colspan="6">System Users</th>
                                         </tr>
                                         <tr>
-                                        <th scope="col">Name</th>
+                                        <th scope="col" onclick="changeSort('name');">Name <i class="fas fa-sort float-mrg"></i></th>
                                         <th scope="col">Email</th>
                                         <th scope="col">Roles</th>
                                         <th scope="col">2 Factor Auth</th>
@@ -210,17 +212,26 @@
 @section('script')
     <script src="{{ asset('public/dist/js/jquery.validate.min.js') }}"></script>
     <script type="text/javascript">
-function setMultiselect() {
-		        $('#select_roles').multiselect({
-                    search: {
-                        left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
-                        right: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
-                    },
-                    fireSearch: function(value) {
-                        return value.length > 1;
-                    }
-                });
-	        }
+        function setMultiselect() {
+	        $('#select_roles').multiselect({
+                search: {
+                    left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+                    right: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+                },
+                fireSearch: function(value) {
+                    return value.length > 1;
+                }
+            });
+        }
+        function changeSort(field_name){
+            var check_sort_id = $('#sort_by_name').val();
+            if(check_sort_id =='ASC' && field_name =='name'){
+                $('#sort_by_name').val('DESC');
+            }else if(check_sort_id =='ASC' && field_name =='email'){
+               $('#sort_by_email').val('DESC'); 
+            }
+            $('.filter-form').submit();
+        }
         $(document).ready(function(){
             $('#2fa').on('show.bs.modal',function (e) {
                 var id = $(e.relatedTarget).data('target-id');
