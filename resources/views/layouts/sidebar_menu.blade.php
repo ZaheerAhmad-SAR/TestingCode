@@ -586,7 +586,6 @@
 
  <script type="text/javascript">
 
-        //alert('dfdfdfdfd');
         $("#bugReportingForm").on('submit', function(e) {
 
             e.preventDefault();
@@ -598,7 +597,8 @@
             var shortTitle  = $("#shortTitle").val();
             var yourMessage = $("#yourMessage").val();
             var query_url   =  document.URL;
-            var severity    = $("#severity").val();
+            var severity  = $("input[name='severity']:checked").val();
+            console.log(severity);
             var formData = new FormData();
             formData.append('shortTitle', shortTitle);
             formData.append('yourMessage', yourMessage);
