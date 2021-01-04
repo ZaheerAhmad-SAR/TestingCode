@@ -12,7 +12,7 @@
   /* IE10+ CSS print styles go here */
   @page {
     size: auto;   /* auto is the initial value */
-    size: A4 portrait;
+    /*size: A4 portrait;*/
     margin: 0;  /* this affects the margin in the printer settings */
     /*border: 1px solid;*/
   	padding: 10px;
