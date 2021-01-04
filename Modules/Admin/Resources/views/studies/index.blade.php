@@ -35,6 +35,7 @@
             <div class="card-body">
                 <form action="{{route('studies.index')}}" method="get" class="filter-form">
                     @csrf
+                    <input type="hidden" name="id" id="sort_by_id" value="ASC">
                     <div class="form-row" style="padding: 10px;">
                         <div class="form-group col-md-4">
                             <input type="text" name="study_code" class="form-control" placeholder="Study Code">
@@ -81,18 +82,19 @@
                         <table class="tablesaw table-bordered" data-tablesaw-mode="stack" id="studies_crud">
                             <thead>
                             <tr>
-                                <th scope="col" data-tablesaw-priority="persist" style="width: 5%">ID</th>
+                                <th scope="col" data-tablesaw-priority="persist" style="width: 5%" onclick="changeSort('id');">ID <i class="fas fa-sort float-mrg"></i></th>
                                 <th scope="col" data-tablesaw-sortable-default-col data-tablesaw-priority="3" style="width: 40%">
                                     Short Name : <strong>Study Title</strong>
                                     <br>
                                     <br>Sponsor
+                                    {{-- <i class="fas fa-sort float-mrg" style="margin-top: -15px"></i> --}}
                                 </th>
-                                <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block"  style="width: 25%">Progress bar</th>
-                                <th scope="col" data-tablesaw-priority="1" style="width: 10%">Status</th>
+                                <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block"  style="width: 20%">Progress bar</th>
+                                <th scope="col" data-tablesaw-priority="1" style="width: 10%">Status {{-- <i class="fas fa-sort float-mrg"></i> --}}</th>
                                 @if(hasPermission(auth()->user(),'systemtools.index'))
-                                    <th scope="col" data-tablesaw-priority="1" style="width: 10%">Study Admin</th>
+                                    <th scope="col" data-tablesaw-priority="1" style="width: 20%">Study Admin</th>
                                 @endif
-                                <th scope="col" data-tablesaw-priority="4" style="width: 10%">Action</th>
+                                <th scope="col" data-tablesaw-priority="4" style="width: 5%">Action</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -761,7 +763,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
 
     <script type="text/javascript">
-
+       
         $('.variable_name_ques').keydown(function(e) {
             if (e.keyCode == 32) {
                 $('.variable_name_ques').css('border', '1px solid red');
@@ -807,6 +809,13 @@
                 $('#study_ID').val(id);
             })
         })
+        function changeSort(field_name){
+            var check_sort_id = $('#sort_by_id').val();
+            if(check_sort_id =='ASC' && field_name =='id'){
+                $('#sort_by_id').val('DESC');
+            }
+            $('.filter-form').submit();
+        }
     </script>
 
     <script src="{{ asset("dist/vendors/fancybox/jquery.fancybox.min.js") }}"></script>
