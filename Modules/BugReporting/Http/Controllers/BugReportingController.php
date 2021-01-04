@@ -39,7 +39,6 @@ class BugReportingController extends Controller
      */
     public function store(Request $request)
     {
-dd("i am here");
         $shortTitle       = $request->post('shortTitle');
         $yourMessage      = $request->post('yourMessage');
         $query_url        = $request->post('query_url');
