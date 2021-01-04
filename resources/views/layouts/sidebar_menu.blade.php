@@ -582,11 +582,11 @@
         </div>
     </div>
     <!-- End -->
-@section('script')
+<script src="{{ asset('public/dist/vendors/jquery/jquery-3.3.1.min.js') }}"></script>
 
  <script type="text/javascript">
 
-
+        //alert('dfdfdfdfd');
         $("#bugReportingForm").on('submit', function(e) {
 
             e.preventDefault();
@@ -627,4 +627,4 @@
             });
         });
     </script>
-@stop
+
