@@ -60,7 +60,7 @@
 
                                             @endphp
                                              <td style="cursor: pointer;">
-                                                <a target="_blank" href=" {{$record['bug_url']}}">{{ucwords($segment[4])}}</a>
+                                                <a target="_blank" href=" {{$record['bug_url']}}">{{ucwords($segment[3])}}</a>
 
                                             </td>
                                             <td>
