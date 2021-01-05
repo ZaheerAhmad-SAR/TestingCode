@@ -119,6 +119,17 @@
                                     @enderror
                                 </div>
                             </div>
+
+                            <div class="form-group row">
+
+                                <div class="col-md-2">
+                                    <label for="avatar" class="">User Signature</label>
+                                </div>
+                                <div class="col-md-4">
+                                    <input id="user_signature" type="file"  name="user_signature" style="padding-left: 3px">
+                                </div>
+                                
+                            </div>
                         </div>
                         <div class="modal-footer">
                             @if(hasPermission(auth()->user(),'users.store'))

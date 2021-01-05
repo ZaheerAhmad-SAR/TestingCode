@@ -815,18 +815,6 @@ class TransmissionDataDeviceController extends Controller
         return redirect()->back();
     }
 
-    public function archiveDeviceTransmission(Request $request, $transmissionID)
-    {
-
-        $findTransmission = TransmissionDataDevice::find(decrypt($transmissionID));
-        $findTransmission->archive_transmission = 'yes';
-        $findTransmission->save();
-
-        Session::flash('success', 'Transmission moved to arcive successfully.');
-
-        return redirect()->back();
-    }
-
     public function certifiedDevice(Request $request)
     {
 
@@ -1040,5 +1028,65 @@ class TransmissionDataDeviceController extends Controller
 
         // return back
         return redirect()->back();
+    }
+
+    public function archiveDeviceTransmission(Request $request, $transmissionID, $status) {
+
+        $findTransmission = TransmissionDataDevice::find(decrypt($transmissionID));
+        $findTransmission->archive_transmission = $status;
+        $findTransmission->save();
+
+        Session::flash('success', 'Transmission moved to arcive successfully.');
+
+        return redirect()->back();
+    }
+
+    public function getArchivedDeviceTransmissionListing(Request $request) {
+        
+
+        $getTransmissions = TransmissionDataDevice::query();
+
+        if ($request->trans_id != '') {
+
+            $getTransmissions = $getTransmissions->where('Transmission_Number', 'like', '%' . $request->trans_id . '%');
+        }
+
+        if ($request->study != '') {
+
+            $getTransmissions = $getTransmissions->where('Study_Name', 'like', '%' . $request->study . '%');
+        }
+
+        if ($request->device_category != '') {
+
+            $getTransmissions = $getTransmissions->where('Device_Category', 'like', '%' . $request->device_category . '%');
+        }
+
+        if ($request->device_serial != '') {
+
+            $getTransmissions = $getTransmissions->where('Device_Serial', 'like', '%' . $request->device_serial . '%');
+        }
+
+        if ($request->site != '') {
+
+            $getTransmissions = $getTransmissions->where('Site_Name', 'like', '%' . $request->site . '%');
+        }
+
+        if ($request->submitter_name != '') {
+
+            $getTransmissions = $getTransmissions->where('Request_MadeBy_FirstName', 'like', "%$request->submitter_name%")
+                ->orWhereRaw("concat(Request_MadeBy_FirstName, ' ', Request_MadeBy_LastName) like '$request->submitter_name' ")
+                ->orWhere('Request_MadeBy_LastName', 'like', "$request->submitter_name");
+        }
+
+        if ($request->status != '') {
+
+            $getTransmissions = $getTransmissions->where('status', $request->status);
+        }
+
+        $getTransmissions = $getTransmissions->where('archive_transmission', 'yes')
+                                            ->orderBy('id', 'desc')
+                                            ->paginate(50);
+
+        return view('certificationapp::certificate_device.archived_device_transmission', compact('getTransmissions'));
     }
 }

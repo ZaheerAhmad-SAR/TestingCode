@@ -52,7 +52,6 @@ class UserController extends Controller
     }
     public function index(Request $request)
     {
-
         if (isThisUserSuperAdmin(\auth()->user())) {
             $roles  =   Role::where('role_type', '!=', 'study_role')->get();
             $systemRoleIds = Role::where('role_type', '!=', 'study_role')->pluck('id')->toArray();
@@ -74,8 +73,10 @@ class UserController extends Controller
         if(isset($request->role_id) && $request->role_id !=''){
             $users = $users->where('users.role_id', 'like', '%'.$request->role_id.'%');
         }
-        $users->orderBy('name', 'asc')->get();
-        $users = $users->orderBy('name', 'asc')->get();
+        if (isset($request->sort_by_name) && $request->sort_by_name !=''){
+            $users = $users->orderBy('name', $request->sort_by_name);
+        }
+        $users = $users->get();
 
         $studyRoleIds = Role::where('role_type', '=', 'study_role')->pluck('id')->toArray();
         $userIdsOfStudyRoles = UserRole::whereIn('role_id', $studyRoleIds)->pluck('user_id')->toArray();
@@ -309,6 +310,15 @@ class UserController extends Controller
                 $this->uploadOne($image, $folder, 'public', $name);
                 $user->profile_image = $filePath;
             }
+
+            // look for user signature
+            if ($request->has('user_signature')) {
+
+                @unlink(storage_path('/user_signature/'.$user->user_signature));
+
+                $user->user_signature = $user->id.''.$request->file("user_signature")->getClientOriginalName();
+                $request->user_signature->move(storage_path('/user_signature/'), $user->user_signature);
+            }
             //dd($user);
             $user->save();
         } else {
@@ -323,11 +333,21 @@ class UserController extends Controller
                 $this->uploadOne($image, $folder, 'public', $name);
                 $user->profile_image = $filePath;
             }
+
+             // look for user signature
+            if ($request->has('user_signature')) {
+
+                @unlink(storage_path('/user_signature/'.$user->user_signature));
+
+                $user->user_signature = $user->id.''.$request->file("user_signature")->getClientOriginalName();
+                $request->user_signature->move(storage_path('/user_signature/'), $user->user_signature);
+            }
+
             //dd($user);
             $user->save();
         }
 
-        return redirect()->route('dashboard.index')->with('message', 'Record Updated Successfully!');
+        return redirect()->back();
     }
 
     public function getcodes()
