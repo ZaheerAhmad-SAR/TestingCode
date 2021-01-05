@@ -70,9 +70,9 @@
                             </div>
                             <div class="col-sm-2">Show to Grader: </div>
                             <div class="col-sm-2">
-                                <input type="radio" name="is_show_to_grader" id="is_show_to_grader_no_calc" value="no"> No
+                                <input type="radio" name="is_show_to_grader" id="is_show_to_grader_no_calc" value="no" checked> No
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <input type="radio" name="is_show_to_grader" id="is_show_to_grader_yes_calc" value="yes" checked> Yes
+                                <input type="radio" name="is_show_to_grader" id="is_show_to_grader_yes_calc" value="yes"> Yes
                             </div>
                             </div>
                             <div class="form-group row">
@@ -278,7 +278,7 @@
             $('#dependency_custom_value_calc').val(dependency_custom_value);
             tId = setTimeout(function() {
                 $('#select_ques_for_dep_calc').val(dependency_question);
-            }, 4000); 
+            }, 4000);
             $('#calculate_Modal').modal('show');
         }else {
             showStepDeActivationAlert();
