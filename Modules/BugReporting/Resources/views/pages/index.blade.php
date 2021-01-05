@@ -34,13 +34,14 @@
                         <div class="table-responsive">
                             <table class="table table-bordered">
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Title</th>
-                                    <th>Message</th>
-                                    <th>Status</th>
-                                    <th>Priority</th>
-                                    <th>Section Name</th>
-                                    <th style="width: 5%;">Action</th>
+                                    <th style="width: 1%;">ID</th>
+                                    <th style="width: 30%;">Title</th>
+{{--                                    <th>Message</th>--}}
+                                    <th style="width: 1%;">Status</th>
+                                    <th style="width: 1%;">Priority</th>
+{{--                                    <th>Section Name</th>--}}
+                                    <th style="width: 2%;">Reported by</th>
+                                    <th style="width: 1%;">Action</th>
                                 </tr>
                                 <tbody>
                                 @if(!$records->isEmpty())
@@ -50,25 +51,27 @@
                                         <tr>
                                             <td>{{$count++}}</td>
                                             <td>{{$record['bug_title']}}</td>
-                                            <td>{{$record['bug_message']}}</td>
-                                            <td>{{$record['bug_status']}}</td>
+{{--                                            <td>{{$record['bug_message']}}</td>--}}
+                                            <td>{{ ($record['status'] && $record['open_status']) ? $record['status'] .'-'. lcfirst($record['open_status']) : '' }}</td>
                                             <td>{{$record['bug_priority']}}</td>
-                                            @php
-                                            $str = '';
-                                            $str = $record['bug_url'];
-                                            $segment = explode("/",$str);
+{{--                                            @php--}}
+{{--                                            $str = '';--}}
+{{--                                            $str = $record['bug_url'];--}}
+{{--                                            $segment = explode("/",$str);--}}
 
-                                            @endphp
-                                             <td style="cursor: pointer;">
-                                                <a target="_blank" href=" {{$record['bug_url']}}">{{ucwords($segment[3])}}</a>
+{{--                                            @endphp--}}
+{{--                                             <td style="cursor: pointer;">--}}
+{{--                                                <a target="_blank" href=" {{$record['bug_url']}}">{{ucwords($segment[3])}}</a>--}}
 
-                                            </td>
+{{--                                            </td>--}}
+                                            @php $row = App\User::where('id','=',$record['bug_reporter_by_id'])->first();@endphp
+                                            <td>{{$row->name}}</td>
                                             <td>
                                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                     <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                                        <span class="dropdown-item"><a href="javascript:void(0);" class="deletebugReporting" data-id="{{$record['id']}}"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span>
                                                         <span class="dropdown-item"><a href="javascript:void(0);" class="EditbugReporting" data-id="{{$record['id']}}"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
+                                                        <span class="dropdown-item"><a href="javascript:void(0);" class="deletebugReporting" data-id="{{$record['id']}}"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span>
                                                     </div>
                                                 </div>
                                             </td>
@@ -123,12 +126,6 @@
                             </div>
 
                             <div class="form-group row">
-                                <div class="col-md-3">Attach a File</div>
-                                <div class="form-group col-md-9">
-                                    <input type="file" class="form-control" id="editAttachFile" name="edutAttachFile" value="">
-                                </div>
-                            </div>
-                            <div class="form-group row">
                                 <label for="Name" class="col-md-3 col-form-label">Severity/Priority</label>
                                 <div class="col-md-9">
                                     <label class="radio-inline  col-form-label"><input type="radio" id="editSeverity" name="editSeverity" value="low"> Low</label> &nbsp;
@@ -136,6 +133,43 @@
                                     <label class="radio-inline  col-form-label"><input type="radio" id="editSeverity" name="editSeverity" value="high"> High</label>
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <label for="Name" class="col-md-3 col-form-label">Status</label>
+                                <div class="col-md-9">
+                                    <label class="radio-inline  col-form-label"><input type="radio" id="editStatus" name="editStatus" value="open"> open</label> &nbsp;
+                                    <label class="radio-inline  col-form-label"><input type="radio" id="editStatus" name="editStatus" value="close"> close</label>
+                                </div>
+                            </div>
+
+                            <div class="form-group row openStatusList" style="display: none;">
+                                <label for="Name" class="col-md-3 col-form-label">Open Status</label>
+                                <div class="col-md-9">
+                                    <select name="openStatus" id="openStatus" class="form-control">
+                                        <option value="Unconfirmed">Unconfirmed</option>
+                                        <option value="Untriaged">Untriaged</option>
+                                        <option value="Available">Available</option>
+                                        <option value="Assigned">Assigned</option>
+                                        <option value="Started">Started</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row closeStatusList" style="display: none;">
+                                <label for="Name" class="col-md-3 col-form-label">Close Status</label>
+                                <div class="col-md-9">
+                                    <select name="closeStatus" id="closeStatus" class="form-control">
+                                        <option value="Fixed">Fixed</option>
+                                        <option value="Verified">Verified</option>
+                                        <option value="Duplicate">Duplicate</option>
+                                        <option value="WontFix">WontFix</option>
+                                        <option value="ExternalDependency">ExternalDependency</option>
+                                        <option value="FixUnreleased">FixUnreleased</option>
+                                        <option value="Invalid">Invalid</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
                         </div>
                         <div class="modal-footer">
                             <button id="bug-close-btn" class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
@@ -214,8 +248,11 @@
                     $('#editYourMessage').val(parsedata.bug_message);
                     $('#editBugUrl').val(parsedata.bug_url);
                     $('#editBugStatus').val(parsedata.bug_status);
-                    $('#editAttachFile').val(parsedata.bug_attachments);
+                    //$('#editAttachFile').val(parsedata.bug_attachments);
                     $('#editBugId').val(parsedata.id);
+
+                    console.log(parsedata.open_status);
+                    console.log(parsedata.closed_status);
 
                     if (parsedata.bug_priority =='low')
                     {
@@ -230,9 +267,98 @@
                         $("input[name=editSeverity][value=" + parsedata.bug_priority + "]").prop('checked', true);
                     }
 
+                    if (parsedata.status =='open')
+                    {
+                        $("input[name=editStatus][value=" + parsedata.status + "]").prop('checked', true);
+                        $('.openStatusList').css('display','');
+                        $('.closeStatusList').css('display','none');
+                    }
 
+                    if (parsedata.status =='close')
+                    {
+                        $("input[name=editStatus][value=" + parsedata.status + "]").prop('checked', true);
+                        $('.openStatusList').css('display','none');
+                        $('.closeStatusList').css('display','');
+
+                    }
+                    /// Open status dropdownvalue
+
+                    if (parsedata.open_status =='Unconfirmed')
+                    {
+                        $( "#openStatus").val(parsedata.open_status);
+                    }
+                    if (parsedata.open_status =='Untriaged')
+                    {
+                        $( "#openStatus").val(parsedata.open_status);
+                    }
+
+                    if (parsedata.open_status =='Available')
+                    {
+                        $( "#openStatus").val(parsedata.open_status);
+                    }
+                    if (parsedata.open_status =='Assigned')
+                    {
+                        $( "#openStatus").val(parsedata.open_status);
+                    }
+                    if (parsedata.open_status =='Started')
+                    {
+                        $( "#openStatus").val(parsedata.open_status);
+                    }
+
+                        ///close status dropdownvalue
+
+                    if (parsedata.closed_status =='Fixed')
+                    {
+                        $( "#closeStatus").val(parsedata.closed_status);
+                    }
+                    if (parsedata.closed_status =='Verified')
+                    {
+                        $( "#closeStatus").val(parsedata.closed_status);
+                    }
+
+                    if (parsedata.closed_status =='Duplicate')
+                    {
+                        $( "#closeStatus").val(parsedata.closed_status);
+                    }
+
+                    if (parsedata.closed_status =='WontFix')
+                    {
+                        $( "#closeStatus").val(parsedata.closed_status);
+                    }
+
+                    if (parsedata.closed_status =='ExternalDependency')
+                    {
+                        $( "#closeStatus").val(parsedata.closed_status);
+                    }
+
+                    if (parsedata.closed_status =='FixUnreleased')
+                    {
+                        $( "#closeStatus").val(parsedata.closed_status);
+                    }
+
+                    if (parsedata.closed_status =='Invalid')
+                    {
+                        $( "#closeStatus").val(parsedata.closed_status);
+                    }
                 }
             });
+        });
+
+        $("input[name='editStatus']").click(function() {
+
+            var statusValue = $(this).val();
+
+            if (statusValue == 'open')
+            {
+                $('.openStatusList').css('display','');
+                $('.closeStatusList').css('display','none');
+            }
+
+            if (statusValue == 'close')
+            {
+                $('.openStatusList').css('display','none');
+                $('.closeStatusList').css('display','');
+            }
         });
 
     </script>
