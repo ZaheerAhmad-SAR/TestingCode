@@ -19,7 +19,7 @@ class BugReportingController extends Controller
      */
     public function index()
     {
-        $records = BugReport::where('parent_bug_id','like',0)->get();
+        $records = BugReport::where('parent_bug_id','like',0)->where('bug_reporter_by_id','=',\auth()->user()->id)->get();
         return view('bugreporting::pages.index',compact('records'));
     }
 
@@ -88,7 +88,11 @@ class BugReportingController extends Controller
      */
     public function edit($id)
     {
-        return view('bugreporting::edit');
+        if ($id)
+        {
+            $record = BugReport::find($id);
+            return response()->json([$record]);
+        }
     }
 
     /**

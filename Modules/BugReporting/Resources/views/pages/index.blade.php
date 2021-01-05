@@ -37,7 +37,7 @@
                                     <th>ID</th>
                                     <th>Title</th>
                                     <th>Message</th>
-{{--                                    <th>Status</th>--}}
+                                    <th>Status</th>
                                     <th>Priority</th>
                                     <th>Section Name</th>
                                     <th style="width: 5%;">Action</th>
@@ -51,7 +51,7 @@
                                             <td>{{$count++}}</td>
                                             <td>{{$record['bug_title']}}</td>
                                             <td>{{$record['bug_message']}}</td>
-{{--                                            <td>{{$record['bug_status']}}</td>--}}
+                                            <td>{{$record['bug_status']}}</td>
                                             <td>{{$record['bug_priority']}}</td>
                                             @php
                                             $str = '';
@@ -67,7 +67,8 @@
                                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                     <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                                        <span class="dropdown-item"><a class="deletebugReporting" data-id="{{$record['id']}}"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span>
+                                                        <span class="dropdown-item"><a href="javascript:void(0);" class="deletebugReporting" data-id="{{$record['id']}}"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span>
+                                                        <span class="dropdown-item"><a href="javascript:void(0);" class="EditbugReporting" data-id="{{$record['id']}}"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
                                                     </div>
                                                 </div>
                                             </td>
@@ -90,8 +91,62 @@
         <!-- END: Card DATA-->
     </div>
 
+    <!-- Modal Report a bug -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="editReportBugModel">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header">
+                    <p class="modal-title"> Edit Report a Bug</p>
+                </div>
+                <form name="editBugReportingForm" id="editBugReportingForm">
+                    <div class="modal-body">
+                        <div class="tab-content clearfix">
+                            <div class="garbageData">
+                                <input type="hidden" name="editBugId" id="editBugId" value="">
+                                <input type="hidden" name="editBugUrl" id="editBugUrl" value="">
+                                <input type="hidden" name="editBugStatus" id="editBugStatus" value="">
+                            </div>
 
+                            <div class="form-group row">
+                                <div class="col-md-3">Short Title</div>
+                                <div class="form-group col-md-9">
+                                    <input type="text" name="editShortTitle" id="editShortTitle" class="form-control" value="">
+                                </div>
+                            </div>
 
+                            <div class="form-group row">
+                                <div class="col-md-3">Enter Your Message</div>
+                                <div class="form-group col-md-9">
+                                    <textarea class="form-control" name="editYourMessage" id="editYourMessage"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="col-md-3">Attach a File</div>
+                                <div class="form-group col-md-9">
+                                    <input type="file" class="form-control" id="editAttachFile" name="edutAttachFile" value="">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="Name" class="col-md-3 col-form-label">Severity/Priority</label>
+                                <div class="col-md-9">
+                                    <label class="radio-inline  col-form-label"><input type="radio" id="editSeverity" name="editSeverity" value="low"> Low</label> &nbsp;
+                                    <label class="radio-inline  col-form-label"><input type="radio" id="editSeverity" name="editSeverity" value="medium"> Medium</label>
+                                    <label class="radio-inline  col-form-label"><input type="radio" id="editSeverity" name="editSeverity" value="high"> High</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="bug-close-btn" class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Send</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End -->
 
 @endsection
 @section('styles')
@@ -133,6 +188,51 @@
                 });
             }
 
+        });
+
+
+        $('body').on('click', '.EditbugReporting', function (e) {
+            $('#editBugReportingForm').trigger('reset');
+            //$('.appendDataOptions_edit').html('');
+            $('#editReportBugModel').modal('show');
+            var id =($(this).attr("data-id"));
+            var url = "{{URL('bug-reporting')}}";
+            var newPath = url+ "/"+ id+"/edit/";
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                type:"GET",
+                dataType: 'html',
+                url:newPath,
+                success : function(results) {
+                    console.log(results);
+                    var parsedata = JSON.parse(results)[0];
+                    $('#editShortTitle').val(parsedata.bug_title);
+                    $('#editYourMessage').val(parsedata.bug_message);
+                    $('#editBugUrl').val(parsedata.bug_url);
+                    $('#editBugStatus').val(parsedata.bug_status);
+                    $('#editAttachFile').val(parsedata.bug_attachments);
+                    $('#editBugId').val(parsedata.id);
+
+                    if (parsedata.bug_priority =='low')
+                    {
+                        $("input[name=editSeverity][value=" + parsedata.bug_priority + "]").prop('checked', true);
+                    }
+                    if (parsedata.bug_priority =='medium')
+                    {
+                        $("input[name=editSeverity][value=" + parsedata.bug_priority + "]").prop('checked', true);
+                    }
+                    if (parsedata.bug_priority =='high')
+                    {
+                        $("input[name=editSeverity][value=" + parsedata.bug_priority + "]").prop('checked', true);
+                    }
+
+
+                }
+            });
         });
 
     </script>
