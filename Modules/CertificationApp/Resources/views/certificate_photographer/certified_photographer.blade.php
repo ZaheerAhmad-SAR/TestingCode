@@ -218,7 +218,7 @@
                                         <td>
 
                                             
-                                            @if($certifiedPhotographer->certificate_status != 'provisional' && $certifiedPhotographer->certificate_type != 'grandfathered')
+                                            @if($certifiedPhotographer->certificate_status == 'full' && $certifiedPhotographer->certificate_type != 'grandfathered')
 
                                             <a href="javascript:void(0)" onClick="generateGrandfatherCertificate('{{$certifiedPhotographer->certificate_id}}', '{{ $certifiedPhotographer->photographer_email}}', '{{ $certifiedPhotographer->cc_emails }}', '{{ $certifiedPhotographer->bcc_emails }}')">
                                                 <i class="fas fa-pen" title="Generate Grandfather Certificate" style="color: #17a2b8 !important;">
@@ -240,6 +240,14 @@
 
                                             <a href="{{ route('photographer-certificate-pdf', $certifiedPhotographer->certificate_file_name)}}" target="_blank">
                                                 <i class="fas fa-file" title="View Certificate" style="color: #17a2b8 !important;">
+                                                
+                                                </i>
+                                            </a>
+
+                                            &nbsp; | &nbsp;
+
+                                            <a href="javascript:void(0)" onClick="changeCertificateStatus('{{$certifiedPhotographer->certificate_id}}', '{{ $certifiedPhotographer->photographer_email}}', '{{ $certifiedPhotographer->cc_emails }}', '{{ $certifiedPhotographer->bcc_emails }}', '{{ $certifiedPhotographer->certificate_status}}')">
+                                                <i class="fas fa-info" title="Change Certificate Status" style="color: #17a2b8 !important;">
                                                 
                                                 </i>
                                             </a>
@@ -441,6 +449,83 @@
     </div>
     <!-- Modal ends -->
 
+     <!-- Status ModAL -->
+    <div class="modal fade" id="change-certificate-status-modal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-color: #1e3d73;">
+          <div class="modal-header bg-primary" style="color: #fff">
+            <h5 class="modal-title" id="exampleModalLabel">Change Certificate Status</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"  style="color: #fff">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+            <form action="{{ route('change-certificate-status') }}" method="POST" class="change-certificate-status-form">
+                @csrf
+            <input type="hidden" name="status_certificate_id" id="status_certificate_id" value="">
+
+              <div class="modal-body">
+
+                <div class="form-group col-md-12">
+                    <label>Certifictaion Status<span class="field-required">*</span></label>
+                    <select name="certification_status" id="certification_status" class="form-control" required="required">
+                        <option value="">Select Status</option>
+                        <option value="provisional">Provisionally Certified</option>
+                        <option value="full">Full</option>
+                        <option value="suspended">Suspended</option>
+                        <option value="expired">Expired</option>
+                        <option value="audit">In Audit</option>
+                    </select>
+                </div>
+
+                <div class="form-group col-md-12">
+                    <label class="edit_users">Email To<span class="field-required">*</span></label>
+                    <Select class="form-control status_user_email" name="status_user_email" id="status_user_email" required>
+
+                    </Select>
+                </div>
+
+                <div class="form-group col-md-12 suspend-certificate-div">
+                    <label class="edit_users">CC Email</label>
+                    <Select class="form-control status_cc_user_email data-required" name="status_cc_user_email[]" id="status_cc_user_email" multiple>
+
+                    </Select>
+                </div>
+
+                <div class="form-group col-md-12">
+                    <label class="edit_users">BCC Email</label>
+                    <Select class="form-control status_bcc_user_email" name="status_bcc_user_email[]" id="status_bcc_user_email" multiple="multiple">
+
+                    </Select>
+                </div>
+
+                <div class="form-group col-md-12">
+                                            
+                    <label for="inputState">Templates</label>
+                    <select id="status_template" name="status_template" class="form-control">
+                        <option value="">Select Template</option>
+                         @foreach($getTemplates as $template)
+                         <option value="{{ $template->template_id }}">{{ $template->template_title }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group col-md-12 comment-div">
+                    <label>Comments<span class="field-required">*</span></label>
+                    <textarea class="form-control status_summernote" name="status_comment" value="" rows="4"></textarea>
+                    <span class="status-edit-error-field" style="display: none; color: red;">Please fill comment field.</span>
+                </div>
+                    
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Change Certificate Status</button>
+
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+    <!-- Modal ends -->
 
 @endsection
 @section('script')
@@ -643,6 +728,96 @@
 
                     // assign body
                     $('.summernote').summernote('code', '');
+                }
+                
+            } // success ends
+
+        }); // ajax ends
+
+    });  // change function ends
+
+     /////////////////////////////// change status modal //////////////////////////////////////////////////
+
+    $('.status_summernote').summernote({
+        height: 150,
+
+    });
+    
+    $('#status_cc_user_email').select2();
+    $('#status_bcc_user_email').select2();
+
+    // status change function
+    function changeCertificateStatus(certificateID, photographerEmail, ccEmail, bccEmail, status) {
+
+        // refresh the select2
+        $('#status_cc_user_email').empty();
+        $('#status_bcc_user_email').empty();
+
+        // assign email to email To input
+        $('.status_user_email').append('<option value="'+photographerEmail+'">'+photographerEmail+'</option>');
+
+        // assign cc and bcc emails
+        $.each(JSON.parse(ccEmail), function(index, value) {
+                                    
+            $('#status_cc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+        });
+
+        $.each(JSON.parse(bccEmail), function(index, value) {
+                                    
+            $('#status_bcc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+        });
+
+        // assign status
+        $('#certification_status').val(status);
+
+        // unselect templete
+        $('#status_template').val(''); 
+        // empty text editor
+        $('.status_summernote').summernote('code', '');
+
+        // hide error message
+        $('.status-edit-error-field').css('display', 'none');
+
+        // assign Certificate ID
+        $('#status_certificate_id').val(certificateID);
+        // show modal
+        $('#change-certificate-status-modal').modal('show');
+    }
+
+     // form submit
+    $('.change-certificate-status-form').submit(function(e) {
+        
+        if($('.status_summernote').summernote('isEmpty')) {
+            // cancel submit
+            e.preventDefault(); 
+            $('.status-edit-error-field').css('display', 'block');
+
+        } else {
+
+            e.currentTarget;
+        }
+    });
+
+
+    $('#status_template').change(function() {
+
+        $.ajax({
+            url: '{{ route("get-template-data") }}',
+            type: 'GET',
+            data: {
+                'template_id': $(this).val(),
+            },
+            success:function(data) {
+
+                if(data.getTemplate != null) {
+
+                    // assign body
+                    $('.status_summernote').summernote('code', data.getTemplate.template_body);
+
+                } else {
+
+                    // assign body
+                    $('.status_summernote').summernote('code', '');
                 }
                 
             } // success ends

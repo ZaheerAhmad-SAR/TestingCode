@@ -201,7 +201,7 @@
                                             <td> {{ $transmission->Transmission_Number }} </td>
                                             <td>
                                                 <span>
-                                                    <a href="javascript:void(0)" class="" title="Remove Archive Transmission" data-url="">
+                                                    <a href="javascript:void(0)" class="" title="Restore" data-url="">
                                                         <i class="fas fa-archive" onClick="archiveTransmission('{{encrypt($transmission->id)}}', '{{ route('archive-photographer-transmission', [encrypt($transmission->id), 'no']) }}')" data-url="" style="color: #17a2b8 !important;"></i>
                                                 </span>
                                             </td>
