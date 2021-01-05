@@ -19,7 +19,7 @@ class BugReportingController extends Controller
      */
     public function index()
     {
-        $records = BugReport::where('parent_bug_id','like',0)->get();
+        $records = BugReport::where('parent_bug_id','like',0)->where('bug_reporter_by_id','=',\auth()->user()->id)->get();
         return view('bugreporting::pages.index',compact('records'));
     }
 
@@ -61,7 +61,8 @@ class BugReportingController extends Controller
             'bug_reporter_by_id'=>\auth()->user()->id,
             'parent_bug_id'=> 0,
             'bug_message'=>$yourMessage,
-            'bug_status'=> 'Started',
+            'status'=> 'open',
+            'open_status'=>'Unconfirmed',
             'bug_url'=>$query_url,
             'bug_title'=>$shortTitle,
             'bug_attachments'=>$filePath,
@@ -88,7 +89,11 @@ class BugReportingController extends Controller
      */
     public function edit($id)
     {
-        return view('bugreporting::edit');
+        if ($id)
+        {
+            $record = BugReport::find($id);
+            return response()->json([$record]);
+        }
     }
 
     /**
