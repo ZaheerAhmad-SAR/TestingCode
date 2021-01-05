@@ -399,7 +399,6 @@
                 }
             })
         }
-
     </script>
 @endpush
 

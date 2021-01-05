@@ -145,8 +145,41 @@ class StudyController extends Controller
      */
     public function studyStatus(Request $request)
     {
-        $study_id = $request->study_ID;
-        Study::where('id', $study_id)->update(['study_status' => $request->status]);
+        $id = $request->study_ID;
+        $deleteExistingData = $request->deleteExistingData;
+        Study::where('id', $id)->update(['study_status' => $request->status]);
+        if ($deleteExistingData == 'deleteExistingData') {
+            dd($deleteExistingData);
+            /*
+            Subject::where('study_id', $id)->delete();
+            AdjudicationFormStatus::where('study_id', $id)->delete();
+            Annotation::where('study_id', $id)->delete();
+            Answer::where('study_id', $id)->delete();
+            ExportType::where('study_id', $id)->delete();
+            FinalAnswer::where('study_id', $id)->delete();
+            FormStatus::where('study_id', $id)->delete();
+            QuestionAdjudicationRequired::where('study_id', $id)->delete();
+            QuestionComments::where('study_id', $id)->delete();
+
+            $phases = StudyStructure::where('study_id', 'like', $id)->get();
+            foreach ($phases as $phase) {
+                $this->deletePhase($phase, true);
+            }
+            StudyStructure::where('study_id', $id)->delete();
+
+            AssignWork::where('study_id', $id)->delete();
+            DiseaseCohort::where('study_id', $id)->delete();
+            Preference::where('study_id', $id)->delete();
+            Query::where('study_id', $id)->delete();
+            QueryNotification::where('study_id', $id)->delete();
+            StudySite::where('study_id', $id)->delete();
+            RoleStudyUser::where('study_id', $id)->delete();
+            StudyRoleUsers::where('study_id', $id)->delete();
+            StudyUser::where('study_id', $id)->delete();
+            TrailLog::where('study_id', $id)->delete();
+            UserRole::where('study_id', $id)->delete();
+            */
+        }
         //return \response()->json($data);
         return redirect()->route('studies.index');
     }

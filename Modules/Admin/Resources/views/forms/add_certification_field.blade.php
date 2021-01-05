@@ -9,7 +9,7 @@
                 <form action="" enctype="multipart/form-data" method="POST"
                     id="form_certify">
                     @csrf
-                    
+
                     <div class="modal-body">
                         <nav>
                             <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
@@ -80,9 +80,9 @@
                                 </div>
                                 <div class="col-sm-2">Show to Grader: </div>
                                 <div class="col-sm-2">
-                                <input type="radio" name="is_show_to_grader" id="is_show_to_grader_no_cert" value="no"> No
+                                <input type="radio" name="is_show_to_grader" id="is_show_to_grader_no_cert" value="no" checked> No
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <input type="radio" name="is_show_to_grader" id="is_show_to_grader_yes_cert" value="yes" checked> Yes
+                                <input type="radio" name="is_show_to_grader" id="is_show_to_grader_yes_cert" value="yes"> Yes
                                 </div>
                                 </div>
                             </div>
@@ -246,7 +246,7 @@
                 $('#dependency_custom_value_cert').val(dependency_custom_value);
                 tId = setTimeout(function() {
                     $('#select_ques_for_dep_cert').val(dependency_question);
-                }, 4000);      
+                }, 4000);
                 tId = setTimeout(function() {
                  $('#first_question_id_cert').val(first_question_id);
                  $('#second_question_id_cert').val(second_question_id);
