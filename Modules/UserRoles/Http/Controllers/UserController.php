@@ -310,6 +310,15 @@ class UserController extends Controller
                 $this->uploadOne($image, $folder, 'public', $name);
                 $user->profile_image = $filePath;
             }
+
+            // look for user signature
+            if ($request->has('user_signature')) {
+
+                @unlink(storage_path('/user_signature/'.$user->user_signature));
+
+                $user->user_signature = $user->id.''.$request->file("user_signature")->getClientOriginalName();
+                $request->user_signature->move(storage_path('/user_signature/'), $user->user_signature);
+            }
             //dd($user);
             $user->save();
         } else {
@@ -324,11 +333,21 @@ class UserController extends Controller
                 $this->uploadOne($image, $folder, 'public', $name);
                 $user->profile_image = $filePath;
             }
+
+             // look for user signature
+            if ($request->has('user_signature')) {
+
+                @unlink(storage_path('/user_signature/'.$user->user_signature));
+
+                $user->user_signature = $user->id.''.$request->file("user_signature")->getClientOriginalName();
+                $request->user_signature->move(storage_path('/user_signature/'), $user->user_signature);
+            }
+
             //dd($user);
             $user->save();
         }
 
-        return redirect()->route('dashboard.index')->with('message', 'Record Updated Successfully!');
+        return redirect()->back();
     }
 
     public function getcodes()
