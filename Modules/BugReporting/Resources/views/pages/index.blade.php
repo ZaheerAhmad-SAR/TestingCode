@@ -35,7 +35,7 @@
                             <table class="table table-bordered">
                                 <tr>
                                     <th style="width: 1%;">ID</th>
-                                    <th style="width: 25%;">Title</th>
+                                    <th style="width: 20%;">Title</th>
                                     <th style="width: 2%;">Reported by</th>
                                     <th style="width: 1%;">Priority</th>
                                     <th style="width: 1%;">Status</th>
@@ -65,15 +65,21 @@
 
 {{--                                            </td>--}}
 
+                                            @if(hasPermission(auth()->user(),'bug-reporting.edit') && hasPermission(auth()->user(),'bug-reporting.destroy'))
                                             <td>
                                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                     <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+
                                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                         <span class="dropdown-item"><a href="javascript:void(0);" class="EditbugReporting" data-id="{{$record['id']}}"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
                                                         <span class="dropdown-item"><a href="javascript:void(0);" class="deletebugReporting" data-id="{{$record['id']}}"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span>
                                                     </div>
+
                                                 </div>
                                             </td>
+                                            @else
+                                                <td><i class="fas fa-ban" aria-hidden="true"></i></td>
+                                            @endif
                                         </tr>
                                 @endforeach
                                 @else
