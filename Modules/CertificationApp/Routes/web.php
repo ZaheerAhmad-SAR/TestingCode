@@ -113,6 +113,9 @@
 // Archive Photographer Transmission
 	Route::get('archived-photographer-transmission-listing', 'TransmissionDataPhotographerController@getArchivedPhotographerTransmissionListing')->name('archived-photographer-transmission-listing');
 
+// change certificate status for both photographer and device
+	Route::post('change-certificate-status', 'TransmissionDataPhotographerController@changeCertificateStatus')->name('change-certificate-status');
+
 // display photographer certificate PDF
 	Route::get('photographer-certificate-pdf/{file_name}', function($fileName) {
 
