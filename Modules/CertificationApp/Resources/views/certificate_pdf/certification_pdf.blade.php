@@ -23,7 +23,6 @@
 body {
 	/*background: #f7f7f7; */
 	height: 150%;
-	padding-left: 40px;
 }
 
 h1, h2, h3,p {     
@@ -31,7 +30,7 @@ h1, h2, h3,p {
 }
 </style>
 <!-- <body style="background: #f7f7f7; height: 150%; border: 2px solid red; padding-left: 10px;"> -->
-<body style="background-image: url('{{ asset('public/certification_pdf/pdf_border8.png')}}'); background-repeat: no-repeat;">
+<body style="background-image: url('{{ asset('public/certification_pdf/Certificate_Background_1.png')}}'); background-repeat: no-repeat;">
 	<table align="center" style="width: 100%;">
 		<tr>
 			<td align="center">&nbsp;</td>
@@ -81,7 +80,7 @@ h1, h2, h3,p {
 		</tr>
 
 		<tr>
-			<td>
+			<td style="padding-left: 50px;">
 				<p style="font-family: play;">Certification Officer</p><br>
 				@if(\Auth::user()->user_signature != '')
 					<img src="{{ route('user-signature', \Auth::user()->user_signature) }}" style="width:150px;">
@@ -90,13 +89,15 @@ h1, h2, h3,p {
 			<!-- <td align="right"><p style="font-family: play;">&nbsp;</p><br><br></td> -->
 		</tr>
 		<tr>
-			<td>
+			<td style="padding-left: 50px;">
 				{{ date('M d, Y') }}
 			</td>
 			<td align="right"><p style="font-family: play;">&nbsp;</p><br></td>
 		</tr>
 		<tr>
-			<td><p style="font-family: play;">{{ \Auth::user()->name }}</p></td>
+			<td style="padding-left: 50px;">
+				<p style="font-family: play;">{{ \Auth::user()->name }}</p>
+			</td>
 			<td align="right"><p style="font-family: play;">&nbsp;</p></td>
 		</tr>
 
