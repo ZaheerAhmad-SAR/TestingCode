@@ -8,6 +8,7 @@
 @stop
 
 @section('content')
+
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
         <div class="row ">
@@ -980,7 +981,7 @@
                             }
                         }
                     });
-                }else{
+                } else {
                     $('#deleteExistingData').val('');
                     $('#changeStudyStatusForm').submit();
                 }

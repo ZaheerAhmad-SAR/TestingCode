@@ -49,6 +49,7 @@ use Modules\FormSubmission\Entities\ExportType;
 use Modules\FormSubmission\Entities\QuestionAdjudicationRequired;
 use Modules\Queries\Entities\QueryNotification;
 use Modules\UserRoles\Entities\StudyRoleUsers;
+use Session;
 
 class StudyController extends Controller
 {
@@ -148,11 +149,18 @@ class StudyController extends Controller
      */
     public function studyStatus(Request $request)
     {
+        /***** get old status for Audit Trail ***/
+        $oldStudy = Study::where('id', $request->study_ID)->first();
+        $deleteData = 'No, do not delete data.';
+
         $id = $request->study_ID;
         $deleteExistingData = $request->deleteExistingData;
+
         Study::where('id', $id)->update(['study_status' => $request->status]);
+
         if ($deleteExistingData == 'deleteExistingData') {
             dd($deleteExistingData);
+
             /*
             Subject::where('study_id', $id)->delete();
             AdjudicationFormStatus::where('study_id', $id)->delete();
@@ -183,6 +191,44 @@ class StudyController extends Controller
             UserRole::where('study_id', $id)->delete();
             */
         }
+
+        /********************************* AUDIT TRAIL FOR STUDY STATUS ******************/
+
+        $newData = array(
+            'study_short_name'  =>  $oldStudy->study_short_name,
+            'study_title' => $oldStudy->study_title,
+            'study_status'  => $request->status,
+            'study_code' => $oldStudy->study_code,
+            'study_sponsor' => $oldStudy->study_sponsor,
+            'data_status' => $deleteData,
+
+        );
+
+        $oldData = array(
+            'study_short_name'  =>  $oldStudy->study_short_name,
+            'study_title' => $oldStudy->study_title,
+            'study_status'  => $oldStudy->study_status,
+            'study_code' => $oldStudy->study_code,
+            'study_sponsor' => $oldStudy->study_sponsor,
+            'data_status' => '',
+        );
+
+        // Log the event
+        $trailLog = new TrailLog;
+        $trailLog->event_id = $id;
+        $trailLog->event_section = 'Study Status';
+        $trailLog->event_type = 'Update';
+        $trailLog->event_message = 'Study '.$oldStudy->study_title.' status updated.';
+        $trailLog->user_id = Auth::user()->id;
+        $trailLog->user_name = Auth::user()->name;
+        $trailLog->role_id = Auth::user()->role_id;
+        $trailLog->ip_address = $request->ip();
+        $trailLog->study_id = Session::get('current_study') != null ? Session::get('current_study') : '';
+        $trailLog->event_url = route('studies.index');
+        $trailLog->event_details = json_encode($newData);
+        $trailLog->event_old_details = json_encode($oldData);
+        $trailLog->save();
+
         //return \response()->json($data);
         return redirect()->route('studies.index');
     }
