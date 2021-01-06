@@ -104,7 +104,23 @@ class BugReportingController extends Controller
      */
     public function update(Request $request)
     {
-        dd($request->all());
+        $checkIdIfExists = BugReport::find($request->editBugId);
+        if ($checkIdIfExists !== null) {
+         $id = (string) Str::uuid();
+         $data = BugReport::create([
+            'id' => $id,
+            'bug_message' => $request->developerComment,
+            'bug_title'=> $request->editBugTitle,
+            'bug_priority' => $request->editSeverity,
+            'status' => $request->editStatus,
+            'open_status' => $request->openStatus,
+            'closed_status' => $request->closeStatus,
+            'bug_url' => $request->editBugUrl,
+            'parent_bug_id' => $checkIdIfExists['id'],
+             'bug_reporter_by_id'=>\auth()->user()->id,
+        ]);
+    }
+        return response()->json(['success' => 'Bug Reporing  is generated successfully.']);
     }
 
     /**
