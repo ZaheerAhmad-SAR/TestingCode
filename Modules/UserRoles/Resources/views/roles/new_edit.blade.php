@@ -311,6 +311,43 @@
                                                 </div>
                                             </div>
                                         </div>
+
+
+                                        <div class="form-group row" style="margin-top: 15px;">
+                                            <div class="col-md-3">
+                                                <label for="Name" style="padding-left: 11px">Bug Reporting </label>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <?php foreach($permissions as $permission) { ?>
+                                                        <input type="checkbox" name="bug_reporting_add" id="bug_reporting_add"
+                                                               <?php if($permission->name == 'bug-reporting.create') {?> checked <?php } } ?>
+                                                        > Add
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <?php foreach($permissions as $permission) { ?>
+                                                        <input type="checkbox" name="bug_reporting_edit" id="bug_reporting_edit"
+                                                               <?php if($permission->name == 'bug-reporting.edit') {?> checked <?php } } ?>
+                                                        > Edit
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <?php foreach($permissions as $permission) { ?>
+                                                        <input type="checkbox" name="bug_reporting_view" id="bug_reporting_view"
+                                                               <?php if($permission->name == 'bug-reporting.index') {?> checked <?php } } ?>
+                                                        > View
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <?php foreach($permissions as $permission) { ?>
+                                                        <input type="checkbox" name="bug_reporting_delete" id="bug_reporting_delete"
+                                                               <?php if($permission->name == 'bug-reporting.destroy') {?> checked <?php } } ?>
+                                                        > Delete
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+
                                     </div>
                                     <div class="tab-pane fade" id="nav-ManagementActivities" role="tabpanel">
                                         <div class="form-group row" style="margin-top: 10px;">
