@@ -1,7 +1,7 @@
 @extends ('layouts.home')
 
 @section('title')
-    <title> Arhived Device Transmissions | {{ config('app.name', 'Laravel') }}</title>
+    <title> Archived Device Transmissions | {{ config('app.name', 'Laravel') }}</title>
 @stop
 
 @section('styles')
@@ -64,10 +64,10 @@
         <div class="row ">
             <div class="col-12  align-self-center">
                 <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
-                    <div class="w-sm-100 mr-auto"><h4 class="mb-0">Arhived Device Transmissions</h4></div>
+                    <div class="w-sm-100 mr-auto"><h4 class="mb-0">Archived Device Transmissions</h4></div>
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                         <li class="breadcrumb-item">Dashboard</li>
-                        <li class="breadcrumb-item">Arhived Device Transmissions</li>
+                        <li class="breadcrumb-item">Archived Device Transmissions</li>
                     </ol>
                 </div>
             </div>
@@ -205,7 +205,7 @@
                                             <td> {{ $transmission->Transmission_Number }} </td>
                                             <td>
                                                 <span>
-                                                    <a href="javascript:void(0)" class="" title="Remove Archive Transmission" data-url="">
+                                                    <a href="javascript:void(0)" class="" title="Restore" data-url="">
                                                         <i class="fas fa-archive" onClick="archiveTransmission('{{encrypt($transmission->id)}}', '{{ route('archive-device-transmission', [encrypt($transmission->id), 'no']) }}')" data-url="" style="color: #17a2b8 !important;"></i>
                                                 </span>
                                             </td>

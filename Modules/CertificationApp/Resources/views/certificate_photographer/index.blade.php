@@ -82,7 +82,7 @@
 
                      <div class="form-group col-md-12 mt-3">        
 
-                        <a href="{{ route('archived-photographer-transmission-listing')}}" class="btn btn-primary archive-device-transmission">Archive Transmissions</a>
+                        <a href="{{ route('archived-photographer-transmission-listing')}}" class="btn btn-primary archive-device-transmission">Archived Transmissions</a>
 
                         @if (!$getTransmissions->isEmpty())
                         <span style="float: right; margin-top: 3px;" class="badge badge-pill badge-primary">

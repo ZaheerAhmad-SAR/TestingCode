@@ -8,22 +8,22 @@
 <style>
 
 /* IE10+ CSS print styles */
-@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+/*@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {*/
   /* IE10+ CSS print styles go here */
-  @page {
-    size: auto;   /* auto is the initial value */
+  /*@page {*/
+    /*size: auto;    auto is the initial value */
     /*size: A4 portrait;*/
-    margin: 0;  /* this affects the margin in the printer settings */
+    /*margin: 0;   this affects the margin in the printer settings */
     /*border: 1px solid;*/
-  	padding: 10px;
-  	box-shadow: 5px 10px 8px 10px #888888;  /* set a border for all printed pages */
-  }
-}
+  	/*padding: 10px;*/
+  	/*box-shadow: 5px 10px 8px 10px #888888;   set a border for all printed pages */
+  /*}*/
+/*}*/
 
 body {
-	background: #f7f7f7; 
+	/*background: #f7f7f7; */
 	height: 150%;
-	padding-left: 10px;
+	padding-left: 40px;
 }
 
 h1, h2, h3,p {     
@@ -31,7 +31,7 @@ h1, h2, h3,p {
 }
 </style>
 <!-- <body style="background: #f7f7f7; height: 150%; border: 2px solid red; padding-left: 10px;"> -->
-<body>
+<body style="background-image: url('{{ asset('public/certification_pdf/pdf_border8.png')}}'); background-repeat: no-repeat;">
 	<table align="center" style="width: 100%;">
 		<tr>
 			<td align="center">&nbsp;</td>
@@ -44,7 +44,7 @@ h1, h2, h3,p {
 		</tr>
 		<tr>
 			<td align="center">
-				<img src="{{ asset('public/occap_email_logo.png')}}" style="width: 25%; padding-bottom: 5px;"> 
+				<img src="{{ asset('public/certification_pdf/occap_email_logo.png')}}" style="width: 25%; padding-bottom: 5px;"> 
 			</td>
 		</tr>
 
