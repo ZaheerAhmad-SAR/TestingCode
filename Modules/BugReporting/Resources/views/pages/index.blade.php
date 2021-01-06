@@ -107,19 +107,13 @@
                             <div class="garbageData">
                                 <input type="hidden" name="editBugId" id="editBugId" value="">
                                 <input type="hidden" name="editBugUrl" id="editBugUrl" value="">
+                                <input type="hidden" name="editBugTitle" id="editBugTitle" value="">
                             </div>
 
                             <div class="form-group row">
-                                <div class="col-md-3">Short Title</div>
+                                <div class="col-md-3">Developer Comment</div>
                                 <div class="form-group col-md-9">
-                                    <input type="text" name="editShortTitle" id="editShortTitle" class="form-control" value="">
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <div class="col-md-3">Enter Your Message</div>
-                                <div class="form-group col-md-9">
-                                    <textarea class="form-control" name="editYourMessage" id="editYourMessage"></textarea>
+                                    <textarea class="form-control" name="developerComment" id="developerComment"></textarea>
                                 </div>
                             </div>
 
@@ -242,15 +236,13 @@
                 success : function(results) {
                     console.log(results);
                     var parsedata = JSON.parse(results)[0];
-                    $('#editShortTitle').val(parsedata.bug_title);
-                    $('#editYourMessage').val(parsedata.bug_message);
                     $('#editBugUrl').val(parsedata.bug_url);
+                    $('#editBugTitle').val(parsedata.bug_title);
                     $('#editBugStatus').val(parsedata.bug_status);
-                    //$('#editAttachFile').val(parsedata.bug_attachments);
                     $('#editBugId').val(parsedata.id);
 
-                    console.log(parsedata.open_status);
-                    console.log(parsedata.closed_status);
+                    // console.log(parsedata.open_status);
+                    // console.log(parsedata.closed_status);
 
                     if (parsedata.bug_priority =='low')
                     {
@@ -359,7 +351,6 @@
             }
         });
 
-
         $("#editBugReportingForm").submit(function(e) {
             $.ajaxSetup({
                 headers: {
@@ -367,18 +358,14 @@
                 }
             });
             e.preventDefault();
-
             $.ajax({
                 data: $('#editBugReportingForm').serialize(),
                 url: "{{ route('bugReporting.update') }}",
                 type: "POST",
                 dataType: 'json',
                 success: function (data) {
-                    {{--$('#editChildModal').modal('hide');--}}
-                    {{--window.setTimeout(function () {--}}
-                    {{--    location.href = '{{ route('modalities.index') }}';--}}
-                    {{--}, 100);--}}
-
+                    $('#editReportBugModel').modal('hide');
+                    location.reload();
                 },
                 error: function (data) {
                     console.log('Error:', data);
