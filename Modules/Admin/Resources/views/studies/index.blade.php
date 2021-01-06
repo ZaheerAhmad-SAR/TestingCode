@@ -617,7 +617,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
 
     <script type="text/javascript">
-       
+
         $('.variable_name_ques').keydown(function(e) {
             if (e.keyCode == 32) {
                 $('.variable_name_ques').css('border', '1px solid red');
@@ -951,9 +951,9 @@
                 var studyStatus = $('#studyStatusDD').val();
                 if(studyStatus == 'Live'){
                     $.confirm({
-                        columnClass: 'col-md-12',
+                        columnClass: 'col-md-8',
                         title: 'Put study in LIVE mode!',
-                        content: 'Keep existing data or delete',
+                        content: '<h2>Keep existing data or delete</h2>If you select "DELETE EXISTING DATA" all current collected data will be permanently deleted otherwise data will remain untouched as the study is moved to LIVE mode',
                         buttons: {
                             deleteExistingData: {
                                 text: 'Delete existing data',
