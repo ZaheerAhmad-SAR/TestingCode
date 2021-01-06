@@ -210,12 +210,37 @@ class RoleController extends Controller
         }
         if ($request->subjects_view == 'on') {
             $permissions = Permission::where('name', '=', 'subjects.index')
-                ->orwhere('name', '=', 'studies.show')
+                ->orwhere('name', '=', 'subjects.show')
                 ->get();
             $this->createRolePermissions($role, $permissions);
         }
         if ($request->subjects_delete == 'on') {
             $permissions = Permission::where('name', '=', 'subjects.destroy')
+                ->get();
+            $this->createRolePermissions($role, $permissions);
+        }
+
+        /*-- Bug reporting Permissions */
+        if ($request->bug_reporting_add == 'on') {
+            $permissions = Permission::where('name', '=', 'bug-reporting.create')
+                ->orwhere('name', '=', 'bug-reporting.store')
+                ->get();
+            $this->createRolePermissions($role, $permissions);
+        }
+        if ($request->bug_reporting_edit == 'on') {
+            $permissions = Permission::where('name', '=', 'bug-reporting.edit')
+                ->orwhere('name', '=', 'bug-reporting.update')
+                ->get();
+            $this->createRolePermissions($role, $permissions);
+        }
+        if ($request->bug_reporting_view == 'on') {
+            $permissions = Permission::where('name', '=', 'bug-reporting.index')
+                ->orwhere('name', '=', 'bug-reporting.show')
+                ->get();
+            $this->createRolePermissions($role, $permissions);
+        }
+        if ($request->bug_reporting_delete == 'on') {
+            $permissions = Permission::where('name', '=', 'bug-reporting.destroy')
                 ->get();
             $this->createRolePermissions($role, $permissions);
         }
