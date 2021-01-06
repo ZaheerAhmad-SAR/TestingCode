@@ -35,12 +35,10 @@
                             <table class="table table-bordered">
                                 <tr>
                                     <th style="width: 1%;">ID</th>
-                                    <th style="width: 30%;">Title</th>
-{{--                                    <th>Message</th>--}}
-                                    <th style="width: 1%;">Status</th>
-                                    <th style="width: 1%;">Priority</th>
-{{--                                    <th>Section Name</th>--}}
+                                    <th style="width: 25%;">Title</th>
                                     <th style="width: 2%;">Reported by</th>
+                                    <th style="width: 1%;">Priority</th>
+                                    <th style="width: 1%;">Status</th>
                                     <th style="width: 1%;">Action</th>
                                 </tr>
                                 <tbody>
@@ -51,9 +49,11 @@
                                         <tr>
                                             <td>{{$count++}}</td>
                                             <td>{{$record['bug_title']}}</td>
-{{--                                            <td>{{$record['bug_message']}}</td>--}}
-                                            <td>{{ ($record['status'] && $record['open_status']) ? $record['status'] .'-'. lcfirst($record['open_status']) : '' }}</td>
+                                            @php $row = App\User::where('id','=',$record['bug_reporter_by_id'])->first();@endphp
+                                            <td>{{$row->name}}</td>
                                             <td>{{$record['bug_priority']}}</td>
+                                            <td>{{ ($record['status'] && $record['open_status']) ? $record['status'] .'-'. lcfirst($record['open_status']) : '' }}</td>
+
 {{--                                            @php--}}
 {{--                                            $str = '';--}}
 {{--                                            $str = $record['bug_url'];--}}
@@ -64,8 +64,7 @@
 {{--                                                <a target="_blank" href=" {{$record['bug_url']}}">{{ucwords($segment[3])}}</a>--}}
 
 {{--                                            </td>--}}
-                                            @php $row = App\User::where('id','=',$record['bug_reporter_by_id'])->first();@endphp
-                                            <td>{{$row->name}}</td>
+
                                             <td>
                                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
                                                     <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
@@ -108,20 +107,13 @@
                             <div class="garbageData">
                                 <input type="hidden" name="editBugId" id="editBugId" value="">
                                 <input type="hidden" name="editBugUrl" id="editBugUrl" value="">
-                                <input type="hidden" name="editBugStatus" id="editBugStatus" value="">
+                                <input type="hidden" name="editBugTitle" id="editBugTitle" value="">
                             </div>
 
                             <div class="form-group row">
-                                <div class="col-md-3">Short Title</div>
+                                <div class="col-md-3">Developer Comment</div>
                                 <div class="form-group col-md-9">
-                                    <input type="text" name="editShortTitle" id="editShortTitle" class="form-control" value="">
-                                </div>
-                            </div>
-
-                            <div class="form-group row">
-                                <div class="col-md-3">Enter Your Message</div>
-                                <div class="form-group col-md-9">
-                                    <textarea class="form-control" name="editYourMessage" id="editYourMessage"></textarea>
+                                    <textarea class="form-control" name="developerComment" id="developerComment"></textarea>
                                 </div>
                             </div>
 
@@ -244,15 +236,13 @@
                 success : function(results) {
                     console.log(results);
                     var parsedata = JSON.parse(results)[0];
-                    $('#editShortTitle').val(parsedata.bug_title);
-                    $('#editYourMessage').val(parsedata.bug_message);
                     $('#editBugUrl').val(parsedata.bug_url);
+                    $('#editBugTitle').val(parsedata.bug_title);
                     $('#editBugStatus').val(parsedata.bug_status);
-                    //$('#editAttachFile').val(parsedata.bug_attachments);
                     $('#editBugId').val(parsedata.id);
 
-                    console.log(parsedata.open_status);
-                    console.log(parsedata.closed_status);
+                    // console.log(parsedata.open_status);
+                    // console.log(parsedata.closed_status);
 
                     if (parsedata.bug_priority =='low')
                     {
@@ -359,6 +349,28 @@
                 $('.openStatusList').css('display','none');
                 $('.closeStatusList').css('display','');
             }
+        });
+
+        $("#editBugReportingForm").submit(function(e) {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            e.preventDefault();
+            $.ajax({
+                data: $('#editBugReportingForm').serialize(),
+                url: "{{ route('bugReporting.update') }}",
+                type: "POST",
+                dataType: 'json',
+                success: function (data) {
+                    $('#editReportBugModel').modal('hide');
+                    location.reload();
+                },
+                error: function (data) {
+                    console.log('Error:', data);
+                }
+            });
         });
 
     </script>

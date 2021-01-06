@@ -46,6 +46,7 @@ use Modules\Admin\Entities\QuestionValidation;
 use Modules\Admin\Entities\Section;
 use Modules\Admin\Entities\SkipLogic;
 use Modules\FormSubmission\Entities\ExportType;
+use Modules\FormSubmission\Entities\FormVersion;
 use Modules\FormSubmission\Entities\QuestionAdjudicationRequired;
 use Modules\Queries\Entities\QueryNotification;
 use Modules\UserRoles\Entities\StudyRoleUsers;
@@ -133,7 +134,7 @@ class StudyController extends Controller
         if ($request->study_sponsor != '') {
             $studies = $studies->where('study_sponsor', 'like', '%' . $request->study_sponsor . '%');
         }
-        if ($request->id !='') {
+        if ($request->id != '') {
             $studies = $studies->orderBy('id', $request->id);
         }
         $studies = $studies->get();
@@ -159,37 +160,22 @@ class StudyController extends Controller
         Study::where('id', $id)->update(['study_status' => $request->status]);
 
         if ($deleteExistingData == 'deleteExistingData') {
-            dd($deleteExistingData);
 
-            /*
-            Subject::where('study_id', $id)->delete();
-            AdjudicationFormStatus::where('study_id', $id)->delete();
-            Annotation::where('study_id', $id)->delete();
-            Answer::where('study_id', $id)->delete();
-            ExportType::where('study_id', $id)->delete();
-            FinalAnswer::where('study_id', $id)->delete();
-            FormStatus::where('study_id', $id)->delete();
-            QuestionAdjudicationRequired::where('study_id', $id)->delete();
-            QuestionComments::where('study_id', $id)->delete();
+            Subject::where('study_id', $id)->withTrashed()->forceDelete();
+            AdjudicationFormStatus::where('study_id', $id)->withTrashed()->forceDelete();
+            Answer::where('study_id', $id)->withTrashed()->forceDelete();
+            FinalAnswer::where('study_id', $id)->withTrashed()->forceDelete();
+            FormStatus::where('study_id', $id)->withTrashed()->forceDelete();
+            Query::where('study_id', $id)->withTrashed()->forceDelete();
+            QueryNotification::where('study_id', $id)->withTrashed()->forceDelete();
 
-            $phases = StudyStructure::where('study_id', 'like', $id)->get();
-            foreach ($phases as $phase) {
-                $this->deletePhase($phase, true);
-            }
-            StudyStructure::where('study_id', $id)->delete();
+            $phaseIds = StudyStructure::where('study_id', 'like', $id)->pluck('id')->toArray();
+            $stepIds = PhaseSteps::whereIn('phase_id', $phaseIds)->pluck('step_id')->toArray();
+            FormVersion::whereIn('step_id', $stepIds)->withTrashed()->forceDelete();
 
-            AssignWork::where('study_id', $id)->delete();
-            DiseaseCohort::where('study_id', $id)->delete();
-            Preference::where('study_id', $id)->delete();
-            Query::where('study_id', $id)->delete();
-            QueryNotification::where('study_id', $id)->delete();
-            StudySite::where('study_id', $id)->delete();
-            RoleStudyUser::where('study_id', $id)->delete();
-            StudyRoleUsers::where('study_id', $id)->delete();
-            StudyUser::where('study_id', $id)->delete();
-            TrailLog::where('study_id', $id)->delete();
-            UserRole::where('study_id', $id)->delete();
-            */
+            /**** For Audit Trail ***/
+            $deleteData = 'Yes, delete data.';
+
         }
 
         /********************************* AUDIT TRAIL FOR STUDY STATUS ******************/
