@@ -61,7 +61,8 @@ class BugReportingController extends Controller
             'bug_reporter_by_id'=>\auth()->user()->id,
             'parent_bug_id'=> 0,
             'bug_message'=>$yourMessage,
-            'bug_status'=> 'Started',
+            'status'=> 'open',
+            'open_status'=>'Unconfirmed',
             'bug_url'=>$query_url,
             'bug_title'=>$shortTitle,
             'bug_attachments'=>$filePath,
@@ -101,9 +102,9 @@ class BugReportingController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        dd($request->all());
     }
 
     /**
