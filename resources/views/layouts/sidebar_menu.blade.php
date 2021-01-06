@@ -519,8 +519,10 @@
     <div class="btn-group dropup" style="margin-left: 15px;">
      <button type="button" class="btn btn-primary dropdown-toggle position-fixed" data-toggle="dropdown">  <i class="icon-question"></i> Support</button>
         <div class="dropdown-menu">
+            @if(hasPermission(auth()->user(),'bug-reporting.create'))
             <a href="#" class="dropdown-item"  data-toggle="modal" data-target="#reportabugmodel"><i class="fa fa-plus"></i>   Report a Bug</a>
             <div class="dropdown-divider"></div>
+            @endif
             <a href="#" class="dropdown-item"><i class="fa fa-plus"></i>  User Manual</a>
             <div class="dropdown-divider"></div>
             <a href="#" class="dropdown-item"> <i class="fa fa-plus"></i>  OCAP v2021.1.0</a>

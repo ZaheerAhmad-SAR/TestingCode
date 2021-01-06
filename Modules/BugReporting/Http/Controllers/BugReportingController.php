@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
 use Modules\BugReporting\Entities\BugReport;
 use App\Traits\UploadTrait;
+use Modules\Queries\Entities\Query;
 
 
 class BugReportingController extends Controller
@@ -19,7 +20,7 @@ class BugReportingController extends Controller
      */
     public function index()
     {
-        $records = BugReport::where('parent_bug_id','like',0)->where('bug_reporter_by_id','=',\auth()->user()->id)->get();
+        $records = BugReport::where('parent_bug_id','like',0)->get();
         return view('bugreporting::pages.index',compact('records'));
     }
 
@@ -107,7 +108,7 @@ class BugReportingController extends Controller
         $checkIdIfExists = BugReport::find($request->editBugId);
         if ($checkIdIfExists !== null) {
          $id = (string) Str::uuid();
-         $data = BugReport::create([
+          BugReport::create([
             'id' => $id,
             'bug_message' => $request->developerComment,
             'bug_title'=> $request->editBugTitle,
@@ -119,6 +120,21 @@ class BugReportingController extends Controller
             'parent_bug_id' => $checkIdIfExists['id'],
              'bug_reporter_by_id'=>\auth()->user()->id,
         ]);
+            $bugStatusArray = array(
+                'status' => $request->editStatus,
+                'open_status'=>$request->openStatus,
+                'closed_status'=>$request->closeStatus,
+                'bug_priority' => $request->editSeverity
+            );
+            $bugStatusArrayChild = array(
+                'status' => $request->editStatus,
+                'open_status'=>$request->openStatus,
+                'closed_status'=>$request->closeStatus,
+                'bug_priority' => $request->editSeverity,
+            );
+
+            BugReport::where('id',$checkIdIfExists['id'])->update($bugStatusArray);
+            BugReport::where('parent_bug_id',$checkIdIfExists['id'])->update($bugStatusArrayChild);
     }
         return response()->json(['success' => 'Bug Reporing  is generated successfully.']);
     }
