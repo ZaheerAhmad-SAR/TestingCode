@@ -275,10 +275,10 @@
                             <table class="table table-bordered" id="laravel_crud">
                                 <thead>
                                     <tr class="table-secondary">
-                                        <th>Subject ID</th>
-                                        <th>Phase</th>
-                                        <th>Visit Date</th>
-                                        <th>Site Name</th>
+                                        <th>Subject ID <i class="fas fa-sort float-mrg"></i></th>
+                                        <th>Phase <i class="fas fa-sort float-mrg"></i></th>
+                                        <th>Visit Date <i class="fas fa-sort float-mrg"></i></th>
+                                        <th>Site Name <i class="fas fa-sort float-mrg"></i></th>
 
                                         @php
                                             $count = 4;

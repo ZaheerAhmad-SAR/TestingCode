@@ -20,7 +20,11 @@ class SiteController extends Controller
      */
     public function index(Request $request)
     {
-        //$sites = Site::paginate(20);
+        if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
+            $field_name = $request->sort_by_field_name;
+        }else{
+            $field_name = 'site_code';
+        }
         $sites = Site::query();
         if ($request->site_code != '') {
             $sites = $sites->where('site_code','like', '%'.$request->site_code.'%');
@@ -40,12 +44,16 @@ class SiteController extends Controller
         if ($request->site_phone != '') {
             $sites = $sites->where('site_phone','like', '%'.$request->site_phone.'%');
         }
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $sites = $sites->orderBy($field_name , $request->sort_by_field);
+        }
         $sites = $sites->paginate(20);
         $siteForTransmissions = Site::all();
         $photographers = Photographer::all();
         $coordinators = Coordinator::all();
         $pinvestigators = PrimaryInvestigator::all();
-        return view('admin::sites.index',compact('sites','photographers','pinvestigators','coordinators','siteForTransmissions'));
+        $old_values = $request->input();
+        return view('admin::sites.index',compact('sites','photographers','pinvestigators','coordinators','siteForTransmissions','old_values'));
     }
 
     /**

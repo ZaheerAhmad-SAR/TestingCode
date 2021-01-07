@@ -26,20 +26,24 @@
             <div class="card-body">
                 <form action="{{route('users.index')}}" method="get" class="filter-form">
                     @csrf
-                    <input type="hidden" name="sort_by_name" id="sort_by_name" value="ASC">
-                    <input type="hidden" name="sort_by_email" id="sort_by_email" value="ASC">
+                    <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ getOldValue($old_values,'sort_by_field') }}">
+                    <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ getOldValue($old_values,'sort_by_field_name') }}">
                     <div class="form-row" style="padding: 10px;">
                         <div class="form-group col-md-3">
-                            <input type="text" name="name" class="form-control" placeholder="Name">
+                            <input type="text" name="name" class="form-control" placeholder="Name" value="{{ getOldValue($old_values,'name')}}">
                         </div>
                          <div class="form-group col-md-3">
-                            <input type="text" name="email" class="form-control" placeholder="Email">
+                            <input type="text" name="email" class="form-control" placeholder="Email" value="{{ getOldValue($old_values,'email')}}">
                         </div>
                         <div class="form-group col-md-3">
+                            @php
+                                $old_role ='';
+                                $old_role =  getOldValue($old_values,'role_id');
+                            @endphp
                            <select class="form-control" name="role_id">
                                <option value="">Role</option>
                                @foreach($allroles as $key => $role)
-                                <option value="{{$role->id}}">{{$role->name}}</option>
+                                <option value="{{$role->id}}" @if($old_role == $role->id) selected @endif>{{$role->name}}</option>
                                @endforeach
                            </select>
                         </div>
@@ -86,7 +90,7 @@
                                         </tr>
                                         <tr>
                                         <th scope="col" onclick="changeSort('name');">Name <i class="fas fa-sort float-mrg"></i></th>
-                                        <th scope="col">Email</th>
+                                        <th scope="col" onclick="changeSort('email');">Email <i class="fas fa-sort float-mrg"></i></th>
                                         <th scope="col">Roles</th>
                                         <th scope="col">2 Factor Auth</th>
                                         <th scope="col">Is Active?</th>
@@ -224,11 +228,13 @@
             });
         }
         function changeSort(field_name){
-            var check_sort_id = $('#sort_by_name').val();
-            if(check_sort_id =='ASC' && field_name =='name'){
-                $('#sort_by_name').val('DESC');
-            }else if(check_sort_id =='ASC' && field_name =='email'){
-               $('#sort_by_email').val('DESC'); 
+            var sort_by_field = $('#sort_by_field').val();
+            if(sort_by_field =='' || sort_by_field =='ASC'){
+               $('#sort_by_field').val('DESC');
+               $('#sort_by_field_name').val(field_name);
+            }else if(sort_by_field =='DESC'){
+               $('#sort_by_field').val('ASC'); 
+               $('#sort_by_field_name').val(field_name); 
             }
             $('.filter-form').submit();
         }

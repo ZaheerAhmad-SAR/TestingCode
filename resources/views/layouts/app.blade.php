@@ -127,6 +127,9 @@
                 var duration = 10000;
                 setTimeout(function () { $('#myalert').hide(); }, duration);
             });
+            $('body').on('click','.reset-filter',function(){
+                ('.filter-form').find('input[type=text], input[type=date],select').val('');
+            });
         </script>
         <!-- END: Page JS-->
     </body>
