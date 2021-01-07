@@ -138,17 +138,16 @@ class StudyController extends Controller
         }
         if ($request->study_sponsor != '') {
             $studies = $studies->where('study_sponsor', 'like', '%' . $request->study_sponsor . '%');
-        
+        }
         if(isset($request->sort_by_field) && $request->sort_by_field !=''){
             $studies = $studies->orderBy($field_name , $request->sort_by_field);
-        if ($request->id != '') {
-            $studies = $studies->orderBy('id', $request->id);
+        }else {
+            $studies = $studies->orderBy('id', 'ASC');
         }
         $studies = $studies->get();
         $old_values = $request->input();
         return view('admin::studies.index', compact('sites', 'users', 'studies','old_values'));
-    }
-
+        }
 
 
     /**
