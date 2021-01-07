@@ -1275,8 +1275,8 @@ function arrayFilter($array)
 
 function TagReleasenumber()
 {
-    return 'Fix OCAP Version Issue';
-    /*
+    //return 'Fix OCAP Version Issue';
+    
     $HEAD_hash = file_get_contents('.git/refs/heads/Laravel_7'); // or branch x
 
     $files = glob('.git/refs/tags/*');
@@ -1288,5 +1288,13 @@ function TagReleasenumber()
             exit;
         }
     }
-    */
+    
+}
+function getOldValue($oldValues, $val)
+{
+     if (isset($oldValues[$val])) {
+        return $oldValues[$val];
+     } else {
+        return '';
+     }
 }

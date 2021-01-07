@@ -26,7 +26,11 @@ class StudyusersController extends Controller
      */
     public function index(Request $request)
     {
-        // dd($request->all());
+        if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
+            $field_name = $request->sort_by_field_name;
+        }else{
+            $field_name = 'name';
+        }
         $currentStudy = session('current_study');
         $studyRoleIds = Role::where('role_type', '=', 'study_role')->pluck('id')->toArray();
         $idsOfUsersWithStudyRole = UserRole::whereIn('role_id', $studyRoleIds)->pluck('user_id')->toArray();
@@ -42,11 +46,15 @@ class StudyusersController extends Controller
         if(isset($request->role_id) && $request->role_id !=''){
             $studyusers = $studyusers->where('users.role_id','like', '%'. $request->role_id.'%');
         }
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $studyusers = $studyusers->orderBy('users.'.$field_name , $request->sort_by_field);
+        }
         $studyusers = $studyusers->get();
+        $old_values = $request->input();
         $remaining_users = User::whereIn('id', $idsOfUsersWithStudyRole)
             ->whereNotIn('id', $enrolledUserIds)->get();
         $allroles = Role::all();
-        return view('userroles::users.studyUsers', compact('roles', 'studyusers', 'remaining_users','allroles'));
+        return view('userroles::users.studyUsers', compact('roles', 'studyusers', 'remaining_users','allroles','old_values'));
     }
 
     /**

@@ -121,7 +121,12 @@ class StudyController extends Controller
         } else {
             $studies = Study::where('study_status', 'Live')->whereIn('id', array_unique($studiesIDs));
         }
-
+        // for default orderBy
+        if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
+            $field_name = $request->sort_by_field_name;
+        }else{
+            $field_name = 'study_sponsor';
+        }
         if ($request->study_code != '') {
             $studies = $studies->where('study_code', 'like', '%' . $request->study_code . '%');
         }
@@ -134,14 +139,15 @@ class StudyController extends Controller
         if ($request->study_sponsor != '') {
             $studies = $studies->where('study_sponsor', 'like', '%' . $request->study_sponsor . '%');
         }
-        if ($request->id != '') {
-            $studies = $studies->orderBy('id', $request->id);
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $studies = $studies->orderBy($field_name , $request->sort_by_field);
+        }else {
+            $studies = $studies->orderBy('id', 'ASC');
         }
         $studies = $studies->get();
-
-        return view('admin::studies.index', compact('sites', 'users', 'studies'));
-    }
-
+        $old_values = $request->input();
+        return view('admin::studies.index', compact('sites', 'users', 'studies','old_values'));
+        }
 
 
     /**
@@ -371,7 +377,12 @@ class StudyController extends Controller
                 ->orderBy('study_short_name')->get();
             $currentStudy = Study::find($id);
             $study = Study::find($id);
-
+            // for default orderBy
+            if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
+                $field_name = $request->sort_by_field_name;
+            }else{
+                $field_name = 'subject_id';
+            }
             $subjects = Subject::select(['subjects.*', 'sites.site_name', 'sites.site_address', 'sites.site_city', 'sites.site_state', 'sites.site_code', 'sites.site_country', 'sites.site_phone']);
             $subjects = $subjects->where('subjects.study_id', '=', $id);
             if ($request->subject_id != '') {
@@ -391,14 +402,19 @@ class StudyController extends Controller
             }
 
             $subjects = $subjects->join('sites', 'sites.id', '=', 'subjects.site_id');
-            $subjects = $subjects->orderBy('subject_id', 'asc')->get();
 
+            if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+                $subjects = $subjects->orderBy($field_name , $request->sort_by_field);
+            }
+            
+            $subjects = $subjects->get();
             $site_study = StudySite::where('study_id', '=', $id)
                 ->join('sites', 'sites.id', '=', 'site_study.site_id')
                 ->select('sites.site_name', 'sites.id', 'sites.site_code')
                 ->get();
             $diseaseCohort = DiseaseCohort::where('study_id', '=', $id)->get();
-            return view('admin::studies.show', compact('study', 'studies', 'subjects', 'currentStudy', 'site_study', 'diseaseCohort'));
+            $old_values = $request->input();
+            return view('admin::studies.show', compact('study', 'studies', 'subjects', 'currentStudy', 'site_study', 'diseaseCohort','old_values'));
         } else {
             return redirect()->route('studies.index');
         }
