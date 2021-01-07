@@ -153,4 +153,13 @@ class BugReportingController extends Controller
            return response()->json(['success' => 'Bug  is deleted successfully.']);
        }
     }
+
+    public function getCurrentRowData(Request $request)
+    {
+        $currentRow = $request->currentRow;
+        $query      = BugReport::where('id',$currentRow)->orderBy('created_at','asc')->first();
+        $answers    = BugReport::where('parent_bug_id',$currentRow)->orderBy('created_at','asc')->get();
+        echo  view('bugreporting::pages.developer_reply_view',compact('answers','query'));
+
+    }
 }

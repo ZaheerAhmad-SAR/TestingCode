@@ -412,7 +412,7 @@
             @endif
 
 
-
+            @if(hasPermission(auth()->user(),'bug-reporting.index'))
             <li class="dropdown">
                 <ul>
                     <li class="dropdown"><a href="#"><i class="fas fa-bug"></i>Bugs Reporting</a>
@@ -426,6 +426,7 @@
                     </li>
                 </ul>
             </li>
+            @endif
 
              <li class="dropdown">
                 <ul>
