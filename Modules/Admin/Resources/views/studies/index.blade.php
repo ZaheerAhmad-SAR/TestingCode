@@ -35,23 +35,28 @@
             <div class="card-body">
                 <form action="{{route('studies.index')}}" method="get" class="filter-form">
                     @csrf
-                    <input type="hidden" name="id" id="sort_by_id" value="ASC">
+                    <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ getOldValue($old_values,'sort_by_field') }}">
+                    <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ getOldValue($old_values,'sort_by_field_name') }}">
                     <div class="form-row" style="padding: 10px;">
                         <div class="form-group col-md-4">
-                            <input type="text" name="study_code" class="form-control" placeholder="Study Code">
+                            <input type="text" name="study_code" class="form-control" placeholder="Study Code" value="{{ getOldValue($old_values,'study_code')}}">
                         </div>
                          <div class="form-group col-md-4">
-                           <input type="text" name="study_short_name" class="form-control" placeholder="Study Short Name">
+                           <input type="text" name="study_short_name" class="form-control" placeholder="Study Short Name" value="{{ getOldValue($old_values,'study_short_name')}}">
                         </div>
                         <div class="form-group col-md-4">
-                            <input type="text" class="form-control" name="study_sponsor" placeholder="Sponsor Name">
+                            <input type="text" class="form-control" name="study_sponsor" placeholder="Sponsor Name" value="{{ getOldValue($old_values,'study_sponsor')}}">
                         </div>
                         <div class="form-group col-md-4">
+                            @php
+                                $old_study_status ='';
+                                $old_study_status =  getOldValue($old_values,'study_status');
+                            @endphp
                             <select name="study_status" class="form-control">
                                 <option value="">Status</option>
-                                <option value="Development">Development</option>
-                                <option value="Live">Live</option>
-                                <option value="Archived">Archived</option>
+                                <option value="Development" @if($old_study_status == 'Development') selected @endif>Development</option>
+                                <option value="Live" @if($old_study_status == 'Live') selected @endif>Live</option>
+                                <option value="Archived" @if($old_study_status == 'Archived') selected @endif>Archived</option>
                             </select>
                         </div>
                         <div class="form-group col-md-4" style="text-align: right;">
@@ -82,15 +87,15 @@
                         <table class="tablesaw table-bordered" data-tablesaw-mode="stack" id="studies_crud">
                             <thead>
                             <tr>
-                                <th scope="col" data-tablesaw-priority="persist" style="width: 5%" onclick="changeSort('id');">ID <i class="fas fa-sort float-mrg"></i></th>
-                                <th scope="col" data-tablesaw-sortable-default-col data-tablesaw-priority="3" style="width: 40%">
+                                <th scope="col" data-tablesaw-priority="persist" style="width: 5%" >ID </th>
+                                <th scope="col" data-tablesaw-sortable-default-col data-tablesaw-priority="3" style="width: 40%" onclick="changeSort('study_sponsor');">
                                     Short Name : <strong>Study Title</strong>
                                     <br>
                                     <br>Sponsor
-                                    {{-- <i class="fas fa-sort float-mrg" style="margin-top: -15px"></i> --}}
+                                    <i class="fas fa-sort float-mrg" style="margin-top: -15px"></i>
                                 </th>
                                 <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block"  style="width: 20%">Progress bar</th>
-                                <th scope="col" data-tablesaw-priority="1" style="width: 10%">Status {{-- <i class="fas fa-sort float-mrg"></i> --}}</th>
+                                <th scope="col" data-tablesaw-priority="1" style="width: 10%" onclick="changeSort('study_status');">Status <i class="fas fa-sort float-mrg"></i></th>
                                 @if(hasPermission(auth()->user(),'systemtools.index'))
                                     <th scope="col" data-tablesaw-priority="1" style="width: 20%">Study Admin</th>
                                 @endif
@@ -663,9 +668,13 @@
             })
         })
         function changeSort(field_name){
-            var check_sort_id = $('#sort_by_id').val();
-            if(check_sort_id =='ASC' && field_name =='id'){
-                $('#sort_by_id').val('DESC');
+            var sort_by_field = $('#sort_by_field').val();
+            if(sort_by_field =='' || sort_by_field =='ASC'){
+               $('#sort_by_field').val('DESC');
+               $('#sort_by_field_name').val(field_name);
+            }else if(sort_by_field =='DESC'){
+               $('#sort_by_field').val('ASC'); 
+               $('#sort_by_field_name').val(field_name); 
             }
             $('.filter-form').submit();
         }

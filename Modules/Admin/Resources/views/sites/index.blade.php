@@ -40,23 +40,25 @@
                 <form action="{{route('sites.index')}}" method="get" class="filter-form">
                     @csrf
                     <div class="form-row" style="padding: 10px;">
+                        <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ getOldValue($old_values,'sort_by_field') }}">
+                        <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ getOldValue($old_values,'sort_by_field_name') }}">
                         <div class="form-group col-md-3">
-                            <input type="text" name="site_code" class="form-control" placeholder="Site Code">
+                            <input type="text" name="site_code" class="form-control" placeholder="Site Code" value="{{ getOldValue($old_values,'site_code')}}">
                         </div>
                          <div class="form-group col-md-3">
-                           <input type="text" name="site_name" class="form-control" placeholder="Site Name">
+                           <input type="text" name="site_name" class="form-control" placeholder="Site Name" value="{{ getOldValue($old_values,'site_name')}}">
                         </div>
                         <div class="form-group col-md-3">
-                            <input type="text" class="form-control" name="site_city" placeholder="Site City">
+                            <input type="text" class="form-control" name="site_city" placeholder="Site City" value="{{ getOldValue($old_values,'site_city')}}">
                         </div>
                         <div class="form-group col-md-3">
-                            <input type="text" class="form-control" name="site_state" placeholder="Site State">
+                            <input type="text" class="form-control" name="site_state" placeholder="Site State" value="{{ getOldValue($old_values,'site_state')}}">
                         </div>
                         <div class="form-group col-md-3">
-                            <input type="text" class="form-control" name="site_country" placeholder="Site Country">
+                            <input type="text" class="form-control" name="site_country" placeholder="Site Country" value="{{ getOldValue($old_values,'site_country')}}">
                         </div>
                         <div class="form-group col-md-3">
-                            <input type="text" class="form-control" name="site_phone" placeholder="Site Contact">
+                            <input type="text" class="form-control" name="site_phone" placeholder="Site Contact" value="{{ getOldValue($old_values,'site_phone')}}">
                         </div>
                         <div class="form-group col-md-3" style="text-align: right;">
                             <button class="btn btn-outline-warning reset-filter"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
@@ -82,11 +84,11 @@
                             <table class="table table-bordered" id="laravel_crud">
                                 <thead>
                                 <tr>
-                                    <th>Code</th>
-                                    <th>Name</th>
-                                    <th>Address</th>
-                                    <th>City</th>
-                                    <th>State</th>
+                                    <th onclick="changeSort('site_code');">Code <i class="fas fa-sort float-mrg"></i></th>
+                                    <th onclick="changeSort('site_name');">Name <i class="fas fa-sort float-mrg"></i></th>
+                                    <th onclick="changeSort('site_address');">Address <i class="fas fa-sort float-mrg"></i></th>
+                                    <th onclick="changeSort('site_city');">City <i class="fas fa-sort float-mrg"></i></th>
+                                    <th onclick="changeSort('site_state');">State <i class="fas fa-sort float-mrg"></i></th>
                                     <th>Country</th>
                                     <th>Phone</th>
                                     <th style="width: 5%;">Action</th>
@@ -1698,7 +1700,17 @@
 
     ///  Delete  Specific Row function
 
-
+function changeSort(field_name){
+    var sort_by_field = $('#sort_by_field').val();
+    if(sort_by_field =='' || sort_by_field =='ASC'){
+       $('#sort_by_field').val('DESC');
+       $('#sort_by_field_name').val(field_name);
+    }else if(sort_by_field =='DESC'){
+       $('#sort_by_field').val('ASC'); 
+       $('#sort_by_field_name').val(field_name); 
+    }
+    $('.filter-form').submit();
+}
 
 </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCEELbGoxVU_nvp6ayr2roHHnjN3hM_uec&libraries=places&callback=initAutocomplete"
