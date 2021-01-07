@@ -87,10 +87,10 @@
 	Route::get('get-transmission-data', 'TransmissionDataPhotographerController@getTransmissionData')->name('get-transmission-data');
 
 // archive photographer transmission
-	Route::get('archive-photographer-transmission/{transmission_id}', 'TransmissionDataPhotographerController@archivePhotographerTransmission')->name('archive-photographer-transmission');
+	Route::get('archive-photographer-transmission/{transmission_id}/{status}', 'TransmissionDataPhotographerController@archivePhotographerTransmission')->name('archive-photographer-transmission');
 
 // archive device transmission
-	Route::get('archive-device-transmission/{transmission_id}', 'TransmissionDataDeviceController@archiveDeviceTransmission')->name('archive-device-transmission');
+	Route::get('archive-device-transmission/{transmission_id}/{status}', 'TransmissionDataDeviceController@archiveDeviceTransmission')->name('archive-device-transmission');
 
 // certified Photographer
 	Route::get('certified-photographer', 'TransmissionDataPhotographerController@certifiedPhotographer')->name('certified-photographer');
@@ -106,6 +106,15 @@
 
 // generate device grandfather certificate
 	Route::post('generate-device-grandfather-certificate', 'TransmissionDataDeviceController@generateDeviceGrandfatherCertificate')->name('generate-device-grandfather-certificate');
+
+// Archive Device Transmission
+	Route::get('archived-device-transmission-listing', 'TransmissionDataDeviceController@getArchivedDeviceTransmissionListing')->name('archived-device-transmission-listing');
+
+// Archive Photographer Transmission
+	Route::get('archived-photographer-transmission-listing', 'TransmissionDataPhotographerController@getArchivedPhotographerTransmissionListing')->name('archived-photographer-transmission-listing');
+
+// change certificate status for both photographer and device
+	Route::post('change-certificate-status', 'TransmissionDataPhotographerController@changeCertificateStatus')->name('change-certificate-status');
 
 // display photographer certificate PDF
 	Route::get('photographer-certificate-pdf/{file_name}', function($fileName) {
@@ -135,6 +144,23 @@
 
 	})->name('device-certificate-pdf');
 
+	// show user signature
+	Route::get('user-signature/{file_name}', function($fileName) {
+
+		$path = storage_path('user_signature/'.$fileName);
+	    if (!File::exists($path)) {
+
+	        abort(404);
+
+	    }
+
+	    $file = File::get($path);
+	    $type = File::mimeType($path);
+	    $response = Response::make($file, 200);
+	    $response->header("Content-Type", $type);
+	    return $response;
+
+	})->name('user-signature');
 
 Route::group(['middleware' => ['auth', 'web']], function () {
     

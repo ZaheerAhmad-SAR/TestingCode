@@ -277,7 +277,7 @@
                                 </tbody>
                             </table>
 
-                            {{ $subjects->links() }}
+                            {{ $subjects->appends(['subject' => \Request::get('subject'), 'phase' => \Request::get('phase'), 'site' => \Request::get('site'), 'visit_date' => \Request::get('visit_date')])->links() }}
 
                             <!--Add  Modal -->
                             <div class="modal fade" id="assign-work-model" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

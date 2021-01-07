@@ -222,7 +222,7 @@
                                     @endif
                                 </tbody>
                             </table>
-                             {{ $getTransmissions->links() }}
+                            {{ $getTransmissions->links() }}
 
                         </div>
                     </div>

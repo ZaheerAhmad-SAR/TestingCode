@@ -924,18 +924,6 @@ class TransmissionDataPhotographerController extends Controller
         return redirect()->back();
     }
 
-    public function archivePhotographerTransmission(Request $request, $transmissionID)
-    {
-
-        $findTransmission = TransmissionDataPhotographer::find(decrypt($transmissionID));
-        $findTransmission->archive_transmission = 'yes';
-        $findTransmission->save();
-
-        Session::flash('success', 'Transmission moved to arcive successfully.');
-
-        return redirect()->back();
-    }
-
     public function certifiedPhotographer(Request $request)
     {
 
@@ -1188,4 +1176,139 @@ class TransmissionDataPhotographerController extends Controller
         // return back
         return redirect()->back();
     }
+
+     public function archivePhotographerTransmission(Request $request, $transmissionID, $status) {
+
+        $findTransmission = TransmissionDataPhotographer::find(decrypt($transmissionID));
+        $findTransmission->archive_transmission = $status;
+        $findTransmission->save();
+
+        Session::flash('success', 'Transmission moved to arcive successfully.');
+
+        return redirect()->back();
+    }
+
+    public function getArchivedPhotographerTransmissionListing(Request $request) {
+        
+        //dd($request);
+
+        $getTransmissions = TransmissionDataPhotographer::query();
+
+        if ($request->trans_id != '') {
+
+            $getTransmissions = $getTransmissions->where('Transmission_Number', 'like', '%' . $request->trans_id . '%');
+        }
+
+        if ($request->study != '') {
+
+            $getTransmissions = $getTransmissions->where('Study_Name', 'like', '%' . $request->study . '%');
+        }
+
+        if ($request->photographer_name != '') {
+
+            $getTransmissions = $getTransmissions->where('Photographer_First_Name', 'like', "%$request->photographer_name%")
+                ->orWhereRaw("concat(Photographer_First_Name, ' ', Photographer_Last_Name) like '$request->photographer_name' ")
+                ->orWhere('Photographer_Last_Name', 'like', "$request->photographer_name");
+        }
+
+        if ($request->certification != '') {
+
+            $getTransmissions = $getTransmissions->where('Requested_certification', 'like', '%' . $request->certification . '%');
+        }
+
+        if ($request->site != '') {
+
+            $getTransmissions = $getTransmissions->where('Site_Name', 'like', '%' . $request->site . '%');
+        }
+
+        if ($request->status != '') {
+
+            $getTransmissions = $getTransmissions->where('status', $request->status);
+        }
+
+        $getTransmissions = $getTransmissions->where('archive_transmission', 'yes')
+                                            ->orderBy('id', 'desc')
+                                            ->paginate(50);
+
+        return view('certificationapp::certificate_photographer.archived_photographer_transmission', compact('getTransmissions'));                              
+    }
+
+    public function changeCertificateStatus(Request $request) {
+        
+        $generateCertificate = CertificationData::where('certificate_id', $request->status_certificate_id)->first();
+        $generateCertificate->certificate_status = $request->certification_status;
+        $generateCertificate->save();
+
+        $getModality = Modility::where('id', $generateCertificate->modility_id)->first();
+        //check in child modilities
+        if ($getModality == null) {
+
+            $getModality = ChildModilities::where('id', $generateCertificate->modility_id)->first();
+        }
+        // get photographer ID
+        $getPhotographer = Photographer::find($generateCertificate->photographer_id);
+
+        // get study information
+        $getStudy = Study::find($generateCertificate->study_id);
+
+        // get site information
+        $getSite = Site::where('id', $generateCertificate->site_id)->first();
+
+        // get study email to pass to pdf
+        $getStudyEmail = StudySetup::where('study_id', $getStudy->id)->first();
+
+        // check transmission type
+        if ($generateCertificate->transmission_type == 'device_transmission') {
+
+            $file_name = $generateCertificate->certificate_file_name;
+            $path = storage_path('certificates_pdf/device');
+
+            $certificateType = 'Device Certificate#';
+
+            // make array for changings dynamic variable in the text editor
+            $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id, $generateCertificate->device_model, $generateCertificate->device_serial_no, $generateCertificate->user_input_device_id];
+
+            $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[modality_name]]', '[[certificate_id]]', '[[sender_name]]', '[[certificate_status]]', '[[certificate_type]]', '[[issue_date]]', '[[expiry_date]]', '[[grandfather_certificate_id]]', '[[device_model]]', '[[device_serial_no]]', '[[device_id]]'];
+
+        } else {
+
+            $file_name = $generateCertificate->certificate_file_name;
+            $path = storage_path('certificates_pdf/photographer');
+
+            $certificateType = 'Photographer Certificate#';
+
+            // make array for changings dynamic variable in the text editor
+            $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, '', $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id];
+
+            $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[pi_name]]', '[[modality_name]]', '[[certificate_id]]', '[[sender_name]]', '[[certificate_status]]', '[[certificate_type]]', '[[issue_date]]', '[[expiry_date]]', '[[grandfather_certificate_id]]'];
+
+        }
+
+        $data = [];
+        $data['email_body'] = str_replace($labels, $variables, $request->status_comment);
+        $senderEmail = $request->status_user_email;
+        $ccEmail = $request->status_cc_user_email;
+        $bccEmail = $request->status_bcc_user_email;
+
+        // send email to users
+        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $bccEmail, $generateCertificate, $getSite, $getStudy, $getModality, $certificateType, $path, $file_name)
+        {
+            $message->subject($getStudy->study_short_name.' '.$getStudy->study_code.' | '.$certificateType.' '.$generateCertificate->certificate_id.' | '. $getSite->site_code.' | '. $getModality->modility_name);
+            $message->to($senderEmail);
+            if($ccEmail != '') {
+                $message->cc($ccEmail);
+            }
+            if($bccEmail != '') {
+                $message->bcc($bccEmail);
+            }
+            if ($generateCertificate->certificate_status == 'full' || $generateCertificate->certificate_status == 'provisional') {
+                $message->attach($path.'/'.$file_name);
+            }
+
+        });
+
+        return redirect()->back();
+    
+    }
+
 }

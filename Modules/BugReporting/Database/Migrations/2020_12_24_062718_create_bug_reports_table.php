@@ -19,7 +19,9 @@ class CreateBugReportsTable extends Migration
             $table->text('bug_message')->nullable();
             $table->uuid('parent_bug_id')->nullable();
             $table->uuid('bug_reporter_by_id')->nullable();
-            $table->enum('bug_status', ['Unconfirmed', 'Untriaged','Available','Assigned','Started'])->default('Started');
+            $table->enum('status', ['open', 'close'])->default('open');
+            $table->enum('open_status', ['Unconfirmed', 'Untriaged','Available','Assigned','Started'])->default('Unconfirmed');
+            $table->enum('closed_status', ['Fixed', 'Verified','Duplicate','WontFix','ExternalDependency','FixUnreleased','Invalid'])->default('Fixed');
             $table->enum('bug_priority', ['low', 'high','medium'])->default('low');
             $table->text('bug_attachments')->nullable();
             $table->text('bug_url')->nullable();

@@ -8,6 +8,7 @@
 @stop
 
 @section('content')
+
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
         <div class="row ">
@@ -525,15 +526,16 @@
                     <h4 class="modal-title" id="studyCrudModal">Change Status</h4>
                 </div>
                 <div class="modal-body">
-                    <form action="{{route('studies.studyStatus')}}" name="changestatus" class="" method="post">
+                    <form action="{{route('studies.studyStatus')}}" name="changestatus" id="changeStudyStatusForm" class="" method="post">
                         @csrf
+                        <input type="hidden" value="" id="deleteExistingData" name="deleteExistingData" value="">
                         @if(!empty($study))
                             <input type="hidden" value="" id="study_ID" name="study_ID">
                         @endif
                         <div class="form-group row">
                             <div class="col-md-3">Status</div>
                             <div class="col-md-6">
-                                <select class="form-control dropdown" name="status" id="status">
+                                <select class="form-control dropdown" name="status" id="studyStatusDD">
                                     <option value="">Select Status</option>
                                     <option value="Archived">Archive</option>
                                     <option value="Development">Development</option>
@@ -543,7 +545,7 @@
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                            <button type="button"  onclick="changeStudyStatus();" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
                         </div>
                     </form>
                 </div>
@@ -955,6 +957,44 @@
                     }
                 });
 	        });
+            function changeStudyStatus() {
+                var studyStatus = $('#studyStatusDD').val();
+                if(studyStatus == 'Live'){
+                    $.confirm({
+                        columnClass: 'col-md-12',
+                        title: 'Put study in LIVE mode!',
+                        content: 'Keep existing data or delete',
+                        buttons: {
+                            deleteExistingData: {
+                                text: 'Delete existing data',
+                                btnClass: 'btn-green',
+                                action: function() {
+                                    $('#deleteExistingData').val('deleteExistingData');
+                                    $('#changeStudyStatusForm').submit();
+                                }
+                            },
+                            doNotdeleteExistingData: {
+                                text: 'Do not delete existing data',
+                                btnClass: 'btn-blue',
+                                action: function() {
+                                    $('#deleteExistingData').val('');
+                                    $('#changeStudyStatusForm').submit();
+                                }
+                            },
+                            cancel: {
+                                text: 'Cancel',
+                                btnClass: 'btn-red',
+                                action: function() {
+                                    $('#deleteExistingData').val('');
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    $('#deleteExistingData').val('');
+                    $('#changeStudyStatusForm').submit();
+                }
+        }
         </script>
 
 @endsection

@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
 use Modules\BugReporting\Entities\BugReport;
 use App\Traits\UploadTrait;
+use Modules\Queries\Entities\Query;
 
 
 class BugReportingController extends Controller
@@ -61,7 +62,8 @@ class BugReportingController extends Controller
             'bug_reporter_by_id'=>\auth()->user()->id,
             'parent_bug_id'=> 0,
             'bug_message'=>$yourMessage,
-            'bug_status'=> 'Started',
+            'status'=> 'open',
+            'open_status'=>'Unconfirmed',
             'bug_url'=>$query_url,
             'bug_title'=>$shortTitle,
             'bug_attachments'=>$filePath,
@@ -88,7 +90,11 @@ class BugReportingController extends Controller
      */
     public function edit($id)
     {
-        return view('bugreporting::edit');
+        if ($id)
+        {
+            $record = BugReport::find($id);
+            return response()->json([$record]);
+        }
     }
 
     /**
@@ -97,9 +103,40 @@ class BugReportingController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $checkIdIfExists = BugReport::find($request->editBugId);
+        if ($checkIdIfExists !== null) {
+         $id = (string) Str::uuid();
+          BugReport::create([
+            'id' => $id,
+            'bug_message' => $request->developerComment,
+            'bug_title'=> $request->editBugTitle,
+            'bug_priority' => $request->editSeverity,
+            'status' => $request->editStatus,
+            'open_status' => $request->openStatus,
+            'closed_status' => $request->closeStatus,
+            'bug_url' => $request->editBugUrl,
+            'parent_bug_id' => $checkIdIfExists['id'],
+             'bug_reporter_by_id'=>\auth()->user()->id,
+        ]);
+            $bugStatusArray = array(
+                'status' => $request->editStatus,
+                'open_status'=>$request->openStatus,
+                'closed_status'=>$request->closeStatus,
+                'bug_priority' => $request->editSeverity
+            );
+            $bugStatusArrayChild = array(
+                'status' => $request->editStatus,
+                'open_status'=>$request->openStatus,
+                'closed_status'=>$request->closeStatus,
+                'bug_priority' => $request->editSeverity,
+            );
+
+            BugReport::where('id',$checkIdIfExists['id'])->update($bugStatusArray);
+            BugReport::where('parent_bug_id',$checkIdIfExists['id'])->update($bugStatusArrayChild);
+    }
+        return response()->json(['success' => 'Bug Reporing  is generated successfully.']);
     }
 
     /**

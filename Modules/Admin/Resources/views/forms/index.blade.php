@@ -270,9 +270,9 @@
                                 <div class="form-group row">
                                     <label for="Required" class="col-sm-2 col-form-label">Required </label>
                                     <div class="col-sm-2">
-                                        <input type="radio" name="is_required" id="required_yes" value="no"> No
+                                        <input type="radio" name="is_required" id="required_no" value="no"> No
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <input type="radio" name="is_required" id="required_no" value="yes" checked> Yes
+                                        <input type="radio" name="is_required" id="required_yes" value="yes" checked> Yes
                                     </div>
                                     <div class="col-sm-2">Exports: </div>
                                     <div class="col-sm-2">
@@ -283,9 +283,9 @@
                                     </div>
                                     <div class="col-sm-2">Show to Grader: </div>
                                 <div class="col-sm-2">
-                                    <input type="radio" name="is_show_to_grader" id="is_show_to_grader_no" value="no"> No
+                                    <input type="radio" name="is_show_to_grader" id="is_show_to_grader_no" value="no" checked> No
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <input type="radio" name="is_show_to_grader" id="is_show_to_grader_yes" value="yes" checked> Yes
+                                    <input type="radio" name="is_show_to_grader" id="is_show_to_grader_yes" value="yes"> Yes
                                 </div>
                                 </div>
                                 <div class="form-group row">
