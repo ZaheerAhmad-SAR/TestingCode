@@ -92,8 +92,12 @@ class TransmissionController extends Controller
 
             $getTransmissions = $getTransmissions->where('status', $request->status);
         }
-
-        $getTransmissions = $getTransmissions->orderBy('id', 'desc')->paginate(50);
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $getTransmissions = $getTransmissions->orderBy($request->sort_by_field_name , $request->sort_by_field);
+        }else{
+            $getTransmissions = $getTransmissions->orderBy('id', 'desc');
+        }
+        $getTransmissions = $getTransmissions->paginate(50);
 
         // get modality
         $getModalities = Modility::get();
@@ -159,13 +163,16 @@ class TransmissionController extends Controller
             ->pluck('study_code')
             ->toArray();
         $studyID = $studyID != null ? $studyID : null;
-
-        $getTransmissions = $getTransmissions->where('StudyI_ID', $studyID)
-            ->orderBy('id', 'desc')
-            ->paginate(50);
+        $getTransmissions = $getTransmissions->where('StudyI_ID', $studyID);
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $getTransmissions = $getTransmissions->orderBy($request->sort_by_field_name , $request->sort_by_field);
+        }else{
+            $getTransmissions = $getTransmissions->orderBy('id', 'desc');
+        }
+        $getTransmissions =    $getTransmissions->paginate(50);
         // get modality
         $getModalities = Modility::get();
-
+        //
         return view('admin::study_transmission_details', compact('getTransmissions', 'getModalities'));
     }
 

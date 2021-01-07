@@ -78,7 +78,21 @@
         <div class="row">
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
+
+                    <div class="form-group col-md-12 mt-3">        
+
+                        <a href="{{ route('archived-device-transmission-listing')}}" class="btn btn-primary archive-device-transmission">Archived Transmissions</a>
+
+                        @if (!$getTransmissions->isEmpty())
+                        <span style="float: right; margin-top: 3px;" class="badge badge-pill badge-primary">
+                            {{ $getTransmissions->count().' out of '.$getTransmissions->total() }}
+                        </span>
+                        @endif
+
+                    </div>
                     
+                    <hr>
+
                     <form action="{{route('certification-device.index')}}" method="get" class="filter-form">
                         <div class="form-row" style="padding: 10px;">
 
@@ -133,7 +147,6 @@
                         <!-- row ends -->
                     </form>
                    
-                   <hr>
                     <div class="card-body">
                         <div class="table-responsive">
 
@@ -212,7 +225,7 @@
                                                 
                                                 <span>
                                                     <a href="javascript:void(0)" class="" title="Archive Transmission" data-url="">
-                                                        <i class="fas fa-archive" onClick="archiveTransmission('{{encrypt($linkedTransmission['id'])}}', '{{ route('archive-device-transmission', encrypt($linkedTransmission['id'])) }}')" data-url="" style="color: #17a2b8 !important;"></i>
+                                                        <i class="fas fa-archive" onClick="archiveTransmission('{{encrypt($linkedTransmission['id'])}}', '{{ route('archive-device-transmission', [encrypt($linkedTransmission['id']), 'yes']) }}')" data-url="" style="color: #17a2b8 !important;"></i>
                                                 </span>
 
                                                 <br>
@@ -259,7 +272,7 @@
                                     @endif
                                 </tbody>
                             </table>
-                             {{ $getTransmissions->links() }}
+                            {{ $getTransmissions->appends(['trans_id' => \Request::get('trans_id'), 'study' => \Request::get('study'), 'device_category' => \Request::get('device_category'), 'device_serial' => \Request::get('device_serial'), 'site' => \Request::get('site'), 'submitter_name' => \Request::get('submitter_name'), 'status' => \Request::get('status')])->links() }}
 
                         </div>
                     </div>
@@ -612,7 +625,7 @@
     });
 
 
-     // form submit
+    // form submit
     $('.generate-certificate-form').submit(function(e) {
         
         if($('.summernote').summernote('isEmpty')) {

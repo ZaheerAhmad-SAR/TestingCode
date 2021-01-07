@@ -58,7 +58,8 @@
 
                     <form action="{{route('transmissions.index')}}" method="get" class="filter-form">
                         <div class="form-row" style="padding: 10px;">
-
+                            <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ request()->sort_by_field }}">
+                            <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ request()->sort_by_field_name }}">
                             <div class="form-group col-md-4">
                                 <label for="trans_id">Transmission#</label>
                                 <input type="text" name="trans_id" id="trans_id" class="form-control filter-form-data" value="{{ request()->trans_id }}" placeholder="Transmission#">
@@ -140,15 +141,15 @@
                             <table class="table table-bordered" id="laravel_crud">
                                 <thead class="table-secondary">
                                     <tr>
-                                        <th>Transmission#</th>
-                                        <th>Site ID</th>
-                                        <th>Subject ID</th>
-                                        <th>Visit</th>
-                                        <th>Date</th>
-                                        <th>Modality</th>
-                                        <th>Processed Status</th>
-                                        <th>Status</th>
-                                        <th>Action</th>
+                                        <th onclick="changeSort('Transmission_Number');">Transmission # <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('Site_ID');" style="width: 8%;">Site ID <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('Subject_ID');">Subject ID <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('visit_name');">Visit <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('visit_date');">Date <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('ImageModality');">Modality <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('is_read');" style="width: 15%;">Processed Status <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('status');">Status <i class="fas fa-sort float-mrg"></i></th>
+                                        <th style="width: 3%;">Action </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -221,7 +222,7 @@
                                     @endif
                                 </tbody>
                             </table>
-                             {{ $getTransmissions->links() }}
+                            {{ $getTransmissions->links() }}
 
                         </div>
                     </div>
@@ -365,7 +366,19 @@
 <script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
 
 <script type="text/javascript">
-
+    // sorting gride
+    function changeSort(field_name){
+        var sort_by_field = $('#sort_by_field').val();
+        if(sort_by_field =='' || sort_by_field =='ASC'){
+           $('#sort_by_field').val('DESC');
+           $('#sort_by_field_name').val(field_name);
+        }else if(sort_by_field =='DESC'){
+           $('#sort_by_field').val('ASC'); 
+           $('#sort_by_field_name').val(field_name); 
+        }
+        $('.filter-form').submit();
+    }
+    
     $('#study_id').select2();
     //// Transmission Query  Work start
 

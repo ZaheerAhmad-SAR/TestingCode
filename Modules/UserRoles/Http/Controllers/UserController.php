@@ -52,7 +52,6 @@ class UserController extends Controller
     }
     public function index(Request $request)
     {
-
         if (isThisUserSuperAdmin(\auth()->user())) {
             $roles  =   Role::where('role_type', '!=', 'study_role')->get();
             $systemRoleIds = Role::where('role_type', '!=', 'study_role')->pluck('id')->toArray();
@@ -64,6 +63,12 @@ class UserController extends Controller
         $currentStudyId = session('current_study');
 
         $userIdsOfSystemRoles = UserRole::whereIn('role_id', $systemRoleIds)->pluck('user_id')->toArray();
+        // for default order by
+        if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
+            $field_name = $request->sort_by_field_name;
+        }else{
+            $field_name = 'name';
+        }
         $users = User::whereIn('id', $userIdsOfSystemRoles);
         if(isset($request->name) && $request->name !=''){
             $users = $users->where('users.name','like', '%'.$request->name.'%');
@@ -74,9 +79,11 @@ class UserController extends Controller
         if(isset($request->role_id) && $request->role_id !=''){
             $users = $users->where('users.role_id', 'like', '%'.$request->role_id.'%');
         }
-        $users->orderBy('name', 'asc')->get();
-        $users = $users->orderBy('name', 'asc')->get();
-
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $users = $users->orderBy('users.'.$field_name , $request->sort_by_field);
+        }
+        $users = $users->get();
+        $old_values = $request->input();
         $studyRoleIds = Role::where('role_type', '=', 'study_role')->pluck('id')->toArray();
         $userIdsOfStudyRoles = UserRole::whereIn('role_id', $studyRoleIds)->pluck('user_id')->toArray();
 
@@ -89,7 +96,7 @@ class UserController extends Controller
             $studyusers = User::whereIn('id', $userIdsOfStudyRoles)->where('id', '!=', \auth()->user()->id)->get();
         }
         $allroles = Role::all();
-        return view('userroles::users.index', compact('users', 'roles', 'studyusers','allroles'));
+        return view('userroles::users.index', compact('users', 'roles', 'studyusers','allroles','old_values'));
     }
 
     /**
@@ -309,6 +316,15 @@ class UserController extends Controller
                 $this->uploadOne($image, $folder, 'public', $name);
                 $user->profile_image = $filePath;
             }
+
+            // look for user signature
+            if ($request->has('user_signature')) {
+
+                @unlink(storage_path('/user_signature/'.$user->user_signature));
+
+                $user->user_signature = $user->id.''.$request->file("user_signature")->getClientOriginalName();
+                $request->user_signature->move(storage_path('/user_signature/'), $user->user_signature);
+            }
             //dd($user);
             $user->save();
         } else {
@@ -323,11 +339,21 @@ class UserController extends Controller
                 $this->uploadOne($image, $folder, 'public', $name);
                 $user->profile_image = $filePath;
             }
+
+             // look for user signature
+            if ($request->has('user_signature')) {
+
+                @unlink(storage_path('/user_signature/'.$user->user_signature));
+
+                $user->user_signature = $user->id.''.$request->file("user_signature")->getClientOriginalName();
+                $request->user_signature->move(storage_path('/user_signature/'), $user->user_signature);
+            }
+
             //dd($user);
             $user->save();
         }
 
-        return redirect()->route('dashboard.index')->with('message', 'Record Updated Successfully!');
+        return redirect()->back();
     }
 
     public function getcodes()

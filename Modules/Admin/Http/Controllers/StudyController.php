@@ -46,9 +46,11 @@ use Modules\Admin\Entities\QuestionValidation;
 use Modules\Admin\Entities\Section;
 use Modules\Admin\Entities\SkipLogic;
 use Modules\FormSubmission\Entities\ExportType;
+use Modules\FormSubmission\Entities\FormVersion;
 use Modules\FormSubmission\Entities\QuestionAdjudicationRequired;
 use Modules\Queries\Entities\QueryNotification;
 use Modules\UserRoles\Entities\StudyRoleUsers;
+use Session;
 
 class StudyController extends Controller
 {
@@ -119,7 +121,12 @@ class StudyController extends Controller
         } else {
             $studies = Study::where('study_status', 'Live')->whereIn('id', array_unique($studiesIDs));
         }
-
+        // for default orderBy
+        if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
+            $field_name = $request->sort_by_field_name;
+        }else{
+            $field_name = 'study_sponsor';
+        }
         if ($request->study_code != '') {
             $studies = $studies->where('study_code', 'like', '%' . $request->study_code . '%');
         }
@@ -132,11 +139,15 @@ class StudyController extends Controller
         if ($request->study_sponsor != '') {
             $studies = $studies->where('study_sponsor', 'like', '%' . $request->study_sponsor . '%');
         }
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $studies = $studies->orderBy($field_name , $request->sort_by_field);
+        }else {
+            $studies = $studies->orderBy('id', 'ASC');
+        }
         $studies = $studies->get();
-
-        return view('admin::studies.index', compact('sites', 'users', 'studies'));
-    }
-
+        $old_values = $request->input();
+        return view('admin::studies.index', compact('sites', 'users', 'studies','old_values'));
+        }
 
 
     /**
@@ -145,8 +156,71 @@ class StudyController extends Controller
      */
     public function studyStatus(Request $request)
     {
-        $study_id = $request->study_ID;
-        Study::where('id', $study_id)->update(['study_status' => $request->status]);
+        /***** get old status for Audit Trail ***/
+        $oldStudy = Study::where('id', $request->study_ID)->first();
+        $deleteData = 'No, do not delete data.';
+
+        $id = $request->study_ID;
+        $deleteExistingData = $request->deleteExistingData;
+
+        Study::where('id', $id)->update(['study_status' => $request->status]);
+
+        if ($deleteExistingData == 'deleteExistingData') {
+
+            Subject::where('study_id', $id)->withTrashed()->forceDelete();
+            AdjudicationFormStatus::where('study_id', $id)->withTrashed()->forceDelete();
+            Answer::where('study_id', $id)->withTrashed()->forceDelete();
+            FinalAnswer::where('study_id', $id)->withTrashed()->forceDelete();
+            FormStatus::where('study_id', $id)->withTrashed()->forceDelete();
+            Query::where('study_id', $id)->withTrashed()->forceDelete();
+            QueryNotification::where('study_id', $id)->withTrashed()->forceDelete();
+
+            $phaseIds = StudyStructure::where('study_id', 'like', $id)->pluck('id')->toArray();
+            $stepIds = PhaseSteps::whereIn('phase_id', $phaseIds)->pluck('step_id')->toArray();
+            FormVersion::whereIn('step_id', $stepIds)->withTrashed()->forceDelete();
+
+            /**** For Audit Trail ***/
+            $deleteData = 'Yes, delete data.';
+
+        }
+
+        /********************************* AUDIT TRAIL FOR STUDY STATUS ******************/
+
+        $newData = array(
+            'study_short_name'  =>  $oldStudy->study_short_name,
+            'study_title' => $oldStudy->study_title,
+            'study_status'  => $request->status,
+            'study_code' => $oldStudy->study_code,
+            'study_sponsor' => $oldStudy->study_sponsor,
+            'data_status' => $deleteData,
+
+        );
+
+        $oldData = array(
+            'study_short_name'  =>  $oldStudy->study_short_name,
+            'study_title' => $oldStudy->study_title,
+            'study_status'  => $oldStudy->study_status,
+            'study_code' => $oldStudy->study_code,
+            'study_sponsor' => $oldStudy->study_sponsor,
+            'data_status' => '',
+        );
+
+        // Log the event
+        $trailLog = new TrailLog;
+        $trailLog->event_id = $id;
+        $trailLog->event_section = 'Study Status';
+        $trailLog->event_type = 'Update';
+        $trailLog->event_message = 'Study '.$oldStudy->study_title.' status updated.';
+        $trailLog->user_id = Auth::user()->id;
+        $trailLog->user_name = Auth::user()->name;
+        $trailLog->role_id = Auth::user()->role_id;
+        $trailLog->ip_address = $request->ip();
+        $trailLog->study_id = Session::get('current_study') != null ? Session::get('current_study') : '';
+        $trailLog->event_url = route('studies.index');
+        $trailLog->event_details = json_encode($newData);
+        $trailLog->event_old_details = json_encode($oldData);
+        $trailLog->save();
+
         //return \response()->json($data);
         return redirect()->route('studies.index');
     }
@@ -303,7 +377,12 @@ class StudyController extends Controller
                 ->orderBy('study_short_name')->get();
             $currentStudy = Study::find($id);
             $study = Study::find($id);
-
+            // for default orderBy
+            if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
+                $field_name = $request->sort_by_field_name;
+            }else{
+                $field_name = 'subject_id';
+            }
             $subjects = Subject::select(['subjects.*', 'sites.site_name', 'sites.site_address', 'sites.site_city', 'sites.site_state', 'sites.site_code', 'sites.site_country', 'sites.site_phone']);
             $subjects = $subjects->where('subjects.study_id', '=', $id);
             if ($request->subject_id != '') {
@@ -323,14 +402,19 @@ class StudyController extends Controller
             }
 
             $subjects = $subjects->join('sites', 'sites.id', '=', 'subjects.site_id');
-            $subjects = $subjects->orderBy('subject_id', 'asc')->get();
 
+            if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+                $subjects = $subjects->orderBy($field_name , $request->sort_by_field);
+            }
+            
+            $subjects = $subjects->get();
             $site_study = StudySite::where('study_id', '=', $id)
                 ->join('sites', 'sites.id', '=', 'site_study.site_id')
                 ->select('sites.site_name', 'sites.id', 'sites.site_code')
                 ->get();
             $diseaseCohort = DiseaseCohort::where('study_id', '=', $id)->get();
-            return view('admin::studies.show', compact('study', 'studies', 'subjects', 'currentStudy', 'site_study', 'diseaseCohort'));
+            $old_values = $request->input();
+            return view('admin::studies.show', compact('study', 'studies', 'subjects', 'currentStudy', 'site_study', 'diseaseCohort','old_values'));
         } else {
             return redirect()->route('studies.index');
         }

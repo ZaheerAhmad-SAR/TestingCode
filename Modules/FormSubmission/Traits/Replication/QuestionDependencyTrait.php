@@ -23,11 +23,14 @@ trait QuestionDependencyTrait
             Dependent on Question ID Update
             */
             $phaseId = StudyStructure::getPhaseIdByQuestionId($newQuestionId);
-            $questionIds = StudyStructure::getQuestionIdsInPhaseArray($phaseId);
-            $replicatedQuestion = Question::where('parent_id', 'like', $questionDependency->dep_on_question_id)
-                ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
-                ->whereIn('id', $questionIds)
-                ->first();
+            $replicatedQuestion = null;
+            if (null !== $phaseId) {
+                $questionIds = StudyStructure::getQuestionIdsInPhaseArray($phaseId);
+                $replicatedQuestion = Question::where('parent_id', 'like', $questionDependency->dep_on_question_id)
+                    ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
+                    ->whereIn('id', $questionIds)
+                    ->first();
+            }
 
             $newQuestionDependencyId = (string)Str::uuid();
             $newQuestionDependency = $questionDependency->replicate();

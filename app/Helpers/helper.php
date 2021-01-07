@@ -1290,3 +1290,11 @@ function TagReleasenumber()
     }
     */
 }
+function getOldValue($oldValues, $val)
+{
+     if (isset($oldValues[$val])) {
+        return $oldValues[$val];
+     } else {
+        return '';
+     }
+}

@@ -22,42 +22,55 @@
             <div class="card-body">
                 <form action="{{route('studies.show',session('current_study'))}}" method="get" class="filter-form">
                     @csrf
+                     <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ getOldValue($old_values,'sort_by_field') }}">
+                    <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ getOldValue($old_values,'sort_by_field_name') }}">
                     <div class="form-row" style="padding: 10px;">
                         <div class="form-group col-md-4">
-                            <input type="text" name="subject_id" class="form-control" placeholder="Subject ID">
+                            <input type="text" name="subject_id" class="form-control" placeholder="Subject ID" value="{{ getOldValue($old_values,'subject_id')}}">
                         </div>
                          <div class="form-group col-md-4">
-                            <select name="site_id" class="form-control">
+                            @php
+                                $old_site ='';
+                                $old_site =  getOldValue($old_values,'site_id');
+                            @endphp
+                            <select name="site_id" class="form-control" >
                                 <option value="">Select Site</option>
                                 @if(!empty($site_study))
                                     @foreach($site_study as $site)
-                                        <option class="dropdown" value="{{$site->id}}">{{$site->site_name}}--{{$site->site_code}}</option>
+                                        <option class="dropdown" value="{{$site->id}}" @if($old_site == $site->id) selected @endif>{{$site->site_name}}--{{$site->site_code}}</option>
                                     @endforeach
                                 @endif
                             </select>
                         </div>
                         <div class="form-group col-md-4">
-                            <input type="date" class="form-control" name="enrollment_date" placeholder="Enrollment Date">
+                            <input type="date" class="form-control" name="enrollment_date" placeholder="Enrollment Date" value="{{ getOldValue($old_values,'enrollment_date')}}">
                         </div>
                         <div class="form-group col-md-4">
-                            {{-- <input type="text" name="disease_cohort" class="form-control" placeholder="Filter Via Disease Cohort"> --}}
+                            @php
+                                $old_cohort ='';
+                                $old_cohort =  getOldValue($old_values,'disease_cohort');
+                            @endphp
                             <select name="disease_cohort" class="form-control">
                                 <option value="">Select Disease Cohort</option>
                                 @if(!empty($diseaseCohort))
                                     {!! $diseaseCohort !!}
                                     @foreach($diseaseCohort as $disease)
-                                        <option class="dropdown" value="{{$disease->id}}">{{$disease->name}}</option>
+                                        <option class="dropdown" value="{{$disease->id}}"  @if($old_cohort == $disease->id) selected @endif>{{$disease->name}}</option>
                                     @endforeach
                                 @endif
                             </select>
                         </div>
                         <div class="form-group col-md-4">
+                            @php
+                                $old_eye ='';
+                                $old_eye =  getOldValue($old_values,'study_eye');
+                            @endphp
                             <select name="study_eye" class="form-control">
                                 <option value="">Select Study Eye</option>
-                                <option value="OD">OD</option>
-                                <option value="OS">OS</option>
-                                <option value="OU">OU</option>
-                                <option value="NA">NA</option>
+                                <option value="OD" @if($old_eye == 'OD') selected @endif>OD</option>
+                                <option value="OS" @if($old_eye == 'OS') selected @endif>OS</option>
+                                <option value="OU" @if($old_eye == 'OU') selected @endif>OU</option>
+                                <option value="NA" @if($old_eye == 'NA') selected @endif>NA</option>
                             </select>
                         </div>
                         <div class="form-group col-md-4" style="text-align: right;">
@@ -82,11 +95,11 @@
                         <div class="table-responsive list">
                             <table class="table">
                                 <thead>
-                                <th>Subject ID</th>
-                                <th>Enrollment Date</th>
-                                <th>Site Name</th>
-                                <th>Disease Cohort</th>
-                                <th>Study Eye</th>
+                                <th onclick="changeSort('subject_id');">Subject ID <i class="fas fa-sort float-mrg"></i></th>
+                                <th onclick="changeSort('enrollment_date');">Enrollment Date <i class="fas fa-sort float-mrg"></i></th>
+                                <th onclick="changeSort('site_name');">Site Name <i class="fas fa-sort float-mrg"></i></th>
+                                <th>Disease Cohort </th>
+                                <th onclick="changeSort('study_eye');">Study Eye <i class="fas fa-sort float-mrg"></i></th>
                                 <th>Actions</th>
                                 </thead>
                                 <tbody>
@@ -99,7 +112,7 @@
                                         <td class="eye" style="display: none;">{{$subject}}</td>
                                         <td class="subject_id"><a href="{{route('subjectFormLoader.showSubjectForm',['study_id'=>$currentStudy->id,'subject_id'=>$subject->id])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
                                         </td>
-                                        <td class="enrol_date">{{$subject->enrollment_date}}</td>
+                                        <td class="enrol_date">{{ date_format( new DateTime($subject->enrollment_date) , 'M-d-Y')}}</td>
                                         <td class="site_name">{{!empty($subject->site_name)?$subject->site_name:'SiteName'}}</td>
                                         <td class="disease">{{!empty($subject->disease_cohort->name)?$subject->disease_cohort->name:'Not Defined'}}</td>
                                         <td class="study_eye">{{!empty($subject->study_eye)?$subject->study_eye:'Not Defined'}}</td>
@@ -449,6 +462,17 @@
                     }
                 }
             });
+        }
+        function changeSort(field_name){
+            var sort_by_field = $('#sort_by_field').val();
+            if(sort_by_field =='' || sort_by_field =='ASC'){
+               $('#sort_by_field').val('DESC');
+               $('#sort_by_field_name').val(field_name);
+            }else if(sort_by_field =='DESC'){
+               $('#sort_by_field').val('ASC'); 
+               $('#sort_by_field_name').val(field_name); 
+            }
+            $('.filter-form').submit();
         }
     </script>
 @endsection

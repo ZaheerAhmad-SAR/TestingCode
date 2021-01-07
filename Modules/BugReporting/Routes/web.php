@@ -15,6 +15,8 @@
 Route::group(['middleware' => ['auth','web']],function(){
 
     Route::resource('bug-reporting','BugReportingController');
+    Route::get('bug-reporting/{id}/destroy', 'BugReportingController@destroy')->name('bug-reporting.destroy');
+    Route::post('bug-reporting/update', 'BugReportingController@update')->name('bugReporting.update');
 });
 
 //Route::prefix('bugreporting')->group(function() {

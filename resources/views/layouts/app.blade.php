@@ -70,6 +70,11 @@
             .dropdown-item{
                 cursor: pointer;
             }
+            .float-mrg{
+                float: right;
+                margin-top: 4px;
+                cursor: pointer;
+            }
         </style>
     </head>
 
@@ -121,6 +126,9 @@
             $(function () {
                 var duration = 10000;
                 setTimeout(function () { $('#myalert').hide(); }, duration);
+            });
+            $('body').on('click','.reset-filter',function(){
+                ('.filter-form').find('input[type=text], input[type=date],select').val('');
             });
         </script>
         <!-- END: Page JS-->

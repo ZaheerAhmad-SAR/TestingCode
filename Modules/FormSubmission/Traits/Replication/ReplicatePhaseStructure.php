@@ -158,14 +158,14 @@ trait ReplicatePhaseStructure
         }
     }
 
-    private function deletePhaseToReplicatedVisits($phase, $isReplicating = true)
+    private function deletePhaseToReplicatedVisits($phaseId, $isReplicating = true)
     {
         $replicating_or_cloning = 'cloning';
         if ($isReplicating === true) {
             $replicating_or_cloning = 'replicating';
         }
 
-        $replicatedPhases = StudyStructure::where('parent_id', 'like', $phase->id)
+        $replicatedPhases = StudyStructure::where('parent_id', 'like', $phaseId)
             ->where('replicating_or_cloning', 'like', $replicating_or_cloning)
             ->get();
         foreach ($replicatedPhases as $replicatedPhase) {
@@ -177,7 +177,7 @@ trait ReplicatePhaseStructure
 
     private function deletePhase($phase, $isReplicating = true)
     {
-        $this->deletePhaseToReplicatedVisits($phase, $isReplicating);
+        $this->deletePhaseToReplicatedVisits($phase->id, $isReplicating);
         foreach ($phase->steps as $step) {
             $this->deleteStep($step);
         }

@@ -519,8 +519,10 @@
     <div class="btn-group dropup" style="margin-left: 15px;">
      <button type="button" class="btn btn-primary dropdown-toggle position-fixed" data-toggle="dropdown">  <i class="icon-question"></i> Support</button>
         <div class="dropdown-menu">
+            @if(hasPermission(auth()->user(),'bug-reporting.create'))
             <a href="#" class="dropdown-item"  data-toggle="modal" data-target="#reportabugmodel"><i class="fa fa-plus"></i>   Report a Bug</a>
             <div class="dropdown-divider"></div>
+            @endif
             <a href="#" class="dropdown-item"><i class="fa fa-plus"></i>  User Manual</a>
             <div class="dropdown-divider"></div>
             <a href="#" class="dropdown-item"> <i class="fa fa-plus"></i>  OCAP v2021.{{  TagReleasenumber() }}</a>
@@ -586,7 +588,6 @@
 
  <script type="text/javascript">
 
-        //alert('dfdfdfdfd');
         $("#bugReportingForm").on('submit', function(e) {
 
             e.preventDefault();
@@ -598,7 +599,8 @@
             var shortTitle  = $("#shortTitle").val();
             var yourMessage = $("#yourMessage").val();
             var query_url   =  document.URL;
-            var severity    = $("#severity").val();
+            var severity  = $("input[name='severity']:checked").val();
+            console.log(severity);
             var formData = new FormData();
             formData.append('shortTitle', shortTitle);
             formData.append('yourMessage', yourMessage);
