@@ -25,7 +25,7 @@
             <div class="col-12 col-sm-12 mt-3">
 
                 <div class="card">
-                    <form action="{{route('users.updateUser',$user->id)}}" enctype="multipart/form-data" method="POST">
+                    <form action="{{route('users.updateUser',$user->id)}}" enctype="multipart/form-data" method="POST" class="user-profile-form">
                         @csrf
                         @method('GET')
                         <div class="modal-body">
@@ -120,7 +120,7 @@
                                 </div>
                             </div>
 
-                            <div class="form-group row">
+                          <!--   <div class="form-group row">
 
                                 <div class="col-md-2">
                                     <label for="avatar" class="">User Signature</label>
@@ -130,6 +130,25 @@
                                 </div>
                                 
                             </div>
+ -->                        <div class="row">
+
+                                <div class="col-md-2">
+                                    <label for="C-Password">Signature</label>
+                                </div>
+
+                                <div class="col-md-10">
+                                    <div class="wrapper">
+                                        <canvas id="signature-pad" class="signature-pad"></canvas>
+                                        <input type="text" id="hidden_user_signature" name="hidden_user_signature" value="" style="display: none;">
+                                    </div>
+                                    <br>
+                                    <button type="button" class="btn btn-outline-primary" id="undo">Undo</button>
+                                    <button type="button" class="btn btn-outline-primary" id="clear">Clear</button>
+                                </div>
+                                <!-- col ends -->
+                            </div>
+                            <!-- row ends -->
+                                
                         </div>
                         <div class="modal-footer">
                             @if(hasPermission(auth()->user(),'users.store'))
@@ -166,15 +185,42 @@
 @section('styles')
 
     <style>
+
         div.dt-buttons{
             display: none;
         }
+
+        .wrapper {
+            position: relative;
+            width: 80%;
+            height: 400px;
+            border: 1px solid;
+            padding: 10px;
+            box-shadow: 5px 10px #1e3d73;
+          -moz-user-select: none;
+          -webkit-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+
+        .signature-pad {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width:100%;
+          height:400px;
+          background-color: white;
+        }
     </style>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
     <link rel="stylesheet" href="{{ asset('dist/vendors/datatable/css/dataTables.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css') }}">
 @endsection
 @section('script')
+
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
+
     <script type="text/javascript">
         $(document).ready(function(){
             var tId;
@@ -194,6 +240,55 @@
                 x.style.display = "none";
             }
         }
+
+        /***************  Signature Pad **************************/
+
+        var canvas = document.getElementById('signature-pad');
+
+        // Adjust canvas coordinate space taking into account pixel ratio,
+        // to make it look crisp on mobile devices.
+        // This also causes canvas to be cleared.
+        function resizeCanvas() {
+            // When zoomed out to less than 100%, for some very strange reason,
+            // some browsers report devicePixelRatio as less than 1
+            // and only part of the canvas is cleared then.
+            var ratio =  Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+        }
+
+        window.onresize = resizeCanvas;
+        resizeCanvas();
+
+        var signaturePad = new SignaturePad(canvas, {
+          backgroundColor: 'rgb(255, 255, 255)' // necessary for saving image as JPEG; can be removed is only saving as PNG or SVG
+        });
+
+        document.getElementById('clear').addEventListener('click', function () {
+          signaturePad.clear();
+        });
+
+        document.getElementById('undo').addEventListener('click', function () {
+            var data = signaturePad.toData();
+          if (data) {
+            data.pop(); // remove the last dot or line
+            signaturePad.fromData(data);
+          }
+        });
+
+        $('.user-profile-form').submit(function(e) {
+
+            e.preventDefault();
+
+            if (!signaturePad.isEmpty()) {
+                var data = signaturePad.toDataURL('image/png');
+                $('#hidden_user_signature').val(data);
+            }
+              
+            e.currentTarget.submit();
+       
+        });
 
     </script>
 @endsection
