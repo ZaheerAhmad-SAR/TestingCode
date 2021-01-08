@@ -191,15 +191,12 @@
                     <p class="modal-title-status">  </p>
                 </div>
                 <form name="showBugDetailsForm" id="showBugDetailsForm">
-{{--                    <div class="modal-body">--}}
-{{--                        <div class="tab-content clearfix">--}}
-{{--                           <p> show Bug Details </p>--}}
-{{--                        </div>--}}
-{{--                        <div class="modal-footer">--}}
-{{--                            <button id="bug-close-btn" class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-                    <div class="bugdataResponse"></div>
+                    <div class="modal-body">
+                        <div class="bugdataResponse"></div>
+                        <div class="modal-footer">
+                            <button id="bug-close-btn" class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                        </div>
+                    </div>
                 </form>
             </div>
         </div>
