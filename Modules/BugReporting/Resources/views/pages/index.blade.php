@@ -48,11 +48,11 @@
 
                                         <tr>
                                             <td>{{$count++}}</td>
-                                            <td>{{$record['bug_title']}}</td>
+                                            <td class="showBugDetails" style="cursor: pointer;" data-value="{{$record['id']}}">{{$record['bug_title']}}</td>
                                             @php $row = App\User::where('id','=',$record['bug_reporter_by_id'])->first();@endphp
                                             <td>{{$row->name}}</td>
                                             <td>{{$record['bug_priority']}}</td>
-                                            <td>{{ ($record['status'] && $record['open_status']) ? $record['status'] .'-'. lcfirst($record['open_status']) : '' }}</td>
+                                            <td>{{ ($record['status'] && $record['open_status']) ? $record['status'] .'-'. lcfirst($record['closed_status']) : '' }}</td>
 
 {{--                                            @php--}}
 {{--                                            $str = '';--}}
@@ -78,7 +78,7 @@
                                                 </div>
                                             </td>
                                             @else
-                                                <td><i class="fas fa-ban" aria-hidden="true"></i></td>
+                                                <td style="cursor: not-allowed;"><i class="fas fa-ban" aria-hidden="true"></i></td>
                                             @endif
                                         </tr>
                                 @endforeach
@@ -180,6 +180,29 @@
     </div>
     <!-- End -->
 
+
+    <!-- Modal Report a bug -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="showBugDetailsModel">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header">
+                    <p class="modal-title"> Report a Bug</p>
+                    <p class="modal-title-status">  </p>
+                </div>
+                <form name="showBugDetailsForm" id="showBugDetailsForm">
+                    <div class="modal-body">
+                        <div class="bugdataResponse"></div>
+                        <div class="modal-footer">
+                            <button id="bug-close-btn" class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End -->
+
 @endsection
 @section('styles')
     <style>
@@ -193,6 +216,41 @@
 @section('script')
 
     <script type="text/javascript">
+
+
+        $('body').on('click','.showBugDetails',function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            var currentRow = $(this).data("value");
+            $('#showBugDetailsModel').modal('show');
+            getCurrentBugData(currentRow);
+
+        });
+
+        function getCurrentBugData(currentRow)
+        {
+            $.ajax({
+                url:"{{route('bug-reporting.getCurrentRowData')}}",
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'currentRow' :currentRow,
+                },
+                success: function(response)
+                {
+                    console.log(response);
+                    $('.bugdataResponse').html('');
+                    $('.bugdataResponse').html(response);
+                    var bugCurrentStatus  = $('#bugStatus').val();
+                    $('.modal-title-status').text('Status :'+' '+bugCurrentStatus);
+
+                }
+            });
+        }
 
 
         // Bug Delete function
