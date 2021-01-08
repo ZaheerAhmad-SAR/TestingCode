@@ -84,7 +84,7 @@ class BugReport extends Model
                     <img class="mr-3" style="width: 30px; height: 30px; border-radius: 50%;" src="' . url((string)$profileImage) . '" />
                         <strong>' . ucfirst((string)$querySubmitedBy->name) . ':</strong>
                         ' . date_format($query->created_at, 'd-M-Y') . '<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        ' . $query->bug_message . '
+                         <div class="text-left"><strong>Response </strong> <br>'.$query->bug_message.' </div><br>
                          ' . $attachment . '
                     </div>
                 </div><hr>';

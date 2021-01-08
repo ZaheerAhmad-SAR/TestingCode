@@ -412,7 +412,7 @@
             @endif
 
 
-            @if(hasPermission(auth()->user(),'bug-reporting.index'))
+{{--            @if(hasPermission(auth()->user(),'bug-reporting.index'))--}}
             <li class="dropdown">
                 <ul>
                     <li class="dropdown"><a href="#"><i class="fas fa-bug"></i>Bugs Reporting</a>
@@ -426,7 +426,7 @@
                     </li>
                 </ul>
             </li>
-            @endif
+{{--            @endif--}}
 
              <li class="dropdown">
                 <ul>
@@ -520,10 +520,10 @@
     <div class="btn-group dropup" style="margin-left: 15px;">
      <button type="button" class="btn btn-primary dropdown-toggle position-fixed" data-toggle="dropdown">  <i class="icon-question"></i> Support</button>
         <div class="dropdown-menu">
-            @if(hasPermission(auth()->user(),'bug-reporting.create'))
+{{--            @if(hasPermission(auth()->user(),'bug-reporting.create'))--}}
             <a href="#" class="dropdown-item"  data-toggle="modal" data-target="#reportabugmodel"><i class="fa fa-plus"></i>   Report a Bug</a>
             <div class="dropdown-divider"></div>
-            @endif
+{{--            @endif--}}
             <a href="#" class="dropdown-item"><i class="fa fa-plus"></i>  User Manual</a>
             <div class="dropdown-divider"></div>
             <a href="#" class="dropdown-item"> <i class="fa fa-plus"></i>  OCAP v2021.{{  TagReleasenumber() }}</a>
