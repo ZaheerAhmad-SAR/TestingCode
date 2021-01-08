@@ -25,11 +25,11 @@ class BugReport extends Model
             }
 
         $attachment = '';
-        if (!empty($query->query_attachments)) {
-            $attachment .= '<div class="row">
-                        <img  style="width:200px; height:200px;" class="mr-3" src=' . url((string)$query->bug_attachments) . ' alt="">
+        if (!empty($query->bug_attachments)) {
+            $attachment .= '<div class="attachments">
+                        <img  style="width:200px; height:200px;"  src=' . url((string)$query->bug_attachments) . ' alt="">
                         </div>
-                        <div class="row">
+                        <div class="gallery">
                         <a target="_blank" data-fancybox-group="gallery" href=' . url((string)$query->bug_attachments) . ' class="fancybox">View Large</a></div>';
         }
         return '<div class="row">
@@ -61,11 +61,11 @@ class BugReport extends Model
 
 
         $attachment = '';
-        if (!empty($query->query_attachments)) {
-            $attachment .= '<div class="row">
-                        <img style="width:200px; height:200px; margin: 0 auto;" class="mr-3" src=' . url((string)$query->bug_attachments) . ' alt="">
+        if (!empty($query->bug_attachments)) {
+            $attachment .= '<div class="attachments">
+                        <img style="width:200px; height:200px; margin: 0 auto;"  src=' . url((string)$query->bug_attachments) . ' alt="">
                         </div>
-                        <div class="row">
+                        <div class="gallery">
                         <a target="_blank" data-fancybox-group="gallery" href=' . url((string)$query->bug_attachments) . ' class="fancybox">View Large</a></div>';
         }
         return '<div class="row">
