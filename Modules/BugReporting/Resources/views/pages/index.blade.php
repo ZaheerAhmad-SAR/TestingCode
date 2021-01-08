@@ -188,6 +188,7 @@
                 <div class="alert alert-danger" style="display:none"></div>
                 <div class="modal-header">
                     <p class="modal-title"> Report a Bug</p>
+                    <p class="modal-title-status">  </p>
                 </div>
                 <form name="showBugDetailsForm" id="showBugDetailsForm">
 {{--                    <div class="modal-body">--}}
@@ -247,6 +248,9 @@
                     console.log(response);
                     $('.bugdataResponse').html('');
                     $('.bugdataResponse').html(response);
+                    var bugCurrentStatus  = $('#bugStatus').val();
+                    $('.modal-title-status').text('Status :'+' '+bugCurrentStatus);
+
                 }
             });
         }
