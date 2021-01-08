@@ -83,7 +83,7 @@ h1, h2, h3,p {
 			<td style="padding-left: 50px;">
 				<p style="font-family: play;">Certification Officer</p><br>
 				@if(\Auth::user()->user_signature != '')
-					<img src="{{ route('user-signature', \Auth::user()->user_signature) }}" style="width:150px;">
+					<img src="{{ route('user-signature', encrypt(\Auth::user()->id.'.png')) }}" style="width:150px;">
 				@endif
 			</td>
 			<!-- <td align="right"><p style="font-family: play;">&nbsp;</p><br><br></td> -->
