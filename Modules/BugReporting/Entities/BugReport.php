@@ -24,13 +24,23 @@ class BugReport extends Model
                 $profileImage = asset($querySubmitedBy->profile_image);
             }
 
+            $bugStatus = '';
+
+            if ($query->status=='open')
+            {
+              $bugStatus = $query->status.'-'.lcfirst($query->open_status);
+            }
+            if ($query->status=='close')
+            {
+              $bugStatus = $query->status.'-'.lcfirst($query->closed_status);
+            }
         $attachment = '';
         if (!empty($query->bug_attachments)) {
             $attachment .= '<div class="attachments">
                         <img  style="width:200px; height:200px;"  src=' . url((string)$query->bug_attachments) . ' alt="">
                         </div>
                         <div class="gallery">
-                        <a target="_blank" data-fancybox-group="gallery" href=' . url((string)$query->bug_attachments) . ' class="fancybox">View Large</a></div>';
+                        <a target="_blank" data-fancybox-group="gallery" href=' . url((string)$query->bug_attachments) . ' class="fancybox ">View Large</a></div>';
         }
         return '<div class="row">
                     <input type="hidden" value=' . $query->parent_bug_id . ' name="parent_query_id" id="parent_query_id">
@@ -40,10 +50,10 @@ class BugReport extends Model
                             src="' . url((string)$profileImage) . '" />
 
                         <strong>' . ucfirst((string)$querySubmitedBy->name) . ':</strong>
-                        ' . date_format($query->created_at, 'M-d-Y H:i A') . '<br>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        ' . date_format($query->created_at, 'd-M-Y') . '<br>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <div class="text-justify"><strong>Bug Title </strong> <br> '.$query->bug_title.' </div>
                             <div class="text-left"><strong>Response </strong> <br>'.$query->bug_message.' </div><br>
-                            <div class="text-left"><strong> Status &nbsp; </strong> '.$query->status.'</div>
+                            <input type="hidden" name="bugStatus" id="bugStatus" value="'.$bugStatus.'">
                              <div class="text-left"><strong> Priority &nbsp; </strong> '.$query->bug_priority.'</div>
                         ' . $attachment . '
                     </div>
@@ -73,7 +83,7 @@ class BugReport extends Model
 
                     <img class="mr-3" style="width: 30px; height: 30px; border-radius: 50%;" src="' . url((string)$profileImage) . '" />
                         <strong>' . ucfirst((string)$querySubmitedBy->name) . ':</strong>
-                        ' . date_format($query->created_at, 'M-d-Y H:i A') . '<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        ' . date_format($query->created_at, 'd-M-Y') . '<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         ' . $query->bug_message . '
                          ' . $attachment . '
                     </div>
