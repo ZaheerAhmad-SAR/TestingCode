@@ -10,7 +10,7 @@ class BugReport extends Model
     protected $table = 'bug_reports';
     protected $fillable = [
         'id', 'bug_message', 'parent_bug_id', 'bug_reporter_by_id', 'bug_title', 'status','bug_url',
-        'bug_attachments','bug_priority','open_status','closed_status'
+        'bug_attachments','bug_priority','open_status','closed_status','study_name'
     ];
     protected $keyType = 'string';
 
@@ -34,6 +34,18 @@ class BugReport extends Model
             {
               $bugStatus = $query->status.'-'.lcfirst($query->closed_status);
             }
+
+            $currentStudy = '';
+
+        if ($query->study_name =='')
+        {
+            $currentStudy = null;
+        }
+        else
+        {
+            $currentStudy = '<strong>Study Name &nbsp;</strong><br>'.$query->study_name;
+        }
+
         $attachment = '';
         if (!empty($query->bug_attachments)) {
             $attachment .= '<div class="attachments">
@@ -51,10 +63,11 @@ class BugReport extends Model
 
                         <strong>' . ucfirst((string)$querySubmitedBy->name) . ':</strong>
                         ' . date_format($query->created_at, 'd-M-Y') . '<br>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <div class="text-justify">'.$currentStudy.'</div>
                             <div class="text-justify"><strong>Bug Title </strong> <br> '.$query->bug_title.' </div>
-                            <div class="text-left"><strong>Response </strong> <br>'.$query->bug_message.' </div><br>
+                            <div class="text-left"><strong>Response </strong> <br>'.$query->bug_message.' </div>
                             <input type="hidden" name="bugStatus" id="bugStatus" value="'.$bugStatus.'">
-                             <div class="text-left"><strong> Priority &nbsp; </strong> '.$query->bug_priority.'</div>
+                             <div class="text-left"><strong> Priority &nbsp; </strong><br> '.$query->bug_priority.'</div>
                         ' . $attachment . '
                     </div>
                 </div><hr>';
