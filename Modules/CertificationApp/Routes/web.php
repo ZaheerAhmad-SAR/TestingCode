@@ -147,7 +147,8 @@
 	// show user signature
 	Route::get('user-signature/{file_name}', function($fileName) {
 
-		$path = storage_path('user_signature/'.$fileName);
+		$decryptFileName = decrypt($fileName);
+		$path = storage_path('user_signature/'.$decryptFileName);
 	    if (!File::exists($path)) {
 
 	        abort(404);
@@ -156,7 +157,7 @@
 
 	    $file = File::get($path);
 	    $type = File::mimeType($path);
-	    $response = Response::make($file, 200);
+	    $response = Response::make(decrypt($file), 200);
 	    $response->header("Content-Type", $type);
 	    return $response;
 
