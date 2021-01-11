@@ -19,9 +19,9 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        session(['current_study'=>'','study_short_name'=> '']);
-        $study = '';
-        return view('userroles::dashboard',compact('study'));
+        // session(['current_study'=>'','study_short_name'=> '']);
+        // $study = '';
+        return view('userroles::dashboard');
     }
 
     /**
