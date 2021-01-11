@@ -3,7 +3,7 @@
     <title> View Subject Details | {{ config('app.name', 'Laravel') }}</title>
 @stop
 @section('content')
-
+    @php $old_values = ''; @endphp
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
         <div class="row ">

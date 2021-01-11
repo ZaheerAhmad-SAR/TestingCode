@@ -2,17 +2,37 @@
     <div class="site-width">
         <!-- START: Menu-->
         <ul id="side-menu" class="sidebar-menu" style="height: calc(100vh - 140px);overflow-y: scroll;">
-            <li class="dropdown"><a href="#"><i class="icon-home mr-1"></i> Dashboard</a>
-                <ul class="@if(is_active('dashboard.index')) {{ 'active' }} @endif">
+            {{-- <li class="dropdown"><a href="#"><i class="icon-home mr-1"></i> Dashboard</a> --}}
+                {{-- <ul class="@if(is_active('dashboard.index')) {{ 'active' }} @endif"> --}}
                   {{--  @if(hasPermission(auth()->user(),'dashboard.index'))--}}
-                        <li class="nav-item @if(is_active('dashboard.index')) {{ 'active' }} @endif">
-                            <a href="{{ url('/dashboard') }}">
-                                <i class="icon-rocket"></i>
-                                Dashboard <span class="sr-only">(current)</span>
-                            </a>
-                        </li>
+                        {{-- <li class="nav-item @if(is_active('dashboard.index')) {{ 'active' }} @endif"> --}}
+                            {{-- <a href="{{ url('/dashboard') }}"> --}}
+                                {{-- <i class="icon-rocket"></i> --}}
+                                {{-- Dashboard <span class="sr-only">(current)</span> --}}
+                            {{-- </a> --}}
+                        {{-- </li> --}}
                     {{--@endif--}}
+                {{-- </ul> --}}
+            {{-- </li> --}}
+            <li class="dropdown">
+                <ul>
+                    <li class="dropdown"><a href="#"><i class="fas fa-home"></i> Dashboard</a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="{{ route('dashboard.index')}}">
+                                    <i class="fas fa-list"></i> System Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('qualitycontrol.qc-work-list')}}">
+                                    <i class="fas fa-list"></i> Study Dashboard
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
+            </li>
+            <li class="dropdown">
                 <ul class="@if(is_active('studies.index')) {{ 'active' }} @endif">
                     @if(
                         (hasPermission(auth()->user(),'studies.index') &&
@@ -251,7 +271,6 @@
                                             <i class="fas fa-list"></i> QC List
                                         </a>
                                     </li>
-
                                     <li>
                                         <a href="{{ route('qualitycontrol.qc-work-list')}}">
                                             <i class="fas fa-list"></i> QC Work List

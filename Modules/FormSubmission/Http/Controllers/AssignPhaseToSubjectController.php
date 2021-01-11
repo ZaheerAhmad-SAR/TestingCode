@@ -25,9 +25,7 @@ class AssignPhaseToSubjectController extends Controller
         $subjectAssignedPhasesIdsArray = $subject->subjectPhasesArray();
         $repeatablePhasesIdsArray = StudyStructure::where('is_repeatable', 1)->withOutRepeated()->pluck('id')->toArray();
         $notToShowPhasesIdsArray = array_diff($subjectAssignedPhasesIdsArray, $repeatablePhasesIdsArray);
-
         $visitPhases = StudyStructure::where('study_id', $request->studyId)->withOutRepeated()->whereNotIn('id', $notToShowPhasesIdsArray)->get();
-
         echo view('formsubmission::subjectFormLoader.assignPhasesToSubjectPopupForm')
             ->with('visitPhases', $visitPhases)
             ->with('subject', $subject);
