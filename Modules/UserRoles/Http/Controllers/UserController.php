@@ -298,6 +298,7 @@ class UserController extends Controller
      */
     public function update_user(Request $request, $id)
     {
+
         $validate = Validator::make($request->all(), [
             'name'      =>  'required',
             'email'      =>  'required|email|unique:users,email,',
@@ -318,14 +319,27 @@ class UserController extends Controller
             }
 
             // look for user signature
-            if ($request->has('user_signature')) {
+            // if ($request->has('user_signature')) {
 
-                @unlink(storage_path('/user_signature/'.$user->user_signature));
+            //     @unlink(storage_path('/user_signature/'.$user->user_signature));
 
-                $user->user_signature = $user->id.''.$request->file("user_signature")->getClientOriginalName();
-                $request->user_signature->move(storage_path('/user_signature/'), $user->user_signature);
+            //     $user->user_signature = $user->id.''.$request->file("user_signature")->getClientOriginalName();
+            //     $request->user_signature->move(storage_path('/user_signature/'), $user->user_signature);
+            // }
+
+
+            if ($request->hidden_user_signature != '') {
+                // unlink old image
+                @unlink(storage_path('/user_signature/'.$user->id.'.png'));
+                // get image and save to path
+                $image = $request->hidden_user_signature;  // your base64 encoded
+                $image = str_replace('data:image/png;base64,', '', $image);
+                $image = base64_decode(str_replace(' ', '+', $image));
+                $imageName = $user->id.'.'.'png';
+                \File::put(storage_path(). '/user_signature/' . $imageName, encrypt($image));
+
             }
-            //dd($user);
+            
             $user->save();
         } else {
             $user->title  =  $request->title;
@@ -340,16 +354,27 @@ class UserController extends Controller
                 $user->profile_image = $filePath;
             }
 
-             // look for user signature
-            if ($request->has('user_signature')) {
+            // look for user signature
+            // if ($request->has('user_signature')) {
 
-                @unlink(storage_path('/user_signature/'.$user->user_signature));
+            //     @unlink(storage_path('/user_signature/'.$user->user_signature));
 
-                $user->user_signature = $user->id.''.$request->file("user_signature")->getClientOriginalName();
-                $request->user_signature->move(storage_path('/user_signature/'), $user->user_signature);
+            //     $user->user_signature = $user->id.''.$request->file("user_signature")->getClientOriginalName();
+            //     $request->user_signature->move(storage_path('/user_signature/'), $user->user_signature);
+            // }
+
+            if ($request->hidden_user_signature != '') {
+                // unlink old image
+                @unlink(storage_path('/user_signature/'.$user->id.'.png'));
+                // get image and save to path
+                $image = $request->hidden_user_signature;  // your base64 encoded
+                $image = str_replace('data:image/png;base64,', '', $image);
+                $image = base64_decode(str_replace(' ', '+', $image));
+                $imageName = $user->id.'.'.'png';
+                \File::put(storage_path(). '/user_signature/' . $imageName, encrypt($image));
+
             }
 
-            //dd($user);
             $user->save();
         }
 
@@ -530,6 +555,7 @@ class UserController extends Controller
                 'roles' => 'Please select a role!',
             ]
         );
+        
         /*$validator->after(function ($validator) use ($request) {
             if (Invitation::where('email', $request->input('email'))->exists()) {
                 $validator->errors()->add('email', 'There exists an invite with this email!');

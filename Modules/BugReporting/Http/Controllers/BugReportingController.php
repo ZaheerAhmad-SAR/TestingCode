@@ -6,9 +6,11 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
+use Modules\Admin\Entities\Study;
 use Modules\BugReporting\Entities\BugReport;
 use App\Traits\UploadTrait;
 use Modules\Queries\Entities\Query;
+use phpDocumentor\Reflection\Types\Null_;
 
 
 class BugReportingController extends Controller
@@ -40,6 +42,20 @@ class BugReportingController extends Controller
      */
     public function store(Request $request)
     {
+        $current_study = '';
+        $current_study    = session('current_study');
+
+        $findCurrentStudy = Study::where('id',$current_study)->first();
+
+        if ($current_study == '')
+        {
+            $current_study = null;
+        }
+        else
+        {
+            $current_study =  $findCurrentStudy->study_short_name;
+        }
+
         $shortTitle       = $request->post('shortTitle');
         $yourMessage      = $request->post('yourMessage');
         $query_url        = $request->post('query_url');
@@ -67,7 +83,8 @@ class BugReportingController extends Controller
             'bug_url'=>$query_url,
             'bug_title'=>$shortTitle,
             'bug_attachments'=>$filePath,
-            'bug_priority'=>$severity
+            'bug_priority'=>$severity,
+            'study_name'=>$current_study
         ]);
         return response()->json([$query,'success'=>'Queries is generate successfully!!!!']);
 
@@ -152,5 +169,14 @@ class BugReportingController extends Controller
            $delete->delete();
            return response()->json(['success' => 'Bug  is deleted successfully.']);
        }
+    }
+
+    public function getCurrentRowData(Request $request)
+    {
+        $currentRow = $request->currentRow;
+        $query      = BugReport::where('id',$currentRow)->orderBy('created_at','asc')->first();
+        $answers    = BugReport::where('parent_bug_id',$currentRow)->orderBy('created_at','asc')->get();
+        echo  view('bugreporting::pages.developer_reply_view',compact('answers','query'));
+
     }
 }

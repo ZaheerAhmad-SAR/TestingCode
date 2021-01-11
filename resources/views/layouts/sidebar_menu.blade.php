@@ -431,7 +431,7 @@
             @endif
 
 
-
+            @if(hasPermission(auth()->user(),'bug-reporting.index'))
             <li class="dropdown">
                 <ul>
                     <li class="dropdown"><a href="#"><i class="fas fa-bug"></i>Bugs Reporting</a>
@@ -445,6 +445,7 @@
                     </li>
                 </ul>
             </li>
+            @endif
 
              <li class="dropdown">
                 <ul>
@@ -544,7 +545,7 @@
             @endif
             <a href="#" class="dropdown-item"><i class="fa fa-plus"></i>  User Manual</a>
             <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item"> <i class="fa fa-plus"></i>  OCAP v2021.1.0</a>
+            <a href="#" class="dropdown-item"> <i class="fa fa-plus"></i>  OCAP v2021.{{  TagReleasenumber() }}</a>
         </div>
     </div>
 
