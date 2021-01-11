@@ -39,6 +39,9 @@
                                     <th style="width: 2%;">Reported by</th>
                                     <th style="width: 1%;">Priority</th>
                                     <th style="width: 1%;">Status</th>
+                                    @if(hasPermission(auth()->user(),'bug-reporting.edit') && hasPermission(auth()->user(),'bug-reporting.destroy'))
+                                        <th style="width: 1%;">Bug Location </th>
+                                    @endif
                                     <th style="width: 1%;">Action</th>
                                 </tr>
                                 <tbody>
@@ -53,17 +56,18 @@
                                             <td>{{$row->name}}</td>
                                             <td>{{$record['bug_priority']}}</td>
                                             <td>{{ ($record['status'] && $record['open_status']) ? $record['status'] .'-'. lcfirst($record['closed_status']) : '' }}</td>
+                                            @php
+                                            $str = '';
+                                            $str = $record['bug_url'];
+                                            $segment = explode("/",$str);
 
-{{--                                            @php--}}
-{{--                                            $str = '';--}}
-{{--                                            $str = $record['bug_url'];--}}
-{{--                                            $segment = explode("/",$str);--}}
+                                            @endphp
+                                            @if(hasPermission(auth()->user(),'bug-reporting.edit') && hasPermission(auth()->user(),'bug-reporting.destroy'))
+                                             <td style="cursor: pointer;">
+                                                <a target="_blank" href=" {{$record['bug_url']}}">{{ucwords($segment[3])}}</a>
 
-{{--                                            @endphp--}}
-{{--                                             <td style="cursor: pointer;">--}}
-{{--                                                <a target="_blank" href=" {{$record['bug_url']}}">{{ucwords($segment[3])}}</a>--}}
-
-{{--                                            </td>--}}
+                                            </td>
+                                            @endif
 
                                             @if(hasPermission(auth()->user(),'bug-reporting.edit') && hasPermission(auth()->user(),'bug-reporting.destroy'))
                                             <td>
