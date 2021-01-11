@@ -185,7 +185,8 @@ class RoleController extends Controller
         if ($request->study_view == 'on') {
             //dd('log store');
             $permissions = Permission::where('name', '=', 'studies.index')
-                ->get();
+                                    ->orwhere('name', '=', 'studies.show')
+                                    ->get();
 
             $this->createRolePermissions($role, $permissions);
         }
