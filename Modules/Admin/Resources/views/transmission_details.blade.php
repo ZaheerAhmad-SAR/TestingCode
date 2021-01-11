@@ -94,7 +94,7 @@
                                 <label for="imagine_modality">Imagine Modality</label>
                                 <input type="text" name="imagine_modality" id="imagine_modality" class="form-control filter-form-data" value="{{ request()->imagine_modality }}" placeholder="Imagine Modality">
                             </div>
-
+                            {{--
                             <div class="form-group col-md-4">
                                 <label for="inputState"> Modality </label>
                                 <select id="modility_id" name="modility_id" class="form-control filter-form-data">
@@ -104,8 +104,9 @@
                                     @endforeach
                                 </select>
                             </div>
+                            --}}
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-4">
                                 <label for="inputState"> Processed Status</label>
                                 <select id="is_read" name="is_read" class="form-control filter-form-data">
                                     <option value="">All Processed Status</option>
@@ -114,7 +115,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-4">
                                 <label for="inputState"> Transmission Status</label>
                                 <select id="status" name="status" class="form-control filter-form-data">
                                     <option value="">All Status</option>
@@ -126,7 +127,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-2 mt-4">
+                            <div class="form-group col-md-3 mt-4">
                                 <button type="button" class="btn btn-primary reset-filter">Reset</button>
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Record</button>
                             </div>

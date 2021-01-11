@@ -78,10 +78,10 @@ class TransmissionController extends Controller
             $getTransmissions = $getTransmissions->where('ImageModality', $request->imagine_modality);
         }
 
-        if ($request->modility_id != '') {
+        // if ($request->modility_id != '') {
 
-            $getTransmissions = $getTransmissions->where('modility_id', $request->modility_id);
-        }
+        //     $getTransmissions = $getTransmissions->where('modility_id', $request->modility_id);
+        // }
 
         if ($request->is_read != '') {
 
@@ -143,10 +143,10 @@ class TransmissionController extends Controller
             $getTransmissions = $getTransmissions->where('ImageModality', $request->imagine_modality);
         }
 
-        if ($request->modility_id != '') {
+        // if ($request->modility_id != '') {
 
-            $getTransmissions = $getTransmissions->where('modility_id', $request->modility_id);
-        }
+        //     $getTransmissions = $getTransmissions->where('modility_id', $request->modility_id);
+        // }
 
         if ($request->is_read != '') {
 
@@ -212,7 +212,7 @@ class TransmissionController extends Controller
                 ->get();
         }
 
-        // get step for this visit and aubject
+        // get step for this visit and subject
         $getStepForVisit = PhaseSteps::where('phase_id', $findTransmission->phase_id)
             ->where('modility_id', $findTransmission->modility_id)
             ->get()
@@ -220,7 +220,6 @@ class TransmissionController extends Controller
 
         // get all the transmission updates
         $getTransmissionUpdates = TransmissionUpdateDetail::where('transmission_id', decrypt($id))->get();
-
 
         return view('admin::study_view_transmission_details', compact('findTransmission', 'getSites', 'getSubjects', 'getPhases', 'getModalities', 'getTransmissionUpdates', 'getStepForVisit'));
     }
@@ -420,7 +419,7 @@ class TransmissionController extends Controller
         // get site id
         if ($request->d_site_id != "") {
 
-            $siteID = explode('/', $request->d_site_id);
+            $siteID = explode('__/__', $request->d_site_id);
             $findTransmission->sit_id = $siteID[0];
             $findTransmission->Site_ID = $siteID[1];
         }
@@ -443,7 +442,7 @@ class TransmissionController extends Controller
             $findTransmission->new_subject = "1";
         } else if ($request->d_subject_Id != "") {
 
-            $subjectID = explode('/', $request->d_subject_Id);
+            $subjectID = explode('__/__', $request->d_subject_Id);
             $findTransmission->subj_id = $subjectID[0];
             $findTransmission->Subject_ID = $subjectID[1];
         }
@@ -453,7 +452,7 @@ class TransmissionController extends Controller
         // get visit name and visit_id
         if ($request->d_visit_name != "") {
 
-            $visitName = explode('/', $request->d_visit_name);
+            $visitName = explode('__/__', $request->d_visit_name);
             $findTransmission->phase_id = $visitName[0];
             $findTransmission->visit_name = $visitName[1];
         }
@@ -463,7 +462,7 @@ class TransmissionController extends Controller
         // get modality name and madality_id
         if ($request->d_image_modality != "") {
 
-            $modilityName = explode('/', $request->d_image_modality);
+            $modilityName = explode('__/__', $request->d_image_modality);
             $findTransmission->modility_id = $modilityName[0];
             $findTransmission->ImageModality = $modilityName[1];
         }
