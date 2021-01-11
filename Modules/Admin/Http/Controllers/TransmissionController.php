@@ -78,10 +78,10 @@ class TransmissionController extends Controller
             $getTransmissions = $getTransmissions->where('ImageModality', $request->imagine_modality);
         }
 
-        if ($request->modility_id != '') {
+        // if ($request->modility_id != '') {
 
-            $getTransmissions = $getTransmissions->where('modility_id', $request->modility_id);
-        }
+        //     $getTransmissions = $getTransmissions->where('modility_id', $request->modility_id);
+        // }
 
         if ($request->is_read != '') {
 
@@ -143,10 +143,10 @@ class TransmissionController extends Controller
             $getTransmissions = $getTransmissions->where('ImageModality', $request->imagine_modality);
         }
 
-        if ($request->modility_id != '') {
+        // if ($request->modility_id != '') {
 
-            $getTransmissions = $getTransmissions->where('modility_id', $request->modility_id);
-        }
+        //     $getTransmissions = $getTransmissions->where('modility_id', $request->modility_id);
+        // }
 
         if ($request->is_read != '') {
 
