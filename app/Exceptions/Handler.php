@@ -62,6 +62,7 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         if (config('app.env') == 'local') {
+            dd('i am here');
 
             return parent::render($request, $exception);
         }
