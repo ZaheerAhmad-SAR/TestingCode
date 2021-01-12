@@ -119,7 +119,9 @@ class CertificationPreferencesController extends Controller
         // get all parent and child modalities
         $getModalities = ChildModilities::query();
         $getModalities = $getModalities->select('modilities.id as parent_modility_id', 'modilities.modility_name as parent_modility_name', 'child_modilities.id as child_modility_id', 'child_modilities.modility_name as child_modility_name')
-        ->leftjoin('modilities', 'modilities.id', '=', 'child_modilities.modility_id');
+        ->leftjoin('modilities', 'modilities.id', '=', 'child_modilities.modility_id')
+        ->whereNULL('modilities.deleted_at')
+        ->whereNULL('child_modilities.deleted_at');
 
         if ($request->parent_modility != '') {
 

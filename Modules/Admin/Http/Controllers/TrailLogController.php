@@ -79,6 +79,7 @@ class TrailLogController extends Controller
                 "Section" => "Section",
                 "Study Site" => "Study Site",
                 "Study" => "Study",
+                "Study Status" => "Study Status",
                 "Subject" => "Subject",
                 "Transmission Data" => "Transmission Data",
                 "QC Form" => "QC Form",
