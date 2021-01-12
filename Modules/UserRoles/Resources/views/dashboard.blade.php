@@ -62,7 +62,6 @@
                 </div>
             </div>
         </div>
-        
     </div>
     <div class="row">
         <div class="col-12  col-lg-12 mt-3">
@@ -202,7 +201,6 @@
                               </div>
                             </td>
                             <td>Grader 2</td>
-                            
                             <td><span class="badge badge-pill badge-light p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'incomplete' ))->count() }}</span></td>
                             <td><span class="badge badge-pill badge-success p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'complete' ))->count() }}</span></td>
                             <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'resumable' ))->count() }}</span></td>
@@ -239,10 +237,10 @@
                               </div>
                             </td>
                             <td>Adjudication</td>
-                            <td><span class="badge badge-pill badge-light p-2 mb-1">2</span></td>
-                            <td><span class="badge badge-pill badge-success p-2 mb-1">4</span></td>
-                            <td><span class="badge badge-pill badge-warning p-2 mb-1">3</span></td>
-                            <td><span class="badge badge-pill badge-danger p-2 mb-1">5</span></td>
+                            <td><span class="badge badge-pill badge-light p-2 mb-1">{{ Modules\FormSubmission\Entities\AdjudicationFormStatus::where(array('form_type_id' => 2,'adjudication_status' => 'incomplete' ))->count() }}</span></td>
+                            <td><span class="badge badge-pill badge-success p-2 mb-1">{{ Modules\FormSubmission\Entities\AdjudicationFormStatus::where(array('form_type_id' => 2,'adjudication_status' => 'complete' ))->count() }}</span></td>
+                            <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ Modules\FormSubmission\Entities\AdjudicationFormStatus::where(array('form_type_id' => 2,'adjudication_status' => 'resumable' ))->count() }}</span></td>
+                            <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ Modules\FormSubmission\Entities\AdjudicationFormStatus::where(array('form_type_id' => 2,'adjudication_status' => 'not_required' ))->count() }}</span></td>
                         </tr>
                         <tr class="collapse row-Adj">
                             <td colspan="7">
@@ -258,10 +256,10 @@
                                         @foreach($modalities as $key => $value)
                                         <tr>
                                             <td>{{ $value->modility_abbreviation }}</td>
-                                            <td><span class="badge badge-pill badge-light p-2 mb-1">1</span></td>
-                                            <td><span class="badge badge-pill badge-success p-2 mb-1">3</span></td>
-                                            <td><span class="badge badge-pill badge-warning p-2 mb-1">3</span></td>
-                                            <td><span class="badge badge-pill badge-danger p-2 mb-1">3</span></td>
+                                            <td><span class="badge badge-pill badge-light p-2 mb-1">{{ Modules\FormSubmission\Entities\AdjudicationFormStatus::where(array('form_type_id' => 2,'adjudication_status' => 'incomplete','modility_id' => $value->id ))->count() }}</span></td>
+                                            <td><span class="badge badge-pill badge-success p-2 mb-1">{{ Modules\FormSubmission\Entities\AdjudicationFormStatus::where(array('form_type_id' => 2,'adjudication_status' => 'complete','modility_id' => $value->id ))->count() }}</span></td>
+                                            <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ Modules\FormSubmission\Entities\AdjudicationFormStatus::where(array('form_type_id' => 2,'adjudication_status' => 'resumable','modility_id'  => $value->id ))->count() }}</span></td>
+                                            <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ Modules\FormSubmission\Entities\AdjudicationFormStatus::where(array('form_type_id' => 2,'adjudication_status' => 'not_required','modility_id'  => $value->id ))->count() }}</span></td>
                                         </tr>
                                         @endforeach
                                     </tbody>
