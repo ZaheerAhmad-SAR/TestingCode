@@ -47,45 +47,38 @@
 {{--                                <span class="badge badge-default"> <span class="ring">--}}
 {{--                                </span><span class="ring-point">--}}
 {{--                                </span> </span>--}}
-                                <span class="badge badge-pill badge-danger" style="height: 20px;
-    top: 12px;">5</span>
+
+                                @php $count =  \Modules\Queries\Entities\QueryUser::where('user_id','=', auth()->user()->id)->count(); @endphp
+
+                                @if($count > 0)
+                                    <span class="badge badge-pill badge-danger" style="height: 20px;top: 12px;"> {{$count}}</span>
+                                @endif
+
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right border   py-0">
+
+                                @php $userQueries =  \Modules\Queries\Entities\QueryUser::where('user_id','=', auth()->user()->id)->get(); @endphp
+
+                                @foreach($userQueries as $str)
+                                    @php
+                                        $personName ='';
+                                        $result      = \Modules\Queries\Entities\Query::where('id','=',$str->query_id)->first();
+                                        $personName  = App\User::where('id',$result->queried_remarked_by_id)->first();
+                                        @endphp
                                 <li>
                                     <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0" href="javascript:void(0)">
                                         <div class="media">
-                                            <img src="{{asset('dist/images/author.jpg')}}" alt="" class="d-flex mr-3 img-fluid rounded-circle w-50">
-                                            <div class="media-body">
-                                                <p class="mb-0 text-success">john send a message</p>
-                                                12 min ago
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li >
-                                    <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0" href="javascript:void(0)">
-                                        <div class="media">
                                             <img src="{{asset('dist/images/author.jpg')}}" alt="" class="d-flex mr-3 img-fluid rounded-circle">
                                             <div class="media-body">
-                                                <p class="mb-0 text-danger">Peter send a message</p>
-                                                15 min ago
+                                                <p data-value="{{$result->id}}" class="mb-0 text-danger" >New Query By {{$personName->name}} </p>
+                                                {{ date_format($result->created_at,'d-M-Y')}}
                                             </div>
                                         </div>
                                     </a>
                                 </li>
-                                <li >
-                                    <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0" href="javascript:void(0)">
-                                        <div class="media">
-                                            <img src="{{asset('dist/images/author.jpg')}}" alt="" class="d-flex mr-3 img-fluid rounded-circle">
-                                            <div class="media-body">
-                                                <p class="mb-0 text-warning">Bill send a message</p>
-                                                5 min ago
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-
+                                @endforeach
                                 <li><a class="dropdown-item text-center py-2" href="javascript:void(0)"> Read All Message <i class="icon-arrow-right pl-2 small"></i></a></li>
+
                             </ul>
                         </li>
                         <li class="d-inline-block align-self-center  d-block d-lg-none">
