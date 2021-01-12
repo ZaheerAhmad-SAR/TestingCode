@@ -9,8 +9,7 @@
         <div class="col-12  align-self-center">
             <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
                 <div class="w-sm-100 mr-auto">
-
-                    <h4 class="mb-0">{{-- {{ ucfirst(auth()->user()->name) }} --}} &nbsp;&nbsp; System Dashboard</h4>
+                    <h4 class="mb-0">System Dashboard</h4>
                 </div>
 
                 <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
@@ -22,69 +21,258 @@
     </div>
     <!-- END: Breadcrumbs-->
     <!-- START: Card Data-->
-    <div class="col-12  col-lg-12 mt-3">
+    <div class="row">
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class='p-4 align-self-center'>
+                        <span class="col-xl-4" style="display: contents;"><i class="fas fa-file-medical-alt fa-4x"></i></span>
+                        <span class="col-xl-8" style="display: inline-block;"> <h2>{{ Modules\Admin\Entities\Study::count() }}</h2> <strong>Total Studies</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class='p-4 align-self-center'>
+                        <span class="col-xl-4" style="display: contents;"><i class="fas fa-user fa-4x"></i></span>
+                        <span class="col-xl-8" style="display: inline-block;"> <h2>{{ App\User::count() }}</h2> <strong>Total Users</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class='p-4 align-self-center'>
+                        <span class="col-xl-4" style="display: contents;"><i class="fas fa-user-tag fa-4x"></i></span>
+                        <span class="col-xl-8" style="display: inline-block;"> <h2>{{ Modules\Admin\Entities\Subject::count() }}</h2> <strong>Total Subjects</strong></span> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class='p-4 align-self-center'> 
+                        <span class="col-xl-4" style="display: contents;"><i class="fas fa-file-signature fa-4x"></i></span>
+                        <span class="col-xl-8" style="display: inline-block;"> <h2>{{ Modules\FormSubmission\Entities\SubjectsPhases::count() }}</h2> <strong>Total Visits</strong></span> 
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <div class="row">
+        <div class="col-12  col-lg-12 mt-3">
         <div class="card">
             <div class="card-header  justify-content-between align-items-center">
-                <h6 class="card-title"> Visit Progress </h6>
+                <h6 class="card-title"> Visits Progress </h6>
             </div>
             <div class="card-body table-responsive p-0">
 
                 <table class="table font-w-600 mb-0">
                     <thead>
                         <tr>
+                            <th>Expand</th>
                             <th>Type</th>
-                            <th>Not Initiated</th>
                             <th>Initiated</th>
-                            <th>Editing</th>
                             <th>Complete</th>
+                            <th>Editing</th>
                             <th>Not Required</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Qc</td>
-                            <td><span class="badge badge-pill badge-dark p-2 mb-1">1</span></td>
-                            <td><span class="badge badge-pill badge-light p-2 mb-1">2</span></td>
-                            <td><span class="badge badge-pill badge-warning p-2 mb-1">3</span></td>
-                            <td><span class="badge badge-pill badge-success p-2 mb-1">4</span></td>
-                            <td><span class="badge badge-pill badge-danger p-2 mb-1">5</span></td>
+                            <td>
+                              <div class="btn-group btn-group-sm" role="group">
+                                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-QC" style="font-size: 20px; color: #1e3d73;"></i>
+                              </div>
+                            </td>
+                            <td>QC</td>                            
+                           
+                            <td><span class="badge badge-pill badge-light p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 1,'form_status' => 'incomplete' ))->count() }}</span></td>
+                            <td><span class="badge badge-pill badge-success p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 1,'form_status' => 'complete' ))->count() }}</span></td>
+                            <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 1,'form_status' => 'resumable' ))->count() }}</span></td>
+                            <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 1,'form_status' => 'not_required' ))->count() }}</span></td>
+                        </tr>
+                        <tr class="collapse row-QC">
+                            <td colspan="7">
+                               <table class="table table-hover" style="width: 100%">
+                                    <thead class="table-info">
+                                        <th>Modality Name</th>
+                                        <th>Total Initiated</th>
+                                        <th>Total Complete</th>
+                                        <th>Total Editing</th>
+                                        <th>Total Not Required</th>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($modalities as $key => $value)
+                                        <tr>
+                                            <td>{{ $value->modility_abbreviation }}</td>
+                                            <td><span class="badge badge-pill badge-light p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 1,'form_status' => 'incomplete','modility_id' => $value->id ))->count() }}</span></td>
+                                            <td><span class="badge badge-pill badge-success p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 1,'form_status' => 'complete','modility_id' => $value->id ))->count() }}</span></td>
+                                            <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 1,'form_status' => 'resumable','modility_id'  => $value->id ))->count() }}</span></td>
+                                            <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 1,'form_status' => 'not_required','modility_id'  => $value->id ))->count() }}</span></td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </td>
                         </tr>
                         <tr>
+                            <td>
+                              <div class="btn-group btn-group-sm" role="group">
+                                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-eligibility" style="font-size: 20px; color: #1e3d73;"></i>
+                              </div>
+                            </td>
                             <td>Eligibility</td>
-                            <td><span class="badge badge-pill badge-dark p-2 mb-1">1</span></td>
-                            <td><span class="badge badge-pill badge-light p-2 mb-1">2</span></td>
-                            <td><span class="badge badge-pill badge-warning p-2 mb-1">3</span></td>
-                            <td><span class="badge badge-pill badge-success p-2 mb-1">4</span></td>
-                            <td><span class="badge badge-pill badge-danger p-2 mb-1">5</span></td>
+                            
+                            <td><span class="badge badge-pill badge-light p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 3,'form_status' => 'incomplete' ))->count() }}</span></td>
+                            <td><span class="badge badge-pill badge-success p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 3,'form_status' => 'complete' ))->count() }}</span></td>
+                            <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 3,'form_status' => 'resumable' ))->count() }}</span></td>
+                            <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 3,'form_status' => 'not_required' ))->count() }}</span></td>
+                        </tr>
+                        <tr class="collapse row-eligibility">
+                            <td colspan="7">
+                               <table class="table table-hover" style="width: 100%">
+                                    <thead class="table-info">
+                                        <th>Modality Name</th>
+                                        <th>Total Initiated</th>
+                                        <th>Total Complete</th>
+                                        <th>Total Editing</th>
+                                        <th>Total Not Required</th>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($modalities as $key => $value)
+                                        <tr>
+                                            <td>{{ $value->modility_abbreviation }}</td>
+                                            <td><span class="badge badge-pill badge-light p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 3,'form_status' => 'incomplete','modility_id' => $value->id ))->count() }}</span></td>
+                                            <td><span class="badge badge-pill badge-success p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 3,'form_status' => 'complete','modility_id' => $value->id ))->count() }}</span></td>
+                                            <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 3,'form_status' => 'resumable','modility_id'  => $value->id ))->count() }}</span></td>
+                                            <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 3,'form_status' => 'not_required','modility_id'  => $value->id ))->count() }}</span></td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </td>
                         </tr>
                         <tr>
+                            <td>
+                              <div class="btn-group btn-group-sm" role="group">
+                                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-G1" style="font-size: 20px; color: #1e3d73;"></i>
+                              </div>
+                            </td>
                             <td>Grader 1</td>
-                            <td><span class="badge badge-pill badge-dark p-2 mb-1">1</span></td>
-                            <td><span class="badge badge-pill badge-light p-2 mb-1">2</span></td>
-                            <td><span class="badge badge-pill badge-warning p-2 mb-1">3</span></td>
-                            <td><span class="badge badge-pill badge-success p-2 mb-1">4</span></td>
-                            <td><span class="badge badge-pill badge-danger p-2 mb-1">5</span></td>
+                            
+                            <td><span class="badge badge-pill badge-light p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'incomplete' ))->count() }}</span></td>
+                            <td><span class="badge badge-pill badge-success p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'complete' ))->count() }}</span></td>
+                            <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'resumable' ))->count() }}</span></td>
+                            <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'not_required' ))->count() }}</span></td>
+                        </tr>
+                        <tr class="collapse row-G1">
+                            <td colspan="7">
+                               <table class="table table-hover" style="width: 100%">
+                                    <thead class="table-info">
+                                        <th>Modality Name</th>
+                                        <th>Total Initiated</th>
+                                        <th>Total Complete</th>
+                                        <th>Total Editing</th>
+                                        <th>Total Not Required</th>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($modalities as $key => $value)
+                                        <tr>
+                                            <td>{{ $value->modility_abbreviation }}</td>
+                                            <td><span class="badge badge-pill badge-light p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'incomplete','modility_id' => $value->id ))->count() }}</span></td>
+                                            <td><span class="badge badge-pill badge-success p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'complete','modility_id' => $value->id ))->count() }}</span></td>
+                                            <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'resumable','modility_id'  => $value->id ))->count() }}</span></td>
+                                            <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'not_required','modility_id'  => $value->id ))->count() }}</span></td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </td>
                         </tr>
                         <tr>
+                            <td>
+                              <div class="btn-group btn-group-sm" role="group">
+                                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-G2" style="font-size: 20px; color: #1e3d73;"></i>
+                              </div>
+                            </td>
                             <td>Grader 2</td>
-                            <td><span class="badge badge-pill badge-dark p-2 mb-1">1</span></td>
-                            <td><span class="badge badge-pill badge-light p-2 mb-1">2</span></td>
-                            <td><span class="badge badge-pill badge-warning p-2 mb-1">3</span></td>
-                            <td><span class="badge badge-pill badge-success p-2 mb-1">4</span></td>
-                            <td><span class="badge badge-pill badge-danger p-2 mb-1">5</span></td>
+                            
+                            <td><span class="badge badge-pill badge-light p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'incomplete' ))->count() }}</span></td>
+                            <td><span class="badge badge-pill badge-success p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'complete' ))->count() }}</span></td>
+                            <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'resumable' ))->count() }}</span></td>
+                            <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'not_required' ))->count() }}</span></td>
+                        </tr>
+                        <tr class="collapse row-G2">
+                            <td colspan="7">
+                               <table class="table table-hover" style="width: 100%">
+                                    <thead class="table-info">
+                                        <th>Modality Name</th>
+                                        <th>Total Initiated</th>
+                                        <th>Total Complete</th>
+                                        <th>Total Editing</th>
+                                        <th>Total Not Required</th>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($modalities as $key => $value)
+                                        <tr>
+                                            <td>{{ $value->modility_abbreviation }}</td>
+                                            <td><span class="badge badge-pill badge-light p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'incomplete','modility_id' => $value->id ))->count() }}</span></td>
+                                            <td><span class="badge badge-pill badge-success p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'complete','modility_id' => $value->id ))->count() }}</span></td>
+                                            <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'resumable','modility_id'  => $value->id ))->count() }}</span></td>
+                                            <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'not_required','modility_id'  => $value->id ))->count() }}</span></td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </td>
                         </tr>
                         <tr>
+                            <td>
+                              <div class="btn-group btn-group-sm" role="group">
+                                <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-Adj" style="font-size: 20px; color: #1e3d73;"></i>
+                              </div>
+                            </td>
                             <td>Adjudication</td>
-                            <td><span class="badge badge-pill badge-dark p-2 mb-1">1</span></td>
                             <td><span class="badge badge-pill badge-light p-2 mb-1">2</span></td>
-                            <td><span class="badge badge-pill badge-warning p-2 mb-1">3</span></td>
                             <td><span class="badge badge-pill badge-success p-2 mb-1">4</span></td>
+                            <td><span class="badge badge-pill badge-warning p-2 mb-1">3</span></td>
                             <td><span class="badge badge-pill badge-danger p-2 mb-1">5</span></td>
+                        </tr>
+                        <tr class="collapse row-Adj">
+                            <td colspan="7">
+                               <table class="table table-hover" style="width: 100%">
+                                    <thead class="table-info">
+                                        <th>Modality Name</th>
+                                        <th>Total Initiated</th>
+                                        <th>Total Complete</th>
+                                        <th>Total Editing</th>
+                                        <th>Total Not Required</th>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($modalities as $key => $value)
+                                        <tr>
+                                            <td>{{ $value->modility_abbreviation }}</td>
+                                            <td><span class="badge badge-pill badge-light p-2 mb-1">1</span></td>
+                                            <td><span class="badge badge-pill badge-success p-2 mb-1">3</span></td>
+                                            <td><span class="badge badge-pill badge-warning p-2 mb-1">3</span></td>
+                                            <td><span class="badge badge-pill badge-danger p-2 mb-1">3</span></td>
+                                        </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+    </div>
     </div>
 </div>
     <!-- END: Card DATA-->
@@ -94,6 +282,9 @@
 <style type="text/css">
     .badge{
         line-height: 0.4 !important;
+    }
+    .detail-icon{
+        cursor: pointer;
     }
 </style>
 <link rel="stylesheet"  href="{{ asset('public/dist/vendors/chartjs/Chart.min.css') }}">
@@ -106,6 +297,11 @@
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-2.0.3.css') }}">
 @stop
 @section('script')
+<script type="text/javascript">
+    $('.detail-icon').click(function(e){
+        $(this).toggleClass("fa-chevron-circle-right fa-chevron-circle-down");
+    });
+</script>
 <script src="{{ asset('public/dist/vendors/raphael/raphael.min.js') }}"></script>
 <script src="{{ asset('public/dist/vendors/morris/morris.min.js') }}"></script>
 <script src="{{ asset('public/dist/vendors/chartjs/Chart.min.js') }}"></script>
