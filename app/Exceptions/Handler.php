@@ -62,6 +62,7 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         if (config('app.env') == 'local') {
+
             return parent::render($request, $exception);
         }
 
@@ -72,12 +73,12 @@ class Handler extends ExceptionHandler
         }
 
         if ($exception instanceof NotFoundHttpException) { // no url found exception
-            return response()->view('errors.404');
+            return response()->view('errors.error404');
         }
 
         if ($exception instanceof \PDOException) { //query exception
             // send your custom error message here
-            return response()->view('errors.404');
+            return response()->view('errors.error404');
         }
 
         if ($exception instanceof TokenMismatchException) { //form token mismatch exception
@@ -87,27 +88,27 @@ class Handler extends ExceptionHandler
 
         if ($exception instanceof \ErrorException) { // php errors exception
             // send your custom error message here
-            return response()->view('errors.404');
+            return response()->view('errors.error404');
         }
 
         if ($exception instanceof \BadMethodCallException) { // call undefined function exception
             // send your custom error message here
-            return response()->view('errors.404');
+            return response()->view('errors.error404');
         }
 
         if ($exception instanceof \NotReadableException) { // Image invertion  error handling
             // send your custom error message here
-            return response()->view('errors.404');
+            return response()->view('errors.error404');
         }
 
         if ($exception instanceof \Swift_TransportException) { // Swift mailer error handling
             // send your custom error message here
-            return response()->view('errors.404');
+            return response()->view('errors.error404');
         }
 
         if ($exception instanceof \Illuminate\Contracts\Encryption\DecryptException) { // encryption payload error handling
             // send your custom error message here
-            return response()->view('errors.404');
+            return response()->view('errors.error404');
         }
 
         return parent::render($request, $exception);
