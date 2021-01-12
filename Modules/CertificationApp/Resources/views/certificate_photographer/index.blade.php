@@ -270,7 +270,7 @@
                                 </tbody>
                             </table>
                             
-                            {{ $getTransmissions->appends(['trans_id' => \Request::get('trans_id'), 'study' => \Request::get('study'), 'photographer_name' => \Request::get('photographer_name'), 'certification' => \Request::get('certification'), 'site' => \Request::get('site'), 'status' => \Request::get('status'),])->links() }}
+                            {{ $getTransmissions->appends(['trans_id' => \Request::get('trans_id'), 'study' => \Request::get('study'), 'photographer_name' => \Request::get('photographer_name'), 'certification' => \Request::get('certification'), 'site' => \Request::get('site'), 'status' => \Request::get('status')])->links() }}
 
                         </div>
                     </div>

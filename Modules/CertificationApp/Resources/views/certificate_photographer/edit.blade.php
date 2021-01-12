@@ -157,7 +157,7 @@
                                         <option value="">Select Site</option>
                                         <option value="add_new">Add New</option>
                                         @foreach($getSites as $site)
-                                        <option @if($site->site_code == $findTransmission->Site_ID) selected @endif value="{{$site->id.'/'.$site->site_code}}">{{$site->site_code.' - '.$site->site_name}}</option>
+                                        <option @if($site->site_code == $findTransmission->Site_ID) selected @endif value="{{$site->id.'__/__'.$site->site_code}}">{{$site->site_code.' - '.$site->site_name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -256,7 +256,7 @@
                                     <select name="Requested_certification" id="Requested_certification" class="form-control required-data" required>
                                         <option value="">Select Modality</option>
                                         @foreach($getModalities as $modality)
-                                        <option @if($modality->modility_name == $findTransmission->Requested_certification) selected @endif value="{{$modality->id.'/'.$modality->modility_name}}">{{$modality->modility_name}}</option>
+                                        <option @if($modality->modility_name == $findTransmission->Requested_certification) selected @endif value="{{$modality->id.'__/__'.$modality->modility_name}}">{{$modality->modility_name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
