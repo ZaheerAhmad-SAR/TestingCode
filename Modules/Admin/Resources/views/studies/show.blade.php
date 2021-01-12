@@ -22,7 +22,7 @@
             <div class="card-body">
                 <form action="{{route('studies.show',session('current_study'))}}" method="get" class="filter-form">
                     @csrf
-                     <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ getOldValue($old_values,'sort_by_field') }}">
+                    <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ getOldValue($old_values,'sort_by_field') }}">
                     <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ getOldValue($old_values,'sort_by_field_name') }}">
                     <div class="form-row" style="padding: 10px;">
                         <div class="form-group col-md-4">

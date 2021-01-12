@@ -204,7 +204,7 @@
                                     <select name="d_site_id" id="d_site_id" class="form-control remove-readonly" disabled="" required="required">
                                         <option value="">Select Site</option>
                                         @foreach($getSites as $site)
-                                        <option @if($site->site_code == $findTransmission->Site_ID) selected @endif value="{{$site->id.'/'.$site->site_code}}">{{$site->site_code}}</option>
+                                        <option @if($site->site_code == $findTransmission->Site_ID) selected @endif value="{{$site->id.'__/__'.$site->site_code}}">{{$site->site_code}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -301,7 +301,7 @@
                                         <option value="">Select Subject</option>
                                         <option @if ($findTransmission->new_subject == 1) selected @endif value="1">New Subject</option>
                                         @foreach($getSubjects as $subject)
-                                        <option @if($subject->subject_id == $findTransmission->Subject_ID) selected @endif value="{{$subject->id.'/'.$subject->subject_id}}">{{$subject->subject_id}}</option>
+                                        <option @if($subject->subject_id == $findTransmission->Subject_ID) selected @endif value="{{$subject->id.'__/__'.$subject->subject_id}}">{{$subject->subject_id}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -326,7 +326,7 @@
                                     <select name="d_visit_name" id="d_visit_name" class="form-control remove-readonly" disabled="" required="required">
                                         <option value="">Select Visit</option>
                                         @foreach($getPhases as $phase)
-                                        <option @if($phase->name == $findTransmission->visit_name) selected @endif value="{{$phase->id.'/'.$phase->name}}">{{$phase->name}}</option>
+                                        <option @if($phase->name == $findTransmission->visit_name) selected @endif value="{{$phase->id.'__/__'.$phase->name}}">{{$phase->name}}</option>
                                         @endforeach
                                     </select>
 
@@ -353,7 +353,7 @@
                                     <select name="d_image_modality" id="d_image_modality" class="form-control remove-readonly" disabled="" required="required">
                                         <option value="">Select Modality</option>
                                         @foreach($getModalities as $modality)
-                                        <option @if($modality->modility_name == $findTransmission->ImageModality) selected @endif value="{{$modality->id.'/'.$modality->modility_name}}">{{$modality->modility_name}}</option>
+                                        <option @if($modality->modility_name == $findTransmission->ImageModality) selected @endif value="{{$modality->id.'__/__'.$modality->modility_name}}">{{$modality->modility_name}}</option>
                                         @endforeach
                                     </select>
                                 </div>

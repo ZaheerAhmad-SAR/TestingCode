@@ -96,7 +96,7 @@
                                 <label for="imagine_modality">Imagine Modality</label>
                                 <input type="text" name="imagine_modality" id="imagine_modality" class="form-control filter-form-data" value="{{ request()->imagine_modality }}" placeholder="Imagine Modality">
                             </div>
-
+                            {{--
                              <div class="form-group col-md-2">
                                 <label for="inputState"> Modality </label>
                                 <select id="modility_id" name="modility_id" class="form-control filter-form-data">
@@ -106,8 +106,9 @@
                                     @endforeach
                                 </select>
                             </div>
+                            --}}
 
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-3">
                                 <label for="inputState"> Processed Status</label>
                                 <select id="is_read" name="is_read" class="form-control filter-form-data">
                                     <option value="">All Processed Status</option>
@@ -128,7 +129,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-2 mt-4">
+                            <div class="form-group col-md-3 mt-4">
                                 <button type="button" class="btn btn-primary reset-filter">Reset</button>
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Record</button>
                             </div>
@@ -235,7 +236,8 @@
                                     @endif
                                 </tbody>
                             </table>
-                             {{ $getTransmissions->links() }}
+
+                            {{ $getTransmissions->appends(['trans_id' => \Request::get('trans_id'), 'subject_id' => \Request::get('subject_id'), 'visit_name' => \Request::get('visit_name'), 'visit_date' => \Request::get('visit_date'), 'imagine_modality' => \Request::get('imagine_modality'), 'is_read' => \Request::get('is_read'), 'status' => \Request::get('status') ])->links() }}
 
                         </div>
                     </div>

@@ -56,6 +56,7 @@ class QueriesController extends Controller
 
     public function usersDropDownListQuestion(Request $request)
     {
+
         $studyusers =  UserRole::select('users.*','user_roles.study_id','roles.role_type', 'roles.name as role_name','study_role_users.study_id','study_role_users.user_id')
             ->join('users','users.id','=','user_roles.user_id')
             ->join('roles','roles.id','=','user_roles.role_id')

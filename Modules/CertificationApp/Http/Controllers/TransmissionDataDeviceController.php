@@ -275,7 +275,7 @@ class TransmissionDataDeviceController extends Controller
         // get site id
         if ($request->Site_ID != "" && $request->Site_ID != "add_new") {
 
-            $siteID = explode('/', $request->Site_ID);
+            $siteID = explode('__/__', $request->Site_ID);
             $findTransmission->transmission_site_id = $siteID[0];
             $findTransmission->Site_ID = $siteID[1];
 
@@ -287,7 +287,7 @@ class TransmissionDataDeviceController extends Controller
         // get dvice id
         if ($request->Device_Model != "" && $request->Device_Model != "add_new") {
 
-            $modelID = explode('//', $request->Device_Model);
+            $modelID = explode('__/__', $request->Device_Model);
             $findTransmission->transmission_device_id = $modelID[0];
             $findTransmission->Device_Model = $modelID[1];
 
@@ -299,7 +299,7 @@ class TransmissionDataDeviceController extends Controller
         // get modality name and madality_id
         if ($request->Requested_certification != "") {
 
-            $modilityName = explode('/', $request->Requested_certification);
+            $modilityName = explode('__/__', $request->Requested_certification);
             $findTransmission->transmission_modility_id = $modilityName[0];
             $findTransmission->Requested_certification = $modilityName[1];
         }
@@ -824,6 +824,9 @@ class TransmissionDataDeviceController extends Controller
             ->leftjoin('sites', 'sites.id', 'certification_data.site_id')
             ->leftjoin('users', 'users.id', '=', 'certification_data.certification_officer_id')
             ->where('certification_data.transmission_type', 'device_transmission');
+            // ->whereNULL('photographers.deleted_at')
+            // ->whereNULL('sites.deleted_at')
+            // ->whereNULL('users.deleted_at');
 
             if ($request->certify_id != '') {
 
