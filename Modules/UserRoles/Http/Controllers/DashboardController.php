@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\UserRoles\Entities\RolePermission;
+use Modules\Admin\Entities\Modility;
 
 class DashboardController extends Controller
 {
@@ -21,7 +22,8 @@ class DashboardController extends Controller
     {
         // session(['current_study'=>'','study_short_name'=> '']);
         // $study = '';
-        return view('userroles::dashboard');
+        $modalities = Modility::all();
+        return view('userroles::dashboard',compact('modalities'));
     }
 
     /**
