@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Modules\Queries\Entities\AppNotification;
 use Modules\Queries\Entities\Query;
 use Modules\Admin\Entities\Study;
 use Modules\Queries\Entities\QueryUser;
@@ -317,6 +318,12 @@ class QueriesController extends Controller
                     'user_id' => $user,
                     'query_id' => $id
                 ]);
+                AppNotification::create([
+                    'id' => Str::uuid(),
+                    'user_id' => $user,
+                    'query_id' => $id
+
+                ]);
             }
         }
         if ($queryAssignedTo == 'role')
@@ -328,8 +335,15 @@ class QueriesController extends Controller
                     'roles_id' => $role,
                     'query_id' => $id
                 ]);
+                AppNotification::create([
+                    'id' => Str::uuid(),
+                    'role_id'=>$role,
+                    'query_id' => $id
+                ]);
             }
         }
+
+
         return response()->json([$query,'success'=>'Queries is generate successfully!!!!']);
 
     }
@@ -397,6 +411,12 @@ class QueriesController extends Controller
                     'user_id' => $user,
                     'query_id' => $id
                 ]);
+
+                AppNotification::create([
+                    'id' => Str::uuid(),
+                    'query_id' => $id,
+                    'user_id'=>$user
+                ]);
             }
         }
         if ($queryAssignedTo == 'role')
@@ -408,8 +428,17 @@ class QueriesController extends Controller
                     'roles_id' => $role,
                     'query_id' => $id
                 ]);
+                AppNotification::create([
+                    'id' => Str::uuid(),
+                    'role_id'=>$role,
+                    'query_id' => $id,
+                ]);
             }
+
         }
+
+
+
         return response()->json([$query,'success'=>'Queries is generate successfully!!!!']);
 
     }
@@ -477,6 +506,11 @@ class QueriesController extends Controller
                     'user_id' => $user,
                     'query_id' => $id
                 ]);
+                AppNotification::create([
+                    'id' => Str::uuid(),
+                    'query_id' => $id,
+                    'user_id'=>$user
+                ]);
             }
         }
         if ($queryAssignedTo == 'role')
@@ -487,6 +521,12 @@ class QueriesController extends Controller
                     'id' => (string)Str::uuid(),
                     'roles_id' => $role,
                     'query_id' => $id
+                ]);
+
+                AppNotification::create([
+                    'id' => Str::uuid(),
+                    'query_id' => $id,
+                    'role_id'=>$role
                 ]);
             }
         }
