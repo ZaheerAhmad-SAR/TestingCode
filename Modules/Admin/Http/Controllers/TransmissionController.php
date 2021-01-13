@@ -93,8 +93,9 @@ class TransmissionController extends Controller
             $getTransmissions = $getTransmissions->where('status', $request->status);
         }
         if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            
             $getTransmissions = $getTransmissions->orderBy($request->sort_by_field_name , $request->sort_by_field);
-        }else{
+        } else {
             $getTransmissions = $getTransmissions->orderBy('id', 'desc');
         }
         $getTransmissions = $getTransmissions->paginate(50);

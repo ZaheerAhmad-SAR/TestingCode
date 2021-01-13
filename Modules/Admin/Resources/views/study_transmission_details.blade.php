@@ -236,7 +236,8 @@
                                     @endif
                                 </tbody>
                             </table>
-                             {{ $getTransmissions->links() }}
+
+                            {{ $getTransmissions->appends(['trans_id' => \Request::get('trans_id'), 'subject_id' => \Request::get('subject_id'), 'visit_name' => \Request::get('visit_name'), 'visit_date' => \Request::get('visit_date'), 'imagine_modality' => \Request::get('imagine_modality'), 'is_read' => \Request::get('is_read'), 'status' => \Request::get('status') ])->links() }}
 
                         </div>
                     </div>
