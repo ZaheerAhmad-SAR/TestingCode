@@ -1275,19 +1275,22 @@ function arrayFilter($array)
 
 function TagReleasenumber()
 {
-    //return 'Fix OCAP Version Issue';
     
-    $HEAD_hash = file_get_contents('.git/refs/heads/Laravel_7'); // or branch x
+   $HEAD_hash = file_get_contents('./.git/refs/heads/Laravel_7'); // or any branch
+   
 
-    $files = glob('.git/refs/tags/*');
-    foreach (array_reverse($files) as $file) {
-        $contents = file_get_contents($file);
+$files = glob('./.git/refs/tags/*');
+foreach(array_reverse($files) as $file) {
+    $contents = file_get_contents($file);
 
-        if ($HEAD_hash === $contents) {
-            return basename($file);
-            exit;
-        }
+    if($HEAD_hash === $contents)
+    {
+        return  basename($file);
+        exit;
     }
+}
+
+return 'No matching tag';
     
 }
 function getOldValue($oldValues, $val)
