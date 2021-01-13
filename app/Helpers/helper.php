@@ -1275,9 +1275,9 @@ function arrayFilter($array)
 
 function TagReleasenumber()
 {
-    //return 'Fix OCAP Version Issue';
+    //return 'Fix OCAP Version Issue fixed';
     
-    $HEAD_hash = file_get_contents('.git/refs/heads/Laravel_7'); // or branch x
+    $HEAD_hash = file_get_contents('.git/refs/tags/Laravel_7'); // or branch x
 
     $files = glob('.git/refs/tags/*');
     foreach (array_reverse($files) as $file) {
@@ -1288,6 +1288,13 @@ function TagReleasenumber()
             exit;
         }
     }
+    // $commitHash = trim(exec('git log --pretty="%h" -n1 HEAD'));
+
+    //     $commitDate = new \DateTime(trim(exec('git log -n1 --pretty=%ci HEAD')));
+
+    //     $commitDate->setTimezone(new \DateTimeZone('UTC'));
+  
+    //     dd() sprintf('v%s.%s.%s-dev.%s (%s)', self::MAJOR, self::MINOR, self::PATCH, $commitHash, $commitDate->format('Y'));
     
 }
 function getOldValue($oldValues, $val)
