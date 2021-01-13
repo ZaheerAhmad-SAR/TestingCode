@@ -129,8 +129,9 @@
                                     <input id="user_signature" type="file"  name="user_signature" style="padding-left: 3px">
                                 </div>
                                 
-                            </div>
- -->                        <div class="row">
+                            </div>-->                        
+                            @if(hasPermission(auth()->user(),'systemtools.index'))
+                            <div class="row">
 
                                 <div class="col-md-2">
                                     <label for="C-Password">Signature</label>
@@ -148,7 +149,8 @@
                                 <!-- col ends -->
                             </div>
                             <!-- row ends -->
-                                
+                            @endif 
+                              
                         </div>
                         <div class="modal-footer">
                             @if(hasPermission(auth()->user(),'users.store'))
