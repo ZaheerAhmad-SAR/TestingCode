@@ -59,6 +59,7 @@
 
                                 @php $userQueries =  \Modules\Queries\Entities\QueryUser::where('user_id','=', auth()->user()->id)->get(); @endphp
 
+                                @if(!empty($userQueries))
                                 @foreach($userQueries as $str)
                                     @php
                                         $personName ='';
@@ -77,7 +78,8 @@
                                     </a>
                                 </li>
                                 @endforeach
-                                <li><a class="dropdown-item text-center py-2" href="javascript:void(0)"> Read All Message <i class="icon-arrow-right pl-2 small"></i></a></li>
+                                @endif
+{{--                                <li><a class="dropdown-item text-center py-2" href="javascript:void(0)"> Read All Message <i class="icon-arrow-right pl-2 small"></i></a></li>--}}
 
                             </ul>
                         </li>
