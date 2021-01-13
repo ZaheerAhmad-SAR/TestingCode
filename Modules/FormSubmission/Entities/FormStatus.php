@@ -89,6 +89,7 @@ class FormStatus extends Model
         $numberOfGraders = ($numGraders != 0) ? $numGraders : $step->graders_number;
         $formStatusObjects = self::getFormStatusObjArray($getFormStatusArray);
         $extraNeededObjects = $numberOfGraders - count($formStatusObjects);
+
         for ($counter = 0; $counter < $extraNeededObjects; $counter++) {
             $formStatusObjects[] = new FormStatus();
         }
