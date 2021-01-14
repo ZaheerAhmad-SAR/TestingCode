@@ -89,6 +89,7 @@ class FormStatus extends Model
         $numberOfGraders = ($numGraders != 0) ? $numGraders : $step->graders_number;
         $formStatusObjects = self::getFormStatusObjArray($getFormStatusArray);
         $extraNeededObjects = $numberOfGraders - count($formStatusObjects);
+
         for ($counter = 0; $counter < $extraNeededObjects; $counter++) {
             $formStatusObjects[] = new FormStatus();
         }
@@ -140,10 +141,18 @@ class FormStatus extends Model
 
     public static function makeFormStatusSpan($step, $formStatusObj)
     {
+        
         $info = '';
         $formStatus = $formStatusObj->form_status;
         if ($formStatus != 'no_status') {
-            $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="' . $formStatusObj->user->name . '"';
+            if($formStatusObj->user) {
+                
+                $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="' . $formStatusObj->user->name . '"';
+
+            } else {
+
+                $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="Done By Deleted User"';
+            }
         }
 
         $imgSpanStepClsStr = buildSafeStr($step->step_id, 'img_step_status_');

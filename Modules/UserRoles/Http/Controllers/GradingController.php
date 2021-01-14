@@ -341,7 +341,11 @@ class GradingController extends Controller
             ->rightJoin('subjects_phases', 'subjects_phases.subject_id', '=', 'subjects.id')
             ->leftJoin('study_structures', 'study_structures.id', '=', 'subjects_phases.phase_id')
             ->leftJoin('sites', 'sites.id', 'subjects.site_id')
-            ->where('subjects.study_id', \Session::get('current_study'));
+            ->where('subjects.study_id', \Session::get('current_study'))
+            ->whereNULL('subjects_phases.deleted_at')
+            ->whereNULL('study_structures.deleted_at')
+            ->whereNULL('sites.deleted_at')
+            ->whereNULL('subjects.deleted_at');
         //->leftJoin('form_submit_status', 'form_submit_status.subject_id', 'subjects.id');
 
         if ($request->subject != '') {
@@ -377,6 +381,8 @@ class GradingController extends Controller
         // get modalities
         $getModilities = PhaseSteps::select('phase_steps.step_id', 'phase_steps.step_name', 'modilities.id as modility_id', 'modilities.modility_name')
             ->leftJoin('modilities', 'modilities.id', '=', 'phase_steps.modility_id')
+            //->whereNULL('phase_steps.deleted_at')
+            ->whereNULL('modilities.deleted_at')
             ->groupBy('phase_steps.modility_id')
             ->orderBy('modilities.modility_name')
             ->get();
@@ -387,6 +393,8 @@ class GradingController extends Controller
 
             $getSteps = PhaseSteps::select('phase_steps.step_id', 'phase_steps.step_name', 'phase_steps.modility_id', 'form_types.id as form_type_id', 'form_types.form_type')
                 ->leftJoin('form_types', 'form_types.id', '=', 'phase_steps.form_type_id')
+                //->whereNULL('phase_steps.deleted_at')
+                ->whereNULL('form_types.deleted_at')
                 ->where('modility_id', $modility->modility_id)
                 ->orderBy('form_types.sort_order')
                 ->groupBy('phase_steps.form_type_id')
@@ -506,6 +514,8 @@ class GradingController extends Controller
         $getModilities = PhaseSteps::select('modilities.id', 'modilities.modility_name')
             ->leftJoin('study_structures', 'study_structures.id', '=', 'phase_steps.phase_id')
             ->leftJoin('modilities', 'modilities.id', '=', 'phase_steps.modility_id')
+            ->whereNULL('modilities.deleted_at')
+            ->whereNULL('study_structures.deleted_at')
             ->where('study_structures.study_id', \Session::get('current_study'))
             ->groupBy('phase_steps.modility_id')
             ->orderBy('modilities.modility_name')
@@ -516,6 +526,8 @@ class GradingController extends Controller
             ->leftJoin('study_structures', 'study_structures.id', '=', 'phase_steps.phase_id')
             ->leftJoin('form_types', 'form_types.id', '=', 'phase_steps.form_type_id')
             ->where('study_structures.study_id', \Session::get('current_study'))
+            ->whereNULL('form_types.deleted_at')
+            ->whereNULL('study_structures.deleted_at')
             ->groupBy('phase_steps.form_type_id')
             ->orderBy('form_types.sort_order')
             ->get();
