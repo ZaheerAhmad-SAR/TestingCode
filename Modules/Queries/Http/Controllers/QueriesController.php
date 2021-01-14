@@ -645,10 +645,23 @@ class QueriesController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        if ($request->ajax())
+        {
+            $studyIDOfCurrentNotification = $request->post('studyIDOfCurrentNotification');
+            $currentNotificationID        = $request->post('currentNotificationId');
+            $study = Study::where('id',$studyIDOfCurrentNotification)->first();
+            session([ 'current_study' => $study->study_short_name]);
+            $isRead    = array('is_read'=>'yes');
+            $is_active = array('is_active'=>'yes');
+             AppNotification::where('query_id',$currentNotificationID)->update($isRead);
+             Query::where('id',$currentNotificationID)->update($is_active);
+            return response()->json(['success'=>'Queries is updated successfully!!!!']);
+        }
     }
+
+
 
     /**
      * Remove the specified resource from storage.

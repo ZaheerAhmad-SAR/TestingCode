@@ -41,6 +41,7 @@
                                 @endif
                         </span>
                         </li>
+                        @if(session('current_study'))
                         <li class="dropdown align-self-center d-inline-block">
                             <a href="#" class="nav-link" data-toggle="dropdown" aria-expanded="false">
                                 <i class="icon-bell h4"></i>
@@ -48,7 +49,7 @@
 {{--                                </span><span class="ring-point">--}}
 {{--                                </span> </span>--}}
 
-                                @php $count =  \Modules\Queries\Entities\QueryUser::where('user_id','=', auth()->user()->id)->count(); @endphp
+                                @php $count =  \Modules\Queries\Entities\AppNotification::where('user_id','=', auth()->user()->id)->where('is_read','no')->count(); @endphp
 
                                 @if($count > 0)
                                     <span class="badge badge-pill badge-danger" style="height: 20px;top: 12px;"> {{$count}}</span>
@@ -57,21 +58,34 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right border   py-0">
 
-                                @php $userQueries =  \Modules\Queries\Entities\QueryUser::where('user_id','=', auth()->user()->id)->get(); @endphp
+                                @php
+                                    $userQueries =  \Modules\Queries\Entities\AppNotification::where('user_id','=', auth()->user()->id)->where('is_read','no')->get();
+                                @endphp
 
                                 @if(!empty($userQueries))
                                 @foreach($userQueries as $str)
                                     @php
-                                        $personName ='';
-                                        $result      = \Modules\Queries\Entities\Query::where('id','=',$str->query_id)->first();
-                                        $personName  = App\User::where('id',$result->queried_remarked_by_id)->first();
-                                        @endphp
+
+                                    $userData ='';
+
+                                    $result = '';
+                                    $result      = \Modules\Queries\Entities\Query::where('id','=',$str->query_id)->where('query_status','open')->first();
+                                    $userData  = App\User::where('id',$result->queried_remarked_by_id)->first();
+
+                                    @endphp
                                 <li>
-                                    <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0" href="javascript:void(0)">
+
+                                    @php
+                                        $studyName = Modules\Admin\Entities\Study::where('id',$result->study_id)->first();
+                                         //session([ 'current_study' => $studyName->study_short_name]);
+
+                                    @endphp
+                                    <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0 currentNotificationId" data-id="{{$result->study_id}}" href="{{$result->query_url .'?studyid='.$result->study_id }}" target="_blank" data-value="{{$result->id}}">
                                         <div class="media">
                                             <img src="{{asset('dist/images/author.jpg')}}" alt="" class="d-flex mr-3 img-fluid rounded-circle">
                                             <div class="media-body">
-                                                <p data-value="{{$result->id}}" class="mb-0 text-danger" >New Query By {{$personName->name}} </p>
+
+                                                <p class="mb-0 text-primary "> Study:  <b> {{ $studyName->study_short_name}}</b> have new query by <b>{{$userData->name}}</b> </p>
                                                 {{ date_format($result->created_at,'d-M-Y')}}
                                             </div>
                                         </div>
@@ -83,6 +97,10 @@
 
                             </ul>
                         </li>
+                        @endif
+
+
+
                         <li class="d-inline-block align-self-center  d-block d-lg-none">
                             <a href="#" class="nav-link mobilesearch" data-toggle="dropdown" aria-expanded="false"><i class="icon-magnifier h4"></i>
                             </a>
@@ -115,6 +133,38 @@
             </nav>
         </div>
     </div>
+    <script src="{{ asset('public/dist/vendors/jquery/jquery-3.3.1.min.js') }}"></script>
+    <script type="text/javascript">
+
+
+        $('.currentNotificationId').click(function () {
+            var currentNotificationId  = $(this).attr('data-value');
+            var studyIDOfCurrentNotification = $(this).attr('data-id');
+
+            updateNotificationToRead(currentNotificationId,studyIDOfCurrentNotification);
+        });
+
+        function updateNotificationToRead(currentNotificationId,studyIDOfCurrentNotification)
+        {
+            $.ajax({
+                url:"{{route('queries.update')}}",
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'currentNotificationId' :currentNotificationId,
+                    'studyIDOfCurrentNotification' :studyIDOfCurrentNotification,
+                },
+                success: function(response)
+                {
+                      console.log(response);
+                      location.reload();
+                }
+            });
+        }
+
+
+    </script>
     <!-- END: Header-->
     <!-- START: Main Menu-->
     @include('layouts/sidebar_menu')
