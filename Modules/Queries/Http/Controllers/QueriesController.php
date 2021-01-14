@@ -611,12 +611,11 @@ class QueriesController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function show($id)
+    public function show()
     {
 
-        $users    = User::where('id','!=',\auth()->user()->id)->get();
-        $queries  = Query::all();
-        return view('queries::queries.chat',compact('users','queries'));
+        $records = AppNotification::where('user_id','=', auth()->user()->id)->get();
+        return view('queries::notifications.index',compact('records'));
     }
 
     /**
@@ -671,6 +670,13 @@ class QueriesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function appNotification()
+    {
+
+
+        //return view('queries::notifications.index');
     }
 
 }

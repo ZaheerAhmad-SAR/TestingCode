@@ -45,10 +45,6 @@
                         <li class="dropdown align-self-center d-inline-block">
                             <a href="#" class="nav-link" data-toggle="dropdown" aria-expanded="false">
                                 <i class="icon-bell h4"></i>
-{{--                                <span class="badge badge-default"> <span class="ring">--}}
-{{--                                </span><span class="ring-point">--}}
-{{--                                </span> </span>--}}
-
                                 @php $count =  \Modules\Queries\Entities\AppNotification::where('user_id','=', auth()->user()->id)->where('is_read','no')->count(); @endphp
 
                                 @if($count > 0)
@@ -93,7 +89,9 @@
                                 </li>
                                 @endforeach
                                 @endif
-{{--                                <li><a class="dropdown-item text-center py-2" href="javascript:void(0)"> Read All Message <i class="icon-arrow-right pl-2 small"></i></a></li>--}}
+                                @if($count > 1)
+                                <li><a class="dropdown-item text-center py-2" href="{{route('queries.show')}}"> Read All Message <i class="icon-arrow-right pl-2 small"></i></a></li>
+                                @endif
 
                             </ul>
                         </li>

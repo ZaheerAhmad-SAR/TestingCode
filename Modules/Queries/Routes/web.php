@@ -18,6 +18,7 @@
 Route::group(['middleware' => ['auth','web']],function(){
     Route::resource('queries','QueriesController');
     Route::get('queries/chatindex','QueriesController@chatindex')->name('queries.chatindex');
+    Route::post('queries/show','QueriesController@show')->name('queries.show');
     Route::post('queries/loadHtml', 'QueriesController@loadHtml')->name('queries.loadHtml');
     Route::post('queries/update', 'QueriesController@update')->name('queries.update');
     Route::post('queries/usersDropDownListQuestion', 'QueriesController@usersDropDownListQuestion')->name('queries.usersDropDownListQuestion');
