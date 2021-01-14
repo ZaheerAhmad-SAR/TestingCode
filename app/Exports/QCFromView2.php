@@ -32,6 +32,11 @@ class QCFromView2 implements FromView
             ->leftJoin('sites', 'sites.id', '=', 'subjects.site_id')
             ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id')
             ->leftJoin('subjects_phases', 'subjects_phases.phase_id', 'form_submit_status.study_structures_id')
+            ->whereNULL('subjects.deleted_at')
+            ->whereNULL('study_structures.deleted_at')
+            ->whereNULL('sites.deleted_at')
+            ->whereNULL('phase_steps.deleted_at')
+            ->whereNULL('subjects_phases.deleted_at')
             ->where('form_submit_status.form_type_id', 1)
             ->where('form_submit_status.study_id', \Session::get('current_study'))
             ->groupBy(['form_submit_status.subject_id', 'form_submit_status.study_structures_id'])
@@ -43,6 +48,8 @@ class QCFromView2 implements FromView
             $getModilities = $getModilities->select('form_submit_status.modility_id', 'phase_steps.step_id', 'phase_steps.step_name', 'modilities.modility_name')
                 ->leftJoin('modilities', 'modilities.id', '=', 'form_submit_status.modility_id')
                 ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id')
+                ->whereNULL('modilities.deleted_at')
+                ->whereNULL('phase_steps.deleted_at')
                 ->groupBy('form_submit_status.modility_id')
                 ->orderBy('modilities.modility_name')
                 ->get();
@@ -56,6 +63,9 @@ class QCFromView2 implements FromView
                     ->leftJoin('modilities', 'modilities.id', '=', 'form_submit_status.modility_id')
                     ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id')
                     ->leftJoin('form_types', 'form_types.id', '=', 'form_submit_status.form_type_id')
+                    ->whereNULL('modilities.deleted_at')
+                    ->whereNULL('phase_steps.deleted_at')
+                    ->whereNULL('form_types.deleted_at')
                     ->where('form_submit_status.modility_id', $modility->modility_id)
                     ->where('form_submit_status.form_type_id', 1)
                     ->orderBy('form_types.sort_order')
@@ -84,6 +94,8 @@ class QCFromView2 implements FromView
                             ->where('form_type_id', $type['form_type_id'])
                             ->first();
 
+                        //$formStatus[$key . '_' . $type['form_type']] = '';
+
                         if ($step != null) {
 
                             $getFormStatusArray = [
@@ -101,9 +113,10 @@ class QCFromView2 implements FromView
 
                                 $formStatus[$key . '_' . $type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, true);
                             }
-                        } else {
+                        } 
+                        else {
 
-                            $formStatus[$key . '_' . $type['form_type']] = 'NoName-Not Initiated|';
+                            $formStatus[$key . '_' . $type['form_type']] = ' - ';
                         } // step check ends
 
                     } // step lopp ends
