@@ -39,7 +39,7 @@ class FormStatus extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'form_filled_by_user_id', 'id');
+        return $this->belongsTo(User::class, 'form_filled_by_user_id', 'id')->withTrashed();
     }
 
     public function formType()
@@ -89,7 +89,6 @@ class FormStatus extends Model
         $numberOfGraders = ($numGraders != 0) ? $numGraders : $step->graders_number;
         $formStatusObjects = self::getFormStatusObjArray($getFormStatusArray);
         $extraNeededObjects = $numberOfGraders - count($formStatusObjects);
-
         for ($counter = 0; $counter < $extraNeededObjects; $counter++) {
             $formStatusObjects[] = new FormStatus();
         }
@@ -145,14 +144,14 @@ class FormStatus extends Model
         $info = '';
         $formStatus = $formStatusObj->form_status;
         if ($formStatus != 'no_status') {
-            if($formStatusObj->user) {
+            // if($formStatusObj->user) {
                 
                 $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="' . $formStatusObj->user->name . '"';
 
-            } else {
+            // } else {
 
-                $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="Done By Deleted User"';
-            }
+            //     $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="Done By Deleted User"';
+            // }
         }
 
         $imgSpanStepClsStr = buildSafeStr($step->step_id, 'img_step_status_');

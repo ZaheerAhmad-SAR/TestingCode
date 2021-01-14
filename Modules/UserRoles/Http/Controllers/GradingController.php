@@ -344,8 +344,8 @@ class GradingController extends Controller
             ->where('subjects.study_id', \Session::get('current_study'))
             ->whereNULL('subjects_phases.deleted_at')
             ->whereNULL('study_structures.deleted_at')
-            ->whereNULL('sites.deleted_at')
-            ->whereNULL('subjects.deleted_at');
+            ->whereNULL('sites.deleted_at');
+            //->whereNULL('subjects.deleted_at');
         //->leftJoin('form_submit_status', 'form_submit_status.subject_id', 'subjects.id');
 
         if ($request->subject != '') {
@@ -469,6 +469,8 @@ class GradingController extends Controller
                             ->where('form_type_id', $type['form_type_id'])
                             ->first();
 
+                        //$formStatus[$key . '_' . $type['form_type']]['status'] = '';
+
                         if ($step != null) {
 
                             $getFormStatusArray = array(
@@ -485,9 +487,10 @@ class GradingController extends Controller
 
                                 $formStatus[$key . '_' . $type['form_type']]['status'] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
                             }
-                        } else {
+                         } 
+                        else {
 
-                            $formStatus[$key . '_' . $type['form_type']]['status'] = '<img src="' . url('images/no_status.png') . '"/>';
+                            $formStatus[$key . '_' . $type['form_type']]['status'] = '';
                         } // step null check ends
 
                     } // step lopp ends
