@@ -41,7 +41,7 @@
                                 @endif
                         </span>
                         </li>
-
+                        @if(session('current_study'))
                         <li class="dropdown align-self-center d-inline-block">
                             <a href="#" class="nav-link" data-toggle="dropdown" aria-expanded="false">
                                 <i class="icon-bell h4"></i>
@@ -101,9 +101,7 @@
 
                             </ul>
                         </li>
-
-
-
+                        @endif
 
                         <li class="d-inline-block align-self-center  d-block d-lg-none">
                             <a href="#" class="nav-link mobilesearch" data-toggle="dropdown" aria-expanded="false"><i class="icon-magnifier h4"></i>
