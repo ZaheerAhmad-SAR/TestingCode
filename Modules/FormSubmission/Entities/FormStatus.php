@@ -332,4 +332,8 @@ class FormStatus extends Model
             ->pluck('subject_id')
             ->toArray();
     }
+    public function assignwork()
+    {
+        return $this->belongsTo(AssignWork::class, 'modility_id', 'modility_id');
+    }
 }
