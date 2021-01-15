@@ -33,6 +33,7 @@ class QCFromView implements FromView
             ->whereNULL('subjects_phases.deleted_at')
             ->whereNULL('study_structures.deleted_at')
             ->whereNULL('sites.deleted_at')
+            ->groupBy(['subjects.id', 'study_structures.id'])
             ->orderBy('subjects.subject_id')
             ->orderBy('study_structures.position')
             ->get();
