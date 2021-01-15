@@ -611,12 +611,11 @@ class QueriesController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function show($id)
+    public function show()
     {
 
-        $users    = User::where('id','!=',\auth()->user()->id)->get();
-        $queries  = Query::all();
-        return view('queries::queries.chat',compact('users','queries'));
+        $records = AppNotification::where('user_id','=', auth()->user()->id)->get();
+        return view('queries::notifications.index',compact('records'));
     }
 
     /**
@@ -645,10 +644,23 @@ class QueriesController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        if ($request->ajax())
+        {
+            $studyIDOfCurrentNotification = $request->post('studyIDOfCurrentNotification');
+            $currentNotificationID        = $request->post('currentNotificationId');
+            $study = Study::where('id',$studyIDOfCurrentNotification)->first();
+            session([ 'current_study' => $study->study_short_name]);
+            $isRead    = array('is_read'=>'yes');
+            $is_active = array('is_active'=>'yes');
+             AppNotification::where('query_id',$currentNotificationID)->update($isRead);
+             Query::where('id',$currentNotificationID)->update($is_active);
+            return response()->json(['success'=>'Queries is updated successfully!!!!']);
+        }
     }
+
+
 
     /**
      * Remove the specified resource from storage.
@@ -658,6 +670,13 @@ class QueriesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function appNotification()
+    {
+
+
+        //return view('queries::notifications.index');
     }
 
 }
