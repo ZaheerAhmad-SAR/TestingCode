@@ -39,7 +39,7 @@ class FormStatus extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'form_filled_by_user_id', 'id');
+        return $this->belongsTo(User::class, 'form_filled_by_user_id', 'id')->withTrashed();
     }
 
     public function formType()
@@ -140,10 +140,18 @@ class FormStatus extends Model
 
     public static function makeFormStatusSpan($step, $formStatusObj)
     {
+        
         $info = '';
         $formStatus = $formStatusObj->form_status;
         if ($formStatus != 'no_status') {
-            $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="' . $formStatusObj->user->name . '"';
+            // if($formStatusObj->user) {
+                
+                $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="' . $formStatusObj->user->name . '"';
+
+            // } else {
+
+            //     $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="Done By Deleted User"';
+            // }
         }
 
         $imgSpanStepClsStr = buildSafeStr($step->step_id, 'img_step_status_');

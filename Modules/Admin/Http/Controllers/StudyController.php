@@ -162,8 +162,16 @@ class StudyController extends Controller
 
         $id = $request->study_ID;
         $deleteExistingData = $request->deleteExistingData;
+        
+        // get it for other cases
+        $studyDeleteCount = $oldStudy->study_delete_count;
 
-        Study::where('id', $id)->update(['study_status' => $request->status]);
+        // increament study delete count
+        if($request->status == 'Live') {
+            $studyDeleteCount = $oldStudy->study_delete_count + 1;
+        } 
+
+        Study::where('id', $id)->update(['study_status' => $request->status, 'study_delete_count' => $studyDeleteCount]);
 
         if ($deleteExistingData == 'deleteExistingData') {
 
@@ -178,6 +186,9 @@ class StudyController extends Controller
             $phaseIds = StudyStructure::where('study_id', 'like', $id)->pluck('id')->toArray();
             $stepIds = PhaseSteps::whereIn('phase_id', $phaseIds)->pluck('step_id')->toArray();
             FormVersion::whereIn('step_id', $stepIds)->withTrashed()->forceDelete();
+
+            // update transmission status for this study
+            $changeStatus = CrushFtpTransmission::where('StudyI_ID', $oldStudy->study_code)->update(['status' => 'pending']);
 
             /**** For Audit Trail ***/
             $deleteData = 'Yes, delete data.';

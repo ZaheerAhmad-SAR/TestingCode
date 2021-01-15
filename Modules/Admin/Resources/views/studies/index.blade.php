@@ -146,7 +146,7 @@
                                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                         @if(hasPermission(auth()->user(),'systemtools.index'))
                                                             <span class="dropdown-item">
-                                                        <a href="javascript:void(0)" id="change-status" data-target-id="{{$study->id}}" data-toggle="modal" data-target="#change_status">
+                                                        <a href="javascript:void(0)" id="change-status" data-target-id="{{$study->id}}" data-target-studydeletecount="{{$study->study_delete_count}}" data-toggle="modal" data-target="#change_status">
                                                             <i class="icon-action-redo"></i> Change Status
                                                         </a>
                                                     </span>
@@ -531,6 +531,7 @@
                         <input type="hidden" value="" id="deleteExistingData" name="deleteExistingData" value="">
                         @if(!empty($study))
                             <input type="hidden" value="" id="study_ID" name="study_ID">
+                            <input type="hidden" value="" id="study_delete_count" name="study_delete_count">
                         @endif
                         <div class="form-group row">
                             <div class="col-md-3">Status</div>
@@ -641,6 +642,11 @@
             $('#change_status').on('show.bs.modal',function (e) {
                 var id = $(e.relatedTarget).data('target-id');
                 $(this).find('#study_ID').val(id);
+
+                // get delete count
+                var studyDeleteCount = $(e.relatedTarget).data('target-studydeletecount');
+                console.log(studyDeleteCount);
+                $(this).find('#study_delete_count').val(studyDeleteCount);
                 //$('#study_ID').val(id);
             })
         })
@@ -653,7 +659,7 @@
             })
         })
         $(document).ready(function(){
-            $('input[type="checkbox"]').click(function(){
+            $('input[type="checkbox"]').click(function() {
                 var a = Ge
                 if($(this).prop("checked") == true){
                     $("#result").html("Checkbox is checked.");
@@ -959,41 +965,48 @@
 	        });
             function changeStudyStatus() {
                 var studyStatus = $('#studyStatusDD').val();
-                if(studyStatus == 'Live'){
-                    $.confirm({
-                        columnClass: 'col-md-12',
-                        title: 'Put study in LIVE mode!',
-                        content: 'Keep existing data or delete',
-                        buttons: {
-                            deleteExistingData: {
-                                text: 'Delete existing data',
-                                btnClass: 'btn-green',
-                                action: function() {
-                                    $('#deleteExistingData').val('deleteExistingData');
-                                    $('#changeStudyStatusForm').submit();
-                                }
-                            },
-                            doNotdeleteExistingData: {
-                                text: 'Do not delete existing data',
-                                btnClass: 'btn-blue',
-                                action: function() {
-                                    $('#deleteExistingData').val('');
-                                    $('#changeStudyStatusForm').submit();
-                                }
-                            },
-                            cancel: {
-                                text: 'Cancel',
-                                btnClass: 'btn-red',
-                                action: function() {
-                                    $('#deleteExistingData').val('');
+                var StudyDeleteCount = $('#study_delete_count').val();
+                // if it is first time
+                if (StudyDeleteCount == 0) {
+                    if(studyStatus == 'Live') {
+                        $.confirm({
+                            columnClass: 'col-md-12',
+                            title: 'Put study in LIVE mode!',
+                            content: 'Keep existing data or delete',
+                            buttons: {
+                                deleteExistingData: {
+                                    text: 'Delete existing data',
+                                    btnClass: 'btn-green',
+                                    action: function() {
+                                        $('#deleteExistingData').val('deleteExistingData');
+                                        $('#changeStudyStatusForm').submit();
+                                    }
+                                },
+                                doNotdeleteExistingData: {
+                                    text: 'Do not delete existing data',
+                                    btnClass: 'btn-blue',
+                                    action: function() {
+                                        $('#deleteExistingData').val('');
+                                        $('#changeStudyStatusForm').submit();
+                                    }
+                                },
+                                cancel: {
+                                    text: 'Cancel',
+                                    btnClass: 'btn-red',
+                                    action: function() {
+                                        $('#deleteExistingData').val('');
+                                    }
                                 }
                             }
-                        }
-                    });
+                        });
+                    } else {
+                        $('#deleteExistingData').val('');
+                        $('#changeStudyStatusForm').submit();
+                    } // live check ends
                 } else {
                     $('#deleteExistingData').val('');
                     $('#changeStudyStatusForm').submit();
-                }
+                } // delete count check ends
         }
         </script>
 

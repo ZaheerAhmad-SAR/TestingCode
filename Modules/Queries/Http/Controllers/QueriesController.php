@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
+use Modules\Queries\Entities\AppNotification;
 use Modules\Queries\Entities\Query;
 use Modules\Admin\Entities\Study;
 use Modules\Queries\Entities\QueryUser;
@@ -317,6 +318,12 @@ class QueriesController extends Controller
                     'user_id' => $user,
                     'query_id' => $id
                 ]);
+                AppNotification::create([
+                    'id' => Str::uuid(),
+                    'user_id' => $user,
+                    'query_id' => $id
+
+                ]);
             }
         }
         if ($queryAssignedTo == 'role')
@@ -328,8 +335,15 @@ class QueriesController extends Controller
                     'roles_id' => $role,
                     'query_id' => $id
                 ]);
+                AppNotification::create([
+                    'id' => Str::uuid(),
+                    'role_id'=>$role,
+                    'query_id' => $id
+                ]);
             }
         }
+
+
         return response()->json([$query,'success'=>'Queries is generate successfully!!!!']);
 
     }
@@ -397,6 +411,12 @@ class QueriesController extends Controller
                     'user_id' => $user,
                     'query_id' => $id
                 ]);
+
+                AppNotification::create([
+                    'id' => Str::uuid(),
+                    'query_id' => $id,
+                    'user_id'=>$user
+                ]);
             }
         }
         if ($queryAssignedTo == 'role')
@@ -408,8 +428,17 @@ class QueriesController extends Controller
                     'roles_id' => $role,
                     'query_id' => $id
                 ]);
+                AppNotification::create([
+                    'id' => Str::uuid(),
+                    'role_id'=>$role,
+                    'query_id' => $id,
+                ]);
             }
+
         }
+
+
+
         return response()->json([$query,'success'=>'Queries is generate successfully!!!!']);
 
     }
@@ -477,6 +506,11 @@ class QueriesController extends Controller
                     'user_id' => $user,
                     'query_id' => $id
                 ]);
+                AppNotification::create([
+                    'id' => Str::uuid(),
+                    'query_id' => $id,
+                    'user_id'=>$user
+                ]);
             }
         }
         if ($queryAssignedTo == 'role')
@@ -487,6 +521,12 @@ class QueriesController extends Controller
                     'id' => (string)Str::uuid(),
                     'roles_id' => $role,
                     'query_id' => $id
+                ]);
+
+                AppNotification::create([
+                    'id' => Str::uuid(),
+                    'query_id' => $id,
+                    'role_id'=>$role
                 ]);
             }
         }
@@ -571,12 +611,11 @@ class QueriesController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function show($id)
+    public function show()
     {
 
-        $users    = User::where('id','!=',\auth()->user()->id)->get();
-        $queries  = Query::all();
-        return view('queries::queries.chat',compact('users','queries'));
+        $records = AppNotification::where('user_id','=', auth()->user()->id)->get();
+        return view('queries::notifications.index',compact('records'));
     }
 
     /**
@@ -605,10 +644,23 @@ class QueriesController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        if ($request->ajax())
+        {
+            $studyIDOfCurrentNotification = $request->post('studyIDOfCurrentNotification');
+            $currentNotificationID        = $request->post('currentNotificationId');
+            $study = Study::where('id',$studyIDOfCurrentNotification)->first();
+            session([ 'current_study' => $study->study_short_name]);
+            $isRead    = array('is_read'=>'yes');
+            $is_active = array('is_active'=>'yes');
+             AppNotification::where('query_id',$currentNotificationID)->update($isRead);
+             Query::where('id',$currentNotificationID)->update($is_active);
+            return response()->json(['success'=>'Queries is updated successfully!!!!']);
+        }
     }
+
+
 
     /**
      * Remove the specified resource from storage.
@@ -618,6 +670,13 @@ class QueriesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function appNotification()
+    {
+
+
+        //return view('queries::notifications.index');
     }
 
 }

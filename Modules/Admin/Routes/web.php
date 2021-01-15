@@ -134,6 +134,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('studySite/removeAssignedSites', 'StudySiteController@removeAssignedSites')->name('studySite.removeAssignedSites');
 });
 Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
+    
     Route::resource('studies', 'StudyController');
     Route::resource('sites', 'SiteController');
     Route::post('sites/update', 'SiteController@update')->name('sites.updateSites');
