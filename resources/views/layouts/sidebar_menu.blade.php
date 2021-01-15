@@ -391,14 +391,7 @@
                 @if(session('current_study'))
                     <li class="dropdown">
                         <ul>
-                            <li class="dropdown"><a href="#"><i class="fab fa-rocketchat"></i>Queries <sup><span class="badge badge-pill badge-danger p-2 mb-1">{{ Modules\Queries\Entities\Query::where(array('query_status' => 'open','queried_remarked_by_id' => auth()->user()->id ))->count() }}</span></sup></a>
-                                <ul class="sub-menu">
-                                    <li>
-                                        <a href="{{route('queries.index')}}">
-                                            Overall Data 
-                                        </a>
-                                    </li>
-                                </ul>
+                            <li class="nav-item"><a href="{{route('queries.index')}}"><i class="fab fa-rocketchat"></i>Queries <sup><span class="badge badge-pill badge-danger p-2 mb-1">{{ Modules\Queries\Entities\Query::where(array('query_status' => 'open','queried_remarked_by_id' => auth()->user()->id ))->count() }}</span></sup></a>
                             </li>
                         </ul>
                     </li>
