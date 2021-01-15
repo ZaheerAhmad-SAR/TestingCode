@@ -478,8 +478,9 @@ class StudyController extends Controller
     public function update(Request $request)
     {
         // get old data for audit section
-        $study = $oldStudy = Study::find($request->study_id);
+        $oldStudy = Study::where('id', $request->study_id)->first();
 
+        $study = Study::find($request->study_id);
         $study->study_short_name  =  $request->study_short_name;
         $study->study_title = $request->study_title;
         $study->study_status  = 'Development';
@@ -512,7 +513,7 @@ class StudyController extends Controller
         /*************************** */
         /*************************** */
         // Preferences
-        $this->updatePreferences($oldStudy);
+        $this->updatePreferences($study);
         /*************************** */
         /*************************** */
 
