@@ -31,7 +31,8 @@
                         <label for="password" class="col-md-3">Password</label>
                         <input type="password" autocomplete="off" class="form-control col-md-8" required="required" id="password"
                             name="password" {{ $readOnly }}>
-                        <p id="passwordHelpBlock" class="form-text text-muted col-md-12">
+                        <span class="col-md-3"></span>
+                        <p id="passwordHelpBlock" class="form-text text-muted col-md-9">
                             Your password must be 8 characters long, should contain at-least 1 Uppercase, 1
                             Lowercase, 1 Numeric and 1 special character.
                         </p>
