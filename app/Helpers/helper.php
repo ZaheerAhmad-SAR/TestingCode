@@ -136,6 +136,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
         $auditUrl = url('optionsGroup');
         // store data in event array
         $newData = array(
+            'study_short_name' => session('study_short_name'),
             'option_group_name' => $eventData->option_group_name,
             'option_group_description' => $eventData->option_group_description,
             'option_layout' => $eventData->option_layout,
@@ -146,6 +147,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
         if ($eventType == 'Update') {
             // store data in event array
             $oldData = array(
+                'study_short_name' => session('study_short_name'),
                 'option_group_name' => $previousData->option_group_name,
                 'option_group_description' => $previousData->option_group_description,
                 'option_layout' => $previousData->option_layout,
@@ -729,7 +731,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
 
         // store data in event array
         $newData = array(
-            'study_id'    => session('current_study'),
+            'study_short_name'    => session('study_short_name'),
             'step_name'    => $getPhaseName->step_name,
             'name'        =>  $eventData->name,
             'description' =>  $eventData->description,
@@ -744,7 +746,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
             $getOldPhaseName = PhaseSteps::where('step_id', $previousData->phase_steps_id)->first();
 
             $oldData = array(
-                'study_id'    =>  session('current_study'),
+                'study_short_name'    =>  session('study_short_name'),
                 'step_name'   =>  $getOldPhaseName->step_name,
                 'name'        =>  $previousData->name,
                 'description' =>  $previousData->description,
@@ -900,7 +902,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
 
         // store data in event array
         $newData = array(
-            'study_id' => Session::get('current_study'),
+            'study_short_name' => Session::get('study_short_name'),
             'subject_id' => $eventData->subject_id,
             'enrollment_date' => $eventData->enrollment_date,
             'site_name' => $site_study,
@@ -928,7 +930,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
             $old_diseaseCohort = $old_diseaseCohort != null ? $old_diseaseCohort->name : 'N/A';
 
             $oldData = array(
-                'study_id' => $previousData->study_id,
+                'study_short_name' => $previousData->study_short_name,
                 'subject_id' => $previousData->subject_id,
                 'enrollment_date' => $previousData->enrollment_date,
                 'site_name' => $old_site_study,
@@ -969,7 +971,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
 
         // store data in event array
         $newData = array(
-            'study_id' => Session::get('current_study'),
+            'study_short_name' => Session::get('study_short_name'),
             'subject_id' => $eventData->subject_id,
             'enrollment_date' => $eventData->enrollment_date,
             'site_name' => $site_study,

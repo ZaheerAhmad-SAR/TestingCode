@@ -162,14 +162,14 @@ class StudyController extends Controller
 
         $id = $request->study_ID;
         $deleteExistingData = $request->deleteExistingData;
-        
+
         // get it for other cases
         $studyDeleteCount = $oldStudy->study_delete_count;
 
         // increament study delete count
         if($request->status == 'Live') {
             $studyDeleteCount = $oldStudy->study_delete_count + 1;
-        } 
+        }
 
         Study::where('id', $id)->update(['study_status' => $request->status, 'study_delete_count' => $studyDeleteCount]);
 
@@ -379,6 +379,7 @@ class StudyController extends Controller
                 'study_short_name' => $study->study_short_name,
                 'study_code' => $study->study_code
             ]);
+
             $id = $study->id;
 
             $studies  =  UserRole::select('user_roles.*', 'users.*', 'studies.*')
@@ -417,7 +418,7 @@ class StudyController extends Controller
             if(isset($request->sort_by_field) && $request->sort_by_field !=''){
                 $subjects = $subjects->orderBy($field_name , $request->sort_by_field);
             }
-            
+
             $subjects = $subjects->get();
             $site_study = StudySite::where('study_id', '=', $id)
                 ->join('sites', 'sites.id', '=', 'site_study.site_id')
@@ -478,8 +479,9 @@ class StudyController extends Controller
     public function update(Request $request)
     {
         // get old data for audit section
-        $study = $oldStudy = Study::find($request->study_id);
+        $oldStudy = Study::where('id', $request->study_id)->first();
 
+        $study = Study::find($request->study_id);
         $study->study_short_name  =  $request->study_short_name;
         $study->study_title = $request->study_title;
         $study->study_status  = 'Development';
@@ -512,7 +514,7 @@ class StudyController extends Controller
         /*************************** */
         /*************************** */
         // Preferences
-        $this->updatePreferences($oldStudy);
+        $this->updatePreferences($study);
         /*************************** */
         /*************************** */
 

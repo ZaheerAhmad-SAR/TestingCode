@@ -72,16 +72,22 @@
                                 <li>
 
                                     @php
-                                        $studyName = Modules\Admin\Entities\Study::where('id',$result->study_id)->first();
-                                         //session([ 'current_study' => $studyName->study_short_name]);
+                                        $studyData = Modules\Admin\Entities\Study::where('id',$result->study_id)->first();
 
+                                        $redirectArray = array(
+                                            'study_short_name' => $studyData->study_short_name,
+                                            'study_code'=>$studyData->study_code,
+                                            'id'=>$studyData->id,
+                                            'query_url'=>$result->query_url
+
+                                        );
                                     @endphp
-                                    <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0 currentNotificationId" data-id="{{$result->study_id}}" href="{{$result->query_url .'?studyid='.$result->study_id }}" target="_blank" data-value="{{$result->id}}">
+                                    <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0 currentNotificationId appRedirectPage" data-study_code="{{$studyData->study_code}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_id="{{$studyData->id}}" data-query_url="{{$result->query_url}}" data-id="{{$result->study_id}}" href="{{$result->query_url}}" data-value="{{$result->id}}">
                                         <div class="media">
                                             <img src="{{asset('dist/images/author.jpg')}}" alt="" class="d-flex mr-3 img-fluid rounded-circle">
                                             <div class="media-body">
 
-                                                <p class="mb-0 text-primary "> Study:  <b> {{ $studyName->study_short_name}}</b> have new query by <b>{{$userData->name}}</b> </p>
+                                                <p class="mb-0 text-primary "> Study:  <b> {{$studyData->study_short_name}}</b> have new query by <b>{{$userData->name}}</b> </p>
                                                 {{ date_format($result->created_at,'d-M-Y')}}
                                             </div>
                                         </div>
@@ -96,8 +102,6 @@
                             </ul>
                         </li>
                         @endif
-
-
 
                         <li class="d-inline-block align-self-center  d-block d-lg-none">
                             <a href="#" class="nav-link mobilesearch" data-toggle="dropdown" aria-expanded="false"><i class="icon-magnifier h4"></i>
@@ -138,11 +142,46 @@
         $('.currentNotificationId').click(function () {
             var currentNotificationId  = $(this).attr('data-value');
             var studyIDOfCurrentNotification = $(this).attr('data-id');
+            var query_url = $(this).attr('data-query_url');
 
-            updateNotificationToRead(currentNotificationId,studyIDOfCurrentNotification);
+            updateNotificationToRead(currentNotificationId,studyIDOfCurrentNotification,query_url);
         });
 
-        function updateNotificationToRead(currentNotificationId,studyIDOfCurrentNotification)
+        // $('.appRedirectPage').click(function () {
+        //
+        // var query_url = $(this).attr('data-query_url');
+        // var  study_id = $(this).attr('data-study_id');
+        // var  study_short_name = $(this).attr('data-study_short_name');
+        // var  study_code = $(this).attr('data-study_code');
+        // appRedirectGetData(query_url,study_id,study_short_name,study_code);
+        //
+        // });
+
+
+
+
+        {{--function  appRedirectGetData(query_url,study_id,study_short_name,study_code)--}}
+        {{--{--}}
+        {{--    $.ajax({--}}
+        {{--        url:"{{route('queries.redirectTicketToStudy')}}",--}}
+        {{--        type: 'POST',--}}
+        {{--        data: {--}}
+        {{--            "_token": "{{ csrf_token() }}",--}}
+        {{--            "_method": 'POST',--}}
+        {{--            'query_url' :query_url,--}}
+        {{--            'study_id' :study_id,--}}
+        {{--            'study_code' :study_code,--}}
+        {{--            'study_short_name' :study_short_name,--}}
+        {{--        },--}}
+        {{--        success: function(response)--}}
+        {{--        {--}}
+        {{--            console.log(response);--}}
+        {{--            window.location.href = query_url;--}}
+        {{--        }--}}
+        {{--    });--}}
+        {{--}--}}
+
+        function updateNotificationToRead(currentNotificationId,studyIDOfCurrentNotification,query_url)
         {
             $.ajax({
                 url:"{{route('queries.update')}}",
@@ -152,11 +191,13 @@
                     "_method": 'POST',
                     'currentNotificationId' :currentNotificationId,
                     'studyIDOfCurrentNotification' :studyIDOfCurrentNotification,
+                    'query_url' :query_url
+
                 },
                 success: function(response)
                 {
                       console.log(response);
-                      location.reload();
+                      //location.reload();
                 }
             });
         }
