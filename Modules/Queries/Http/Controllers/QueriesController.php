@@ -418,7 +418,8 @@ class QueriesController extends Controller
                 AppNotification::create([
                     'id' => Str::uuid(),
                     'query_id' => $id,
-                    'user_id'=>$user
+                    'user_id'=>$user,
+                    'study_id'=>$study_id
                 ]);
             }
         }
@@ -435,6 +436,7 @@ class QueriesController extends Controller
                     'id' => Str::uuid(),
                     'role_id'=>$role,
                     'query_id' => $id,
+                    'study_id'=>$study_id
                 ]);
             }
 
@@ -512,7 +514,8 @@ class QueriesController extends Controller
                 AppNotification::create([
                     'id' => Str::uuid(),
                     'query_id' => $id,
-                    'user_id'=>$user
+                    'user_id'=>$user,
+                    'study_id'=>$study_id
                 ]);
             }
         }
@@ -529,7 +532,8 @@ class QueriesController extends Controller
                 AppNotification::create([
                     'id' => Str::uuid(),
                     'query_id' => $id,
-                    'role_id'=>$role
+                    'role_id'=>$role,
+                    'study_id'=>$study_id
                 ]);
             }
         }
@@ -663,7 +667,17 @@ class QueriesController extends Controller
         }
     }
 
-
+    public function markAllNotificationToRead()
+    {
+        $records = AppNotification::where('user_id','=', auth()->user()->id)->where('is_read','no')->get();
+        foreach ($records as $record)
+        {
+            //dd($record['user_id']);
+            $isRead    = array('is_read'=>'yes');
+            AppNotification::where('user_id',$record['user_id'])->update($isRead);
+            return response()->json(['success'=>'All Notification is mark to Read successfully!!!!']);
+        }
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -675,64 +689,15 @@ class QueriesController extends Controller
         //
     }
 
-    public function redirectTicketToStudy()
+    public function redirectTicketToStudy(Request $request)
     {
-
-
-        if ( isset($_GET['study_short_name'] ) )
-        {
-            $study_short_name = $_GET['study_short_name'];
-
-        }
-        if ( isset($_GET['study_code'] ) )
-        {
-            $study_code = $_GET['study_code'];
-
-        }
-
-        if ( isset($_GET['id'] ) )
-        {
-            $id= $_GET['id'];
-
-        }
-
-        if ( isset($_GET['query_url'] ) )
-        {
-            $query_url= $_GET['query_url'];
-
-        }
-
-        //dd($study_short_name,$study_code,$id,$query_url);
-
-        $url = $query_url;
-
+        $studyId   = $request->post('study_id');
+        $query_url = $request->post('query_url');
         session([
-            'current_study' => $id,
-            'study_short_name' => $study_short_name,
-            'study_code' => $study_code
+            'current_study' => $studyId
         ]);
+        return response()->json(['success'=>$query_url]);
 
-        if (Session::has('current_study')){
-            //return response()->json(['success'=>'Queries response is successfully save!!!!']);
-            //return \redirect($url);
-            //Redirect::to($url);
-
-//            Session::flash('status','Your message');
-//            return \redirect($url);
-
-            return redirect()->route($url)->with("test","ABC");
-        }
-        else
-        {
-            dd('session not set');
-        }
-
-        //Session::get($id);
-        //dd(session()->all());
-
-        //dd('dfdfdfdfdfdf');
-           //redirect($url);
-        //return response()->json(['success'=>'Queries response is successfully save!!!!']);
     }
 
 }
