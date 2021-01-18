@@ -342,6 +342,6 @@ class FormStatus extends Model
     }
     public function assignwork()
     {
-        return $this->belongsTo(AssignWork::class, 'modility_id', 'modility_id');
+        return $this->belongsTo(AssignWork::class, 'modility_id', 'modility_id')->withDefault();
     }
 }

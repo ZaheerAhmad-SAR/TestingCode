@@ -32,9 +32,9 @@
         @stack('styles')
         <!-- END: Custom CSS-->
         <style>
-            #settingbutton{
+            /*#settingbutton{
                 display: none;
-            }
+            }*/
             .fstselected{
                 font-size: 12px !important;
             }

@@ -301,18 +301,17 @@
                                   </div>
                                 </td>
                                 <td>QC</td>                            
-                                <td><span class="badge badge-pill badge-light p-2 mb-1">{{ get_all_counts_assigned_work_withoutoperator('1','=') }}</span></td>
-                                <td><span class="badge badge-pill badge-success p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('1','=','>=') }}</span></td>
-                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('1','!=','>=') }}</span></td>
-                                <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('1','=','<=') }}</span></td>
+                                <td><span class="badge badge-pill badge-light p-2 mb-1">{{ get_all_counts_assigned_work('1') }}</span></td>
+                                <td><span class="badge badge-pill badge-success p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('1','=','<=') }}</span></td>
                                 <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('1','!=','<=') }}</span></td>
+                                <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('1','=','>') }}</span></td>
+                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('1','!=','>') }}</span></td>
                             </tr>
                             <tr class="collapse row-QC2">
                                 <td colspan="7">
                                    <table class="table table-hover" style="width: 100%">
                                         <thead class="table-info">
                                             <th>Modality Name</th>
-                                            <th>Total Assigned</th>
                                             <th>Complete Within Due Date </th>
                                             <th>Not Complete and Due </th>
                                             <th>Complete After Due Date</th>
@@ -322,11 +321,12 @@
                                             @foreach($modalities as $key => $value)
                                             <tr>
                                                 <td>{{ $value->modility_abbreviation }}</td>
-                                                <td><span class="badge badge-pill badge-light p-2 mb-1">{{ get_all_counts_assigned_work_withoutoperator_modality('1',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-success p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('1','=','>=',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('1','!=','>=',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('1','=','<=',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('1','!=','<=',$value->id) }}</span></td>
+                                                <td><span class="badge badge-pill badge-success p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('1','=','<=',$value->id) }}</span></td>
+                                                {{-- <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoutoperator_modality('1',$value->id) }}</span></td> --}}
+                                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_not_complete_and_due('1',$value->id) }}</span></td>
+                                                
+                                                <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('1','=','>',$value->id) }}</span></td>
+                                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('1','!=','>',$value->id) }}</span></td>
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -336,23 +336,21 @@
                             <tr>
                                 <td style="text-align: left;width:10%">
                                   <div class="btn-group btn-group-sm" role="group">
-                                    <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-eligibility" style="font-size: 20px; color: #1e3d73;"></i>
+                                    <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-eligibility2" style="font-size: 20px; color: #1e3d73;"></i>
                                   </div>
                                 </td>
                                 <td>Eligibility</td>
-                                
-                                <td><span class="badge badge-pill badge-light p-2 mb-1">{{ get_all_counts_assigned_work_withoutoperator('3','=') }}</span></td>
-                                <td><span class="badge badge-pill badge-success p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('3','=','>=') }}</span></td>
-                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('3','!=','>=') }}</span></td>
-                                <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('3','=','<=') }}</span></td>
+                                <td><span class="badge badge-pill badge-light p-2 mb-1">{{ get_all_counts_assigned_work('3') }}</span></td>
+                                <td><span class="badge badge-pill badge-success p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('3','=','<=') }}</span></td>
                                 <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('3','!=','<=') }}</span></td>
+                                <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('3','=','>') }}</span></td>
+                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('3','!=','>') }}</span></td>
                             </tr>
-                            <tr class="collapse row-eligibility">
+                            <tr class="collapse row-eligibility2">
                                 <td colspan="7">
                                    <table class="table table-hover" style="width: 100%">
                                         <thead class="table-info">
                                             <th>Modality Name</th>
-                                            <th>Total Assigned</th>
                                             <th>Complete Within Due Date </th>
                                             <th>Not Complete and Due </th>
                                             <th>Complete After Due Date</th>
@@ -362,11 +360,10 @@
                                             @foreach($modalities as $key => $value)
                                             <tr>
                                                 <td>{{ $value->modility_abbreviation }}</td>
-                                                <td><span class="badge badge-pill badge-light p-2 mb-1">{{ get_all_counts_assigned_work_withoutoperator_modality('3',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-success p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('3','=','>=',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('3','!=','>=',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('3','=','<=',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('3','!=','<=',$value->id) }}</span></td>
+                                                <td><span class="badge badge-pill badge-success p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('3','=','<=',$value->id) }}</span></td>
+                                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoutoperator_modality('3',$value->id) }}</span></td>
+                                                <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('3','=','>',$value->id) }}</span></td>
+                                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('3','!=','>',$value->id) }}</span></td>
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -376,23 +373,21 @@
                             <tr>
                                 <td style="text-align: left;width:10%">
                                   <div class="btn-group btn-group-sm" role="group">
-                                    <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-G1" style="font-size: 20px; color: #1e3d73;"></i>
+                                    <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-grading_assign" style="font-size: 20px; color: #1e3d73;"></i>
                                   </div>
                                 </td>
-                                <td>Grader 1</td>
-                                
-                                <td><span class="badge badge-pill badge-light p-2 mb-1">{{ get_all_counts_assigned_work_withoutoperator('2','=') }}</span></td>
-                                <td><span class="badge badge-pill badge-success p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('2','=','>=') }}</span></td>
-                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('2','!=','>=') }}</span></td>
-                                <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('2','=','<=') }}</span></td>
+                                <td>Grading</td>
+                                <td><span class="badge badge-pill badge-light p-2 mb-1">{{ get_all_counts_assigned_work('2') }}</span></td>
+                                <td><span class="badge badge-pill badge-success p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('2','=','<=') }}</span></td>
                                 <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('2','!=','<=') }}</span></td>
+                                <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('2','=','>') }}</span></td>
+                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('2','!=','>') }}</span></td>
                             </tr>
-                            <tr class="collapse row-G1">
+                            <tr class="collapse row-grading_assign">
                                 <td colspan="7">
                                    <table class="table table-hover" style="width: 100%">
                                         <thead class="table-info">
                                             <th>Modality Name</th>
-                                            <th>Total Assigned</th>
                                             <th>Complete Within Due Date </th>
                                             <th>Not Complete and Due </th>
                                             <th>Complete After Due Date</th>
@@ -402,89 +397,10 @@
                                             @foreach($modalities as $key => $value)
                                             <tr>
                                                 <td>{{ $value->modility_abbreviation }}</td>
-                                                <td><span class="badge badge-pill badge-light p-2 mb-1">{{ get_all_counts_assigned_work_withoutoperator_modality('2',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-success p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('2','=','>=',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('2','!=','>=',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('2','=','<=',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('2','!=','<=',$value->id) }}</span></td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;width:10%">
-                                  <div class="btn-group btn-group-sm" role="group">
-                                    <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-G2" style="font-size: 20px; color: #1e3d73;"></i>
-                                  </div>
-                                </td>
-                                <td>Grader 2</td>
-                                <td><span class="badge badge-pill badge-light p-2 mb-1">{{ get_all_counts_assigned_work_withoutoperator('2','=') }}</span></td>
-                                <td><span class="badge badge-pill badge-success p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('2','=','>=') }}</span></td>
-                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('2','!=','>=') }}</span></td>
-                                <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('2','=','<=') }}</span></td>
-                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('2','!=','<=') }}</span></td>
-                            </tr>
-                            <tr class="collapse row-G2">
-                                <td colspan="7">
-                                   <table class="table table-hover" style="width: 100%">
-                                        <thead class="table-info">
-                                            <th>Modality Name</th>
-                                            <th>Total Assigned</th>
-                                            <th>Complete Within Due Date </th>
-                                            <th>Not Complete and Due </th>
-                                            <th>Complete After Due Date</th>
-                                            <th>Not Complete After Due Date</th>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($modalities as $key => $value)
-                                            <tr>
-                                                <td>{{ $value->modility_abbreviation }}</td>
-                                                <td><span class="badge badge-pill badge-light p-2 mb-1">{{ get_all_counts_assigned_work_withoutoperator_modality('2',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-success p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('2','=','>=',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('2','!=','>=',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('2','=','<=',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('2','!=','<=',$value->id) }}</span></td>
-                                            </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="text-align: left;width:10%">
-                                  <div class="btn-group btn-group-sm" role="group">
-                                    <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-Adj" style="font-size: 20px; color: #1e3d73;"></i>
-                                  </div>
-                                </td>
-                                <td>Adjudication</td>
-                                <td><span class="badge badge-pill badge-light p-2 mb-1">{{ get_all_counts_assigned_work_withoutoperator('2','=') }}</span></td>
-                                <td><span class="badge badge-pill badge-success p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('2','=','>=') }}</span></td>
-                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('2','!=','>=') }}</span></td>
-                                <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('2','=','<=') }}</span></td>
-                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator('2','!=','<=') }}</span></td>
-                            </tr>
-                            <tr class="collapse row-Adj">
-                                <td colspan="7">
-                                   <table class="table table-hover" style="width: 100%">
-                                        <thead class="table-info">
-                                            <th>Modality Name</th>
-                                            <th>Total Assigned</th>
-                                            <th>Complete Within Due Date </th>
-                                            <th>Not Complete and Due </th>
-                                            <th>Complete After Due Date</th>
-                                            <th>Not Complete After Due Date</th>
-                                        </thead>
-                                        <tbody>
-                                            @foreach($modalities as $key => $value)
-                                            <tr>
-                                                <td>{{ $value->modility_abbreviation }}</td>
-                                                <td><span class="badge badge-pill badge-light p-2 mb-1">{{ get_all_counts_assigned_work_withoutoperator_modality('2',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-success p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('2','=','>=',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('2','!=','>=',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('2','=','<=',$value->id) }}</span></td>
-                                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('2','!=','<=',$value->id) }}</span></td>
+                                                <td><span class="badge badge-pill badge-success p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('2','=','<=',$value->id) }}</span></td>
+                                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_not_complete_and_due('2',$value->id) }}</span></td>
+                                                <td><span class="badge badge-pill badge-warning p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('2','=','>',$value->id) }}</span></td>
+                                                <td><span class="badge badge-pill badge-danger p-2 mb-1">{{ get_all_counts_assigned_work_withoperator_modality('2','!=','>',$value->id) }}</span></td>
                                             </tr>
                                             @endforeach
                                         </tbody>
