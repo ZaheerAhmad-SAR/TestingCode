@@ -159,23 +159,23 @@
      Sidebar Settings 
      ============================================================= */
 
-    var settinghtml = `<div id="settings" class="">
-            <a href="#" id="settingbutton" class="setting"> 
-                <h5 class="mb-0"><i class="icon-settings"></i></h5>
-            </a>
-            <div class="sidbarchat p-3">
-                <h5 class="mb-0">Active Users</h5>
-                <hr/>
-                User Name (Active)
-                <p style="font-size:11px;"> 15:00 min ago </p>
-                <hr/>
-                 User Name 2 (Active)
-                <p style="font-size:11px;"> 15:00 min ago </p>
-                <hr/>
-            </div>
-        </div>`;
+    // var settinghtml = `<div id="settings" class="">
+    //         <a href="#" id="settingbutton" class="setting"> 
+    //             <h5 class="mb-0"><i class="icon-settings"></i></h5>
+    //         </a>
+    //         <div class="sidbarchat p-3">
+    //             <h5 class="mb-0">Active Users</h5>
+    //             <hr/>
+    //             User Name (Active)
+    //             <p style="font-size:11px;"> 15:00 min ago </p>
+    //             <hr/>
+    //              User Name 2 (Active)
+    //             <p style="font-size:11px;"> 15:00 min ago </p>
+    //             <hr/>
+    //         </div>
+    //     </div>`;
 
-    $("body").append(settinghtml);
+    //$("body").append(settinghtml);
 
     $('.setting').on('click', function () {
         $('#settings').toggleClass('active');
