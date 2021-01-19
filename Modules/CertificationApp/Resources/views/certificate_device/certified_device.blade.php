@@ -260,6 +260,15 @@
                                                 
                                                 </i>
                                             </a>
+
+
+                                            &nbsp; | &nbsp;
+
+                                            <a href="javascript:void(0)" onClick="changeCertificateDate('{{$certifiedDevice->certificate_id}}', '{{ $certifiedDevice->photographer_email}}', '{{ $certifiedDevice->cc_emails }}', '{{ $certifiedDevice->bcc_emails }}', '{{ date('Y-m-d', strtotime($certifiedDevice->expiry_date)) }}')">
+                                                <i class="fas fa-clock" title="Change Certificate Date" style="color: #17a2b8 !important;">
+                                                
+                                                </i>
+                                            </a>
                                             
                                         </td>
                                     </tr>
@@ -527,6 +536,77 @@
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="submit" class="btn btn-primary">Change Certificate Status</button>
+
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+    <!-- Modal ends -->
+
+    <!-- Certification Date ModAL -->
+    <div class="modal fade" id="change-certificate-date-modal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content" style="border-color: #1e3d73;">
+          <div class="modal-header bg-primary" style="color: #fff">
+            <h5 class="modal-title" id="exampleModalLabel">Change Certificate date</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"  style="color: #fff">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+            <form action="{{ route('change-certificate-date') }}" method="POST" class="change-certificate-date-form">
+                @csrf
+            <input type="hidden" name="date_certificate_id" id="date_certificate_id" value="">
+
+              <div class="modal-body">
+
+                <div class="form-group col-md-12">
+                    <label class="edit_users">Email To<span class="field-required">*</span></label>
+                    <Select class="form-control date_user_email" name="date_user_email" id="date_user_email" required>
+
+                    </Select>
+                </div>
+
+                <div class="form-group col-md-12 suspend-certificate-div">
+                    <label class="edit_users">CC Email</label>
+                    <Select class="form-control date_cc_user_email data-required" name="date_cc_user_email[]" id="date_cc_user_email" multiple>
+
+                    </Select>
+                </div>
+
+                <div class="form-group col-md-12">
+                    <label class="edit_users">BCC Email</label>
+                    <Select class="form-control date_bcc_user_email" name="date_bcc_user_email[]" id="date_bcc_user_email" multiple="multiple">
+
+                    </Select>
+                </div>
+
+                <div class="form-group col-md-12">
+                                            
+                    <label for="inputState">Templates</label>
+                    <select id="date_template" name="date_template" class="form-control">
+                        <option value="">Select Template</option>
+                         @foreach($getTemplates as $template)
+                         <option value="{{ $template->template_id }}">{{ $template->template_title }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="form-group col-md-12 comment-div">
+                    <label>Comments<span class="field-required">*</span></label>
+                    <textarea class="form-control date_summernote" name="date_comment" value="" rows="4"></textarea>
+                    <span class="date-edit-error-field" style="display: none; color: red;">Please fill comment field.</span>
+                </div>
+
+                <div class="form-group col-md-12">
+                    <label>Expiry Date<span class="field-required">*</span></label>
+                    <input type="date" class="form-control data-required" id="certificate_expiry_date" name="certificate_expiry_date" value="" required>
+                </div>
+                    
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Change Certificate Expiry</button>
 
               </div>
             </form>
@@ -830,6 +910,95 @@
 
                     // assign body
                     $('.status_summernote').summernote('code', '');
+                }
+                
+            } // success ends
+
+        }); // ajax ends
+
+    });  // change function ends
+
+      ///////////////////////////////// Change Certificate Date Modal /////////////////////////////////////////
+
+    $('.date_summernote').summernote({
+        height: 150,
+
+    });
+    
+    $('#date_cc_user_email').select2();
+    $('#date_bcc_user_email').select2();
+
+    // status change function
+    function changeCertificateDate(certificateID, photographerEmail, ccEmail, bccEmail, date) {
+
+        // refresh the select2
+        $('#date_cc_user_email').empty();
+        $('#date_bcc_user_email').empty();
+
+        // assign email to email To input
+        $('.date_user_email').append('<option value="'+photographerEmail+'">'+photographerEmail+'</option>');
+
+        // assign cc and bcc emails
+        $.each(JSON.parse(ccEmail), function(index, value) {
+                                    
+            $('#date_cc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+        });
+
+        $.each(JSON.parse(bccEmail), function(index, value) {
+                                    
+            $('#date_bcc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+        });
+
+        // assign date
+        $('#certificate_expiry_date').val(date);
+
+        // unselect templete
+        $('#date_template').val(''); 
+        // empty text editor
+        $('.date_summernote').summernote('code', '');
+
+        // hide error message
+        $('.date-edit-error-field').css('display', 'none');
+
+        // assign Certificate ID
+        $('#date_certificate_id').val(certificateID);
+        // show modal
+        $('#change-certificate-date-modal').modal('show');
+    }
+
+    // form submit
+    $('.change-certificate-date-form').submit(function(e) {
+        
+        if($('.date_summernote').summernote('isEmpty')) {
+            // cancel submit
+            e.preventDefault(); 
+            $('.date-edit-error-field').css('display', 'block');
+
+        } else {
+
+            e.currentTarget;
+        }
+    });
+
+     $('#date_template').change(function() {
+
+        $.ajax({
+            url: '{{ route("get-template-data") }}',
+            type: 'GET',
+            data: {
+                'template_id': $(this).val(),
+            },
+            success:function(data) {
+
+                if(data.getTemplate != null) {
+
+                    // assign body
+                    $('.date_summernote').summernote('code', data.getTemplate.template_body);
+
+                } else {
+
+                    // assign body
+                    $('.date_summernote').summernote('code', '');
                 }
                 
             } // success ends

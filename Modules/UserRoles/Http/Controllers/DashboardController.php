@@ -8,6 +8,8 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\UserRoles\Entities\RolePermission;
 use Modules\Admin\Entities\Modility;
+use Modules\Admin\Entities\AssignWork;
+use Modules\FormSubmission\Entities\FormStatus;
 
 class DashboardController extends Controller
 {
@@ -23,6 +25,10 @@ class DashboardController extends Controller
         // session(['current_study'=>'','study_short_name'=> '']);
         // $study = '';
         $modalities = Modility::all();
+        $assign_work_cfp = AssignWork::where('form_type_id',2)->with(['get_form_status' => function ($query) { $query->where('form_status', '=', 'complete'); }])->get();
+        // $assign_work_cfp = AssignWork::where('form_type_id',2)->with('form_status',['form_status' => 'complete'])->get();
+
+        // dd($assign_work_cfp);
         return view('userroles::dashboard',compact('modalities'));
     }
 

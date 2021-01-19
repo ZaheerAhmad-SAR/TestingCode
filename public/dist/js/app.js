@@ -164,46 +164,14 @@
                 <h5 class="mb-0"><i class="icon-settings"></i></h5>
             </a>
             <div class="sidbarchat p-3">
-                <h5 class="mb-0">TEMPLATE CUSTOMIZER</h5>
-                <p>Customize your template</p>
+                <h5 class="mb-0">Active Users</h5>
                 <hr/>
-                <h6>TEMPLATE COLOR</h6>
-                <ul class="list-inline float-left claerfix">
-                    <li class="color-box m-2 list-inline-item float-left color1" data-color="#1e3d73"></li>
-                    <li class="color-box m-2 list-inline-item float-left color2" data-color="#0bb2d4"></li>                    
-                    <li class="color-box m-2 list-inline-item float-left color3" data-color="#17b3a3"></li>
-                    <li class="color-box m-2 list-inline-item float-left color4" data-color="#eb6709"></li>
-                    <li class="color-box m-2 list-inline-item float-left color5" data-color="#76c335"></li>
-                    <li class="color-box m-2 list-inline-item float-left color6" data-color="#3e8ef7"></li>
-                    <li class="float-left list-inline-item"><input type="color" class="cursor-pointer color m-2"  value="#1e3d73"></li>
-                </ul>
-                <hr class="float-left w-100"/>
-               
-                <h6>TEMPLATE STYLE</h6>                              
-                <label class="chkbox">Light 
-                    <input name="style" value="light" class="style" type="radio" >
-                    <span class="checkmark"></span>
-                </label> <br/>
-                <label class="chkbox mt-2">Dark 
-                    <input name="style" value="dark" class="style" type="radio" >
-                    <span class="checkmark"></span>
-                </label> <br/>
-                <label class="chkbox mt-2">Semi Dark 
-                    <input name="style" value="semi-dark" class="style" type="radio" >
-                    <span class="checkmark"></span>
-                </label> 
-                <br/><br/>
-                <hr class="float-left w-100"/>
-                <label class="chkbox horizontal mb-2">Horizontal Menu 
-                    <input name="horizontal" value="horizontal-menu" class="horizontallayout" type="checkbox" >
-                    <span class="checkmark"></span>
-                </label><br/>
-                <label class="chkbox compact">Compact Sidebar 
-                    <input name="compact" value="compact" class="sidebar" type="checkbox" >
-                    <span class="checkmark"></span>
-                </label>
-               
-
+                User Name (Active)
+                <p style="font-size:11px;"> 15:00 min ago </p>
+                <hr/>
+                 User Name 2 (Active)
+                <p style="font-size:11px;"> 15:00 min ago </p>
+                <hr/>
             </div>
         </div>`;
 
