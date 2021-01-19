@@ -130,7 +130,26 @@
                                 </div>
                                 
                             </div>-->                        
-                            @if(hasPermission(auth()->user(),'systemtools.index'))
+                            @if(hasPermission(auth()->user(),'certification-photographer.index'))
+
+                            <div class="row">
+
+                                <div class="col-md-2">
+                                    <label for="C-Password">Signature Status</label>
+                                </div>
+
+                                <div class="col-md-10">
+                                    @if (File::exists(storage_path('user_signature/'.\Auth::user()->id.'.png')))
+                                    <!-- <a href="{{ route('user-signature', encrypt(\Auth::user()->id.'.png')) }}"> -->
+                                    <span class="badge badge-success"><strong>Availble</strong></span>
+                                    <!-- </a> -->
+                                    @else
+                                    <span class="badge badge-info"><strong>Not Availble</strong></span>
+                                    @endif
+                                </div>
+
+                            </div>
+                            <br>
                             <div class="row">
 
                                 <div class="col-md-2">

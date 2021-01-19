@@ -229,11 +229,19 @@
 
                                             @if($certifiedDevice->certificate_status == 'full' && $certifiedDevice->certificate_type != 'grandfathered')
 
-                                            <a href="javascript:void(0)" onClick="generateGrandfatherCertificate('{{$certifiedDevice->certificate_id}}', '{{ $certifiedDevice->photographer_email}}', '{{ $certifiedDevice->cc_emails }}', '{{ $certifiedDevice->bcc_emails }}')">
-                                                <i class="fas fa-pen" title="Generate Grandfather Certificate" style="color: #17a2b8 !important;">
-                                                
-                                                </i>
-                                            </a>
+                                            @if(hasPermission(auth()->user(),'generate-device-certificate'))
+                                                <a href="javascript:void(0)" onClick="generateGrandfatherCertificate('{{$certifiedDevice->certificate_id}}', '{{ $certifiedDevice->photographer_email}}', '{{ $certifiedDevice->cc_emails }}', '{{ $certifiedDevice->bcc_emails }}')">
+                                                    <i class="fas fa-pen" title="Generate Grandfather Certificate" style="color: #17a2b8 !important;">
+                                                    
+                                                    </i>
+                                                </a>
+                                            @else
+                                                <a href="javascript:void(0)">
+                                                    <i class="fas fa-pen" title="No Permission" style="color: #17a2b8 !important;">
+                                                    
+                                                    </i>
+                                                </a>
+                                            @endif
 
                                             &nbsp; | 
                                             @endif
