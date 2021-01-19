@@ -30,6 +30,8 @@ use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\RolePermission;
 use Illuminate\Support\Facades\Route;
 use Modules\Admin\Entities\RoleStudyUser;
+use Modules\Admin\Entities\AssignWork;
+use Modules\FormSubmission\Entities\FormStatus;
 
 function hasrole($role)
 {
@@ -1302,4 +1304,76 @@ function getOldValue($oldValues, $val)
      } else {
         return '';
      }
+}
+function get_all_counts_assigned_work_withoperator($form_type_id, $form_status,$condition){
+    $where = array(
+        'assign_work.form_type_id' => $form_type_id,
+        'form_submit_status.form_type_id' => $form_type_id,
+    ); 
+    // $dd = 'true';
+    $total_numbers = AssignWork::query();
+        $total_numbers = $total_numbers->select('assign_work.*,form_submit_status.id')
+        ->from('assign_work')
+        ->leftjoin('form_submit_status', 'form_submit_status.modility_id', '=', 'assign_work.modility_id')
+        ->where($where)
+        ->where('form_submit_status.form_status', $form_status ,'complete')
+        ->where('form_submit_status.created_at', $condition , DB::raw('assign_work.assign_date'))
+        ->count();
+     // printSqlQuery($total_numbers,$dd);
+    return $total_numbers;
+}
+
+function get_all_counts_assigned_work_withoperator_modality($form_type_id, $form_status,$condition,$modility_id){
+    $where = array(
+        'assign_work.form_type_id' => $form_type_id,
+        'assign_work.modility_id' => $modility_id,
+        'form_submit_status.form_type_id' => $form_type_id,
+    ); 
+    $total_numbers = AssignWork::query();
+        $total_numbers = $total_numbers->select('*')
+        ->from('assign_work')
+        ->leftjoin('form_submit_status', 'form_submit_status.modility_id', '=', 'assign_work.modility_id')
+        ->where($where)
+        ->where('form_submit_status.form_status', $form_status ,'complete')
+        ->where('form_submit_status.created_at', $condition ,DB::raw('assign_work.assign_date'))
+        ->count();
+    return $total_numbers;
+}
+
+function get_all_counts_assigned_work_withoutoperator($form_type_id, $form_status){
+    $where = array(
+        'assign_work.form_type_id' => $form_type_id,
+        'form_submit_status.form_status' => $form_status,
+    );
+    $total_numbers = AssignWork::query();
+        $total_numbers = $total_numbers->select('*')
+        ->from('assign_work')
+        ->leftjoin('form_submit_status', 'form_submit_status.modility_id', '=', 'assign_work.modility_id')
+        ->where($where)
+        ->count();
+    return $total_numbers;
+}
+
+function get_all_counts_assigned_work_withoutoperator_modality($form_type_id,$modility_id){
+    $where = array(
+        'assign_work.form_type_id' => $form_type_id,
+        'assign_work.modility_id' => $modility_id,
+    );
+    $total_numbers = AssignWork::query();
+        $total_numbers = $total_numbers->select('*')
+        ->from('assign_work')
+        ->leftjoin('form_submit_status', 'form_submit_status.modility_id', '=', 'assign_work.modility_id')
+        ->where($where)
+        ->count();
+    return $total_numbers;
+}
+function get_all_counts_assigned_not_complete_and_due($form_type_id,$modility_id){
+    $where = array(
+        'assign_work.form_type_id' => $form_type_id,
+        'assign_work.modility_id' => $modility_id,
+    );
+    return AssignWork::where($where)->with(['get_form_status' => function ($query) { $query->where('form_type_id', '=', $form_type_id)->where('form_status', '!=', 'complete'); }])->count();
+}
+function get_all_counts_assigned_work($form_type_id){
+    return AssignWork::where('form_type_id',$form_type_id)->count();
 }

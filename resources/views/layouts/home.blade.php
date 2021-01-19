@@ -41,7 +41,7 @@
                                 @endif
                         </span>
                         </li>
-                        @if(session('current_study'))
+
                         <li class="dropdown align-self-center d-inline-block">
                             <a href="#" class="nav-link" data-toggle="dropdown" aria-expanded="false">
                                 <i class="icon-bell h4"></i>
@@ -82,26 +82,35 @@
 
                                         );
                                     @endphp
-                                    <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0 currentNotificationId appRedirectPage" data-study_code="{{$studyData->study_code}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_id="{{$studyData->id}}" data-query_url="{{$result->query_url}}" data-id="{{$result->study_id}}" href="{{$result->query_url}}" data-value="{{$result->id}}">
+                                    <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0 currentNotificationId appRedirectPage"   data-study_id="{{$studyData->id}}" data-query_url="{{$result->query_url}}" data-id="{{$result->study_id}}" href="javascript:void(0);" data-value="{{$result->id}}">
                                         <div class="media">
                                             <img src="{{asset('dist/images/author.jpg')}}" alt="" class="d-flex mr-3 img-fluid rounded-circle">
                                             <div class="media-body">
 
-                                                <p class="mb-0 text-primary "> Study:  <b> {{$studyData->study_short_name}}</b> have new query by <b>{{$userData->name}}</b> </p>
+                                                <p class="mb-0 text-primary ">{{$studyData->study_short_name}} : new query by {{$userData->name}}</p>
                                                 {{ date_format($result->created_at,'d-M-Y')}}
                                             </div>
+
                                         </div>
                                     </a>
                                 </li>
+
                                 @endforeach
                                 @endif
-                                @if($count > 1)
-                                <li><a class="dropdown-item text-center py-2" href="{{route('queries.show')}}"> Read All Message <i class="icon-arrow-right pl-2 small"></i></a></li>
-                                @endif
 
+                                <tr>
+                                                 @if($count > 0 )
+                                    &nbsp; &nbsp;<td class="align-baseline"><a class="markAllRead" href="javascript:void(0);"><span><i class="fas fa-check"></i></span> &nbsp;Mark All Read</a></td> &nbsp; &nbsp; &nbsp;
+                                                @else
+                                        &nbsp; &nbsp;<td class="align-baseline"><a class="noNewNotification" href="javascript:void(0);"><span><i class="fas fa-check"></i></span> &nbsp;No New Notification</a></td> &nbsp; &nbsp; &nbsp;
+                                                @endif
+                                    @if($count > 1)
+                                        <td class="align-top"><a href="{{route('queries.show')}}"><span><i class="fas fa-book-open"></i></span> &nbsp; All Notification</a></td>
+                                    @endif
+                                 </tr>
                             </ul>
                         </li>
-                        @endif
+
 
                         <li class="d-inline-block align-self-center  d-block d-lg-none">
                             <a href="#" class="nav-link mobilesearch" data-toggle="dropdown" aria-expanded="false"><i class="icon-magnifier h4"></i>
@@ -147,39 +156,53 @@
             updateNotificationToRead(currentNotificationId,studyIDOfCurrentNotification,query_url);
         });
 
-        // $('.appRedirectPage').click(function () {
-        //
-        // var query_url = $(this).attr('data-query_url');
-        // var  study_id = $(this).attr('data-study_id');
-        // var  study_short_name = $(this).attr('data-study_short_name');
-        // var  study_code = $(this).attr('data-study_code');
-        // appRedirectGetData(query_url,study_id,study_short_name,study_code);
-        //
-        // });
+        $('.markAllRead').click(function () {
 
+            $.ajax({
+                url:"{{route('queries.markAllNotificationToRead')}}",
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST'
+                },
+                success: function(response)
+                {
+                    console.log(response);
+                    location.reload();
 
+                }
+            });
+        });
 
+        $('.appRedirectPage').click(function () {
 
-        {{--function  appRedirectGetData(query_url,study_id,study_short_name,study_code)--}}
-        {{--{--}}
-        {{--    $.ajax({--}}
-        {{--        url:"{{route('queries.redirectTicketToStudy')}}",--}}
-        {{--        type: 'POST',--}}
-        {{--        data: {--}}
-        {{--            "_token": "{{ csrf_token() }}",--}}
-        {{--            "_method": 'POST',--}}
-        {{--            'query_url' :query_url,--}}
-        {{--            'study_id' :study_id,--}}
-        {{--            'study_code' :study_code,--}}
-        {{--            'study_short_name' :study_short_name,--}}
-        {{--        },--}}
-        {{--        success: function(response)--}}
-        {{--        {--}}
-        {{--            console.log(response);--}}
-        {{--            window.location.href = query_url;--}}
-        {{--        }--}}
-        {{--    });--}}
-        {{--}--}}
+        var query_url = $(this).attr('data-query_url');
+        var  study_id = $(this).attr('data-study_id');
+        appRedirectGetData(query_url,study_id);
+        });
+
+        function  appRedirectGetData(query_url,study_id)
+        {
+            $.ajax({
+                url:"{{route('queries.redirectTicketToStudy')}}",
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'query_url' :query_url,
+                    'study_id' :study_id
+                },
+                success: function(response)
+                {
+                    console.log(response);
+                    if (response.success)
+                    {
+                    var urlPath = response.success;
+                        window.location.href = urlPath;
+                    }
+                }
+            });
+        }
 
         function updateNotificationToRead(currentNotificationId,studyIDOfCurrentNotification,query_url)
         {
