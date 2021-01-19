@@ -1314,4 +1314,88 @@ class TransmissionDataPhotographerController extends Controller
     
     }
 
+    public function changeCertificateDate(Request $request) {
+
+        $generateCertificate = CertificationData::where('certificate_id', $request->date_certificate_id)->first();
+        $generateCertificate->expiry_date = $request->certificate_expiry_date;
+        $generateCertificate->save();
+
+        $getModality = Modility::where('id', $generateCertificate->modility_id)->first();
+        //check in child modilities
+        if ($getModality == null) {
+
+            $getModality = ChildModilities::where('id', $generateCertificate->modility_id)->first();
+        }
+        // get photographer ID
+        $getPhotographer = Photographer::find($generateCertificate->photographer_id);
+
+        // get study information
+        $getStudy = Study::find($generateCertificate->study_id);
+
+        // get site information
+        $getSite = Site::where('id', $generateCertificate->site_id)->first();
+
+        // get study email to pass to pdf
+        $getStudyEmail = StudySetup::where('study_id', $getStudy->id)->first();
+
+        // for photographer date update
+        if ($generateCertificate->transmission_type == 'photographer_transmission') {
+
+            $certificateType = 'Photographer Certificate#';
+
+            $file_name = $generateCertificate->certificate_id . '_' . $getModality->modility_name . '_photographer.pdf';
+            $path = storage_path('certificates_pdf/photographer');
+            // generate pdf
+            $pdf = PDF::loadView('certificationapp::certificate_pdf.certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('a4')->save($path . '/' . $file_name);
+
+            // make array for changings dynamic variable in the text editor
+            $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id];
+
+            $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[modality_name]]', '[[certificate_id]]', '[[sender_name]]', '[[certificate_status]]', '[[certificate_type]]', '[[issue_date]]', '[[expiry_date]]', '[[grandfather_certificate_id]]'];
+
+        } else {
+
+            $certificateType = 'Device Certificate#';
+
+            $file_name = $generateCertificate->certificate_id . '_' . $getModality->modility_name . '_device.pdf';
+            $path = storage_path('certificates_pdf/device');
+            // generate pdf
+            $pdf = PDF::loadView('certificationapp::certificate_pdf.certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('a4')->save($path . '/' . $file_name);
+
+            // make array for changings dynamic variable in the text editor
+            $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id, $generateCertificate->device_model, $generateCertificate->device_serial_no, $generateCertificate->user_input_device_id];
+
+            $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[modality_name]]', '[[certificate_id]]', '[[sender_name]]', '[[certificate_status]]', '[[certificate_type]]', '[[issue_date]]', '[[expiry_date]]', '[[grandfather_certificate_id]]', '[[device_model]]', '[[device_serial_no]]', '[[device_id]]'];
+        }
+
+        $data = [];
+        $data['email_body'] = str_replace($labels, $variables, $request->date_comment);
+        $senderEmail = $request->date_user_email;
+        $ccEmail = $request->date_cc_user_email;
+        $bccEmail = $request->date_bcc_user_email;
+
+        // send email to users
+        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $bccEmail, $generateCertificate, $getSite, $getStudy, $getModality, $certificateType, $path, $file_name)
+        {
+            $message->subject($getStudy->study_short_name.' '.$getStudy->study_code.' | '.$certificateType.' '.$generateCertificate->certificate_id.' | '. $getSite->site_code.' | '. $getModality->modility_name);
+            
+            $message->to($senderEmail);
+
+            if($ccEmail != '') {
+                $message->cc($ccEmail);
+            }
+            if($bccEmail != '') {
+                $message->bcc($bccEmail);
+            }
+            
+            $message->attach($path.'/'.$file_name);
+
+        });
+
+        \Session::flash('success', 'Certificate expiry date updated successfully.');
+
+        return redirect()->back();
+
+    } // certificate date change function ends
+
 }
