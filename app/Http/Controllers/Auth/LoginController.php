@@ -64,6 +64,11 @@ class LoginController extends Controller
 
         if ($this->attemptLogin($request)) {
             if ((int)auth()->user()->is_active == 1) {
+                // dd($request->email);
+                $user = User::where('email', $request->email)->first();
+                $user->working_status = 'online';
+                $user->online_at = now();
+                $user->save();
                 return $this->sendLoginResponse($request);
             }
         }
