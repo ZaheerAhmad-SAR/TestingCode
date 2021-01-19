@@ -102,12 +102,12 @@
                                 <tr>
                                                  @if($count > 0 )
                                     &nbsp; &nbsp;<td class="align-baseline"><a class="markAllRead" href="javascript:void(0);"><span><i class="fas fa-check"></i></span> &nbsp;Mark All Read</a></td> &nbsp; &nbsp; &nbsp;
-                                                @else
-                                        &nbsp; &nbsp;<td class="align-baseline"><a class="noNewNotification" href="javascript:void(0);"><span><i class="fas fa-check"></i></span> &nbsp;No New Notification</a></td> &nbsp; &nbsp; &nbsp;
+{{--                                                @else--}}
+{{--                                        &nbsp; &nbsp;<td class="align-baseline"><a class="noNewNotification" href="javascript:void(0);"><span><i class="fas fa-check"></i></span> &nbsp;No New Notification</a></td> &nbsp; &nbsp; &nbsp;--}}
                                                 @endif
-                                    @if($count > 1)
+
                                         <td class="align-top"><a href="{{route('queries.show')}}"><span><i class="fas fa-book-open"></i></span> &nbsp; All Notification</a></td>
-                                    @endif
+
                                  </tr>
                             </ul>
                         </li>
