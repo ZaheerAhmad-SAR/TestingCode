@@ -438,17 +438,17 @@ class TransmissionDataPhotographerController extends Controller
         //
     }
 
-    public function updatePhotographerTransmissionStatus(Request $request)
-    {
+    // public function updatePhotographerTransmissionStatus(Request $request)
+    // {
 
-        $updateStatus = TransmissionDataPhotographer::find($request->hidden_transmission_id);
-        $updateStatus->status = $request->status;
-        $updateStatus->save();
+    //     $updateStatus = TransmissionDataPhotographer::find($request->hidden_transmission_id);
+    //     $updateStatus->status = $request->status;
+    //     $updateStatus->save();
 
-        Session::flash('success', 'Status updated successfully.');
-        // return to page
-        return redirect()->back();
-    }
+    //     Session::flash('success', 'Status updated successfully.');
+    //     // return to page
+    //     return redirect()->back();
+    // }
 
     public function transmissionDataPhotographer(Request $request)
     {

@@ -220,11 +220,19 @@
                                             
                                             @if($certifiedPhotographer->certificate_status == 'full' && $certifiedPhotographer->certificate_type != 'grandfathered')
 
-                                            <a href="javascript:void(0)" onClick="generateGrandfatherCertificate('{{$certifiedPhotographer->certificate_id}}', '{{ $certifiedPhotographer->photographer_email}}', '{{ $certifiedPhotographer->cc_emails }}', '{{ $certifiedPhotographer->bcc_emails }}')">
-                                                <i class="fas fa-pen" title="Generate Grandfather Certificate" style="color: #17a2b8 !important;">
-                                                
-                                                </i>
-                                            </a>
+                                            @if(hasPermission(auth()->user(),'generate-photographer-grandfather-certificate'))
+                                                <a href="javascript:void(0)" onClick="generateGrandfatherCertificate('{{$certifiedPhotographer->certificate_id}}', '{{ $certifiedPhotographer->photographer_email}}', '{{ $certifiedPhotographer->cc_emails }}', '{{ $certifiedPhotographer->bcc_emails }}')">
+                                                    <i class="fas fa-pen" title="Generate Grandfather Certificate" style="color: #17a2b8 !important;">
+                                                    
+                                                    </i>
+                                                </a>
+                                            @else
+                                                <a href="javascript:void(0)">
+                                                    <i class="fas fa-pen" title="No Permission" style="color: #17a2b8 !important;">
+                                                    
+                                                    </i>
+                                                </a>
+                                            @endif
 
                                             &nbsp; | 
                                             @endif

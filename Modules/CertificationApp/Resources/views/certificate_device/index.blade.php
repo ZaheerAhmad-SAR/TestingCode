@@ -176,10 +176,16 @@
 
                                             <td>
                                                 @if ($transmission->certificateStatus['status'] == 'provisional')
-
+                                                
+                                                @if(hasPermission(auth()->user(),'generate-device-certificate'))
                                                 <a href="javascript:void()" id="generate-certification" data-id="" title="Provisional Certified" class="badge badge-warning" onClick="generateCertificate('{{$transmission->id}}', '{{ $transmission->certificateStatus['certificate_id'] }}', '{{ route('update-device-provisonal-certificate')}}', 'Provisional')">
                                                     Provisional Certified
                                                 </a>
+                                                @else
+                                                    <a href="javascript:void()" title="No Permission" class="badge badge-warning">
+                                                        Provisional Certified
+                                                    </a>
+                                                @endif
 
                                                 @elseif($transmission->certificateStatus['status'] == 'full')
 
@@ -189,9 +195,15 @@
 
                                                 @elseif($transmission->certificateStatus['status'] == 'allowed')
 
-                                                <a href="javascript:void()" id="generate-certification" data-id="" title="Generate Certificate" class="badge badge-dark" onClick="generateCertificate('{{$transmission->id}}', '{{ $transmission->certificateStatus['certificate_id'] }}', 'NO URL','Generate')">
-                                                    Generate Certificate
-                                                </a>
+                                                @if(hasPermission(auth()->user(),'generate-device-certificate'))
+                                                    <a href="javascript:void()" id="generate-certification" data-id="" title="Generate Certificate" class="badge badge-dark" onClick="generateCertificate('{{$transmission->id}}', '{{ $transmission->certificateStatus['certificate_id'] }}', 'NO URL','Generate')">
+                                                        Generate Certificate
+                                                    </a>
+                                                @else
+                                                    <a href="javascript:void()" data-id="" title="No Permission" class="badge badge-dark">
+                                                        Generate Certificate
+                                                    </a>
+                                                @endif
 
                                                 @elseif($transmission->certificateStatus['status'] == 'not_allowed')
 

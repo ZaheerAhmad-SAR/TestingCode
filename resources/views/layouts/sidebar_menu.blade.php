@@ -415,7 +415,8 @@
             </li>
             @endif
 
-             <li class="dropdown">
+            @if(hasPermission(auth()->user(),'certification-photographer.index'))
+            <li class="dropdown">
                 <ul>
                     <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Certification App</a>
                         <ul class="sub-menu">
@@ -446,13 +447,15 @@
                                 </a>
                             </li>
 
+                            @if(hasPermission(auth()->user(),'certification-preferences.index'))
                             <li  class="@if(is_active('certification-preferences')) {{ ' active' }} @endif">
                                 <a href="{{route('certification-preferences.index')}}">
                                     <i class="fas fa-list"></i> Preferences
                                 </a>
                             </li>
+                            @endif
 
-                             <li  class="@if(is_active('certification-template')) {{ ' active' }} @endif">
+                            <li  class="@if(is_active('certification-template')) {{ ' active' }} @endif">
                                 <a href="{{route('certification-template')}}">
                                     <i class="fas fa-list"></i> Template
                                 </a>
@@ -462,6 +465,7 @@
                     </li>
                 </ul>
             </li>
+            @endif
 
             @if(hasPermission(auth()->user(),'systemtools.index') && hasPermission(auth()->user(),'trail_logs.list'))
 
