@@ -622,6 +622,7 @@ class QueriesController extends Controller
     {
 
         $records = AppNotification::where('user_id','=', auth()->user()->id)->get();
+        //dd($records);
         return view('queries::notifications.index',compact('records'));
     }
 
