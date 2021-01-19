@@ -4,6 +4,39 @@
 @stop
 @section('content')
 <div class="container-fluid site-width">
+     @php 
+       $users = App\User::all();
+     @endphp
+    <div id="settings" class="">
+        <a href="#" id="settingbutton" class="setting"> 
+            <h5 class="mb-0"><i class="icon-settings"></i></h5>
+        </a>
+        <div class="sidbarchat p-3" style="overflow: auto;">
+            <h5 class="mb-0">Active Users</h5>
+            <hr/>
+            @foreach($users as $user)
+                @php
+                    $time = new DateTime($user->online_at);
+                    $time = $time->format('H:i');
+                @endphp
+                <div class="media">
+                    <img src="{{(asset('public/images/download.png'))}}" style="width: 40px; height: 40px; border-radius: 50%;">
+                    @if($user->working_status =='offline')
+                    <i class="fas fa-circle" style="position: absolute;left: 45px; color: red;"></i>
+                    @else
+                    <i class="fas fa-circle" style="position: absolute;left: 45px; color: green;"></i>
+                    @endif
+                    <span style="margin-top: 15px;">{{$user->name}} </span><br> 
+                </div>
+                @if($user->working_status =='offline')
+                <p style="font-size:11px; text-align: right;">{{Carbon\Carbon::parse($user->offline_at)->diffForHumans()}} </p>
+                @else
+                <p style="font-size:11px; text-align: right;">{{Carbon\Carbon::parse($user->online_at)->diffForHumans()}} </p>
+                @endif
+                <hr/>
+            @endforeach
+        </div>
+    </div>
     <!-- START: Breadcrumbs-->
     <div class="row">
         <div class="col-12  align-self-center">
