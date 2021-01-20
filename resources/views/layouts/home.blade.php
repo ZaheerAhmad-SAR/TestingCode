@@ -72,23 +72,13 @@
                                     @endphp
                                 <li>
 
-                                    @php
-                                        $studyData = Modules\Admin\Entities\Study::where('id',$result->study_id)->first();
-
-                                        //$redirectArray = array(
-                                           // 'study_short_name' => $studyData->study_short_name,
-                                           // 'study_code'=>$studyData->study_code,
-                                            //'id'=>$studyData->id,
-                                            //'query_url'=>$result->query_url
-
-                                        //);
-                                    @endphp
+                                    @php $studyData = Modules\Admin\Entities\Study::where('id',$result->study_id)->first(); @endphp
                                     <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0 currentNotificationId appRedirectPage"   data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$result->query_url}}" data-id="{{$result->study_id}}" href="javascript:void(0);" data-value="{{$result->id}}">
                                         <div class="media">
                                             <img src="{{asset('dist/images/author.jpg')}}" alt="" class="d-flex mr-3 img-fluid rounded-circle">
                                             <div class="media-body">
 
-                                                <p class="mb-0 text-primary ">{{$studyData->study_short_name}} : new query by {{$userData->name}}</p>
+                                                <p class="mb-0 text-primary "><b> {{$studyData->study_short_name}} : new query by {{$userData->name}} </b></p>
                                                 {{ date_format($result->created_at,'d-M-Y')}}
                                             </div>
 
@@ -106,7 +96,7 @@
 {{--                                        &nbsp; &nbsp;<td class="align-baseline"><a class="noNewNotification" href="javascript:void(0);"><span><i class="fas fa-check"></i></span> &nbsp;No New Notification</a></td> &nbsp; &nbsp; &nbsp;--}}
                                                 @endif
 
-                                        <td class="align-top"><a href="{{route('queries.show')}}"><span><i class="fas fa-book-open"></i></span> &nbsp; All Notification</a></td>
+                                        <td class="align-top"><a href="{{route('queries.show')}}"><span><i class="fas fa-book-open"></i></span> &nbsp; All Notifications</a></td>
 
                                  </tr>
                             </ul>
