@@ -21,21 +21,18 @@
 
         <!-- START: Card Data-->
         <div class="row">
-            <div class="col-12 col-sm-12 mt-3">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center">
-
-                    </div>
-
-                        <div class="col-md-12">
-                            <div class="card overflow-hidden">
+            <div class="col-md-12">
+               <div class="card overflow-hidden">
                                 <div class="card-header d-flex justify-content-between align-items-center">
                                     <h6 class="card-title">Notification List</h6>
                                 </div>
                                 <div class="card-content">
                                     <div class="card-body p-0">
                                         <ul class="list-group list-unstyled">
-                                            @foreach($records as $record)
+
+{{--                                            @if(!empty($records))--}}
+                                                @if(!$records->isEmpty())
+                                                @foreach($records as $record)
 
                                                 @php
 
@@ -57,24 +54,32 @@
                                                     </div>
 
                                                     <div class="media-body align-self-center pl-4">
-                                                        <span class="mb-0 font-w-600">{{$studyData->study_short_name}}</span><br>
-                                                        <p class="mb-0 font-w-500 tx-s-12"> new query by {{$userData->name}}</p>
+
+                                                           @if($record->is_read == 'no')
+                                                            <span class="mb-0 font-w-600">{{$studyData->study_short_name}}</span><br>
+                                                            <p class="mb-0 font-w-500 tx-s-12"> new query by {{$userData->name}}</p>
+                                                           @else
+                                                            <span class="mb-0 font-w-600"> <b>{{$studyData->study_short_name}} </b></span><br>
+                                                            <p class="mb-0 font-w-500 tx-s-12"> <b>new query by {{$userData->name}}</b></p>
+                                                           @endif
+
                                                     </div>
-{{--                                                    <div class="ml-auto my-auto font-weight-bold text-right text-success">--}}
-{{--                                                        +500<br/>--}}
-{{--                                                        <small class="d-block">USD</small>--}}
-{{--                                                    </div>--}}
+                                                    <div class="ml-auto my-auto font-weight-bold text-right text-success">
+
+                                                        <small class="d-block">{{Carbon\Carbon::parse($result->created_at)->diffForHumans()}}</small>
+                                                    </div>
                                                 </div>
                                             </li>
                                             @endforeach
+                                            @else
+                                                <li class=" p-2 border-bottom text-center text-capitalize"> no new notification!!!!</li>
+                                            @endif
+
+
                                         </ul>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                </div>
-
             </div>
         </div>
         <!-- END: Card DATA-->

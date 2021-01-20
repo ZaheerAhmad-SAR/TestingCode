@@ -622,6 +622,7 @@ class QueriesController extends Controller
     {
 
         $records = AppNotification::where('user_id','=', auth()->user()->id)->get();
+        //dd($records);
         return view('queries::notifications.index',compact('records'));
     }
 
@@ -655,15 +656,19 @@ class QueriesController extends Controller
     {
         if ($request->ajax())
         {
-            $studyIDOfCurrentNotification = $request->post('studyIDOfCurrentNotification');
-            $currentNotificationID        = $request->post('currentNotificationId');
-            $query_url                    = $request->post('query_url');
-            session(['current_study' => $studyIDOfCurrentNotification]);
+            $query_url        = $request->post('query_url');
+            $studyId          = $request->post('study_id');
+            $study_code       = $request->post('study_code');
+            $query_id         = $request->post('currentNotificationId');
+            $study_short_name = $request->post('study_short_name');
+            session([
+                'current_study' => $studyId,
+                'study_short_name' =>$study_short_name,
+                'study_code' => $study_code
+            ]);
             $isRead    = array('is_read'=>'yes');
-
-             AppNotification::where('query_id',$currentNotificationID)->update($isRead);
-            //return  \redirect($query_url);
-            return response()->json(['success'=>'Queries is updated successfully!!!!']);
+            AppNotification::where('query_id',$query_id)->update($isRead);
+            return response()->json(['success'=>$query_url]);
         }
     }
 
@@ -691,12 +696,7 @@ class QueriesController extends Controller
 
     public function redirectTicketToStudy(Request $request)
     {
-        $studyId   = $request->post('study_id');
-        $query_url = $request->post('query_url');
-        session([
-            'current_study' => $studyId
-        ]);
-        return response()->json(['success'=>$query_url]);
+
 
     }
 
