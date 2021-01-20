@@ -1,13 +1,14 @@
 <?php
 
 namespace Modules\Admin\Http\Controllers;
-
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Admin\Entities\TrailLog;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\StudyUser;
+use Modules\UserRoles\Entities\UserLog;
 use Session;
 use Auth;
 use Carbon\Carbon;
@@ -21,7 +22,6 @@ class TrailLogController extends Controller
         $eventSection = [];
         $getUsers = [];
         $getStudies = [];
-
     	// check for system user Admin
     	if(hasPermission(auth()->user(),'systemtools.index') && hasPermission(auth()->user(),'trail_logs.list')) {
     		// get logs
@@ -209,5 +209,15 @@ class TrailLogController extends Controller
         // user role echeck ends
 
     	return view('admin::trail_log', compact('getLogs', 'eventSection','getUsers', 'getStudies'));
+    }
+    // users Activity log
+    public function usersActivities(Request $request){
+
+        $activities = UserLog::query();
+        $activities = $activities->select('user_logs.*', 'users.name')
+                   ->leftjoin('users', 'users.id', '=', 'user_logs.user_id')
+                   ->orderBy('created_at', 'desc')
+                   ->paginate(15); 
+        return view('admin::users_activities_log',compact('activities'));
     }
 }

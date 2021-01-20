@@ -210,6 +210,8 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
     // CHM-Amir
     Route::get('trail_logs', 'TrailLogController@index')->name('trail_logs.list');
+
+    Route::get('users_activities', 'TrailLogController@usersActivities')->name('trail_logs.usersActivities');
     //Transmissions Routes
     Route::resource('transmissions', 'TransmissionController');
 

@@ -55,7 +55,7 @@
     <!-- END: Breadcrumbs-->
     <!-- START: Card Data-->
     <div class="row">
-        <div class="col-12 col-sm-6 col-xl-3">
+        <div class="col-12 col-sm-6 col-xl-4">
             <div class="card">
                 <div class="card-body p-0">
                     <div class='p-4 align-self-center'>
@@ -65,17 +65,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-sm-6 col-xl-3">
-            <div class="card">
-                <div class="card-body p-0">
-                    <div class='p-4 align-self-center'>
-                        <span class="col-xl-4" style="display: contents;"><i class="fas fa-user fa-4x"></i></span>
-                        <span class="col-xl-8" style="display: inline-block;"> <h2>{{ App\User::count() }}</h2> <strong>Total Users</strong></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-12 col-sm-6 col-xl-3">
+        <div class="col-12 col-sm-6 col-xl-4">
             <div class="card">
                 <div class="card-body p-0">
                     <div class='p-4 align-self-center'>
@@ -85,7 +75,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-sm-6 col-xl-3">
+        <div class="col-12 col-sm-6 col-xl-4">
             <div class="card">
                 <div class="card-body p-0">
                     <div class='p-4 align-self-center'> 
@@ -96,6 +86,42 @@
             </div>
         </div>
     </div>
+    
+    <div class="row">
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class='p-4 align-self-center'>
+                        <span class="col-xl-4" style="display: contents;"><i class="fas fa-users fa-4x"></i></span>
+                        <span class="col-xl-8" style="display: inline-block;"> <h2>{{ App\User::count() }}</h2> <strong>Total Users</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class='p-4 align-self-center'>
+                        <span class="col-xl-4" style="display: contents;"><i class="fas fa-users fa-4x"></i></span>
+                        <span class="col-xl-8" style="display: inline-block;"> <h2>{{ App\User::where('working_status','online')->count() }}</h2> <strong>Active Users</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-4">
+            <div class="card">
+                <div class="card-body p-0">
+                    <div class='p-4 align-self-center'>
+                        <span class="col-xl-4" style="display: contents;"><i class="fas fa-users fa-4x"></i></span>
+                        <span class="col-xl-8" style="display: inline-block;"> <h2>{{ App\User::where('working_status','offline')->count() }}</h2> <strong>Offline Users</strong></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{-- graph --}}
+        @include('userroles::line_graph_dashboard')
+    {{-- graph --}}
     <div class="row">
         <div class="col-12  col-lg-12 mt-3">
             <div class="card">

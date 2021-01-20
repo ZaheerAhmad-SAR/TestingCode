@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Modules\UserRoles\Entities\RolePermission;
-
+use Modules\Admin\Entities\Modility;
 class HomeController extends Controller
 {
     /**
@@ -24,9 +24,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        session(['current_study'=>'','study_short_name'=> '']);
-
-        return view('userroles::dashboard');
+        //session(['current_study'=>'','study_short_name'=> '']);
+        $modalities = Modility::all();
+        return view('userroles::dashboard',compact('modalities'));
     }
     
 }
