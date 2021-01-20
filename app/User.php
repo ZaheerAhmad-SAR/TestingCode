@@ -18,6 +18,7 @@ use Modules\UserRoles\Entities\Role;
 use Modules\Admin\Entities\RoleStudyUser;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Entities\UserSystemInfo;
+use Modules\UserRoles\Entities\UserLog;
 
 class User extends Authenticatable
 {
@@ -242,5 +243,10 @@ class User extends Authenticatable
     public function certificationOfficer()
     {
         return $this->hasMany(CertificationData::class);
+    }
+    
+    public function user_log()
+    {
+        return $this->hasMany(UserLog::class);
     }
 }

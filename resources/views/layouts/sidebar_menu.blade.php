@@ -475,6 +475,12 @@
                                     Audit Trail
                                 </a>
                             </li>
+                            <li>
+                                <a href="{{route('trail_logs.usersActivities')}}">
+                                    <i class="fas fa-users"></i>
+                                    Users Activities
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -498,6 +504,8 @@
                     </ul>
                 </li>
                 @endif
+
+               
 
             @endif
 
