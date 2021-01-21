@@ -154,7 +154,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
 	// show user signature
 	Route::get('user-signature/{file_name}', function($fileName) {
-
+		
 		$decryptFileName = decrypt($fileName);
 		$path = storage_path('user_signature/'.$decryptFileName);
 	    if (!File::exists($path)) {
