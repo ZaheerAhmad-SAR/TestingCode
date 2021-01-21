@@ -509,7 +509,7 @@
                 </li>
                 @endif
 
-               
+
 
             @endif
 
@@ -520,7 +520,7 @@
      <button type="button" class="btn btn-primary dropdown-toggle position-fixed" data-toggle="dropdown">  <i class="icon-question"></i> Support</button>
         <div class="dropdown-menu">
             @if(hasPermission(auth()->user(),'bug-reporting.create'))
-            <a href="#" class="dropdown-item"  data-toggle="modal" data-target="#reportabugmodel"><i class="fa fa-plus"></i>   Report a Bug</a>
+            <a href="javascript:void(0);" class="dropdown-item"  data-toggle="modal" data-target="#reportabugmodel"><i class="fa fa-plus"></i>   Report a Bug</a>
             <div class="dropdown-divider"></div>
             @endif
             <a href="#" class="dropdown-item"><i class="fa fa-plus"></i>  User Manual</a>
