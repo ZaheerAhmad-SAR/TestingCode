@@ -182,6 +182,7 @@
 @push('script')
 <script>
     $('.add_calculated_field').on('click', function() {
+
         checkIsStepHasData();
         if (checkIsStepActive() == false) {
             $('#form_calculate').trigger('reset');
