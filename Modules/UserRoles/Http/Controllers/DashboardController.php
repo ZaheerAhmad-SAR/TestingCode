@@ -34,7 +34,7 @@ class DashboardController extends Controller
         // ->whereDate('online_at', '=', Carbon::now()->toDateString())
         // ->groupBy('hour')
         // ->get();
-        dd($records);
+        // dd($records);
         $assign_work_cfp = AssignWork::where('form_type_id',2)->with(['get_form_status' => function ($query) { $query->where('form_status', '=', 'complete'); }])->get();
         // $assign_work_cfp = AssignWork::where('form_type_id',2)->with('form_status',['form_status' => 'complete'])->get();
 
