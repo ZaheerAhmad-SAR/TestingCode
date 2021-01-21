@@ -77,6 +77,7 @@
                                                         <div class="ml-auto my-auto font-weight-bold text-right text-success">
                                                             <a href="#" class="mr-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-options-vertical"></i></a>
                                                             <div class="dropdown-menu p-0 m-0 dropdown-menu-right mail-bulk-action">
+                                                                <a class="dropdown-item markAsUnReadNotification" data-id="{{$record->id}}" href="javascript:void(0);"><i class="icon-notebook"></i> Mark as unread</a>
                                                                 <a class="dropdown-item readnotificationdelete" data-id="{{$record->id}}" href="javascript:void(0);"><i class="icon-trash"></i> Delete</a>
                                                             </div>
                                                         </div>
@@ -116,6 +117,24 @@
             var id  = $(this).attr('data-id');
             $.ajax({
                 url:"{{route('queries.markAsRead')}}",
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'id' :id
+                },
+                success: function(response)
+                {
+                    console.log(response);
+                    location.reload();
+                }
+            });
+        });
+
+        $('.markAsUnReadNotification').click(function () {
+            var id  = $(this).attr('data-id');
+            $.ajax({
+                url:"{{route('queries.markAsUnRead')}}",
                 type: 'POST',
                 data: {
                     "_token": "{{ csrf_token() }}",

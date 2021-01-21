@@ -20,6 +20,7 @@ Route::group(['middleware' => ['auth','web']],function(){
     Route::get('queries/chatindex','QueriesController@chatindex')->name('queries.chatindex');
     Route::post('queries/show','QueriesController@show')->name('queries.show');
     Route::post('queries/markAsRead','QueriesController@markAsRead')->name('queries.markAsRead');
+    Route::post('queries/markAsUnRead','QueriesController@markAsUnRead')->name('queries.markAsUnRead');
     Route::post('queries/deletenotification','QueriesController@deletenotification')->name('queries.deletenotification');
     Route::post('queries/markAllNotificationToRead','QueriesController@markAllNotificationToRead')->name('queries.markAllNotificationToRead');
 

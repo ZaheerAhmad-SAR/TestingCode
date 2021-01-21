@@ -206,9 +206,10 @@ class Query extends Model
         $queryCheck   = false;
         $queryByLogin = $sqlQuery->where('queried_remarked_by_id', 'like', auth()->user()->id)
             ->where('parent_query_id','=',0)
-            ->where('query_status', '!=', 'close')
+            ->where('query_status', '=', 'close')
             ->where('query_level', '=', 'question')
-            ->count();
+            //->count();
+            ->first();
         //dd($queryByLogin);
         if ($queryByLogin > 0) {
             //dd('ddddd');
