@@ -19,12 +19,10 @@ Route::group(['middleware' => ['auth','web']],function(){
     Route::resource('queries','QueriesController');
     Route::get('queries/chatindex','QueriesController@chatindex')->name('queries.chatindex');
     Route::post('queries/show','QueriesController@show')->name('queries.show');
+    Route::post('queries/markAsRead','QueriesController@markAsRead')->name('queries.markAsRead');
+    Route::post('queries/deletenotification','QueriesController@deletenotification')->name('queries.deletenotification');
     Route::post('queries/markAllNotificationToRead','QueriesController@markAllNotificationToRead')->name('queries.markAllNotificationToRead');
-    Route::post('queries/redirectTicketToStudy','QueriesController@redirectTicketToStudy')->name('queries.redirectTicketToStudy');
 
-    //Route::get('redirectTicket','QueriesController@redirectTicketToStudy')->name('queries.redirectTicketToStudy');
-
-    //Route::get('redirectTicket/{id}','QueriesController@redirectTicketToStudy')->name('queries.redirectTicketToStudy');
 
     Route::post('queries/loadHtml', 'QueriesController@loadHtml')->name('queries.loadHtml');
     Route::post('queries/update', 'QueriesController@update')->name('queries.update');

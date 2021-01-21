@@ -694,10 +694,29 @@ class QueriesController extends Controller
         //
     }
 
-    public function redirectTicketToStudy(Request $request)
+    public function markAsRead(Request $request)
     {
-
-
+       $id    = $request->post('id');
+       $check = AppNotification::find($id);
+       if ($check!== '')
+       {
+           $isRead    = array('is_read'=>'yes');
+           AppNotification::where('id',$check['id'])->update($isRead);
+           return response()->json(['success'=>' Notification is mark to Read successfully!!!!']);
+       }
     }
+
+    public function deletenotification(Request $request)
+    {
+       $id    = $request->post('id');
+       $check = AppNotification::find($id);
+       if ($check!== '')
+       {
+           $check->delete();
+           return response()->json(['success' => 'Notification is deleted successfully.']);
+       }
+    }
+
+
 
 }
