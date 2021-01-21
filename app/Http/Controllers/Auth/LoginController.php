@@ -13,6 +13,8 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use App\Http\Requests\ValidateSecretRequest;
 use App\Helpers\UserSystemInfoHelper;
 use Modules\UserRoles\Entities\UserSystemInfo;
+use Modules\UserRoles\Entities\UserLog;
+use Illuminate\Support\Str;
 
 class LoginController extends Controller
 {
@@ -64,11 +66,17 @@ class LoginController extends Controller
 
         if ($this->attemptLogin($request)) {
             if ((int)auth()->user()->is_active == 1) {
-                // dd($request->email);
+                
                 $user = User::where('email', $request->email)->first();
                 $user->working_status = 'online';
                 $user->online_at = now();
                 $user->save();
+                $id    = (string)Str::uuid();
+                UserLog::create([
+                    'id' => $id,
+                    'user_id'    => $user->id,
+                    'online_at' => now()
+                ]);
                 return $this->sendLoginResponse($request);
             }
         }

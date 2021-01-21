@@ -42,6 +42,7 @@
                                     @if(hasPermission(auth()->user(),'bug-reporting.edit') && hasPermission(auth()->user(),'bug-reporting.destroy'))
                                         <th style="width: 1%;">Bug Location </th>
                                     @endif
+                                    <th style="width: 1%;">created_at</th>
                                     <th style="width: 1%;">Action</th>
                                 </tr>
                                 <tbody>
@@ -68,7 +69,7 @@
 
                                             </td>
                                             @endif
-
+                                            <td>{{Carbon\Carbon::parse($record['created_at'])->diffForHumans()}}</td>
                                             @if(hasPermission(auth()->user(),'bug-reporting.edit') && hasPermission(auth()->user(),'bug-reporting.destroy'))
                                             <td>
                                                 <div class="d-flex mt-3 mt-md-0 ml-auto">

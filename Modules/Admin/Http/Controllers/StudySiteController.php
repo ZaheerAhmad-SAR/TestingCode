@@ -165,7 +165,7 @@ class StudySiteController extends Controller
 
     public function assignedSites(Request $request)
     {
-        //dd($request->all());
+        $total_sites = Site::all();
         $sites = Site::query();
         if ($request->site_code != '') {
             $sites = $sites->where('site_code','like', '%'.$request->site_code.'%');
@@ -186,7 +186,7 @@ class StudySiteController extends Controller
             $sites = $sites->where('site_phone','like', '%'.$request->site_phone.'%');
         }
         $sites = $sites->paginate(20);
-        return view('admin::studies.assign_sites',compact('sites'));
+        return view('admin::studies.assign_sites',compact('sites','total_sites'));
     }
 
     public function updateStudySite(Request $request)

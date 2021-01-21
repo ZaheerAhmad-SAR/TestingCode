@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('body')
     <!-- START: Header-->
+{{--    @php dd(session()->all()); @endphp--}}
     @if (!empty(auth()->user()))
     <div id="header-fix" class="header fixed-top">
         <div class="site-width">
@@ -71,23 +72,13 @@
                                     @endphp
                                 <li>
 
-                                    @php
-                                        $studyData = Modules\Admin\Entities\Study::where('id',$result->study_id)->first();
-
-                                        $redirectArray = array(
-                                            'study_short_name' => $studyData->study_short_name,
-                                            'study_code'=>$studyData->study_code,
-                                            'id'=>$studyData->id,
-                                            'query_url'=>$result->query_url
-
-                                        );
-                                    @endphp
-                                    <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0 currentNotificationId appRedirectPage"   data-study_id="{{$studyData->id}}" data-query_url="{{$result->query_url}}" data-id="{{$result->study_id}}" href="javascript:void(0);" data-value="{{$result->id}}">
+                                    @php $studyData = Modules\Admin\Entities\Study::where('id',$result->study_id)->first(); @endphp
+                                    <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0 currentNotificationId appRedirectPage"   data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$result->query_url}}" data-id="{{$result->study_id}}" href="javascript:void(0);" data-value="{{$result->id}}">
                                         <div class="media">
                                             <img src="{{asset('dist/images/author.jpg')}}" alt="" class="d-flex mr-3 img-fluid rounded-circle">
                                             <div class="media-body">
 
-                                                <p class="mb-0 text-primary ">{{$studyData->study_short_name}} : new query by {{$userData->name}}</p>
+                                                <p class="mb-0 text-primary "><b> {{$studyData->study_short_name}} : new query by {{$userData->name}} </b></p>
                                                 {{ date_format($result->created_at,'d-M-Y')}}
                                             </div>
 
@@ -101,12 +92,12 @@
                                 <tr>
                                                  @if($count > 0 )
                                     &nbsp; &nbsp;<td class="align-baseline"><a class="markAllRead" href="javascript:void(0);"><span><i class="fas fa-check"></i></span> &nbsp;Mark All Read</a></td> &nbsp; &nbsp; &nbsp;
-                                                @else
-                                        &nbsp; &nbsp;<td class="align-baseline"><a class="noNewNotification" href="javascript:void(0);"><span><i class="fas fa-check"></i></span> &nbsp;No New Notification</a></td> &nbsp; &nbsp; &nbsp;
+{{--                                                @else--}}
+{{--                                        &nbsp; &nbsp;<td class="align-baseline"><a class="noNewNotification" href="javascript:void(0);"><span><i class="fas fa-check"></i></span> &nbsp;No New Notification</a></td> &nbsp; &nbsp; &nbsp;--}}
                                                 @endif
-                                    @if($count > 1)
-                                        <td class="align-top"><a href="{{route('queries.show')}}"><span><i class="fas fa-book-open"></i></span> &nbsp; All Notification</a></td>
-                                    @endif
+
+                                        <td class="align-top"><a href="{{route('queries.show')}}"><span><i class="fas fa-book-open"></i></span> &nbsp; All Notifications</a></td>
+
                                  </tr>
                             </ul>
                         </li>
@@ -150,11 +141,38 @@
 
         $('.currentNotificationId').click(function () {
             var currentNotificationId  = $(this).attr('data-value');
-            var studyIDOfCurrentNotification = $(this).attr('data-id');
-            var query_url = $(this).attr('data-query_url');
-
-            updateNotificationToRead(currentNotificationId,studyIDOfCurrentNotification,query_url);
+            var query_url        = $(this).attr('data-query_url');
+            var study_id         = $(this).attr('data-study_id');
+            var study_code       = $(this).attr('data-study_code');
+            var study_short_name = $(this).attr('data-study_short_name');
+            updateNotificationToRead(currentNotificationId,query_url,study_id,study_code,study_short_name);
         });
+
+        function updateNotificationToRead(currentNotificationId,query_url,study_id,study_code,study_short_name)
+        {
+            $.ajax({
+                url:"{{route('queries.update')}}",
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'currentNotificationId' :currentNotificationId,
+                    'query_url' :query_url,
+                    'study_id' :study_id,
+                    'study_code' :study_code,
+                    'study_short_name' :study_short_name,
+                },
+                success: function(response)
+                {
+                    console.log(response);
+                    if (response.success)
+                    {
+                        var urlPath = response.success;
+                        window.location.href = urlPath;
+                    }
+                }
+            });
+        }
 
         $('.markAllRead').click(function () {
 
@@ -169,61 +187,9 @@
                 {
                     console.log(response);
                     location.reload();
-
                 }
             });
         });
-
-        $('.appRedirectPage').click(function () {
-
-        var query_url = $(this).attr('data-query_url');
-        var  study_id = $(this).attr('data-study_id');
-        appRedirectGetData(query_url,study_id);
-        });
-
-        function  appRedirectGetData(query_url,study_id)
-        {
-            $.ajax({
-                url:"{{route('queries.redirectTicketToStudy')}}",
-                type: 'POST',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'POST',
-                    'query_url' :query_url,
-                    'study_id' :study_id
-                },
-                success: function(response)
-                {
-                    console.log(response);
-                    if (response.success)
-                    {
-                    var urlPath = response.success;
-                        window.location.href = urlPath;
-                    }
-                }
-            });
-        }
-
-        function updateNotificationToRead(currentNotificationId,studyIDOfCurrentNotification,query_url)
-        {
-            $.ajax({
-                url:"{{route('queries.update')}}",
-                type: 'POST',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'POST',
-                    'currentNotificationId' :currentNotificationId,
-                    'studyIDOfCurrentNotification' :studyIDOfCurrentNotification,
-                    'query_url' :query_url
-
-                },
-                success: function(response)
-                {
-                      console.log(response);
-                      //location.reload();
-                }
-            });
-        }
 
 
     </script>

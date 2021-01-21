@@ -72,6 +72,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('forms/isStepActive/{step_id}', 'FormController@isStepActive')->name('steps.isStepActive');
     Route::post('forms/isThisStepHasData', 'FormController@isThisStepHasData')->name('steps.isThisStepHasData');
     Route::post('forms/getStepVersion/{step_id}', 'FormController@getStepVersion')->name('forms.getStepVersion');
+    Route::get('forms/show_available_variable_names/{step_id}', 'FormController@show_available_variable_names')->name('forms.show_available_variable_names');
     // skip logic
     Route::resource('skiplogic', 'SkipLogicController');
     Route::get('skiplogic/sections_for_skip_logic/{id}', 'SkipLogicController@sections_skip_logic')->name('skiplogic.sectionsSkip');
@@ -210,6 +211,8 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
     // CHM-Amir
     Route::get('trail_logs', 'TrailLogController@index')->name('trail_logs.list');
+
+    Route::get('users_activities', 'TrailLogController@usersActivities')->name('trail_logs.usersActivities');
     //Transmissions Routes
     Route::resource('transmissions', 'TransmissionController');
 
