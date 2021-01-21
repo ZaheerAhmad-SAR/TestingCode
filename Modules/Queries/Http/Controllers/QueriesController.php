@@ -226,6 +226,15 @@ class QueriesController extends Controller
             'query_level'=>$query_level_q
         ]);
 
+        AppNotification::create([
+            'id' => Str::uuid(),
+            'user_id' => \auth()->user()->id,
+            'query_id' => $query_id,
+            'is_read'=>'no',
+            'study_id'=>$study_id
+
+        ]);
+
         $queryStatusArray = array('query_status'=>$query_status);
         $queryStatusArrayChild = array('query_status'=>$query_status);
         Query::where('id',$find['id'])->update($queryStatusArray);
@@ -705,6 +714,18 @@ class QueriesController extends Controller
            return response()->json(['success'=>' Notification is mark to Read successfully!!!!']);
        }
     }
+    public function markAsUnRead(Request $request)
+    {
+       $id    = $request->post('id');
+       $check = AppNotification::find($id);
+       if ($check!== '')
+       {
+           $isRead    = array('is_read'=>'no');
+           AppNotification::where('id',$check['id'])->update($isRead);
+           return response()->json(['success'=>' Notification is mark to un-Read successfully!!!!']);
+       }
+    }
+
 
     public function deletenotification(Request $request)
     {

@@ -22,7 +22,7 @@ class BugReportingController extends Controller
      */
     public function index()
     {
-        $records = BugReport::where('parent_bug_id','like',0)->get();
+        $records = BugReport::where('parent_bug_id','like',0)->orderBy('created_at', 'DESC')->get();
         return view('bugreporting::pages.index',compact('records'));
     }
 
