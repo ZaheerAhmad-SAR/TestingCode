@@ -10,7 +10,7 @@ use Modules\UserRoles\Entities\RolePermission;
 use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\AssignWork;
 use Modules\FormSubmission\Entities\FormStatus;
-
+use Illuminate\Support\Carbon;
 class DashboardController extends Controller
 {
     /*public function __construct() {
@@ -24,12 +24,22 @@ class DashboardController extends Controller
     {
         // session(['current_study'=>'','study_short_name'=> '']);
         // $study = '';
+        
         $modalities = Modility::all();
+        $date = now();
+        $records = User::get()->groupBy(function($date) {
+            return Carbon::parse($date->online_at)->format('h');
+        });
+        // $records = User::select(User::raw('count(*) as count, HOUR(online_at) as hour'))
+        // ->whereDate('online_at', '=', Carbon::now()->toDateString())
+        // ->groupBy('hour')
+        // ->get();
+        dd($records);
         $assign_work_cfp = AssignWork::where('form_type_id',2)->with(['get_form_status' => function ($query) { $query->where('form_status', '=', 'complete'); }])->get();
         // $assign_work_cfp = AssignWork::where('form_type_id',2)->with('form_status',['form_status' => 'complete'])->get();
 
         // dd($assign_work_cfp);
-        return view('userroles::dashboard',compact('modalities'));
+        return view('userroles::dashboard',compact('modalities','records'));
     }
 
     /**

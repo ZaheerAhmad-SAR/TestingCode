@@ -19,20 +19,23 @@
                     $time = new DateTime($user->online_at);
                     $time = $time->format('H:i');
                 @endphp
-                <div class="media">
-                    <img src="{{(asset('public/images/download.png'))}}" style="width: 40px; height: 40px; border-radius: 50%;">
+                <div class="media" style="display: block;">
+                    <img src="{{(asset('public/images/download.png'))}}" style="width: 30px; height: 30px; border-radius: 50%;">
                     @if($user->working_status =='offline')
-                    <i class="fas fa-circle" style="position: absolute;left: 45px; color: red;"></i>
+                    <i class="fas fa-circle" style="position: absolute;left: 36px; color: red;"></i>
                     @else
-                    <i class="fas fa-circle" style="position: absolute;left: 45px; color: green;"></i>
+                    <i class="fas fa-circle" style="position: absolute;left: 36px; color: green;"></i>
                     @endif
-                    <span style="margin-top: 15px;">{{$user->name}} </span><br> 
+                    <span>{{$user->name}} </span>
+                    <span style="font-size:9px; float: right;margin-top: 25px;">
+                    @if($user->working_status =='offline')
+                        {{Carbon\Carbon::parse($user->offline_at)->diffForHumans()}}
+                    @else
+                        {{Carbon\Carbon::parse($user->online_at)->diffForHumans()}} 
+                    @endif
+                    </span>
                 </div>
-                @if($user->working_status =='offline')
-                <p style="font-size:11px; text-align: right;">{{Carbon\Carbon::parse($user->offline_at)->diffForHumans()}} </p>
-                @else
-                <p style="font-size:11px; text-align: right;">{{Carbon\Carbon::parse($user->online_at)->diffForHumans()}} </p>
-                @endif
+                
                 <hr/>
             @endforeach
         </div>
@@ -507,27 +510,7 @@
         $(this).toggleClass("fa-chevron-circle-right fa-chevron-circle-down");
     });
 </script>
-<script src="{{ asset('public/dist/vendors/raphael/raphael.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/morris/morris.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/chartjs/Chart.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/starrr/starrr.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-flot/jquery.canvaswrapper.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-flot/jquery.colorhelpers.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.saturated.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.browser.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.drawSeries.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.uiConstants.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.legend.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-flot/jquery.flot.pie.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/chartjs/Chart.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-2.0.3.min.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-world-mill.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-de-merc.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/jquery-jvectormap/jquery-jvectormap-us-aea.js') }}"></script>
-<script src="{{ asset('public/dist/vendors/apexcharts/apexcharts.js') }}"></script>
-<script  src="{{ asset('public/dist/vendors/lineprogressbar/jquery.lineProgressbar.js') }}"></script>
-<script  src="{{ asset('public/dist/vendors/lineprogressbar/jquery.barfiller.js') }}"></script>
 
-<script src="{{ asset('public/dist/js/home.script.js') }}"></script>
+<script src="{{ asset('public/dist/vendors/chartjs/Chart.min.js') }}"></script>
+
 @stop
