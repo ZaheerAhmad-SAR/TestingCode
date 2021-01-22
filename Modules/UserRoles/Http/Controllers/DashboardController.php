@@ -17,28 +17,17 @@ class DashboardController extends Controller
         $this->middleware('can:users.dashboard');
     }*/
     /**
+    whereDate('online_at', Carbon::today())
      * Display a listing of the resource.
      * @return Response
      */
     public function index()
     {
-        // session(['current_study'=>'','study_short_name'=> '']);
-        // $study = '';
-        
         $modalities = Modility::all();
-        $date = now();
         $records = User::get()->groupBy(function($date) {
-            return Carbon::parse($date->online_at)->format('h');
+            return Carbon::parse($date->online_at)->format('H');
         });
-        // $records = User::select(User::raw('count(*) as count, HOUR(online_at) as hour'))
-        // ->whereDate('online_at', '=', Carbon::now()->toDateString())
-        // ->groupBy('hour')
-        // ->get();
-        // dd($records);
         $assign_work_cfp = AssignWork::where('form_type_id',2)->with(['get_form_status' => function ($query) { $query->where('form_status', '=', 'complete'); }])->get();
-        // $assign_work_cfp = AssignWork::where('form_type_id',2)->with('form_status',['form_status' => 'complete'])->get();
-
-        // dd($assign_work_cfp);
         return view('userroles::dashboard',compact('modalities','records'));
     }
 

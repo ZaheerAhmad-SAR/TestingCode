@@ -205,7 +205,7 @@
                                         <select name="form_field_type_id" id="question_type" class="form-control">
                                             <option value="">--- Field Type ---</option>
                                             @foreach ($fields as $key => $value)
-                                                @if ($value->field_type == 'Certification' || $value->field_type == 'Description')
+                                                @if ($value->field_type == 'Certification' || $value->field_type == 'Description' || $value->field_type == 'Calculated')
                                                 @else
                                                     <option value="{{ $value->id }}">{{ $value->field_type }}</option>
                                                 @endif
