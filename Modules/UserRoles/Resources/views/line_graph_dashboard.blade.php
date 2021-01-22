@@ -29,19 +29,33 @@
 if ($("#chartjs_corona").length > 0)
 {
 	@php 
-		// $record = App\user::all();
-		
-		// dd($record);
+		$total_online = '';
+        $time_in_24_hour_format = '';
+        $i = 0;
+        foreach($records as $key => $value){
+            $key = $key.':00';
+            $time  = date("h:i a", strtotime($key));
+            $time_in_24_hour_format  .= "'$time'".',';
+            $i++;
+        }
+        foreach($records as $key => $value){
+            $total_online .= count($value).',';
+            $i++;
+        }
+        foreach($records as $key => $value){
+            $total_online .= count($value).',';
+            
+        }
 	@endphp
     var config = {
         type: 'line',
         data: {
-            labels: ['12:00', '1:00 AM', '2:00 AM', '3:00 AM', '4:00 AM', '5:00 AM', '6:00 AM', '7:00', '8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM', '7:00 PM', '8:00 PM', '9:00 PM', '10:00 PM', '11:00 PM'],
+            labels: [@php echo $time_in_24_hour_format @endphp],
             datasets: [{
                     label: 'Online',
                     borderColor: '#17a2b8',
                     backgroundColor: 'rgba(23, 162, 184, 0.2)',
-                    data: [27, 69, 22, 55, 31, 50,27, 69, 22, 55, 31, 50,27, 69, 22, 55, 31, 50,27, 69, 22, 55, 31, 50],
+                    data: [@php echo $total_online @endphp],
                     borderWidth: 1
                 }]
         },
