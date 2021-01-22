@@ -96,7 +96,7 @@
 {{--                                        &nbsp; &nbsp;<td class="align-baseline"><a class="noNewNotification" href="javascript:void(0);"><span><i class="fas fa-check"></i></span> &nbsp;No New Notification</a></td> &nbsp; &nbsp; &nbsp;--}}
                                                 @endif
 
-                                        <td class="align-top"><a href="{{route('queries.show')}}"><span><i class="fas fa-book-open"></i></span> &nbsp; All Notifications</a></td>
+                                        <td class="align-top"><a href="{{route('notifications.index')}}"><span><i class="fas fa-book-open"></i></span> &nbsp; All Notifications</a></td>
 
                                  </tr>
                             </ul>
@@ -177,7 +177,7 @@
         $('.markAllRead').click(function () {
 
             $.ajax({
-                url:"{{route('queries.markAllNotificationToRead')}}",
+                url:"{{route('notifications.markAllNotificationToRead')}}",
                 type: 'POST',
                 data: {
                     "_token": "{{ csrf_token() }}",
