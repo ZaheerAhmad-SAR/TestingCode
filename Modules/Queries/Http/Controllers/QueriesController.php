@@ -630,9 +630,6 @@ class QueriesController extends Controller
     public function show()
     {
 
-        $records = AppNotification::where('user_id','=', auth()->user()->id)->get();
-        //dd($records);
-        return view('queries::notifications.index',compact('records'));
     }
 
     /**
@@ -681,17 +678,7 @@ class QueriesController extends Controller
         }
     }
 
-    public function markAllNotificationToRead()
-    {
-        $records = AppNotification::where('user_id','=', auth()->user()->id)->where('is_read','no')->get();
-        foreach ($records as $record)
-        {
-            //dd($record['user_id']);
-            $isRead    = array('is_read'=>'yes');
-            AppNotification::where('user_id',$record['user_id'])->update($isRead);
-            return response()->json(['success'=>'All Notification is mark to Read successfully!!!!']);
-        }
-    }
+
 
     /**
      * Remove the specified resource from storage.
@@ -702,42 +689,6 @@ class QueriesController extends Controller
     {
         //
     }
-
-    public function markAsRead(Request $request)
-    {
-       $id    = $request->post('id');
-       $check = AppNotification::find($id);
-       if ($check!== '')
-       {
-           $isRead    = array('is_read'=>'yes');
-           AppNotification::where('id',$check['id'])->update($isRead);
-           return response()->json(['success'=>' Notification is mark to Read successfully!!!!']);
-       }
-    }
-    public function markAsUnRead(Request $request)
-    {
-       $id    = $request->post('id');
-       $check = AppNotification::find($id);
-       if ($check!== '')
-       {
-           $isRead    = array('is_read'=>'no');
-           AppNotification::where('id',$check['id'])->update($isRead);
-           return response()->json(['success'=>' Notification is mark to un-Read successfully!!!!']);
-       }
-    }
-
-
-    public function deletenotification(Request $request)
-    {
-       $id    = $request->post('id');
-       $check = AppNotification::find($id);
-       if ($check!== '')
-       {
-           $check->delete();
-           return response()->json(['success' => 'Notification is deleted successfully.']);
-       }
-    }
-
 
 
 }

@@ -17,12 +17,14 @@
 
 Route::group(['middleware' => ['auth','web']],function(){
     Route::resource('queries','QueriesController');
+    Route::resource('notifications','AppNotificationsController');
+    Route::get('notifications', 'AppNotificationsController@index')->name('notifications.index');
+    Route::post('notifications/markAllNotificationToRead','AppNotificationsController@markAllNotificationToRead')->name('notifications.markAllNotificationToRead');
+    Route::post('notifications/markAsUnRead','AppNotificationsController@markAsUnRead')->name('notifications.markAsUnRead');
+    Route::post('notifications/markAsRead','AppNotificationsController@markAsRead')->name('notifications.markAsRead');
+    Route::post('notifications/removeNotification','AppNotificationsController@removeNotification')->name('notifications.removeNotification');
     Route::get('queries/chatindex','QueriesController@chatindex')->name('queries.chatindex');
-    Route::post('queries/show','QueriesController@show')->name('queries.show');
-    Route::post('queries/markAsRead','QueriesController@markAsRead')->name('queries.markAsRead');
-    Route::post('queries/markAsUnRead','QueriesController@markAsUnRead')->name('queries.markAsUnRead');
-    Route::post('queries/deletenotification','QueriesController@deletenotification')->name('queries.deletenotification');
-    Route::post('queries/markAllNotificationToRead','QueriesController@markAllNotificationToRead')->name('queries.markAllNotificationToRead');
+
 
 
     Route::post('queries/loadHtml', 'QueriesController@loadHtml')->name('queries.loadHtml');
