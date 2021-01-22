@@ -155,6 +155,7 @@ class TransmissionDataDeviceController extends Controller
                 ->where('site_id', $getSiteID)
                 ->where('device_serial_no', $transmission->Device_Serial)
                 ->where('transmission_type', 'device_transmission')
+                ->whereNULL('pdf_key')
                 ->first();
 
             if ($certifiedTransmission != null) {
@@ -563,9 +564,8 @@ class TransmissionDataDeviceController extends Controller
         }
     }
 
-    public function generateDeviceCertificate(Request $request)
+    public function approveDeviceCertificate(Request $request)
     {
-
         // find Transmission
         $findTransmission = TransmissionDataDevice::find($request->hidden_transmission_id);
 
@@ -656,6 +656,7 @@ class TransmissionDataDeviceController extends Controller
 
         $generateCertificate->transmission_type = 'device_transmission';
         $generateCertificate->validity = 'yes';
+        $generateCertificate->pdf_key = $request->pdf_key;
         $generateCertificate->save();
 
         // get study email to pass to pdf
@@ -666,41 +667,12 @@ class TransmissionDataDeviceController extends Controller
         // generate pdf
         $pdf = PDF::loadView('certificationapp::certificate_pdf.certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('a4')->save($path . '/' . $file_name);
 
-        // make array for changings dynamic variable in the text editor
-        $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, $findTransmission->PI_Name, $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id, $generateCertificate->device_model, $generateCertificate->device_serial_no, $generateCertificate->user_input_device_id];
-
-        $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[pi_name]]', '[[modality_name]]', '[[certificate_id]]', '[[sender_name]]', '[[certificate_status]]', '[[certificate_type]]', '[[issue_date]]', '[[expiry_date]]', '[[grandfather_certificate_id]]', '[[device_model]]', '[[device_serial_no]]', '[[device_id]]'];
-
-        $data = [];
-        $data['email_body'] = str_replace($labels, $variables, $request->comment);
-        $senderEmail = $generateCertificate->photographer_email;
-        $ccEmail = $generateCertificate->cc_emails != '' ? json_decode($generateCertificate->cc_emails) : '';
-        $bccEmail = $generateCertificate->bcc_emails != '' ? json_decode($generateCertificate->bcc_emails) : '';
-
-        // send email to users
-        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $bccEmail, $generateCertificate, $findTransmission, $getSite, $getStudy, $getModality, $path, $file_name)
-        {
-            $message->subject($getStudy->study_short_name.' '.$getStudy->study_code.' | Device Certification# '.$generateCertificate->certificate_id.' | '. $getSite->site_code.' | '. $getModality->modility_name);
-            $message->to($senderEmail);
-            if($ccEmail != null) {
-                $message->cc($ccEmail);
-            }
-
-            if($bccEmail != null) {
-                $message->bcc($bccEmail);
-            }
-            $message->attach($path.'/'.$file_name);
-
-        });
-
         // update the file name in database
         $upateFileName = CertificationData::where('id', $newCertificateID)
             ->update(['certificate_file_name' => $file_name]);
 
-        Session::flash('success', 'Certicate generated successfully.');
-
         // return back
-        return redirect()->back();
+        return redirect()->route('device-certificate-pdf', $file_name);
     }
 
     public function updateDeviceProvisonalCertificate(Request $request)
@@ -823,7 +795,8 @@ class TransmissionDataDeviceController extends Controller
             ->leftjoin('photographers', 'photographers.id', '=', 'certification_data.photographer_id')
             ->leftjoin('sites', 'sites.id', 'certification_data.site_id')
             ->leftjoin('users', 'users.id', '=', 'certification_data.certification_officer_id')
-            ->where('certification_data.transmission_type', 'device_transmission');
+            ->where('certification_data.transmission_type', 'device_transmission')
+            ->whereNULL('pdf_key');
             // ->whereNULL('photographers.deleted_at')
             // ->whereNULL('sites.deleted_at')
             // ->whereNULL('users.deleted_at');
@@ -920,7 +893,7 @@ class TransmissionDataDeviceController extends Controller
         return view('certificationapp::certificate_device.certified_device', compact('getCertifiedDevice', 'getStudies', 'getTemplates', 'getParentModality', 'getChildModality'));
     }
 
-    public function generateDeviceGrandfatherCertificate(Request $request)
+    public function approveGrandFatherDeviceCertificate(Request $request)
     {
 
         $findCertificate = CertificationData::where('certificate_id', $request->certificate_id)->first();
@@ -970,9 +943,8 @@ class TransmissionDataDeviceController extends Controller
 
         $generateCertificate->transmission_type = 'device_transmission';
         $generateCertificate->validity = 'yes';
+        $generateCertificate->pdf_key = $request->gf_pdf_key;
         $generateCertificate->save();
-
-        /** ---------------------------- Email Section ---------------------------------- **/
 
         $getModality = Modility::where('id', $generateCertificate->modility_id)->first();
         //check in child modilities
@@ -997,40 +969,41 @@ class TransmissionDataDeviceController extends Controller
         // generate pdf
         $pdf = PDF::loadView('certificationapp::certificate_pdf.certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('a4')->save($path . '/' . $file_name);
 
-        // make array for changings dynamic variable in the text editor
-        $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, '', $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id, $generateCertificate->device_model, $generateCertificate->device_serial_no, $generateCertificate->user_input_device_id];
+        /** ---------------------------- Email Section ---------------------------------- **/
 
-        $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[pi_name]]', '[[modality_name]]', '[[certificate_id]]', '[[sender_name]]', '[[certificate_status]]', '[[certificate_type]]', '[[issue_date]]', '[[expiry_date]]', '[[grandfather_certificate_id]]', '[[device_model]]', '[[device_serial_no]]', '[[device_id]]'];
+        // // make array for changings dynamic variable in the text editor
+        // $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, '', $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id, $generateCertificate->device_model, $generateCertificate->device_serial_no, $generateCertificate->user_input_device_id];
 
-        $data = [];
-        $data['email_body'] = str_replace($labels, $variables, $request->comment);
-        $senderEmail = $generateCertificate->photographer_email;
-        $ccEmail = $generateCertificate->cc_emails != '' ? json_decode($generateCertificate->cc_emails) : '';
-        $bccEmail = $generateCertificate->bcc_emails != '' ? json_decode($generateCertificate->bcc_emails) : '';
+        // $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[pi_name]]', '[[modality_name]]', '[[certificate_id]]', '[[sender_name]]', '[[certificate_status]]', '[[certificate_type]]', '[[issue_date]]', '[[expiry_date]]', '[[grandfather_certificate_id]]', '[[device_model]]', '[[device_serial_no]]', '[[device_id]]'];
 
-        // send email to users
-        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $bccEmail, $generateCertificate, $getSite, $getStudy, $getModality, $path, $file_name)
-        {
-            $message->subject($getStudy->study_short_name.' '.$getStudy->study_code.' | Grandfather Device Certification# '.$generateCertificate->certificate_id.' | '. $getSite->site_code.' | '. $getModality->modility_name);
-            $message->to($senderEmail);
-            if($ccEmail != '') {
-                $message->cc($ccEmail);
-            }
-            if($bccEmail != '') {
-                $message->bcc($bccEmail);
-            }
-            $message->attach($path.'/'.$file_name);
+        // $data = [];
+        // $data['email_body'] = str_replace($labels, $variables, $request->comment);
+        // $senderEmail = $generateCertificate->photographer_email;
+        // $ccEmail = $generateCertificate->cc_emails != '' ? json_decode($generateCertificate->cc_emails) : '';
+        // $bccEmail = $generateCertificate->bcc_emails != '' ? json_decode($generateCertificate->bcc_emails) : '';
 
-        });
+        // // send email to users
+        // Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $bccEmail, $generateCertificate, $getSite, $getStudy, $getModality, $path, $file_name)
+        // {
+        //     $message->subject($getStudy->study_short_name.' '.$getStudy->study_code.' | Grandfather Device Certification# '.$generateCertificate->certificate_id.' | '. $getSite->site_code.' | '. $getModality->modility_name);
+        //     $message->to($senderEmail);
+        //     if($ccEmail != '') {
+        //         $message->cc($ccEmail);
+        //     }
+        //     if($bccEmail != '') {
+        //         $message->bcc($bccEmail);
+        //     }
+        //     $message->attach($path.'/'.$file_name);
+
+        // });
 
         // update the file name in database
         $upateFileName = CertificationData::where('id', $newCertificateID)
             ->update(['certificate_file_name' => $file_name]);
 
-        Session::flash('success', 'Certicate generated successfully.');
 
         // return back
-        return redirect()->back();
+        return redirect()->route('device-certificate-pdf', $file_name);
     }
 
     public function archiveDeviceTransmission(Request $request, $transmissionID, $status) {
@@ -1091,5 +1064,90 @@ class TransmissionDataDeviceController extends Controller
                                             ->paginate(50);
 
         return view('certificationapp::certificate_device.archived_device_transmission', compact('getTransmissions'));
+    }
+
+    public function generateDeviceCertificate(Request $request) {
+
+        // find the pdf key;
+        $generateCertificate = CertificationData::where('pdf_key', $request->pdf_key)->first();
+
+        // call notification function for sending email
+        $sendNotificationForCertificate = $this->notificationForCertificate($request, $generateCertificate);
+
+        $generateCertificate->pdf_key = null;
+        $generateCertificate->save();
+
+        Session::flash('success', 'Certificate generated successfully.');
+
+        return redirect()->back();
+       
+    } // generate device certificate
+
+    public function generateDeviceGrandfatherCertificate(Request $request) {
+
+        // find the pdf key;
+        $generateCertificate = CertificationData::where('pdf_key', $request->gf_pdf_key)->first();
+
+        // call notification function for sending email
+        $sendNotificationForCertificate = $this->notificationForCertificate($request, $generateCertificate);
+
+        $generateCertificate->pdf_key = null;
+        $generateCertificate->save();
+
+        Session::flash('success', 'Certificate generated successfully.');
+
+        return redirect()->back();
+       
+    } // generate device certificate
+
+    public function notificationForCertificate($request, $generateCertificate) {
+
+        $getModality = Modility::where('id', $generateCertificate->modility_id)->first();
+        //check in child modilities
+        if ($getModality == null) {
+
+            $getModality = ChildModilities::where('id', $generateCertificate->modility_id)->first();
+        }
+        // get photographer ID
+        $getPhotographer = Photographer::find($generateCertificate->photographer_id);
+
+        // get study information
+        $getStudy = Study::find($generateCertificate->study_id);
+
+        // get site information
+        $getSite = Site::where('id', $generateCertificate->site_id)->first();
+
+        // get study email to pass to pdf
+        $getStudyEmail = StudySetup::where('study_id', $getStudy->id)->first();
+
+        $path = storage_path('certificates_pdf/device');
+
+        // make array for changings dynamic variable in the text editor
+        $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id, $generateCertificate->device_model, $generateCertificate->device_serial_no, $generateCertificate->user_input_device_id];
+
+        $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[modality_name]]', '[[certificate_id]]', '[[sender_name]]', '[[certificate_status]]', '[[certificate_type]]', '[[issue_date]]', '[[expiry_date]]', '[[grandfather_certificate_id]]', '[[device_model]]', '[[device_serial_no]]', '[[device_id]]'];
+
+        $data = [];
+        $data['email_body'] = str_replace($labels, $variables, $request->comment);
+        $senderEmail = $generateCertificate->photographer_email;
+        $ccEmail = $generateCertificate->cc_emails != '' ? json_decode($generateCertificate->cc_emails) : '';
+        $bccEmail = $generateCertificate->bcc_emails != '' ? json_decode($generateCertificate->bcc_emails) : '';
+
+        // send email to users
+        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $bccEmail, $generateCertificate, $getSite, $getStudy, $getModality, $path)
+        {
+            $message->subject($getStudy->study_short_name.' '.$getStudy->study_code.' | Device Certification# '.$generateCertificate->certificate_id.' | '. $getSite->site_code.' | '. $getModality->modility_name);
+            $message->to($senderEmail);
+            if($ccEmail != null) {
+                $message->cc($ccEmail);
+            }
+
+            if($bccEmail != null) {
+                $message->bcc($bccEmail);
+            }
+            $message->attach($path.'/'.$generateCertificate->certificate_file_name);
+
+        });
+
     }
 }

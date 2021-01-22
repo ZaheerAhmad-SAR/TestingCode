@@ -22,6 +22,12 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 
+	// approve device certificate
+	Route::post('approve-device-certificate', 'TransmissionDataDeviceController@approveDeviceCertificate')->name('approve-device-certificate');
+
+	// approve grand father device certificate
+	Route::post('approve-device-grandfather-certificate', 'TransmissionDataDeviceController@approveGrandFatherDeviceCertificate')->name('approve-device-grandfather-certificate');
+
 
 Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
