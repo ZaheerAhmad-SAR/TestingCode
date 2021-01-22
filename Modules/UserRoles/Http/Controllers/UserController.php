@@ -225,6 +225,7 @@ class UserController extends Controller
                 'role_id'   => $request->user_role,
                 'study_id'  => session('current_study')
             ]);
+            
             UserRole::createUserRole($request->study_user, $request->user_role);
             return response()->json(['success' => 'User assigned successfully.']);
         }
