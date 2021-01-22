@@ -16,7 +16,6 @@ class PreviewFormController extends Controller
 {
     public function show($phase_id, $step_id)
     {
-       // dd('here in form controller');
         $phase = StudyStructure::find($phase_id);
         $step = PhaseSteps::find($step_id);
 

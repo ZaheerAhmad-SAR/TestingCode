@@ -305,10 +305,11 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-            <form action="{{ route('generate-device-certificate') }}" method="POST" class="generate-certificate-form">
+            <form action="{{ route('approve-device-certificate') }}" method="POST" class="generate-certificate-form">
                 @csrf
               <div class="modal-body">
                     <input type="hidden" name="hidden_transmission_id" class="hidden_transmission_id" value="">
+                    <input type="hidden" name="pdf_key" class="pdf_key" id="pdf_key" value="">
                     <input type="hidden" name="hidden_device_certification_id" class="hidden_device_certification_id" value="">
                     
                     <div class="form-group col-md-12">
@@ -399,12 +400,17 @@
 
                     <div class="form-group col-md-12 suspend-certificate-div">
                         <label>Issue Date</label>
-                        <input type="date" class="form-control data-required" id="issue_date" name="issue_date" value="">
+                        <input type="date" class="form-control data-required" id="issue_date" name="issue_date" value="" required>
                     </div>
+
+                    <div class="form-group col-md-12 suspend-certificate-div"> 
+                        <button type="submit" class="btn btn-success approve-pdf">Approve Certificate PDF</button>      
+                    </div>
+
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Generate Certificate</button>
+                <button type="button" class="btn btn-primary generate-pdf" disabled>Generate Certificate</button>
               </div>
             </form>
         </div>
@@ -478,6 +484,16 @@
 
         // assign transmission ID
         $('.hidden_transmission_id').val(transmissionID);
+        // assign file key
+        $('.pdf_key').val(Math.random().toString(36).substr(2, 16));
+        // enable approve pdf button
+        $('.approve-pdf').attr('disabled', false);
+        // disable generate button
+        $('.generate-pdf').attr('disabled', true);
+        // make form target blank
+        $('.generate-certificate-form').attr('target', '_blank');
+        // give default url
+         $('.generate-certificate-form').attr("action", "{{ route('approve-device-certificate')}}");
 
         // by default values
         // $('#certification_status').val('');
@@ -648,7 +664,12 @@
         } else {
 
             e.currentTarget;
+            // enable approve pdf button
+            $('.approve-pdf').attr('disabled', true);
+            // disable generate button
+            $('.generate-pdf').attr('disabled', false);
         }
+
     });
 
     $('#template').change(function() {
@@ -686,6 +707,17 @@
             window.location.href = transmissionRoute;
         } 
     }
+
+    $('.generate-pdf').click(function(){
+
+        // make form target blank
+        $('.generate-certificate-form').removeAttr('target');
+        // give default url
+        $('.generate-certificate-form').attr("action", "{{ route('generate-device-certificate')}}");
+
+        $('.generate-certificate-form').submit();
+
+    });
 
 </script>
 

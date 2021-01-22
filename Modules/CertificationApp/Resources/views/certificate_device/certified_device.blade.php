@@ -408,9 +408,11 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-            <form action="{{ route('generate-device-grandfather-certificate') }}" method="POST" class="certificate-grandfather-form">
+            <form action="{{ route('approve-device-grandfather-certificate') }}" method="POST" class="certificate-grandfather-form">
                 @csrf
             <input type="hidden" name="certificate_id" id="certificate_id" value="">
+            <input type="hidden" name="gf_pdf_key" class="gf_pdf_key" id="gf_pdf_key" value="">
+            <input type="hidden" name="gf_approve_status" class="gf_approve_status" id="gf_approve_status" value="">
 
               <div class="modal-body">
 
@@ -461,11 +463,15 @@
                     <textarea class="form-control summernote" name="comment" value="" rows="4"></textarea>
                     <span class="edit-error-field" style="display: none; color: red;">Please fill comment field.</span>
                 </div>
+
+                <div class="form-group col-md-12 suspend-certificate-div"> 
+                    <button type="submit" class="btn btn-success approve-gf-pdf">Approve Certificate PDF</button>      
+                </div>
                     
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Generate Certificate</button>
+                <button type="button" class="btn btn-primary generate-gf-pdf" disabled>Generate Certificate</button>
 
               </div>
             </form>
@@ -745,6 +751,18 @@
 
         // assign Certificate ID
         $('#certificate_id').val(certificateID);
+        // assign file key
+        $('.gf_pdf_key').val(Math.random().toString(36).substr(2, 16));
+        // enable approve pdf button
+        $('.approve-gf-pdf').attr('disabled', false);
+        // set approve status to null
+        $('.gf_approve_status').val('');
+        // disable generate button
+        $('.generate-gf-pdf').attr('disabled', true);
+        // make form target blank
+        $('.certificate-grandfather-form').attr('target', '_blank');
+        // give default url
+         $('.certificate-grandfather-form').attr("action", "{{ route('approve-device-grandfather-certificate')}}");
         // show modal
         $('#certificate-grandfather-modal').modal('show');
     }
@@ -753,59 +771,77 @@
 
         e.preventDefault();
 
-        if($('.summernote').summernote('isEmpty')) {
-            // cancel submit
-            e.preventDefault(); 
-            $('.edit-error-field').css('display', 'block'); 
+        if($('.gf_approve_status').val() == 'yes') {
+
+            // submit the form
+            e.currentTarget.submit();
 
         } else {
 
-            $.ajax({
-            url: '{{ route("check-grandfather-certificate") }}',
-            type: 'GET',
-            data: {
-                'study_id': $('#study').val(),
-                'certificate_id': $('#certificate_id').val(),
-                'type': 'device',
-            },
-                success:function(data) {
+            if($('.summernote').summernote('isEmpty')) {
+                // cancel submit
+                e.preventDefault(); 
+                $('.edit-error-field').css('display', 'block'); 
 
-                   if(data['success'] == 'true') {
-                    // submit form
-                    e.currentTarget.submit();
+            } else {
 
-                   } else {
+                $.ajax({
+                url: '{{ route("check-grandfather-certificate") }}',
+                type: 'GET',
+                data: {
+                    'study_id': $('#study').val(),
+                    'certificate_id': $('#certificate_id').val(),
+                    'type': 'device',
+                },
+                    success:function(data) {
 
-                        swal({
-                          title: "Certificate Exists",
-                          text: "Grandfather Certificate already exists.Do you want to Generate another one?",
-                          type: "warning",
-                          showCancelButton: true,
-                          confirmButtonClass: 'btn-danger',
-                          confirmButtonText: 'Yes, please proceed!',
-                          cancelButtonText: "No, please cancel!",
-                          closeOnConfirm: true,
-                          closeOnCancel: true
-                        },
-                        function(isConfirm) {
-                            if (isConfirm) {
+                       if(data['success'] == 'true') {
+                        // submit form
+                        e.currentTarget.submit();
 
-                                // submit the form
-                                e.currentTarget.submit();
+                        // enable approve pdf button
+                        $('.approve-gf-pdf').attr('disabled', true);
+                        // disable generate button
+                        $('.generate-gf-pdf').attr('disabled', false);
 
-                            } else {
-                                // close the model
-                                $('#certificate-grandfather-modal').modal('hide');
-                            }
-                        });
-                    
-                   }
-                    
-                } // success ends
+                       } else {
 
-            }); // ajax ends
+                            swal({
+                              title: "Certificate Exists",
+                              text: "Grandfather Certificate already exists.Do you want to Generate another one?",
+                              type: "warning",
+                              showCancelButton: true,
+                              confirmButtonClass: 'btn-danger',
+                              confirmButtonText: 'Yes, please proceed!',
+                              cancelButtonText: "No, please cancel!",
+                              closeOnConfirm: true,
+                              closeOnCancel: true
+                            },
+                            function(isConfirm) {
+                                if (isConfirm) {
 
-        } // summer note else ends
+                                    // submit the form
+                                    e.currentTarget.submit();
+
+                                    // enable approve pdf button
+                                    $('.approve-gf-pdf').attr('disabled', true);
+                                    // disable generate button
+                                    $('.generate-gf-pdf').attr('disabled', false);
+
+                                } else {
+                                    // close the model
+                                    $('#certificate-grandfather-modal').modal('hide');
+                                }
+                            });
+                        
+                       }
+                        
+                    } // success ends
+
+                }); // ajax ends
+
+            } // summer note else ends
+        } // approve status
  
     }); // submit form function ends
 
@@ -836,7 +872,21 @@
 
     });  // change function ends
 
-    /////////////////////////////// change status modal //////////////////////////////////////////////////
+    $('.generate-gf-pdf').click(function(){
+
+        // make form target blank
+        $('.certificate-grandfather-form').removeAttr('target');
+        // give default url
+        $('.certificate-grandfather-form').attr("action", "{{ route('generate-device-grandfather-certificate')}}");
+
+        // set approve status to yes
+        $('.gf_approve_status').val('yes');
+
+        $('.certificate-grandfather-form').submit();
+
+    });
+
+    ///////////////// change status modal ///////////////////////////////////////////
 
     $('.status_summernote').summernote({
         height: 150,

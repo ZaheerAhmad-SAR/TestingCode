@@ -1043,6 +1043,7 @@ class TransmissionDataPhotographerController extends Controller
                                     ->where('transmission_type', 'photographer_transmission')
                                     //->where('certificate_type', '!=', 'grandfathered')
                                     ->where('validity', 'yes')
+                                    ->whereNULL('pdf_key')
                                     ->first();
 
             } else {
@@ -1056,6 +1057,7 @@ class TransmissionDataPhotographerController extends Controller
                                     ->where('transmission_type', 'device_transmission')
                                     //->where('certificate_type', '!=', 'grandfathered')
                                     ->where('validity', 'yes')
+                                    ->whereNULL('pdf_key')
                                     ->first();
             }
 
