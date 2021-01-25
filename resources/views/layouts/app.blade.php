@@ -94,7 +94,7 @@
     <!-- END: Back to top-->
 
     <!-- START: Template JS-->
-
+ 
     <script src="{{ asset('public/dist/vendors/jquery/jquery-3.3.1.min.js') }}"></script>
         <script src="{{ asset('public/dist/vendors/jquery-ui/jquery-ui.min.js') }}"></script>
         <script src="{{ asset('public/dist/vendors/moment/moment.js') }}"></script>
@@ -122,6 +122,7 @@
         <script>
             $(document).ready(function(){
                 $('[data-toggle="popover"]').popover();
+
             });
             $(function () {
                 var duration = 10000;
@@ -131,6 +132,7 @@
                 ('.filter-form').find('input[type=text], input[type=date],select').val('');
             });
         </script>
+        
         <!-- END: Page JS-->
     </body>
 </html>
