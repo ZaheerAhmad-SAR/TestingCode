@@ -1002,7 +1002,7 @@ class TransmissionDataDeviceController extends Controller
             ->update(['certificate_file_name' => $file_name]);
 
 
-        // return back
+        // return to pdf function
         return redirect()->route('device-certificate-pdf', $file_name);
     }
 
