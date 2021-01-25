@@ -138,20 +138,29 @@
                                     <label for="C-Password">Signature Status</label>
                                 </div>
 
-                                <div class="col-md-10">
+                                <div class="col-md-4">
                                     <!-- @if (File::exists(storage_path('user_signature/'.\Auth::user()->id.'.png')))
                                     <a href="{{ route('user-signature', encrypt(\Auth::user()->id.'.png')) }}"> -->
                                     
-                                    <span class="badge badge-success"><strong>Availble</strong></span>
+                                    <span class="badge badge-success"><strong>Available</strong></span>
                                     <!-- </a> -->
                                     @else
-                                    <span class="badge badge-info"><strong>Not Availble</strong></span>
+                                    <span class="badge badge-info"><strong>Not Available</strong></span>
                                     @endif
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label for="C-Password">Show Signature Pad</label>
+                                </div>
+
+                                <div class="col-md-4">
+                                  <input type="checkbox" name="show_signature_pad" id="show_signature_pad" value="yes">
                                 </div>
 
                             </div>
                             <br>
-                            <div class="row">
+                            
+                            <div class="row signature-pad-row">
 
                                 <div class="col-md-2">
                                     <label for="C-Password">Signature</label>
@@ -310,6 +319,24 @@
               
             e.currentTarget.submit();
        
+        });
+
+        // hide signature pad in page load
+        jQuery(document).ready(function(){
+        setTimeout(function(){
+        $(".signature-pad-row").hide();
+        }, 10)
+        });
+
+        $('#show_signature_pad').change(function(e){
+            if($(this).prop('checked')) {
+                // show signature pad
+                $('.signature-pad-row').show();
+            } else {
+                // hide signature pad
+                $('.signature-pad-row').hide();
+
+            }
         });
 
     </script>
