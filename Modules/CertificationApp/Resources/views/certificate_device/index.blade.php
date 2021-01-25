@@ -404,7 +404,7 @@
                     </div>
 
                     <div class="form-group col-md-12 suspend-certificate-div"> 
-                        <button type="submit" class="btn btn-success approve-pdf">Approve Certificate PDF</button>      
+                        <button type="submit" class="btn btn-success approve-pdf">View Certificate PDF</button>      
                     </div>
 
               </div>

@@ -465,7 +465,7 @@
                 </div>
 
                 <div class="form-group col-md-12 suspend-certificate-div"> 
-                    <button type="submit" class="btn btn-success approve-gf-pdf">Approve Certificate PDF</button>      
+                    <button type="submit" class="btn btn-success approve-gf-pdf">View Certificate PDF</button>      
                 </div>
                     
               </div>
@@ -563,7 +563,7 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content" style="border-color: #1e3d73;">
           <div class="modal-header bg-primary" style="color: #fff">
-            <h5 class="modal-title" id="exampleModalLabel">Change Certificate date</h5>
+            <h5 class="modal-title" id="exampleModalLabel">Change Certificate Date</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"  style="color: #fff">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -571,6 +571,7 @@
             <form action="{{ route('change-certificate-date') }}" method="POST" class="change-certificate-date-form">
                 @csrf
             <input type="hidden" name="date_certificate_id" id="date_certificate_id" value="">
+            <input type="hidden" name="date_certificate_approve_status" id="date_certificate_approve_status" value="">
 
               <div class="modal-body">
 
@@ -616,11 +617,15 @@
                     <label>Expiry Date<span class="field-required">*</span></label>
                     <input type="date" class="form-control data-required" id="certificate_expiry_date" name="certificate_expiry_date" value="" required>
                 </div>
+
+                <div class="form-group col-md-12 suspend-certificate-div"> 
+                    <button type="submit" class="btn btn-success approve-date-certificate-pdf">View Certificate PDF</button>      
+                </div>
                     
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Change Certificate Expiry</button>
+                <button type="button" class="btn btn-primary generate-date-certificate-pdf" disabled>Change Certificate Expiry</button>
 
               </div>
             </form>
@@ -1020,6 +1025,18 @@
 
         // assign Certificate ID
         $('#date_certificate_id').val(certificateID);
+
+        // make date approve status to null
+        $('#date_certificate_approve_status').val('');
+        // enable approve pdf button
+        $('.approve-date-certificate-pdf').attr('disabled', false);
+        // disable generate button
+        $('.generate-date-certificate-pdf').attr('disabled', true);
+        // make form target blank
+        $('.change-certificate-date-form').attr('target', '_blank');
+        // give default url
+         $('.change-certificate-date-form').attr("action", "{{ route('change-certificate-date')}}");
+
         // show modal
         $('#change-certificate-date-modal').modal('show');
     }
@@ -1035,6 +1052,11 @@
         } else {
 
             e.currentTarget;
+
+            // enable approve pdf button
+            $('.approve-date-certificate-pdf').attr('disabled', true);
+            // disable generate button
+            $('.generate-date-certificate-pdf').attr('disabled', false);
         }
     });
 
@@ -1065,6 +1087,17 @@
 
     });  // change function ends
 
+    $('.generate-date-certificate-pdf').click(function(){
+
+        // make form target blank
+        $('.change-certificate-date-form').removeAttr('target');
+
+        // set approve status to yes
+        $('#date_certificate_approve_status').val('yes');
+
+        $('.change-certificate-date-form').submit();
+
+    });
 
 </script>
 
