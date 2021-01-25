@@ -222,7 +222,9 @@
                 fieldId) {
                 if (isPreview === false) {
                     if (isFormDataLocked(stepIdStr) == false) {
+                      
                         if (canSubmitForm(formType, stepIdStr)) {
+
                             if (needToPutFormInEditMode(stepIdStr) == false) {
                                 if (window['validateQuestion' + questionIdStr](true, stepIdStr)) {
                                     if (eval("typeof " + window['showHideQuestion' + questionIdStr]) != 'undefined') {
@@ -579,6 +581,7 @@
                 var numberOfAlreadyGradedPersons = $('#form_master_' + stepIdStr + ' input[name="numberOfAlreadyGradedPersons"]').val();
 
                 var canQualityControl = {{ canQualityControl(['create', 'store', 'edit', 'update']) ? 'true' : 'false' }};
+
                 var canGrading = {{ canGrading(['create', 'store', 'edit', 'update']) ? 'true' : 'false' }};
                 var canEligibility = {{ canEligibility(['create', 'store', 'edit', 'update']) ? 'true' : 'false' }};
                 var canAdjudication = {{ canAdjudication(['create', 'store', 'edit', 'update']) ? 'true' : 'false' }};
@@ -601,6 +604,7 @@
                     (formType == 'QC') &&
                     (canQualityControl == true)
                 ) {
+
                     if ((formStatus == 'no_status') && (formFilledByUserId == 'no-user-id')) {
                         canSubmit = true;
                     }
@@ -621,10 +625,11 @@
                     }
                 }
 
-                if (
-                    (numberOfGraders == numberOfAlreadyGradedPersons) &&
+                // ((formType == 'Grading') && (canGrading == true)) &&
+                if (((formType == 'Grading') && (canGrading == true)) && (numberOfGraders == numberOfAlreadyGradedPersons) &&
                     (formFilledByUserId != current_user_id)
                 ) {
+
                     canSubmit = false;
                 }
 

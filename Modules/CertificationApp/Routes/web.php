@@ -22,6 +22,12 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 
+	// approve device certificate
+	Route::post('approve-device-certificate', 'TransmissionDataDeviceController@approveDeviceCertificate')->name('approve-device-certificate');
+
+	// approve grand father device certificate
+	Route::post('approve-device-grandfather-certificate', 'TransmissionDataDeviceController@approveGrandFatherDeviceCertificate')->name('approve-device-grandfather-certificate');
+
 
 Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
@@ -154,7 +160,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
 	// show user signature
 	Route::get('user-signature/{file_name}', function($fileName) {
-
+		
 		$decryptFileName = decrypt($fileName);
 		$path = storage_path('user_signature/'.$decryptFileName);
 	    if (!File::exists($path)) {
