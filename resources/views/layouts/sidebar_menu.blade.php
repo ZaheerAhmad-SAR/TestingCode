@@ -41,7 +41,7 @@
             @if(hasPermission(auth()->user(),'systemtools.index'))
             <li class="dropdown">
                 <ul>
-                        <li class="dropdown"><a href="#"><i class="icon-grid"></i>System Tools</a>
+                        <li class="dropdown"><a href="#"><i class="fas fa-tools"></i>System Tools</a>
                             <ul class="sub-menu">
                                 @if(hasPermission(auth()->user(),'users.index'))
                                     <li class="@if(is_active('users.index')) {{ ' active' }} @endif">
@@ -92,7 +92,7 @@
                 @if(session('current_study'))
                 <li class="dropdown">
                     <ul>
-                        <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Tools</a>
+                        <li class="dropdown"><a href="#"><i class="fas fa-tools"></i>Study Tools</a>
                             <ul class="sub-menu">
                                 @if(hasPermission(auth()->user(),'studyusers.index'))
                                     <li class="@if(is_active('studyusers.index')) {{ ' active' }} @endif">
@@ -167,7 +167,7 @@
             @if(hasPermission(auth()->user(),'systemtools.index'))
             <li class="dropdown">
                 <ul>
-                    <li class="dropdown"><a href="#"><i class="icon-grid"></i>Transmissions</a>
+                    <li class="dropdown"><a href="#"><i class="fas fa-file-contract"></i>Transmissions</a>
                         <ul class="sub-menu">
 
                             @if(!empty(session('current_study')))
@@ -220,7 +220,7 @@
                         <ul class="@if(is_active('studies.show')) {{ 'active' }} @endif">
                             <li class="nav-item @if(is_active('studies.show')) {{ ' active' }} @endif">
                                 <a href="{!! route('studies.show',session('current_study')) !!}">
-                                    <i class="fas fa-hospital"></i>Subjects
+                                    <i class="fas fa-user-tag"></i>Subjects
                                 </a>
                             </li>
                     </ul>
@@ -247,7 +247,7 @@
                 @if(session('current_study'))
                     <li class="dropdown">
                         <ul>
-                            <li class="dropdown"><a href="#"><i class="fas fa-sitemap"></i> Quality Control</a>
+                            <li class="dropdown"><a href="#"><i class="fas fa-file-image"></i> Quality Control</a>
                                 <ul class="sub-menu">
                                     <li>
                                         <a href="{{ route('qualitycontrol.index')}}">
@@ -347,7 +347,7 @@
                 @if(session('current_study'))
                 <li class="dropdown">
                     <ul>
-                        <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Certification Data</a>
+                        <li class="dropdown"><a href="#"><i class="fas fa-certificate"></i> Certification Data</a>
                             <ul class="sub-menu">
                                 <li  class="@if(is_active('photographer.index')) {{ ' active' }} @endif">
                                     <a href="{{route('photographer.index')}}">
@@ -418,7 +418,7 @@
             @if(hasPermission(auth()->user(),'certification-photographer.index'))
             <li class="dropdown">
                 <ul>
-                    <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Certification App</a>
+                    <li class="dropdown"><a href="#"><i class="fas fa-certificate"></i> Certification App</a>
                         <ul class="sub-menu">
 
                             <li class="@if(is_active('certification-device')) {{ ' active' }} @endif">
