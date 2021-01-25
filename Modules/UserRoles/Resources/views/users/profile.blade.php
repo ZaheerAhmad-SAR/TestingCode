@@ -19,7 +19,6 @@
             {{ showMessage() }}
         </div>
         <!-- END: Breadcrumbs-->
-
         <!-- START: Card Data-->
         <div class="row">
             <div class="col-12 col-sm-12 mt-3">
@@ -102,7 +101,6 @@
                                     <label for="password">Password</label>
                                 </div>
                                 <div class="{!! ($errors->has('password')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                    {{--<input type="password" autocomplete="off" class="form-control" required="required" id="password" name="password" value="{{old('password')}}">--}}
                                     <input type="password" autocomplete="off" class="form-control @error('password') is-invalid @enderror" id="password" name="password"  autocomplete="new-password">
                                     @error('password')
                                     <span class="text-danger small"> {{ $message }} </span>
@@ -112,26 +110,13 @@
                                     <label for="C-Password">Confirm Password</label>
                                 </div>
                                 <div class="{!! ($errors->has('password_confirmation')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                   {{-- <input type="password" autocomplete="off" class="form-control" required="required" id="password_confirmation" name="password_confirmation" value="{{old('password_confirmation')}}">--}}
                                     <input type="password" autocomplete="off" class="form-control" id="password-confirm" name="password_confirmation"  autocomplete="new-password">
                                     @error('password_confirmation')
                                     <span class="text-danger small">{{ $message }} </span>
                                     @enderror
                                 </div>
-                            </div>
-
-                          <!--   <div class="form-group row">
-
-                                <div class="col-md-2">
-                                    <label for="avatar" class="">User Signature</label>
-                                </div>
-                                <div class="col-md-4">
-                                    <input id="user_signature" type="file"  name="user_signature" style="padding-left: 3px">
-                                </div>
-                                
-                            </div>-->                        
+                            </div>                      
                             @if(hasPermission(auth()->user(),'certification-photographer.index'))
-
                             <div class="row">
 
                                 <div class="col-md-2">
