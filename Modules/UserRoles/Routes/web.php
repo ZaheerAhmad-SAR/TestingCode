@@ -97,7 +97,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::post('users/assignusers', 'UserController@assign_users')->name('users.assignUsers');
     Route::post('users/enable_2fa', 'UserController@enable_2fa')->name('users.enable_2fa');
 });
-Route::group(['middleware' => ['auth', 'web']], function () {
+    Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('update_user/{id}', 'UserController@update_user')->name('users.updateUser');
     Route::get('change-role/{role_id}', 'DashboardController@switch_role')->name('switch_role');
 
