@@ -664,9 +664,9 @@
         } else {
 
             e.currentTarget;
-            // enable approve pdf button
+           // disable approve pdf button
             $('.approve-pdf').attr('disabled', true);
-            // disable generate button
+            // enable generate button
             $('.generate-pdf').attr('disabled', false);
         }
 

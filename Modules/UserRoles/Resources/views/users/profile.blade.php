@@ -139,8 +139,8 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    <!-- @if (File::exists(storage_path('user_signature/'.\Auth::user()->id.'.png')))
-                                    <a href="{{ route('user-signature', encrypt(\Auth::user()->id.'.png')) }}"> -->
+                                    @if (File::exists(storage_path('user_signature/'.\Auth::user()->id.'.png')))
+                                    <!-- <a href="{{ route('user-signature', encrypt(\Auth::user()->id.'.png')) }}"> -->
                                     
                                     <span class="badge badge-success"><strong>Available</strong></span>
                                     <!-- </a> -->

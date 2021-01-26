@@ -175,7 +175,7 @@
                                                 @if ($transmission->certificateStatus['status'] == 'provisional')
                                                 
                                                 @if(hasPermission(auth()->user(),'generate-photographer-certificate'))
-                                                    <a href="javascript:void()" id="generate-certification" data-id="" title="Provisional Certified" class="badge badge-warning" onClick="generateCertificate('{{$transmission->id}}', '{{ $transmission->certificateStatus['certificate_id'] }}', '{{ route('update-photographer-provisonal-certificate')}}', 'Provisional')">
+                                                    <a href="javascript:void()" id="generate-certification" data-id="" title="Provisional Certified" class="badge badge-warning" onClick="generateCertificate('{{$transmission->id}}', '{{ $transmission->certificateStatus['certificate_id'] }}', '{{ route('approve-photographer-provisional-certificate')}}', 'Provisional')">
                                                         Provisional Certified
                                                     </a>
                                                 @else
@@ -303,10 +303,12 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-            <form action="{{ route('generate-photographer-certificate') }}" method="POST" class="generate-certificate-form">
+          <!-- generate-photographer-certificate -->
+            <form action="{{ route('approve-photographer-certificate') }}" method="POST" class="generate-certificate-form">
                 @csrf
               <div class="modal-body">
                     <input type="hidden" name="hidden_transmission_id" class="hidden_transmission_id" value="">
+                    <input type="hidden" name="pdf_key" class="pdf_key" id="pdf_key" value="">
                     <input type="hidden" name="hidden_photographer_certification_id" class="hidden_photographer_certification_id" value="">
                     
                     <div class="form-group col-md-12">
@@ -393,10 +395,15 @@
                         <label>Issue Date</label>
                         <input type="date" class="form-control data-required" id="issue_date" name="issue_date" value="" required>
                     </div>
+
+                    <div class="form-group col-md-12 suspend-certificate-div"> 
+                        <button type="submit" class="btn btn-success approve-pdf">View Certificate PDF</button>      
+                    </div>
+
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary">Generate Certificate</button>
+                <button type="submit" class="btn btn-primary generate-pdf" disabled>Generate Certificate</button>
               </div>
             </form>
         </div>
@@ -458,17 +465,22 @@
 
     function generateCertificate(transmissionID, certificateID, route, type) {
 
-        if(type == 'Provisional') {
-            // chnage form action and assign certification ID
-            $('.generate-certificate-form').attr('action', route);
-            $('.hidden_photographer_certification_id').val(certificateID);
-        }
-
         var transmission = '';
         var childModalities = '';
 
         // assign transmission ID
         $('.hidden_transmission_id').val(transmissionID);
+
+        // assign file key
+        $('.pdf_key').val(Math.random().toString(36).substr(2, 16));
+        // enable approve pdf button
+        $('.approve-pdf').attr('disabled', false);
+        // disable generate button
+        $('.generate-pdf').attr('disabled', true);
+        // make form target blank
+        $('.generate-certificate-form').attr('target', '_blank');
+        // give default url
+         $('.generate-certificate-form').attr("action", "{{ route('approve-photographer-certificate')}}");
 
         // by default values
         $('#certification_status').val('');
@@ -490,6 +502,12 @@
         // refresh the select2
         $('#cc_user_email').empty();
         $('#bcc_user_email').empty();
+
+        if(type == 'Provisional') {
+            // chnage form action and assign certification ID
+            $('.generate-certificate-form').attr('action', route);
+            $('.hidden_photographer_certification_id').val(certificateID);
+        }
 
         // hide error message
         $('.edit-error-field').css('display', 'none');
@@ -639,6 +657,10 @@
         } else {
 
             e.currentTarget;
+            // disable approve pdf button
+            $('.approve-pdf').attr('disabled', true);
+            // enable generate button
+            $('.generate-pdf').attr('disabled', false);
         }
     });
 
@@ -677,6 +699,26 @@
             window.location.href = transmissionRoute;
         } 
     }
+
+    $('.generate-pdf').click(function(){
+
+        // make form target blank
+        $('.generate-certificate-form').removeAttr('target');
+        
+        
+        if($('.hidden_photographer_certification_id').val() != '') {
+        
+            // change url according to 
+            $('.generate-certificate-form').attr("action", "{{ route('update-photographer-provisonal-certificate')}}");
+
+        } else {
+            // give default url
+            $('.generate-certificate-form').attr("action", "{{ route('generate-photographer-certificate')}}");
+        }
+
+        $('.generate-certificate-form').submit();
+
+    });
 
 </script>
 

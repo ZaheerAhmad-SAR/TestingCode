@@ -804,9 +804,9 @@
                         // submit form
                         e.currentTarget.submit();
 
-                        // enable approve pdf button
+                         // diable approve pdf button
                         $('.approve-gf-pdf').attr('disabled', true);
-                        // disable generate button
+                        // enable generate button
                         $('.generate-gf-pdf').attr('disabled', false);
 
                        } else {
@@ -828,9 +828,9 @@
                                     // submit the form
                                     e.currentTarget.submit();
 
-                                    // enable approve pdf button
+                                    // diable approve pdf button
                                     $('.approve-gf-pdf').attr('disabled', true);
-                                    // disable generate button
+                                    // enable generate button
                                     $('.generate-gf-pdf').attr('disabled', false);
 
                                 } else {
