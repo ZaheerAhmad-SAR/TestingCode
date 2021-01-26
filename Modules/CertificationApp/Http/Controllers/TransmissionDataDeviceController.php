@@ -624,12 +624,12 @@ class TransmissionDataDeviceController extends Controller
             // issue date
             $generateCertificate->issue_date = \Carbon\Carbon::parse($request->issue_date);
             $generateCertificate->expiry_date = \Carbon\Carbon::parse($request->issue_date)->addMonths(3);
+
         } else {
 
             // issue date
             $generateCertificate->issue_date = \Carbon\Carbon::parse($request->issue_date);
             $generateCertificate->expiry_date = \Carbon\Carbon::parse($request->issue_date)->addYears(4);
-
 
         }
 
@@ -668,7 +668,7 @@ class TransmissionDataDeviceController extends Controller
         $pdf = PDF::loadView('certificationapp::certificate_pdf.certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('a4')->save($path . '/' . $file_name);
 
         // update the file name in database
-        $upateFileName = CertificationData::where('id', $newCertificateID)
+        $upateFileName = CertificationData::where('certificate_id', $generateCertificate->certificate_id)
             ->update(['certificate_file_name' => $file_name]);
 
         // return back
@@ -964,41 +964,13 @@ class TransmissionDataDeviceController extends Controller
         // get study email to pass to pdf
         $getStudyEmail = StudySetup::where('study_id', $getStudy->id)->first();
 
-        $file_name = $generateCertificate->certificate_id . '_' . $getModality->modility_name . '_grandfathered_device.pdf';
+        $file_name = $generateCertificate->certificate_id . '_' . $getModality->modility_name . '_device.pdf';
         $path = storage_path('certificates_pdf/device');
         // generate pdf
         $pdf = PDF::loadView('certificationapp::certificate_pdf.certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('a4')->save($path . '/' . $file_name);
 
-        /** ---------------------------- Email Section ---------------------------------- **/
-
-        // // make array for changings dynamic variable in the text editor
-        // $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, '', $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id, $generateCertificate->device_model, $generateCertificate->device_serial_no, $generateCertificate->user_input_device_id];
-
-        // $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[pi_name]]', '[[modality_name]]', '[[certificate_id]]', '[[sender_name]]', '[[certificate_status]]', '[[certificate_type]]', '[[issue_date]]', '[[expiry_date]]', '[[grandfather_certificate_id]]', '[[device_model]]', '[[device_serial_no]]', '[[device_id]]'];
-
-        // $data = [];
-        // $data['email_body'] = str_replace($labels, $variables, $request->comment);
-        // $senderEmail = $generateCertificate->photographer_email;
-        // $ccEmail = $generateCertificate->cc_emails != '' ? json_decode($generateCertificate->cc_emails) : '';
-        // $bccEmail = $generateCertificate->bcc_emails != '' ? json_decode($generateCertificate->bcc_emails) : '';
-
-        // // send email to users
-        // Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $bccEmail, $generateCertificate, $getSite, $getStudy, $getModality, $path, $file_name)
-        // {
-        //     $message->subject($getStudy->study_short_name.' '.$getStudy->study_code.' | Grandfather Device Certification# '.$generateCertificate->certificate_id.' | '. $getSite->site_code.' | '. $getModality->modility_name);
-        //     $message->to($senderEmail);
-        //     if($ccEmail != '') {
-        //         $message->cc($ccEmail);
-        //     }
-        //     if($bccEmail != '') {
-        //         $message->bcc($bccEmail);
-        //     }
-        //     $message->attach($path.'/'.$file_name);
-
-        // });
-
         // update the file name in database
-        $upateFileName = CertificationData::where('id', $newCertificateID)
+        $upateFileName = CertificationData::where('certificate_id', $generateCertificate->certificate_id)
             ->update(['certificate_file_name' => $file_name]);
 
 
