@@ -74,7 +74,7 @@
                                             $userData ='';
                                             $result   = '';
                                             $result   = \Modules\Queries\Entities\Query::where('id','=',$record->query_id)->where('query_status','open')->first();
-                                            $userData = App\User::where('id',$result->queried_remarked_by_id)->first();
+                                            $userData = App\User::where('id',$record->notification_create_by_user_id)->first();
                                             $studyData = Modules\Admin\Entities\Study::where('id',$result->study_id)->first();
                                         @endphp
 
