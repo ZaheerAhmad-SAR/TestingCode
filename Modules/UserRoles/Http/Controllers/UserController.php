@@ -52,22 +52,25 @@ class UserController extends Controller
     }
     public function index(Request $request)
     {
-        if (isThisUserSuperAdmin(\auth()->user())) {
+        if(isThisUserSuperAdmin(\auth()->user())){
             $roles  =   Role::where('role_type', '!=', 'study_role')->get();
             $systemRoleIds = Role::where('role_type', '!=', 'study_role')->pluck('id')->toArray();
-        } else {
+        }else{
             $roles  =   Role::where('role_type', '=', 'system_role')->get();
             $systemRoleIds = Role::where('role_type', '=', 'system_role')->pluck('id')->toArray();
         }
-
         $currentStudyId = session('current_study');
-
         $userIdsOfSystemRoles = UserRole::whereIn('role_id', $systemRoleIds)->pluck('user_id')->toArray();
         // for default order by
         if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
             $field_name = $request->sort_by_field_name;
         }else{
             $field_name = 'name';
+        }
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $asc_or_decs = $request->sort_by_field;
+        }else{
+            $asc_or_decs = 'ASC';
         }
         $users = User::whereIn('id', $userIdsOfSystemRoles);
         if(isset($request->name) && $request->name !=''){
@@ -82,17 +85,16 @@ class UserController extends Controller
         if(isset($request->sort_by_field) && $request->sort_by_field !=''){
             $users = $users->orderBy('users.'.$field_name , $request->sort_by_field);
         }
-        $users = $users->get();
+        $users = $users->paginate(10)->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
         $old_values = $request->input();
         $studyRoleIds = Role::where('role_type', '=', 'study_role')->pluck('id')->toArray();
         $userIdsOfStudyRoles = UserRole::whereIn('role_id', $studyRoleIds)->pluck('user_id')->toArray();
-
         if ($currentStudyId != '') {
             $studyUserIds = RoleStudyUser::where('study_id', 'like', $currentStudyId)->pluck('user_id')->toArray();
             $studyusers = User::whereIn('id', $userIdsOfStudyRoles)
                 ->whereIn('id', $studyUserIds)
                 ->where('id', '!=', \auth()->user()->id)->get();
-        } else {
+        }else {
             $studyusers = User::whereIn('id', $userIdsOfStudyRoles)->where('id', '!=', \auth()->user()->id)->get();
         }
         $allroles = Role::all();
@@ -320,13 +322,13 @@ class UserController extends Controller
 
             if ($request->hidden_user_signature != '') {
                 // unlink old image
-                @unlink(storage_path('/user_signature/'.$user->id.'.png'));
+                @unlink(storage_path('/user_signature/'.md5($user->id).'.png'));
                 // get image and save to path
                 $image = $request->hidden_user_signature;  // your base64 encoded
                 $image = str_replace('data:image/png;base64,', '', $image);
                 $image = base64_decode(str_replace(' ', '+', $image));
-                $imageName = $user->id.'.'.'png';
-                \File::put(storage_path(). '/user_signature/' . $imageName, encrypt($image));
+                $imageName = md5($user->id).'.'.'png';
+                \File::put(storage_path(). '/user_signature/' . $imageName, $image);
 
             }
             
@@ -346,13 +348,13 @@ class UserController extends Controller
 
             if ($request->hidden_user_signature != '') {
                 // unlink old image
-                @unlink(storage_path('/user_signature/'.$user->id.'.png'));
+                @unlink(storage_path('/user_signature/'.md5($user->id).'.png'));
                 // get image and save to path
                 $image = $request->hidden_user_signature;  // your base64 encoded
                 $image = str_replace('data:image/png;base64,', '', $image);
                 $image = base64_decode(str_replace(' ', '+', $image));
-                $imageName = $user->id.'.'.'png';
-                \File::put(storage_path(). '/user_signature/' . $imageName, encrypt($image));
+                $imageName = md5($user->id).'.'.'png';
+                \File::put(storage_path(). '/user_signature/' . $imageName, $image);
 
             }
 

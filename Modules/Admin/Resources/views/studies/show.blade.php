@@ -139,6 +139,7 @@
                                 @endforeach
                                 </tbody>
                             </table>
+                            {{ $subjects->links() }}
                         </div>
                     </div>
                 </div>

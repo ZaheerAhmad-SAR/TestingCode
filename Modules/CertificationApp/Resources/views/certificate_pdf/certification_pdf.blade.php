@@ -81,12 +81,12 @@ h1, h2, h3,p {
 
 		<tr>
 			<td style="padding-left: 50px;">
-				<p style="font-family: play;">Certification Officer</p><br>
-				@if (File::exists(storage_path('user_signature/'.\Auth::user()->id.'.png')))
+				<p style="font-family: play;">Certification Officer</p>
+				@if (File::exists(storage_path('user_signature/'.md5(\Auth::user()->id).'.png')))
 					
-					<img src="{{ route('user-signature', encrypt(\Auth::user()->id.'.png')) }}" style="width:150px;">
+					<!-- <img src="{{ route('user-signature', encrypt(\Auth::user()->id.'.png')) }}" style="width:150px;"> -->
 					
-					<!-- <img src="{{ storage_path('user_signature/'.\Auth::user()->id.'.png') }}" style="width:150px;"> -->
+					<img src="{{ storage_path('user_signature/'.md5(\Auth::user()->id).'.png') }}" style="width:150px;">
 				@endif
 			</td>
 			<!-- <td align="right"><p style="font-family: play;">&nbsp;</p><br><br></td> -->

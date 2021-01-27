@@ -20,14 +20,9 @@ Route::get('/2fa/disable', 'Google2FAController@disableTwoFactor');
 Route::get('/2fa/validate', 'Auth\LoginController@getValidateToken');
 Route::post('/2fa/validate', ['middleware' => 'throttle:5', 'uses' => 'Auth\LoginController@postValidateToken']);
 Route::POST('/registration', 'Auth\RegisterController@register')->name('accept');
-
-
 Auth::routes(['register' => false]);
-
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('home/working_status', 'HomeController@working_status')->name('study.workingStatus');
+Route::get('home/update_online_at_time', 'HomeController@update_online_at_time')->name('study.updateOnlineTime');
 
 Route::get('/vtag', 'VtagCOntroller@index')->name('vtag');
-
-
-
-

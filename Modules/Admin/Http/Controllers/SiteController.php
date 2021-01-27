@@ -25,6 +25,12 @@ class SiteController extends Controller
         }else{
             $field_name = 'site_code';
         }
+        
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $asc_or_decs = $request->sort_by_field;
+        }else{
+            $asc_or_decs = 'ASC';
+        }
         $sites = Site::query();
         if ($request->site_code != '') {
             $sites = $sites->where('site_code','like', '%'.$request->site_code.'%');
@@ -47,7 +53,7 @@ class SiteController extends Controller
         if(isset($request->sort_by_field) && $request->sort_by_field !=''){
             $sites = $sites->orderBy($field_name , $request->sort_by_field);
         }
-        $sites = $sites->paginate(20);
+        $sites = $sites->paginate(20)->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
         $siteForTransmissions = Site::all();
         $photographers = Photographer::all();
         $coordinators = Coordinator::all();
