@@ -19,7 +19,6 @@
             {{ showMessage() }}
         </div>
         <!-- END: Breadcrumbs-->
-
         <!-- START: Card Data-->
         <div class="row">
             <div class="col-12 col-sm-12 mt-3">
@@ -102,7 +101,6 @@
                                     <label for="password">Password</label>
                                 </div>
                                 <div class="{!! ($errors->has('password')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                    {{--<input type="password" autocomplete="off" class="form-control" required="required" id="password" name="password" value="{{old('password')}}">--}}
                                     <input type="password" autocomplete="off" class="form-control @error('password') is-invalid @enderror" id="password" name="password"  autocomplete="new-password">
                                     @error('password')
                                     <span class="text-danger small"> {{ $message }} </span>
@@ -112,45 +110,42 @@
                                     <label for="C-Password">Confirm Password</label>
                                 </div>
                                 <div class="{!! ($errors->has('password_confirmation')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                   {{-- <input type="password" autocomplete="off" class="form-control" required="required" id="password_confirmation" name="password_confirmation" value="{{old('password_confirmation')}}">--}}
                                     <input type="password" autocomplete="off" class="form-control" id="password-confirm" name="password_confirmation"  autocomplete="new-password">
                                     @error('password_confirmation')
                                     <span class="text-danger small">{{ $message }} </span>
                                     @enderror
                                 </div>
-                            </div>
-
-                          <!--   <div class="form-group row">
-
-                                <div class="col-md-2">
-                                    <label for="avatar" class="">User Signature</label>
-                                </div>
-                                <div class="col-md-4">
-                                    <input id="user_signature" type="file"  name="user_signature" style="padding-left: 3px">
-                                </div>
-                                
-                            </div>-->                        
+                            </div>                      
                             @if(hasPermission(auth()->user(),'certification-photographer.index'))
-
                             <div class="row">
 
                                 <div class="col-md-2">
                                     <label for="C-Password">Signature Status</label>
                                 </div>
 
-                                <div class="col-md-10">
+                                <div class="col-md-4">
                                     @if (File::exists(storage_path('user_signature/'.\Auth::user()->id.'.png')))
                                     <!-- <a href="{{ route('user-signature', encrypt(\Auth::user()->id.'.png')) }}"> -->
-                                    <span class="badge badge-success"><strong>Availble</strong></span>
+                                    
+                                    <span class="badge badge-success"><strong>Available</strong></span>
                                     <!-- </a> -->
                                     @else
-                                    <span class="badge badge-info"><strong>Not Availble</strong></span>
+                                    <span class="badge badge-info"><strong>Not Available</strong></span>
                                     @endif
+                                </div>
+
+                                <div class="col-md-2">
+                                    <label for="C-Password">Show Signature Pad</label>
+                                </div>
+
+                                <div class="col-md-4">
+                                  <input type="checkbox" name="show_signature_pad" id="show_signature_pad" value="yes">
                                 </div>
 
                             </div>
                             <br>
-                            <div class="row">
+                            
+                            <div class="row signature-pad-row">
 
                                 <div class="col-md-2">
                                     <label for="C-Password">Signature</label>
@@ -309,6 +304,24 @@
               
             e.currentTarget.submit();
        
+        });
+
+        // hide signature pad in page load
+        jQuery(document).ready(function(){
+        setTimeout(function(){
+        $(".signature-pad-row").hide();
+        }, 10)
+        });
+
+        $('#show_signature_pad').change(function(e){
+            if($(this).prop('checked')) {
+                // show signature pad
+                $('.signature-pad-row').show();
+            } else {
+                // hide signature pad
+                $('.signature-pad-row').hide();
+
+            }
         });
 
     </script>

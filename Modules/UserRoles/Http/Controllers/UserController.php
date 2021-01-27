@@ -225,6 +225,7 @@ class UserController extends Controller
                 'role_id'   => $request->user_role,
                 'study_id'  => session('current_study')
             ]);
+            
             UserRole::createUserRole($request->study_user, $request->user_role);
             return response()->json(['success' => 'User assigned successfully.']);
         }
@@ -298,7 +299,6 @@ class UserController extends Controller
      */
     public function update_user(Request $request, $id)
     {
-
         $validate = Validator::make($request->all(), [
             'name'      =>  'required',
             'email'      =>  'required|email|unique:users,email,',
@@ -313,20 +313,10 @@ class UserController extends Controller
                 $image = $request->file('profile_image');
                 $name = Str::slug($request->input('name')) . '_' . time();
                 $folder = '/images/';
-                $filePath = $folder . $name . '.' . $image->getClientOriginalExtension();
+                $filePath = $name . '.' . $image->getClientOriginalExtension();
                 $this->uploadOne($image, $folder, 'public', $name);
                 $user->profile_image = $filePath;
             }
-
-            // look for user signature
-            // if ($request->has('user_signature')) {
-
-            //     @unlink(storage_path('/user_signature/'.$user->user_signature));
-
-            //     $user->user_signature = $user->id.''.$request->file("user_signature")->getClientOriginalName();
-            //     $request->user_signature->move(storage_path('/user_signature/'), $user->user_signature);
-            // }
-
 
             if ($request->hidden_user_signature != '') {
                 // unlink old image
@@ -349,19 +339,10 @@ class UserController extends Controller
                 $image = $request->file('profile_image');
                 $name = Str::slug($request->input('name')) . '_' . time();
                 $folder = '/images/';
-                $filePath = $folder . $name . '.' . $image->getClientOriginalExtension();
+                $filePath = $name . '.' . $image->getClientOriginalExtension();
                 $this->uploadOne($image, $folder, 'public', $name);
                 $user->profile_image = $filePath;
             }
-
-            // look for user signature
-            // if ($request->has('user_signature')) {
-
-            //     @unlink(storage_path('/user_signature/'.$user->user_signature));
-
-            //     $user->user_signature = $user->id.''.$request->file("user_signature")->getClientOriginalName();
-            //     $request->user_signature->move(storage_path('/user_signature/'), $user->user_signature);
-            // }
 
             if ($request->hidden_user_signature != '') {
                 // unlink old image

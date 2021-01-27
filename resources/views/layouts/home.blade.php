@@ -112,7 +112,7 @@
                             <a href="#" class="nav-link py-0" data-toggle="dropdown" aria-expanded="false">
                                 <div class="media">
                                     @if(!empty(auth()->user()->image))
-                                       <img src="{{ asset(auth()->user()->image) }}" style="width: 40px; height: 40px; border-radius: 50%;">
+                                       <img src="{{ asset('/images/'.auth()->user()->image) }}" style="width: 40px; height: 40px; border-radius: 50%;">
                                     @else
                                        <img src="{{(asset('public/images/download.png'))}}" style="width: 40px; height: 40px; border-radius: 50%;">
                                         @endif
