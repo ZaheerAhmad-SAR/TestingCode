@@ -320,13 +320,13 @@ class UserController extends Controller
 
             if ($request->hidden_user_signature != '') {
                 // unlink old image
-                @unlink(storage_path('/user_signature/'.$user->id.'.png'));
+                @unlink(storage_path('/user_signature/'.md5($user->id).'.png'));
                 // get image and save to path
                 $image = $request->hidden_user_signature;  // your base64 encoded
                 $image = str_replace('data:image/png;base64,', '', $image);
                 $image = base64_decode(str_replace(' ', '+', $image));
-                $imageName = $user->id.'.'.'png';
-                \File::put(storage_path(). '/user_signature/' . $imageName, encrypt($image));
+                $imageName = md5($user->id).'.'.'png';
+                \File::put(storage_path(). '/user_signature/' . $imageName, $image);
 
             }
             
@@ -346,13 +346,13 @@ class UserController extends Controller
 
             if ($request->hidden_user_signature != '') {
                 // unlink old image
-                @unlink(storage_path('/user_signature/'.$user->id.'.png'));
+                @unlink(storage_path('/user_signature/'.md5($user->id).'.png'));
                 // get image and save to path
                 $image = $request->hidden_user_signature;  // your base64 encoded
                 $image = str_replace('data:image/png;base64,', '', $image);
                 $image = base64_decode(str_replace(' ', '+', $image));
-                $imageName = $user->id.'.'.'png';
-                \File::put(storage_path(). '/user_signature/' . $imageName, encrypt($image));
+                $imageName = md5($user->id).'.'.'png';
+                \File::put(storage_path(). '/user_signature/' . $imageName, $image);
 
             }
 
