@@ -47,7 +47,7 @@ class SiteController extends Controller
         if(isset($request->sort_by_field) && $request->sort_by_field !=''){
             $sites = $sites->orderBy($field_name , $request->sort_by_field);
         }
-        $sites = $sites->paginate(20);
+        $sites = $sites->paginate(20)->withPath('?sort_by_field_name='.$field_name.'&sort_by_field=DESC');;
         $siteForTransmissions = Site::all();
         $photographers = Photographer::all();
         $coordinators = Coordinator::all();

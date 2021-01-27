@@ -40,7 +40,9 @@
                 <form action="{{route('sites.index')}}" method="get" class="filter-form">
                     @csrf
                     <div class="form-row" style="padding: 10px;">
-                        <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ getOldValue($old_values,'sort_by_field') }}">
+                        <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ request()->sort_by_field }}">
+                        {{-- <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ getOldValue($old_values,'sort_by_field') }}"> --}}
+                        
                         <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ getOldValue($old_values,'sort_by_field_name') }}">
                         <div class="form-group col-md-3">
                             <input type="text" name="site_code" class="form-control" placeholder="Site Code" value="{{ getOldValue($old_values,'site_code')}}">
