@@ -74,9 +74,24 @@ class AppNotificationsController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        if ($request->ajax())
+        {
+            $query_url        = $request->post('query_url');
+            $studyId          = $request->post('study_id');
+            $study_code       = $request->post('study_code');
+            $query_id         = $request->post('currentNotificationId');
+            $study_short_name = $request->post('study_short_name');
+            session([
+                'current_study' => $studyId,
+                'study_short_name' =>$study_short_name,
+                'study_code' => $study_code
+            ]);
+            $isRead    = array('is_read'=>'yes');
+            AppNotification::where('query_id',$query_id)->update($isRead);
+            return response()->json(['success'=>$query_url]);
+        }
     }
 
     /**
