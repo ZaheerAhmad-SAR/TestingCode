@@ -84,11 +84,11 @@
                     <div class="card-body">
                         <div class="table-responsive list">
                             <table class="table table-bordered editable-table" id="laravel_crud">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col" colspan="6">System Users</th>
-                                        </tr>
-                                        <tr>
+                                <thead>
+                                    <tr>
+                                      <th scope="col" colspan="6">System Users</th>
+                                    </tr>
+                                    <tr>
                                         <th scope="col" onclick="changeSort('name');">Name <i class="fas fa-sort float-mrg"></i></th>
                                         <th scope="col" onclick="changeSort('email');">Email <i class="fas fa-sort float-mrg"></i></th>
                                         <th scope="col">Roles</th>
@@ -96,47 +96,48 @@
                                         <th scope="col">Is Active?</th>
                                         <th scope="col">Actions</th>
                                     </tr>
-                                    </thead>
-                                    <tbody id="users-crud">
-                                        @foreach($users as $user)
-                                    <tr>
-                                        <td>{{ucfirst(($user->name))}}</td>
-                                        <td>{{($user->email)}}</td>
-                                        <td>{{ \App\User::getUserRolesString($user) }}</td>
-                                        <td>{{!empty($user->google2fa_secret)?'Enabled':'Disabled'}}</td>
-                                        <td id="userActiveTD_{{$user->id}}">{{ ((int)$user->is_active == 1)? 'Active':'InActive' }}</td>
-                                        <td>
-                                            <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                                <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
-                                                <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
+                                </thead>
+                                <tbody id="users-crud">
+                                    @foreach($users as $user)
+                                <tr>
+                                    <td>{{ucfirst(($user->name))}}</td>
+                                    <td>{{($user->email)}}</td>
+                                    <td>{{ \App\User::getUserRolesString($user) }}</td>
+                                    <td>{{!empty($user->google2fa_secret)?'Enabled':'Disabled'}}</td>
+                                    <td id="userActiveTD_{{$user->id}}">{{ ((int)$user->is_active == 1)? 'Active':'InActive' }}</td>
+                                    <td>
+                                        <div class="d-flex mt-3 mt-md-0 ml-auto">
+                                            <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                            <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
+                                            <span class="dropdown-item">
+                                            <a href="javascript:void(0);" onclick="openEditUserPopup('{{ $user->id }}');">
+                                                    <i class="far fa-edit"></i>&nbsp; Edit
+                                                </a>
+                                            </span>
                                                 <span class="dropdown-item">
-                                                <a href="javascript:void(0);" onclick="openEditUserPopup('{{ $user->id }}');">
-                                                        <i class="far fa-edit"></i>&nbsp; Edit
-                                                    </a>
+                                                <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
+                                                    <i class="fa fa-trash"></i>&nbsp; Delete </a>
                                                 </span>
-                                                    <span class="dropdown-item">
-                                                    <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
-                                                        <i class="fa fa-trash"></i>&nbsp; Delete </a>
-                                                    </span>
 
 
-                                                    @if (hasPermission(auth()->user(), 'systemtools.index'))
-                                                    <div id="userActiveStatusDiv_{{$user->id}}">
-                                                        @if($user->is_active == 0)
-                                                        <span class="dropdown-item activateUser" onclick="submitActivateUserRequest('{{ $user->id }}');"><i class="far fa-play-circle"></i>&nbsp; Activate User</span>
-                                                        @else
-                                                        <span class="dropdown-item inActivateUser" onclick="submitInActivateUserRequest('{{ $user->id }}');"><i class="far fa-pause-circle"></i>&nbsp; Inactivate User</span>
-                                                        @endif
-                                                    </div>
+                                                @if (hasPermission(auth()->user(), 'systemtools.index'))
+                                                <div id="userActiveStatusDiv_{{$user->id}}">
+                                                    @if($user->is_active == 0)
+                                                    <span class="dropdown-item activateUser" onclick="submitActivateUserRequest('{{ $user->id }}');"><i class="far fa-play-circle"></i>&nbsp; Activate User</span>
+                                                    @else
+                                                    <span class="dropdown-item inActivateUser" onclick="submitInActivateUserRequest('{{ $user->id }}');"><i class="far fa-pause-circle"></i>&nbsp; Inactivate User</span>
                                                     @endif
-
                                                 </div>
+                                                @endif
+
                                             </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                    </tbody>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                                </tbody>
                             </table>
+                            {{ $users->links() }}
                         </div>
                     </div>
                     <div class="card-body">

@@ -68,6 +68,8 @@ padding: 5px 10px;
                 @endphp
                 <form action="{{route('studySite.assignedSites')}}" method="get" class="form-1 filter-form">
                     <div class="form-row" style="padding: 10px;">
+                        <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ request()->sort_by_field }}">
+                        <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ request()->sort_by_field_name }}">
                         <input type="hidden" name="form_1" value="1" class="form-control">
                         <div class="form-group col-md-3">
                             <label for="inputState">Site Code</label>
@@ -163,11 +165,11 @@ padding: 5px 10px;
                                     <tr class="table-secondary">
                                         <th style="width: 11%;"> <input type="checkbox" class="select_all" name="select_all" id="select_all"> &nbsp; Select All
                                     </th>
-                                    <th>Code</th>
-                                    <th>Name</th>
-                                    <th>Address</th>
-                                    <th>City</th>
-                                    <th>State</th>
+                                    <th onclick="changeSort('site_code');">Code <i class="fas fa-sort float-mrg"></i></th>
+                                    <th onclick="changeSort('site_name');">Name <i class="fas fa-sort float-mrg"></i></th>
+                                    <th onclick="changeSort('site_address');">Address <i class="fas fa-sort float-mrg"></i></th>
+                                    <th onclick="changeSort('site_city');">City <i class="fas fa-sort float-mrg"></i></th>
+                                    <th onclick="changeSort('site_state');">State <i class="fas fa-sort float-mrg"></i></th>
                                     <th>Country</th>
                                     <th>Status</th>
                                 </tr>
@@ -285,5 +287,17 @@ $('.select_all').prop('checked',true);
 $('.select_all').prop('checked',false);
 }
 });
+// Sort order
+function changeSort(field_name){
+    var sort_by_field = $('#sort_by_field').val();
+    if(sort_by_field =='' || sort_by_field =='ASC'){
+       $('#sort_by_field').val('DESC');
+       $('#sort_by_field_name').val(field_name);
+    }else if(sort_by_field =='DESC'){
+       $('#sort_by_field').val('ASC'); 
+       $('#sort_by_field_name').val(field_name); 
+    }
+    $('.filter-form').submit();
+}
 </script>
 @endsection
