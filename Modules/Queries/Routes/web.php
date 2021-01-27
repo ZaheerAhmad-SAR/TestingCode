@@ -23,12 +23,13 @@ Route::group(['middleware' => ['auth','web']],function(){
     Route::post('notifications/markAsUnRead','AppNotificationsController@markAsUnRead')->name('notifications.markAsUnRead');
     Route::post('notifications/markAsRead','AppNotificationsController@markAsRead')->name('notifications.markAsRead');
     Route::post('notifications/removeNotification','AppNotificationsController@removeNotification')->name('notifications.removeNotification');
+    Route::post('notifications/update', 'AppNotificationsController@update')->name('notifications.update');
     Route::get('queries/chatindex','QueriesController@chatindex')->name('queries.chatindex');
 
 
 
     Route::post('queries/loadHtml', 'QueriesController@loadHtml')->name('queries.loadHtml');
-    Route::post('queries/update', 'QueriesController@update')->name('queries.update');
+    //Route::post('queries/update', 'QueriesController@update')->name('queries.update');
     Route::post('queries/usersDropDownListQuestion', 'QueriesController@usersDropDownListQuestion')->name('queries.usersDropDownListQuestion');
     Route::post('queries/loadAllQueriesByStudyId', 'QueriesController@loadAllQueriesByStudyId')->name('queries.loadAllQueriesByStudyId');
     Route::post('queries/loadAllQuestionById', 'QueriesController@loadAllQuestionById')->name('queries.loadAllQuestionById');
