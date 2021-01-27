@@ -31,6 +31,11 @@ class StudyusersController extends Controller
         }else{
             $field_name = 'name';
         }
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $asc_or_decs = $request->sort_by_field;
+        }else{
+            $asc_or_decs = 'ASC';
+        }
         $currentStudy = session('current_study');
         $studyRoleIds = Role::where('role_type', '=', 'study_role')->pluck('id')->toArray();
         $idsOfUsersWithStudyRole = UserRole::whereIn('role_id', $studyRoleIds)->pluck('user_id')->toArray();
@@ -49,7 +54,7 @@ class StudyusersController extends Controller
         if(isset($request->sort_by_field) && $request->sort_by_field !=''){
             $studyusers = $studyusers->orderBy('users.'.$field_name , $request->sort_by_field);
         }
-        $studyusers = $studyusers->get();
+        $studyusers = $studyusers->paginate(10)->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
         $old_values = $request->input();
         $remaining_users = User::whereIn('id', $idsOfUsersWithStudyRole)
             ->whereNotIn('id', $enrolledUserIds)->get();

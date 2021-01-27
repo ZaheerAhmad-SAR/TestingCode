@@ -3,7 +3,7 @@
 	    <div class="card">                           
 	        <div class="card-content">
 	            <div class="card-body">
-	                <canvas id="chartjs_corona"></canvas>
+	                <canvas id="chartjs_corona" style="height: 300px !important;"></canvas>
 	            </div>
 	        </div>
 	    </div>

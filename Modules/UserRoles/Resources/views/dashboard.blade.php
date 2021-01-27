@@ -26,7 +26,7 @@
                     @else
                     <i class="fas fa-circle" style="position: absolute;left: 36px; color: green;"></i>
                     @endif
-                    <span>{{$user->name}} </span>
+                    <span data-toggle="tooltip" data-placement="bottom" title="{{$user->name}}"> {{substr($user->name, 0, 15)}}... </span>
                     <span style="font-size:9px; float: right;margin-top: 25px;">
                     @if($user->working_status =='offline')
                         {{Carbon\Carbon::parse($user->offline_at)->diffForHumans()}}
@@ -106,7 +106,7 @@
                 <div class="card-body p-0">
                     <div class='p-4 align-self-center'>
                         <span class="col-xl-4" style="display: contents;"><i class="fas fa-users fa-4x"></i></span>
-                        <span class="col-xl-8" style="display: inline-block;"> <h2>{{ App\User::where('working_status','online')->count() }}</h2> <strong>Active Users</strong></span>
+                        <span class="col-xl-8" style="display: inline-block;"> <h2>{{ App\User::where('working_status','online')->count() }}</h2> <strong>Online Users</strong></span>
                     </div>
                 </div>
             </div>
@@ -495,6 +495,7 @@
     }
     
 </style>
+
 <link rel="stylesheet"  href="{{ asset('public/dist/vendors/chartjs/Chart.min.css') }}">
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/morris/morris.css') }}">
 <link rel="stylesheet" href="{{ asset('public/dist/vendors/weather-icons/css/pe-icon-set-weather.min.css') }}">

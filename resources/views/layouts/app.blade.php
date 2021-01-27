@@ -120,6 +120,33 @@
         @stack('script_last')
         @stack('script_skip_logic')
         <script>
+            $(function() {
+                var url_route = "{{ URL('home/working_status') }}";
+
+                $.ajax({
+                    url:url_route,
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+                       
+                    }
+                });
+            });
+
+            $(function() {
+                var url_route2 = "{{ URL('home/update_online_at_time') }}";
+                $.ajax({
+                    url:url_route2,
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                    },
+                    success: function(response) {
+                       
+                    }
+                });
+            });
+            
             $(document).ready(function(){
                 $('[data-toggle="popover"]').popover();
 

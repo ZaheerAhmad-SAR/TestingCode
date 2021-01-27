@@ -165,8 +165,22 @@ class StudySiteController extends Controller
 
     public function assignedSites(Request $request)
     {
+
         $total_sites = Site::all();
         $sites = Site::query();
+        // For Sorting purpose 
+        if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
+            $field_name = $request->sort_by_field_name;
+        }else{
+            $field_name = 'site_code';
+        }
+        
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $asc_or_decs = $request->sort_by_field;
+        }else{
+            $asc_or_decs = 'ASC';
+        }
+
         if ($request->site_code != '') {
             $sites = $sites->where('site_code','like', '%'.$request->site_code.'%');
         }
@@ -185,7 +199,10 @@ class StudySiteController extends Controller
         if ($request->site_phone != '') {
             $sites = $sites->where('site_phone','like', '%'.$request->site_phone.'%');
         }
-        $sites = $sites->paginate(20);
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $sites = $sites->orderBy($field_name , $request->sort_by_field);
+        }
+        $sites = $sites->paginate(20)->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
         return view('admin::studies.assign_sites',compact('sites','total_sites'));
     }
 
