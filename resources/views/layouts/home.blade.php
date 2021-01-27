@@ -79,7 +79,8 @@
                                             <div class="media-body">
 
                                                 <p class="mb-0 text-primary "><b> {{$studyData->study_short_name}} : new query by {{$userData->name}} </b></p>
-                                                {{ date_format($result->created_at,'d-M-Y')}}
+{{--                                                {{ date_format($result->created_at,'d-M-Y')}}--}}
+                                                {{Carbon\Carbon::parse($result->created_at)->diffForHumans()}}
                                             </div>
 
                                         </div>
