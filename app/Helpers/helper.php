@@ -677,8 +677,8 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
 
         // store data in event array
         $newData = array(
-            'study_id'    => session('current_study'),
-            'phase_id'    => $getPhaseName->name,
+            'study_name'    => session('study_short_name'),
+            'phase_name'    => $getPhaseName->name,
             'step_position'  =>  $eventData->step_position,
             'form_type_id' =>  $getFormName->form_type,
             'modility_id' =>  $getModilityName->modility_name,
@@ -701,8 +701,8 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
             $getOldModilityName = Modility::find($previousData->modility_id);
 
             $oldData = array(
-                'study_id'    => session('current_study'),
-                'phase_id'    => $getOldPhaseName->name,
+                'study_name'    => session('study_short_name'),
+                'phase_name'    => $getOldPhaseName->name,
                 'step_position'  =>  $previousData->step_position,
                 'form_type_id' =>  $getOldFormName->form_type,
                 'modility_id' =>  $getOldModilityName->modility_name,
