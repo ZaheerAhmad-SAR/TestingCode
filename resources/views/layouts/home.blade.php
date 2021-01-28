@@ -57,6 +57,7 @@
 
                                 @php
                                     $userQueries =  \Modules\Queries\Entities\AppNotification::where('user_id','=', auth()->user()->id)->where('is_read','no')->get();
+
                                 @endphp
 
                                 @if(!empty($userQueries))
@@ -67,8 +68,7 @@
 
                                     $result = '';
                                     $result      = \Modules\Queries\Entities\Query::where('id','=',$str->query_id)->where('query_status','open')->first();
-                                    $userData  = App\User::where('id',$result->queried_remarked_by_id)->first();
-
+                                    $userData  = App\User::where('id',$str->notification_create_by_user_id)->first();
                                     @endphp
                                 <li>
 
@@ -79,7 +79,8 @@
                                             <div class="media-body">
 
                                                 <p class="mb-0 text-primary "><b> {{$studyData->study_short_name}} : new query by {{$userData->name}} </b></p>
-                                                {{ date_format($result->created_at,'d-M-Y')}}
+{{--                                                {{ date_format($result->created_at,'d-M-Y')}}--}}
+                                                {{Carbon\Carbon::parse($str->created_at)->diffForHumans()}}
                                             </div>
 
                                         </div>
@@ -151,7 +152,7 @@
         function updateNotificationToRead(currentNotificationId,query_url,study_id,study_code,study_short_name)
         {
             $.ajax({
-                url:"{{route('queries.update')}}",
+                url:"{{route('notifications.update')}}",
                 type: 'POST',
                 data: {
                     "_token": "{{ csrf_token() }}",

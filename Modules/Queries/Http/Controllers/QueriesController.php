@@ -167,82 +167,6 @@ class QueriesController extends Controller
 
     }
 
-    public function queryQuestionReply(Request $request)
-    {
-        //dd($request->all());
-        $query_status     = $request->post('query_status'); // return the status value
-        $query_id         = $request->post('query_id');
-        $find             = Query::find($query_id);
-
-        $message_reply    = $request->post('message_query_for_reply');
-        $query_subject    = $request->post('subject_question');
-        $query_level_q    = $request->post('query_level_question');
-
-        $query_url        = $request->post('query_url');
-        $query_type       = $request->post('query_type');
-
-        $study_id         = $request->post('study_id');
-        $subject_id       = $request->post('subject_id');
-        $phase_steps_id   = $request->post('phase_steps_id');
-        $section_id       = $request->post('section_id');
-        $question_id      = $request->post('question_id');
-        $field_id         = $request->post('field_id');
-        $form_type_id     = $request->post('form_type_id');
-        $modility_id      = $request->post('modility_id');
-        $module_name      = $request->post('module_name');
-        $study_structures = $request->post('study_structures_id');
-
-        $id               = (string)Str::uuid();
-        $filePath = '';
-        if ($request->has('question_file'))
-        {
-            if (!empty($request->file('question_file'))) {
-                $image = $request->file('question_file');
-                $name = Str::slug($request->input('name')).'_'.time();
-                $folder = '/query_attachments/';
-                $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
-                $this->uploadOne($image, $folder, 'public', $name);
-            }
-        }
-        $query            = Query::create([
-            'id'=>$id,
-            'queried_remarked_by_id'=>\auth()->user()->id,
-            'parent_query_id'=> $query_id,
-            'messages'=>$message_reply,
-            'query_type' =>$query_type,
-            'query_url'=>$query_url,
-            'query_subject'=>$query_subject,
-            'query_attachments'=>$filePath,
-            'study_id'=>$study_id,
-            'subject_id'=>$subject_id,
-            'study_structures_id'=>$study_structures,
-            'phase_steps_id'=>$phase_steps_id,
-            'section_id'=>$section_id,
-            'question_id'=>$question_id,
-            'field_id'=>$field_id,
-            'form_type_id'=>$form_type_id,
-            'modility_id'=>$modility_id,
-            'module_name'=>$module_name,
-            'query_level'=>$query_level_q
-        ]);
-
-        AppNotification::create([
-            'id' => Str::uuid(),
-            'user_id' => \auth()->user()->id,
-            'query_id' => $query_id,
-            'is_read'=>'no',
-            'study_id'=>$study_id
-
-        ]);
-
-        $queryStatusArray = array('query_status'=>$query_status);
-        $queryStatusArrayChild = array('query_status'=>$query_status);
-        Query::where('id',$find['id'])->update($queryStatusArray);
-        Query::where('parent_query_id',$find['id'])->update($queryStatusArrayChild);
-        return response()->json([$query,'success'=>'Question response is successfully save!!!!','reply_id'=>$id]);
-
-    }
-
     public function showCommentsById(Request $request)
     {
     $query_id = $request->query_id;
@@ -360,8 +284,9 @@ class QueriesController extends Controller
 
     }
 
-    public function storeQuestionQueries(Request $request){
-        ///dd($request->all());
+    public function storeQuestionQueries(Request $request)
+    {
+        //dd($request->all());
         $study_id            = $request->post('study_id');
         $question_id         = $request->post('question_id');
         $phase_steps_id      = $request->post('phase_steps_id');
@@ -390,9 +315,9 @@ class QueriesController extends Controller
             $this->uploadOne($image, $folder, 'public', $name);
         }
 
-        $id              = (string)Str::uuid();
+        $queryid              = (string)Str::uuid();
         $query           = Query::create([
-            'id'=>$id,
+            'id'=>$queryid,
             'queried_remarked_by_id'=>\auth()->user()->id,
             'parent_query_id'=> 0,
             'messages'=>$message,
@@ -421,14 +346,14 @@ class QueriesController extends Controller
                 QueryUser::create([
                     'id' => (string)Str::uuid(),
                     'user_id' => $user,
-                    'query_id' => $id
+                    'query_id' => $queryid
                 ]);
 
                 AppNotification::create([
                     'id' => Str::uuid(),
-                    'query_id' => $id,
+                    'query_id' => $queryid,
                     'user_id'=>$user,
-                    'study_id'=>$study_id
+                    'notification_create_by_user_id'=>\auth()->user()->id
                 ]);
             }
         }
@@ -439,13 +364,13 @@ class QueriesController extends Controller
                 RoleQuery::create([
                     'id' => (string)Str::uuid(),
                     'roles_id' => $role,
-                    'query_id' => $id
+                    'query_id' => $queryid
                 ]);
                 AppNotification::create([
                     'id' => Str::uuid(),
                     'role_id'=>$role,
-                    'query_id' => $id,
-                    'study_id'=>$study_id
+                    'query_id' => $queryid,
+                    'notification_create_by_user_id'=>\auth()->user()->id
                 ]);
             }
 
@@ -454,6 +379,95 @@ class QueriesController extends Controller
 
 
         return response()->json([$query,'success'=>'Queries is generate successfully!!!!']);
+
+    }
+
+
+    public function queryQuestionReply(Request $request)
+    {
+        //dd($request->all(),\auth()->user()->name);
+        $query_status     = $request->post('query_status'); // return the status value
+        $query_id         = $request->post('query_id');
+
+        $record           = AppNotification::where('query_id',$query_id)->first();
+
+        $find             = Query::find($query_id);
+
+        $message_reply    = $request->post('message_query_for_reply');
+        $query_subject    = $request->post('subject_question');
+        $query_level_q    = $request->post('query_level_question');
+
+        $query_url        = $request->post('query_url');
+        $query_type       = $request->post('query_type');
+
+        $study_id         = $request->post('study_id');
+        $subject_id       = $request->post('subject_id');
+        $phase_steps_id   = $request->post('phase_steps_id');
+        $section_id       = $request->post('section_id');
+        $question_id      = $request->post('question_id');
+        $field_id         = $request->post('field_id');
+        $form_type_id     = $request->post('form_type_id');
+        $modility_id      = $request->post('modility_id');
+        $module_name      = $request->post('module_name');
+        $study_structures = $request->post('study_structures_id');
+
+        $queryId               = (string)Str::uuid();
+        $filePath = '';
+        if ($request->has('question_file'))
+        {
+            if (!empty($request->file('question_file'))) {
+                $image = $request->file('question_file');
+                $name = Str::slug($request->input('name')).'_'.time();
+                $folder = '/query_attachments/';
+                $filePath = $folder . $name. '.' . $image->getClientOriginalExtension();
+                $this->uploadOne($image, $folder, 'public', $name);
+            }
+        }
+        $query            = Query::create([
+            'id'=>$queryId,
+            'queried_remarked_by_id'=>\auth()->user()->id,
+            'parent_query_id'=> $query_id,
+            'messages'=>$message_reply,
+            'query_type' =>$query_type,
+            'query_url'=>$query_url,
+            'query_subject'=>$query_subject,
+            'query_attachments'=>$filePath,
+            'study_id'=>$study_id,
+            'subject_id'=>$subject_id,
+            'study_structures_id'=>$study_structures,
+            'phase_steps_id'=>$phase_steps_id,
+            'section_id'=>$section_id,
+            'question_id'=>$question_id,
+            'field_id'=>$field_id,
+            'form_type_id'=>$form_type_id,
+            'modility_id'=>$modility_id,
+            'module_name'=>$module_name,
+            'query_level'=>$query_level_q
+        ]);
+
+//        AppNotification::create([
+//            'id' => Str::uuid(),
+//            'user_id' =>  $record->notification_create_by_user_id,
+//            'query_id' => $query_id,
+//            'is_read'=>'no',
+//            'notification_create_by_user_id'=> \auth()->user()->id
+//
+//        ]);
+
+
+        AppNotification::create([
+            'id' => Str::uuid(),
+            'query_id' => $query_id,
+            'user_id'=>$record->notification_create_by_user_id,
+            'notification_create_by_user_id'=>\auth()->user()->id
+        ]);
+
+
+        $queryStatusArray = array('query_status'=>$query_status);
+        $queryStatusArrayChild = array('query_status'=>$query_status);
+        Query::where('id',$find['id'])->update($queryStatusArray);
+        Query::where('parent_query_id',$find['id'])->update($queryStatusArrayChild);
+        return response()->json([$query,'success'=>'Question response is successfully save!!!!','reply_id'=>$queryId]);
 
     }
 
@@ -660,22 +674,7 @@ class QueriesController extends Controller
      */
     public function update(Request $request)
     {
-        if ($request->ajax())
-        {
-            $query_url        = $request->post('query_url');
-            $studyId          = $request->post('study_id');
-            $study_code       = $request->post('study_code');
-            $query_id         = $request->post('currentNotificationId');
-            $study_short_name = $request->post('study_short_name');
-            session([
-                'current_study' => $studyId,
-                'study_short_name' =>$study_short_name,
-                'study_code' => $study_code
-            ]);
-            $isRead    = array('is_read'=>'yes');
-            AppNotification::where('query_id',$query_id)->update($isRead);
-            return response()->json(['success'=>$query_url]);
-        }
+        //
     }
 
 
