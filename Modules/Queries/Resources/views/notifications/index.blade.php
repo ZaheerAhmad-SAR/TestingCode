@@ -44,10 +44,10 @@
                             </select>
                         </div>
 
-                        <div class="form-group col-md-3">
-                            <label for="inputState"> Status Date </label>
-                            <input type="text" name="status_date" id="status_date" class="form-control status_date filter-form-data" value="">
-                        </div>
+{{--                        <div class="form-group col-md-3">--}}
+{{--                            <label for="inputState"> Status Date </label>--}}
+{{--                            <input type="text" name="status_date" id="status_date" class="form-control status_date filter-form-data" value="">--}}
+{{--                        </div>--}}
 
                         <div class="form-group col-md-2" style="text-align: right; margin-top: 26px;">
                             <button class="btn btn-outline-warning reset-filter"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
@@ -106,7 +106,7 @@
                                                         <a href="#" class="mr-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-options-vertical"></i></a>
                                                         <div class="dropdown-menu p-0 m-0 dropdown-menu-right mail-bulk-action">
                                                             <a class="dropdown-item markAsUnReadNotification" data-id="{{$record->id}}" href="javascript:void(0);"><i class="icon-notebook"></i> Mark as unread</a>
-                                                            <a class="dropdown-item readnotificationdelete" data-id="{{$record->id}}" href="javascript:void(0);"><i class="icon-trash"></i> Delete</a>
+{{--                                                            <a class="dropdown-item readnotificationdelete" data-id="{{$record->id}}" href="javascript:void(0);"><i class="icon-trash"></i> Delete</a>--}}
                                                         </div>
                                                     </div>
                                                 @endif
