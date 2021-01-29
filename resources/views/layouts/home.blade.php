@@ -67,15 +67,13 @@
                                     $userData ='';
                                     $answers = '';
                                     $query = '';
-                                    $answers      = \Modules\Queries\Entities\Query::where('parent_query_id','like',$str->query_id)
+                                    $answers = \Modules\Queries\Entities\Query::where('parent_query_id','like',$str->query_id)
                                     ->where('query_status','open')->get();
-                                    //dd($answers !== null);
-                                    //dd($answers);
-                                    $query      = \Modules\Queries\Entities\Query::where('id','=',$str->query_id)
+
+                                    $query = \Modules\Queries\Entities\Query::where('id','=',$str->query_id)
                                     ->where('query_status','open')
                                     ->where('parent_query_id',0)
                                     ->first();
-                                    //dd($query);
                                     $userData  = App\User::where('id',$str->notification_create_by_user_id)->first();
                                     @endphp
 
