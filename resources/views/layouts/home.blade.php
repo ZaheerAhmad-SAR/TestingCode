@@ -78,7 +78,7 @@
                                             <img src="{{asset('dist/images/author.jpg')}}" alt="" class="d-flex mr-3 img-fluid rounded-circle">
                                             <div class="media-body">
 
-                                                <p class="mb-0 text-primary "><b> {{$studyData->study_short_name}} : new query by {{$userData->name}} </b></p>
+                                                <p class="mb-0 text-primary "><b> {{$studyData->study_short_name}} : New query by {{$userData->name}} </b></p>
 {{--                                                {{ date_format($result->created_at,'d-M-Y')}}--}}
                                                 {{Carbon\Carbon::parse($str->created_at)->diffForHumans()}}
                                             </div>

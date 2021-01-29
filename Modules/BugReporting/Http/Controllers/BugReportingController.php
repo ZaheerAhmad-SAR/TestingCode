@@ -9,7 +9,10 @@ use Illuminate\Support\Str;
 use Modules\Admin\Entities\Study;
 use Modules\BugReporting\Entities\BugReport;
 use App\Traits\UploadTrait;
+use Modules\Queries\Entities\AppNotification;
 use Modules\Queries\Entities\Query;
+use Modules\UserRoles\Entities\Role;
+use Modules\UserRoles\Entities\UserRole;
 use phpDocumentor\Reflection\Types\Null_;
 
 
@@ -22,6 +25,7 @@ class BugReportingController extends Controller
      */
     public function index()
     {
+
         $records = BugReport::where('parent_bug_id','like',0)->orderBy('created_at', 'DESC')->get();
         return view('bugreporting::pages.index',compact('records'));
     }
@@ -85,6 +89,15 @@ class BugReportingController extends Controller
             'bug_attachments'=>$filePath,
             'bug_priority'=>$severity,
             'study_name'=>$current_study
+        ]);
+        $role = Role::where('name','Developer')->first();
+        $userRole = UserRole::where('role_id',$role->id)->first();
+
+        AppNotification::create([
+            'id' => Str::uuid(),
+            'query_id' => $id,
+            'user_id'=>$userRole->user_id,
+            'notification_create_by_user_id'=>\auth()->user()->id
         ]);
         return response()->json([$query,'success'=>'Queries is generate successfully!!!!']);
 
