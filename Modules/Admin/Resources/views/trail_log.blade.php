@@ -245,7 +245,7 @@
                                                             <tr>
                                                                 <td>{{$key}}</td>
                                                                 <td>{{$details}}</td>
-                                                                <td>{{$oldDetails->$key}}</td>
+                                                                <td>{{isset($oldDetails->$key) ? $oldDetails->$key : '' }}</td>
                                                             </tr>
                                                             @endforeach
                                                         @endif
