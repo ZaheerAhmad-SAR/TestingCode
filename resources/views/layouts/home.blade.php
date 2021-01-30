@@ -65,27 +65,60 @@
                                     @php
 
                                     $userData ='';
+                                    $answers = '';
+                                    $query = '';
+                                    $answers = \Modules\Queries\Entities\Query::where('parent_query_id','like',$str->query_id)
+                                    ->where('query_status','open')->get();
 
-                                    $result = '';
-                                    $result      = \Modules\Queries\Entities\Query::where('id','=',$str->query_id)->where('query_status','open')->first();
+                                    $query = \Modules\Queries\Entities\Query::where('id','=',$str->query_id)
+                                    ->where('query_status','open')
+                                    ->where('parent_query_id',0)
+                                    ->first();
                                     $userData  = App\User::where('id',$str->notification_create_by_user_id)->first();
                                     @endphp
-                                <li>
 
-                                    @php $studyData = Modules\Admin\Entities\Study::where('id',$result->study_id)->first(); @endphp
-                                    <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0 currentNotificationId appRedirectPage"   data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$result->query_url}}" data-id="{{$result->study_id}}" href="javascript:void(0);" data-value="{{$result->id}}">
+                                    <li>
+                                    @php $studyData = Modules\Admin\Entities\Study::where('id',$query->study_id)->first(); @endphp
+                                    <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0 currentNotificationId appRedirectPage"   data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$query->query_url}}" data-id="{{$query->study_id}}" href="javascript:void(0);" data-value="{{$query->id}}">
                                         <div class="media">
                                             <img src="{{asset('dist/images/author.jpg')}}" alt="" class="d-flex mr-3 img-fluid rounded-circle">
                                             <div class="media-body">
 
-                                                <p class="mb-0 text-primary "><b> {{$studyData->study_short_name}} : New query by {{$userData->name}} </b></p>
-{{--                                                {{ date_format($result->created_at,'d-M-Y')}}--}}
+                                                <p class="mb-0 text-primary">
+
+                                                        <b> {{$studyData->study_short_name}} : @if($answers->isEmpty()) New Query By  @else Reply By  @endif {{$userData->name}} </b>
+                                                </p>
+
                                                 {{Carbon\Carbon::parse($str->created_at)->diffForHumans()}}
                                             </div>
 
                                         </div>
                                     </a>
                                 </li>
+{{--                                <li>--}}
+
+{{--                                    @php $studyData = Modules\Admin\Entities\Study::where('id',$query->study_id)->first(); @endphp--}}
+{{--                                    <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0 currentNotificationId appRedirectPage"   data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$query->query_url}}" data-id="{{$query->study_id}}" href="javascript:void(0);" data-value="{{$query->id}}">--}}
+{{--                                        <div class="media">--}}
+{{--                                            <img src="{{asset('dist/images/author.jpg')}}" alt="" class="d-flex mr-3 img-fluid rounded-circle">--}}
+{{--                                            <div class="media-body">--}}
+
+{{--                                                <p class="mb-0 text-primary "><b> {{$studyData->study_short_name}}--}}
+
+{{--                                                            @if($answers !== null)--}}
+
+{{--                                                            : reply by {{$userData->name}}--}}
+{{--                                                            @endif--}}
+
+{{--                                                    </b>--}}
+{{--                                                </p>--}}
+{{--                                                {{Carbon\Carbon::parse($str->created_at)->diffForHumans()}}--}}
+{{--                                            </div>--}}
+
+{{--                                        </div>--}}
+{{--                                    </a>--}}
+{{--                                </li>--}}
+
 
                                 @endforeach
                                 @endif

@@ -67,7 +67,9 @@ class QueriesController extends Controller
             ->join('study_role_users','study_role_users.user_id','=','user_roles.user_id')
             ->where('roles.role_type','!=','system_role')
             ->where('study_role_users.study_id','=',$request->study_id)
+            ->groupBy('users.id')
             ->get();
+        //dd($studyusers);
         echo  view('queries::queries.question.usersdropdownquestions',compact('studyusers'));
     }
 
@@ -353,6 +355,7 @@ class QueriesController extends Controller
                     'id' => Str::uuid(),
                     'query_id' => $queryid,
                     'user_id'=>$user,
+                    'is_read'=> 'no',
                     'notification_create_by_user_id'=>\auth()->user()->id
                 ]);
             }
@@ -370,13 +373,11 @@ class QueriesController extends Controller
                     'id' => Str::uuid(),
                     'role_id'=>$role,
                     'query_id' => $queryid,
+                    'is_read'=> 'no',
                     'notification_create_by_user_id'=>\auth()->user()->id
                 ]);
             }
-
         }
-
-
 
         return response()->json([$query,'success'=>'Queries is generate successfully!!!!']);
 
@@ -458,6 +459,7 @@ class QueriesController extends Controller
         AppNotification::create([
             'id' => Str::uuid(),
             'query_id' => $query_id,
+            'is_read'=> 'no',
             'user_id'=>$record->notification_create_by_user_id,
             'notification_create_by_user_id'=>\auth()->user()->id
         ]);
