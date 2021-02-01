@@ -179,7 +179,7 @@ class Query extends Model
         $queryCheck   = false;
         $queryByLogin = $sqlQuery->where('queried_remarked_by_id', 'like', auth()->user()->id)
             ->where('parent_query_id', 'like', 0)
-//            ->where('query_status', '!=', 'close')
+            ->where('query_status', '!=', 'close')
             ->where('query_level', '=', 'question')
             ->first();
 
@@ -211,8 +211,14 @@ class Query extends Model
             //->count();
             ->first();
         //dd($queryByLogin);
-        if ($queryByLogin > 0) {
+        if (null !== $queryByLogin) {
             //dd('ddddd');
+            $queryCheck = true;
+        }
+        $queryForUser = QueryUser::where('user_id', auth()->user()->id)->first();
+
+        if (null !== $queryForUser) {
+
             $queryCheck = true;
         }
         return $queryCheck;
