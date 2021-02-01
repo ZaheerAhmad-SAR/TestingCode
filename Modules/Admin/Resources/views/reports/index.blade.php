@@ -8,7 +8,7 @@
                     <div class="w-sm-100 mr-auto"><h4 class="mb-0">Report Turnaround Time of visits completion</h4></div>
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                         <li class="breadcrumb-item">Dashboard</li>
-                        <li class="breadcrumb-item">Finance</li>
+                        <li class="breadcrumb-item">Reports</li>
                     </ol>
                 </div>
             </div>

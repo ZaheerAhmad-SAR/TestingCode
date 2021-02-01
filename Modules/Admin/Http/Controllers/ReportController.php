@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\UserRoles\Http\Controllers;
+namespace Modules\Admin\Http\Controllers;
 
 use App\Mail\TransmissonQuery;
 use Illuminate\Contracts\Support\Renderable;
@@ -28,7 +28,7 @@ use DB;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 
-class FinanceController extends Controller
+class ReportController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -87,7 +87,7 @@ class FinanceController extends Controller
         $getModalities = Modility::get();
         // get studies
         $getStudies = Study::get();
-        return view('userroles::finance.index', compact('getTransmissions', 'getModalities', 'getStudies'));
+        return view('admin::reports.index', compact('getTransmissions', 'getModalities', 'getStudies'));
     }
 
     /**
@@ -96,7 +96,7 @@ class FinanceController extends Controller
      */
     public function create()
     {
-        return view('userroles::create');
+        return view('admin::create');
     }
 
     /**
@@ -116,7 +116,7 @@ class FinanceController extends Controller
      */
     public function show($id)
     {
-        return view('userroles::show');
+        return view('admin::show');
     }
 
     /**
@@ -126,7 +126,7 @@ class FinanceController extends Controller
      */
     public function edit($id)
     {
-        return view('userroles::edit');
+        return view('admin::edit');
     }
 
     /**

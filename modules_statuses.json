@@ -7,5 +7,6 @@
     "CertificationApp": true,
     "Model": true,
     "TransmissionDataDevice": true,
-    "BugReporting": true
+    "BugReporting": true,
+    "Dashboards": true
 }

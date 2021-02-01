@@ -523,7 +523,7 @@
                     <li class="dropdown"><a href="#"><i class="fas fa-info"></i>TAT Reports</a>
                         <ul class="sub-menu">
                             <li>
-                                <a href="">
+                                <a href="{{route('reports.index')}}">
                                     <i class="fas fa-history"></i>
                                     Visit Completion Report
                                 </a>
