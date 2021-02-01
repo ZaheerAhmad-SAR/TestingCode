@@ -396,7 +396,7 @@
                 @if(session('current_study'))
                     <li class="dropdown">
                         <ul>
-                            <li class="nav-item"><a href="{{route('queries.index')}}"><i class="fab fa-rocketchat"></i>Queries <sup><span class="badge badge-pill badge-danger p-2 mb-1">{{ Modules\Queries\Entities\Query::where(array('query_status' => 'open','queried_remarked_by_id' => auth()->user()->id ))->count() }}</span></sup></a>
+                            <li class="nav-item"><a href="{{route('queries.index')}}"><i class="fab fa-rocketchat"></i>Queries <span class="badge badge-dark">{{ Modules\Queries\Entities\Query::where(array('query_status' => 'open','queried_remarked_by_id' => auth()->user()->id,'parent_query_id'=>0 ))->count() }}</span></a>
                             </li>
                         </ul>
                     </li>
@@ -405,19 +405,14 @@
 
 
             @if(hasPermission(auth()->user(),'bug-reporting.index'))
+                @if(session('current_study'))
             <li class="dropdown">
                 <ul>
-                    <li class="dropdown"><a href="#"><i class="fas fa-bug"></i>Bugs Reporting</a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a  href="{{route('bug-reporting.index')}}">
-                                    List
-                                </a>
-                            </li>
-                        </ul>
+                    <li class="nav-item"><a href="{{route('bug-reports.index')}}"><i class="fas fa-bug"></i>Bug Reports <span class="badge badge-danger">{{Modules\BugReporting\Entities\BugReport::where(array('status' => 'open','parent_bug_id' => 0))->count() }}</span></a>
                     </li>
                 </ul>
             </li>
+                @endif
             @endif
 
             @if(hasPermission(auth()->user(),'certification-photographer.index'))
@@ -630,7 +625,7 @@
             formData.append("attachFile", $("#attachFile")[0].files[0]);
 
             $.ajax({
-                url: "{{route('bug-reporting.store')}}",
+                url: "{{route('bug-reports.store')}}",
                 type: "POST",
                 data: formData,
                 dataType: 'json',

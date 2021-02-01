@@ -54,6 +54,7 @@ class QueriesController extends Controller
             ->join('study_role_users','study_role_users.user_id','=','user_roles.user_id')
             ->where('roles.role_type','!=','system_role')
             ->where('study_role_users.study_id','=',$request->study_id)
+            ->groupBy('users.id')
             ->get();
         echo  view('queries::queries.form.usersdropdownform',compact('studyusers'));
     }
@@ -536,11 +537,13 @@ class QueriesController extends Controller
                     'user_id' => $user,
                     'query_id' => $id
                 ]);
+
                 AppNotification::create([
                     'id' => Str::uuid(),
                     'query_id' => $id,
                     'user_id'=>$user,
-                    'study_id'=>$study_id
+                    'is_read'=> 'no',
+                    'notification_create_by_user_id'=>\auth()->user()->id
                 ]);
             }
         }
@@ -556,9 +559,10 @@ class QueriesController extends Controller
 
                 AppNotification::create([
                     'id' => Str::uuid(),
-                    'query_id' => $id,
                     'role_id'=>$role,
-                    'study_id'=>$study_id
+                    'query_id' => $id,
+                    'is_read'=> 'no',
+                    'notification_create_by_user_id'=>\auth()->user()->id
                 ]);
             }
         }
