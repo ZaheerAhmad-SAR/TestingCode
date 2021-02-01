@@ -1377,3 +1377,19 @@ function get_all_counts_assigned_not_complete_and_due($form_type_id,$modility_id
 function get_all_counts_assigned_work($form_type_id){
     return AssignWork::where('form_type_id',$form_type_id)->count();
 }
+// For visits Turnarround Time selection
+function get_tat_of_visit_complete($subject_id,$phase_id,$form_type_id,$form_status,$modality_id){
+    $where = array(
+        'study_structures_id' => $phase_id,
+        'form_type_id' => $form_type_id,
+        'form_status' => $form_status,
+        'modility_id' => $modality_id
+    );
+    return FormStatus::where($where)->with('user')->first();
+}
+
+function get_date_differnce($date1,$date2)
+{
+   return (\Carbon\Carbon::parse($date1))->diff(\Carbon\Carbon::parse($date2))->format('%m month, %d days');
+   // return $date1->diff($date2);
+}
