@@ -40,21 +40,22 @@
 {{--        </div>--}}
 {{--    @else--}}
 
-{{--        <div class="closeQuestion">--}}
-{{--        <span class="ml-3" style="cursor: pointer;">--}}
-{{--            @php--}}
-{{--                $dataStr = '';--}}
-{{--                if(isset($queryParams)){--}}
-{{--                    $dataStr = "'" . implode("', '", $queryParams)."'";--}}
-{{--                }--}}
+    @if(\Modules\Queries\Entities\Query::questionStatusHasClose($queryParams))
+        <div class="closeQuestion">
+        <span class="ml-3" style="cursor: pointer;">
+            @php
+                $dataStr = '';
+                if(isset($queryParams)){
+                    $dataStr = "'" . implode("', '", $queryParams)."'";
+                }
 
-{{--            //echo('false');--}}
-{{--            @endphp--}}
-{{--            <i class="fas fa-check-circle showCloseQuestionPopUp" onclick="showCloseQuestionQueries({{ $dataStr }});"  style="margin-top: 12px; position: absolute;left: 17px; color: green;"></i>--}}
+            //echo('false');
+            @endphp
+            <i class="fas fa-check-circle showCloseQuestionPopUp" onclick="showCloseQuestionQueries({{ $dataStr }});"  style="margin-top: 12px; position: absolute;left: 17px; color: green;"></i>
 
-{{--        </span>--}}
-{{--        </div>--}}
-{{--        @endif--}}
+        </span>
+        </div>
+        @endif
 {{--    @endif--}}
 
 </div>
