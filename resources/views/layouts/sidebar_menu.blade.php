@@ -11,6 +11,11 @@
                                     <i class="fas fa-list"></i> System Dashboard
                                 </a>
                             </li>
+                            <li>
+                                <a href="{{ route('finance.index')}}">
+                                    <i class="icon-layers"></i> Finance Dashboard
+                                </a>
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -513,6 +518,20 @@
 
             @endif
 
+            <li class="dropdown">
+                <ul>
+                    <li class="dropdown"><a href="#"><i class="fas fa-info"></i>TAT Reports</a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="">
+                                    <i class="fas fa-history"></i>
+                                    Visit Completion Report
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
         </ul>
         <!-- END: Menu-->
 
