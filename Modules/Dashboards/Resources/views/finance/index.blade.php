@@ -126,10 +126,10 @@
                                                                 {{ $value->modility_abbreviation }}
                                                             </span>
                                                         </td>
-                                                        <th>{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 1,'form_status' => 'complete','modility_id' => $value->id,'form_filled_by_user_id' => $record->user_id))->count() }}</th>
-                                                        <th>{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 3,'form_status' => 'complete','modility_id' => $value->id,'form_filled_by_user_id' => $record->user_id))->count() }}</th>
-                                                        <th>{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'complete','modility_id' => $value->id,'form_filled_by_user_id' => $record->user_id))->count() }}</th>
-                                                        <th>{{ Modules\FormSubmission\Entities\AdjudicationFormStatus::where(array('form_type_id' => 2,'adjudication_status' => 'complete','modility_id' => $value->id,'form_adjudicated_by_id' => $record->user_id))->count() }}</th>
+                                                        <th>{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 1,'form_status' => 'complete','modility_id' => $value->id,'form_filled_by_user_id' => $record->user_id,'study_id' => $record->study_id))->count() }}</th>
+                                                        <th>{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 3,'form_status' => 'complete','modility_id' => $value->id,'form_filled_by_user_id' => $record->user_id,'study_id' => $record->study_id))->count() }}</th>
+                                                        <th>{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'complete','modility_id' => $value->id,'form_filled_by_user_id' => $record->user_id,'study_id' => $record->study_id))->count() }}</th>
+                                                        <th>{{ Modules\FormSubmission\Entities\AdjudicationFormStatus::where(array('form_type_id' => 2,'adjudication_status' => 'complete','modility_id' => $value->id,'form_adjudicated_by_id' => $record->user_id,'study_id' => $record->study_id))->count() }}</th>
                                                     </tr>
                                                     @endforeach
                                                 </tbody>
