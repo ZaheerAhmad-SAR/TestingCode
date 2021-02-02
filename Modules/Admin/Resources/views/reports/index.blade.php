@@ -17,23 +17,13 @@
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
                     <div class="card-body">
-                        <form action="{{route('finance.index')}}" method="get" class="filter-form">
+                        <form action="{{route('reports.index')}}" method="get" class="filter-form">
                             <div class="form-row" style="padding: 10px;">
                                 <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ request()->sort_by_field }}">
                                 <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ request()->sort_by_field_name }}">
                                 <div class="form-group col-md-3">
                                     <label for="trans_id">Transmission#</label>
                                     <input type="text" name="trans_id" id="trans_id" class="form-control filter-form-data" value="{{ request()->trans_id }}" placeholder="Transmission#">
-                                </div>
-
-                                <div class="form-group col-md-3">
-                                    <label for="inputState"> Users </label>
-                                    <select id="study_id" name="study_id" class="form-control filter-form-data">
-                                        <option value="">All Users</option>
-                                        @foreach($getStudies as $study)
-                                        <option @if ($study->study_code == request()->study_id) selected @endif value="{{ $study->study_code}}"> {{ $study->study_short_name }}</option>
-                                        @endforeach
-                                    </select>
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="inputState"> Study </label>
@@ -91,6 +81,7 @@
                                         <th>TAT Grading</th>
                                         <th>TAT Adjudication</th>
                                         <th>Modality</th>
+                                        <th>Timer</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -136,6 +127,7 @@
                                             @endif
                                         </td>
                                         <td>{{$transmission->ImageModality}}</td>
+                                        <td>5:30 Mint</td>
                                     </tr> 
                                     @endforeach
                                     @else

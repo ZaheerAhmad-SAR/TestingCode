@@ -64,6 +64,7 @@
                         <table class="table font-w-600 mb-0">
                             <thead>
                                 <tr>
+                                    <th>Expand</th>
                                     <th>User Name</th>
                                     <th>Study Name</th>
                                     <th>Role</th>
@@ -78,6 +79,11 @@
                                     {{-- {{dd($study_users)}} --}}
                                     @foreach($study_users as $record)
                                     <tr>
+                                        <td style="text-align: left;width:10%">
+                                          <div class="btn-group btn-group-sm" role="group">
+                                            <i class="fas h5 mr-2 fa-chevron-circle-right detail-icon" title="Log Details" data-toggle="collapse" data-target=".row-{{$record->id}}" style="font-size: 20px; color: #1e3d73;"></i>
+                                          </div>
+                                        </td>
                                         <td>{{$record->user->name}}</td>
                                         <td>{{$record->study->study_short_name}}</td>
                                         <td>{{$record->role->name}}</td>
@@ -100,6 +106,34 @@
                                             <span class="badge badge-pill badge-primary mb-1" style="font-weight: 400;font-size: 13px;">
                                                 {{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'incomplete','study_id' =>$record->study_id,'form_filled_by_user_id' =>$record->user_id ))->count() }}
                                             </span>
+                                        </td>
+                                    </tr>
+                                    <tr class="collapse row-{{$record->id}}">
+                                        <td colspan="8">
+                                           <table class="table table-hover" style="width: 100%">
+                                                <thead class="table-info">
+                                                    <th>Modality Short Name</th>
+                                                    <th>Completed QC</th>
+                                                    <th>Completed Eligibility</th>
+                                                    <th>Completed Grading</th>
+                                                    <th>Completed Adjudication</th>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach($getModalities as $key => $value)
+                                                    <tr>
+                                                        <td>
+                                                            <span data-toggle="tooltip" data-placement="top" title="{{$value->modility_name}}">
+                                                                {{ $value->modility_abbreviation }}
+                                                            </span>
+                                                        </td>
+                                                        <th>{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 1,'form_status' => 'complete','modility_id' => $value->id,'form_filled_by_user_id' => $record->user_id))->count() }}</th>
+                                                        <th>{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 3,'form_status' => 'complete','modility_id' => $value->id,'form_filled_by_user_id' => $record->user_id))->count() }}</th>
+                                                        <th>{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'complete','modility_id' => $value->id,'form_filled_by_user_id' => $record->user_id))->count() }}</th>
+                                                        <th>{{ Modules\FormSubmission\Entities\AdjudicationFormStatus::where(array('form_type_id' => 2,'adjudication_status' => 'complete','modility_id' => $value->id,'form_adjudicated_by_id' => $record->user_id))->count() }}</th>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
                                         </td>
                                     </tr>
                                     @endforeach
@@ -136,5 +170,10 @@
             }
             $('.filter-form').submit();
         }
-    </script>   
+    </script> 
+    <script type="text/javascript">
+        $('.detail-icon').click(function(e){
+            $(this).toggleClass("fa-chevron-circle-right fa-chevron-circle-down");
+        });
+    </script>  
 @stop
