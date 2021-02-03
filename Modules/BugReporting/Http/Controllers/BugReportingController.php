@@ -3,6 +3,7 @@
 namespace Modules\BugReporting\Http\Controllers;
 
 use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
@@ -25,7 +26,10 @@ class BugReportingController extends Controller
      */
     public function index()
     {
-
+//        $role = Role::where('name','Developer')->first();
+//
+//        $userRoles = UserRole::where('role_id',$role->id)->pluck('user_id')->toArray();
+//        dd($userRoles);
         $records = BugReport::where('parent_bug_id','like',0)->orderBy('created_at', 'DESC')->get();
         return view('bugreporting::pages.index',compact('records'));
     }
@@ -90,15 +94,26 @@ class BugReportingController extends Controller
             'bug_priority'=>$severity,
             'study_name'=>$current_study
         ]);
-        $role = Role::where('name','Developer')->first();
-        $userRole = UserRole::where('role_id',$role->id)->first();
+//        $role = Role::where('name','Developer')->first();
+//        $userRole = UserRole::where('role_id',$role->id)->first();
 
-        AppNotification::create([
-            'id' => Str::uuid(),
-            'query_id' => $id,
-            'user_id'=>$userRole->user_id,
-            'notification_create_by_user_id'=>\auth()->user()->id
-        ]);
+        $role = Role::where('name','Developer')->first();
+
+        $userRoles = UserRole::where('role_id',$role->id)->pluck('user_id')->toArray();
+
+        foreach ($userRoles as $role)
+        {
+            AppNotification::create([
+                'id' => Str::uuid(),
+                'queryorbugid' => $id,
+                'user_id'=>$role,
+                'notifications_type'=>'bugReport',
+                'is_read'=>'no',
+                'notification_create_by_user_id'=>\auth()->user()->id
+            ]);
+        }
+
+
         return response()->json([$query,'success'=>'Queries is generate successfully!!!!']);
 
     }
@@ -135,6 +150,7 @@ class BugReportingController extends Controller
      */
     public function update(Request $request)
     {
+
         $checkIdIfExists = BugReport::find($request->editBugId);
         if ($checkIdIfExists !== null) {
          $id = (string) Str::uuid();
@@ -162,6 +178,15 @@ class BugReportingController extends Controller
                 'closed_status'=>$request->closeStatus,
                 'bug_priority' => $request->editSeverity,
             );
+
+            AppNotification::create([
+                'id' => Str::uuid(),
+                'queryorbugid' =>  $checkIdIfExists['id'],
+                'user_id'=> $checkIdIfExists['bug_reporter_by_id'],
+                'notifications_type'=>'bugReport',
+                'is_read'=>'no',
+                'notification_create_by_user_id'=>\auth()->user()->id
+            ]);
 
             BugReport::where('id',$checkIdIfExists['id'])->update($bugStatusArray);
             BugReport::where('parent_bug_id',$checkIdIfExists['id'])->update($bugStatusArrayChild);
