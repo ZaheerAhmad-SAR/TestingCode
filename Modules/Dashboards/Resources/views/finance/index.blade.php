@@ -41,7 +41,7 @@
                                 </div>
                                 <div class="form-group col-md-3">
                                     <label for="dt">Date Range</label>
-                                    <input type="text" name="date_range" id="date_range" class="form-control filter-form-data" value="{{ request()->visit_date }}">
+                                    <input type="text" name="visit_date" id="visit_date" class="form-control visit_date filter-form-data" value="{{ request()->visit_date }}">
                                 </div>
                                 <div class="form-group col-md-3 mt-4" style="text-align: right;">
                                     <button type="button" class="btn  btn-outline-warning reset-filter"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
@@ -54,6 +54,13 @@
                 </div>
             </div>
         </div>
+@php
+    if(request()->visit_date != '') {
+       $visitDate = explode('-', request()->visit_date);
+       $from = \Carbon\Carbon::parse($visitDate[0]); // 2018-09-29 00:00:00
+       $to = \Carbon\Carbon::parse($visitDate[1]); // 2018-09-29 23:59:59
+    }
+@endphp
         <div class="row">
             <div class="col-12  col-lg-12 mt-3">
                 <div class="card">
@@ -88,23 +95,55 @@
                                         <td>{{$record->study->study_short_name}}</td>
                                         <td>{{$record->role->name}}</td>
                                         <td>
+                                            @php
+                                                $total_qc_count = Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 1,'form_status' => 'complete','study_id' =>$record->study_id,'form_filled_by_user_id' =>$record->user_id ));
+                                                if(request()->visit_date != ''){
+                                                    $total_qc_count = $total_qc_count->whereDate('created_at', '>=', $from);
+                                                    $total_qc_count = $total_qc_count->whereDate('created_at', '<=', $to);
+                                                }
+                                                $total_qc_count = $total_qc_count->count();
+                                            @endphp
                                             <span class="badge badge-pill badge-primary mb-1" style="font-weight: 400;font-size: 13px;">
-                                                {{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 1,'form_status' => 'incomplete','study_id' =>$record->study_id,'form_filled_by_user_id' =>$record->user_id ))->count() }}
+                                                {{ $total_qc_count }}
                                             </span>
                                         </td>
                                         <td>
+                                            @php
+                                                $total_qc_eli = Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 3,'form_status' => 'complete','study_id' =>$record->study_id,'form_filled_by_user_id' =>$record->user_id ));
+                                                if(request()->visit_date != ''){
+                                                    $total_qc_eli = $total_qc_eli->whereDate('created_at', '>=', $from);
+                                                    $total_qc_eli = $total_qc_eli->whereDate('created_at', '<=', $to);
+                                                }
+                                                $total_qc_eli = $total_qc_eli->count();
+                                            @endphp
                                             <span class="badge badge-pill badge-primary mb-1" style="font-weight: 400;font-size: 13px;">
-                                                {{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 3,'form_status' => 'incomplete','study_id' =>$record->study_id,'form_filled_by_user_id' =>$record->user_id ))->count() }}
+                                                {{ $total_qc_eli }}
                                             </span>
                                         </td>
                                         <td>
+                                            @php
+                                                $total_qc_grading = Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'complete','study_id' =>$record->study_id,'form_filled_by_user_id' =>$record->user_id ));
+                                                if(request()->visit_date != ''){
+                                                    $total_qc_grading = $total_qc_grading->whereDate('created_at', '>=', $from);
+                                                    $total_qc_grading = $total_qc_grading->whereDate('created_at', '<=', $to);
+                                                }
+                                                $total_qc_grading = $total_qc_grading->count();
+                                            @endphp
                                             <span class="badge badge-pill badge-primary mb-1" style="font-weight: 400;font-size: 13px;">
-                                                {{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'incomplete','study_id' =>$record->study_id,'form_filled_by_user_id' =>$record->user_id ))->count() }}
+                                                {{ $total_qc_grading }}
                                             </span>
                                         </td>
                                         <td>
+                                            @php
+                                                $total_qc_adj = Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'complete','study_id' =>$record->study_id,'form_filled_by_user_id' =>$record->user_id ));
+                                                if(request()->visit_date != ''){
+                                                    $total_qc_adj = $total_qc_adj->whereDate('created_at', '>=', $from);
+                                                    $total_qc_adj = $total_qc_adj->whereDate('created_at', '<=', $to);
+                                                }
+                                                $total_qc_adj = $total_qc_adj->count();
+                                            @endphp
                                             <span class="badge badge-pill badge-primary mb-1" style="font-weight: 400;font-size: 13px;">
-                                                {{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'incomplete','study_id' =>$record->study_id,'form_filled_by_user_id' =>$record->user_id ))->count() }}
+                                                {{ Modules\FormSubmission\Entities\AdjudicationFormStatus::where(array('form_type_id' => 2,'adjudication_status' => 'complete','study_id' =>$record->study_id,'form_adjudicated_by_id' =>$record->user_id ))->count() }}
                                             </span>
                                         </td>
                                     </tr>
@@ -120,16 +159,83 @@
                                                 </thead>
                                                 <tbody>
                                                     @foreach($getModalities as $key => $value)
+                                                    @php 
+                                                    $where_total_qc = array(
+                                                        'form_type_id' => 1,
+                                                        'form_status' => 'complete',
+                                                        'modility_id' => $value->id,
+                                                        'form_filled_by_user_id' => $record->user_id,
+                                                        'study_id' => $record->study_id
+                                                    );
+                                                    $where_total_eligibility = array(
+                                                        'form_type_id' => 3,
+                                                        'form_status' => 'complete',
+                                                        'modility_id' => $value->id,
+                                                        'form_filled_by_user_id' => $record->user_id,
+                                                        'study_id' => $record->study_id
+                                                    );
+                                                    $where_total_grading = array(
+                                                        'form_type_id' => 2,
+                                                        'form_status' => 'complete',
+                                                        'modility_id' => $value->id,
+                                                        'form_filled_by_user_id' => $record->user_id,
+                                                        'study_id' => $record->study_id
+                                                    );
+                                                    $where_total_adj = array(
+                                                        'form_type_id' => 2,
+                                                        'adjudication_status' => 'complete',
+                                                        'modility_id' => $value->id,
+                                                        'form_adjudicated_by_id' => $record->user_id,
+                                                        'study_id' => $record->study_id
+                                                    );
+
+                                                    @endphp
                                                     <tr>
                                                         <td>
                                                             <span data-toggle="tooltip" data-placement="top" title="{{$value->modility_name}}">
                                                                 {{ $value->modility_abbreviation }}
                                                             </span>
                                                         </td>
-                                                        <th>{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 1,'form_status' => 'complete','modility_id' => $value->id,'form_filled_by_user_id' => $record->user_id,'study_id' => $record->study_id))->count() }}</th>
-                                                        <th>{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 3,'form_status' => 'complete','modility_id' => $value->id,'form_filled_by_user_id' => $record->user_id,'study_id' => $record->study_id))->count() }}</th>
-                                                        <th>{{ Modules\FormSubmission\Entities\FormStatus::where(array('form_type_id' => 2,'form_status' => 'complete','modility_id' => $value->id,'form_filled_by_user_id' => $record->user_id,'study_id' => $record->study_id))->count() }}</th>
-                                                        <th>{{ Modules\FormSubmission\Entities\AdjudicationFormStatus::where(array('form_type_id' => 2,'adjudication_status' => 'complete','modility_id' => $value->id,'form_adjudicated_by_id' => $record->user_id,'study_id' => $record->study_id))->count() }}</th>
+                                                        {{-- count of QC --}}
+                                                        @php
+                                                        // count of qc
+                                                           $qc_count = Modules\FormSubmission\Entities\FormStatus::where($where_total_qc);
+                                                           if(request()->visit_date != ''){
+                                                                $qc_count = $qc_count->whereDate('created_at', '>=', $from);
+                                                                $qc_count = $qc_count->whereDate('created_at', '<=', $to);
+                                                           }
+                                                           $qc_count = $qc_count->count();
+                                                        // count of eligibility
+                                                           $eligibility_count = Modules\FormSubmission\Entities\FormStatus::where($where_total_eligibility);
+                                                           if(request()->visit_date != ''){
+                                                                $eligibility_count = $eligibility_count->whereDate('created_at', '>=', $from);
+                                                                $eligibility_count = $eligibility_count->whereDate('created_at', '<=', $to);
+                                                           }
+                                                           $eligibility_count = $eligibility_count->count();
+                                                        // count of Grading
+                                                           $grading_count = Modules\FormSubmission\Entities\FormStatus::where($where_total_grading);
+                                                           if(request()->visit_date != ''){
+                                                                $grading_count = $grading_count->whereDate('created_at', '>=', $from);
+                                                                $grading_count = $grading_count->whereDate('created_at', '<=', $to);
+                                                           }
+                                                           $grading_count = $grading_count->count();
+                                                        // count of qc
+                                                           $adj_count = Modules\FormSubmission\Entities\AdjudicationFormStatus::where($where_total_adj);
+                                                           if(request()->visit_date != ''){
+                                                                $adj_count = $adj_count->whereDate('created_at', '>=', $from);
+                                                                $adj_count = $adj_count->whereDate('created_at', '<=', $to);
+                                                           }
+                                                           $adj_count = $adj_count->count();
+                                                        
+                                                        @endphp
+                                                        <th>{{ $qc_count }}</th>
+                                                        {{-- count of Eligibility --}}
+                                                        <th>{{ $eligibility_count }} </th>
+                                                        {{-- count of Grading --}}
+                                                        <th>{{ $grading_count }}
+                                                        </th>
+                                                        {{-- count of Adjudication --}}
+                                                        <th>{{ $adj_count }}</th>
                                                     </tr>
                                                     @endforeach
                                                 </tbody>
@@ -156,8 +262,22 @@
 @section('styles')
     <link rel="stylesheet" href="{{ asset('dist/vendors/datatable/css/dataTables.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css') }}">
+    <!-- date range picker -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-tagsinput/1.3.6/jquery.tagsinput.min.css" rel="stylesheet">
+    <!-- select2 -->
+    <link rel="stylesheet" href="{{ asset('public/dist/vendors/select2/css/select2.min.css') }}"/>
+    <link rel="stylesheet" href="{{ asset('public/dist/vendors/select2/css/select2-bootstrap.min.css') }}"/>
+    <!-- select2-->
 @stop
 @section('script')
+    <!-- date range picker -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+    <!-- select2 -->
+    <script src="{{ asset('public/dist/vendors/select2/js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
     <script type="text/javascript">
         function changeSort(field_name){
             var sort_by_field = $('#sort_by_field').val();
@@ -172,8 +292,27 @@
         }
     </script> 
     <script type="text/javascript">
+
         $('.detail-icon').click(function(e){
             $(this).toggleClass("fa-chevron-circle-right fa-chevron-circle-down");
         });
-    </script>  
+
+        // initialize date range picker
+        $('input[name="visit_date"]').daterangepicker({
+            autoUpdateInput: false,
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+
+        $('input[name="visit_date"]').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+        });
+
+        $('input[name="visit_date"]').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
+
+    </script> 
+
 @stop
