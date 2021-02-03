@@ -56,7 +56,8 @@ Route::group(['middleware' => ['auth', 'web']], function () {
 
     Route::post('steps/activate_step/{step_id}', 'StudyStructureController@activateStep')->name('steps.activateStep');
     Route::post('steps/deActivate_step/{step_id}', 'StudyStructureController@deActivateStep')->name('steps.deActivateStep');
-
+    // For Reports
+    Route::resource('reports', 'ReportController');
     // for Section
     Route::resource('sections', 'SectionController');
     Route::post('section', 'SectionController@getSectionby_id')->name('section.getSections');

@@ -90,7 +90,6 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     // Route::resource('activitylog','ActivityLogController');
     Route::resource('certification', 'CertificationController');
     Route::resource('data_management', 'DataManagementController');
-    Route::resource('finance', 'FinanceController');
     Route::resource('adjudication', 'AdjudicationController');
     Route::resource('eligibility', 'EligibilityController');
     Route::resource('studyRoles', 'StudyRolesController');
@@ -103,4 +102,6 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
     Route::post('systemUser/activate_user', 'SystemusersController@activate_user')->name('systemUser.activate_user');
     Route::post('systemUser/inactivate_user', 'SystemusersController@inactivate_user')->name('systemUser.inactivate_user');
+
+    // Finance Dashboard
 });
