@@ -238,7 +238,7 @@
         function getCurrentBugData(currentRow)
         {
             $.ajax({
-                url:"{{route('bug-reporting.getCurrentRowData')}}",
+                url:"{{route('bug-reports.getCurrentRowData')}}",
                 type: 'POST',
                 data: {
                     "_token": "{{ csrf_token() }}",
@@ -266,7 +266,7 @@
                 }
             });
             var parent_id = $(this).data("id");
-            var url = "{{URL('/bug-reporting')}}";
+            var url = "{{URL('/bug-reports')}}";
             var newPath = url+ "/"+ parent_id+"/destroy/";
             if( confirm("Are You sure want to delete !") ==true)
             {
@@ -291,7 +291,7 @@
             //$('.appendDataOptions_edit').html('');
             $('#editReportBugModel').modal('show');
             var id =($(this).attr("data-id"));
-            var url = "{{URL('bug-reporting')}}";
+            var url = "{{URL('bug-reports')}}";
             var newPath = url+ "/"+ id+"/edit/";
             $.ajaxSetup({
                 headers: {
@@ -429,7 +429,7 @@
             e.preventDefault();
             $.ajax({
                 data: $('#editBugReportingForm').serialize(),
-                url: "{{ route('bugReporting.update') }}",
+                url: "{{ route('bug-reports.update') }}",
                 type: "POST",
                 dataType: 'json',
                 success: function (data) {

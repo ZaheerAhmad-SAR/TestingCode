@@ -14,10 +14,10 @@
 
 Route::group(['middleware' => ['auth','web']],function(){
 
-    Route::resource('bug-reporting','BugReportingController');
-    Route::get('bug-reporting/{id}/destroy', 'BugReportingController@destroy')->name('bug-reporting.destroy');
-    Route::post('bug-reporting/getCurrentRowData', 'BugReportingController@getCurrentRowData')->name('bug-reporting.getCurrentRowData');
-    Route::post('bug-reporting/update', 'BugReportingController@update')->name('bugReporting.update');
+    Route::resource('bug-reports','BugReportingController');
+    Route::get('bug-reports/{id}/destroy', 'BugReportingController@destroy')->name('bug-reports.destroy');
+    Route::post('bug-reports/getCurrentRowData', 'BugReportingController@getCurrentRowData')->name('bug-reports.getCurrentRowData');
+    Route::post('bug-reports/update', 'BugReportingController@update')->name('bug-reports.update');
 });
 
 //Route::prefix('bugreporting')->group(function() {

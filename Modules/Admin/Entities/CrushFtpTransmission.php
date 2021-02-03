@@ -4,6 +4,7 @@ namespace Modules\Admin\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\FormSubmission\Entities\FormStatus;
 
 class CrushFtpTransmission extends Model
 {
@@ -26,4 +27,9 @@ class CrushFtpTransmission extends Model
     public $table = 'crush_ftp_transmissions';
 
     public $timestamps = true;
+
+    public function FormStatus()
+    {
+        return $this->belongsToMany(FormStatus::class, 'modility_id', 'modility_id');
+    }
 }

@@ -23,7 +23,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $modalities = Modility::all();
+         $modalities = Modility::all();
         $records = User::where('working_status','online')->get()->groupBy(function($date) {
             return Carbon::parse($date->online_at)->format('H');
         });

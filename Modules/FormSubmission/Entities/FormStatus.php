@@ -10,6 +10,7 @@ use Modules\FormSubmission\Traits\AdjudicationTrait;
 use Modules\FormSubmission\Scopes\FormStatusOrderByScope;
 use Modules\Admin\Entities\FormType;
 use Modules\Admin\Entities\PhaseSteps;
+use Modules\Admin\Entities\CrushFtpTransmission;
 use Modules\Queries\Entities\Query;
 
 class FormStatus extends Model
@@ -77,7 +78,9 @@ class FormStatus extends Model
         return self::getFormStatusObjQuery($getFormStatusArray)->orderBy('created_at')->get();
     }
 
-
+    public function crushftptransmission(){
+        return $this->hasMany(CrushFtpTransmission::class, 'modility_id', 'modility_id');
+    }
     public function editReasons()
     {
         return $this->hasMany(FormRevisionHistory::class, 'form_submit_status_id', 'id');

@@ -1,7 +1,7 @@
 <?php
 
 namespace Modules\UserRoles\Entities;
-
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Admin\Entities\Study;
@@ -16,5 +16,15 @@ class StudyRoleUsers extends Model
     public function study()
     {
         return $this->belongsTo(Study::class);
+    }
+
+    public function user()
+    {
+    	return $this->belongsTo(User::class);
+    }
+
+    public function role()
+    {
+    	return $this->belongsTo(Role::class);
     }
 }

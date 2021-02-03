@@ -57,7 +57,8 @@
 
                                         @endphp
                                         <td>{{ $personName->name }}</td>
-                                        <td>{{date_format($query->created_at,'M-d-Y')}}</td>
+                                        <td> {{Carbon\Carbon::parse($query->created_at)->diffForHumans()}}</td>
+{{--                                        <td>{{date_format($query->created_at,'M-d-Y')}}</td>--}}
                                         <td>{{ucfirst($query->query_status)}}</td>
                                         <td class="detailConversation" style="cursor: pointer;" data-id="{{$query->id}}"><i class="fa fa-eye" aria-hidden="true"></i></td>
                                     </tr>
