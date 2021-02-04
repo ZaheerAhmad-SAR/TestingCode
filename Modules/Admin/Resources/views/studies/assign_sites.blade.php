@@ -137,6 +137,14 @@ padding: 5px 10px;
                                 @endforeach
                             </select>
                         </div>
+                        <div class="form-group col-md-3">
+                            <label for="inputState">Status </label>
+                            <select id="status" name="status" class="form-control filter-form-data">
+                                <option value="">All Status </option>
+                                <option @if(request()->status == 'yes') selected @endif value="yes">Yes</option>
+                                <option @if(request()->status == 'no') selected @endif value="no">No</option>
+                            </select>
+                        </div>
                         {{--                            <div class="form-group col-md-3">--}}
                             {{--                                <label for="inputState">Text </label>--}}
                             {{--                                <div id="bloodhound">--}}
@@ -232,6 +240,7 @@ $('select[name="site_address"]').select2();
 $('select[name="site_city"]').select2();
 $('select[name="site_state"]').select2();
 $('select[name="site_country"]').select2();
+$('select[name="status"]').select2();
 $('.reset-filter').click(function(){
 // reset values
 $('.filter-form').trigger("reset");
@@ -294,8 +303,8 @@ function changeSort(field_name){
        $('#sort_by_field').val('DESC');
        $('#sort_by_field_name').val(field_name);
     }else if(sort_by_field =='DESC'){
-       $('#sort_by_field').val('ASC'); 
-       $('#sort_by_field_name').val(field_name); 
+       $('#sort_by_field').val('ASC');
+       $('#sort_by_field_name').val(field_name);
     }
     $('.filter-form').submit();
 }

@@ -395,17 +395,17 @@ class StudyController extends Controller
             }else{
                 $field_name = 'site_code';
             }
-            
+
             if(isset($request->sort_by_field) && $request->sort_by_field !=''){
                 $asc_or_decs = $request->sort_by_field;
             }else{
                 $asc_or_decs = 'ASC';
             }
-            
-            $subjects = Subject::query();
+           $subjects = Subject::query();
             $subjects =  $subjects->select('subjects.*', 'sites.site_name', 'sites.site_address', 'sites.site_city', 'sites.site_state', 'sites.site_code', 'sites.site_country', 'sites.site_phone')
                 ->join('sites', 'sites.id', '=', 'subjects.site_id')
                 ->where('subjects.study_id', '=', $id);
+
             if ($request->subject_id != '') {
                 $subjects = $subjects->where('subjects.subject_id', $request->subject_id);
             }
