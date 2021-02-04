@@ -51,7 +51,7 @@ class FinanceController extends Controller
         if($request->user_id !=''){
             $study_users = $study_users->where('user_id', 'like', '%' . $request->user_id . '%');
         }
-        $study_users = $study_users->paginate(10);
+        $study_users = $study_users->paginate(50);
         // get studies
         $getStudies = Study::get();
         return view('dashboards::finance.index', compact('getVisits', 'getModalities', 'getStudies','users','study_users'));
