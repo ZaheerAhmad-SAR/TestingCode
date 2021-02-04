@@ -88,9 +88,15 @@
                                     @if(!$getTransmissions->isEmpty())
                                     @foreach($getTransmissions as $transmission)
                                     @php
-                                       $form_data_qc = get_tat_of_visit_complete($transmission->Subject_ID,$transmission->phase_id,'1','complete',$transmission->modility_id);
-                                      $form_data_grading = get_tat_of_visit_complete($transmission->Subject_ID,$transmission->phase_id,'2','complete',$transmission->modility_id);
-                                      $form_data_adj = get_tat_of_visit_complete($transmission->Subject_ID,$transmission->phase_id,'2','complete',$transmission->modility_id);
+                                      $subject_id = '';  
+                                      $get_subjectid = Modules\Admin\Entities\Subject::where('subject_id','like', $transmission->Subject_ID)->first();
+                                      if(!empty($get_subjectid)){
+                                        $subject_id = $get_subjectid->id;
+                                        dd($subject_id);
+                                      }
+                                      $form_data_qc = get_tat_of_visit_complete($subject_id,$transmission->phase_id,'1','complete',$transmission->modility_id);
+                                      $form_data_grading = get_tat_of_visit_complete($subject_id,$transmission->phase_id,'2','complete',$transmission->modility_id);
+                                      $form_data_adj = get_tat_of_visit_complete($subject_id,$transmission->phase_id,'2','complete',$transmission->modility_id);
                                       
                                     @endphp
                                       <tr>
@@ -101,7 +107,7 @@
                                         <td>
                                             @if($form_data_qc !=null)
                                             <span data-toggle="tooltip" data-placement="top" title="{{$form_data_qc->user->name}}">
-                                            {{ get_date_differnce($transmission->created_at,$form_data_qc->created_at) }}
+                                            {{ get_date_differnce($form_data_qc->created_at,$transmission->created_at) }}
                                             </span>
                                             @else
                                                 Null
@@ -111,7 +117,7 @@
                                         <td>
                                             @if($form_data_grading !=null)
                                             <span data-toggle="tooltip" data-placement="top" title="{{$form_data_qc->user->name}}">
-                                                {{ get_date_differnce($transmission->created_at,$form_data_grading->created_at) }}
+                                                {{ get_date_differnce($form_data_grading->created_at,$transmission->created_at) }}
                                             </span>
                                             @else
                                                 Null
@@ -120,7 +126,7 @@
                                         <td>
                                             @if($form_data_adj !=null)
                                             <span data-toggle="tooltip" data-placement="top" title="{{$form_data_qc->user->name}}">
-                                                {{ get_date_differnce($transmission->created_at,$form_data_adj->created_at) }}
+                                                {{ get_date_differnce($form_data_adj->created_at,$transmission->created_at) }}
                                             </span>
                                             @else
                                                 Null

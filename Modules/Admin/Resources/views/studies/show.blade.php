@@ -139,7 +139,8 @@
                                 @endforeach
                                 </tbody>
                             </table>
-                            {{ $subjects->links() }}
+                            
+                            {{ $subjects->appends(['sort_by_field_name' => \Request::get('sort_by_field_name'), 'sort_by_field' => \Request::get('sort_by_field'), 'subject_id' => \Request::get('subject_id'), 'site_id' => \Request::get('site_id'), 'date' => \Request::get('date'), 'disease_cohort' => \Request::get('disease_cohort'), 'study_eye' => \Request::get('study_eye')])->links() }}
                         </div>
                     </div>
                 </div>
