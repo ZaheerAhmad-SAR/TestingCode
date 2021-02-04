@@ -14,6 +14,7 @@ use Modules\Queries\Entities\Query;
 use Modules\Admin\Entities\Study;
 use Modules\Queries\Entities\QueryUser;
 use Modules\Queries\Entities\RoleQuery;
+use Modules\UserRoles\Entities\StudyRoleUsers;
 use Modules\UserRoles\Entities\UserRole;
 use phpDocumentor\Reflection\Types\Null_;
 use App\Traits\UploadTrait;
@@ -71,6 +72,7 @@ class QueriesController extends Controller
             ->groupBy('users.id')
             ->get();
         //dd($studyusers);
+
         echo  view('queries::queries.question.usersdropdownquestions',compact('studyusers'));
     }
 
@@ -257,12 +259,6 @@ class QueriesController extends Controller
                     'user_id' => $user,
                     'query_id' => $id
                 ]);
-                AppNotification::create([
-                    'id' => Str::uuid(),
-                    'user_id' => $user,
-                    'query_id' => $id
-
-                ]);
             }
         }
         if ($queryAssignedTo == 'role')
@@ -272,11 +268,6 @@ class QueriesController extends Controller
                 RoleQuery::create([
                     'id' => (string)Str::uuid(),
                     'roles_id' => $role,
-                    'query_id' => $id
-                ]);
-                AppNotification::create([
-                    'id' => Str::uuid(),
-                    'role_id'=>$role,
                     'query_id' => $id
                 ]);
             }
@@ -354,9 +345,10 @@ class QueriesController extends Controller
 
                 AppNotification::create([
                     'id' => Str::uuid(),
-                    'query_id' => $queryid,
+                    'queryorbugid' => $queryid,
                     'user_id'=>$user,
                     'is_read'=> 'no',
+                    'notifications_type'=>'query',
                     'notification_create_by_user_id'=>\auth()->user()->id
                 ]);
             }
@@ -373,7 +365,8 @@ class QueriesController extends Controller
                 AppNotification::create([
                     'id' => Str::uuid(),
                     'role_id'=>$role,
-                    'query_id' => $queryid,
+                    'queryorbugid' => $queryid,
+                    'notifications_type'=>'query',
                     'is_read'=> 'no',
                     'notification_create_by_user_id'=>\auth()->user()->id
                 ]);
@@ -391,7 +384,7 @@ class QueriesController extends Controller
         $query_status     = $request->post('query_status'); // return the status value
         $query_id         = $request->post('query_id');
 
-        $record           = AppNotification::where('query_id',$query_id)->first();
+        $record           = AppNotification::where('queryorbugid',$query_id)->first();
 
         $find             = Query::find($query_id);
 
@@ -459,8 +452,9 @@ class QueriesController extends Controller
 
         AppNotification::create([
             'id' => Str::uuid(),
-            'query_id' => $query_id,
+            'queryorbugid' => $query_id,
             'is_read'=> 'no',
+            'notifications_type'=> 'query',
             'user_id'=>$record->notification_create_by_user_id,
             'notification_create_by_user_id'=>\auth()->user()->id
         ]);

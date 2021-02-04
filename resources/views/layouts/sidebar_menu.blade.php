@@ -1,3 +1,8 @@
+<style>
+    .badge {
+        line-height: normal !important;
+    }
+</style>
 <div class="sidebar">
     <div class="site-width">
         <!-- START: Menu-->
@@ -405,14 +410,14 @@
 
 
             @if(hasPermission(auth()->user(),'bug-reporting.index'))
-                @if(session('current_study'))
+{{--                @if(session('current_study'))--}}
             <li class="dropdown">
                 <ul>
-                    <li class="nav-item"><a href="{{route('bug-reports.index')}}"><i class="fas fa-bug"></i>Bug Reports <span class="badge badge-danger">{{Modules\BugReporting\Entities\BugReport::where(array('status' => 'open','parent_bug_id' => 0))->count() }}</span></a>
+                    <li class="nav-item"><a href="{{route('bug-reports.index')}}"><i class="fas fa-bug"></i>Bug Reports <span class="badge badge-danger">{{Modules\BugReporting\Entities\BugReport::where('parent_bug_id','like', 0)->where('status','open')->count() }}</span></a>
                     </li>
                 </ul>
             </li>
-                @endif
+{{--                @endif--}}
             @endif
 
             @if(hasPermission(auth()->user(),'certification-photographer.index'))

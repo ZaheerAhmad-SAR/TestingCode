@@ -198,19 +198,21 @@ class Query extends Model
 
     public static function questionStatusHasClose($questionQueryArray)
     {
+
+
         $query = new Query();
 
         $questionQueryArray = array_intersect_key(array_filter($questionQueryArray), array_flip($query->getFillable()));
+
         $sqlQuery = self::getFormQueryObjQuery($questionQueryArray);
         //printSqlQuery($sqlQuery, false);
         $queryCheck   = false;
         $queryByLogin = $sqlQuery->where('queried_remarked_by_id', 'like', auth()->user()->id)
-            ->where('parent_query_id','=',0)
+            ->where('parent_query_id', 'like', 0)
             ->where('query_status', '=', 'close')
             ->where('query_level', '=', 'question')
-            //->count();
             ->first();
-        //dd($queryByLogin);
+
         if (null !== $queryByLogin) {
             //dd('ddddd');
             $queryCheck = true;
@@ -223,6 +225,34 @@ class Query extends Model
         }
         return $queryCheck;
     }
+
+//    public static function questionStatusHasClose($questionQueryArray)
+//    {
+//        $query = new Query();
+//
+//        $questionQueryArray = array_intersect_key(array_filter($questionQueryArray), array_flip($query->getFillable()));
+//        $sqlQuery = self::getFormQueryObjQuery($questionQueryArray);
+//        //printSqlQuery($sqlQuery, false);
+//        $queryCheck   = false;
+//        $queryByLogin = $sqlQuery->where('queried_remarked_by_id', 'like', auth()->user()->id)
+//            ->where('parent_query_id','=',0)
+//            ->where('query_status', '=', 'close')
+//            ->where('query_level', '=', 'question')
+//            //->count();
+//            ->first();
+//        //dd($queryByLogin);
+//        if (null !== $queryByLogin) {
+//            //dd('ddddd');
+//            $queryCheck = true;
+//        }
+//        $queryForUser = QueryUser::where('user_id', auth()->user()->id)->first();
+//
+//        if (null !== $queryForUser) {
+//
+//            $queryCheck = true;
+//        }
+//        return $queryCheck;
+//    }
 
     public static function formStatusHasClose($questionQueryArray)
     {
