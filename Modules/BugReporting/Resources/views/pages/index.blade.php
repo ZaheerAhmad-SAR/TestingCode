@@ -56,7 +56,13 @@
                                             @php $row = App\User::where('id','=',$record['bug_reporter_by_id'])->first();@endphp
                                             <td>{{$row->name}}</td>
                                             <td>{{$record['bug_priority']}}</td>
-                                            <td>{{ ($record['status'] && $record['open_status']) ? $record['status'] .'-'. lcfirst($record['closed_status']) : '' }}</td>
+{{--                                            <td>{{ ($record['status'] && $record['open_status']) ? $record['status'] .'-'. lcfirst($record['closed_status']) : '' }}</td>--}}
+                                            @if($record['status'] == 'open')
+                                                <td> {{($record['status'].'-'.lcfirst($record['open_status']))}}</td>
+                                            @else
+                                                <td> {{($record['status'].'-'.lcfirst($record['closed_status']))}}</td>
+                                            @endif
+
                                             @php
                                             $str = '';
                                             $str = $record['bug_url'];
