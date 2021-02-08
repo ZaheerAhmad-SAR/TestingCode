@@ -12,7 +12,7 @@ use Modules\Admin\Entities\FormFieldType;
 class FormFieldTypeSeederTableSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Run the database seeds for filed type.
      *
      * @return void
      */
@@ -163,5 +163,7 @@ class FormFieldTypeSeederTableSeeder extends Seeder
                 'updated_at'    => Carbon::now()
             ]);
         }
+       
+
     }
 }
