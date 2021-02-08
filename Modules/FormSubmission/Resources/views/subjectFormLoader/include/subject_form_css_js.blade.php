@@ -227,7 +227,9 @@
 
                             if (needToPutFormInEditMode(stepIdStr) == false) {
                                 if (window['validateQuestion' + questionIdStr](true, stepIdStr)) {
+
                                     if (eval("typeof " + window['showHideQuestion' + questionIdStr]) != 'undefined') {
+                                        
                                         window['showHideQuestion' + questionIdStr](stepIdStr);
                                     }
                                     if (eval("typeof " + window['runCalculatedFieldsFunctions' + stepIdStr]) !=
