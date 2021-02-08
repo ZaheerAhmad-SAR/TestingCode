@@ -34,6 +34,11 @@ class DevicesController extends Controller
             $devices = $devices->where('certify_device.cert_issueDate', $request->cert_issueDate);
         }
         $devices = $devices->groupBy('certify_device.device_categ')->where('certify_device.study_id', session('study_code'))->paginate(15);
+        DB::enableQueryLog(); // Enable query log
+
+// Your Eloquent query executed by using get()
+
+dd(DB::getQueryLog()); // Show results of log
         return view('certification::devices.index', ['devices' => $devices]);
     }
     /**
