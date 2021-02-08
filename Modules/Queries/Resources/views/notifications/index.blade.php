@@ -93,11 +93,11 @@
                                                     <div class="media-body align-self-center pl-4">
                                                         @if($record->is_read == 'no')
                                                             <span class="mb-0 font-w-600"> <b>{{$studyData->study_short_name}} </b></span><br>
-                                                            <p class="mb-0 font-w-500 tx-s-12"> <b> @if($answers->isEmpty()) New Query By  @else Reply By  @endif  {{$userData->name}}</b></p>
+                                                            <p class="mb-0 font-w-500 tx-s-12"> <b> @if($answers->isEmpty()) New Query By  @else Query Reply By  @endif  {{$userData->name}}</b></p>
                                                             <small class="d-block">{{Carbon\Carbon::parse($result->created_at)->diffForHumans()}}</small>
                                                         @else
                                                             <span class="mb-0 font-w-600">{{$studyData->study_short_name}}</span><br>
-                                                            <p class="mb-0 font-w-500 tx-s-12"> @if($answers->isEmpty()) New Query By  @else Reply By  @endif {{$userData->name}}</p>
+                                                            <p class="mb-0 font-w-500 tx-s-12"> @if($answers->isEmpty()) New Query By  @else Query Reply By  @endif {{$userData->name}}</p>
                                                             <small class="d-block">{{Carbon\Carbon::parse($result->created_at)->diffForHumans()}}</small>
                                                         @endif
                                                     </div>
@@ -138,11 +138,11 @@
                                                     <div class="media-body align-self-center pl-4">
                                                         @if($record->is_read == 'no')
                                                             <span class="mb-0 font-w-600"> <b>{{$studyData->study_short_name}} </b></span><br>
-                                                            <p class="mb-0 font-w-500 tx-s-12"> <b> @if($answers->isEmpty()) New Bug By  @else Reply By  @endif  {{$userData->name}}</b></p>
+                                                            <p class="mb-0 font-w-500 tx-s-12"> <b> @if($answers->isEmpty()) New Bug By  @else Bug Reply By  @endif  {{$userData->name}}</b></p>
                                                             <small class="d-block">{{Carbon\Carbon::parse($bugs->created_at)->diffForHumans()}}</small>
                                                         @else
                                                             <span class="mb-0 font-w-600">{{$studyData->study_short_name}}</span><br>
-                                                            <p class="mb-0 font-w-500 tx-s-12"> @if($answers->isEmpty()) New Bug By  @else Reply By  @endif {{$userData->name}}</p>
+                                                            <p class="mb-0 font-w-500 tx-s-12"> @if($answers->isEmpty()) New Bug By  @else Bug Reply By  @endif {{$userData->name}}</p>
                                                             <small class="d-block">{{Carbon\Carbon::parse($bugs->created_at)->diffForHumans()}}</small>
                                                         @endif
                                                     </div>
