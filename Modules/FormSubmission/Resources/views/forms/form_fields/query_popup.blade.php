@@ -21,7 +21,7 @@
             <i class="fas fa-question-circle showAllQuestionQueries" onclick="getAllQuestionQueryData({{ $dataStr }});"  style="margin-top: 12px; position: absolute;left: 0; color: red;"></i>
         </span>
         </div>
-        @endif
+
 {{--     @if(\Modules\Queries\Entities\Query::questionHasQuery($queryParams)>0)--}}
 {{--    @if(\Modules\Queries\Entities\Query::questionStatusHasClose($queryParams)===true)--}}
 {{--        <div class="showQueries">--}}
@@ -40,7 +40,7 @@
 {{--        </div>--}}
 {{--    @else--}}
 
-    @if(\Modules\Queries\Entities\Query::questionStatusHasClose($queryParams))
+    @elseif(\Modules\Queries\Entities\Query::questionStatusHasClose($queryParams))
         <div class="closeQuestion">
         <span class="ml-3" style="cursor: pointer;">
             @php

@@ -70,55 +70,102 @@
                             <ul class="list-group list-unstyled">
                                 @if(!$records->isEmpty())
                                     @foreach($records as $record)
+                                        @if($record->notifications_type=='query')
                                         @php
                                             $userData ='';
                                             $answers = '';
                                             $result   = '';
-                                            $result   = \Modules\Queries\Entities\Query::where('id','=',$record->query_id)
+                                            $result   = \Modules\Queries\Entities\Query::where('id','=',$record->queryorbugid)
                                             ->where('query_status','open')
                                              ->where('parent_query_id',0)
                                             ->first();
-                                            $answers = \Modules\Queries\Entities\Query::where('parent_query_id','like',$record->query_id)
+                                            $answers = \Modules\Queries\Entities\Query::where('parent_query_id','like',$record->queryorbugid)
                                             ->where('query_status','open')
                                             ->get();
                                             $userData = App\User::where('id',$record->notification_create_by_user_id)->first();
                                             $studyData = Modules\Admin\Entities\Study::where('id',$result->study_id)->first();
                                         @endphp
-
-                                        <li class="p-2 border-bottom">
-                                            <div class="media d-flex w-100">
-                                                <div class="transaction-date text-center rounded bg-primary text-white p-2">
-                                                    <small class="d-block">{{ date_format($result->created_at,'M')}}</small><span class="h6">{{ date_format($result->created_at,'d')}}</span>
-                                                </div>
-                                                <div class="media-body align-self-center pl-4">
+                                            <li class="p-2 border-bottom">
+                                                <div class="media d-flex w-100">
+                                                    <div class="transaction-date text-center rounded bg-primary text-white p-2">
+                                                        <small class="d-block">{{ date_format($result->created_at,'M')}}</small><span class="h6">{{ date_format($result->created_at,'d')}}</span>
+                                                    </div>
+                                                    <div class="media-body align-self-center pl-4">
+                                                        @if($record->is_read == 'no')
+                                                            <span class="mb-0 font-w-600"> <b>{{$studyData->study_short_name}} </b></span><br>
+                                                            <p class="mb-0 font-w-500 tx-s-12"> <b> @if($answers->isEmpty()) New Query By  @else Reply By  @endif  {{$userData->name}}</b></p>
+                                                            <small class="d-block">{{Carbon\Carbon::parse($result->created_at)->diffForHumans()}}</small>
+                                                        @else
+                                                            <span class="mb-0 font-w-600">{{$studyData->study_short_name}}</span><br>
+                                                            <p class="mb-0 font-w-500 tx-s-12"> @if($answers->isEmpty()) New Query By  @else Reply By  @endif {{$userData->name}}</p>
+                                                            <small class="d-block">{{Carbon\Carbon::parse($result->created_at)->diffForHumans()}}</small>
+                                                        @endif
+                                                    </div>
                                                     @if($record->is_read == 'no')
-                                                        <span class="mb-0 font-w-600"> <b>{{$studyData->study_short_name}} </b></span><br>
-                                                        <p class="mb-0 font-w-500 tx-s-12"> <b> @if($answers->isEmpty()) New Query By  @else Reply By  @endif  {{$userData->name}}</b></p>
-                                                        <small class="d-block">{{Carbon\Carbon::parse($result->created_at)->diffForHumans()}}</small>
+                                                        <div class="ml-auto my-auto font-weight-bold text-right text-success">
+                                                            <a href="#" class="mr-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-options-vertical"></i></a>
+                                                            <div class="dropdown-menu p-0 m-0 dropdown-menu-right mail-bulk-action">
+                                                                <a class="dropdown-item markAsReadNotification" data-id="{{$record->id}}" href="javascript:void(0);" ><i class="icon-book-open"></i> Mark as Read</a>
+                                                            </div>
+                                                        </div>
                                                     @else
-                                                        <span class="mb-0 font-w-600">{{$studyData->study_short_name}}</span><br>
-                                                        <p class="mb-0 font-w-500 tx-s-12"> @if($answers->isEmpty()) New Query By  @else Reply By  @endif {{$userData->name}}</p>
-                                                        <small class="d-block">{{Carbon\Carbon::parse($result->created_at)->diffForHumans()}}</small>
+                                                        <div class="ml-auto my-auto font-weight-bold text-right text-success">
+                                                            <a href="#" class="mr-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-options-vertical"></i></a>
+                                                            <div class="dropdown-menu p-0 m-0 dropdown-menu-right mail-bulk-action">
+                                                                <a class="dropdown-item markAsUnReadNotification" data-id="{{$record->id}}" href="javascript:void(0);"><i class="icon-notebook"></i> Mark as unread</a>
+                                                                {{--                                                            <a class="dropdown-item readnotificationdelete" data-id="{{$record->id}}" href="javascript:void(0);"><i class="icon-trash"></i> Delete</a>--}}
+                                                            </div>
+                                                        </div>
                                                     @endif
                                                 </div>
-                                                @if($record->is_read == 'no')
-                                                    <div class="ml-auto my-auto font-weight-bold text-right text-success">
-                                                        <a href="#" class="mr-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-options-vertical"></i></a>
-                                                        <div class="dropdown-menu p-0 m-0 dropdown-menu-right mail-bulk-action">
-                                                            <a class="dropdown-item markAsReadNotification" data-id="{{$record->id}}" href="javascript:void(0);" ><i class="icon-book-open"></i> Mark as Read</a>
-                                                        </div>
+                                            </li>
+                                        @else
+                                            @php
+
+                                                $bugs = Modules\BugReporting\Entities\BugReport::where('id',$record->queryorbugid)->first();
+
+                                                 $studyData = Modules\Admin\Entities\Study::where('study_short_name',$bugs->study_name)->first();
+                                                  $userData  = App\User::where('id',$record->notification_create_by_user_id)->first();
+
+                                            $answers = Modules\BugReporting\Entities\BugReport::where('parent_bug_id','=',$record->queryorbugid)->orWhereNull('parent_bug_id')
+                                            ->where('status','open')->get();
+                                            @endphp
+                                            <li class="p-2 border-bottom">
+                                                <div class="media d-flex w-100">
+                                                    <div class="transaction-date text-center rounded bg-primary text-white p-2">
+                                                        <small class="d-block">{{ date_format($bugs->created_at,'M')}}</small><span class="h6">{{ date_format($bugs->created_at,'d')}}</span>
                                                     </div>
-                                                @else
-                                                    <div class="ml-auto my-auto font-weight-bold text-right text-success">
-                                                        <a href="#" class="mr-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-options-vertical"></i></a>
-                                                        <div class="dropdown-menu p-0 m-0 dropdown-menu-right mail-bulk-action">
-                                                            <a class="dropdown-item markAsUnReadNotification" data-id="{{$record->id}}" href="javascript:void(0);"><i class="icon-notebook"></i> Mark as unread</a>
-{{--                                                            <a class="dropdown-item readnotificationdelete" data-id="{{$record->id}}" href="javascript:void(0);"><i class="icon-trash"></i> Delete</a>--}}
-                                                        </div>
+                                                    <div class="media-body align-self-center pl-4">
+                                                        @if($record->is_read == 'no')
+                                                            <span class="mb-0 font-w-600"> <b>{{$studyData->study_short_name}} </b></span><br>
+                                                            <p class="mb-0 font-w-500 tx-s-12"> <b> @if($answers->isEmpty()) New Bug By  @else Reply By  @endif  {{$userData->name}}</b></p>
+                                                            <small class="d-block">{{Carbon\Carbon::parse($bugs->created_at)->diffForHumans()}}</small>
+                                                        @else
+                                                            <span class="mb-0 font-w-600">{{$studyData->study_short_name}}</span><br>
+                                                            <p class="mb-0 font-w-500 tx-s-12"> @if($answers->isEmpty()) New Bug By  @else Reply By  @endif {{$userData->name}}</p>
+                                                            <small class="d-block">{{Carbon\Carbon::parse($bugs->created_at)->diffForHumans()}}</small>
+                                                        @endif
                                                     </div>
-                                                @endif
-                                            </div>
-                                        </li>
+                                                    @if($record->is_read == 'no')
+                                                        <div class="ml-auto my-auto font-weight-bold text-right text-success">
+                                                            <a href="#" class="mr-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-options-vertical"></i></a>
+                                                            <div class="dropdown-menu p-0 m-0 dropdown-menu-right mail-bulk-action">
+                                                                <a class="dropdown-item markAsReadNotification" data-id="{{$record->id}}" href="javascript:void(0);" ><i class="icon-book-open"></i> Mark as Read</a>
+                                                            </div>
+                                                        </div>
+                                                    @else
+                                                        <div class="ml-auto my-auto font-weight-bold text-right text-success">
+                                                            <a href="#" class="mr-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="icon-options-vertical"></i></a>
+                                                            <div class="dropdown-menu p-0 m-0 dropdown-menu-right mail-bulk-action">
+                                                                <a class="dropdown-item markAsUnReadNotification" data-id="{{$record->id}}" href="javascript:void(0);"><i class="icon-notebook"></i> Mark as unread</a>
+                                                                {{--                                                            <a class="dropdown-item readnotificationdelete" data-id="{{$record->id}}" href="javascript:void(0);"><i class="icon-trash"></i> Delete</a>--}}
+                                                            </div>
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                            </li>
+                                        @endif
+
                                     @endforeach
                                 @else
                                     <li class=" p-2 border-bottom text-center text-capitalize"> no new notification!!!!</li>

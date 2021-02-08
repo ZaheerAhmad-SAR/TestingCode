@@ -26,6 +26,7 @@ class AppNotificationsController extends Controller
         $records = $records->where('user_id','=', auth()->user()->id);
         $records = $records->orderBy('created_at','DESC');
         $records = $records->get();
+         //dd($records);
         //$records = $records->paginate(20);
         return view('queries::notifications.index',compact('records'));
     }
@@ -79,10 +80,11 @@ class AppNotificationsController extends Controller
     {
         if ($request->ajax())
         {
-            $query_url        = $request->post('query_url');
-            $studyId          = $request->post('study_id');
-            $study_code       = $request->post('study_code');
-            $query_id         = $request->post('currentNotificationId');
+            $query_url    = $request->post('query_url');
+            $studyId      = $request->post('study_id');
+            $study_code   = $request->post('study_code');
+            $queryorbugid = $request->post('currentNotificationId');
+
             $study_short_name = $request->post('study_short_name');
             session([
                 'current_study' => $studyId,
@@ -90,7 +92,7 @@ class AppNotificationsController extends Controller
                 'study_code' => $study_code
             ]);
             $isRead    = array('is_read'=>'yes');
-            AppNotification::where('query_id',$query_id)->update($isRead);
+            AppNotification::where('queryorbugid',$queryorbugid)->update($isRead);
             return response()->json(['success'=>$query_url]);
         }
     }
