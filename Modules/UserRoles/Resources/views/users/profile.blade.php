@@ -115,7 +115,7 @@
                                     <span class="text-danger small">{{ $message }} </span>
                                     @enderror
                                 </div>
-                            </div>                      
+                            </div>
                             @if(hasPermission(auth()->user(),'certification-photographer.index'))
                             <div class="row">
 
@@ -126,7 +126,7 @@
                                 <div class="col-md-4">
                                     @if (File::exists(storage_path('user_signature/'.md5(\Auth::user()->id).'.png')))
                                     <!-- <a href="{{ route('user-signature', encrypt(\Auth::user()->id.'.png')) }}"> -->
-                                    
+
                                     <span class="badge badge-success"><strong>Available</strong></span>
                                     <!-- </a> -->
                                     @else
@@ -144,7 +144,7 @@
 
                             </div>
                             <br>
-                            
+
                             <div class="row signature-pad-row">
 
                                 <div class="col-md-2">
@@ -163,8 +163,8 @@
                                 <!-- col ends -->
                             </div>
                             <!-- row ends -->
-                            @endif 
-                              
+                            @endif
+
                         </div>
                         <div class="modal-footer">
                             @if(hasPermission(auth()->user(),'users.store'))
@@ -301,9 +301,9 @@
                 var data = signaturePad.toDataURL('image/png');
                 $('#hidden_user_signature').val(data);
             }
-              
+
             e.currentTarget.submit();
-       
+
         });
 
         // hide signature pad in page load
