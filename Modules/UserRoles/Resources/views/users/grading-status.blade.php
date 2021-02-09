@@ -160,7 +160,7 @@
                             
                             <input type="hidden" name="form_2" value="2" class="form-control">
 
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-3">
                                 <label for="inputState">Subject</label>
                                 <select id="subject" name="subject" class="form-control filter-form-data">
                                     <option value="">All Subject</option>
@@ -170,7 +170,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-3">
                                 <label for="inputState">Phase</label>
                                 <select id="phase" name="phase" class="form-control filter-form-data">
                                     <option value="">All Phase</option>
@@ -190,6 +190,17 @@
                                 </select>
                             </div>
                             
+                           <div class="form-group col-md-3">
+                            
+                                <label for="inputState">Form Type</label>
+                                <select id="form_type" name="form_type" class="form-control filter-form-data">
+                                    <option value="">All Form Type</option>
+                                     @foreach($getFilterFormType as $filterForm)
+                                     <option @if(request()->form_type == $filterForm->id) selected @endif value="{{ $filterForm->id }}">{{ $filterForm->form_type }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
                             <div class="form-group col-md-3">
                             
                                 <label for="inputState">Status</label>
@@ -198,6 +209,17 @@
                                      @foreach($getFilterFormStatus as $filter => $filterStatus)
                                      <option @if(request()->form_status == $filter) selected @endif value="{{ $filter }}">{{ $filterStatus }}</option>
                                     @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="inputState">Graders</label>
+                                <select name="graders_number" id="graders_number" class="form-control filter-form-data">
+                                    <option value="">Select Numbers of Graders</option>
+                                    <option @if(request()->graders_number == "0") selected @endif value="0">Null (0)</option>
+                                    <option @if(request()->graders_number == "1") selected @endif  value="1">One (1)</option>
+                                    <option @if(request()->graders_number == "2") selected @endif  value="2">Two (2)</option>
+                                    <option @if(request()->graders_number == "3") selected @endif  value="3">Three (3)</option>
                                 </select>
                             </div>
                    
