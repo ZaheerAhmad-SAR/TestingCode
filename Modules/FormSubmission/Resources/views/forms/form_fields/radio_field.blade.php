@@ -20,8 +20,7 @@ $showFalseField = false; // for laterly added questions
     $showFalseField = true;
     }
     @endphp
-    <div
-        class="custom-control custom-radio {{ $optionGroup->option_layout == 'horizontal' ? 'custom-control-inline' : '' }}">
+    <div class="custom-control custom-radio {{ $optionGroup->option_layout == 'horizontal' ? 'custom-control-inline' : '' }}">
         <input type="radio" name="{{ $field_name }}"
             onchange="validateAndSubmitField('{{ $stepIdStr }}', '{{ $sectionIdStr }}', '{{ $question->id }}', '{{ $questionIdStr }}', '{{ $step->formType->form_type }}', '{{ $field_name }}', '{{ $fieldId }}');"
             value="{{ $option_value }}" {{ $checked }}

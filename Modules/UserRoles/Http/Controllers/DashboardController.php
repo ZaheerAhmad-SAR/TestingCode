@@ -27,7 +27,6 @@ class DashboardController extends Controller
         $records = User::where('working_status','online')->get()->groupBy(function($date) {
             return Carbon::parse($date->online_at)->format('H');
         });
-        $assign_work_cfp = AssignWork::where('form_type_id',2)->with(['get_form_status' => function ($query) { $query->where('form_status', '=', 'complete'); }])->get();
         return view('userroles::dashboard',compact('modalities','records'));
     }
 

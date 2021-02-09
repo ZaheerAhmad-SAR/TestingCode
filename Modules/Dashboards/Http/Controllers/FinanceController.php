@@ -38,7 +38,7 @@ class FinanceController extends Controller
      */
     public function index(Request $request)
     {
-        $getVisits = FormStatus::paginate(50);
+        $getVisits = FormStatus::all();
         // get modality
         $getModalities = Modility::get();
         // get users for filter
