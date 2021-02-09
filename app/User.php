@@ -47,6 +47,7 @@ class User extends Authenticatable
         'role_id',
         'password',
         'google_auth',
+        'notification_type',
         'qr_flag',
         'browser_name',
         'two_factor_code',
@@ -244,7 +245,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(CertificationData::class);
     }
-    
+
     public function user_log()
     {
         return $this->hasMany(UserLog::class);
