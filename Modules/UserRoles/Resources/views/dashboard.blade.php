@@ -58,6 +58,21 @@
     <!-- END: Breadcrumbs-->
     <!-- START: Card Data-->
     <div class="row">
+    <div class="col-12 col-lg-12  mt-3">
+        <div class="card">                           
+            <div class="card-content" style="padding: 2px;">
+                <div class="card-body" style="text-align: right;">
+                   <div class="form-row"> 
+                        <select class="form-control">
+                           <option value="">Select Study</option>
+                        </select>
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div> 
+</div>
+    <div class="row" style="margin-top: 5px;">
         <div class="col-12 col-sm-6 col-xl-4">
             <div class="card">
                 <div class="card-body p-0">
