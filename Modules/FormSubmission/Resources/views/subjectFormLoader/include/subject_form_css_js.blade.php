@@ -29,9 +29,9 @@
 
             function disableAllFormFields(id) {
                 console.log('disableAllFormFields : ' + id);
-                $("#" + id + " :input").prop('disabled', true);
-                $("#" + id + " textarea").prop('disabled', true);
-                $("#" + id + " select").prop('disabled', true);
+                $("#" + id + " :input").attr('disabled', true);
+                $("#" + id + " textarea").attr('disabled', true);
+                $("#" + id + " select").attr('disabled', true);
             }
 
             function makeReadOnly(cls) {
@@ -44,9 +44,9 @@
 
             function enableAllFormFields(id) {
                 console.log('enableAllFormFields : ' + id);
-                $("#" + id + " :input").prop('disabled', false);
-                $("#" + id + " textarea").prop('disabled', false);
-                $("#" + id + " select").prop('disabled', false);
+                $("#" + id + " :input").attr('disabled', false);
+                $("#" + id + " textarea").attr('disabled', false);
+                $("#" + id + " select").attr('disabled', false);
             }
 
             function disableField(fieldId) {
@@ -219,18 +219,19 @@
             }
 
             function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, questionIdStr, formType, field_name,
-                fieldId) {
+                fieldId,dependencyIdStr) {
                 if (isPreview === false) {
                     if (isFormDataLocked(stepIdStr) == false) {
                       
                         if (canSubmitForm(formType, stepIdStr)) {
 
                             if (needToPutFormInEditMode(stepIdStr) == false) {
+
                                 if (window['validateQuestion' + questionIdStr](true, stepIdStr)) {
 
-                                    if (eval("typeof " + window['showHideQuestion' + questionIdStr]) != 'undefined') {
+                                    if (eval("typeof " + window['showHideQuestion' + questionIdStr+ '_' + dependencyIdStr]) != 'undefined') {
 
-                                        window['showHideQuestion' + questionIdStr](stepIdStr);
+                                        window['showHideQuestion' + questionIdStr+ '_' + dependencyIdStr](stepIdStr);
                                     }
                                     if (eval("typeof " + window['runCalculatedFieldsFunctions' + stepIdStr]) !=
                                         'undefined') {
