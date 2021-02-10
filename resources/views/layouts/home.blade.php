@@ -190,10 +190,10 @@
 
         $('.currentNotificationId').click(function () {
             var currentNotificationId  = $(this).attr('data-value');
-            var query_url        = $(this).attr('data-query_url');
-            var study_id         = $(this).attr('data-study_id');
-            var study_code       = $(this).attr('data-study_code');
-            var study_short_name = $(this).attr('data-study_short_name');
+            var query_url              = $(this).attr('data-query_url');
+            var study_id               = $(this).attr('data-study_id');
+            var study_code             = $(this).attr('data-study_code');
+            var study_short_name       = $(this).attr('data-study_short_name');
             updateNotificationToRead(currentNotificationId,query_url,study_id,study_code,study_short_name);
         });
 
