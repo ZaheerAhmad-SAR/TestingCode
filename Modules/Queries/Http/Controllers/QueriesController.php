@@ -2,12 +2,15 @@
 
 namespace Modules\Queries\Http\Controllers;
 
+use App\Mail\QueriesEmail;
+use App\Mail\TransmissonQuery;
 use App\User;
 use http\Env\Response;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Modules\Queries\Entities\AppNotification;
 use Modules\Queries\Entities\Query;
@@ -332,17 +335,43 @@ class QueriesController extends Controller
             'modility_id'=>$modility_id,
             'query_attachments'=>$filePath
         ]);
+        $current_study = '';
+        $current_study    = session('current_study');
+        $findCurrentStudy = Study::where('id',$current_study)->first();
+        $current_study    = $findCurrentStudy->study_short_name;
+
         if ($queryAssignedTo == 'user')
         {
             foreach ($usersArray as $user)
             {
+
                 $roles = (array)null;
                 QueryUser::create([
                     'id' => (string)Str::uuid(),
                     'user_id' => $user,
                     'query_id' => $queryid
                 ]);
+                $checkNotificationType = User::where('id',$user)->where('notification_type','=','email')->pluck('id')->toArray();
+                if (count($checkNotificationType) > 0)
+                {
+                    $yes       = is_array($checkNotificationType) ? $checkNotificationType : [$checkNotificationType];
+                    $userEmail = User::whereIn('id',$yes)->pluck('email')->toArray();
 
+                    $usersList = implode(',', $userEmail);
+
+                    $data  = array(
+                        'query_subject'=>$query_subject,
+                        'messages'=>$message,
+                        'attachment' => $filePath,
+                        'studyShortName' => $current_study,
+                        'study_code'=>$findCurrentStudy->study_code,
+                        'study_id'=>$findCurrentStudy->id,
+                        'createdByName' =>\auth()->user()->name,
+                        'pathtoRedirect'=>$query_url,
+                    );
+
+                    Mail::to($usersList)->send(new QueriesEmail($data));
+                }
                 AppNotification::create([
                     'id' => Str::uuid(),
                     'queryorbugid' => $queryid,
@@ -352,6 +381,7 @@ class QueriesController extends Controller
                     'notification_create_by_user_id'=>\auth()->user()->id
                 ]);
             }
+
         }
         if ($queryAssignedTo == 'role')
         {
