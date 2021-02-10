@@ -1,7 +1,7 @@
 @php
 $options = [''=>''];
 if ($question->certification_type == 'devices') {
-    $list = DB::connection('mysql2')->table('certify_device')->select('certify_device.*', DB::Raw('GROUP_CONCAT(trans_no SEPARATOR ",") as transmissions'), DB::Raw('GROUP_CONCAT(c_id SEPARATOR ",") as IDs'), DB::Raw('GROUP_CONCAT(status SEPARATOR ",") as statuses'), DB::Raw('GROUP_CONCAT(certification_officerName SEPARATOR ",") as certification_officerNames'))->groupBy('certify_device.device_categ')->where('certify_device.study_id', session('study_code'))->get();
+    $list = DB::connection('mysql2')->table('certify_device')->select('certify_device.*', DB::Raw('GROUP_CONCAT(trans_no SEPARATOR ",") as transmissions'), DB::Raw('GROUP_CONCAT(c_id SEPARATOR ",") as IDs'), DB::Raw('GROUP_CONCAT(status SEPARATOR ",") as statuses'), DB::Raw('GROUP_CONCAT(certification_officerName SEPARATOR ",") as certification_officerNames'))->groupBy('certify_device.device_categ')->groupBy('certify_device.device_sn')->groupBy('certify_device.study_name')->groupBy('certify_device.site_id')->where('certify_device.study_id', session('study_code'))->where('certify_device.status', 'accepted')->get();
     foreach ($list as $key => $item) {
         $value = $item->device_sn . ' && ' . $item->device_model . ' && ' . $item->device_categ;
         $options[$value] = $value;

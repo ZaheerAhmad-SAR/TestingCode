@@ -135,16 +135,30 @@
                                 </div>
 
                                 <div class="col-md-2">
-                                    <label for="C-Password">Show Signature Pad</label>
+                                    <label for="notificationType">Notification Type </label>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="notificationType"> System</label>
+                                    <input type="checkbox" name="notification_type" id="notification_type" value="system" checked="checked" disabled>
+                                    <label for="notificationType"> Email </label>
+                                    <input type="checkbox" name="notification_type" id="notification_type" @if($user->notification_type == 'email') checked="checked" @endif value="email">
                                 </div>
 
-                                <div class="col-md-4">
-                                  <input type="checkbox" name="show_signature_pad" id="show_signature_pad" value="yes">
-                                </div>
 
                             </div>
                             <br>
 
+                            <div class="row">
+
+                                <div class="col-md-2">
+                                    <label for="C-Password">Show Signature Pad</label>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <input type="checkbox" name="show_signature_pad" id="show_signature_pad" value="yes">
+                                </div>
+                            </div>
+                                <br>
                             <div class="row signature-pad-row">
 
                                 <div class="col-md-2">
