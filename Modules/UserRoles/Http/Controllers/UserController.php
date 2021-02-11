@@ -227,7 +227,7 @@ class UserController extends Controller
                 'role_id'   => $request->user_role,
                 'study_id'  => session('current_study')
             ]);
-            
+
             UserRole::createUserRole($request->study_user, $request->user_role);
             return response()->json(['success' => 'User assigned successfully.']);
         }
@@ -310,6 +310,7 @@ class UserController extends Controller
             $user->title  =  $request->title;
             $user->name  =  $request->name;
             $user->phone =  $request->phone;
+            $user->notification_type =  $request->notification_type;
             $user->password =   Hash::make($request->password);
             if ($request->has('profile_image')) {
                 $image = $request->file('profile_image');
@@ -331,12 +332,13 @@ class UserController extends Controller
                 \File::put(storage_path(). '/user_signature/' . $imageName, $image);
 
             }
-            
+
             $user->save();
         } else {
             $user->title  =  $request->title;
             $user->name  =  $request->name;
             $user->phone =  $request->phone;
+            $user->notification_type =  $request->notification_type;
             if ($request->has('profile_image')) {
                 $image = $request->file('profile_image');
                 $name = Str::slug($request->input('name')) . '_' . time();
@@ -538,7 +540,7 @@ class UserController extends Controller
                 'roles' => 'Please select a role!',
             ]
         );
-        
+
         /*$validator->after(function ($validator) use ($request) {
             if (Invitation::where('email', $request->input('email'))->exists()) {
                 $validator->errors()->add('email', 'There exists an invite with this email!');
