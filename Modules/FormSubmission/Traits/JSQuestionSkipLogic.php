@@ -177,7 +177,7 @@ trait JSQuestionSkipLogic
 
             function ' . $functionName . $skipLogicIdStr . '(){
 
-                console.log(\'' . $functionName . $skipLogicIdStr . '\');
+                //console.log(\'' . $functionName . $skipLogicIdStr . '\');
 
                 var stepIdStr = \'' . $stepIdStr . '\';
                 var fieldVal = ' . $getValueFunctionName . '(stepIdStr, \'' . $fieldName . '\', \'' . $fieldId . '\');
