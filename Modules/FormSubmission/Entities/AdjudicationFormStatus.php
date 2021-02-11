@@ -203,4 +203,17 @@ class AdjudicationFormStatus extends Model
             ->pluck('phase_steps_id')
             ->toArray();
     }
+
+    public static function getTotalAdjudicationStatus($studyId, $status = null)
+    {
+        $getTotalStatus = self::query();
+        $getTotalStatus = $getTotalStatus->where('study_id', $studyId);
+                    if($status != null) {
+                        $getTotalStatus->where('adjudication_status', $status);
+                    }
+        $getTotalStatus = $getTotalStatus->get()->count();
+
+        return $getTotalStatus;
+       
+    }
 }
