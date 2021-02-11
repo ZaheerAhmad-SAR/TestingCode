@@ -457,7 +457,6 @@ class FormController extends Controller
             $adjStatus->opertaor = $request->opertaor;
             $adjStatus->custom_value = $request->custom_value;
             $adjStatus->save();
-
             $this->updateQuestionAdjudicationStatusesToReplicatedVisits($adjStatus, true);
         } else {
             $this->createQuestionAdjudicationStatus($request, $questionObj);
@@ -504,7 +503,6 @@ class FormController extends Controller
         // Question dependency update
         if (!empty($request->dependency_id) && $request->dependency_id != 'no-id-123') {
             $dependencies = QuestionDependency::where('id', $request->dependency_id)->first();
-
             if (!empty($request->dep_on_question_id)) {
                 $dependencies->q_d_status = $request->q_d_status;
                 $dependencies->dep_on_question_id = $request->dep_on_question_id;

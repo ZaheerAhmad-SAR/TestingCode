@@ -28,10 +28,10 @@
             }
 
             function disableAllFormFields(id) {
-                console.log('disableAllFormFields : ' + id);
-                $("#" + id + " :input").prop('disabled', true);
-                $("#" + id + " textarea").prop('disabled', true);
-                $("#" + id + " select").prop('disabled', true);
+                //console.log('disableAllFormFields : ' + id);
+                $("#" + id + " :input").attr('disabled', true);
+                $("#" + id + " textarea").attr('disabled', true);
+                $("#" + id + " select").attr('disabled', true);
             }
 
             function makeReadOnly(cls) {
@@ -43,10 +43,10 @@
             }
 
             function enableAllFormFields(id) {
-                console.log('enableAllFormFields : ' + id);
-                $("#" + id + " :input").prop('disabled', false);
-                $("#" + id + " textarea").prop('disabled', false);
-                $("#" + id + " select").prop('disabled', false);
+                //console.log('enableAllFormFields : ' + id);
+                $("#" + id + " :input").attr('disabled', false);
+                $("#" + id + " textarea").attr('disabled', false);
+                $("#" + id + " select").attr('disabled', false);
             }
 
             function disableField(fieldId) {
@@ -58,7 +58,7 @@
             }
 
             function disableByClass(cls) {
-                console.log('disableByClass : ' + cls);
+                //console.log('disableByClass : ' + cls);
                 $("." + cls).prop('disabled', true);
                 $("." + cls + " :input").prop('disabled', true);
                 $("." + cls + " textarea").prop('disabled', true);
@@ -74,7 +74,7 @@
             }
 
             function enableByClass(cls) {
-                console.log('enableByClass : ' + cls);
+                //console.log('enableByClass : ' + cls);
                 $("." + cls).prop('disabled', false);
                 $("." + cls + " :input").prop('disabled', false);
                 $("." + cls + " select").prop('disabled', false);
@@ -219,18 +219,19 @@
             }
 
             function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, questionIdStr, formType, field_name,
-                fieldId) {
+                fieldId,dependencyIdStr) {
                 if (isPreview === false) {
                     if (isFormDataLocked(stepIdStr) == false) {
                       
                         if (canSubmitForm(formType, stepIdStr)) {
 
                             if (needToPutFormInEditMode(stepIdStr) == false) {
+
                                 if (window['validateQuestion' + questionIdStr](true, stepIdStr)) {
 
-                                    if (eval("typeof " + window['showHideQuestion' + questionIdStr]) != 'undefined') {
+                                    if (eval("typeof " + window['showHideQuestion' + questionIdStr+ '_' + dependencyIdStr]) != 'undefined') {
 
-                                        window['showHideQuestion' + questionIdStr](stepIdStr);
+                                        window['showHideQuestion' + questionIdStr+ '_' + dependencyIdStr](stepIdStr);
                                     }
                                     if (eval("typeof " + window['runCalculatedFieldsFunctions' + stepIdStr]) !=
                                         'undefined') {
@@ -451,10 +452,10 @@
             }
 
             function hideReasonField(stepIdStr, stepClsStr, formType, formStatusIdStr, waitSeconds) {
-                console.log('hideReasonField : ' + stepIdStr + ' - ' + stepClsStr + ' - ' + formType + ' - ' + formStatusIdStr + ' - ' + waitSeconds);
+                //console.log('hideReasonField : ' + stepIdStr + ' - ' + stepClsStr + ' - ' + formType + ' - ' + formStatusIdStr + ' - ' + waitSeconds);
                 startWait();
                 var seconds = waitSeconds * 1000;
-                console.log('wait : ' + seconds);
+                //console.log('wait : ' + seconds);
                 setTimeout(function() {
                     $("#edit_form_div_" + stepIdStr).hide(500);
                     $('#edit_reason_text_' + stepIdStr).prop('required', false);
@@ -814,7 +815,7 @@
                         $('#file_upload_files_div_' + fieldId).html(linkStr);
                     },
                     error: function(response){
-                        console.log(response);
+                        //console.log(response);
                     }
                 });
             }
@@ -922,7 +923,7 @@
 
             function reloadPage(waitSeconds) {
                 var seconds = waitSeconds * 1000;
-                console.log('wait : ' + seconds);
+                //console.log('wait : ' + seconds);
                 setTimeout(function() {
                     location.reload();
                 }, seconds);

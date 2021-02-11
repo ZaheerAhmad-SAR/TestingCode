@@ -26,6 +26,7 @@
                                 <span class="text-muted font-w-600">Define Basic Attribute of Question</span><br>
                                 </div>
                                 <div class="form-group row" style="margin-top: 10px;">
+                                    <input type="hidden" name="dependency_id" id="dependency_id_cert">
                                     <input type="hidden" name="id" id="question_id_cert" value="">
                                     <input type="hidden" name="field_id" id="form_field_id_cert" value="">
                                     <input type="hidden" name="form_field_type_id" id="question_type_cert" value="">
@@ -94,7 +95,6 @@
                                 <div class="form-group row" style="margin-top: 10px;">
                                     <div class="col-sm-2">Field is dependent: </div>
                                     <div class="col-sm-10">
-                                        <input type="hidden" name="dependency_id" id="dependency_id">
                                         <input type="radio" name="q_d_status" class="field_dependent"
                                             id="field_dependent_no_cert" value="no" checked> No
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -183,6 +183,7 @@
                 $('#form_certify').attr('action', "{{ route('forms.updateQuestion') }}");
                 var row = $(this).closest('div.custom_fields')
                 tId = ''
+                dependency_id = row.find('input.dependency_id').val()
                 ques_id = row.find('input.question_id').val()
                 ques_type_id = row.find('input.question_type_id').val()
                 question_sort = row.find('input.question_sort').val()
@@ -207,6 +208,7 @@
                 dependency_custom_value = row.find('input.dependency_custom_value').val()
                 step_id = $('#steps').val();
                 $('#question_id_cert').val(ques_id);
+                $('#dependency_id_cert').val(dependency_id);
                 $('#question_sort_cert').val(question_sort);
                 $('#question_type_cert').val(ques_type_id);
                 $('#section_id_cert').val(section_id);
