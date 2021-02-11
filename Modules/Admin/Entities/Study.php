@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\UserRoles\Entities\Permission;
 use Modules\Admin\Entities\RoleStudyUser;
 use Modules\Admin\Entities\StudyStructure;
+use Modules\Admin\Entities\ProgressbarStudy;
 use Modules\FormSubmission\Entities\AdjudicationFormStatus;
 use Modules\FormSubmission\Entities\FormStatus;
 use Modules\FormSubmission\Entities\SubjectsPhases;
@@ -74,53 +75,17 @@ class Study extends Model
         return $this->hasManyThrough(PhaseSteps::class, StudyStructure::class, 'study_id', 'phase_id', 'id', 'id');
     }
 
+    public function progressbar() {
+        return $this->hasOne(ProgressbarStudy::class, 'id', 'study_id');
+    }
+
     public static function calculateFormPercentage($studyId)
     {
-        $qc_percentage = 0;
-        $grading_percentage = 0;
-        $adjudication_percentage = 0;
+        $getPercentage = ProgressbarStudy::where('study_id', $studyId)->first();
 
-        // get all phases for a study
-        $studyPhasesIdsArray = StudyStructure::getStudyPhaseIdsArray($studyId);
-        // get only activated phases for subject
-        $activatedPhasesidsArray = SubjectsPhases::getActivatedPhasesidsArray($studyPhasesIdsArray);
-        // get activated subjects for the above get phase array
-        $subjectIdsFromActivatedPhasesIdsArray = SubjectsPhases::getSubjectIdsFromActivatedPhasesidsArray($activatedPhasesidsArray);
-        // get unique subjects from above query
-        $subjectIdsFromActivatedPhasesIdsArray = array_unique($subjectIdsFromActivatedPhasesIdsArray);
-        // get modility ID for activated phases
-        $modilityIdsFromActivatedPhasesIdsArray = SubjectsPhases::getModilityIdsFromActivatedPhasesidsArray($activatedPhasesidsArray);
-        // get steps for activated phases where form type is QC
-        $qcStepsIdsArray = PhaseSteps::getStepsIdsArray(1, $activatedPhasesidsArray);
-        // get steps for activated phases where form type is GRADING
-        $gradingStepsIdsArray = PhaseSteps::getStepsIdsArray(2, $activatedPhasesidsArray);
-        // get GRADING COUNT for activated phases where form type is GRADING
-        $countGradingSteps = PhaseSteps::countGradingSteps($activatedPhasesidsArray, $modilityIdsFromActivatedPhasesIdsArray);
-
-        /*********************************************************/
-
-        //  get step_ids where form_type->qc, status->complete and only qc steps 
-        $completedQcStepsIdsArray = FormStatus::getStepsIdsArrayByStatusAndFormType(1, 'complete', $qcStepsIdsArray);
-        if (count($qcStepsIdsArray) > 0 && count($subjectIdsFromActivatedPhasesIdsArray) > 0) {
-            $qc_percentage = round((count($completedQcStepsIdsArray) / (count($qcStepsIdsArray) * count($subjectIdsFromActivatedPhasesIdsArray))) * 100);
-        }
-
-
-        /*********************************************************/
-
-        //  get step_ids where form_type->grading, status->complete and only grading steps 
-        $completedGradingStepsIdsArray = FormStatus::getStepsIdsArrayByStatusAndFormType(2, 'complete', $gradingStepsIdsArray);
-        //dd($subjectIdsFromActivatedPhasesIdsArray);
-        if (count($gradingStepsIdsArray) > 0) {
-            $grading_percentage = round((count($completedGradingStepsIdsArray) / ($countGradingSteps * count($subjectIdsFromActivatedPhasesIdsArray))) * 100);
-        }
-
-        /*********************************************************/
-
-        $completedAdjudicationStepsIdsArray = AdjudicationFormStatus::getStepsIdsArrayByStatus('complete', $gradingStepsIdsArray);
-        if (count($gradingStepsIdsArray) > 0) {
-            $adjudication_percentage = round((count($completedAdjudicationStepsIdsArray) / (count($gradingStepsIdsArray) * count($subjectIdsFromActivatedPhasesIdsArray))) * 100);
-        }
+        $qc_percentage = $getPercentage != null ? $getPercentage->qc_percentage : 0;
+        $grading_percentage = $getPercentage != null ? $getPercentage->grading_percentage : 0;
+        $adjudication_percentage = $getPercentage != null ? $getPercentage->adjudication_percentage : 0;
 
         return '<div class="progress">
             <div class="progress-bar bg-info" role="progressbar" aria-valuenow="' . $qc_percentage . '"

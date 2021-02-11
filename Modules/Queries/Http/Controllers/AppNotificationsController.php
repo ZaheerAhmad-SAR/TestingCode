@@ -78,14 +78,23 @@ class AppNotificationsController extends Controller
      */
     public function update(Request $request)
     {
+       //dd(session()->has('current_study'));
+
         if ($request->ajax())
         {
             $query_url    = $request->post('query_url');
             $studyId      = $request->post('study_id');
             $study_code   = $request->post('study_code');
             $queryorbugid = $request->post('currentNotificationId');
-
             $study_short_name = $request->post('study_short_name');
+
+            if ($request->session()->has('current_study'))
+            {
+                $request->session()->forget('current_study');
+
+            }
+
+
             session([
                 'current_study' => $studyId,
                 'study_short_name' =>$study_short_name,
