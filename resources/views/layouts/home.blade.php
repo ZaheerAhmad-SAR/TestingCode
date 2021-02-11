@@ -19,18 +19,18 @@
 
                     <a href="#" class="sidebarCollapse" id="collapse"><i class="icon-menu"></i></a>
                 </div>
-                @if(empty(auth()->user()->google2fa_secret))
-                    <div class="" style="margin-top: 15px;padding: 9px 62px 14px 0px;" >
-                        @php
-                        $style = (empty(auth()->user()->google2fa_secret))? 'style="display:none;"':'style="margin-top:20px"';
-                        @endphp
-                        <div class="alert alert-warning alert-dismissible" {{ $style }} >
-                            <a type="submit" class="btn btn-outline-info" href="{{route('users.updateProfile')}}" >Enable now</a>
-                            <strong>Warning!</strong> Google 2-Factor Auth is disabled, turn it on.
-                            <button class="close" data-dismiss="alert">&times;</button>
-                        </div>
-                    </div>
-            @endif
+{{--                @if(empty(auth()->user()->google2fa_secret))--}}
+{{--                    <div class="" style="margin-top: 15px;padding: 9px 62px 14px 0px;" >--}}
+{{--                        @php--}}
+{{--                        $style = (empty(auth()->user()->google2fa_secret))? 'style="display:none;"':'style="margin-top:20px"';--}}
+{{--                        @endphp--}}
+{{--                        <div class="alert alert-warning alert-dismissible" {{ $style }} >--}}
+{{--                            <a type="submit" class="btn btn-outline-info" href="{{route('users.updateProfile')}}" >Enable now</a>--}}
+{{--                            <strong>Warning!</strong> Google 2-Factor Auth is disabled, turn it on.--}}
+{{--                            <button class="close" data-dismiss="alert">&times;</button>--}}
+{{--                        </div>--}}
+{{--                    </div>--}}
+{{--                @endif--}}
                 <!-- title here  -->
                 <!--  -->
                 <div class="navbar-right ml-auto h-100">
@@ -190,10 +190,10 @@
 
         $('.currentNotificationId').click(function () {
             var currentNotificationId  = $(this).attr('data-value');
-            var query_url        = $(this).attr('data-query_url');
-            var study_id         = $(this).attr('data-study_id');
-            var study_code       = $(this).attr('data-study_code');
-            var study_short_name = $(this).attr('data-study_short_name');
+            var query_url              = $(this).attr('data-query_url');
+            var study_id               = $(this).attr('data-study_id');
+            var study_code             = $(this).attr('data-study_code');
+            var study_short_name       = $(this).attr('data-study_short_name');
             updateNotificationToRead(currentNotificationId,query_url,study_id,study_code,study_short_name);
         });
 

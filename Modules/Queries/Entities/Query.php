@@ -3,9 +3,11 @@
 namespace Modules\Queries\Entities;
 
 use App\User;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use phpDocumentor\Reflection\Types\Self_;
+use Carbon\Carbon;
 
 class Query extends Model
 {
@@ -50,15 +52,16 @@ class Query extends Model
         $attachment = '';
         $profileImage = '';
 
-        if (null === $querySubmitedBy->profile_image)
+        if ($querySubmitedBy->profile_image == '')
         {
-            $profileImage = asset('public/images/download.png');
+            $profileImage = asset('/images/download.png');
         }
         else
         {
-            $profileImage = asset($querySubmitedBy->profile_image);
+            $profileImage = asset('/images/'.$querySubmitedBy->profile_image);
         }
-
+        //date_format($query->created_at, 'M-d-Y H:i A')
+        $date = Carbon::parse($query->created_at)->diffForHumans();
         if (!empty($query->query_attachments)) {
             $attachment .= '<div class="row">
                         <img  style="width:200px; height:200px;" class="mr-3" src=' . url((string)$query->query_attachments) . ' alt="">
@@ -69,11 +72,11 @@ class Query extends Model
         return '<div class="row text-left">
                     <input type="hidden" value=' . $query->parent_query_id . ' name="parent_query_id" id="parent_query_id">
                     <div class="col-md-12">
-                        <img class="mr-3" style="width: 30px; height: 30px; border-radius: 50%;"
+                        <img class="mr-1"  style="width: 30px; height: 30px; border-radius: 50%;"
                             src="' . url((string)$profileImage) . '" />
 
                         <strong>' . ucfirst((string)$querySubmitedBy->name) . ':</strong>
-                        ' . date_format($query->created_at, 'M-d-Y H:i A') . '<br>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        ' .$date. '<br>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         ' . $query->messages . '
                         ' . $attachment . '
                     </div>
@@ -86,14 +89,15 @@ class Query extends Model
 
         $profileImage = '';
 
-        if (null === $querySubmitedBy->profile_image)
+        if ($querySubmitedBy->profile_image == '')
         {
-            $profileImage = asset('public/images/download.png');
+            $profileImage = asset('/images/download.png');
         }
         else
         {
-            $profileImage = asset($querySubmitedBy->profile_image);
+            $profileImage = asset('/images/'.$querySubmitedBy->profile_image);
         }
+             $date = Carbon::parse($query->created_at)->diffForHumans();
         if (!empty($query->query_attachments)) {
             $attachment .= '<div class="row">
                         <img style="width:200px; height:200px; margin: 0 auto;" class="mr-3" src=' . url((string)$query->query_attachments) . ' alt="">
@@ -103,9 +107,9 @@ class Query extends Model
         }
         return '<div class="row text-right">
                     <div class="col-md-12">
-                    <img class="mr-3" style="width: 30px; height: 30px; border-radius: 50%;" src="' . url((string)$profileImage) . '" />
+                    <img class="mr-1" style="width: 40px; height: 40px; border-radius: 50%;" src="' . url((string)$profileImage) . '" />
                         <strong>' . ucfirst((string)$querySubmitedBy->name) . ':</strong>
-                        ' . date_format($query->created_at, 'M-d-Y H:i A') . '<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        ' .$date.'<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         ' . $query->messages . '
                          ' . $attachment . '
                     </div>

@@ -92,9 +92,11 @@
                                                     </div>
                                                     <div class="media-body align-self-center pl-4">
                                                         @if($record->is_read == 'no')
-                                                            <span class="mb-0 font-w-600"> <b>{{$studyData->study_short_name}} </b></span><br>
+                                                            <div class="currentNotificationRow" style="cursor: pointer;" data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$result->query_url}}" data-id="{{$record->queryorbugid}}">
+                                                            <span class="mb-0 font-w-600 " > <b>{{$studyData->study_short_name}} </b></span><br>
                                                             <p class="mb-0 font-w-500 tx-s-12"> <b> @if($answers->isEmpty()) New Query By  @else Query Reply By  @endif  {{$userData->name}}</b></p>
                                                             <small class="d-block">{{Carbon\Carbon::parse($result->created_at)->diffForHumans()}}</small>
+                                                            </div>
                                                         @else
                                                             <span class="mb-0 font-w-600">{{$studyData->study_short_name}}</span><br>
                                                             <p class="mb-0 font-w-500 tx-s-12"> @if($answers->isEmpty()) New Query By  @else Query Reply By  @endif {{$userData->name}}</p>
@@ -285,6 +287,43 @@
             }
 
         });
+
+        $('.currentNotificationRow').click(function () {
+
+            var currentNotificationId  = $(this).attr('data-id');
+            var query_url              = $(this).attr('data-query_url');
+            var study_id               = $(this).attr('data-study_id');
+            var study_code             = $(this).attr('data-study_code');
+            var study_short_name       = $(this).attr('data-study_short_name');
+            updateNotificationToRead(currentNotificationId,query_url,study_id,study_code,study_short_name);
+        });
+
+        function updateNotificationToRead(currentNotificationId,query_url,study_id,study_code,study_short_name)
+        {
+            $.ajax({
+                url:"{{route('notifications.update')}}",
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'currentNotificationId' :currentNotificationId,
+                    'query_url' :query_url,
+                    'study_id' :study_id,
+                    'study_code' :study_code,
+                    'study_short_name' :study_short_name,
+                },
+                success: function(response)
+                {
+                    console.log(response);
+                    if (response.success)
+                    {
+                        var urlPath = response.success;
+                        window.location.href = urlPath;
+                    }
+                }
+            });
+        }
+
     </script>
 
     <script src="{{ asset('public/dist/vendors/datatable/js/jquery.dataTables.min.js') }}"></script>
