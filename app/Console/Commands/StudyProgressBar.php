@@ -126,6 +126,19 @@ class StudyProgressBar extends Command
 
             } // subject
 
+            /**************************** Adjudictaion Modality *************************/
+
+            // get all adjudication record for study from adjudication status
+            $getTotalAdjudicationStatus = AdjudicationFormStatus::getTotalAdjudicationStatus($studyId);
+            $getCompleteAdjudicationStatus = AdjudicationFormStatus::getTotalAdjudicationStatus($studyId, 'complete');
+
+            /********************* Form Percentage Ends *******************************/
+
+            if($getTotalAdjudicationStatus > 0 && $getCompleteAdjudicationStatus > 0) {
+
+                $adjudication_percentage = round($getCompleteAdjudicationStatus / $getTotalAdjudicationStatus * 100);
+            }
+
             if($totalQcSteps > 0 && $completedQcSteps > 0) {
                 $qc_percentage = round($completedQcSteps / $totalQcSteps * 100);
             }
@@ -133,19 +146,6 @@ class StudyProgressBar extends Command
             if($totalGradingSteps > 0 && $completedGradingSteps > 0) {
                 $grading_percentage = round($completedGradingSteps / $totalGradingSteps * 100);
             }
-
-            /**************************** Adjudictaion Modality *************************/
-
-            // get all adjudication record for study from adjudication status
-            $getTotalAdjudicationStatus = AdjudicationFormStatus::getTotalAdjudicationStatus($studyId);
-            $getCompleteAdjudicationStatus = AdjudicationFormStatus::getTotalAdjudicationStatus($studyId, 'complete');
-
-            if($getTotalAdjudicationStatus > 0 && $getCompleteAdjudicationStatus > 0) {
-
-                $adjudication_percentage = round($getCompleteAdjudicationStatus / $getTotalAdjudicationStatus * 100);
-            }
-
-            /********************* Form Percentage Ends *******************************/
 
             // save data
             $progressbar = ProgressBarStudy::where('study_id', $studyId)->first();
