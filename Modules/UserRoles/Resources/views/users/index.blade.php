@@ -22,6 +22,7 @@
                 </ul>
             </div>
         @endif
+
         <div class="card">
             <div class="card-body">
                 <form action="{{route('users.index')}}" method="get" class="filter-form">
@@ -140,6 +141,8 @@
                             {{ $users->links() }}
                         </div>
                     </div>
+
+                    {{--
                     <div class="card-body">
                         <div class="table-responsive list">
                             <table class="table table-bordered editable-table" id="laravel_crud">
@@ -195,6 +198,7 @@
                             </table>
                         </div>
                     </div>
+                    --}}
                 </div>
             </div>
         </div>
