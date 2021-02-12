@@ -401,7 +401,8 @@
                 @if(session('current_study'))
                     <li class="dropdown">
                         <ul>
-                            <li class="nav-item"><a href="{{route('queries.index')}}"><i class="fab fa-rocketchat"></i>Queries <span class="badge badge-dark">{{ Modules\Queries\Entities\Query::where(array('query_status' => 'open','queried_remarked_by_id' => auth()->user()->id,'parent_query_id'=>0 ))->count() }}</span></a>
+                            @php $count = Modules\Queries\Entities\QueryUser::where('user_id','=',\auth()->user()->id)->count() @endphp
+                            <li class="nav-item"><a href="{{route('queries.index')}}"><i class="fab fa-rocketchat"></i>Queries <span class="badge badge-dark">{{$count}}</span></a>
                             </li>
                         </ul>
                     </li>
