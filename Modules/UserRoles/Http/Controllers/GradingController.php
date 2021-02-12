@@ -348,17 +348,17 @@ class GradingController extends Controller
     public function assignWork(Request $request)
     {
 
-        $today              = Carbon::now()
-                                    ->startOfDay()        // 2018-09-29 00:00:00.000000
-                                    ->toDateTimeString(); // 2018-09-29 00:00:00
+        // $today              = Carbon::now()
+        //                             ->startOfDay()        // 2018-09-29 00:00:00.000000
+        //                             ->toDateTimeString(); // 2018-09-29 00:00:00
 
-        $afterFourteenDays  = Carbon::now()->addDays(14)
-                                    ->endOfDay()          // 2018-09-29 23:59:59.000000
-                                    ->toDateTimeString();
-        // get all work within 14 days
-        $getFourteenDaysWork = AssignWork::whereBetween('assign_date', [$today, $afterFourteenDays])->get();
+        // $afterFourteenDays  = Carbon::now()->addDays(14)
+        //                             ->endOfDay()          // 2018-09-29 23:59:59.000000
+        //                             ->toDateTimeString();
+        // // get all work within 14 days
+        // $getFourteenDaysWork = AssignWork::whereBetween('assign_date', [$today, $afterFourteenDays])->get();
 
-        dd($getFourteenDaysWork);
+        // dd($getFourteenDaysWork);
 
         // modility/form type array
         $modalitySteps = [];
