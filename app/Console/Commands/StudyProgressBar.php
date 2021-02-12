@@ -126,7 +126,7 @@ class StudyProgressBar extends Command
 
             } // subject
 
-            /**************************** Adjudictaion Modality *************************/
+            /**************************** Adjudictaion Form Status *************************/
 
             // get all adjudication record for study from adjudication status
             $getTotalAdjudicationStatus = AdjudicationFormStatus::getTotalAdjudicationStatus($studyId);
