@@ -318,6 +318,7 @@ class UserController extends Controller
      */
     public function update_user(Request $request, $id)
     {
+
         $validate = Validator::make($request->all(), [
             'name'      =>  'required',
             'email'      =>  'required|email|unique:users,email,',
@@ -328,6 +329,9 @@ class UserController extends Controller
             $user->name  =  $request->name;
             $user->phone =  $request->phone;
             $user->notification_type =  $request->notification_type;
+            $user->bug_report =  $request->bug;
+            $user->is_form =  $request->form;
+            $user->is_subject =  $request->subject;
             $user->password =   Hash::make($request->password);
             if ($request->has('profile_image')) {
                 $image = $request->file('profile_image');
@@ -356,6 +360,9 @@ class UserController extends Controller
             $user->name  =  $request->name;
             $user->phone =  $request->phone;
             $user->notification_type =  $request->notification_type;
+            $user->bug_report =  $request->bug;
+            $user->is_form =  $request->form;
+            $user->is_subject =  $request->subject;
             if ($request->has('profile_image')) {
                 $image = $request->file('profile_image');
                 $name = Str::slug($request->input('name')) . '_' . time();

@@ -98,9 +98,11 @@
                                                             <small class="d-block">{{Carbon\Carbon::parse($result->created_at)->diffForHumans()}}</small>
                                                             </div>
                                                         @else
+                                                            <div class="currentNotificationRow" style="cursor: pointer;" data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$result->query_url}}" data-id="{{$record->queryorbugid}}">
                                                             <span class="mb-0 font-w-600">{{$studyData->study_short_name}}</span><br>
                                                             <p class="mb-0 font-w-500 tx-s-12"> @if($answers->isEmpty()) New Query By  @else Query Reply By  @endif {{$userData->name}}</p>
                                                             <small class="d-block">{{Carbon\Carbon::parse($result->created_at)->diffForHumans()}}</small>
+                                                            </div>
                                                         @endif
                                                     </div>
                                                     @if($record->is_read == 'no')
