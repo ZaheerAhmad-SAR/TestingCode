@@ -129,4 +129,5 @@ class AdjudicationFormStatus extends Model
         AdjudicationFormStatus::create($adjudicationFormStatusData);
         return AdjudicationFormStatus::find($id);
     }
+
 }
