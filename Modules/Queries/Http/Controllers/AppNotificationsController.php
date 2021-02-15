@@ -78,8 +78,8 @@ class AppNotificationsController extends Controller
      */
     public function update(Request $request)
     {
-       //dd(session()->has('current_study'));
-
+        //dd(session()->has('current_study'));
+        //dd(session()->has('current_study'),$request->all());
         if ($request->ajax())
         {
             $query_url    = $request->post('query_url');
@@ -93,7 +93,6 @@ class AppNotificationsController extends Controller
                 $request->session()->forget('current_study');
 
             }
-
 
             session([
                 'current_study' => $studyId,

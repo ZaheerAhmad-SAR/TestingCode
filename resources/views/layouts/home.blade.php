@@ -104,9 +104,14 @@
                                             </li>
                                         @else
                                             @php
-                                                $bugs = Modules\BugReporting\Entities\BugReport::where('id',$record->queryorbugid)->first();
+                                                $bugs = '';
 
-                                                 $studyData = Modules\Admin\Entities\Study::where('study_short_name',$bugs->study_name)->first();
+                                                $bugs = Modules\BugReporting\Entities\BugReport::where('id',$record->queryorbugid)->first();
+                                                 if ($bugs !== null)
+                                                 {
+                                                      $studyData = Modules\Admin\Entities\Study::where('study_short_name',$bugs->study_name)->first();
+                                                 }
+
                                                   $userData  = App\User::where('id',$record->notification_create_by_user_id)->first();
 
                                             $answers = Modules\BugReporting\Entities\BugReport::where('parent_bug_id','=',$record->queryorbugid)->orWhereNull('parent_bug_id')
@@ -116,7 +121,11 @@
 
                                             <li>
 
-                                                <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0 currentNotificationId appRedirectPage"   data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$bugs->bug_url}}" data-id="{{$studyData->id}}" href="javascript:void(0);" data-value="{{$bugs->id}}">
+                                                <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0 currentNotificationBugId"
+                                                   data-study_id="{{$studyData->id}}"  data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"
+                                                   data-query_url="{{$bugs->bug_url}}"  data-id ="{{$studyData->id}}" href="javascript:void(0);" data-value="{{$bugs->id}}">
+
+
                                                     <div class="media">
                                                         <img src="{{asset('dist/images/author.jpg')}}" alt="" class="d-flex mr-3 img-fluid rounded-circle">
                                                         <div class="media-body">
@@ -196,6 +205,19 @@
             var study_short_name       = $(this).attr('data-study_short_name');
             updateNotificationToRead(currentNotificationId,query_url,study_id,study_code,study_short_name);
         });
+
+
+        $('.currentNotificationBugId').click(function () {
+            var currentNotificationId  = $(this).attr('data-value');
+            var query_url              = $(this).attr('data-query_url');
+            var study_id               = $(this).attr('data-study_id');
+            var study_code             = $(this).attr('data-study_code');
+            var study_short_name       = $(this).attr('data-study_short_name');
+            updateNotificationToRead(currentNotificationId,query_url,study_id,study_code,study_short_name);
+        });
+
+
+
 
         function updateNotificationToRead(currentNotificationId,query_url,study_id,study_code,study_short_name)
         {
