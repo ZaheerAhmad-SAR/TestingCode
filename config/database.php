@@ -75,12 +75,12 @@ return [
         'mysql2' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST_2'),
-            'port' => env('DB_PORT'),
-            'database' => env('DB_DATABASE_2'),
-            'username' => env('DB_USERNAME'),
-            'password' => env('DB_PASSWORD'),
-            'unix_socket' => env('DB_SOCKET'),
+            'host' => env('DB_HOST_2', '18.216.100.149'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE_2', 'certification'),
+            'username' => env('DB_USERNAME_2', 'certifymeremote'),
+            'password' => env('DB_PASSWORD_2', 'AVNiNpoSY4C3ufzk'),
+            'unix_socket' => env('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
@@ -94,7 +94,6 @@ return [
 
 
         ],
-
         // new end
         'pgsql' => [
             'driver' => 'pgsql',
