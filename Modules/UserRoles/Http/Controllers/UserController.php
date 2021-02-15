@@ -52,14 +52,19 @@ class UserController extends Controller
     }
     public function index(Request $request)
     {
-        if(isThisUserSuperAdmin(\auth()->user())){
-            $roles  =   Role::where('role_type', '!=', 'study_role')->get();
-            $systemRoleIds = Role::where('role_type', '!=', 'study_role')->pluck('id')->toArray();
-        }else{
-            $roles  =   Role::where('role_type', '=', 'system_role')->get();
-            $systemRoleIds = Role::where('role_type', '=', 'system_role')->pluck('id')->toArray();
-        }
+        // if(isThisUserSuperAdmin(\auth()->user())){
+        //     $roles  =   Role::where('role_type', '!=', 'study_role')->get();
+        //     $systemRoleIds = Role::where('role_type', '!=', 'study_role')->pluck('id')->toArray();
+        // }else {
+        //     $roles  =   Role::where('role_type', '=', 'system_role')->get();
+        //     $systemRoleIds = Role::where('role_type', '=', 'system_role')->pluck('id')->toArray();
+        // }
+        
         $currentStudyId = session('current_study');
+
+        $roles  =   Role::get();
+        $systemRoleIds = Role::pluck('id')->toArray();
+        
         $userIdsOfSystemRoles = UserRole::whereIn('role_id', $systemRoleIds)->pluck('user_id')->toArray();
         // for default order by
         if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
@@ -72,7 +77,9 @@ class UserController extends Controller
         }else{
             $asc_or_decs = 'ASC';
         }
+
         $users = User::whereIn('id', $userIdsOfSystemRoles);
+
         if(isset($request->name) && $request->name !=''){
             $users = $users->where('users.name','like', '%'.$request->name.'%');
         }
@@ -85,18 +92,26 @@ class UserController extends Controller
         if(isset($request->sort_by_field) && $request->sort_by_field !=''){
             $users = $users->orderBy('users.'.$field_name , $request->sort_by_field);
         }
-        $users = $users->paginate(10)->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
+        $users = $users->orderBy('name', 'asc')
+                    ->paginate(20)
+                    ->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
         $old_values = $request->input();
-        $studyRoleIds = Role::where('role_type', '=', 'study_role')->pluck('id')->toArray();
+
+        //$studyRoleIds = Role::where('role_type', '=', 'study_role')->pluck('id')->toArray();
+        $studyRoleIds = Role::pluck('id')->toArray();
         $userIdsOfStudyRoles = UserRole::whereIn('role_id', $studyRoleIds)->pluck('user_id')->toArray();
+
         if ($currentStudyId != '') {
             $studyUserIds = RoleStudyUser::where('study_id', 'like', $currentStudyId)->pluck('user_id')->toArray();
+            
             $studyusers = User::whereIn('id', $userIdsOfStudyRoles)
-                ->whereIn('id', $studyUserIds)
-                ->where('id', '!=', \auth()->user()->id)->get();
+                ->whereNotIn('id', $studyUserIds)
+                ->where('id', '!=', \auth()->user()->id)
+                ->get();
         }else {
             $studyusers = User::whereIn('id', $userIdsOfStudyRoles)->where('id', '!=', \auth()->user()->id)->get();
         }
+        
         $allroles = Role::all();
         return view('userroles::users.index', compact('users', 'roles', 'studyusers','allroles','old_values'));
     }
@@ -265,19 +280,21 @@ class UserController extends Controller
             $assigned_roles = Role::whereIn('id', $currentRoleIds)->get();
 
             if (isThisUserSuperAdmin(\auth()->user())) {
-                $allRoleIds = Role::where('role_type', '!=', 'study_role')->pluck('id')->toArray();
+                $allRoleIds = Role::pluck('id')->toArray();
             } else {
-                $allRoleIds = Role::where('role_type', '=', 'system_role')->pluck('id')->toArray();
+                $allRoleIds = Role::where('role_type', '!=', 'super_admin')->pluck('id')->toArray();
             }
             $unassignedRoleIds = array_diff($allRoleIds, $currentRoleIds);
             $unassigned_roles = Role::whereIn('id', $unassignedRoleIds)->get();
+
         } else {
-            $currentRoleIds = RoleStudyUser::where('user_id', 'like', $id)->pluck('role_id')->toArray();
+            // $currentRoleIds = RoleStudyUser::where('user_id', 'like', $id)->pluck('role_id')->toArray();
+            $currentRoleIds = UserRole::where('user_id', 'like', $id)->pluck('role_id')->toArray();
             $assigned_roles = Role::whereIn('id', $currentRoleIds)->get();
             if (!empty($currentRoleIds)) {
-                $unassigned_roles = Role::where('role_type', '=', 'study_role')->whereNotIn('id', $currentRoleIds)->get();
+                $unassigned_roles = Role::where('role_type', '!=', 'super_admin')->whereNotIn('id', $currentRoleIds)->get();
             } else {
-                $unassigned_roles = Role::where('role_type', '=', 'study_role')->get();
+                $unassigned_roles = Role::where('role_type', '!=', 'super_admin')->get();
             }
         }
 
@@ -301,6 +318,7 @@ class UserController extends Controller
      */
     public function update_user(Request $request, $id)
     {
+
         $validate = Validator::make($request->all(), [
             'name'      =>  'required',
             'email'      =>  'required|email|unique:users,email,',
@@ -311,6 +329,9 @@ class UserController extends Controller
             $user->name  =  $request->name;
             $user->phone =  $request->phone;
             $user->notification_type =  $request->notification_type;
+            $user->bug_report =  $request->bug;
+            $user->is_form =  $request->form;
+            $user->is_subject =  $request->subject;
             $user->password =   Hash::make($request->password);
             if ($request->has('profile_image')) {
                 $image = $request->file('profile_image');
@@ -339,6 +360,9 @@ class UserController extends Controller
             $user->name  =  $request->name;
             $user->phone =  $request->phone;
             $user->notification_type =  $request->notification_type;
+            $user->bug_report =  $request->bug;
+            $user->is_form =  $request->form;
+            $user->is_subject =  $request->subject;
             if ($request->has('profile_image')) {
                 $image = $request->file('profile_image');
                 $name = Str::slug($request->input('name')) . '_' . time();

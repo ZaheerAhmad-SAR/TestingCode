@@ -351,12 +351,13 @@ class QueriesController extends Controller
                     'user_id' => $user,
                     'query_id' => $queryid
                 ]);
-                $checkNotificationType = User::where('id',$user)->where('notification_type','=','email')->pluck('id')->toArray();
+                $checkNotificationType = User::where('id',$user)->where('notification_type','=','email')
+                    ->where('is_subject','=',true)
+                    ->pluck('id')->toArray();
                 if (count($checkNotificationType) > 0)
                 {
                     $yes       = is_array($checkNotificationType) ? $checkNotificationType : [$checkNotificationType];
                     $userEmail = User::whereIn('id',$yes)->pluck('email')->toArray();
-
                     $usersList = implode(',', $userEmail);
 
                     $data  = array(
@@ -410,21 +411,15 @@ class QueriesController extends Controller
 
     public function queryQuestionReply(Request $request)
     {
-        //dd($request->all(),\auth()->user()->name);
         $query_status     = $request->post('query_status'); // return the status value
         $query_id         = $request->post('query_id');
-
         $record           = AppNotification::where('queryorbugid',$query_id)->first();
-
         $find             = Query::find($query_id);
-
         $message_reply    = $request->post('message_query_for_reply');
         $query_subject    = $request->post('subject_question');
         $query_level_q    = $request->post('query_level_question');
-
         $query_url        = $request->post('query_url');
         $query_type       = $request->post('query_type');
-
         $study_id         = $request->post('study_id');
         $subject_id       = $request->post('subject_id');
         $phase_steps_id   = $request->post('phase_steps_id');
@@ -435,8 +430,7 @@ class QueriesController extends Controller
         $modility_id      = $request->post('modility_id');
         $module_name      = $request->post('module_name');
         $study_structures = $request->post('study_structures_id');
-
-        $queryId               = (string)Str::uuid();
+        $queryId          = (string)Str::uuid();
         $filePath = '';
         if ($request->has('question_file'))
         {
@@ -469,16 +463,6 @@ class QueriesController extends Controller
             'module_name'=>$module_name,
             'query_level'=>$query_level_q
         ]);
-
-//        AppNotification::create([
-//            'id' => Str::uuid(),
-//            'user_id' =>  $record->notification_create_by_user_id,
-//            'query_id' => $query_id,
-//            'is_read'=>'no',
-//            'notification_create_by_user_id'=> \auth()->user()->id
-//
-//        ]);
-
 
         AppNotification::create([
             'id' => Str::uuid(),

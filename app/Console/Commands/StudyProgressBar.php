@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use Modules\Admin\Entities\Study;
+use Modules\Admin\Entities\Subject;
 use Modules\Admin\Entities\StudyStructure;
 use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\ProgressbarStudy;
@@ -57,12 +58,10 @@ class StudyProgressBar extends Command
             $grading_percentage = 0;
             $adjudication_percentage = 0;
 
-            // get all phases for a study
-            $studyPhasesIdsArray = StudyStructure::getStudyPhaseIdsArray($studyId);
-            // get only activated unique phases for subject
-            $activatedPhasesidsArray = array_unique(SubjectsPhases::getActivatedPhasesidsArray($studyPhasesIdsArray));
-            // get activated unique subjects for the above get phase array
-            $subjectIdsFromActivatedPhasesIdsArray = array_unique(SubjectsPhases::getSubjectIdsFromActivatedPhasesidsArray($activatedPhasesidsArray));
+            // get all subjects for a study
+            $getAllSubjectArray = Subject::where('study_id', $studyId)->pluck('id')->toArray();
+            // get activated subjects
+            $getActivatedSubjectsArray = array_unique(SubjectsPhases::getActivatedSubjectFromSubjectArray($getAllSubjectArray));
 
             /****************** Form Percentage **********************************/
 
@@ -82,9 +81,12 @@ class StudyProgressBar extends Command
             $completedAdjudicationSteps = 0;
 
             // look for each subject
-            foreach($subjectIdsFromActivatedPhasesIdsArray as $subject) {
+            foreach($getActivatedSubjectsArray as $subject) {
+
+                // get activated phases for this subject
+                $getActivatedPhasesArray = array_unique(SubjectsPhases::getActivatedPhaseFromSubject($subject));
                 // look for each phase
-                foreach($activatedPhasesidsArray as $phase) {
+                foreach($getActivatedPhasesArray as $phase) {
 
                     /******************************** QC Modality ****************************/
 
@@ -105,7 +107,7 @@ class StudyProgressBar extends Command
 
                     /******************************** Grading Modality ****************************/
 
-                    // get unique modality ids for activated phases where form is QC
+                    //get unique modality ids for activated phases where form is QC
                     $gradingModalityIdsArray = array_unique(PhaseSteps::getStepsIdsArray(2, $phase));
 
                     // look for each modality
@@ -120,35 +122,22 @@ class StudyProgressBar extends Command
                         $totalGradingSteps++;
                     } // gradingmodality
 
-                    /******************************** Adjudictaion Modality ****************************/
-
-                    // get unique modality ids for activated phases where form is QC
-                    $adjudicationModalityIdsArray = array_unique(PhaseSteps::getStepsIdsArray(2, $phase));
-                    // look for each modality
-                    foreach($adjudicationModalityIdsArray as $adjudicationmodality) {
-
-                        // get grader numbers
-                        $getGraderNumber = PhaseSteps::where('phase_id', $phase)
-                                                    ->where('modility_id', $adjudicationmodality)
-                                                    ->where('form_type_id', 2)
-                                                    ->first();
-                        // skip the iteration
-                        if($getGraderNumber->graders_number < 2) {
-                            continue;
-                        }
-
-                        $getStepCompleteStatus = PhaseSteps::getStepStatus($studyId, $subject, $phase, $adjudicationmodality, 'complete', 2, 'Adjudication');
-
-                        if($getStepCompleteStatus == true) {
-                            $completedAdjudicationSteps++;
-                        }
-                        
-                        $totalAdjusictaionSteps++;
-                    } // adjudicationmodality
-
                 } // phase
 
             } // subject
+
+            /**************************** Adjudictaion Form Status *************************/
+
+            // get all adjudication record for study from adjudication status
+            $getTotalAdjudicationStatus = AdjudicationFormStatus::getTotalAdjudicationStatus($studyId);
+            $getCompleteAdjudicationStatus = AdjudicationFormStatus::getTotalAdjudicationStatus($studyId, 'complete');
+
+            /********************* Form Percentage Ends *******************************/
+
+            if($getTotalAdjudicationStatus > 0 && $getCompleteAdjudicationStatus > 0) {
+
+                $adjudication_percentage = round($getCompleteAdjudicationStatus / $getTotalAdjudicationStatus * 100);
+            }
 
             if($totalQcSteps > 0 && $completedQcSteps > 0) {
                 $qc_percentage = round($completedQcSteps / $totalQcSteps * 100);
@@ -157,12 +146,6 @@ class StudyProgressBar extends Command
             if($totalGradingSteps > 0 && $completedGradingSteps > 0) {
                 $grading_percentage = round($completedGradingSteps / $totalGradingSteps * 100);
             }
-
-             if($totalAdjusictaionSteps > 0 && $completedAdjudicationSteps > 0) {
-                $adjudication_percentage = round($completedAdjudicationSteps / $totalAdjusictaionSteps * 100);
-            }
-
-            /********************* Form Percentage Ends *******************************/
 
             // save data
             $progressbar = ProgressBarStudy::where('study_id', $studyId)->first();

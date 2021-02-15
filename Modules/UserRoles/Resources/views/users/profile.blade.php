@@ -116,6 +116,51 @@
                                     @enderror
                                 </div>
                             </div>
+                            <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label for="notificationType">Notification Type </label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="customCheck4">System</label>
+                                    <input type="checkbox"  disabled="disabled" id="customCheck4">
+
+                                    <label for="outprimary">Email</label>
+                                    @if($user->notification_type == 'email')
+                                    <input name="notification_type" type="checkbox" checked="checked" class="emailChecked" id="outprimary" onchange="notificationTypeValueChange();" value="email"/>
+                                    @endif
+
+                                    @if($user->notification_type !== 'email')
+                                    <input name="notification_type" type="checkbox" class="emailChecked" id="outprimary" onchange="notificationTypeValueChange();" value="email"/>
+                                     @endif
+
+
+                                    <div class="othergroups">
+                                        <label  for="bug">Bug</label> &nbsp; &nbsp; &nbsp;
+
+                                        <input type="radio" name="bug" id="bug" value="1" @if($user->bug_report==true) checked="checked" @endif >
+                                        <label  for="bug">Yes</label>
+
+                                        <input type="radio" name="bug" id="bug" value="0" @if($user->bug_report==false) checked="checked" @endif>
+                                        <label  for="bug"> No</label>
+                                        <br>
+                                        <label  for="bug"> Form </label> &nbsp; &nbsp;
+                                        <input type="radio" name="form" id="form" value="1"  @if($user->is_form==true) checked="checked" @endif>
+                                        <label  for="bug">Yes</label>
+
+                                        <input type="radio" name="form" id="form" value="0" @if($user->is_form==false) checked="checked" @endif>
+                                        <label  for="bug"> No</label>
+
+                                        <br>
+                                        <label for="subject">Subject</label>
+                                        <input type="radio"  id="subject" name="subject" value="1"   @if($user->is_subject==true) checked="checked" @endif>
+                                        <label  for="bug">Yes</label>
+
+                                        <input type="radio"  id="subject" name="subject" value="0"  @if($user->is_subject==false) checked="checked" @endif>
+                                        <label for="subject">no</label>
+                                    </div>
+
+                                </div>
+                            </div>
                             @if(hasPermission(auth()->user(),'certification-photographer.index'))
                             <div class="row">
 
@@ -133,21 +178,7 @@
                                     <span class="badge badge-info"><strong>Not Available</strong></span>
                                     @endif
                                 </div>
-
-                                <div class="col-md-2">
-                                    <label for="notificationType">Notification Type </label>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="notificationType"> System</label>
-                                    <input type="checkbox" name="notification_type" id="notification_type" value="system" checked="checked" disabled>
-                                    <label for="notificationType"> Email </label>
-                                    <input type="checkbox" name="notification_type" id="notification_type" @if($user->notification_type == 'email') checked="checked" @endif value="email">
-                                </div>
-
-
                             </div>
-                            <br>
-
                             <div class="row">
 
                                 <div class="col-md-2">
@@ -337,6 +368,29 @@
 
             }
         });
+        /// script for Notification type
+        //$('.othergroups').hide();
+        // $(".emailChecked").click(function()
+        // {
+        //     if($(this).is(":checked"))
+        //     {
+        //         $(".othergroups").show();
+        //     }
+        //     else
+        //     {
+        //         $(".othergroups").hide();
+        //     }
+        // });
+        /// end script for Notification type
 
+
+
+        function notificationTypeValueChange()
+        {
+            if($('.emailChecked').is(":checked"))
+                $(".othergroups").show();
+            else
+                $(".othergroups").hide();
+        }
     </script>
 @endsection

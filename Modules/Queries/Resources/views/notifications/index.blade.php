@@ -74,33 +74,37 @@
                                         @php
                                             $userData ='';
                                             $answers = '';
-                                            $result   = '';
-                                            $result   = \Modules\Queries\Entities\Query::where('id','=',$record->queryorbugid)
+                                            $question = '';
+                                            $question   = \Modules\Queries\Entities\Query::where('id','=',$record->queryorbugid)
                                             ->where('query_status','open')
                                              ->where('parent_query_id',0)
                                             ->first();
+
                                             $answers = \Modules\Queries\Entities\Query::where('parent_query_id','like',$record->queryorbugid)
                                             ->where('query_status','open')
                                             ->get();
+
                                             $userData = App\User::where('id',$record->notification_create_by_user_id)->first();
-                                            $studyData = Modules\Admin\Entities\Study::where('id',$result->study_id)->first();
+                                            $studyData = Modules\Admin\Entities\Study::where('id',$question->study_id)->first();
                                         @endphp
                                             <li class="p-2 border-bottom">
                                                 <div class="media d-flex w-100">
                                                     <div class="transaction-date text-center rounded bg-primary text-white p-2">
-                                                        <small class="d-block">{{ date_format($result->created_at,'M')}}</small><span class="h6">{{ date_format($result->created_at,'d')}}</span>
+                                                        <small class="d-block">{{ date_format($question->created_at,'M')}}</small><span class="h6">{{ date_format($question->created_at,'d')}}</span>
                                                     </div>
                                                     <div class="media-body align-self-center pl-4">
                                                         @if($record->is_read == 'no')
-                                                            <div class="currentNotificationRow" style="cursor: pointer;" data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$result->query_url}}" data-id="{{$record->queryorbugid}}">
+                                                            <div class="currentNotificationRow" style="cursor: pointer;" data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$question->query_url}}" data-id="{{$record->queryorbugid}}">
                                                             <span class="mb-0 font-w-600 " > <b>{{$studyData->study_short_name}} </b></span><br>
                                                             <p class="mb-0 font-w-500 tx-s-12"> <b> @if($answers->isEmpty()) New Query By  @else Query Reply By  @endif  {{$userData->name}}</b></p>
-                                                            <small class="d-block">{{Carbon\Carbon::parse($result->created_at)->diffForHumans()}}</small>
+                                                            <small class="d-block">{{Carbon\Carbon::parse($question->created_at)->diffForHumans()}}</small>
                                                             </div>
                                                         @else
+                                                            <div class="currentNotificationRow" style="cursor: pointer;" data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$question->query_url}}" data-id="{{$record->queryorbugid}}">
                                                             <span class="mb-0 font-w-600">{{$studyData->study_short_name}}</span><br>
                                                             <p class="mb-0 font-w-500 tx-s-12"> @if($answers->isEmpty()) New Query By  @else Query Reply By  @endif {{$userData->name}}</p>
-                                                            <small class="d-block">{{Carbon\Carbon::parse($result->created_at)->diffForHumans()}}</small>
+                                                            <small class="d-block">{{Carbon\Carbon::parse($question->created_at)->diffForHumans()}}</small>
+                                                            </div>
                                                         @endif
                                                     </div>
                                                     @if($record->is_read == 'no')
