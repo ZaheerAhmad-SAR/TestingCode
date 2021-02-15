@@ -110,6 +110,7 @@
                                                  if ($bugs !== null)
                                                  {
                                                       $studyData = Modules\Admin\Entities\Study::where('study_short_name',$bugs->study_name)->first();
+
                                                  }
 
                                                   $userData  = App\User::where('id',$record->notification_create_by_user_id)->first();
@@ -120,10 +121,18 @@
                                             @endphp
 
                                             <li>
+                                                @if($studyData!==null)
+                                                    <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0 currentNotificationBugId"
+                                                       data-study_id="{{$studyData->id}}"  data-study_short_name="{{$studyData->study_short_name}}"
+                                                       data-study_code="{{$studyData->study_code}}"
+                                                       data-query_url="{{$bugs->bug_url}}"  data-id ="{{$studyData->id}}" href="javascript:void(0);" data-value="{{$bugs->id}}">
+                                                        @else
 
-                                                <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0 currentNotificationBugId"
-                                                   data-study_id="{{$studyData->id}}"  data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"
-                                                   data-query_url="{{$bugs->bug_url}}"  data-id ="{{$studyData->id}}" href="javascript:void(0);" data-value="{{$bugs->id}}">
+                                                            <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0"
+                                                               href="{{$bugs->bug_url}}">
+                                                       @endif
+
+
 
 
                                                     <div class="media">
@@ -132,7 +141,7 @@
 
                                                             <p class="mb-0 text-primary">
 
-                                                                <b> {{$studyData->study_short_name}} : @if($answers->isEmpty())  New Bug By  @else Reply By  @endif {{$userData->name}} </b>
+                                                                <b> @if($studyData!==null) {{$studyData->study_short_name}} : @else  @endif  @if($answers->isEmpty())  New Bug By  @else Reply By  @endif {{$userData->name}} </b>
                                                             </p>
 
                                                             {{Carbon\Carbon::parse($record->created_at)->diffForHumans()}}
