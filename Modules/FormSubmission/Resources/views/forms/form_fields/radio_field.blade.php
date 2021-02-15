@@ -30,7 +30,7 @@ $showFalseField = false; // for laterly added questions
         <input type="radio" name="{{ $field_name }}"
             onchange="validateAndSubmitField('{{ $stepIdStr }}', '{{ $sectionIdStr }}', '{{ $question->id }}', '{{ $questionIdStr }}', '{{ $step->formType->form_type }}', '{{ $field_name }}', '{{ $fieldId }}','{{ $dependencyIdStr }}');"
             value="{{ $option_value }}" {{ $checked }}
-            class="custom-control-input {{ buildSafeStr($question->id, 'skip_logic_' . $option_value) }} {{ $fieldId }}">
+            class="custom-control-input {{ $skipLogicQuestionIdStr }} {{ buildSafeStr($question->id, 'skip_logic_' . $option_value) }} {{ $fieldId }}">
         <label class="custom-control-label" for="customCheck1">{{ $option_name }}</label>
     </div>
 @endforeach
