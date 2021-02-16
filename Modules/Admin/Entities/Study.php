@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\UserRoles\Entities\Permission;
 use Modules\Admin\Entities\RoleStudyUser;
 use Modules\Admin\Entities\StudyStructure;
+use Modules\Admin\Entities\AssignWork;
 use Modules\Admin\Entities\ProgressbarStudy;
 use Modules\FormSubmission\Entities\AdjudicationFormStatus;
 use Modules\FormSubmission\Entities\FormStatus;
