@@ -33,7 +33,19 @@ class QueriesEmail extends Mailable
     public function build()
     {
 
-        $mail = $this->view('emails.queries_emails')->with($this->data) ->subject($this->data['studyShortName']. '||'.'New Query By'.' '.$this->data['createdByName']);
+        $subject = '';
+
+        if ($this->data['parent_query_id'] == 0)
+        {
+            $subject = $this->data['studyShortName']. '||'.'New Query By'.' '.$this->data['createdByName'];
+        }
+        else
+        {
+
+            $subject = $this->data['studyShortName'] . '||' . 'Reply Query By' . ' ' . $this->data['createdByName'];
+        }
+
+        $mail = $this->view('emails.queries_emails')->with($this->data) ->subject($subject);
             if ($this->data['attachment'] !== '')
             {
                 $mail->attach(public_path().'/'.$this->data['attachment']);

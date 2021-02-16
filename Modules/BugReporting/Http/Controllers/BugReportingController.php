@@ -167,9 +167,9 @@ class BugReportingController extends Controller
      */
     public function update(Request $request)
     {
-
         $checkIdIfExists = BugReport::find($request->editBugId);
-        if ($checkIdIfExists !== null) {
+        if ($checkIdIfExists !== null)
+        {
          $id = (string) Str::uuid();
           BugReport::create([
             'id' => $id,
@@ -204,6 +204,24 @@ class BugReportingController extends Controller
                 'is_read'=>'no',
                 'notification_create_by_user_id'=>\auth()->user()->id
             ]);
+
+            $checkNotificationType = User::where('id','=',$checkIdIfExists->bug_reporter_by_id)->where('notification_type','=','email')
+                ->where('bug_report','=',true)->first();
+
+            $sendEmailtoBugCreateUser = $checkNotificationType->email;
+
+            if ($checkNotificationType !== '')
+            {
+                $data  = array(
+                    'bug_title'=>$request->editBugTitle,
+                    'bug_message'=>$request->developerComment,
+                    'bug_attachments'=>'',
+                    'bug_priority'=>$request->editSeverity,
+                    'createdByName' =>\auth()->user()->name,
+                );
+                Mail::to($sendEmailtoBugCreateUser)->send(new BugMails($data));
+            }
+
 
             BugReport::where('id',$checkIdIfExists['id'])->update($bugStatusArray);
             BugReport::where('parent_bug_id',$checkIdIfExists['id'])->update($bugStatusArrayChild);
