@@ -116,32 +116,23 @@
                                     @enderror
                                 </div>
                             </div>
-                            @if(hasPermission(auth()->user(),'certification-photographer.index'))
-                            <div class="row">
-
-                                <div class="col-md-2">
-                                    <label for="C-Password">Signature Status</label>
-                                </div>
-
-                                <div class="col-md-4">
-                                    @if (File::exists(storage_path('user_signature/'.md5(\Auth::user()->id).'.png')))
-                                    <!-- <a href="{{ route('user-signature', encrypt(\Auth::user()->id.'.png')) }}"> -->
-
-                                    <span class="badge badge-success"><strong>Available</strong></span>
-                                    <!-- </a> -->
-                                    @else
-                                    <span class="badge badge-info"><strong>Not Available</strong></span>
-                                    @endif
-                                </div>
-
+                            <div class="form-group row">
                                 <div class="col-md-2">
                                     <label for="notificationType">Notification Type </label>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-2">
                                     <label for="customCheck4">System</label>
-                                        <input type="checkbox"  disabled="disabled" id="customCheck4">
+                                    <input type="checkbox"  disabled="disabled" id="customCheck4">
+
                                     <label for="outprimary">Email</label>
-                                        <input name="notification_type" type="checkbox" @if($user->notification_type == 'email') checked="checked" @endif  class="emailChecked" id="outprimary" value="email" onchange="notificationTypeValueChange();"/>
+                                    @if($user->notification_type == 'email')
+                                    <input name="notification_type" type="checkbox" checked="checked" class="emailChecked" id="outprimary" onchange="notificationTypeValueChange();" value="email"/>
+                                    @endif
+
+                                    @if($user->notification_type !== 'email')
+                                    <input name="notification_type" type="checkbox" class="emailChecked" id="outprimary" onchange="notificationTypeValueChange();" value="email"/>
+                                     @endif
+
 
                                     <div class="othergroups">
                                         <label  for="bug">Bug</label> &nbsp; &nbsp; &nbsp;
@@ -166,8 +157,26 @@
 
                                         <input type="radio"  id="subject" name="subject" value="0"  @if($user->is_subject==false) checked="checked" @endif>
                                         <label for="subject">no</label>
-
                                     </div>
+
+                                </div>
+                            </div>
+                            @if(hasPermission(auth()->user(),'certification-photographer.index'))
+                            <div class="row">
+
+                                <div class="col-md-2">
+                                    <label for="C-Password">Signature Status</label>
+                                </div>
+
+                                <div class="col-md-4">
+                                    @if (File::exists(storage_path('user_signature/'.md5(\Auth::user()->id).'.png')))
+                                    <!-- <a href="{{ route('user-signature', encrypt(\Auth::user()->id.'.png')) }}"> -->
+
+                                    <span class="badge badge-success"><strong>Available</strong></span>
+                                    <!-- </a> -->
+                                    @else
+                                    <span class="badge badge-info"><strong>Not Available</strong></span>
+                                    @endif
                                 </div>
                             </div>
                             <div class="row">
@@ -360,7 +369,7 @@
             }
         });
         /// script for Notification type
-        // $('.othergroups').hide();
+        //$('.othergroups').hide();
         // $(".emailChecked").click(function()
         // {
         //     if($(this).is(":checked"))
@@ -373,6 +382,8 @@
         //     }
         // });
         /// end script for Notification type
+
+
 
         function notificationTypeValueChange()
         {

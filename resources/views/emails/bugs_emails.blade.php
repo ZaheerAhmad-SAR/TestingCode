@@ -50,11 +50,11 @@
                                                 <table class="header-row" width="378" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;">
                                                     <tbody>
                                                     <tr>
-                                                        <td class="header-row-td" width="378" style="font-weight: normal; line-height: 19px; margin: 0px; font-size: 18px; padding-bottom: 10px; padding-top: 15px;" valign="top" align="left">{{$data['query_subject']}}</td>
+                                                        <td class="header-row-td" width="378" style="font-weight: normal; line-height: 19px; margin: 0px; font-size: 18px; padding-bottom: 10px; padding-top: 15px;" valign="top" align="left">{{$data['bug_title']}}</td>
                                                     </tr>
                                                     </tbody>
                                                 </table>
-                                                <div style=" line-height: 20px;font-size: 13px;"> {{$data['messages']}} </div>
+                                                <div style=" line-height: 20px;font-size: 13px;"> {{$data['bug_message']}} </div>
                                             </td>
                                         </tr>
                                         </tbody>
@@ -103,7 +103,7 @@
                                         <tr>
                                             <td class="table-col-td" width="378" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; width: 378px;" valign="top" align="left">
                                                 <div style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; text-align: center;">
-                                                    <a class="btn btn-success" data-study_short_name="{{$data['studyShortName']}}" data-study_code="{{$data['study_code']}}" data-study_id="{{$data['study_id']}}"  href="https://ocap.oirrc.net/" style="color: #ffffff; text-decoration: none; margin: 0px; text-align: center; vertical-align: baseline; border: 4px solid #6fb3e0; padding: 4px 9px; font-size: 15px; line-height: 21px; background-color: #6fb3e0; cursor: pointer;">&nbsp; Click Here &nbsp;</a>
+                                                    <a class="btn btn-success" href="https://ocap.oirrc.net/" style="color: #ffffff; text-decoration: none; margin: 0px; text-align: center; vertical-align: baseline; border: 4px solid #6fb3e0; padding: 4px 9px; font-size: 15px; line-height: 21px; background-color: #6fb3e0; cursor: pointer;">&nbsp; Click Here &nbsp;</a>
                                                 </div>
                                                 <table class="table-space" height="16" style="height: 16px; font-size: 0px; line-height: 0; width: 378px; background-color: #ffffff;" width="378" bgcolor="#FFFFFF" cellspacing="0" cellpadding="0" border="0">
                                                     <tbody>

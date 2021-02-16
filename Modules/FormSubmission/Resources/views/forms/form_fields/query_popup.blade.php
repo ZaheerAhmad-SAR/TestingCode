@@ -18,7 +18,7 @@
                     $dataStr = "'" . implode("', '", $queryParams)."'";
                 }
             @endphp
-            <i class="fas fa-question-circle showAllQuestionQueries" onclick="getAllQuestionQueryData({{ $dataStr }});"  style="margin-top: 12px; position: absolute;left: 0; color: red;"></i>
+            <i class="fas fa-question-circle showAllQuestionQueries" onclick="getAllQuestionQueryData({{ $dataStr }});"  style="margin-top: 12px; position: absolute;left: 10px; color: red;"></i>
         </span>
         </div>
 

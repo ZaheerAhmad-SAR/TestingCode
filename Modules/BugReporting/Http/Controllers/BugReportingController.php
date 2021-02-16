@@ -2,10 +2,12 @@
 
 namespace Modules\BugReporting\Http\Controllers;
 
+use App\Mail\BugMails;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Modules\Admin\Entities\Study;
 use Modules\BugReporting\Entities\BugReport;
@@ -101,6 +103,8 @@ class BugReportingController extends Controller
 
         $userRoles = UserRole::where('role_id',$role->id)->pluck('user_id')->toArray();
 
+        $userEmails = User::where('id','=',$userRoles)->pluck('email')->toArray();
+
         foreach ($userRoles as $role)
         {
             AppNotification::create([
@@ -111,9 +115,22 @@ class BugReportingController extends Controller
                 'is_read'=>'no',
                 'notification_create_by_user_id'=>\auth()->user()->id
             ]);
+
+            $checkNotificationType = User::where('id','like',\auth()->user()->id)->where('notification_type','=','email')
+                ->where('bug_report','=',true)->first();
+
+            if ($checkNotificationType !== '')
+            {
+                $data  = array(
+                    'bug_title'=>$shortTitle,
+                    'bug_message'=>$yourMessage,
+                    'bug_attachments'=>$filePath,
+                    'bug_priority'=>$severity,
+                    'createdByName' =>\auth()->user()->name,
+                );
+                Mail::to($userEmails)->send(new BugMails($data));
+            }
         }
-
-
         return response()->json([$query,'success'=>'Queries is generate successfully!!!!']);
 
     }
@@ -150,9 +167,9 @@ class BugReportingController extends Controller
      */
     public function update(Request $request)
     {
-
         $checkIdIfExists = BugReport::find($request->editBugId);
-        if ($checkIdIfExists !== null) {
+        if ($checkIdIfExists !== null)
+        {
          $id = (string) Str::uuid();
           BugReport::create([
             'id' => $id,
@@ -187,6 +204,24 @@ class BugReportingController extends Controller
                 'is_read'=>'no',
                 'notification_create_by_user_id'=>\auth()->user()->id
             ]);
+
+            $checkNotificationType = User::where('id','=',$checkIdIfExists->bug_reporter_by_id)->where('notification_type','=','email')
+                ->where('bug_report','=',true)->first();
+
+            $sendEmailtoBugCreateUser = $checkNotificationType->email;
+
+            if ($checkNotificationType !== '')
+            {
+                $data  = array(
+                    'bug_title'=>$request->editBugTitle,
+                    'bug_message'=>$request->developerComment,
+                    'bug_attachments'=>'',
+                    'bug_priority'=>$request->editSeverity,
+                    'createdByName' =>\auth()->user()->name,
+                );
+                Mail::to($sendEmailtoBugCreateUser)->send(new BugMails($data));
+            }
+
 
             BugReport::where('id',$checkIdIfExists['id'])->update($bugStatusArray);
             BugReport::where('parent_bug_id',$checkIdIfExists['id'])->update($bugStatusArrayChild);
