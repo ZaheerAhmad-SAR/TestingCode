@@ -253,4 +253,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(UserLog::class);
     }
+
+     public static function getUserStatus($userId) {
+        return self::where('id', $userId)
+                    ->whereNull('deleted_at')
+                    ->first();
+     }
 }
