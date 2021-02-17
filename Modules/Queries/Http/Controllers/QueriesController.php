@@ -610,11 +610,9 @@ class QueriesController extends Controller
 
     public function replyFormQueries(Request $request)
     {
-        $query_status     = $request->post('formStatusInput'); // return the status value
-
-        $query_id         = $request->post('queryIdInput');
-        $find             = Query::find($query_id);
-
+        $query_status        = $request->post('formStatusInput'); // return the status value
+        $query_id            = $request->post('queryIdInput');
+        $find                = Query::find($query_id);
         $study_id            = $request->post('studyIdInput');
         $question_id         = $request->post('questionIdInput');
         $phase_steps_id      = $request->post('phaseStepsIdInput');
@@ -626,7 +624,6 @@ class QueriesController extends Controller
         $module              = $request->post('moduleNameInput');
         $modility_id         = $request->post('modilityIdInput');
         $queryId             = $request->post('queryIdInput');
-
         $message             = $request->post('formReply');
         $query_subject       = $request->post('subjectFormInput');
         $query_url           = $request->post('queryUrlInput');
