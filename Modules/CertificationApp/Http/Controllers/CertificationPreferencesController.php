@@ -14,6 +14,7 @@ use Modules\CertificationApp\Entities\StudyModility;
 use Modules\CertificationApp\Entities\StudyDevice;
 use Modules\CertificationApp\Entities\StudySetup;
 use Modules\CertificationApp\Entities\CertificationTemplate;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Str;
 use Session;
@@ -387,4 +388,31 @@ class CertificationPreferencesController extends Controller
 
         } // ajax ends
     }
+
+    public function showCertificationReport(Request $request) {
+
+        $old_cert_sites_array = DB::connection('mysql2')->table('site')->pluck('OIIRC_id')->toArray();
+        $old_cert_sites_count = DB::connection('mysql2')->table('site')->pluck('OIIRC_id')->count();
+
+      
+        $new_cert_sites_array = DB::connection('mysql')->table('sites')->pluck('site_code')->toArray();
+        $new_cert_sites_count = DB::connection('mysql')->table('sites')->pluck('site_code')->count();
+
+
+
+        $not_in_new_app_array       = DB::connection('mysql2')->table('site')->whereNotIn('OIIRC_id', $new_cert_sites_array)->get();
+
+        $not_in_new_app_count = DB::connection('mysql2')->table('site')->whereNotIn('OIIRC_id', $new_cert_sites_array)->pluck('OIIRC_id')->count();
+
+       
+       //dd($not_in_new_app_array);
+       // dd("old_cert_sites_count".$old_cert_sites_count.'new_cert_sites_count'.$new_cert_sites_count.'not_in_new_app_count'.$not_in_new_app_count);
+
+
+        return view('certificationapp::certificate_preferences.certification_report', compact('old_cert_sites_array', 'old_cert_sites_count','new_cert_sites_count','not_in_new_app_array','not_in_new_app_count'));
+      
+       
+
+    }
+
 }
