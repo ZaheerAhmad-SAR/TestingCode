@@ -351,14 +351,243 @@ class GradingController extends Controller
         // $today              = Carbon::now()
         //                             ->startOfDay()        // 2018-09-29 00:00:00.000000
         //                             ->toDateTimeString(); // 2018-09-29 00:00:00
-
-        // $afterFourteenDays  = Carbon::now()->addDays(14)
+        // $fourteenDaysWork  = Carbon::now()->addDays(14)
         //                             ->endOfDay()          // 2018-09-29 23:59:59.000000
         //                             ->toDateTimeString();
-        // // get all work within 14 days
-        // $getFourteenDaysWork = AssignWork::whereBetween('assign_date', [$today, $afterFourteenDays])->get();
+        // // get all users for work within 14 days
+        // $getFourteenDaysWorkUsers = array_unique(AssignWork::whereBetween('assign_date', [$today, $fourteenDaysWork])
+        //     ->pluck('user_id')
+        //     ->toArray());
+        // // get all the modalities
+        // $getModilities = AssignWork::select('modilities.id as modility_id', 'modilities.modility_name')
+        //                     ->leftJoin('modilities', 'modilities.id', '=', 'assign_work.modility_id')
+        //                     ->whereNULL('modilities.deleted_at')
+        //                     ->groupBy('assign_work.modility_id')
+        //                     ->get()
+        //                     ->toArray();
+        // if($getModilities != null) {
+        //     // assign the total key to modality array
+        //     $getModilities[] = array(
+        //         'modility_id' => rand(),
+        //         'modility_name' => 'Total'
+        //     );
+        // }
+        // // get all forms
+        // $getForms = AssignWork::select('form_types.id as form_type_id', 'form_types.form_type')
+        //                         ->leftjoin('form_types', 'form_types.id', '=', 'assign_work.form_type_id')
+        //                         ->whereNULL('form_types.deleted_at')
+        //                         ->groupBy('assign_work.form_type_id')
+        //                         ->get()
+        //                         ->toArray();
+        // // save data to this array
+        // $workData = [];
+        // foreach($getFourteenDaysWorkUsers as $user) {
+        //     // check if user is not deleted
+        //     $getUserStatus = User::getUserStatus($user);
+        //     // if user not deleted
+        //     if($getUserStatus != null) {
+        //         // get all studies for this user to work within 14 days
+        //         $getFourteenDaysWorkStudies = array_unique(AssignWork::whereBetween('assign_date', [$today, $fourteenDaysWork])
+        //             ->where('user_id', $user)
+        //             ->pluck('study_id')
+        //             ->toArray());
+        //         // loop study
+        //         foreach($getFourteenDaysWorkStudies as $study) {
+        //             // form loop
+        //             foreach($getForms as $formKey => $form) {
+        //                 // set grand total mising counter
+        //                 $grandTotalMissingCount = 0;
+        //                 // set gradn total fourteen days counter
+        //                 $grandTotalFourteenDaysCount = 0;
+        //                 // set grand all total days counter
+        //                 $grandAllTotalCount = 0;
+        //                 // modility loop
+        //                 foreach($getModilities as $modilityKey => $modility) {
+        //                     // missing count
+        //                     $missingCount = 0;
+        //                     // fourteen days count
+        //                     $fourteenDaysCount = 0;
+        //                     // total count
+        //                     $totalCount = 0;
+        //                         // check if not custom created modility
+        //                         if($modility['modility_name'] != 'Total') {
 
-        // dd($getFourteenDaysWork);
+        //                         /*********************** missing assign work ****************/
+        //                         // get missing assign work status
+        //                         $getMisisngAssignWorkStatus = AssignWork::getAssignWorkStatus($user, $study, $today, null, $form['form_type_id'], $modility['modility_id'], 'missingWork');
+        //                         // loop through this missing assign work
+        //                         foreach($getMisisngAssignWorkStatus as $missingAssignWork) {
+        //                             // filter array
+        //                             $getFormStatusArray = array(
+        //                                 'subject_id' => $missingAssignWork->subject_id,
+        //                                 'study_structures_id' => $missingAssignWork->phase_id,
+        //                                 'modility_id' => $missingAssignWork->modility_id,
+        //                                 'form_type_id' => $missingAssignWork->form_type_id,
+        //                                 'form_status' => 'complete'
+        //                             );
+
+        //                             /******************* form type 1 ******************/
+        //                             if ($missingAssignWork->form_type_id == 1) {
+        //                                 // get form staus
+        //                                 $getFormStatus = FormStatus::getFormStatusObjArray($getFormStatusArray);
+
+        //                                 if($getFormStatus->isEmpty()) {
+        //                                     // increament counter
+        //                                     $missingCount++;
+        //                                 } 
+        //                             } // form type one
+
+        //                             /******************* form type 2 ******************/
+        //                             if ($missingAssignWork->form_type_id == 2) {
+        //                                 // get form staus
+        //                                 $getFormStatus = FormStatus::getFormStatusObjArray($getFormStatusArray);
+
+        //                                 if($getFormStatus->isEmpty()) {
+        //                                     // increament counter
+        //                                     $missingCount++;
+        //                                 } else {
+        //                                     // compare total graders with total form completed
+        //                                     $step = PhaseSteps::where('phase_id', $missingAssignWork->phase_id)
+        //                                                         ->where('modility_id', $missingAssignWork->modility_id)
+        //                                                         ->where('form_type_id', $missingAssignWork->form_type_id)
+        //                                                         ->first();
+
+        //                                     if ($getFormStatus->count() < $step->graders_number) {
+        //                                     // increament counter
+        //                                     $missingCount++;
+        //                                     }
+
+        //                                 }
+        //                             } // form type 2
+        //                         }
+        //                         // to avoid special character
+        //                         $workData[$user][$study][$form['form_type'].'_/_'.$modility['modility_name']]['missingDays'] = $missingCount;
+        //                         // total missing assign work count
+        //                         $grandTotalMissingCount = $grandTotalMissingCount + $missingCount;
+        //                         /************ missing assign work loop ends *****************/
+                                
+        //                         /************** fourteen days assign work *********************/
+        //                         // get fourteen days assign work status
+        //                         $getFourteenDaysAssignWorkStatus = AssignWork::getAssignWorkStatus($user, $study, $today, $fourteenDaysWork, $form['form_type_id'], $modility['modility_id'], 'fourteenDaysWork');
+
+        //                         foreach($getFourteenDaysAssignWorkStatus as $fourteenDaysAssignWork) {
+        //                             // filter array
+        //                             $getFormStatusArray = array(
+        //                                 'subject_id' => $fourteenDaysAssignWork->subject_id,
+        //                                 'study_structures_id' => $fourteenDaysAssignWork->phase_id,
+        //                                 'modility_id' => $fourteenDaysAssignWork->modility_id,
+        //                                 'form_type_id' => $fourteenDaysAssignWork->form_type_id,
+        //                                 'form_status' => 'complete'
+        //                             );
+
+        //                             /******************* form type 1 ******************/
+        //                             if ($fourteenDaysAssignWork->form_type_id == 1) {
+        //                                 // get form staus
+        //                                 $getFormStatus = FormStatus::getFormStatusObjArray($getFormStatusArray);
+
+        //                                 if($getFormStatus->isEmpty()) {
+        //                                     // increament counter
+        //                                     $fourteenDaysCount++;
+        //                                 } 
+        //                             } // form type one
+
+        //                             /******************* form type 2 ******************/
+        //                             if ($fourteenDaysAssignWork->form_type_id == 2) {
+        //                                 // get form staus
+        //                                 $getFormStatus = FormStatus::getFormStatusObjArray($getFormStatusArray);
+
+        //                                 if($getFormStatus->isEmpty()) {
+        //                                     // increament counter
+        //                                     $fourteenDaysCount++;
+        //                                 } else {
+        //                                     // compare total graders with total form completed
+        //                                     $step = PhaseSteps::where('phase_id', $fourteenDaysAssignWork->phase_id)
+        //                                                         ->where('modility_id', $fourteenDaysAssignWork->modility_id)
+        //                                                         ->where('form_type_id', $fourteenDaysAssignWork->form_type_id)
+        //                                                         ->first();
+
+        //                                     if ($getFormStatus->count() < $step->graders_number) {
+        //                                         // increament counter
+        //                                         $fourteenDaysCount++;
+        //                                     }
+
+        //                                 }
+        //                             } // form type 2
+        //                         }
+        //                         // to avoid special character
+        //                         $workData[$user][$study][$form['form_type'].'_/_'.$modility['modility_name']]['fourteenDays'] = $fourteenDaysCount;
+        //                         // total fourteen days assign work count
+        //                         $grandTotalFourteenDaysCount = $grandTotalFourteenDaysCount + $fourteenDaysCount;
+        //                         /************** fourteen days assign work loop ends ***********/
+
+        //                         /************** All days assign work *********************/
+        //                         // get all assign work status
+        //                         $getAllAssignWorkStatus = AssignWork::getAssignWorkStatus($user, $study, null, null, $form['form_type_id'], $modility['modility_id'], 'allDaysWork');
+        //                         foreach($getAllAssignWorkStatus as $allDaysAssignWork) {
+        //                             // filter array
+        //                             $getFormStatusArray = array(
+        //                                 'subject_id' => $allDaysAssignWork->subject_id,
+        //                                 'study_structures_id' => $allDaysAssignWork->phase_id,
+        //                                 'modility_id' => $allDaysAssignWork->modility_id,
+        //                                 'form_type_id' => $allDaysAssignWork->form_type_id,
+        //                                 'form_status' => 'complete'
+        //                             );
+
+        //                             /******************* form type 1 ******************/
+        //                             if ($allDaysAssignWork->form_type_id == 1) {
+        //                                 // get form staus
+        //                                 $getFormStatus = FormStatus::getFormStatusObjArray($getFormStatusArray);
+
+        //                                 if($getFormStatus->isEmpty()) {
+        //                                     // increament counter
+        //                                     $totalCount++;
+        //                                 } 
+        //                             } // form type one
+
+        //                             /******************* form type 2 ******************/
+        //                             if ($allDaysAssignWork->form_type_id == 2) {
+        //                                 // get form staus
+        //                                 $getFormStatus = FormStatus::getFormStatusObjArray($getFormStatusArray);
+
+        //                                 if($getFormStatus->isEmpty()) {
+        //                                     // increament counter
+        //                                     $totalCount++;
+        //                                 } else {
+        //                                     // compare total graders with total form completed
+        //                                     $step = PhaseSteps::where('phase_id', $allDaysAssignWork->phase_id)
+        //                                                         ->where('modility_id', $allDaysAssignWork->modility_id)
+        //                                                         ->where('form_type_id', $allDaysAssignWork->form_type_id)
+        //                                                         ->first();
+
+        //                                     if ($getFormStatus->count() < $step->graders_number) {
+        //                                         // increament counter
+        //                                         $totalCount++;
+        //                                     }
+
+        //                                 }
+        //                             } // form type 2
+        //                         }
+        //                         // to avoid special character
+        //                         $workData[$user][$study][$form['form_type'].'_/_'.$modility['modility_name']]['allDays'] = $totalCount;
+        //                         // garnd total count of assign days
+        //                         $grandAllTotalCount = $grandAllTotalCount + $totalCount;
+        //                         /************** All days assign work loop ends ***********/
+        //                     } else {
+                           
+        //                         // grand missing assign work
+        //                         $workData[$user][$study][$form['form_type'].'_/_'.$modility['modility_name']]['grandTotalMissingCount'] = $grandTotalMissingCount;
+        //                         // grand fourteen days assign work
+        //                         $workData[$user][$study][$form['form_type'].'_/_'.$modility['modility_name']]['grandTotalFourteenDaysCount'] = $grandTotalFourteenDaysCount;
+        //                         // grand total days assign work
+        //                         $workData[$user][$study][$form['form_type'].'_/_'.$modility['modility_name']]['grandAllTotalCount'] = $grandAllTotalCount;
+
+        //                     }// Total modility check ends
+        //                 } // modility loop ends
+        //             } // form loop ends
+        //         } // study loop ends
+        //     } // user deleted_at check ends 
+        // } // user loop ends
+        // dd($workData);
 
         // modility/form type array
         $modalitySteps = [];
@@ -390,12 +619,12 @@ class GradingController extends Controller
         if ($request->visit_date != '') {
             $visitDate = explode('-', $request->visit_date);
             $from   = Carbon::parse($visitDate[0])
-                ->startOfDay()        // 2018-09-29 00:00:00.000000
-                ->toDateTimeString(); // 2018-09-29 00:00:00
+                            ->startOfDay()        // 2018-09-29 00:00:00.000000
+                            ->toDateTimeString(); // 2018-09-29 00:00:00
 
             $to     = Carbon::parse($visitDate[1])
-                ->endOfDay()          // 2018-09-29 23:59:59.000000
-                ->toDateTimeString(); // 2018-09-29 23:59:59
+                            ->endOfDay()          // 2018-09-29 23:59:59.000000
+                            ->toDateTimeString(); // 2018-09-29 23:59:59
 
             $subjects =  $subjects->whereBetween('subjects_phases.visit_date', [$from, $to]);
         }

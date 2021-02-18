@@ -256,7 +256,10 @@
                                     <select name="Requested_certification" id="Requested_certification" class="form-control required-data" required>
                                         <option value="">Select Modality</option>
                                         @foreach($getModalities as $modality)
-                                        <option @if($modality->modility_name == $findTransmission->Requested_certification) selected @endif value="{{$modality->id.'__/__'.$modality->modility_name}}">{{$modality->modility_name}}</option>
+                                            @php
+                                                $matchingAbbreviation = preg_match("~\b$modality->modility_abbreviation\b~", $findTransmission->Requested_certification);
+                                            @endphp
+                                        <option @if($modality->modility_name == $findTransmission->Requested_certification || $matchingAbbreviation) selected @endif value="{{$modality->id.'__/__'.$modality->modility_name}}">{{$modality->modility_name}}</option>
                                         @endforeach
                                     </select>
                                 </div>

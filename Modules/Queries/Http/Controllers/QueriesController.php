@@ -368,7 +368,7 @@ class QueriesController extends Controller
                         'study_code'=>$findCurrentStudy->study_code,
                         'study_id'=>$findCurrentStudy->id,
                         'createdByName' =>\auth()->user()->name,
-                        'pathtoRedirect'=>$query_url,
+                        'parent_query_id'=>0,
                     );
 
                     Mail::to($usersList)->send(new QueriesEmail($data));
@@ -411,6 +411,8 @@ class QueriesController extends Controller
 
     public function queryQuestionReply(Request $request)
     {
+
+
         $query_status     = $request->post('query_status'); // return the status value
         $query_id         = $request->post('query_id');
         $record           = AppNotification::where('queryorbugid',$query_id)->first();
@@ -442,7 +444,7 @@ class QueriesController extends Controller
                 $this->uploadOne($image, $folder, 'public', $name);
             }
         }
-        $query            = Query::create([
+        $query        = Query::create([
             'id'=>$queryId,
             'queried_remarked_by_id'=>\auth()->user()->id,
             'parent_query_id'=> $query_id,
@@ -473,7 +475,35 @@ class QueriesController extends Controller
             'notification_create_by_user_id'=>\auth()->user()->id
         ]);
 
+        $current_study = '';
+        $current_study    = session('current_study');
+        $findCurrentStudy = Study::where('id',$current_study)->first();
+        $current_study    = $findCurrentStudy->study_short_name;
+        $assignedToUsers  = QueryUser::where('query_id',$find->id)->pluck('user_id')->toArray(); // Find the Id of Assigned User During query creating
 
+        $checkNotificationType = User::whereIn('id',$assignedToUsers)->where('notification_type','=','email')
+            ->where('is_subject','=',true)->get();
+
+        if ($checkNotificationType!== null) {
+
+            foreach ($checkNotificationType as $item)
+            {
+                $usersList = explode(" ", $item['email']);
+
+                $data = array(
+                    'query_subject' => $query_subject,
+                    'messages' => $message_reply,
+                    'attachment' => $filePath,
+                    'studyShortName' => $current_study,
+                    'study_code' => $findCurrentStudy->study_code,
+                    'study_id' => $findCurrentStudy->id,
+                    'createdByName' => \auth()->user()->name,
+                    'parent_query_id'=>1,
+                );
+                Mail::to($usersList)->send(new QueriesEmail($data));
+            }
+
+            }
         $queryStatusArray = array('query_status'=>$query_status);
         $queryStatusArrayChild = array('query_status'=>$query_status);
         Query::where('id',$find['id'])->update($queryStatusArray);
@@ -580,11 +610,9 @@ class QueriesController extends Controller
 
     public function replyFormQueries(Request $request)
     {
-        $query_status     = $request->post('formStatusInput'); // return the status value
-
-        $query_id         = $request->post('queryIdInput');
-        $find             = Query::find($query_id);
-
+        $query_status        = $request->post('formStatusInput'); // return the status value
+        $query_id            = $request->post('queryIdInput');
+        $find                = Query::find($query_id);
         $study_id            = $request->post('studyIdInput');
         $question_id         = $request->post('questionIdInput');
         $phase_steps_id      = $request->post('phaseStepsIdInput');
@@ -596,7 +624,6 @@ class QueriesController extends Controller
         $module              = $request->post('moduleNameInput');
         $modility_id         = $request->post('modilityIdInput');
         $queryId             = $request->post('queryIdInput');
-
         $message             = $request->post('formReply');
         $query_subject       = $request->post('subjectFormInput');
         $query_url           = $request->post('queryUrlInput');
