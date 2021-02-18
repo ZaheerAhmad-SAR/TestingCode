@@ -83,23 +83,21 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-2">
+                            <div class="col-md-12">
                                 <img src="{{ url('images/no_status.png') }}" />&nbsp;&nbsp;Not Initiated
-                            </div>
-                            <div class="col-md-2">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <img src="{{ url('images/required.png') }}" />&nbsp;&nbsp;Required
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <img src="{{ url('images/incomplete.png') }}" />&nbsp;&nbsp;Initiated
-                            </div>
-                            <div class="col-md-2">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <img src="{{ url('images/resumable.png') }}" />&nbsp;&nbsp;Editing
-                            </div>
-                            <div class="col-md-2">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <img src="{{ url('images/complete.png') }}" />&nbsp;&nbsp;Complete
-                            </div>
-                            <div class="col-md-2">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <img src="{{ url('images/not_required.png') }}" />&nbsp;&nbsp;Not Required
-                            </div>
-                            <div class="col-md-2">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <img src="{{ url('images/query.png') }}" />&nbsp;&nbsp;Query
+                        
                             </div>
                         </div>
                     </div>
