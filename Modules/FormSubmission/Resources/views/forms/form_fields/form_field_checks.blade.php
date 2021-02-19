@@ -14,7 +14,7 @@ $dataArray = ['question'=> $question, 'field_name'=> $field_name,
     @include('formsubmission::forms.form_fields.textarea_field', $dataArray)
 @elseif($fieldType == 'Number')
     @include('formsubmission::forms.form_fields.number_field', $dataArray)
-@elseif($fieldType == 'Date & Time')
+@elseif($fieldType == 'Date')
     @include('formsubmission::forms.form_fields.datetime_field', $dataArray)
 @elseif($fieldType == 'Upload')
     @include('formsubmission::forms.form_fields.upload_field', $dataArray)
