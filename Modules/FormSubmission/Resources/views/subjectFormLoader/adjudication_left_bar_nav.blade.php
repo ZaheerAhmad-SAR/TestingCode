@@ -5,6 +5,7 @@ $getGradingFormStatusArray = [
 'study_structures_id' => $phase->id,
 'phase_steps_id' => $step->step_id,
 'form_type_id' => $step->form_type_id,
+'form_status' => 'complete',
 ];
 
 $getAdjudicationFormStatusArray = [
@@ -13,6 +14,7 @@ $getAdjudicationFormStatusArray = [
 'study_structures_id' => $phase->id,
 'phase_steps_id' => $step->step_id,
 'modility_id' => $step->modility_id,
+'adjudication_status' => 'complete',
 ];
 @endphp
 @if (canAdjudication(['index']))
