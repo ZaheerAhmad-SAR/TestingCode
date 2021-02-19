@@ -156,7 +156,8 @@ class AdjudicationFormStatus extends Model
         } elseif ($adjudication_status == 'notrequired') {
             $imageStr .= '<img src="' . url('images/not_required.png') . '"/>';
         } elseif ($adjudication_status == 'required') {
-            $imageStr .= '<img src="' . url('images/required.png') . '"/>';
+            // $imageStr .= '<img src="' . url('images/required.png') . '"/>';
+            $imageStr .= '<i class="fas fa-exclamation-circle" style="font-size:15px;"></i>';
         }
         return $imageStr;
     }
