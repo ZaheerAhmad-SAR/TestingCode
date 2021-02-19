@@ -79,7 +79,7 @@ trait JSQuestionDataValidation
 
 
         $fieldName = buildFormFieldName($question->formFields->variable_name);
-        $fieldTitle = $question->question_text;
+        $fieldTitle = json_encode($question->question_text);
         $questionIdStr = buildSafeStr($question->id, '');
         $fieldId = $fieldName . '_' . $questionIdStr;
 
@@ -93,7 +93,7 @@ trait JSQuestionDataValidation
                     if(isFormValid){
                         var fieldName = "' . $fieldName . '";
                         var fieldId = "' . $fieldId . '";
-                        var fieldTitle = "' . $fieldTitle . '";
+                        var fieldTitle = ' . $fieldTitle . ';
                         var questionRowId = "' . $questionRowId . '";
                         ' . $messageTypeStr . '
 

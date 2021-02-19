@@ -86,7 +86,7 @@
                             <div class="col-md-12">
                                 <img src="{{ url('images/no_status.png') }}" />&nbsp;&nbsp;Not Initiated
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <img src="{{ url('images/required.png') }}" />&nbsp;&nbsp;Required
+                                <i class="fas fa-exclamation-circle" style="font-size:15px;"></i> &nbsp;&nbsp;Required
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 <img src="{{ url('images/incomplete.png') }}" />&nbsp;&nbsp;Initiated
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

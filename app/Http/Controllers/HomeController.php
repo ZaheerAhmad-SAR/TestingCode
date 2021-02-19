@@ -32,6 +32,10 @@ class HomeController extends Controller
         });
         return view('userroles::dashboard',compact('modalities','records'));
     }
+    public function user_preferences()
+    {
+        return view('prefrences.user_prefrences');
+    }
     public function update_online_at_time(){
         $user = User::find(\Auth()->user()->id);
         $user->online_at  =  now();
