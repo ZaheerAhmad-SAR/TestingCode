@@ -103,7 +103,7 @@ class FormFieldTypeSeederTableSeeder extends Seeder
         if (null === $field) {
             $form_filed_Date_Time = FormFieldType::create([
                 'id' => $id,
-                'field_type'    => 'Date & Time',
+                'field_type'    => 'Date',
                 'icon'          => 'fa fa-calendar-alt',
                 'support_multiple_values' => 'no',
                 'sort_order'    =>  7,
