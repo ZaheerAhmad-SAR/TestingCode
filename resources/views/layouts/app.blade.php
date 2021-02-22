@@ -77,8 +77,13 @@
             }
         </style>
     </head>
-
-<body class="@yield('class')">
+@php 
+    $active_class = '';
+    if(\Auth::check()){
+        $active_class = \Auth::user()->user_prefrences->default_theme;
+    }
+@endphp
+<body class="@yield('class') {{ $active_class }}">
     <!-- START: Pre Loader-->
         <div class="se-pre-con">
             <div class="loader"></div>
@@ -96,70 +101,69 @@
     <!-- START: Template JS-->
  
     <script src="{{ asset('public/dist/vendors/jquery/jquery-3.3.1.min.js') }}"></script>
-        <script src="{{ asset('public/dist/vendors/jquery-ui/jquery-ui.min.js') }}"></script>
-        <script src="{{ asset('public/dist/vendors/moment/moment.js') }}"></script>
-        <script src="{{ asset('public/dist/vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-        <script src="{{ asset('public/dist/vendors/slimscroll/jquery.slimscroll.min.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/jquery-ui/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/moment/moment.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/slimscroll/jquery.slimscroll.min.js') }}"></script>
 
-        <!-- END: Template JS-->
-        <!-- START: APP JS-->
-        <script src="{{ asset('public/dist/js/app.js') }}"></script>
-        <script src="{{ asset('public/dist/js/jquery.multi-select.js') }}"></script>
-        <script src="{{ asset('public/js/fstdropdown.min.js') }}"></script>
-        <script src="{{ asset('public/js/sweetalert.min.js') }}"></script>
-        <script src="{{ asset('public/js/jquery.validate.min.js') }}"></script>
-        <script src="{{ asset('public/js/jquery-confirm.min.js') }}"></script>
-        <script src="{{ asset('public/js/multiselect.js') }}"></script>
+    <!-- END: Template JS-->
+    <!-- START: APP JS-->
+    <script src="{{ asset('public/dist/js/app.js') }}"></script>
+    <script src="{{ asset('public/dist/js/jquery.multi-select.js') }}"></script>
+    <script src="{{ asset('public/js/fstdropdown.min.js') }}"></script>
+    <script src="{{ asset('public/js/sweetalert.min.js') }}"></script>
+    <script src="{{ asset('public/js/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('public/js/jquery-confirm.min.js') }}"></script>
+    <script src="{{ asset('public/js/multiselect.js') }}"></script>
 
-        <!-- END: APP JS-->
+    <!-- END: APP JS-->
 
-        <!-- START: Page JS-->
-        @yield('script')
-        @stack('script')
-        @stack('script_mid')
-        @stack('script_last')
-        @stack('script_skip_logic')
-        <script>
-            $(function() {
-                var url_route = "{{ URL('home/working_status') }}";
+    <!-- START: Page JS-->
+    @yield('script')
+    @stack('script')
+    @stack('script_mid')
+    @stack('script_last')
+    @stack('script_skip_logic')
+    <script>
+        $(function() {
+            var url_route = "{{ URL('home/working_status') }}";
 
-                $.ajax({
-                    url:url_route,
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                    },
-                    success: function(response) {
-                       
-                    }
-                });
+            $.ajax({
+                url:url_route,
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
+                success: function(response) {
+                   
+                }
             });
+        });
 
-            $(function() {
-                var url_route2 = "{{ URL('home/update_online_at_time') }}";
-                $.ajax({
-                    url:url_route2,
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                    },
-                    success: function(response) {
-                       
-                    }
-                });
+        $(function() {
+            var url_route2 = "{{ URL('home/update_online_at_time') }}";
+            $.ajax({
+                url:url_route2,
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
+                success: function(response) {
+                   
+                }
             });
-            
-            $(document).ready(function(){
-                $('[data-toggle="popover"]').popover();
-
-            });
-            $(function () {
-                var duration = 10000;
-                setTimeout(function () { $('#myalert').hide(); }, duration);
-            });
-            $('body').on('click','.reset-filter',function(){
-                ('.filter-form').find('input[type=text], input[type=date],select').val('');
-            });
-        </script>
+        });
         
+        $(document).ready(function(){
+            $('[data-toggle="popover"]').popover();
+
+        });
+        $(function () {
+            var duration = 10000;
+            setTimeout(function () { $('#myalert').hide(); }, duration);
+        });
+        $('body').on('click','.reset-filter',function(){
+            ('.filter-form').find('input[type=text], input[type=date],select').val('');
+        });
+    </script>
         <!-- END: Page JS-->
     </body>
 </html>

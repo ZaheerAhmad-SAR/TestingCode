@@ -19,7 +19,7 @@ use Modules\Admin\Entities\RoleStudyUser;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Entities\UserSystemInfo;
 use Modules\UserRoles\Entities\UserLog;
-
+use App\UserPrefrences;
 class User extends Authenticatable
 {
     use Notifiable;
@@ -254,9 +254,14 @@ class User extends Authenticatable
         return $this->hasMany(UserLog::class);
     }
 
-     public static function getUserStatus($userId) {
+    public static function getUserStatus($userId) {
         return self::where('id', $userId)
                     ->whereNull('deleted_at')
                     ->first();
-     }
+    }
+
+    public function user_prefrences()
+    {
+        return $this->hasOne(UserPrefrences::class);
+    }
 }
