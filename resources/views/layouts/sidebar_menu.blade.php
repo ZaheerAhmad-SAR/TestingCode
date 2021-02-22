@@ -2,11 +2,15 @@
     .badge {
         line-height: normal !important;
     }
+    .scroll-bar{
+        height: calc(100vh - 140px);
+        overflow-y: scroll;
+    }
 </style>
 <div class="sidebar">
     <div class="site-width">
-        <!-- START: Menu-->
-        <ul id="side-menu" class="sidebar-menu" style="height: calc(100vh - 140px);overflow-y: scroll;">
+        <!-- START: Menu  style="height: calc(100vh - 140px);overflow-y: scroll;"-->
+        <ul id="side-menu" class="sidebar-menu">
             <li class="dropdown">
                 <ul>
                     <li class="dropdown"><a href="#"><i class="fas fa-home"></i> Dashboard</a>
@@ -605,7 +609,12 @@
     </div>
     <!-- End -->
 <script src="{{ asset('public/dist/vendors/jquery/jquery-3.3.1.min.js') }}"></script>
-
+{{--  style="height: calc(100vh - 140px);overflow-y: scroll;" --}}
+ <script type="text/javascript">
+    $(".sidebar").hover(function () {
+        $('#side-menu').toggleClass("scroll-bar");
+    });
+ </script>   
  <script type="text/javascript">
 
         $("#bugReportingForm").on('submit', function(e) {

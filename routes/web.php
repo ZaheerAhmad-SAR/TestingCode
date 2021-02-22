@@ -24,5 +24,8 @@ Auth::routes(['register' => false]);
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('home/working_status', 'HomeController@working_status')->name('study.workingStatus');
 Route::get('home/update_online_at_time', 'HomeController@update_online_at_time')->name('study.updateOnlineTime');
-Route::get('home/user_preferences', 'HomeController@user_preferences')->name('home.user-preferences');
 Route::get('/vtag', 'VtagCOntroller@index')->name('vtag');
+// For Users prefrences
+
+Route::get('home/user_preferences', 'HomeController@user_preferences')->name('home.user-preferences');
+Route::post('home/update_user_prefrences', 'HomeController@update_user_prefrences')->name('home.UpdateUserPrefrences');
