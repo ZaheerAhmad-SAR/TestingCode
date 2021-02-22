@@ -47,9 +47,11 @@
                             <a href="#" class="nav-link" data-toggle="dropdown" aria-expanded="false">
                                 <i class="icon-bell h4"></i>
 
-                                <div id="reloadNotification"></div>
+                                <div id="reloadNotification" data-notification="someData">
 
                                     {!! \Modules\Queries\Entities\AppNotification::countUserUnReadNotification() !!}
+
+                                </div>
 {{--                                @php $count =  \Modules\Queries\Entities\AppNotification::where('user_id','=', auth()->user()->id)->where('is_read','no')->count(); @endphp--}}
 
 {{--                                @if($count > 0)--}}
@@ -172,7 +174,7 @@
                                                                 <b> @if($studyData!==null) {{$studyData->study_short_name}} : @else  @endif  @if($answers->isEmpty())  New Bug By  @else Reply By  @endif {{$userData->name}} </b>
                                                             </p>
 
-                                                            {{Carbon\Carbon::parse($record->created_at)->diffForHumans()}}
+                                                            {{Carbon\Carbon::parse($bugs->created_at)->diffForHumans()}}
                                                         </div>
 
                                                     </div>
@@ -215,7 +217,7 @@
                                 <a href="{{route('home.user-preferences')}}" class="dropdown-item px-2 align-self-center d-flex">
                                     <i class="fas fa-user"></i>&nbsp; User Preferences
                                 </a>
-                                
+
                                 <div class="dropdown-divider"></div>
                                 <a href="{{ route('logout') }}"  onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item px-2 text-danger align-self-center d-flex">
                                     <span class="icon-logout mr-2 h6  mb-0"></span> Sign Out</a>

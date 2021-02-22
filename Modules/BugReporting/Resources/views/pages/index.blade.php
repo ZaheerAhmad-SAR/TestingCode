@@ -309,7 +309,7 @@
                 dataType: 'html',
                 url:newPath,
                 success : function(results) {
-                    console.log(results);
+                    //console.log(results);
                     var parsedata = JSON.parse(results)[0];
                     $('#editBugUrl').val(parsedata.bug_url);
                     $('#editBugTitle').val(parsedata.bug_title);
