@@ -16,3 +16,12 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/queries', function (Request $request) {
     return $request->user();
 });
+
+
+
+
+//
+//
+//Route::get('counts', function() {
+//    return \Modules\Queries\Entities\AppNotification::all();
+//});

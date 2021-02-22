@@ -333,7 +333,8 @@ class QueriesController extends Controller
             'field_id'=>$field_id,
             'form_type_id'=>$form_type_id,
             'modility_id'=>$modility_id,
-            'query_attachments'=>$filePath
+            'query_attachments'=>$filePath,
+            'query_condition'=>'new'
         ]);
         $current_study = '';
         $current_study    = session('current_study');
@@ -463,12 +464,13 @@ class QueriesController extends Controller
             'form_type_id'=>$form_type_id,
             'modility_id'=>$modility_id,
             'module_name'=>$module_name,
-            'query_level'=>$query_level_q
+            'query_level'=>$query_level_q,
+            'query_condition'=>'reply'
         ]);
 
         AppNotification::create([
             'id' => Str::uuid(),
-            'queryorbugid' => $query_id,
+            'queryorbugid' => $queryId,
             'is_read'=> 'no',
             'notifications_type'=> 'query',
             'user_id'=>$record->notification_create_by_user_id,
