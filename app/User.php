@@ -262,6 +262,6 @@ class User extends Authenticatable
 
     public function user_prefrences()
     {
-        return $this->hasOne(UserPrefrences::class);
+        return $this->hasOne(UserPrefrences::class)->withDefault();
     }
 }

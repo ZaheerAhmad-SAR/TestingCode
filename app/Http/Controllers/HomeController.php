@@ -41,6 +41,7 @@ class HomeController extends Controller
     }
     // Update User Prefrences
     public function update_user_prefrences(Request $request){
+        
         $user_id = \Auth()->user()->id;
         $res=UserPrefrences::where('user_id',$user_id)->delete();
         $id    = (string)Str::uuid();
