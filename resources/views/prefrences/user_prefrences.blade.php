@@ -9,7 +9,7 @@
         <div class="col-12  align-self-center">
             <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
                 <div class="w-sm-100 mr-auto">
-                    <h4 class="mb-0" style="text-decoration: underline;color: black;">
+                    <h4 class="mb-0" style="text-decoration: underline;">
                     {{\Auth()->user()->name}} Prefrences
                     </h4>
                 </div>
@@ -28,7 +28,7 @@
                 <div class="card-header">
                     <div class="row">
                         <div class="col-md-9">
-                            <h4 class="card-title">Preferences list</h4>
+                            <h4 class="card-title">Preferences list </h4>
                         </div>
                     </div>
                 </div>
@@ -36,17 +36,27 @@
                     <div class="card-body py-5">
                         <div class="row">
                             <div class="col-12">
-                                <form>
+                                <form action="{{route('home.UpdateUserPrefrences')}}" method="post">
+                                    @csrf
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label for="inputEmail4">Default Theme</label><br><br>
-                                            <input type="radio" name="default_theme" id="inputEmail4" value="" checked> White &nbsp;&nbsp;&nbsp;&nbsp; 
-                                            <input type="radio" name="default_theme" id="inputEmail4" value=""> Sami-Dark &nbsp;&nbsp;&nbsp;&nbsp; 
-                                            <input type="radio" name="default_theme" id="inputEmail4" value=""> Dark &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="default_theme" id="inputEmail4" value="light" @if($user_preferences->default_theme =='light') checked @endif> Light &nbsp;&nbsp;&nbsp;&nbsp; 
+                                            <input type="radio" name="default_theme" id="inputEmail4" value="semi-dark" @if($user_preferences->default_theme =='semi-dark') checked @endif> Semi-Dark &nbsp;&nbsp;&nbsp;&nbsp; 
+                                            <input type="radio" name="default_theme" id="inputEmail4" value="dark" @if($user_preferences->default_theme =='dark') checked @endif> Dark &nbsp;&nbsp;&nbsp;&nbsp;
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="page">Default Pagination</label>
-                                            <input type="number" class="form-control" name="default_pagination" id="default_pagination" placeholder="Default Pagination">
+                                            <select class="form-control" name="default_pagination" id="default_pagination">
+                                                <option value="10" @if($user_preferences->default_pagination =='10') selected @endif>10</option>
+                                                <option value="20" @if($user_preferences->default_pagination =='20') selected @endif>20</option>
+                                                <option value="50" @if($user_preferences->default_pagination =='50') selected @endif>50</option>
+                                                <option value="100" @if($user_preferences->default_pagination =='100') selected @endif>100</option>
+                                                <option value="200" @if($user_preferences->default_pagination =='200') selected @endif>200</option>
+                                                <option value="500" @if($user_preferences->default_pagination =='500') selected @endif>500</option>
+                                                <option value="1000" @if($user_preferences->default_pagination =='100') selected @endif>1000</option>
+                                            </select>
+
                                         </div>
                                     </div>
                                     <div class="form-row" style="float: right;">
