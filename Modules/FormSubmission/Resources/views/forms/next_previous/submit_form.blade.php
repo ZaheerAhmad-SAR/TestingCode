@@ -13,14 +13,13 @@
         </div>
     </div>
     <div class="col-md-1">
-        <button type="button" class="btn btn-success float-right"
-            onclick="submitStepForm{{ $stepIdStr }}('{{ $stepIdStr }}', '{{ $stepClsStr }}');"
+        <button type="button" class="btn btn-success float-right" onclick="submitStepForm{{ $stepIdStr }}('{{ $stepIdStr }}', '{{ $stepClsStr }}');"
             id="submit_{{ $stepIdStr }}">Submit</button>
     </div>
 </div>
 
 @php
-$queryParams = [
+$queryParams =  [
                     'study_id'=>$studyId,
                     'subject_id'=>$subjectId,
                     'study_structures_id'=>$phase->id,

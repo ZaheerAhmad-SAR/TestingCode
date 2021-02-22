@@ -212,6 +212,10 @@
                                 <a href="{{route('users.updateProfile')}}" class="dropdown-item px-2 align-self-center d-flex">
                                     <span class="icon-pencil mr-2 h6 mb-0"></span> Edit Profile
                                 </a>
+                                <a href="{{route('home.user-preferences')}}" class="dropdown-item px-2 align-self-center d-flex">
+                                    <i class="fas fa-user"></i>&nbsp; User Preferences
+                                </a>
+                                
                                 <div class="dropdown-divider"></div>
                                 <a href="{{ route('logout') }}"  onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item px-2 text-danger align-self-center d-flex">
                                     <span class="icon-logout mr-2 h6  mb-0"></span> Sign Out</a>

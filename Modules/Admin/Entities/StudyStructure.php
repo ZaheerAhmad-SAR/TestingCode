@@ -36,7 +36,7 @@ class StudyStructure extends Model
 
     public function phases()
     {
-        return $this->hasMany(PhaseSteps::class, 'phase_id', 'id');
+        return $this->hasMany(PhaseSteps::class, 'phase_id', 'id')->orderBy('step_position', 'ASC');
     }
 
     public function roles()

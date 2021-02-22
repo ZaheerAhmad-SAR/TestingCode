@@ -4,6 +4,7 @@ namespace Modules\FormSubmission\Entities;
 
 use App\User;
 use Modules\Admin\Entities\FormType;
+use Modules\FormSubmission\Entities\QuestionAdjudicationRequired;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
@@ -65,7 +66,7 @@ class AdjudicationFormStatus extends Model
             if ($wrapSeperate) {
                 return self::makeAdjudicationFormStatusSeperateSpan($adjudicationFormStatusObj);
             } else {
-                return self::makeAdjudicationFormStatusSpan($step, $adjudicationFormStatusObj);
+                return self::makeAdjudicationFormStatusSpan($step, $adjudicationFormStatusObj, $getAdjudicationFormStatusArray);
             }
         } else {
             return $adjudicationFormStatusObj->adjudication_status;
@@ -118,14 +119,19 @@ class AdjudicationFormStatus extends Model
         return $userName . '-' . $status . '|';
     }
 
-    public static function makeAdjudicationFormStatusSpan($step, $adjudicationFormStatusObj)
+    public static function makeAdjudicationFormStatusSpan($step, $adjudicationFormStatusObj,$getAdjudicationFormStatusArray)
     {
         $info = '';
         $adjudicationFormStatus = $adjudicationFormStatusObj->adjudication_status;
+
         if ($adjudicationFormStatus != 'no_status') {
             $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="' . $adjudicationFormStatusObj->user->name . '"';
+        }else{
+            $checkIfAnyQuestionNeedAdj = QuestionAdjudicationRequired::checkEnteryInAdjudicationRequired($getAdjudicationFormStatusArray);
+            if($checkIfAnyQuestionNeedAdj > 0){
+                $adjudicationFormStatus = 'required';
+            }
         }
-
         $imgSpanStepClsStr = buildAdjudicationStatusIdClsStr($step->step_id);
         $spanStr = '<span class="' . $imgSpanStepClsStr . '" ' . $info . '>';
         $spanStr .= self::makeAdjudicationFormStatusSpanImage($adjudicationFormStatus) . '</span>';
@@ -149,6 +155,9 @@ class AdjudicationFormStatus extends Model
             $imageStr .= '<img src="' . url('images/adjudication.png') . '"/>';
         } elseif ($adjudication_status == 'notrequired') {
             $imageStr .= '<img src="' . url('images/not_required.png') . '"/>';
+        } elseif ($adjudication_status == 'required') {
+            // $imageStr .= '<img src="' . url('images/required.png') . '"/>';
+            $imageStr .= '<i class="fas fa-exclamation-circle" style="font-size:15px;"></i>';
         }
         return $imageStr;
     }

@@ -220,6 +220,7 @@
 
             function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, questionIdStr, formType, field_name,
                 fieldId,dependencyIdStr) {
+
                 if (isPreview === false) {
                     if (isFormDataLocked(stepIdStr) == false) {
                       
@@ -580,7 +581,7 @@
 
             function canSubmitForm(formType, stepIdStr) {
 
-                var numberOfGraders = $('#form_master_' + stepIdStr + ' input[name="numberOfGraders"]').val();;
+                var numberOfGraders = $('#form_master_' + stepIdStr + ' input[name="numberOfGraders"]').val();
                 var numberOfAlreadyGradedPersons = $('#form_master_' + stepIdStr + ' input[name="numberOfAlreadyGradedPersons"]').val();
 
                 var canQualityControl = {{ canQualityControl(['create', 'store', 'edit', 'update']) ? 'true' : 'false' }};
@@ -616,10 +617,10 @@
                     }
                 }
 
-                if (
+                if(
                     ((formType == 'Grading') && (canGrading == true)) ||
                     ((formType == 'Eligibility') && (canEligibility == true))
-                ) {
+                ){
                     if ((formStatus == 'no_status') && (formFilledByUserId == 'no-user-id')) {
                         canSubmit = true;
                     }

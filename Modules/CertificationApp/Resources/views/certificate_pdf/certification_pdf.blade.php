@@ -54,7 +54,7 @@ h1, h2, h3,p {
 				<p style="font-family: play">Imaging certificate is hereby granted to</p>
 				<h1 style="font-size: 3em; text-align: center;font-family: play">{{ $getPhotographer->first_name.' '.$getPhotographer->last_name }}</h1>
 				<h3 style="font-family: play">Site: {{ $getSite->site_name }}</h3>
-				<h3 style="font-family: play">Address: {{ $getSite->site_address.', '.$getSite->site_city.', '.$getSite->state.', '.$getSite->site_country }}</h3>
+				<h3 style="font-family: play">Address: {{ $getSite->site_address != '' ? $getSite->site_address.', ' : '' }} {{ $getSite->site_city != '' ? $getSite->site_city.', ' : '' }} {{ $getSite->site_state != '' ? $getSite->site_state.', ' : '' }} {{ $getSite->site_country != '' ? $getSite->site_country : '' }}</h3>
 				<h3 style="font-family: play">Site Code: {{ $getSite->site_code }}</h3>
 				<p style="font-family: play">For submitting the images as required by the Image Acquisition Protocol for the</p>
 				<h3 style="text-align: center;font-family: play">{{ $getStudy->study_title }}</h3>
