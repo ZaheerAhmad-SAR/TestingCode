@@ -41,22 +41,21 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <label for="inputEmail4">Default Theme</label><br><br>
-                                            <input type="radio" name="default_theme" id="inputEmail4" value="light" @if($user_preferences->default_theme =='light') checked @endif> Light &nbsp;&nbsp;&nbsp;&nbsp; 
-                                            <input type="radio" name="default_theme" id="inputEmail4" value="semi-dark" @if($user_preferences->default_theme =='semi-dark') checked @endif> Semi-Dark &nbsp;&nbsp;&nbsp;&nbsp; 
-                                            <input type="radio" name="default_theme" id="inputEmail4" value="dark" @if($user_preferences->default_theme =='dark') checked @endif> Dark &nbsp;&nbsp;&nbsp;&nbsp;
+                                            <input type="radio" name="default_theme" id="inputEmail4" value="light" @if(isset($user_preferences->default_theme) && $user_preferences->default_theme =='light') checked @endif> Light &nbsp;&nbsp;&nbsp;&nbsp; 
+                                            <input type="radio" name="default_theme" id="inputEmail4" value="semi-dark" @if(isset($user_preferences->default_theme) && $user_preferences->default_theme =='semi-dark') checked @endif> Semi-Dark &nbsp;&nbsp;&nbsp;&nbsp; 
+                                            <input type="radio" name="default_theme" id="inputEmail4" value="dark" @if(isset($user_preferences->default_theme) && $user_preferences->default_theme =='dark') checked @endif> Dark &nbsp;&nbsp;&nbsp;&nbsp;
                                         </div>
                                         <div class="form-group col-md-6">
                                             <label for="page">Default Pagination</label>
                                             <select class="form-control" name="default_pagination" id="default_pagination">
-                                                <option value="10" @if($user_preferences->default_pagination =='10') selected @endif>10</option>
-                                                <option value="20" @if($user_preferences->default_pagination =='20') selected @endif>20</option>
-                                                <option value="50" @if($user_preferences->default_pagination =='50') selected @endif>50</option>
-                                                <option value="100" @if($user_preferences->default_pagination =='100') selected @endif>100</option>
-                                                <option value="200" @if($user_preferences->default_pagination =='200') selected @endif>200</option>
-                                                <option value="500" @if($user_preferences->default_pagination =='500') selected @endif>500</option>
-                                                <option value="1000" @if($user_preferences->default_pagination =='100') selected @endif>1000</option>
+                                                <option value="10" @if(isset($user_preferences->default_pagination) && $user_preferences->default_pagination =='10') selected @endif>10</option>
+                                                <option value="20" @if(isset($user_preferences->default_pagination) && $user_preferences->default_pagination =='20') selected @endif>20</option>
+                                                <option value="50" @if(isset($user_preferences->default_pagination) && $user_preferences->default_pagination =='50') selected @endif>50</option>
+                                                <option value="100" @if(isset($user_preferences->default_pagination) && $user_preferences->default_pagination =='100') selected @endif>100</option>
+                                                <option value="200" @if(isset($user_preferences->default_pagination) && $user_preferences->default_pagination =='200') selected @endif>200</option>
+                                                <option value="500" @if(isset($user_preferences->default_pagination) && $user_preferences->default_pagination =='500') selected @endif>500</option>
+                                                <option value="1000" @if(isset($user_preferences->default_pagination) && $user_preferences->default_pagination =='100') selected @endif>1000</option>
                                             </select>
-
                                         </div>
                                     </div>
                                     <div class="form-row" style="float: right;">
