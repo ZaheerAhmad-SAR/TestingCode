@@ -119,7 +119,8 @@ class BugReportingController extends Controller
             $checkNotificationType = User::where('id','like',\auth()->user()->id)->where('notification_type','=','email')
                 ->where('bug_report','=',true)->first();
 
-            if ($checkNotificationType !== '')
+
+            if ($checkNotificationType !== null)
             {
                 $data  = array(
                     'bug_title'=>$shortTitle,
@@ -167,34 +168,28 @@ class BugReportingController extends Controller
      */
     public function update(Request $request)
     {
-        $checkIdIfExists = BugReport::find($request->editBugId);
+        $checkIdIfExists = BugReport::where(array('id'=>$request->editBugId,'parent_bug_id'=>0))->first();
         if ($checkIdIfExists !== null)
         {
-         $id = (string) Str::uuid();
-          BugReport::create([
-            'id' => $id,
-            'bug_message' => $request->developerComment,
-            'bug_title'=> $request->editBugTitle,
-            'bug_priority' => $request->editSeverity,
-            'status' => $request->editStatus,
-            'open_status' => $request->openStatus,
-            'closed_status' => $request->closeStatus,
-            'bug_url' => $request->editBugUrl,
-            'parent_bug_id' => $checkIdIfExists['id'],
-             'bug_reporter_by_id'=>\auth()->user()->id,
-        ]);
-            $bugStatusArray = array(
-                'status' => $request->editStatus,
-                'open_status'=>$request->openStatus,
-                'closed_status'=>$request->closeStatus,
-                'bug_priority' => $request->editSeverity
-            );
-            $bugStatusArrayChild = array(
-                'status' => $request->editStatus,
-                'open_status'=>$request->openStatus,
-                'closed_status'=>$request->closeStatus,
+            $id = (string) Str::uuid();
+            BugReport::create([
+                'id' => $id,
+                'bug_message' => $request->developerComment,
+                'bug_title'=> $request->editBugTitle,
+                'bug_url' => $request->editBugUrl,
+                'parent_bug_id' => $checkIdIfExists['id'],
+                'bug_reporter_by_id'=>\auth()->user()->id,
+            ]);
+
+            $bugStatusArray  = array
+            (
                 'bug_priority' => $request->editSeverity,
+                'status' => $request->editStatus,
+                'open_status'=>$request->openStatus,
+                'closed_status'=>$request->closeStatus,
             );
+            BugReport::where('id', $checkIdIfExists->id)->update($bugStatusArray);
+            BugReport::where('parent_bug_id', $checkIdIfExists->id)->update($bugStatusArray);
 
             AppNotification::create([
                 'id' => Str::uuid(),
@@ -207,10 +202,7 @@ class BugReportingController extends Controller
 
             $checkNotificationType = User::where('id','=',$checkIdIfExists->bug_reporter_by_id)->where('notification_type','=','email')
                 ->where('bug_report','=',true)->first();
-
-            $sendEmailtoBugCreateUser = $checkNotificationType->email;
-
-            if ($checkNotificationType !== '')
+            if ($checkNotificationType !== null)
             {
                 $data  = array(
                     'bug_title'=>$request->editBugTitle,
@@ -219,13 +211,11 @@ class BugReportingController extends Controller
                     'bug_priority'=>$request->editSeverity,
                     'createdByName' =>\auth()->user()->name,
                 );
-                Mail::to($sendEmailtoBugCreateUser)->send(new BugMails($data));
+
+                Mail::to($checkNotificationType->email)->send(new BugMails($data));
+
             }
-
-
-            BugReport::where('id',$checkIdIfExists['id'])->update($bugStatusArray);
-            BugReport::where('parent_bug_id',$checkIdIfExists['id'])->update($bugStatusArrayChild);
-    }
+        }
         return response()->json(['success' => 'Bug Reporing  is generated successfully.']);
     }
 
@@ -236,12 +226,12 @@ class BugReportingController extends Controller
      */
     public function destroy(Request $request,$id)
     {
-       if ($request->ajax())
-       {
-           $delete = BugReport::find($id);
-           $delete->delete();
-           return response()->json(['success' => 'Bug  is deleted successfully.']);
-       }
+        if ($request->ajax())
+        {
+            $delete = BugReport::find($id);
+            $delete->delete();
+            return response()->json(['success' => 'Bug  is deleted successfully.']);
+        }
     }
 
     public function getCurrentRowData(Request $request)

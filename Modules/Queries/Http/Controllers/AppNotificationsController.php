@@ -31,6 +31,17 @@ class AppNotificationsController extends Controller
         return view('queries::notifications.index',compact('records'));
     }
 
+    public function countUserNotification()
+    {
+
+
+        $count = '';
+        $count = AppNotification::where('user_id','=', auth()->user()->id)->where('is_read','no')->count();
+        if ($count > 0)
+        {
+            return '<span class="badge badge-pill badge-danger" style="height: 20px;top: 12px;">'.$count.'</span>';
+        }
+    }
     /**
      * Show the form for creating a new resource.
      * @return Renderable
@@ -57,7 +68,7 @@ class AppNotificationsController extends Controller
      */
     public function show($id)
     {
-        return view('queries::show');
+        //return view('queries::show');
     }
 
     /**

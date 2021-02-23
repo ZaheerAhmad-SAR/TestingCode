@@ -17,7 +17,7 @@ class Query extends Model
         'id', 'messages', 'parent_query_id', 'queried_remarked_by_id', 'module_id',
         'module_name', 'query_status', 'query_subject', 'query_url', 'query_type', 'query_attachments',
         'study_id', 'subject_id', 'study_structures_id', 'phase_steps_id', 'section_id', 'question_id',
-        'field_id', 'form_type_id', 'modility_id', 'query_level','is_active'
+        'field_id', 'form_type_id', 'modility_id', 'query_level','is_active','query_condition'
     ];
     protected $keyType = 'string';
 
@@ -182,13 +182,16 @@ class Query extends Model
 
         //printSqlQuery($sqlQuery, false);
         $queryCheck   = false;
+
         $queryByLogin = $sqlQuery->where('queried_remarked_by_id', 'like', auth()->user()->id)
             ->where('parent_query_id', 'like', 0)
             ->where('query_status', '!=', 'close')
             ->where('query_level', '=', 'question')
             ->first();
+
         if (null !== $queryByLogin) {
             $queryCheck = true;
+
         }
         // Status For Queried person
         $queryExits = $query->where('parent_query_id', 'like', 0)
@@ -239,34 +242,6 @@ class Query extends Model
         }
         return $queryCheck;
     }
-
-//    public static function questionStatusHasClose($questionQueryArray)
-//    {
-//        $query = new Query();
-//
-//        $questionQueryArray = array_intersect_key(array_filter($questionQueryArray), array_flip($query->getFillable()));
-//        $sqlQuery = self::getFormQueryObjQuery($questionQueryArray);
-//        //printSqlQuery($sqlQuery, false);
-//        $queryCheck   = false;
-//        $queryByLogin = $sqlQuery->where('queried_remarked_by_id', 'like', auth()->user()->id)
-//            ->where('parent_query_id','=',0)
-//            ->where('query_status', '=', 'close')
-//            ->where('query_level', '=', 'question')
-//            //->count();
-//            ->first();
-//        //dd($queryByLogin);
-//        if (null !== $queryByLogin) {
-//            //dd('ddddd');
-//            $queryCheck = true;
-//        }
-//        $queryForUser = QueryUser::where('user_id', auth()->user()->id)->first();
-//
-//        if (null !== $queryForUser) {
-//
-//            $queryCheck = true;
-//        }
-//        return $queryCheck;
-//    }
 
     public static function formStatusHasClose($questionQueryArray)
     {
