@@ -922,12 +922,12 @@
                 });
             }
 
-            // function reloadPage(waitSeconds) {
-            //     var seconds = waitSeconds * 1000;
-            //     //console.log('wait : ' + seconds);
-            //     setTimeout(function() {
-            //         location.reload();
-            //     }, seconds);
-            // }
+            function reloadPage(waitSeconds) {
+                var seconds = waitSeconds * 1000;
+                //console.log('wait : ' + seconds);
+                setTimeout(function() {
+                    location.reload();
+                }, seconds);
+            }
         </script>
     @endpush
