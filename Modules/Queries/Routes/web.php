@@ -24,6 +24,7 @@ Route::group(['middleware' => ['auth','web']],function(){
     Route::post('notifications/markAsRead','AppNotificationsController@markAsRead')->name('notifications.markAsRead');
     Route::post('notifications/removeNotification','AppNotificationsController@removeNotification')->name('notifications.removeNotification');
     Route::post('notifications/update', 'AppNotificationsController@update')->name('notifications.update');
+    Route::post('notifications/countUserNotification', 'AppNotificationsController@countUserNotification')->name('notifications.countUserNotification');
     Route::get('queries/chatindex','QueriesController@chatindex')->name('queries.chatindex');
 
 
@@ -48,4 +49,11 @@ Route::group(['middleware' => ['auth','web']],function(){
     Route::post('queries/usersDropDownListForm', 'QueriesController@usersDropDownListForm')->name('queries.usersDropDownListForm');
 
 
+});
+
+
+Route::post('/countUserNotification', function(){
+    if(Request::ajax()){
+        return Response::json(Request::all());
+    }
 });

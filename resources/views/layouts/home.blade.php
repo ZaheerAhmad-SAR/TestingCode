@@ -46,11 +46,17 @@
                         <li class="dropdown align-self-center d-inline-block">
                             <a href="#" class="nav-link" data-toggle="dropdown" aria-expanded="false">
                                 <i class="icon-bell h4"></i>
-                                @php $count =  \Modules\Queries\Entities\AppNotification::where('user_id','=', auth()->user()->id)->where('is_read','no')->count(); @endphp
 
-                                @if($count > 0)
-                                    <span class="badge badge-pill badge-danger" style="height: 20px;top: 12px;"> {{$count}}</span>
-                                @endif
+                                <div id="reloadNotification" data-notification="someData">
+
+                                    {!! \Modules\Queries\Entities\AppNotification::countUserUnReadNotification() !!}
+
+                                </div>
+{{--                                @php $count =  \Modules\Queries\Entities\AppNotification::where('user_id','=', auth()->user()->id)->where('is_read','no')->count(); @endphp--}}
+
+{{--                                @if($count > 0)--}}
+{{--                                    <span class="badge badge-pill badge-danger" style="height: 20px;top: 12px;"> {{$count}}</span>--}}
+{{--                                @endif--}}
 
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right border   py-0">
@@ -62,7 +68,7 @@
 
                                 @if(!empty($userQueries))
                                 @foreach($userQueries as $record)
-                                   @if($record->notifications_type=='query')
+                                   @if($record->notifications_type =='query')
 
                                     @php
                                     $userData ='';
@@ -74,8 +80,9 @@
 
                                     $query = \Modules\Queries\Entities\Query::where('id','=',$record->queryorbugid)
                                     ->where('query_status','open')
-                                    ->where('parent_query_id',0)
                                     ->first();
+
+
                                     $studyData = '';
                                     if ($query!==null)
                                     {
@@ -84,8 +91,10 @@
 
                                     $userData  = App\User::where('id',$record->notification_create_by_user_id)->first();
                                     @endphp
-                                            <li>
 
+
+                                            @if($query->query_condition == 'new')
+                                            <li>
                                                 <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0 currentNotificationId appRedirectPage"   data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$query->query_url}}" data-id="{{$query->study_id}}" href="javascript:void(0);" data-value="{{$query->id}}">
                                                     <div class="media">
                                                         <img src="{{asset('dist/images/author.jpg')}}" alt="" class="d-flex mr-3 img-fluid rounded-circle">
@@ -93,7 +102,7 @@
 
                                                             <p class="mb-0 text-primary">
 
-                                                                <b> {{$studyData->study_short_name}} : @if($answers->isEmpty())  New Query By  @else Reply By  @endif {{$userData->name}} </b>
+                                                                <b> {{$studyData->study_short_name}} : New Query By {{$userData->name}} </b>
                                                             </p>
 
                                                             {{Carbon\Carbon::parse($record->created_at)->diffForHumans()}}
@@ -102,6 +111,27 @@
                                                     </div>
                                                 </a>
                                             </li>
+                                            @endif
+                                            @if($query->query_condition == 'reply')
+                                                <li>
+
+                                                    <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0 currentNotificationId appRedirectPage"   data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$query->query_url}}" data-id="{{$query->study_id}}" href="javascript:void(0);" data-value="{{$query->id}}">
+                                                        <div class="media">
+                                                            <img src="{{asset('dist/images/author.jpg')}}" alt="" class="d-flex mr-3 img-fluid rounded-circle">
+                                                            <div class="media-body">
+
+                                                                <p class="mb-0 text-primary">
+
+                                                                    <b> {{$studyData->study_short_name}} : Query Reply By {{$userData->name}} </b>
+                                                                </p>
+
+                                                                {{Carbon\Carbon::parse($record->created_at)->diffForHumans()}}
+                                                            </div>
+
+                                                        </div>
+                                                    </a>
+                                                </li>
+                                            @endif
                                         @else
                                             @php
                                                 $bugs = '';
@@ -144,7 +174,7 @@
                                                                 <b> @if($studyData!==null) {{$studyData->study_short_name}} : @else  @endif  @if($answers->isEmpty())  New Bug By  @else Reply By  @endif {{$userData->name}} </b>
                                                             </p>
 
-                                                            {{Carbon\Carbon::parse($record->created_at)->diffForHumans()}}
+                                                            {{Carbon\Carbon::parse($bugs->created_at)->diffForHumans()}}
                                                         </div>
 
                                                     </div>
@@ -157,13 +187,8 @@
                                 @endif
 
                                 <tr>
-                                                 @if($count > 0 )
-                                    &nbsp; &nbsp;<td class="align-baseline"><a class="markAllRead" href="javascript:void(0);"><span><i class="fas fa-check"></i></span> &nbsp;Mark All Read</a></td> &nbsp; &nbsp; &nbsp;
-{{--                                                @else--}}
-{{--                                        &nbsp; &nbsp;<td class="align-baseline"><a class="noNewNotification" href="javascript:void(0);"><span><i class="fas fa-check"></i></span> &nbsp;No New Notification</a></td> &nbsp; &nbsp; &nbsp;--}}
-                                                @endif
-
-                                        <td class="align-top"><a href="{{route('notifications.index')}}"><span><i class="fas fa-book-open"></i></span> &nbsp; All Notifications</a></td>
+                                    {!! Modules\Queries\Entities\AppNotification::showMarkAllReadDiv() !!}
+                                    <td class="align-top"><a href="{{route('notifications.index')}}"><span><i class="fas fa-book-open"></i></span> &nbsp; All Notifications</a></td>
 
                                  </tr>
                             </ul>
@@ -192,7 +217,7 @@
                                 <a href="{{route('home.user-preferences')}}" class="dropdown-item px-2 align-self-center d-flex">
                                     <i class="fas fa-user"></i>&nbsp; User Preferences
                                 </a>
-                                
+
                                 <div class="dropdown-divider"></div>
                                 <a href="{{ route('logout') }}"  onclick="event.preventDefault(); document.getElementById('logout-form').submit();" class="dropdown-item px-2 text-danger align-self-center d-flex">
                                     <span class="icon-logout mr-2 h6  mb-0"></span> Sign Out</a>
@@ -248,7 +273,7 @@
                 },
                 success: function(response)
                 {
-                    console.log(response);
+                    //console.log(response);
                     if (response.success)
                     {
                         var urlPath = response.success;
