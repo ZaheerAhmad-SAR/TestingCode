@@ -122,6 +122,7 @@ class AdjudicationFormStatus extends Model
     public static function makeAdjudicationFormStatusSpan($step, $adjudicationFormStatusObj,$getAdjudicationFormStatusArray)
     {
         $info = '';
+        $checkIfAnyQuestionNeedAdj = '';
         $adjudicationFormStatus = $adjudicationFormStatusObj->adjudication_status;
 
         if ($adjudicationFormStatus != 'no_status') {

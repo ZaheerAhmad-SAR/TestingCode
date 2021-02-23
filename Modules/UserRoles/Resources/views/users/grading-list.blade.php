@@ -78,10 +78,7 @@
             </div>
         </div>
         <!-- END: Breadcrumbs-->
-
-        <!-- START: Card Data-->
         <div class="row">
-            <!-- Grading legends -->
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
                     <div class="card-header  justify-content-between align-items-center">
@@ -89,29 +86,29 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-2">
-                                <img src="{{url('images/no_status.png')}}"/>&nbsp;&nbsp;Not Initiated
-                            </div>
-                            <div class="col-md-2">
-                                <img src="{{url('images/incomplete.png')}}"/>&nbsp;&nbsp;Initiated
-                            </div>
-                            <div class="col-md-2">
-                                <img src="{{url('images/resumable.png')}}"/>&nbsp;&nbsp;Editing
-                            </div>
-                            <div class="col-md-2">
-                                <img src="{{url('images/complete.png')}}"/>&nbsp;&nbsp;Complete
-                            </div>
-                            <div class="col-md-2">
-                                <img src="{{url('images/not_required.png')}}"/>&nbsp;&nbsp;Not Required
-                            </div>
-                            <div class="col-md-2">
-                                <img src="{{url('images/query.png')}}"/>&nbsp;&nbsp;Query
+                            <div class="col-md-12">
+                                <img src="http://localhost/ocap_new/images/no_status.png">&nbsp;&nbsp;Not Initiated
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <i class="fas fa-exclamation-circle" style="font-size:15px;"></i> &nbsp;&nbsp;Required
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <img src="http://localhost/ocap_new/images/incomplete.png">&nbsp;&nbsp;Initiated
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <img src="http://localhost/ocap_new/images/resumable.png">&nbsp;&nbsp;Editing
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <img src="http://localhost/ocap_new/images/complete.png">&nbsp;&nbsp;Complete
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <img src="http://localhost/ocap_new/images/not_required.png">&nbsp;&nbsp;Not Required
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <img src="http://localhost/ocap_new/images/query.png">&nbsp;&nbsp;Query
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
+        </div>
+        <!-- START: Card Data-->
+        <div class="row">
+            <!-- Grading legends -->
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
 
