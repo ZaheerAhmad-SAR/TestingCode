@@ -75,14 +75,16 @@
                                                 $userData ='';
                                                 $answers = '';
                                                 $question = '';
-                                                $question   = \Modules\Queries\Entities\Query::where('id','=',$record->queryorbugid)
-                                                ->where('query_status','open')
-                                                 ->where('parent_query_id',0)
-                                                ->first();
 
-                                                $answers = \Modules\Queries\Entities\Query::where('parent_query_id','like',$record->queryorbugid)
+                                               $answers = \Modules\Queries\Entities\Query::where('parent_query_id','=',$record->queryorbugid)
+                                                ->orWhereNull('parent_query_id')
                                                 ->where('query_status','open')
                                                 ->get();
+
+
+                                                $question   = \Modules\Queries\Entities\Query::where('id','=',$record->queryorbugid)
+                                                ->where('query_status','open')
+                                                ->first();
 
                                                 $userData = App\User::where('id',$record->notification_create_by_user_id)->first();
                                                 $studyData = Modules\Admin\Entities\Study::where('id',$question->study_id)->first();
@@ -90,22 +92,48 @@
                                             <li class="p-2 border-bottom">
                                                 <div class="media d-flex w-100">
                                                     <div class="transaction-date text-center rounded bg-primary text-white p-2">
-                                                        <small class="d-block">{{ date_format($question->created_at,'M')}}</small><span class="h6">{{ date_format($question->created_at,'d')}}</span>
+                                                        <small class="d-block">{{ date_format($record->created_at,'M')}}</small><span class="h6">{{ date_format($question->created_at,'d')}}</span>
                                                     </div>
+
                                                     <div class="media-body align-self-center pl-4">
                                                         @if($record->is_read == 'no')
-                                                            <div class="currentNotificationRow" style="cursor: pointer;" data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$question->query_url}}" data-id="{{$record->queryorbugid}}">
+
+                                                            @if($question->query_condition == 'new')
+
+                                                              <div class="currentNotificationRow" style="cursor: pointer;" data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$question->query_url}}" data-id="{{$record->queryorbugid}}">
                                                                 <span class="mb-0 font-w-600 " > <b>{{$studyData->study_short_name}} </b></span><br>
-                                                                <p class="mb-0 font-w-500 tx-s-12"> <b> @if($answers->isEmpty()) New Query By  @else Query Reply By  @endif  {{$userData->name}}</b></p>
-                                                                <small class="d-block">{{Carbon\Carbon::parse($question->created_at)->diffForHumans()}}</small>
+                                                                <p class="mb-0 font-w-500 tx-s-12"> <b>  New Query By  {{$userData->name}}</b></p>
+                                                                <small class="d-block">{{Carbon\Carbon::parse($record->created_at)->diffForHumans()}}</small>
                                                             </div>
-                                                        @else
-                                                            <div class="currentNotificationRow" style="cursor: pointer;" data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$question->query_url}}" data-id="{{$record->queryorbugid}}">
-                                                                <span class="mb-0 font-w-600">{{$studyData->study_short_name}}</span><br>
-                                                                <p class="mb-0 font-w-500 tx-s-12"> @if($answers->isEmpty()) New Query By  @else Query Reply By  @endif {{$userData->name}}</p>
-                                                                <small class="d-block">{{Carbon\Carbon::parse($question->created_at)->diffForHumans()}}</small>
-                                                            </div>
+
+                                                            @endif
+
+                                                             @if($question->query_condition == 'reply')
+                                                                <div class="currentNotificationRow" style="cursor: pointer;" data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$question->query_url}}" data-id="{{$record->queryorbugid}}">
+                                                                    <span class="mb-0 font-w-600 " > <b>{{$studyData->study_short_name}} </b></span><br>
+                                                                    <p class="mb-0 font-w-500 tx-s-12"> <b>  Query Reply By  {{$userData->name}}</b></p>
+                                                                    <small class="d-block">{{Carbon\Carbon::parse($record->created_at)->diffForHumans()}}</small>
+                                                                </div>
+                                                            @endif
+
                                                         @endif
+
+                                                      @if($record->is_read == 'yes')
+                                                                @if($question->query_condition == 'new')
+                                                                <div class="currentNotificationRow" style="cursor: pointer;" data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$question->query_url}}" data-id="{{$record->queryorbugid}}">
+                                                                <span class="mb-0 font-w-600">{{$studyData->study_short_name}}</span><br>
+                                                                <p class="mb-0 font-w-500 tx-s-12">  New Query By  {{$userData->name}}</p>
+                                                                <small class="d-block">{{Carbon\Carbon::parse($record->created_at)->diffForHumans()}}</small>
+                                                                </div>
+                                                                @endif
+                                                                    @if($question->query_condition == 'reply')
+                                                                    <div class="currentNotificationRow" style="cursor: pointer;" data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$question->query_url}}" data-id="{{$record->queryorbugid}}">
+                                                                        <span class="mb-0 font-w-600">{{$studyData->study_short_name}}</span><br>
+                                                                        <p class="mb-0 font-w-500 tx-s-12">  Query Reply  By  {{$userData->name}}</p>
+                                                                        <small class="d-block">{{Carbon\Carbon::parse($record->created_at)->diffForHumans()}}</small>
+                                                                    </div>
+                                                              @endif
+                                                    @endif
                                                     </div>
                                                     @if($record->is_read == 'no')
                                                         <div class="ml-auto my-auto font-weight-bold text-right text-success">
@@ -150,12 +178,12 @@
                                                                 <div class="currentNotificationRow" style="cursor: pointer;" data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$bugs->bug_url}}" data-id="{{$record->queryorbugid}}">
                                                                     <span class="mb-0 font-w-600"> <b>{{$studyData->study_short_name}} </b></span><br>
                                                                     <p class="mb-0 font-w-500 tx-s-12"> <b> @if($answers->isEmpty()) New Bug By  @else Bug Reply By  @endif  {{$userData->name}}</b></p>
-                                                                    <small class="d-block">{{Carbon\Carbon::parse($bugs->created_at)->diffForHumans()}}</small>
+                                                                    <small class="d-block">{{Carbon\Carbon::parse($record->created_at)->diffForHumans()}}</small>
                                                                 </div>
                                                             @else
                                                                 <div class="currentNotificationRowWithOutStudy" style="cursor: pointer;">
                                                                     <p class="mb-0 font-w-500 tx-s-12"> <b> @if($answers->isEmpty()) New Bug By  @else Bug Reply By  @endif  {{$userData->name}}</b></p>
-                                                                    <small class="d-block">{{Carbon\Carbon::parse($bugs->created_at)->diffForHumans()}}</small>
+                                                                    <small class="d-block">{{Carbon\Carbon::parse($record->created_at)->diffForHumans()}}</small>
                                                                 </div>
                                                             @endif
                                                         @else
@@ -163,13 +191,13 @@
                                                                 <div class="currentNotificationRow" style="cursor: pointer;" data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$bugs->bug_url}}" data-id="{{$record->queryorbugid}}">
                                                                     <span class="mb-0 font-w-600">{{$studyData->study_short_name}}</span><br>
                                                                     <p class="mb-0 font-w-500 tx-s-12"> @if($answers->isEmpty()) New Bug By  @else Bug Reply By  @endif {{$userData->name}}</p>
-                                                                    <small class="d-block">{{Carbon\Carbon::parse($bugs->created_at)->diffForHumans()}}</small>
+                                                                    <small class="d-block">{{Carbon\Carbon::parse($record->created_at)->diffForHumans()}}</small>
                                                                 </div>
                                                             @else
                                                                 <div class="currentNotificationRow" style="cursor: pointer;">
                                                                     <p class="mb-0 font-w-500 tx-s-12"> @if($answers->isEmpty())
                                                                             <a href="{{url('bug-reports')}}}">New Bug By </a>  @else <a href="{{url('bug-reports')}}">Bug Reply By </a>  @endif {{$userData->name}}</p>
-                                                                    <small class="d-block">{{Carbon\Carbon::parse($bugs->created_at)->diffForHumans()}}</small>
+                                                                    <small class="d-block">{{Carbon\Carbon::parse($record->created_at)->diffForHumans()}}</small>
                                                                 </div>
                                                             @endif
                                                         @endif
