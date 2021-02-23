@@ -122,6 +122,7 @@ class AdjudicationFormStatus extends Model
     public static function makeAdjudicationFormStatusSpan($step, $adjudicationFormStatusObj,$getAdjudicationFormStatusArray)
     {
         $info = '';
+        $checkIfAnyQuestionNeedAdj = '';
         $adjudicationFormStatus = $adjudicationFormStatusObj->adjudication_status;
 
         if ($adjudicationFormStatus != 'no_status') {
@@ -134,11 +135,11 @@ class AdjudicationFormStatus extends Model
         }
         $imgSpanStepClsStr = buildAdjudicationStatusIdClsStr($step->step_id);
         $spanStr = '<span class="' . $imgSpanStepClsStr . '" ' . $info . '>';
-        $spanStr .= self::makeAdjudicationFormStatusSpanImage($adjudicationFormStatus) . '</span>';
+        $spanStr .= self::makeAdjudicationFormStatusSpanImage($adjudicationFormStatus,$checkIfAnyQuestionNeedAdj) . '</span>';
         return $spanStr;
     }
 
-    public static function makeAdjudicationFormStatusSpanImage($adjudication_status)
+    public static function makeAdjudicationFormStatusSpanImage($adjudication_status,$checkIfAnyQuestionNeedAdj)
     {
 
         $imageStr = '';
@@ -149,14 +150,15 @@ class AdjudicationFormStatus extends Model
             $imageStr .= '<img src="' . url('images/incomplete.png') . '"/>';
         } elseif ($adjudication_status == 'resumable') {
             $imageStr .= '<img src="' . url('images/resumable.png') . '"/>';
-        } elseif ($adjudication_status == 'no_status') {
+        } elseif ($adjudication_status == 'no_status' && $checkIfAnyQuestionNeedAdj < 1) {
+            $imageStr .= '<img src="' . url('images/not_required.png') . '"/>';
+        } elseif($adjudication_status == 'no_status'){
             $imageStr .= '<img src="' . url('images/no_status.png') . '"/>';
         } elseif ($adjudication_status == 'adjudication') {
             $imageStr .= '<img src="' . url('images/adjudication.png') . '"/>';
         } elseif ($adjudication_status == 'notrequired') {
             $imageStr .= '<img src="' . url('images/not_required.png') . '"/>';
         } elseif ($adjudication_status == 'required') {
-            // $imageStr .= '<img src="' . url('images/required.png') . '"/>';
             $imageStr .= '<i class="fas fa-exclamation-circle" style="font-size:15px;"></i>';
         }
         return $imageStr;

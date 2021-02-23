@@ -25,9 +25,9 @@ class AppNotificationsController extends Controller
         }
         $records = $records->where('user_id','=', auth()->user()->id);
         $records = $records->orderBy('created_at','DESC');
+        //$records = $records->where('is_read', '=','no');
         $records = $records->get();
-         //dd($records);
-        //$records = $records->paginate(20);
+
         return view('queries::notifications.index',compact('records'));
     }
 

@@ -179,6 +179,7 @@ class Query extends Model
 
         $questionQueryArray = array_intersect_key(array_filter($questionQueryArray), array_flip($query->getFillable()));
         $sqlQuery = self::getFormQueryObjQuery($questionQueryArray);
+
         //printSqlQuery($sqlQuery, false);
         $queryCheck   = false;
 
@@ -187,17 +188,20 @@ class Query extends Model
             ->where('query_status', '!=', 'close')
             ->where('query_level', '=', 'question')
             ->first();
-        //printSqlQuery($sqlQuery, false);
 
         if (null !== $queryByLogin) {
-            //dd('ddddd');
             $queryCheck = true;
 
         }
-
+        // Status For Queried person
+        $queryExits = $query->where('parent_query_id', 'like', 0)
+            ->where('query_status', '!=', 'close')
+            ->where('query_level', '=', 'question')
+            ->where('question_id', '=', $questionQueryArray['question_id'])
+            ->count();
         $queryForUser = QueryUser::where('user_id', auth()->user()->id)->first();
 
-        if (null !== $queryForUser) {
+        if (null !== $queryForUser && $queryExits > 0) {
 
             $queryCheck = true;
         }
@@ -222,45 +226,22 @@ class Query extends Model
             ->first();
 
         if (null !== $queryByLogin) {
-            //dd('ddddd');
             $queryCheck = true;
         }
+         // Status For Queried person
+        $queryExits = $query->where('parent_query_id', 'like', 0)
+            ->where('query_status', '=', 'close')
+            ->where('query_level', '=', 'question')
+            ->where('question_id', '=', $questionQueryArray['question_id'])
+            ->count();
         $queryForUser = QueryUser::where('user_id', auth()->user()->id)->first();
 
-        if (null !== $queryForUser) {
+        if (null !== $queryForUser && $queryExits > 0) {
 
             $queryCheck = true;
         }
         return $queryCheck;
     }
-
-//    public static function questionStatusHasClose($questionQueryArray)
-//    {
-//        $query = new Query();
-//
-//        $questionQueryArray = array_intersect_key(array_filter($questionQueryArray), array_flip($query->getFillable()));
-//        $sqlQuery = self::getFormQueryObjQuery($questionQueryArray);
-//        //printSqlQuery($sqlQuery, false);
-//        $queryCheck   = false;
-//        $queryByLogin = $sqlQuery->where('queried_remarked_by_id', 'like', auth()->user()->id)
-//            ->where('parent_query_id','=',0)
-//            ->where('query_status', '=', 'close')
-//            ->where('query_level', '=', 'question')
-//            //->count();
-//            ->first();
-//        //dd($queryByLogin);
-//        if (null !== $queryByLogin) {
-//            //dd('ddddd');
-//            $queryCheck = true;
-//        }
-//        $queryForUser = QueryUser::where('user_id', auth()->user()->id)->first();
-//
-//        if (null !== $queryForUser) {
-//
-//            $queryCheck = true;
-//        }
-//        return $queryCheck;
-//    }
 
     public static function formStatusHasClose($questionQueryArray)
     {
