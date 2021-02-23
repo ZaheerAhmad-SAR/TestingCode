@@ -21,25 +21,6 @@
             <i class="fas fa-question-circle showAllQuestionQueries" onclick="getAllQuestionQueryData({{ $dataStr }});"  style="margin-top: 12px; position: absolute;left: 10px; color: red;"></i>
         </span>
         </div>
-
-{{--     @if(\Modules\Queries\Entities\Query::questionHasQuery($queryParams)>0)--}}
-{{--    @if(\Modules\Queries\Entities\Query::questionStatusHasClose($queryParams)===true)--}}
-{{--        <div class="showQueries">--}}
-{{--        <span class="ml-3" style="cursor: pointer;">--}}
-{{--            @php--}}
-{{--                $dataStr = '';--}}
-{{--                if(isset($queryParams)){--}}
-{{--                    $dataStr = "'" . implode("', '", $queryParams)."'";--}}
-
-{{--                }--}}
-{{--                //echo 'true';--}}
-{{--            @endphp--}}
-
-{{--            <i class="fas fa-question-circle showAllQuestionQueries" onclick="getAllQuestionQueryData({{ $dataStr }});"  style="margin-top: 12px; position: absolute;left: 0; color: red;"></i>--}}
-{{--        </span>--}}
-{{--        </div>--}}
-{{--    @else--}}
-
     @elseif(\Modules\Queries\Entities\Query::questionStatusHasClose($queryParams))
         <div class="closeQuestion">
         <span class="ml-3" style="cursor: pointer;">
@@ -55,6 +36,7 @@
 
         </span>
         </div>
+        @else
         @endif
 {{--    @endif--}}
 

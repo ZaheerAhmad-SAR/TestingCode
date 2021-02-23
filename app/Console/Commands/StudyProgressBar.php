@@ -131,6 +131,7 @@ class StudyProgressBar extends Command
             // get all adjudication record for study from adjudication status
             $getTotalAdjudicationStatus = AdjudicationFormStatus::getTotalAdjudicationStatus($studyId);
             $getCompleteAdjudicationStatus = AdjudicationFormStatus::getTotalAdjudicationStatus($studyId, 'complete');
+            //$getRequiredAdjudication = 
 
             /********************* Form Percentage Ends *******************************/
 
