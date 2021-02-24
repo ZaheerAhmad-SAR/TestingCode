@@ -49,7 +49,11 @@
 
                                 <div id="reloadNotification" data-notification="someData">
 
+{{--                                    {!! \Modules\Queries\Entities\AppNotification::checkIfUserHaveNotification() !!}--}}
+
+
                                     {!! \Modules\Queries\Entities\AppNotification::countUserUnReadNotification() !!}
+
 
                                 </div>
 {{--                                @php $count =  \Modules\Queries\Entities\AppNotification::where('user_id','=', auth()->user()->id)->where('is_read','no')->count(); @endphp--}}
@@ -79,7 +83,7 @@
                                     ->where('query_status','open')->get();
 
                                     $query = \Modules\Queries\Entities\Query::where('id','=',$record->queryorbugid)
-                                    ->where('query_status','open')
+                                    //->where('query_status','open')
                                     ->first();
 
 
@@ -114,7 +118,11 @@
                                             @endif
                                             @if($query->query_condition == 'reply')
                                                 <li>
+                                                    @php
 
+                                                        $userReplyBy  = App\User::where('id',$query->queried_remarked_by_id)->first();
+
+                                                    @endphp
                                                     <a class="dropdown-item px-2 py-2 border border-top-0 border-left-0 border-right-0 currentNotificationId appRedirectPage"   data-study_id="{{$studyData->id}}" data-study_short_name="{{$studyData->study_short_name}}" data-study_code="{{$studyData->study_code}}"  data-query_url="{{$query->query_url}}" data-id="{{$query->study_id}}" href="javascript:void(0);" data-value="{{$query->id}}">
                                                         <div class="media">
                                                             <img src="{{asset('dist/images/author.jpg')}}" alt="" class="d-flex mr-3 img-fluid rounded-circle">
@@ -122,7 +130,7 @@
 
                                                                 <p class="mb-0 text-primary">
 
-                                                                    <b> {{$studyData->study_short_name}} : Query Reply By {{$userData->name}} </b>
+                                                                    <b> {{$studyData->study_short_name}} : Query Reply By {{$userReplyBy->name}} </b>
                                                                 </p>
 
                                                                 {{Carbon\Carbon::parse($record->created_at)->diffForHumans()}}
@@ -299,6 +307,17 @@
                 }
             });
         });
+
+
+
+        // function loadlink(){
+        //     var url = "/ocap_new/countUsers";
+        //     $('#reloadNotification').load(url);
+        // }
+        // loadlink();
+        // setInterval(function(){
+        //     loadlink()
+        // }, 50);
 
 
     </script>
