@@ -20,6 +20,8 @@ class SiteController extends Controller
      */
     public function index(Request $request)
     {
+       
+
         if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
             $field_name = $request->sort_by_field_name;
         }else{

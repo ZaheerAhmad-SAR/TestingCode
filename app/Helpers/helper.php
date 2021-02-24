@@ -32,6 +32,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Admin\Entities\RoleStudyUser;
 use Modules\Admin\Entities\AssignWork;
 use Modules\FormSubmission\Entities\FormStatus;
+use Illuminate\Support\Str;
 
 function hasrole($role)
 {

@@ -46,6 +46,7 @@ trait JSQuestionDependency
                     // new id's get form dependencey table
                     $questionIdStr_new = buildSafeStr($fields->question_id, '');
                     $questionRowIdStr_new = ($isForAdjudication) ? 'adjudication_question_row_' . $questionIdStr_new : 'question_row_' . $questionIdStr_new;
+
                     $dependency_conditions .= 'if(' . $getValueFunctionName . '(stepIdStr, \'' . $dependentOnFieldName . '\', \'' . $dependentOnFieldId . '\') ' . $fields->opertaor . ' \'' . $fields->custom_value . '\'){
                             enableAllFormFields(\'' . $questionRowIdStr_new . '\');
                         }else{

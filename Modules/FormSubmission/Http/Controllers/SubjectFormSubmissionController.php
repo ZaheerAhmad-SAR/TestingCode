@@ -57,7 +57,7 @@ class SubjectFormSubmissionController extends Controller
 
             // get form type
             $formType = $step->formType->form_type .= ' Form';
-            if (!empty($trailLogArray['trail_log'])) {
+            if (!empty($trailLogDataArray['trail_log'])) {
                 eventDetails($trailLogDataArray['trail_log'], $formType, $formAddOrEdit, request()->ip, []);
             }
             /********************* */
