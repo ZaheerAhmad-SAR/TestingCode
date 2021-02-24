@@ -151,6 +151,7 @@
                             <a href="#primaryInvestigator" class="nav-item nav-link addTabs" aria-controls="primaryInvestigator" role="tab" >Primary Investigator</a>
                             <a href="#coordinator" class="nav-item nav-link addTabs" aria-controls="coordinator" role="tab" >Coordinator</a>
                             <a href="#photographer" class="nav-item nav-link addTabs" aria-controls="photographer" role="tab">Photographer</a>
+                            <a href="#devices" class="nav-item nav-link addTabs" aria-controls="devices" role="tab">Devices</a>
                             <a href="#others" class="nav-item nav-link addTabs" aria-controls="others" role="tab">Others</a>
                         </div>
                     </nav>

@@ -400,7 +400,7 @@ class CertificationPreferencesController extends Controller
 
 
 
-        $not_in_new_app_array       = DB::connection('mysql2')->table('site')->whereNotIn('OIIRC_id', $new_cert_sites_array)->get();
+        $not_in_new_app_array = DB::connection('mysql2')->table('site')->whereNotIn('OIIRC_id', $new_cert_sites_array)->get();
 
         $not_in_new_app_count = DB::connection('mysql2')->table('site')->whereNotIn('OIIRC_id', $new_cert_sites_array)->pluck('OIIRC_id')->count();
 
