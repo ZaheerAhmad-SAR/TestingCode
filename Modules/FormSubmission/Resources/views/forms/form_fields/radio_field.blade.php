@@ -16,7 +16,7 @@ $showFalseField = false; // for laterly added questions
 @endphp
 @foreach ($options as $option_name => $option_value)
     @php
-    $where = array('dep_on_question_id' => $question->id, 'custom_value' => $option_value);
+    $where = array('dep_on_question_id' => $question->id);
     $getDependencyId = Modules\Admin\Entities\QuestionDependency::where($where)->first();
     if(null !==$getDependencyId){
         $dependencyIdStr = buildSafeStr($getDependencyId->id, '');

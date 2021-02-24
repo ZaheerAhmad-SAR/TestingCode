@@ -56,7 +56,9 @@
                   animation: spin 2s linear infinite;
                   position: fixed;
                 }
-
+            .detail-icon{
+                cursor: pointer;
+            }    
                 @-webkit-keyframes spin {
                   0% { -webkit-transform: rotate(0deg); }
                   100% { -webkit-transform: rotate(360deg); }
