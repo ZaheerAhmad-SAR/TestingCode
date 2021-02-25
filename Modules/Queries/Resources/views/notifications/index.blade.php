@@ -83,11 +83,13 @@
 
 
                                                 $question   = \Modules\Queries\Entities\Query::where('id','=',$record->queryorbugid)
-                                                ->where('query_status','open')
+                                                //->where('query_status','open')
                                                 ->first();
 
                                                 $userData = App\User::where('id',$record->notification_create_by_user_id)->first();
+
                                                 $studyData = Modules\Admin\Entities\Study::where('id',$question->study_id)->first();
+                                                //dd($studyData);
                                             @endphp
                                             <li class="p-2 border-bottom">
                                                 <div class="media d-flex w-100">
