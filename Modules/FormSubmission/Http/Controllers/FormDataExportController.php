@@ -30,6 +30,7 @@ class FormDataExportController extends Controller
     public function export(Request $request)
     {
 
+
         $exportTypeUsage = new ExportTypeUsage();
         $exportTypeUsage->id = (string)Str::uuid();
         $exportTypeUsage->export_type_id = $request->export_type_id;
@@ -39,7 +40,9 @@ class FormDataExportController extends Controller
         $study = Study::find(session('current_study'));
         $formType = FormType::find($request->form_type_id);
         $modility = Modility::find($request->modility_id);
+
         $fileName = str_replace(' ', '-', $study->study_short_name) . '-' . str_replace(' ', '-', $formType->form_type) . '-' . str_replace(' ', '-', $modility->modility_name) . '-data-export-' . date('Y-m-d-h-i-s') . '.xlsx';
+        
         return Excel::download(new FormDataExport($request), $fileName);
     }
 }

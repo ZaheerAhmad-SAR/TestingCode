@@ -78,6 +78,7 @@ class FormDataExport implements FromView
         $body = [];
         foreach ($subjectIds as $subject_id) {
             $subject = Subject::find($subject_id);
+            if($subject!=null){
             $site = Site::find($subject->site_id);
             $studySite = StudySite::where('study_id', $study->id)->where('site_id', $site->id)->firstOrNew();
 
@@ -108,12 +109,16 @@ class FormDataExport implements FromView
 
                     $answerTds = [];
 
+                    $answerabc = [];
+                    
                     foreach ($sections as $section) {
                         $questions = Question::where('section_id', 'like', $section->id)
                             ->whereIn('id', $questionIds)
                             ->get();
 
                         foreach ($questions as $question) {
+                            // print_r($question);
+                            // echo "<br>";
                             $variableName = $question->formFields->variable_name;
                             $form_filled_by_user_ids = Answer::where('study_id', 'like', $this->study_id)
                                 ->where('subject_id', 'like', $subject_id)
@@ -122,7 +127,14 @@ class FormDataExport implements FromView
                                 ->where('question_id', $question->id)
                                 ->pluck('form_filled_by_user_id')
                                 ->toArray();
-
+// print_r("study_id".$this->study_id);
+// print_r("subject_id".$subject_id);
+// print_r("visit_id".$visit->id);
+// print_r("stepy_id".$step->step_id);
+// print_r("question_id".$question->id);
+// echo "<br>";
+                            if($form_filled_by_user_ids!=null)
+                            {
                             $form_filled_by_user_ids = array_unique($form_filled_by_user_ids);
                             $form_filled_by_user_ids = array_values($form_filled_by_user_ids);
 
@@ -155,11 +167,32 @@ class FormDataExport implements FromView
                                         $option_names = [];
                                         $option_values = [];
                                         $optionGroup = $question->optionGroup;
+                                       
                                         if (!empty($optionGroup->option_value)) {
                                             $option_values = arrayFilter(explode(',', $optionGroup->option_value));
                                             $option_names = arrayFilter(explode(',', $optionGroup->option_name));
                                             $options = array_combine($option_values, $option_names);
-                                            $answerVal = $options[$answer->answer];
+                                           // print_r($options);
+                                            $searchForValue = ',';
+                                          
+
+                                           if( strpos($answer->answer, $searchForValue) !== false ) {
+                                        
+                                            $answerVals_exploded =explode(",",$answer->answer);
+                                          
+                                            foreach($answerVals_exploded as $answerVal_exploded)
+                                            {
+                                                $answerVal =$options[$answerVal_exploded];
+                                            }
+                                           }
+                                           else{
+                                             $answerVal = $options[$answer->answer];
+                                           }
+                                           
+
+                                           
+                                            //  $options = 'abc';
+                                            // $answerVal = 'xyz';
                                         }
                                     }
                                 }
@@ -167,9 +200,11 @@ class FormDataExport implements FromView
                             }
                         }
                     }
+                    }
                 }
                 $body[] = $permanentTds + $answerTds;
             }
+        }
         }
 
         return view('formsubmission::exports.export_view', [
