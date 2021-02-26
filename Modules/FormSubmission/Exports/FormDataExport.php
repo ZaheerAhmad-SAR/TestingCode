@@ -89,11 +89,11 @@ class FormDataExport implements FromView
                     ->where('form_type_id', $this->form_type_id)
                     ->where('modility_id', $this->modility_id)
                     ->get();
-
+                if($subjectVisit!=null){
                 foreach ($steps as $step) {
                     $step = PhaseSteps::find($step->step_id);
                     $sections = Section::where('phase_steps_id', 'like', $step->step_id)->get();
-
+                    
                     $permanentTds = [
                         'study' => $study->study_short_name,
                         'cohort' => Subject::getDiseaseCohort($subject),
@@ -137,13 +137,14 @@ class FormDataExport implements FromView
                             {
                             $form_filled_by_user_ids = array_unique($form_filled_by_user_ids);
                             $form_filled_by_user_ids = array_values($form_filled_by_user_ids);
-
+//print_r($form_filled_by_user_ids); 
                             for ($counter = 0; $counter < $maxNumberOfGraders; ++$counter) {
                                 $headerName = ($step->formType->form_type == 'QC') ? $variableName : $variableName . '_G' . ($counter + 1);
                                 if (!in_array($headerName, $header)) {
                                     $header[$headerName] = $headerName;
                                 }
-
+                                if(isset($form_filled_by_user_ids[$counter]))
+                                {
                                 $answerVal = '';
                                 $answer = Answer::where('study_id', 'like', $this->study_id)
                                     ->where('subject_id', 'like', $subject_id)
@@ -201,6 +202,8 @@ class FormDataExport implements FromView
                         }
                     }
                     }
+                }
+                }
                 }
                 $body[] = $permanentTds + $answerTds;
             }
