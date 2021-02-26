@@ -91,6 +91,7 @@ class FormDataExport implements FromView
                 foreach ($this->visit_ids as $visit_id) {
                     $visit = StudyStructure::find($visit_id);
                     $subjectVisit = SubjectsPhases::where('phase_id', 'like', $visit_id)->where('subject_id', 'like', $subject_id)->first();
+
                     $steps = PhaseSteps::where('phase_id', 'like', $visit_id)
                         ->where('form_type_id', $this->form_type_id)
                         ->where('modility_id', $this->modility_id)
@@ -247,42 +248,50 @@ class FormDataExport implements FromView
             $subjectIds = array_unique($subjectIds);
 
             $body = [];
-            foreach ($subjectIds as $subject_id) {
+        foreach ($subjectIds as $subject_id) {
                 $subject = Subject::find($subject_id);
-                if($subject!=null){
+            if($subject!=null){
                 $site = Site::find($subject->site_id);
                 $studySite = StudySite::where('study_id', $study->id)->where('site_id', $site->id)->firstOrNew();
-
+ 
                 foreach ($this->visit_ids as $visit_id) {
+
                     $visit = StudyStructure::find($visit_id);
-                    $subjectVisit = SubjectsPhases::where('phase_id', 'like', $visit_id)->where('subject_id', 'like', $subject_id)->first();
+                    
+                    $subjectVisit = SubjectsPhases::where('phase_id', 'like', $visit_id)->where('subject_id', 'like', $subject_id)
+                    ->where('modility_id', $this->modility_id)
+                    ->first();
+
+                    if($subjectVisit!=null) {
+
                     $steps = PhaseSteps::where('phase_id', 'like', $visit_id)
                         ->where('form_type_id', $this->form_type_id)
                         ->where('modility_id', $this->modility_id)
                         ->get();
-                    if($subjectVisit!=null){
+
+                    if(!$steps->isEmpty()){
+
+                    $permanentTds = [
+                        'study' => $study->study_short_name,
+                        'cohort' => Subject::getDiseaseCohort($subject),
+                        'site_id' => $studySite->study_site_id,
+                        'site_name' => $site->site_name,
+                        'site_code' => $site->site_code,
+                        'subject_id' => $subject->subject_id,
+                        'study_eye' => $subject->study_eye,
+                        'visit' => $visit->name,
+                        'visit_date' => $subjectVisit->visit_date->format('m-d-Y'),
+                        //'step' => $step->step_name . ' (' . $step->formType->form_type . ' - ' . $step->modility->modility_name . ')',
+                    ];
+             
                     foreach ($steps as $step) {
                         $step = PhaseSteps::find($step->step_id);
                         $sections = Section::where('phase_steps_id', 'like', $step->step_id)->get();
-                        
-                        $permanentTds = [
-                            'study' => $study->study_short_name,
-                            'cohort' => Subject::getDiseaseCohort($subject),
-                            'site_id' => $studySite->study_site_id,
-                            'site_name' => $site->site_name,
-                            'site_code' => $site->site_code,
-                            'subject_id' => $subject->subject_id,
-                            'study_eye' => $subject->study_eye,
-                            'visit' => $visit->name,
-                            'visit_date' => $subjectVisit->visit_date->format('m-d-Y'),
-                            'step' => $step->step_name . ' (' . $step->formType->form_type . ' - ' . $step->modility->modility_name . ')',
-                        ];
-
                         $answerTds = [];
 
                         $answerabc = [];
-                        
                         foreach ($sections as $section) {
+
                             $questions = Question::where('section_id', 'like', $section->id)
                                 ->whereIn('id', $questionIds)
                                 ->get();
@@ -298,18 +307,7 @@ class FormDataExport implements FromView
                                 //     ->where('question_id', $question->id)
                                 //     ->pluck('form_filled_by_user_id')
                                 //     ->toArray();
-    // print_r("study_id".$this->study_id);
-    // print_r("subject_id".$subject_id);
-    // print_r("visit_id".$visit->id);
-    // print_r("stepy_id".$step->step_id);
-    // print_r("question_id".$question->id);
-    // echo "<br>";
-                                // if($form_filled_by_user_ids!=null)
-                                // {
-                                // $form_filled_by_user_ids = array_unique($form_filled_by_user_ids);
-                                // $form_filled_by_user_ids = array_values($form_filled_by_user_ids);
-    //print_r($form_filled_by_user_ids); 
-                                // for ($counter = 0; $counter < $maxNumberOfGraders; ++$counter) {
+  
                                    
                                     $headerName = ($step->formType->form_type == 'QC') ? $variableName : $variableName;
                                     if (!in_array($headerName, $header)) {
@@ -359,23 +357,24 @@ class FormDataExport implements FromView
                                                else{
                                                  $answerVal = isset($options[$answer->answer]) ? $options[$answer->answer] : '';
                                                }
-                                                //  $options = 'abc';
-                                                // $answerVal = 'xyz';
+                                                
                                             }
                                         }
                                     }
                                     $answerTds[$headerName] = htmlentities($answerVal);
-                                // }
-                            }
-                        // }
-                        // }
-                    }
-                    }
-                    }
+
+                                } // questions loop ends
+ 
+                    } // section loop ends
+                    //dd($counter);
+                    } // steps loop ends
+
                     $body[] = $permanentTds + $answerTds;
-                }
-            }
-            } // foreach loop ends
+                    } // step check ends
+                    } // loop visit subject ends
+                } // phase loop ends
+            } // subject empty check
+        } // foreach subject loop ends
 
     } // form type check ends
 
