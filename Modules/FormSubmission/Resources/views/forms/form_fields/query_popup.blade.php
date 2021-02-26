@@ -32,7 +32,7 @@
 
             //echo('false');
             @endphp
-            <i class="fas fa-check-circle showCloseQuestionPopUp" onclick="showCloseQuestionQueries({{ $dataStr }});"  style="margin-top: 12px; position: absolute;left: 17px; color: green;"></i>
+            <i class="fas fa-check-circle showCloseQuestionPopUp" onclick="showCloseQuestionQueries({{ $dataStr }});"  style="margin-top: 12px; position: absolute;left: 5px; color: green;"></i>
 
         </span>
         </div>

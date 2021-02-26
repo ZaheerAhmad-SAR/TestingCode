@@ -39,6 +39,7 @@ class SubjectAdjudicationFormSubmissionController extends Controller
                     $retArray = $this->putFinalAnswer($request, $question);
                     $adjudicationFormRevisionDataArray['adjudication_form_data'][] = $retArray['adjudication_form_data'];
                     $trailLogDataArray['trail_log'][] = $retArray['trail_log'];
+
                 }
             }
 
@@ -91,7 +92,8 @@ class SubjectAdjudicationFormSubmissionController extends Controller
     {
         $step = PhaseSteps::find($request->stepId);
         $answerFixedArray = [];
-        $finalFormDataArray = [];
+        $finalFormDataArray = ['trail_log' => '','adjudication_form_data' => ''];
+        // $finalFormDataArray = [];
         $formDataArray = [];
         $trailLogArray = [];
         $answerFixedArray['study_id'] = $request->studyId;

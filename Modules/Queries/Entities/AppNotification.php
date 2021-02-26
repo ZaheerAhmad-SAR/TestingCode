@@ -2,7 +2,9 @@
 
 namespace Modules\Queries\Entities;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Admin\Entities\Study;
 
 class AppNotification extends Model
 {
@@ -28,6 +30,33 @@ class AppNotification extends Model
       {
           return '&nbsp; &nbsp;<td class="align-baseline"><a class="markAllRead" href="javascript:void(0);"><span><i class="fas fa-check"></i></span> &nbsp;Mark All Read</a></td> &nbsp; &nbsp; &nbsp;';
       }
+    }
+
+    public static function  checkIfUserHaveNotification()
+    {
+        $notifications = Self::where('user_id','=', auth()->user()->id)->where('is_read','no')->get();
+        foreach ($notifications as $notification)
+        {
+              $query = Query::where('id','=',$notification->queryorbugid)
+                ->where('query_status','open')
+                ->first();
+
+                $studyData = Study::where('id','=',$query->study_id)->first();
+
+                $userData  = User::where('id',$notification->notification_create_by_user_id)->first();
+
+                if ($notification->notifications_type =='query')
+                {
+
+                    echo 'new query';
+                }
+                else
+                {
+
+                    echo 'new bug';
+                }
+        }
+
     }
 
 

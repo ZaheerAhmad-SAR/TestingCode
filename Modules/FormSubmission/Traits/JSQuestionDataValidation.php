@@ -15,9 +15,11 @@ trait JSQuestionDataValidation
         $functionName = ($isForAdjudication) ? 'validateAdjudicationQuestion' : 'validateQuestion';
         foreach ($step->sections as $section) {
             foreach ($section->questions as $question) {
-                $questionIdStr = buildSafeStr($question->id, '');
-                $questionValidationStr .= '
-                    isFormValid = ' . $functionName . $questionIdStr . '(isFormValid, "' . $stepIdStr . '");';
+                if($question->form_field_type_id != 11){
+                    $questionIdStr = buildSafeStr($question->id, '');
+                    $questionValidationStr .= '
+                        isFormValid = ' . $functionName . $questionIdStr . '(isFormValid, "' . $stepIdStr . '");';
+                }
             }
         }
 
@@ -87,7 +89,6 @@ trait JSQuestionDataValidation
         $functionName = ($isForAdjudication) ? 'validateAdjudicationQuestion' : 'validateQuestion';
         $getValueFunctionName = ($isForAdjudication) ? 'getAdjudicationFormFieldValueForRequired' : 'getFormFieldValueForRequired';
         $questionRowId = ($isForAdjudication) ? 'adjudication_question_row_' . $questionIdStr : 'question_row_' . $questionIdStr;
-
         $mainQuestionValidationStr .= '
                 function ' . $functionName . $questionIdStr . '(isFormValid, stepIdStr){
                     if(isFormValid){
@@ -104,7 +105,7 @@ trait JSQuestionDataValidation
                     return isFormValid;
                 }';
 
-
+        
         return $mainQuestionValidationStr;
     }
 }
