@@ -124,11 +124,10 @@ class AdjudicationFormStatus extends Model
         $info = '';
         $checkIfAnyQuestionNeedAdj = '';
         $adjudicationFormStatus = $adjudicationFormStatusObj->adjudication_status;
-
+        $checkIfAnyQuestionNeedAdj = QuestionAdjudicationRequired::checkEnteryInAdjudicationRequired($getAdjudicationFormStatusArray);
         if ($adjudicationFormStatus != 'no_status') {
             $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="' . $adjudicationFormStatusObj->user->name . '"';
         }else{
-            $checkIfAnyQuestionNeedAdj = QuestionAdjudicationRequired::checkEnteryInAdjudicationRequired($getAdjudicationFormStatusArray);
             if($checkIfAnyQuestionNeedAdj > 0){
                 $adjudicationFormStatus = 'required';
             }
