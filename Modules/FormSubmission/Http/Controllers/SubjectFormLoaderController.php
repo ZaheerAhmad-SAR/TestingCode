@@ -12,7 +12,9 @@ use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\Subject;
 use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\StudySite;
+use Modules\FormSubmission\Entities\FormStatus;
 use Modules\Admin\Scopes\StudyStructureWithoutRepeatedScope;
+use Session;
 
 class SubjectFormLoaderController extends Controller
 {
@@ -48,5 +50,15 @@ class SubjectFormLoaderController extends Controller
             ->with('site', $site)
             ->with('studySite', $studySite)
             ->with('current_user_id', $current_user_id);
+    }
+
+    public function lockData(Request $request) {
+        // get all completed forms
+        $getCompletedForms = FormStatus::where('study_id', Session::get('current_study'))
+        ->where('form_status', 'complete')
+        ->groupBy(['subject_id', 'study_structures_id', 'modility_id', 'form_type_id'])
+        ->paginate(20);
+
+        return view('formsubmission::subjectFormLoader.form_lock', ['getCompletedForms' => $getCompletedForms]);
     }
 }
