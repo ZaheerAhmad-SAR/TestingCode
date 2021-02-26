@@ -50,7 +50,7 @@
             ];
             @endphp
             @if($isPreview === false)
-            <div class="col-1">@include('formsubmission::forms.form_fields.query_popup', ['fieldType'=>$fieldType, 'queryParams'=>$queryParams])</div>
+            <div class="col-1">query popup</div>
             @endif
         </div>
     </div>

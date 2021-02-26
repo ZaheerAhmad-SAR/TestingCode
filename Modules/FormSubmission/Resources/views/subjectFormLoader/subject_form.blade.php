@@ -149,6 +149,7 @@
                                             $showPhase = 'true';
                                         }
                                         @endphp
+
                                         <div class="card text-white bg-primary m-1">
                                             <div
                                                 id="heading{{ $phase->id }}"
@@ -255,6 +256,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-12 col-lg-10 mt-3 pl-lg-0">
                         <div class="card border h-100 contact-list-section">
                             <div class="card-body p-0">
@@ -303,7 +305,7 @@
                                                         continue;
                                                     }
                                                 }
-
+                                           
                                                 $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                                                 $adjStepClsStr = buildSafeStr($step->step_id, 'adj_step_cls_');
                                                 $stepIdStr = buildSafeStr($step->step_id, '');
@@ -326,8 +328,10 @@
                                                 'skipLogicStepIdStr' => $skipLogicStepIdStr,
                                                 'stepCounter' => $stepCounter,
                                                 ];
+
                                                 @endphp
                                                 @include('formsubmission::forms.section_loop', $dataArray)
+                                        
                                                 @include('formsubmission::forms.adjudication_form', $dataArray)
                                                 @php
                                                 }

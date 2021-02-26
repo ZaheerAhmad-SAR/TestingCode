@@ -14,6 +14,7 @@ trait JSQuestionDependency
         $questionDependencyStr = '';
         $questionDependencyIdStr = '';
         $dependency_conditions = '';
+        $disabled_all_dependent_questions = '';
         $section = Section::find($question->section_id);
         $step = PhaseSteps::find($section->phase_steps_id);
         $stepIdStr = buildSafeStr($step->step_id, '');
@@ -44,25 +45,35 @@ trait JSQuestionDependency
 
                 foreach($getAllAppliedLogics as $fields){
                     // new id's get form dependencey table
+
                     $questionIdStr_new = buildSafeStr($fields->question_id, '');
                     $questionRowIdStr_new = ($isForAdjudication) ? 'adjudication_question_row_' . $questionIdStr_new : 'question_row_' . $questionIdStr_new;
-
                     $dependency_conditions .= 'if(' . $getValueFunctionName . '(stepIdStr, \'' . $dependentOnFieldName . '\', \'' . $dependentOnFieldId . '\') ' . $fields->opertaor . ' \'' . $fields->custom_value . '\'){
                             enableAllFormFields(\'' . $questionRowIdStr_new . '\');
                         }else{
                             disableAllFormFields(\'' . $questionRowIdStr_new . '\');
                         }';
+
+                    // loading of function on documents load
+                     $questionDependencyStr .= '
+                        $( document ).ready(function() {
+                            disableAllFormFields(\'' . $questionRowIdStr_new . '\');
+                        });
+                       
+                        function ' . $functionName . $dependentOnQuestionIdStr .'_'. $questionDependencyIdStr .'(stepIdStr){
+                            '.$dependency_conditions.';
+                        }';
                 }
 
             }
-            $questionDependencyStr .= '
-            $( document ).ready(function() {
-                disableAllFormFields(\'' . $questionRowIdStr . '\');
-            });
-            
-            function ' . $functionName . $dependentOnQuestionIdStr .'_'. $questionDependencyIdStr .'(stepIdStr){
-                '.$dependency_conditions.';
-            }';
+            // $questionDependencyStr .= '
+            // $( document ).ready(function() {
+            //     disableAllFormFields(\'' . $questionRowIdStr . '\');
+            // });
+           
+            // function ' . $functionName . $dependentOnQuestionIdStr .'_'. $questionDependencyIdStr .'(stepIdStr){
+            //     '.$dependency_conditions.';
+            // }';
         }
         return $questionDependencyStr;
     }
