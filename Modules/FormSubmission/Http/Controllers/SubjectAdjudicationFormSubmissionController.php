@@ -42,7 +42,7 @@ class SubjectAdjudicationFormSubmissionController extends Controller
 
                 }
             }
-
+            
             $adjudicationFormStatusArray = AdjudicationFormStatus::putAdjudicationFormStatus($request);
             AdjudicationFormRevisionHistory::putAdjudicationFormRevisionHistory($adjudicationFormRevisionDataArray, $adjudicationFormStatusArray['id']);
 

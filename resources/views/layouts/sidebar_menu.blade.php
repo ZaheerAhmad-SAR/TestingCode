@@ -395,6 +395,11 @@
                                             Data Exports
                                         </a>
                                     </li>
+                                    <li>
+                                        <a href="{{route('subjectFormLoader.lock-data')}}">
+                                            Data Lock
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                         </ul>
