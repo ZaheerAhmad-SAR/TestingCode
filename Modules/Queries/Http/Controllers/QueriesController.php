@@ -416,8 +416,29 @@ class QueriesController extends Controller
 
         $query_status     = $request->post('query_status'); // return the status value
         $query_id         = $request->post('query_id');
+
         $record           = AppNotification::where('queryorbugid',$query_id)->first();
         $find             = Query::find($query_id);
+        $foundusers       = QueryUser::where('query_id','=',$find->id)->get();
+        $queryCreatedBy      = Query::where('id',$find->id)->where('parent_query_id',0)->first();
+        //dd($queryCreatedBy->queried_remarked_by_id);
+
+        foreach ($foundusers as $founduser)
+        {
+
+
+            $arrayofIds = array(
+                $queryCreatedBy->queried_remarked_by_id, $founduser['user_id']
+            );
+            if (($key = array_search(\auth()->user()->id, $arrayofIds )) !== false) {
+                unset($arrayofIds[$key]);
+            }
+
+        }
+
+
+
+
         $message_reply    = $request->post('message_query_for_reply');
         $query_subject    = $request->post('subject_question');
         $query_level_q    = $request->post('query_level_question');
@@ -468,14 +489,18 @@ class QueriesController extends Controller
             'query_condition'=>'reply'
         ]);
 
-        AppNotification::create([
-            'id' => Str::uuid(),
-            'queryorbugid' => $queryId,
-            'is_read'=> 'no',
-            'notifications_type'=> 'query',
-            'user_id'=>$record->notification_create_by_user_id,
-            'notification_create_by_user_id'=>\auth()->user()->id
-        ]);
+        foreach ($arrayofIds as $founduser)
+        {
+
+            AppNotification::create([
+                'id' => Str::uuid(),
+                'queryorbugid' => $queryId,
+                'is_read'=> 'no',
+                'notifications_type'=> 'query',
+                'user_id'=>$founduser,
+                'notification_create_by_user_id'=>\auth()->user()->id
+            ]);
+        }
 
         $current_study = '';
         $current_study    = session('current_study');

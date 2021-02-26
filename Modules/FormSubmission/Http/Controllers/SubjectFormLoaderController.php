@@ -18,6 +18,8 @@ class SubjectFormLoaderController extends Controller
 {
     public function showSubjectForm($studyId, $subjectId)
     {
+
+
         /***************/
         $studyId = isset($studyId) ? $studyId : 0;
         $study = Study::find($studyId);
@@ -31,10 +33,12 @@ class SubjectFormLoaderController extends Controller
         $current_user_id = auth()->user()->id;
 
         $subjectPhasesIdsArray = $subject->subjectPhasesArray();
+      
         $visitPhases = StudyStructure::where('study_id', $studyId)
             ->whereIn('id', $subjectPhasesIdsArray)
             ->get();
         /*****************/
+    
 
         session(['subject_id' => $subjectId]);
         session(['stepToActivateStr' => '']);

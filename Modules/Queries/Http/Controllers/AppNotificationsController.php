@@ -34,7 +34,6 @@ class AppNotificationsController extends Controller
     public function countUserNotification()
     {
 
-
         $count = '';
         $count = AppNotification::where('user_id','=', auth()->user()->id)->where('is_read','no')->count();
         if ($count > 0)
