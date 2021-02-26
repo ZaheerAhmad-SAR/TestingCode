@@ -31,15 +31,17 @@ class AppNotificationsController extends Controller
         return view('queries::notifications.index',compact('records'));
     }
 
-    public function countUserNotification()
+    public  static function countUserNotification()
     {
 
         $count = '';
-        $count = AppNotification::where('user_id','=', auth()->user()->id)->where('is_read','no')->count();
-        if ($count > 0)
-        {
-            return '<span class="badge badge-pill badge-danger" style="height: 20px;top: 12px;">'.$count.'</span>';
-        }
+        $count = AppNotification::where('user_id','=', auth()->user()->id)
+            ->where('is_read','no')
+            ->distinct('question_id')
+            //->groupBy('question_id')
+            ->count();
+        //return response()->json(['counter'=>$count]);
+        return view('queries::notifications.icon',compact('count'));
     }
     /**
      * Show the form for creating a new resource.

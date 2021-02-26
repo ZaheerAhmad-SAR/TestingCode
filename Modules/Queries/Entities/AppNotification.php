@@ -9,14 +9,19 @@ use Modules\Admin\Entities\Study;
 class AppNotification extends Model
 {
     protected $table = 'app_notifications';
-    protected $fillable = ['id', 'user_id', 'notifications_type','role_id','is_read','notification_create_by_user_id','queryorbugid'];
+    protected $fillable = ['id', 'user_id', 'notifications_type','question_id','role_id','is_read','notification_create_by_user_id','queryorbugid'];
     protected $keyType = 'string';
 
 
     public static function countUserUnReadNotification()
     {
       $count = '';
-      $count = self::where('user_id','=', auth()->user()->id)->where('is_read','no')->count();
+      $count = self::where('user_id','=', auth()->user()->id)
+          ->where('is_read','no')
+          ->distinct('question_id')
+          //->groupBy('question_id')
+          ->count();
+      //dd($count);
       if ($count > 0)
       {
           return '<span class="badge badge-pill badge-danger" style="height: 20px;top: 12px;">'.$count.'</span>';
