@@ -67,8 +67,7 @@ class SubjectAdjudicationFormSubmissionController extends Controller
             }
             // get form type
             $formType = 'Adjudication Form';
-
-            eventDetails($trailLogDataArray['trail_log'], $formType, $formAddOrEdit, request()->ip, []);
+            eventDetails(array_filter($trailLogDataArray['trail_log']), $formType, $formAddOrEdit, request()->ip, []);
             /********************* */
 
             echo json_encode($adjudicationFormStatusArray);
