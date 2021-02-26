@@ -309,8 +309,9 @@ class FormDataExport implements FromView
                                 // $form_filled_by_user_ids = array_unique($form_filled_by_user_ids);
                                 // $form_filled_by_user_ids = array_values($form_filled_by_user_ids);
     //print_r($form_filled_by_user_ids); 
-                                for ($counter = 0; $counter < $maxNumberOfGraders; ++$counter) {
-                                    $headerName = ($step->formType->form_type == 'QC') ? $variableName : $variableName . '_G' . ($counter + 1);
+                                // for ($counter = 0; $counter < $maxNumberOfGraders; ++$counter) {
+                                   
+                                    $headerName = ($step->formType->form_type == 'QC') ? $variableName : $variableName;
                                     if (!in_array($headerName, $header)) {
                                         $header[$headerName] = $headerName;
                                     }
@@ -364,7 +365,7 @@ class FormDataExport implements FromView
                                         }
                                     }
                                     $answerTds[$headerName] = htmlentities($answerVal);
-                                }
+                                // }
                             }
                         // }
                         // }
