@@ -6,7 +6,7 @@
 <!---->
 @if($count>0)
 
-    <span class="badge badge-pill badge-danger" style="height: 20px;top: 12px;">{{$count}}</span>
+    <span class="badge badge-pill badge-danger" id="unReadNotification" style="height: 20px;top: 12px;">{{$count}}</span>
 
 @endif
 

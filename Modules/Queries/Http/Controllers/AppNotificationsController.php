@@ -31,7 +31,7 @@ class AppNotificationsController extends Controller
         return view('queries::notifications.index',compact('records'));
     }
 
-    public  static function countUserNotification()
+    public  function countUserNotification()
     {
 
         $count = '';
@@ -40,8 +40,12 @@ class AppNotificationsController extends Controller
             ->distinct('question_id')
             //->groupBy('question_id')
             ->count();
-        //return response()->json(['counter'=>$count]);
-        return view('queries::notifications.icon',compact('count'));
+        if ($count > 0 )
+        {
+            return response()->json(['counter'=>$count]);
+        }
+
+        //return view('queries::notifications.icon',compact('count'));
     }
     /**
      * Show the form for creating a new resource.

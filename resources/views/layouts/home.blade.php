@@ -47,17 +47,17 @@
                             <a href="#" class="nav-link" data-toggle="dropdown" aria-expanded="false">
                                 <i class="icon-bell h4"></i>
 
-                                <div id="reloadNotification" data-notification="someData">
+
 
 {{--                                    {!! \Modules\Queries\Entities\AppNotification::checkIfUserHaveNotification() !!}--}}
 
+                                    <span class="badge badge-pill badge-danger" id="unReadNotification" style="height: 20px;top: 12px;"></span>
+                                    {!! \Modules\Queries\Entities\AppNotification::countUserUnReadNotification() !!}
 
-{{--                                    {!! \Modules\Queries\Entities\AppNotification::countUserUnReadNotification() !!}--}}
+
+{{--                                    {{ \Modules\Queries\Http\Controllers\AppNotificationsController::countUserNotification() }}--}}
 
 
-                                    {{ \Modules\Queries\Http\Controllers\AppNotificationsController::countUserNotification() }}
-
-                                </div>
 {{--                                @php $count =  \Modules\Queries\Entities\AppNotification::where('user_id','=', auth()->user()->id)->where('is_read','no')->count(); @endphp--}}
 
 {{--                                @if($count > 0)--}}
@@ -321,14 +321,25 @@
 
 
 
-        // function loadlink(){
-        //
-        //     $('#reloadNotification').load(" #reloadNotification");
-        // }
-        // loadlink();
-        // setInterval(function(){
-        //     loadlink()
-        // }, 50);
+        function loadnotifications()
+        {
+            $.ajax({
+                url:"{{route('notifications.countUserNotification')}}",
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                },
+                success: function(response)
+                {
+                    $('#unReadNotification').html(response.counter);
+                }
+            });
+        }
+        loadnotifications();
+        setInterval(function(){
+            loadnotifications()
+        }, 5000);
 
 
     </script>
