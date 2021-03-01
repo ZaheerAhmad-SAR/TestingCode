@@ -984,7 +984,7 @@
         if (queryAssignedTo == 'user')
         {
             var assignedUsers = $('#question_users').val();
-            console.log(assignedUsers);
+            //console.log(assignedUsers);
         }
         if(queryAssignedTo =='role')
         {
@@ -1025,18 +1025,36 @@
             processData:false,
             success: function(response)
             {
-                console.log(response);
+                //console.log(response);
                 $("#queriesQuestionForm")[0].reset();
                 $("#usersSelectOptionList").html('');
                 $('#queries-modal-question').modal('hide');
                 location.reload();
-                // window.setTimeout(function () {
-                //     window.location.reload();
-                // }, 100);
+                {{--$.ajax({--}}
+                {{--    type: 'POST',--}}
+                {{--    url: "{{route('notifications.countUserNotification')}}"--}}
+                {{--});--}}
             }
         });
 
     });
+
+    function countUserNotification()
+    {
+        $.ajax({
+            type: 'POST',
+            url:"{{route('notifications.countUserNotification')}}",
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response)
+            {
+                //console.log(response);
+            }
+        });
+    }
 
     $('#queries-modal-question').on('hidden.bs.modal', function () {
         $(this).find('form').trigger('reset');
@@ -1072,7 +1090,7 @@
         if (queryAssignedTo == 'user')
         {
             var assignedUsers = $('#form_users').val();
-            console.log(assignedUsers);
+            //console.log(assignedUsers);
         }
         if(queryAssignedTo =='role')
         {
@@ -1112,7 +1130,7 @@
             processData:false,
             success: function(response)
             {
-                console.log(response);
+                //console.log(response);
                 $("#formForQueries")[0].reset();
                 $("#formQueryUserDropDownList").html('');
                 $('#queries-modal-form').modal('hide');
@@ -1180,7 +1198,7 @@
             processData:false,
             success: function(results)
             {
-                console.log(results);
+                //console.log(results);
                 $('.replyFormButton').css('display','');
                 var query_id = results[0].parent_query_id;
                 showForm(query_id);

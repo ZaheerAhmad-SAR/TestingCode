@@ -52,8 +52,10 @@
 {{--                                    {!! \Modules\Queries\Entities\AppNotification::checkIfUserHaveNotification() !!}--}}
 
 
-                                    {!! \Modules\Queries\Entities\AppNotification::countUserUnReadNotification() !!}
+{{--                                    {!! \Modules\Queries\Entities\AppNotification::countUserUnReadNotification() !!}--}}
 
+
+                                    {{ \Modules\Queries\Http\Controllers\AppNotificationsController::countUserNotification() }}
 
                                 </div>
 {{--                                @php $count =  \Modules\Queries\Entities\AppNotification::where('user_id','=', auth()->user()->id)->where('is_read','no')->count(); @endphp--}}
@@ -66,7 +68,13 @@
                             <ul class="dropdown-menu dropdown-menu-right border   py-0">
 
                                 @php
-                                    $userQueries =  \Modules\Queries\Entities\AppNotification::where('user_id','=', auth()->user()->id)->where('is_read','no')->get();
+                                    $userQueries =  \Modules\Queries\Entities\AppNotification::where('user_id','=', auth()->user()->id)
+                                    ->where('is_read','no')
+                                      ->orderBy('created_at', 'DESC')
+                                      ->groupBy('question_id')
+                                     //->distinct('user_id')
+                                    ->get();
+
 
                                 @endphp
 
@@ -84,6 +92,9 @@
 
                                     $query = \Modules\Queries\Entities\Query::where('id','=',$record->queryorbugid)
                                     //->where('query_status','open')
+                                    //->orderBy('created_at', 'DESC')
+                                    //->groupBy('parent_query_id')
+                                    //->distinct('parent_query_id')
                                     ->first();
 
 
@@ -311,8 +322,8 @@
 
 
         // function loadlink(){
-        //     var url = "/ocap_new/countUsers";
-        //     $('#reloadNotification').load(url);
+        //
+        //     $('#reloadNotification').load(" #reloadNotification");
         // }
         // loadlink();
         // setInterval(function(){

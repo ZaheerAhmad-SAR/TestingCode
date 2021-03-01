@@ -380,6 +380,7 @@ class QueriesController extends Controller
                     'user_id'=>$user,
                     'is_read'=> 'no',
                     'notifications_type'=>'query',
+                    'question_id'=>$question_id,
                     'notification_create_by_user_id'=>\auth()->user()->id
                 ]);
             }
@@ -399,6 +400,7 @@ class QueriesController extends Controller
                     'role_id'=>$role,
                     'queryorbugid' => $queryid,
                     'notifications_type'=>'query',
+                    'question_id'=>$question_id,
                     'is_read'=> 'no',
                     'notification_create_by_user_id'=>\auth()->user()->id
                 ]);
@@ -497,6 +499,7 @@ class QueriesController extends Controller
                 'queryorbugid' => $queryId,
                 'is_read'=> 'no',
                 'notifications_type'=> 'query',
+                'question_id'=>$question_id,
                 'user_id'=>$founduser,
                 'notification_create_by_user_id'=>\auth()->user()->id
             ]);
