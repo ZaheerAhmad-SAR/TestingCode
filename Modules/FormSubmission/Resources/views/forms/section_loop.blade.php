@@ -55,15 +55,30 @@ $numberOfAlreadyGradedPersons = count($formStatusObjects);
 if($step->formType->form_type == 'Grading' || $step->formType->form_type == 'Eligibility'){
     $getFormStatusArray['form_filled_by_user_id'] = $current_user_id;
 }
+
 $formStatusObj = \Modules\FormSubmission\Entities\FormStatus::getFormStatusObj($getFormStatusArray);
+
 $formStatus = 'no_status';
 $formFilledByUserId = 'no-user-id';
 $isFormDataLocked = 0;
-if(null !== $formStatusObj){
+
+if(null !== $formStatusObj) {
     $formStatus = $formStatusObj->form_status;
     $formFilledByUserId = $formStatusObj->form_filled_by_user_id;
-    $isFormDataLocked = $formStatusObj->is_data_locked;
+    //$isFormDataLocked = $formStatusObj->is_data_locked;
 }
+
+/********* check form lock status ******************/
+$getFormStatuslockArray= [
+    'study_id' => $studyId,
+    'study_structures_id' => $phase->id,
+    'modility_id' => $step->modility_id,
+];
+$formLockStatusObj = \Modules\FormSubmission\Entities\FormStatus::getFormStatusObj($getFormStatuslockArray);
+if(null !== $formLockStatusObj) {
+    $isFormDataLocked = $formLockStatusObj->is_data_locked;
+}
+/********* check form lock status ******************/
 @endphp
 <div class="row">
     <div class="col-12 col-md-12">

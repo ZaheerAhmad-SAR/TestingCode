@@ -130,6 +130,7 @@
                                         @endforeach
                                         </tbody>
                             </table>
+                            {{ $studyusers->links()}}
                         </div>
                     </div>
                 </div>
