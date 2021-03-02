@@ -11,6 +11,11 @@
 |
 */
 
+// php info
+// Route::get('phpInfo', function(){
+//     phpinfo();
+// });
+
 //test transmission view
 // Route::get('transmissions/transmissionData', function () {
 //     return view('admin::test_transmission_api');

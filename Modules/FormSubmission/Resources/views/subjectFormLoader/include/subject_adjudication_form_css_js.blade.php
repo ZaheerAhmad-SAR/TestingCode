@@ -234,20 +234,37 @@
             }
 
             function openAdjudicationFormForEditing(stepIdStr, stepClsStr, formType, formStatusIdStr) {
-                if(canSubmitAdjudicationForm(stepIdStr)){
-                        var frmData = $("#adjudication_form_master_" + stepIdStr).serialize();
-                        frmData = frmData + '&' + 'open_adjudication_form_to_edit=1';
-                        $.ajax({
-                            url: "{{ route('SubjectAdjudicationFormSubmission.openSubjectAdjudicationFormToEdit') }}",
-                            type: 'POST',
-                            data: frmData,
-                            success: function(response) {
-                                showAdjudicationFormReasonField(stepIdStr, stepClsStr, formType, formStatusIdStr);
-                            }
-                        });
-                }else{
-                    showPermissionError();
+                if (isFormDataLocked(stepIdStr) == false) {
+                    if(canSubmitAdjudicationForm(stepIdStr)){
+                            var frmData = $("#adjudication_form_master_" + stepIdStr).serialize();
+                            frmData = frmData + '&' + 'open_adjudication_form_to_edit=1';
+                            $.ajax({
+                                url: "{{ route('SubjectAdjudicationFormSubmission.openSubjectAdjudicationFormToEdit') }}",
+                                type: 'POST',
+                                data: frmData,
+                                success: function(response) {
+                                    showAdjudicationFormReasonField(stepIdStr, stepClsStr, formType, formStatusIdStr);
+                                }
+                            });
+                    }else{
+                        showPermissionError();
+                    }
+                } else {
+                    showDataLockError();
                 }
+            }
+
+            function isFormDataLocked(stepIdStr) {
+                var isFormDataLocked = $('#form_master_' + stepIdStr + ' input[name="isFormDataLocked"]').val();
+                if (isFormDataLocked == 1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            function showDataLockError() {
+                showAlert('Data lock status', 'Form data is locked, you can not change data!', 'error');
             }
 
             function showAdjudicationFormReasonField(stepIdStr, stepClsStr, formType, formStatusIdStr) {

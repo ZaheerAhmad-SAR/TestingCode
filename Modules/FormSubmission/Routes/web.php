@@ -10,9 +10,10 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-// form lock functionality
+    // form lock functionality
     Route::get('subjectFormLoader/lock-data', 'SubjectFormLoaderController@lockData')->name('subjectFormLoader.lock-data');
+    Route::post('subjectFormLoader/lock-form-data', 'SubjectFormLoaderController@lockFormData')->name('subjectFormLoader.lock-from-data');
+    Route::post('subjectFormLoader/unlocklock-form-data', 'SubjectFormLoaderController@unlockFormData')->name('subjectFormLoader.unlock-form-data');
 
   Route::get('forms/show/{phase_id}/{step_id}', 'PreviewFormController@show')->name('forms.show');
 Route::group(['middleware' => ['auth', 'web']], function () {
