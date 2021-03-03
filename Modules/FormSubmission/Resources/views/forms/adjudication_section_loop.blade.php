@@ -171,14 +171,17 @@ if(
     @push('script')
         <script>
             function submitStepAdjudicationForm{{ $stepIdStr }}(stepIdStr, stepClsStr) {
-                
-                if (checkAdjudicationFormTermCond(stepIdStr)) {
-                    if (isAdjudicationFormInEditMode(stepIdStr)) {
-                        if (checkAdjudicationFormReason(stepIdStr) == false) {
-                            stopJsHere();
+                if (isFormDataLocked(stepIdStr) == false) {
+                    if (checkAdjudicationFormTermCond(stepIdStr)) {
+                        if (isAdjudicationFormInEditMode(stepIdStr)) {
+                            if (checkAdjudicationFormReason(stepIdStr) == false) {
+                                stopJsHere();
+                            }
                         }
+                        validateAndSubmitAdjudicationForm(stepIdStr, '{{ buildAdjudicationStatusIdClsStr($adjudicationFormStatusObj->id) }}');
                     }
-                    validateAndSubmitAdjudicationForm(stepIdStr, '{{ buildAdjudicationStatusIdClsStr($adjudicationFormStatusObj->id) }}');
+                } else {
+                    showDataLockError();
                 }
             }
 
