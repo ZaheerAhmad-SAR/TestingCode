@@ -128,7 +128,9 @@
             <div class="col-12 col-sm-12">
                 <div class="row row-eq-height">
                     <div class="col-12 col-lg-2 mt-3 todo-menu-bar flip-menu pr-lg-0">
-                        <a href="#" class="d-inline-block d-lg-none mt-1 flip-menu-close"><i class="icon-close"></i></a>
+                        <a href="#" class="d-inline-block d-lg-none mt-1 flip-menu-close">
+                            <i class="icon-close"></i>
+                        </a>
                         <div class="card border h-100 contact-menu-section">
                             <div id="accordion">
                                 @php
@@ -140,7 +142,6 @@
                                         $phaseIdStr = buildSafeStr($phase->id, 'phase_cls_');
                                         $subjectPhaseDetail =
                                         \Modules\FormSubmission\Entities\SubjectsPhases::getSubjectPhase($subjectId, $phase->id);
-
                                         $showPhase = 'false';
                                         if(request('phaseId', '-') == $phase->id){
                                             $showPhase = 'true';
@@ -261,18 +262,29 @@
                         <div class="card border h-100 contact-list-section">
                             <div class="card-body p-0">
                                 <div class="contacts list">
-                                    @if (count($visitPhases))
+                                    @php
+
+                                        $subject = \Modules\Admin\Entities\Subject::find(Request::segment(3));
+                                        $subjectPhasesIdsArray = $subject->subjectPhasesArray();
+                                        $where = array('study_id' =>$studyId,'id' => Request::segment(4));
+                                        $visitPhases_to_load_forms = \Modules\Admin\Entities\StudyStructure::where($where)->whereIn('id', $subjectPhasesIdsArray)->get();
+                                        // load steps to get modality id
+                                        $where_step = array('step_id' => Request::segment(5));
+                                        $get_modality_id = \Modules\Admin\Entities\PhaseSteps::where($where_step)->first();
+                                    @endphp
+                                    @if (count($visitPhases_to_load_forms))
                                         @php
                                         $activeStep = true;
                                         $stepCounter = 0;
                                         @endphp
-                                        @foreach ($visitPhases as $phase)
+                                        @foreach ($visitPhases_to_load_forms as $phase)
                                             @php
                                             $phaseIdStr = buildSafeStr($phase->id, 'phase_cls_');
                                             $steps =
                                             \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($subjectId, $phase->id);
                                             @endphp
                                             @foreach ($steps as $step)
+                                            @if($step->modility_id == $get_modality_id->modility_id)
                                                 @php
                                                 $stepCounter++;
                                                 if ($step->formType->form_type == 'Grading' || $step->formType->form_type == 'Eligibility') {
@@ -296,21 +308,18 @@
                                                         'subject_id' => $subjectId,
                                                         'study_id' => $studyId,
                                                         'study_structures_id' => $phase->id,
-                                                        'form_type_id' => 3,
+                                                        'form_type_id' => 3, //Eligibility 
                                                         'modility_id' => $step->modility_id,
                                                         ];
-                                                    if(
-                                                        null !== $eligibilityStep &&
+                                                    if(null !== $eligibilityStep &&
                                                         \Modules\FormSubmission\Entities\FormStatus::isAllGradersGradedThatForm($eligibilityStep, $getEligibilityFormStatusArray) === false){
                                                         continue;
                                                     }
                                                 }
-                                           
                                                 $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                                                 $adjStepClsStr = buildSafeStr($step->step_id, 'adj_step_cls_');
                                                 $stepIdStr = buildSafeStr($step->step_id, '');
                                                 $skipLogicStepIdStr = buildSafeStr($step->step_id, 'skip_logic_');
-
 
                                                 $sections = $step->sections;
                                                 if(count($sections)){
@@ -328,15 +337,15 @@
                                                 'skipLogicStepIdStr' => $skipLogicStepIdStr,
                                                 'stepCounter' => $stepCounter,
                                                 ];
-
                                                 @endphp
-                                                @include('formsubmission::forms.section_loop', $dataArray)
-                                        
-                                                @include('formsubmission::forms.adjudication_form', $dataArray)
+                                                    @include('formsubmission::forms.section_loop', $dataArray)
+                                            
+                                                    @include('formsubmission::forms.adjudication_form', $dataArray)
                                                 @php
                                                 }
                                                 $activeStep = false;
                                                 @endphp
+                                            @endif
                                             @endforeach
                                         @endforeach
                                     @endif

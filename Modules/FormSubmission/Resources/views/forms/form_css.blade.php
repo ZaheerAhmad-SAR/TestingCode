@@ -1,4 +1,7 @@
 <style>
+    .card-header{
+        cursor: pointer;
+    }
     .date-cls{
         font-size: 10px;
         color: #1e3d73;

@@ -713,11 +713,15 @@
             }
 
             function updateCurrentStepId(phaseId, stepId, isAdjudication) {
+                var stepIdStr =   stepId.replace(/-/g, "_");
                 $('#current_phase_id').val(phaseId);
                 $('#current_step_id').val(stepId);
                 $('#current_section_id').val('-');
                 $('#isAdjudication').val(isAdjudication);
                 changeUrl();
+                if($("#form_master_" + stepIdStr).length == 0 && $("#form_" + stepIdStr).length == 0) {
+                    reloadPage(0);
+                }
             }
 
             function updateCurrentSectionId(phaseId, stepId, sectionId) {
@@ -734,7 +738,6 @@
                     var sectionId = $('#current_section_id').val();
                     var showAllQuestions = $('#showAllQuestions').val();
                     var isAdjudication = $('#isAdjudication').val();
-
                     var title = 'new title';
                     var url = "{{ url('/') }}/subjectFormLoader/{{ $studyId }}/{{ $subjectId }}/" + phaseId + '/' + stepId +
                         '/' + sectionId + '/' + isAdjudication + '/' + showAllQuestions;
