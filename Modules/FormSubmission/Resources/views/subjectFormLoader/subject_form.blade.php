@@ -134,7 +134,7 @@
                         <div class="card border h-100 contact-menu-section">
                             <div id="accordion">
                                 @php
-                                $activePhase = true;
+                                $activePhase = false;
                                 @endphp
                                 @if (count($visitPhases))
                                     @foreach ($visitPhases as $phase)

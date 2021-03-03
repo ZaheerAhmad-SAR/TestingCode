@@ -84,6 +84,22 @@ if(null !== $formLockStatusObj) {
     <div class="col-12 col-md-12">
         <div class="card">
             <div class="card-body">
+                {{--  --}}
+                @php 
+                    $check_if_form_graded_by_logged_user = [
+                        'subject_id' => $subjectId,
+                        'study_id' => $studyId,
+                        'study_structures_id' => $phase->id,
+                        'phase_steps_id' => $step->step_id,
+                        'form_type_id' => $step->form_type_id,
+                        'modility_id' => $step->modility_id,
+                        'form_status' => 'complete',
+                        'form_filled_by_user_id' => $current_user_id
+                    ];
+                @endphp
+                @if(\Modules\FormSubmission\Entities\FormStatus::getFormStatusObjArray($check_if_form_graded_by_logged_user)->isEmpty() && $numberOfAlreadyGradedPersons >= $step->graders_number)
+                    <div class="alert alert-danger" role="alert">The current form has already been graded by required number of graders</div>
+                @else
                 <form name="form_master_{{ $stepIdStr }}" id="form_master_{{ $stepIdStr }}" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="studyId" value="{{ $studyId }}" />
@@ -199,6 +215,7 @@ if(null !== $formLockStatusObj) {
                             </div>
                         </div>
                 </form>
+                @endif
             </div>
         </div>
     </div>
