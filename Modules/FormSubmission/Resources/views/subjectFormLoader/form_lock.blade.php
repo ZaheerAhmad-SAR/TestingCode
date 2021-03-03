@@ -143,7 +143,7 @@ padding: 5px 10px;
                                             if ($lockFromStatus == 0) {
                                                 echo "<span class='btn btn-primary'>N/A</span>";
                                             } else {
-                                                echo "<span class='btn btn-danger'>Form Data Locked</span>";
+                                                echo "<span class='btn btn-danger'>Locked</span>";
                                             }
                                         @endphp
                                     </td>

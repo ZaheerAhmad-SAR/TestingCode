@@ -538,7 +538,10 @@ class RoleController extends Controller
         /*-- Data management Permissions */
         if ($request->management == 'on') {
             $permissions = Permission::where('name', '=', 'data_management.index')
-                ->get();
+                                    ->orwhere('name', '=', 'subjectFormLoader.lock-data')
+                                    ->orwhere('name', '=', 'subjectFormLoader.lock-from-data')
+                                    ->orwhere('name', '=', 'subjectFormLoader.unlock-form-data')
+                                    ->get();
             $this->createRolePermissions($role, $permissions);
         }
 
