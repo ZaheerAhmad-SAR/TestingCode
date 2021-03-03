@@ -54,55 +54,111 @@ padding: 5px 10px;
         <div class="col-12 col-sm-12 mt-3">
             <div class="card">
                 <div class="form-group col-md-12 mt-3">
-                    <button type="button" class="btn btn-primary lock-data" data-url="{{ route('studySite.update') }}">Lock Forms</button>
-                    <button type="button" class="btn btn-primary unlock-data" data-url="{{route('studySite.removeAssignedSites')}}">Unlock forms</button>
-                    @if (!$getCompletedForms->isEmpty())
+                    <button type="button" class="btn btn-primary lock-forms" data-url="{{ route('subjectFormLoader.lock-from-data') }}">Lock Forms</button>
+                    <button type="button" class="btn btn-primary unlock-forms" data-url="{{route('subjectFormLoader.unlock-form-data')}}">Unlock Forms</button>
+                    @if (!$getPhaseModalities->isEmpty())
                     <span style="float: right; margin-top: 3px;" class="badge badge-pill badge-primary">
-                        {{ $getCompletedForms->count().' out of '.$getCompletedForms->total() }}
+                        {{ $getPhaseModalities->count().' out of '.$getPhaseModalities->total() }}
                     </span>
                     @endif
                 </div>
-                <hr>
+                
+                     <hr>
+
+                    <form action="{{route('subjectFormLoader.lock-data')}}" method="get" class="form-1 filter-form">
+                        <div class="form-row" style="padding: 10px;">
+
+                            <input type="hidden" name="form_1" value="1" class="form-control">
+
+                            <div class="form-group col-md-4">
+                                <label for="inputState">Phase</label>
+                                <select id="phase" name="phase" class="form-control filter-form-data">
+                                    <option value="">All Phases</option>
+                                    @foreach($filterPhases as $phase)
+                                    <option @if(request()->phase == $phase->id) selected @endif value="{{ $phase->id }}">{{ $phase->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-4">
+                                <label for="inputState">Modality</label>
+                                <select id="modality" name="modality" class="form-control filter-form-data">
+                                    <option value="">All Modalities</option>
+                                    @foreach($filetrModalities as $modality)
+                                    <option @if(request()->modality == $modality->id) selected @endif value="{{ $modality->id }}">{{ $modality->modility_name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-4 mt-4">        
+                               <!--  <button type="button" class="btn btn-primary reset-filter-1">Reset</button> -->
+                                <button type="submit" class="btn btn-primary btn-lng">Filter Records</button>
+                                <button type="button" class="btn btn-primary reset-filter">Reset</button>
+
+                            </div>
+
+                        </div>
+                        <!-- row ends -->
+                    </form>
             
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table class="table table-bordered" id="laravel_crud">
-                            <thead>
-                                <tr class="table-secondary">
-                                    <th style="width: 11%;"> <input type="checkbox" class="select_all" name="select_all" id="select_all"> &nbsp; Select All
-                                </th>
-                                <th>Code</th>
-                                <th>Name</th>
-                                <th>Address</th>
-                                <th>City</th>
-                                <th>State</th>
-                                <th>Country</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if(!$getCompletedForms->isEmpty())
-                            @foreach($getCompletedForms as $key => $completedForms)
-                            <tr>
-                                <td>
-                                    <input type="checkbox" class="check_forms" name="completed_forms[{{ $completedForms->id}}]" >
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                               
-                            </tr>
-                            @endforeach
-                            @else
-                            <tr>
-                                <td colspan="5" style="text-align: center;"> No record found.</td>
-                            </tr>
-                            @endif
-                        </tbody>
-                    </table>
+                        <form method="POST" action="" class="modality-form">
+                        @csrf
+                            <table class="table table-bordered" id="laravel_crud">
+                                <thead>
+                                    <tr class="table-secondary">
+                                        <th style="width: 11%;"> <input type="checkbox" class="select_all" name="select_all" id="select_all"> &nbsp; Select All
+                                    </th>
+                                    <th>Phase Name</th>
+                                    <th>Modality Name</th>
+                                    <th>Modality Abbreviation</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(!$getPhaseModalities->isEmpty())
+                                @foreach($getPhaseModalities as $key => $phase)
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="check_modality" name="check_modality[{{$phase->phase_id.'__/__'.$phase->modility_id}}]" value="{{$phase->phase_id.'__/__'.$phase->modility_id}}">
+                                    </td>
+                                    <td>{{$phase->phase_name}}</td>
+                                    <td>{{$phase->modility_name}}</td>
+                                    <td>{{$phase->modility_abbreviation}}</td>
+                                    <td>
+                                        @php
+                                            $getLockFormStatusArray = [
+                                                'study_id' => \Session::get('current_study'),
+                                                'study_structures_id' => $phase->phase_id,
+                                                'modility_id' => $phase->modility_id,
+                                            ];
+
+                                            $lockFromStatus = 0;
+                                            $lockFormStatusObj = \Modules\FormSubmission\Entities\FormStatus::getFormStatusObj($getLockFormStatusArray);
+                                            if(null !== $lockFormStatusObj) {
+                                                $lockFromStatus = $lockFormStatusObj->is_data_locked == 1 ? $lockFormStatusObj->is_data_locked : 0;
+                                            }
+
+                                            if ($lockFromStatus == 0) {
+                                                echo "<span class='btn btn-primary'>N/A</span>";
+                                            } else {
+                                                echo "<span class='btn btn-danger'>Form Data Locked</span>";
+                                            }
+                                        @endphp
+                                    </td>
+                                </tr>
+                                @endforeach
+                                @else
+                                <tr>
+                                    <td colspan="5" style="text-align: center;"> No record found.</td>
+                                </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                        {{ $getPhaseModalities->appends(['phase' => \Request::get('phase'), 'modality' => \Request::get('modality')])->links() }}
+                    </form>
+                    <!-- form ends -->
                 </div>
                 <!-- table responsive -->
             </div>
@@ -127,6 +183,81 @@ padding: 5px 10px;
 <script src="{{ asset('public/dist/vendors/sweetalert/sweetalert.min.js') }}"></script>
 <!-- <script src="{{ asset('public/dist/js/sweetalert.script.js') }}"></script> -->
 <script type="text/javascript">
+
+    $('select[name="modality"]').select2();
+    $('select[name="phase"]').select2();
+
+    $('.reset-filter').click(function(){
+        // reset values
+        $('.filter-form').trigger("reset");
+        $('.filter-form-data').val("").trigger("change");
+        // submit the filter form
+        window.location.reload();
+    });
+
+    $('.lock-forms').click(function() {
+        // any checkbox is checked
+        if ($(".check_modality:checked").length > 0) {
+            
+            // assign url to action
+            $('.modality-form').attr('action', $(this).attr('data-url'))
+            // submit form
+            $('.modality-form').submit();
+
+        } else {
+           // alert msg
+           alert('No modality selected.');
+        }
+    });
+
+    $('.unlock-forms').click(function() {
+        // any checkbox is checked
+        if ($(".check_modality:checked").length > 0) {
+            
+            // assign url to action
+            $('.modality-form').attr('action', $(this).attr('data-url'))
+            // submit form
+            $('.modality-form').submit();
+
+        } else {
+           // alert msg
+           alert('No modality selected.');
+        }
+       
+    });
+
+    // select all change function
+    $('.select_all').change(function(){
+        
+        if($(this).is(":checked")) {
+            // check all checkboxes
+            $(".check_modality").each(function() {
+                $(this).prop('checked', true);
+            });
+
+        } else {
+
+            // un-check all checkboxes
+            $(".check_modality").each(function() {
+                $(this).prop('checked', false);
+            });
+
+        }
+    });
+
+    // select/ unselect select all on checkbox event
+    $('.check_modality').change(function () {
+
+        if ($('.check_modality:checked').length == $('.check_modality').length) {
+            // CHECK SELECT ALL
+            $('.select_all').prop('checked',true);
+
+        } else {
+            // uncheck select all
+            $('.select_all').prop('checked',false);
+
+        }
+    });
     
 </script>
 

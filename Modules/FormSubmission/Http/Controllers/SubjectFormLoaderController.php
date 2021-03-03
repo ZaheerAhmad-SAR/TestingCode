@@ -13,7 +13,9 @@ use Modules\Admin\Entities\Subject;
 use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\StudySite;
 use Modules\FormSubmission\Entities\FormStatus;
+use Modules\FormSubmission\Entities\AdjudicationFormStatus;
 use Modules\Admin\Scopes\StudyStructureWithoutRepeatedScope;
+use Modules\Admin\Entities\Modility;
 use Session;
 
 class SubjectFormLoaderController extends Controller
@@ -55,12 +57,75 @@ class SubjectFormLoaderController extends Controller
     }
 
     public function lockData(Request $request) {
-        // get all completed forms
-        $getCompletedForms = FormStatus::where('study_id', Session::get('current_study'))
-        ->where('form_status', 'complete')
-        ->groupBy(['subject_id', 'study_structures_id', 'modility_id', 'form_type_id'])
-        ->paginate(20);
+         // get modalities for filter
+        $filetrModalities = Modility::orderBy('modility_abbreviation')->get();
+        // get study->phases for filter
+        $filterPhases = StudyStructure::where('study_id', Session::get('current_study'))
+                                        ->orderBy('position')
+                                        ->get();
+        //get all phases and modalities for study
+        $getPhaseModalities = StudyStructure::query();
+        $getPhaseModalities = $getPhaseModalities->select('study_structures.id as phase_id', 'study_structures.name as phase_name', 'modilities.id as modility_id', 'modilities.modility_name', 'modilities.modility_abbreviation')
+        ->crossJoin('modilities')
+        ->where('study_structures.study_id', Session::get('current_study'))
+        ->whereNULL('study_structures.deleted_at')
+        ->whereNULL('modilities.deleted_at');
+        if($request->modality != '') {
+            $getPhaseModalities = $getPhaseModalities->where('modilities.id', $request->modality);
+        }
+        if($request->phase != '') {
+            $getPhaseModalities = $getPhaseModalities->where('study_structures.id', $request->phase);
+        }
+        // paginate data
+        $getPhaseModalities = $getPhaseModalities->orderBy('study_structures.position')
+                                                 ->paginate(20);
 
-        return view('formsubmission::subjectFormLoader.form_lock', ['getCompletedForms' => $getCompletedForms]);
+        return view('formsubmission::subjectFormLoader.form_lock', ['getPhaseModalities' => $getPhaseModalities, 'filterPhases' => $filterPhases, 'filetrModalities' => $filetrModalities]);
+    }
+
+    public function lockFormData(Request $request) {
+        $input = $request->all();
+        // loop the checked checkboxes
+        foreach($input['check_modality'] as $key => $value) {
+            // explode phase and modality
+            $explodedPhaseModality = explode('__/__', $value);
+            // lock all the form for this study, phase and modality
+            $lockForms = FormStatus::where('study_structures_id', $explodedPhaseModality[0])
+                                    ->where('modility_id', $explodedPhaseModality[1])
+                                    ->where('study_id', Session::get('current_study'))
+                                    ->update(['is_data_locked' => 1]);
+            // lock all forms for the adjudication based on study, phase and modality
+            $lockAdjudictaionForms = AdjudicationFormStatus::where('study_structures_id', $explodedPhaseModality[0])
+                                                            ->where('modility_id', $explodedPhaseModality[1])
+                                                            ->where('study_id', Session::get('current_study'))
+                                                            ->update(['is_data_locked' => 1]);
+        } // modiality check loop ends
+        // success msg
+        Session::flash('success', 'Forms data locked successfully.');
+        // return back
+        return redirect()->back();
+    }
+
+    public function unlockFormData(Request $request) {
+        $input = $request->all();
+        // loop the checked checkboxes
+        foreach($input['check_modality'] as $key => $value) {
+            // explode phase and modality
+            $explodedPhaseModality = explode('__/__', $value);
+            // unlock all the form for this study, phase and modality
+            $lockForms = FormStatus::where('study_structures_id', $explodedPhaseModality[0])
+                                    ->where('modility_id', $explodedPhaseModality[1])
+                                    ->where('study_id', Session::get('current_study'))
+                                    ->update(['is_data_locked' => 0]);
+            // unlock all forms for the adjudication based on study, phase and modality
+            $lockAdjudictaionForms = AdjudicationFormStatus::where('study_structures_id', $explodedPhaseModality[0])
+                                                            ->where('modility_id', $explodedPhaseModality[1])
+                                                            ->where('study_id', Session::get('current_study'))
+                                                            ->update(['is_data_locked' => 0]);
+        } // modiality check loop ends
+        // success msg
+        Session::flash('success', 'Forms data unlocked successfully.');
+        // return back
+        return redirect()->back();
     }
 }

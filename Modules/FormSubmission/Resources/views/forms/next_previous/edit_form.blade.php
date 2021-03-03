@@ -15,7 +15,7 @@
             Edit Form
         </button>
     @endif
-
+    {{--
     @if(canManageData(['create', 'store', 'edit', 'update']) && ($isPreview === false))
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <button type="button" class="btn btn-danger" name="lock_data_button_{{ $stepIdStr }}"
@@ -31,7 +31,7 @@
             UnLock Data
         </button>
     @endif
-
+    --}}
     @include('formsubmission::forms.next_previous.print_form', ['formStatus'=>$formStatusObj->form_status])
     @include('formsubmission::forms.next_previous.show_qc_questions_to_grader')
 

@@ -33,6 +33,20 @@ if(
         \Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatusObj($getAdjudicationFormStatusArray);
         $adjudicationFormStatus = (null !== $adjudicationFormStatusObj)?
         $adjudicationFormStatusObj->adjudication_status:'no_status';
+
+        /********* check form lock status ******************/
+        $getFormStatuslockArray= [
+            'study_id' => $studyId,
+            'study_structures_id' => $phase->id,
+            'modility_id' => $step->modility_id,
+        ];
+        $isFormDataLocked = 0;
+        $formLockStatusObj = \Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatusObj($getFormStatuslockArray);
+        if(null !== $formLockStatusObj) {
+            $isFormDataLocked = $formLockStatusObj->is_data_locked;
+        }
+        /********* check form lock status ******************/
+
         @endphp
         <div class="row">
             <div class="col-12 col-md-12">
@@ -48,6 +62,7 @@ if(
                             <input type="hidden" name="formTypeId" value="{{ $step->form_type_id }}" />
                             <input type="hidden" name="formType" value="{{ $step->formType->form_type }}" />
                             <input type="hidden" name="modilityId" value="{{ $step->modility_id }}" />
+                            <input type="hidden" name="isFormDataLocked" value="{{ $isFormDataLocked }}" />
                             <input type="hidden" name="form_adjudicated_by_id" value="{{ $adjudicationFormStatusObj->form_adjudicated_by_id }}" />
                             <input type="hidden" name="adjudication_status" value="{{ $adjudicationFormStatusObj->adjudication_status }}" />
                             <input type="hidden" class="adjudication_form_hid_editing_status_{{ $stepIdStr }}"
@@ -156,6 +171,7 @@ if(
     @push('script')
         <script>
             function submitStepAdjudicationForm{{ $stepIdStr }}(stepIdStr, stepClsStr) {
+                
                 if (checkAdjudicationFormTermCond(stepIdStr)) {
                     if (isAdjudicationFormInEditMode(stepIdStr)) {
                         if (checkAdjudicationFormReason(stepIdStr) == false) {
