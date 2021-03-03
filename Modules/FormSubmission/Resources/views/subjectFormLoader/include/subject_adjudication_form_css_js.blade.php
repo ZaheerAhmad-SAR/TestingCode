@@ -114,7 +114,7 @@
 
             function validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, questionIdStr, field_name, fieldId) {
                 if(canSubmitAdjudicationForm(stepIdStr)){
-                    if(needToPutAdjudicationFormInEditMode(stepIdStr) == false){
+                    if(needToPutAdjudicationFormInEditMode(stepIdStr) == false) {
                         //if(window['validateAdjudicationQuestion' + questionIdStr](true, stepIdStr)){
                             if(eval("typeof " + window['checkQuestionSkipLogicForAdjudication' + questionIdStr]) != 'undefined'){
                                 window['checkQuestionSkipLogicForAdjudication' + questionIdStr]();
@@ -162,13 +162,17 @@
             }
 
             function submitAdjudicationFormField(stepIdStr, questionId, field_name, fieldId) {
-                var submitAdjudicationFormFlag = true;
-                if (submitAdjudicationFormFlag) {
-                    var frmData = $("#adjudication_form_master_" + stepIdStr).serialize();
-                    var field_val;
-                    field_val = getAdjudicationFormFieldValue(stepIdStr, field_name, fieldId);
-                    frmData = frmData + '&' + field_name + '=' + field_val + '&' + 'questionId=' + questionId;
-                    submitAdjudicationFormFieldRequest(frmData, stepIdStr, '', '');
+                if (isFormDataLocked(stepIdStr) == false) {
+                    var submitAdjudicationFormFlag = true;
+                    if (submitAdjudicationFormFlag) {
+                        var frmData = $("#adjudication_form_master_" + stepIdStr).serialize();
+                        var field_val;
+                        field_val = getAdjudicationFormFieldValue(stepIdStr, field_name, fieldId);
+                        frmData = frmData + '&' + field_name + '=' + field_val + '&' + 'questionId=' + questionId;
+                        submitAdjudicationFormFieldRequest(frmData, stepIdStr, '', '');
+                    }
+                } else {
+                    showDataLockError();
                 }
             }
 

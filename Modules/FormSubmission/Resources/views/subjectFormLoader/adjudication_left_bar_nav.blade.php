@@ -34,7 +34,7 @@ if(null !== $adjudicationLockFormStatusObj) {
     @if (($step->formType->form_type == 'Grading' || $step->formType->form_type == 'Eligibility') && \Modules\FormSubmission\Entities\FormStatus::isAllGradersGradedThatForm($step, $getGradingFormStatusArray))
         <a class="badge p-1 {{ $badgeCls }} m-1" href="javascript:void(0);"
             onclick="showSections('step_adjudication_sections_{{ $stepIdStr }}'); updateCurrentStepId('{{ $step->phase_id }}', '{{ $step->step_id }}', 'yes');">
-            Adj. {{ $step->formType->form_type }} {{ $step->modility->modility_abbreviation }}
+            Adj. {{ $step->modility->modility_abbreviation }}
             @php
             echo
             \Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatus($step,
