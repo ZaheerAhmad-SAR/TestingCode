@@ -720,6 +720,7 @@
                 $('#isAdjudication').val(isAdjudication);
                 changeUrl();
                 if($("#form_master_" + stepIdStr).length == 0 && $("#form_" + stepIdStr).length == 0) {
+                    $('.loader').css('display','block');
                     reloadPage(0);
                 }
             }
