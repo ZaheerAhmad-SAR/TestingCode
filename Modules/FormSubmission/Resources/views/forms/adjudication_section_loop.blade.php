@@ -52,6 +52,28 @@ if(
             <div class="col-12 col-md-12">
                 <div class="card">
                     <div class="card-body">
+                        @php 
+                            $check_if_form_graded_by_logged_user = [
+                                'subject_id' => $subjectId,
+                                'study_id' => $studyId,
+                                'study_structures_id' => $phase->id,
+                                'phase_steps_id' => $step->step_id,
+                                'form_type_id' => $step->form_type_id,
+                                'modility_id' => $step->modility_id,
+                                'adjudication_status' => 'complete',
+                                'form_adjudicated_by_id' => $current_user_id
+                            ];
+                        @endphp
+                        
+                        @if(\Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatusObjArray($check_if_form_graded_by_logged_user)->isEmpty())
+                            <div class="alert alert-danger" role="alert">
+                                The current form has already been graded by required number of graders
+                            </div>
+                            {{-- just defined id to controll page from loading on same modality  --}}
+                                <div id="adjudication_form_master_{{ $stepIdStr }}"></div>
+                                <div id="adjudication_form_{{ $stepIdStr }}"></div>
+                            {{-- just defined id to controll page from loading on same modality  --}}
+                        @else
                         <form name="adjudication_form_master_{{ $stepIdStr }}"
                             id="adjudication_form_master_{{ $stepIdStr }}">
                             @csrf
@@ -69,8 +91,6 @@ if(
                                 name="adjudication_form_editing_status_{{ $stepIdStr }}"
                                 id="adjudication_form_editing_status_{{ $stepIdStr }}"
                                 value="{{ $adjudicationFormStatus == 'resumable' ? 'yes' : 'no' }}" />
-
-
                         </form>
                         <form class="" method="POST" name="adjudication_form_{{ $stepIdStr }}"
                             id="adjudication_form_{{ $stepIdStr }}">
@@ -163,6 +183,7 @@ if(
                                 </div>
                             </div>
                         </form>
+                        @endif
                     </div>
                 </div>
             </div>

@@ -150,4 +150,9 @@ color: #C30;
     font-weight: 600;
     border: 1px solid #1E3D73;
 }
+.selected_form_adj{
+    background: lightgray;
+    font-weight: 600;
+    border: 1px solid #1E3D73;
+}
 </style>

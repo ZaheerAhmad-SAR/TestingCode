@@ -178,7 +178,10 @@
                                                             @php
                                                              // apply css to current active form 
                                                                 $active_form = '';
-                                                                if($step->step_id == Request::segment(5)){
+                                                                $active_form_adj = '';
+                                                                if($step->step_id == Request::segment(5) && Request::segment(7) =='yes'){
+                                                                    $active_form_adj = 'selected_form_adj';
+                                                                }else if ($step->step_id == Request::segment(5)){
                                                                     $active_form = 'selected_form';
                                                                 }
                                                              // apply css to current active form end 
