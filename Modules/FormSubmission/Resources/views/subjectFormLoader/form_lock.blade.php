@@ -110,6 +110,7 @@ padding: 5px 10px;
                                     <tr class="table-secondary">
                                         <th style="width: 11%;"> <input type="checkbox" class="select_all" name="select_all" id="select_all"> &nbsp; Select All
                                     </th>
+                                    <th>Subject</th>
                                     <th>Phase Name</th>
                                     <th>Modality Name</th>
                                     <th>Modality Abbreviation</th>
@@ -123,6 +124,7 @@ padding: 5px 10px;
                                     <td>
                                         <input type="checkbox" class="check_modality" name="check_modality[{{$phase->phase_id.'__/__'.$phase->modility_id}}]" value="{{$phase->phase_id.'__/__'.$phase->modility_id}}">
                                     </td>
+                                    <td>{{$phase->subject_id}}</td>
                                     <td>{{$phase->phase_name}}</td>
                                     <td>{{$phase->modility_name}}</td>
                                     <td>{{$phase->modility_abbreviation}}</td>

@@ -57,19 +57,23 @@ class SubjectFormLoaderController extends Controller
     }
 
     public function lockData(Request $request) {
-         // get modalities for filter
-        $filetrModalities = Modility::orderBy('modility_abbreviation')->get();
-        // get study->phases for filter
-        $filterPhases = StudyStructure::where('study_id', Session::get('current_study'))
-                                        ->orderBy('position')
-                                        ->get();
         //get all phases and modalities for study
-        $getPhaseModalities = StudyStructure::query();
-        $getPhaseModalities = $getPhaseModalities->select('study_structures.id as phase_id', 'study_structures.name as phase_name', 'modilities.id as modility_id', 'modilities.modility_name', 'modilities.modility_abbreviation')
-        ->crossJoin('modilities')
-        ->where('study_structures.study_id', Session::get('current_study'))
-        ->whereNULL('study_structures.deleted_at')
-        ->whereNULL('modilities.deleted_at');
+        // $getPhaseModalities = Subject::query();
+        // $getPhaseModalities = $getPhaseModalities->select('subjects.id as sub_id', 'subjects.subject_id','study_structures.id as phase_id', 'study_structures.name as phase_name', 'modilities.id as modility_id', 'modilities.modility_name', 'modilities.modility_abbreviation')
+        // ->rightJoin('subjects_phases', 'subjects_phases.subject_id', '=', 'subjects.id')
+        // ->leftJoin('study_structures', 'study_structures.id', '=', 'subjects_phases.phase_id')
+        // ->crossJoin('modilities')
+        // ->where('subjects.study_id', Session::get('current_study'))
+        // ->whereNULL('subjects_phases.deleted_at')
+        // ->whereNULL('study_structures.deleted_at')
+        // ->whereNULL('modilities.deleted_at');
+        $getPhaseModalities = Subject::query();
+        $getPhaseModalities = $getPhaseModalities->select('subjects.id as sub_id', 'subjects.subject_id','study_structures.id as phase_id', 'study_structures.name as phase_name')
+        ->rightJoin('subjects_phases', 'subjects_phases.subject_id', '=', 'subjects.id')
+        ->leftJoin('study_structures', 'study_structures.id', '=', 'subjects_phases.phase_id')
+        ->where('subjects.study_id', Session::get('current_study'))
+        ->whereNULL('subjects_phases.deleted_at')
+        ->whereNULL('study_structures.deleted_at');
         if($request->modality != '') {
             $getPhaseModalities = $getPhaseModalities->where('modilities.id', $request->modality);
         }
@@ -80,6 +84,13 @@ class SubjectFormLoaderController extends Controller
         $getPhaseModalities = $getPhaseModalities->orderBy('study_structures.position')
                                                  ->paginate(20);
 
+        // dd($getPhaseModalities);
+        // get modalities for filter
+        $filetrModalities = Modility::orderBy('modility_abbreviation')->get();
+        // get study->phases for filter
+        $filterPhases = StudyStructure::where('study_id', Session::get('current_study'))
+                                        ->orderBy('position')
+                                        ->get();
         return view('formsubmission::subjectFormLoader.form_lock', ['getPhaseModalities' => $getPhaseModalities, 'filterPhases' => $filterPhases, 'filetrModalities' => $filetrModalities]);
     }
 
