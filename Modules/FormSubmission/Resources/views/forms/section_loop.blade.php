@@ -98,7 +98,13 @@ if(null !== $formLockStatusObj) {
                     ];
                 @endphp
                 @if(\Modules\FormSubmission\Entities\FormStatus::getFormStatusObjArray($check_if_form_graded_by_logged_user)->isEmpty() && $numberOfAlreadyGradedPersons >= $step->graders_number)
-                    <div class="alert alert-danger" role="alert">The current form has already been graded by required number of graders</div>
+                    <div class="alert alert-danger" role="alert">
+                        The current form has already been graded by required number of graders
+                    </div>
+                    {{-- just defined id to controll page from loading on same modality  --}}
+                        <div id="form_master_{{ $stepIdStr }}"></div>
+                        <div id="form_{{ $stepIdStr }}"></div>
+                    {{-- just defined id to controll page from loading on same modality  --}}
                 @else
                 <form name="form_master_{{ $stepIdStr }}" id="form_master_{{ $stepIdStr }}" enctype="multipart/form-data">
                     @csrf

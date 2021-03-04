@@ -176,6 +176,15 @@
                                                         @endphp
                                                         @foreach ($steps as $step)
                                                             @php
+                                                             // apply css to current active form 
+                                                                $active_form = '';
+                                                                $active_form_adj = '';
+                                                                if($step->step_id == Request::segment(5) && Request::segment(7) =='yes'){
+                                                                    $active_form_adj = 'selected_form_adj';
+                                                                }else if ($step->step_id == Request::segment(5)){
+                                                                    $active_form = 'selected_form';
+                                                                }
+                                                             // apply css to current active form end 
                                                             if ($step->formType->form_type == 'Grading' || $step->formType->form_type == 'Eligibility') {
                                                                 $getQcFormStatusArray = [
                                                                     'subject_id' => $subjectId,
@@ -263,7 +272,7 @@
                             <div class="card-body p-0">
                                 <div class="contacts list">
                                     @php
-
+                                        // load form by url
                                         $subject = \Modules\Admin\Entities\Subject::find(Request::segment(3));
                                         $subjectPhasesIdsArray = $subject->subjectPhasesArray();
                                         $where = array('study_id' =>$studyId,'id' => Request::segment(4));
