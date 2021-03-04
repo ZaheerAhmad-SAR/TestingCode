@@ -556,7 +556,8 @@
                         'phaseId': phaseId
                     },
                     success: function(response) {
-                        reloadPage(0);
+                        changeUrl_after_deactivate_visit()
+                        reloadPage(1);
                     }
                 });
             }
@@ -760,7 +761,19 @@
                     }
                 }
             }
-
+            function changeUrl_after_deactivate_visit() {
+                    var title = 'new title';
+                    var url = "{{ url('/') }}/subjectFormLoader/{{ $studyId }}/{{ $subjectId }}";
+                    if (typeof(history.pushState) != "undefined") {
+                        var obj = {
+                            Title: title,
+                            Url: url
+                        };
+                        history.pushState(obj, obj.Title, obj.Url);
+                    } else {
+                        alert("Browser does not support HTML5.");
+                    }
+            }
             function validateAndUploadFiles(stepIdStr, sectionIdStr, questionId, questionIdStr, formType, field_name,
                 fieldId) {
                 if (isPreview === false) {
