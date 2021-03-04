@@ -11,13 +11,16 @@ $getFormQCStatusArray = [
 /*************** Form Lock *****************/
 $getQCLockFormStatusArray = [
 'study_id' => $studyId,
+'subject_id' => $subjectId,
 'study_structures_id' => $phase->id,
 'modility_id' => $step->modility_id,
 ];
-$qcLockFromStatus = 0;
+$qcLockFromStatus = '';
 $qcLockFormStatusObj = \Modules\FormSubmission\Entities\FormStatus::getFormStatusObj($getQCLockFormStatusArray);
 if(null !== $qcLockFormStatusObj) {
-    $qcLockFromStatus = $qcLockFormStatusObj->is_data_locked == 1 ? $qcLockFormStatusObj->is_data_locked : 0;
+    $qcLockFromStatus = $qcLockFormStatusObj->is_data_locked == 1 ? '<span class="" data-toggle="popover" data-trigger="hover" data-content="'.$qcLockFormStatusObj->is_data_locked_reason.'">
+                                        <i class="fas fa-lock"></i>
+                                    </span>' : '';
 }
 /*************** Form Lock *****************/
 @endphp
@@ -31,11 +34,7 @@ if(null !== $qcLockFormStatusObj) {
             $getFormQCStatusArray, true);
             @endphp
             
-            @if($qcLockFromStatus == 1)
-                <span class="" data-toggle="popover" data-trigger="hover" data-content="Form Data is Locked!">
-                    <i class="fas fa-lock"> </i>
-                </span>
-            @endif
+            {!! $qcLockFromStatus !!}
         </a>
         <br>
     @endif

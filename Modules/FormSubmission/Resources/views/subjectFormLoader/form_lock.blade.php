@@ -50,47 +50,102 @@ padding: 5px 10px;
     </div>
     <!-- END: Breadcrumbs-->
     <!-- START: Card Data-->
-    <div class="row">
-        <div class="col-12 col-sm-12 mt-3">
-            <div class="card">
-                <div class="form-group col-md-12 mt-3">
-                    <button type="button" class="btn btn-primary lock-forms" data-url="{{ route('subjectFormLoader.lock-from-data') }}">Lock Forms</button>
-                    <button type="button" class="btn btn-primary unlock-forms" data-url="{{route('subjectFormLoader.unlock-form-data')}}">Unlock Forms</button>
-                    @if (!$getPhaseModalities->isEmpty())
-                    <span style="float: right; margin-top: 3px;" class="badge badge-pill badge-primary">
-                        {{ $getPhaseModalities->count().' out of '.$getPhaseModalities->total() }}
-                    </span>
-                    @endif
+   <!-- START: Card Data-->
+        <div class="row">
+            <!-- Grading legends -->
+            <div class="col-12 col-sm-12 mt-3">
+                <div class="card">
+                    <div class="card-header  justify-content-between align-items-center">
+                        <h4 class="card-title">Status legend</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img src="{{url('images/no_status.png')}}"/>&nbsp;&nbsp;Not Initiated
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/incomplete.png')}}"/>&nbsp;&nbsp;Initiated
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/resumable.png')}}"/>&nbsp;&nbsp;Editing
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/complete.png')}}"/>&nbsp;&nbsp;Complete
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/not_required.png')}}"/>&nbsp;&nbsp;Not Required
+                            </div>
+                            <div class="col-md-2">
+                                <img src="{{url('images/query.png')}}"/>&nbsp;&nbsp;Query
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                
+            </div>
+
+            <div class="col-12 col-sm-12 mt-3">
+                <div class="card">
+
+                    <div class="form-group col-md-12 mt-3">        
+
+                        <button type="button" class="btn btn-primary lock-forms">Form Lock</button>
+                        <button type="button" class="btn btn-primary unlock-forms">Form Unlock</button>
+
+                        @if (!$subjects->isEmpty())
+                        <span style="float: right; margin-top: 3px;" class="badge badge-pill badge-primary">
+                            {{ $subjects->count().' out of '.$subjects->total() }}
+                        </span>
+                        @endif
+
+                    </div>
+
                      <hr>
+                    <!-- Other Filters ends -->
 
                     <form action="{{route('subjectFormLoader.lock-data')}}" method="get" class="form-1 filter-form">
                         <div class="form-row" style="padding: 10px;">
 
                             <input type="hidden" name="form_1" value="1" class="form-control">
 
-                            <div class="form-group col-md-4">
+                            <div class="form-group col-md-3">
+                                <label for="inputState">Subject</label>
+                                <select id="subject" name="subject" class="form-control filter-form-data">
+                                    <option value="">All Subject</option>
+                                    @foreach($getFilterSubjects as $filterSubject)
+                                    <option @if(request()->subject == $filterSubject->id) selected @endif value="{{ $filterSubject->id }}">{{ $filterSubject->subject_id }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-2">
                                 <label for="inputState">Phase</label>
                                 <select id="phase" name="phase" class="form-control filter-form-data">
-                                    <option value="">All Phases</option>
-                                    @foreach($filterPhases as $phase)
-                                    <option @if(request()->phase == $phase->id) selected @endif value="{{ $phase->id }}">{{ $phase->name }}</option>
+                                    <option value="">All Phase</option>
+                                    @foreach($getFilterPhases as $filterPhase)
+                                    <option  @if(request()->phase == $filterPhase->id) selected @endif value="{{ $filterPhase->id }}">{{ $filterPhase->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-4">
-                                <label for="inputState">Modality</label>
-                                <select id="modality" name="modality" class="form-control filter-form-data">
-                                    <option value="">All Modalities</option>
-                                    @foreach($filetrModalities as $modality)
-                                    <option @if(request()->modality == $modality->id) selected @endif value="{{ $modality->id }}">{{ $modality->modility_name }}</option>
+                            
+                            <div class="form-group col-md-2">
+                            
+                                <label for="inputState">Site</label>
+                                <select id="site" name="site" class="form-control filter-form-data">
+                                    <option value="">All Site</option>
+                                     @foreach($getFilterSites as $filterSite)
+                                     <option @if(request()->site == $filterSite->id) selected @endif value="{{ $filterSite->id }}">{{ $filterSite->site_name }}</option>
                                     @endforeach
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-4 mt-4">        
+                           
+                            <div class="form-group col-md-3">
+                                <label for="dt">Visit Date</label>
+                                <input type="text" name="visit_date" id="visit_date" class="form-control visit_date filter-form-data" value="{{ request()->visit_date }}">
+                            </div>
+
+                            <div class="form-group col-md-2 mt-4">        
                                <!--  <button type="button" class="btn btn-primary reset-filter-1">Reset</button> -->
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Records</button>
                                 <button type="button" class="btn btn-primary reset-filter">Reset</button>
@@ -100,75 +155,150 @@ padding: 5px 10px;
                         </div>
                         <!-- row ends -->
                     </form>
-            
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <form method="POST" action="" class="modality-form">
-                        @csrf
+
+                    <div class="card-body">
+
+                        <div class="table-responsive">
+                        <form method="POST" action="" class="subject-form">
+                            @csrf
                             <table class="table table-bordered" id="laravel_crud">
                                 <thead>
                                     <tr class="table-secondary">
-                                        <th style="width: 11%;"> <input type="checkbox" class="select_all" name="select_all" id="select_all"> &nbsp; Select All
-                                    </th>
-                                    <th>Subject</th>
-                                    <th>Phase Name</th>
-                                    <th>Modality Name</th>
-                                    <th>Modality Abbreviation</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if(!$getPhaseModalities->isEmpty())
-                                @foreach($getPhaseModalities as $key => $phase)
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" class="check_modality" name="check_modality[{{$phase->phase_id.'__/__'.$phase->modility_id}}]" value="{{$phase->phase_id.'__/__'.$phase->modility_id}}">
-                                    </td>
-                                    <td>{{$phase->subject_id}}</td>
-                                    <td>{{$phase->phase_name}}</td>
-                                    <td>{{$phase->modility_name}}</td>
-                                    <td>{{$phase->modility_abbreviation}}</td>
-                                    <td>
+                                        <th>Select All 
+                                            <input type="checkbox" class="select_all" name="select_all" id="select_all">
+                                        </th>
+                                        <th>Subject ID</th>
+                                        <th>Phase</th>
+                                        <th>Visit Date</th>
+                                        <th>Site Name</th>
+
                                         @php
-                                            $getLockFormStatusArray = [
-                                                'study_id' => \Session::get('current_study'),
-                                                'study_structures_id' => $phase->phase_id,
-                                                'modility_id' => $phase->modility_id,
-                                            ];
-
-                                            $lockFromStatus = 0;
-                                            $lockFormStatusObj = \Modules\FormSubmission\Entities\FormStatus::getFormStatusObj($getLockFormStatusArray);
-                                            if(null !== $lockFormStatusObj) {
-                                                $lockFromStatus = $lockFormStatusObj->is_data_locked == 1 ? $lockFormStatusObj->is_data_locked : 0;
-                                            }
-
-                                            if ($lockFromStatus == 0) {
-                                                echo "<span class='btn btn-primary'>N/A</span>";
-                                            } else {
-                                                echo "<span class='btn btn-danger'>Locked</span>";
-                                            }
+                                            $count = 5;
                                         @endphp
-                                    </td>
-                                </tr>
-                                @endforeach
-                                @else
-                                <tr>
-                                    <td colspan="5" style="text-align: center;"> No record found.</td>
-                                </tr>
-                                @endif
-                            </tbody>
-                        </table>
-                        {{ $getPhaseModalities->appends(['phase' => \Request::get('phase'), 'modality' => \Request::get('modality')])->links() }}
-                    </form>
-                    <!-- form ends -->
+
+                                        @if ($modalitySteps != null)
+                                            @foreach($modalitySteps as $key => $steps)
+                                            @php
+                                                $count = $count + count($steps);
+                                            @endphp
+                                            <th colspan="{{count($steps)}}" class="border-bottom-0" style="text-align: center;">
+                                                    {{$key}}
+                                            </th>
+                                            @endforeach
+                                        @endif
+                                    </tr>
+
+                                    @if ($modalitySteps != null)
+                                    <tr class="table-secondary">
+                                        <th scope="col" colspan="5" class="border-top-0"> </th>
+                                        @foreach($modalitySteps as $steps)
+                                        
+                                            @foreach($steps as $value)
+                                            <th scope="col" class="border-top-0" style="text-align: center;">
+                                                  {{$value['form_type']}}
+                                            </th>
+                                            @endforeach
+                                        @endforeach
+                                    </tr>
+                                    @endif
+
+                                </thead>
+
+                                <tbody>
+                                    @if(!$subjects->isEmpty())
+
+                                        @foreach($subjects as $key => $subject)
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="check_subject" name="check_subject[{{ $subject->id.'__/__'.$subject->phase_id }}]" value="{{ $subject->id.'__/__'.$subject->phase_id }}" >
+                                            </td>
+                                            <td>
+                                               <span class="text-primary font-weight-bold">
+                                                    
+                                                    {{$subject->subject_id}}
+                                                    
+                                                </span>
+                                               <input type="hidden" name="subject_id[]" value="{{ $subject->id }}">
+                                            </td>
+                                            <td>
+                                                {{$subject->phase_name}}
+                                                <input type="hidden" name="phase_id[]" value="{{ $subject->phase_id }}">
+                                            </td>
+                                            <td>{{ date('d-M-Y', strtotime($subject->visit_date))}}</td>
+                                            <td>{{$subject->site_name}}</td>
+                                            
+                                            @if($subject->form_status != null)
+                                                @foreach($subject->form_status as $status)
+ 
+                                                    <td style="text-align: center;">
+
+                                                        <a href="{{route('subjectFormLoader.showSubjectForm',['study_id' => $subject->study_id, 'subject_id' => $subject->id])}}" class="text-primary font-weight-bold">
+                                                            
+                                                            <?php echo $status['status']; ?>
+                                                            <?php echo $status['data_lock_status']; ?>
+                                                        </a>
+                                                    </td>
+
+                                                @endforeach
+                                            @endif
+                                        </tr>
+                                        @endforeach
+
+                                    @else
+                                    <tr>
+                                        <td colspan="{{$count}}" style="text-align: center;"> No record found.</td>
+                                    </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+
+                            {{ $subjects->appends(['subject' => \Request::get('subject'), 'phase' => \Request::get('phase'), 'site' => \Request::get('site'), 'visit_date' => \Request::get('visit_date')])->links() }}
+
+                            <!--Add  Modal -->
+                            <div class="modal fade" id="lock-form-modal" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title lock-form-heading" id="exampleModalLabel"></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <div class="form-group">
+                                        <label class="modility">Modality</label>
+                                        <select class="form-control modility_id" name="modility_id[]" id="modility_id" multiple required>
+                                            @foreach($getModilities as $modility)
+                                                <option value="{{$modility->id}}">{{$modility->modility_name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <dvi class="form-group">
+                                        <label class="reason_for_locking">Lock/Unlock Reason</label>
+                                        <textarea class="form-control" rows="5" name="reason_for_locking" required></textarea>
+                                    </dvi>
+
+                                  </div>
+                                  <!-- modal body ends -->
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary lock-form-button"></button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- Model ends -->
+                        </form>
+                        <!-- form ends -->
+                        </div>
+                        <!-- table responsive -->
+                    </div>
                 </div>
-                <!-- table responsive -->
+                <!-- Card ends -->
             </div>
         </div>
-        <!-- Card ends -->
-    </div>
-</div>
-<!-- END: Card DATA-->
+        <!-- END: Card DATA-->
 </div>
 @endsection
 @section('script')
@@ -186,8 +316,26 @@ padding: 5px 10px;
 <!-- <script src="{{ asset('public/dist/js/sweetalert.script.js') }}"></script> -->
 <script type="text/javascript">
 
-    $('select[name="modality"]').select2();
+    // initialize date range picker
+    $('input[name="visit_date"]').daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            cancelLabel: 'Clear'
+        }
+    });
+
+    $('input[name="visit_date"]').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+    });
+
+    $('input[name="visit_date"]').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
+
+    $('select[name="subject"]').select2();
     $('select[name="phase"]').select2();
+    $('select[name="site"]').select2();
+    $('.modility_id').select2();
 
     $('.reset-filter').click(function(){
         // reset values
@@ -199,31 +347,46 @@ padding: 5px 10px;
 
     $('.lock-forms').click(function() {
         // any checkbox is checked
-        if ($(".check_modality:checked").length > 0) {
-            
-            // assign url to action
-            $('.modality-form').attr('action', $(this).attr('data-url'))
-            // submit form
-            $('.modality-form').submit();
+        if ($(".check_subject:checked").length > 0) {
+            // show lock form heading
+            $('.lock-form-heading').text('Lock Forms');
+            // show lock form button text
+            $('.lock-form-button').text('Lock Forms');
+            // empty select and text area
+            $('.subject-form').find("textarea, select").val("");
+            // empty select2
+            $('.modility_id').trigger('change');
+            // give dynamic url to form action
+            $('.subject-form').attr("action", "{{route('subjectFormLoader.lock-from-data')}}");
+            // show model
+            $('#lock-form-modal').modal('show');
 
         } else {
            // alert msg
-           alert('No modality selected.');
+           alert('No subject selected.');
         }
+       
     });
 
     $('.unlock-forms').click(function() {
         // any checkbox is checked
-        if ($(".check_modality:checked").length > 0) {
-            
-            // assign url to action
-            $('.modality-form').attr('action', $(this).attr('data-url'))
-            // submit form
-            $('.modality-form').submit();
+        if ($(".check_subject:checked").length > 0) {
+            // show lock form heading
+            $('.lock-form-heading').text('Unlock Forms');
+            // show lock form button text
+            $('.lock-form-button').text('Unlock Forms');
+            // empty select and text area
+            $('.subject-form').find("textarea, select").val("");
+            // empty select2
+            $('.modility_id').trigger('change');
+            // give dynamic url to form action
+            $('.subject-form').attr("action", "{{route('subjectFormLoader.unlock-form-data')}}");
+            // show model
+            $('#lock-form-modal').modal('show');
 
         } else {
            // alert msg
-           alert('No modality selected.');
+           alert('No subject selected.');
         }
        
     });
@@ -233,14 +396,14 @@ padding: 5px 10px;
         
         if($(this).is(":checked")) {
             // check all checkboxes
-            $(".check_modality").each(function() {
+            $(".check_subject").each(function() {
                 $(this).prop('checked', true);
             });
 
         } else {
 
             // un-check all checkboxes
-            $(".check_modality").each(function() {
+            $(".check_subject").each(function() {
                 $(this).prop('checked', false);
             });
 
@@ -248,9 +411,9 @@ padding: 5px 10px;
     });
 
     // select/ unselect select all on checkbox event
-    $('.check_modality').change(function () {
+    $('.check_subject').change(function () {
 
-        if ($('.check_modality:checked').length == $('.check_modality').length) {
+        if ($('.check_subject:checked').length == $('.check_subject').length) {
             // CHECK SELECT ALL
             $('.select_all').prop('checked',true);
 
@@ -260,7 +423,6 @@ padding: 5px 10px;
 
         }
     });
-    
 </script>
 
 @endsection

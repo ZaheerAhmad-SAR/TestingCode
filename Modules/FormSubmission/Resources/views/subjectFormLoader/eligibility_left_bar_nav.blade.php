@@ -11,13 +11,16 @@ $getGradingFormStatusArray = [
 /*************** Form Lock *****************/
 $getEligibilityLockFormStatusArray = [
 'study_id' => $studyId,
+'subject_id' => $subjectId,
 'study_structures_id' => $phase->id,
 'modility_id' => $step->modility_id,
 ];
-$eligibilityLockFromStatus = 0;
+$eligibilityLockFromStatus = '';
 $eligibilityLockFormStatusObj = \Modules\FormSubmission\Entities\FormStatus::getFormStatusObj($getEligibilityLockFormStatusArray);
 if(null !== $eligibilityLockFormStatusObj) {
-    $eligibilityLockFromStatus = $eligibilityLockFormStatusObj->is_data_locked == 1 ? $eligibilityLockFormStatusObj->is_data_locked : 0;
+    $eligibilityLockFromStatus = $eligibilityLockFormStatusObj->is_data_locked == 1 ? '<span class="" data-toggle="popover" data-trigger="hover" data-content="'.$eligibilityLockFormStatusObj->is_data_locked_reason.'">
+                                        <i class="fas fa-lock"></i>
+                                    </span>' : '';
 }
 /*************** Form Lock *****************/
 @endphp
@@ -29,11 +32,7 @@ if(null !== $eligibilityLockFormStatusObj) {
             echo \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getGradingFormStatusArray);
             @endphp
 
-            @if($eligibilityLockFromStatus == 1)
-                <span class="" data-toggle="popover" data-trigger="hover" data-content="Form Data is Locked!">
-                    <i class="fas fa-lock"> </i>
-                </span>
-            @endif
+            {!! $eligibilityLockFromStatus !!}
         </a>
         <br>
     @endif
