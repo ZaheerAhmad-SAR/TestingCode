@@ -20,13 +20,16 @@ $getAdjudicationFormStatusArray = [
 /*************** Form Lock *****************/
 $getAdjudicationLockFormStatusArray = [
 'study_id' => $studyId,
+'subject_id' => $subjectId,
 'study_structures_id' => $phase->id,
 'modility_id' => $step->modility_id,
 ];
-$adjudicationLockFromStatus = 0;
+$adjudicationLockFromStatus = '';
 $adjudicationLockFormStatusObj = \Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatusObj($getAdjudicationLockFormStatusArray);
 if(null !== $adjudicationLockFormStatusObj) {
-    $adjudicationLockFromStatus = $adjudicationLockFormStatusObj->is_data_locked == 1 ? $adjudicationLockFormStatusObj->is_data_locked : 0;
+    $adjudicationLockFromStatus = $adjudicationLockFormStatusObj->is_data_locked == 1 ? '<span class="" data-toggle="popover" data-trigger="hover" data-content="'.$adjudicationLockFormStatusObj->is_data_locked_reason.'">
+                                        <i class="fas fa-lock"></i>
+                                    </span>' : '';
 }
 /*************** Form Lock *****************/
 @endphp
@@ -41,11 +44,7 @@ if(null !== $adjudicationLockFormStatusObj) {
             $getAdjudicationFormStatusArray, true);
             @endphp
 
-            @if($adjudicationLockFromStatus == 1)
-                <span class="" data-toggle="popover" data-trigger="hover" data-content="Form Data is Locked!">
-                    <i class="fas fa-lock"> </i>
-                </span>
-            @endif
+            {!! $adjudicationLockFromStatus !!}
         </a>
         <br>
     @endif
