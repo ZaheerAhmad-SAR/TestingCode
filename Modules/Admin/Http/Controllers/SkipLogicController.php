@@ -24,6 +24,8 @@ use Modules\Admin\Entities\QuestionOption;
 use Modules\Admin\Entities\CohortSkipLogic;
 use Modules\Admin\Entities\CohortSkipLogicOption;
 use Modules\Admin\Entities\DiseaseCohort;
+use Modules\Admin\Entities\FormType;
+use Modules\Admin\Entities\Modility;
 use Illuminate\Support\Facades\DB;
 use Modules\FormSubmission\Traits\Replication\ReplicatePhaseStructure;
 
@@ -45,12 +47,14 @@ class SkipLogicController extends Controller
         $all_study_steps = PhaseSteps::where('phase_id', $step->phase_id)->get();
         return view('admin::forms.skip_question_text', compact('num_values', 'all_study_steps', 'step'));
     }
-    public function skip_logic_cohort($id)
-    {
+    public function skip_logic_cohort($id,$formTypeId ='',$modalityId ='')
+    { 
+        $form_types = FormType::all();
+        $modalities = Modility::all();
         $disease_cohorts = DiseaseCohort::where('study_id', '=', session('current_study'))->get();
         $cohort_skiplogic = CohortSkipLogic::where('study_id', '=', session('current_study'))->get();
         $all_study_steps = PhaseSteps::where('phase_id', $id)->get();
-        return view('admin::structure.skip_logic_cohort', compact('all_study_steps', 'disease_cohorts', 'cohort_skiplogic'));
+        return view('admin::structure.skip_logic_cohort', compact('all_study_steps', 'disease_cohorts', 'cohort_skiplogic','form_types','modalities'));
     }
 
     public function add_skipLogic(Request $request)

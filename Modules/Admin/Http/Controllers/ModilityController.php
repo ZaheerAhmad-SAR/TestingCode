@@ -38,7 +38,7 @@ class ModilityController extends Controller
      */
     public function create()
     {
-        $modalities = Modility::paginate(2);
+        $modalities = Modility::paginate(\Auth::user()->user_prefrences->default_pagination);
         //dd($modalities);
         foreach ($modalities as $key => $value) {
             // $arr[3] will be updated with each value from $arr...

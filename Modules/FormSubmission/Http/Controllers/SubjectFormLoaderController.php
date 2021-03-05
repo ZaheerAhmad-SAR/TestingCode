@@ -78,7 +78,7 @@ class SubjectFormLoaderController extends Controller
         }
         // paginate data
         $getPhaseModalities = $getPhaseModalities->orderBy('study_structures.position')
-                                                 ->paginate(20);
+                                                 ->paginate(\Auth::user()->user_prefrences->default_pagination);
 
         return view('formsubmission::subjectFormLoader.form_lock', ['getPhaseModalities' => $getPhaseModalities, 'filterPhases' => $filterPhases, 'filetrModalities' => $filetrModalities]);
     }
