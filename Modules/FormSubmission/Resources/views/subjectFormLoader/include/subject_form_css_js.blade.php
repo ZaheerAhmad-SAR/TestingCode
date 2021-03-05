@@ -220,39 +220,40 @@
 
             function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, questionIdStr, formType, field_name,
                 fieldId,dependencyIdStr) {
+                
+                if (isFormDataLocked(stepIdStr) == false) {
+                  
+                    if (canSubmitForm(formType, stepIdStr)) {
 
-                if (isPreview === false) {
-                    if (isFormDataLocked(stepIdStr) == false) {
-                      
-                        if (canSubmitForm(formType, stepIdStr)) {
+                        if (needToPutFormInEditMode(stepIdStr) == false) {
 
-                            if (needToPutFormInEditMode(stepIdStr) == false) {
+                            if (window['validateQuestion' + questionIdStr](true, stepIdStr)) {
 
-                                if (window['validateQuestion' + questionIdStr](true, stepIdStr)) {
+                                if (eval("typeof " + window['showHideQuestion' + questionIdStr+ '_' + dependencyIdStr]) != 'undefined') {
 
-                                    if (eval("typeof " + window['showHideQuestion' + questionIdStr+ '_' + dependencyIdStr]) != 'undefined') {
-
-                                        window['showHideQuestion' + questionIdStr+ '_' + dependencyIdStr](stepIdStr);
-                                    }
-                                    if (eval("typeof " + window['runCalculatedFieldsFunctions' + stepIdStr]) !=
-                                        'undefined') {
-                                        window['runCalculatedFieldsFunctions' + stepIdStr](questionIdStr);
-                                    }
-                                    if (eval("typeof " + window['checkQuestionSkipLogic' + questionIdStr]) != 'undefined') {
-                                        window['checkQuestionSkipLogic' + questionIdStr]();
-                                    }
-                                    submitFormField(stepIdStr, questionId, field_name, fieldId);
+                                    window['showHideQuestion' + questionIdStr+ '_' + dependencyIdStr](stepIdStr);
                                 }
-                            } else {
-                                showPutFormInEditModeError();
+                                if (eval("typeof " + window['runCalculatedFieldsFunctions' + stepIdStr]) !=
+                                    'undefined') {
+                                    window['runCalculatedFieldsFunctions' + stepIdStr](questionIdStr);
+                                }
+                                if (eval("typeof " + window['checkQuestionSkipLogic' + questionIdStr]) != 'undefined') {
+                                    window['checkQuestionSkipLogic' + questionIdStr]();
+                                }
+                                if (isPreview === false) {
+                                    submitFormField(stepIdStr, questionId, field_name, fieldId);
+                                } //form preview
                             }
                         } else {
-                            showPermissionError();
+                            showPutFormInEditModeError();
                         }
                     } else {
-                        showDataLockError();
+                        showPermissionError();
                     }
+                } else {
+                    showDataLockError();
                 }
+                
             }
 
             function handleValidationErrors(error) {
