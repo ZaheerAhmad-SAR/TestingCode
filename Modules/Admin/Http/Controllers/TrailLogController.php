@@ -58,7 +58,7 @@ class TrailLogController extends Controller
                 $getLogs =  $getLogs->whereBetween('trail_logs.created_at', [$from, $to]);
             }
 
-            $getLogs = $getLogs->orderBy('id', 'desc')->paginate(15);
+            $getLogs = $getLogs->orderBy('id', 'desc')->paginate(\Auth::user()->user_prefrences->default_pagination);
 
             // event section filter array
             $eventSection = array(
@@ -138,7 +138,7 @@ class TrailLogController extends Controller
                     $getLogs =  $getLogs->whereBetween('trail_logs.created_at', [$from, $to]);
                 }
 
-                $getLogs = $getLogs->orderBy('id', 'desc')->paginate(15);
+                $getLogs = $getLogs->orderBy('id', 'desc')->paginate(\Auth::user()->user_prefrences->default_pagination);
 
                 //get event sections
                 $eventSection = TrailLog::GroupBy('event_section')
@@ -189,7 +189,7 @@ class TrailLogController extends Controller
                     $getLogs =  $getLogs->whereBetween('trail_logs.created_at', [$from, $to]);
                 }
 
-                $getLogs = $getLogs->orderBy('id', 'desc')->paginate(15);
+                $getLogs = $getLogs->orderBy('id', 'desc')->paginate(\Auth::user()->user_prefrences->default_pagination);
 
                 //get event sections
                 $eventSection = TrailLog::GroupBy('event_section')
@@ -218,7 +218,7 @@ class TrailLogController extends Controller
         $activities = $activities->select('user_logs.*', 'users.name')
                    ->leftjoin('users', 'users.id', '=', 'user_logs.user_id')
                    ->orderBy('created_at', 'desc')
-                   ->paginate(15); 
+                   ->paginate(\Auth::user()->user_prefrences->default_pagination); 
         return view('admin::users_activities_log',compact('activities'));
     }
 }

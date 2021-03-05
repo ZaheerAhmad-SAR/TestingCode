@@ -86,7 +86,7 @@ class GradingController extends Controller
             $subjects = $subjects->groupBy(['subjects.id', 'study_structures.id'])
                 ->orderBy('subjects.subject_id')
                 ->orderBy('study_structures.position')
-                ->paginate(15);
+                ->paginate(\Auth::user()->user_prefrences->default_pagination);
 
             // get modalities
             $getModilities = PhaseSteps::select('phase_steps.step_id', 'phase_steps.step_name', 'modilities.id as modility_id', 'modilities.modility_name')
@@ -206,7 +206,7 @@ class GradingController extends Controller
             }
 
             $subjects = $subjects->groupBy(['form_submit_status.subject_id', 'form_submit_status.study_structures_id'])
-                ->paginate(15);
+                ->paginate(\Auth::user()->user_prefrences->default_pagination);
 
 
             if (!$subjects->isEmpty()) {
@@ -632,7 +632,7 @@ class GradingController extends Controller
         $subjects = $subjects->groupBy(['subjects.id', 'study_structures.id'])
             ->orderBy('subjects.subject_id')
             ->orderBy('study_structures.position')
-            ->paginate(15);
+            ->paginate(\Auth::user()->user_prefrences->default_pagination);
 
         // get modalities
         $getModilities = PhaseSteps::select('phase_steps.step_id', 'phase_steps.step_name', 'modilities.id as modility_id', 'modilities.modility_name')
@@ -1157,7 +1157,7 @@ class GradingController extends Controller
             $subjects = $subjects->groupBy(['subjects.id', 'study_structures.id'])
                 ->orderBy('subjects.subject_id')
                 ->orderBy('study_structures.position')
-                ->paginate(15);
+                ->paginate(\Auth::user()->user_prefrences->default_pagination);
 
             // get modalities
             $getModilities = PhaseSteps::select('phase_steps.step_id', 'phase_steps.step_name', 'modilities.id as modility_id', 'modilities.modility_name')
@@ -1444,7 +1444,7 @@ class GradingController extends Controller
             }
 
             $subjects = $subjects->groupBy(['form_submit_status.subject_id', 'form_submit_status.study_structures_id'])
-                ->paginate(15);
+                ->paginate(\Auth::user()->user_prefrences->default_pagination);
 
             if (!$subjects->isEmpty()) {
 
@@ -1668,7 +1668,7 @@ class GradingController extends Controller
         $subjects = $subjects->groupBy(['assign_work.subject_id', 'assign_work.phase_id'])
             ->orderBy('subjects.subject_id')
             ->orderBy('study_structures.position')
-            ->paginate(15);
+            ->paginate(\Auth::user()->user_prefrences->default_pagination);
 
 
         // get modalities

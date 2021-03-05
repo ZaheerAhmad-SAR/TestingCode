@@ -161,7 +161,9 @@ class SubjectFormLoaderController extends Controller
 
             $modalitySteps[$modility->modility_name] = $getSteps;
         }
-
+        // paginate data
+        $getPhaseModalities = $getPhaseModalities->orderBy('study_structures.position')
+                                                 ->paginate(\Auth::user()->user_prefrences->default_pagination);
         //get form status depending upon subject, phase and modality
         if ($modalitySteps != null) {
             foreach ($subjects as $subject) {
