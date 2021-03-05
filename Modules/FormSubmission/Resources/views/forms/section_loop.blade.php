@@ -18,6 +18,9 @@ if ($step->formType->form_type == 'Grading' && canGrading(['index'])){
 if ($step->formType->form_type == 'Eligibility' && canEligibility(['index'])){
     $showForm = true;
 }
+if ($isPreview ===true){
+    $stepIdStr = buildSafeStr(Request::segment(4), '');
+}
 @endphp
 @if($showForm == true)
 @php
