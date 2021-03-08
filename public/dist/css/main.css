@@ -1254,6 +1254,7 @@ body::-webkit-scrollbar-thumb {
     color: var(--primarycolor);
     background-color: transparent;
     border-bottom: 2px solid var(--primarycolor);
+    font-weight: 700 !important;
 }
 
 .tab-content > .active {

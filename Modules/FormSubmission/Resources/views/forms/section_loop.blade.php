@@ -134,6 +134,8 @@ if(null !== $formLockStatusObj) {
                                 $subjectId = ($subjectId ?? '');
                                 $studyId = ($studyId ?? '');
                                 $activeSection = true;
+                                $liBackground = '';
+                                $number = 0;
                                 @endphp
                                 @foreach ($sections as $section)
                                 @php
@@ -145,33 +147,30 @@ if(null !== $formLockStatusObj) {
                                 if($activeSection && request('sectionId', '-') == '-'){
                                     $showSection = 'active';
                                 }
+                                if(substr($section->name, -2) =='OD'){
+                                    $liBackground = 'li-even';
+                                }else if(substr($section->name, -2) =='OS'){
+                                    $liBackground = 'li-odd';
+                                }else{
+                                    $liBackground = 'no-class';
+                                }
                                 @endphp
-                                    <li class="nav-item mr-auto mb-4">
-                                        <a class="nav-link p-0
-                                    {{ $stepClsStr }}
-                                    {{ $sectionClsStr }}
-                                    {{ $showSection }}
-                                    {{ $activeSection ? 'first_navlink_' . $stepIdStr : '' }}" data-toggle="tab"
-                                            href="#tab{{ $section->id }}"
-                                            onclick="updateCurrentSectionId('{{ $section->step->phase_id }}', '{{ $section->step->step_id }}', '{{ $section->id }}');">
-                                            <div class="d-flex">
-                                                <div class="mr-3 mb-0 h1">{{ $section->sort_number }}</div>
-                                                <div class="media-body align-self-center">
-                                                    <h6
-                                                        class="mb-0 text-uppercase font-weight-bold">
-                                                        {{ $section->name }}
-                                                    </h6>
-                                                    {{ $section->description }}
-                                                    @if(!empty($transmissionNumber))
-                                                      <br>
-                                                      <span class="text text-danger">Transmission Number : {{ $transmissionNumber }}</span>
-                                                    @endif
-                                                </div>
-                                            </div>
+                                    <li class="nav-item mr-auto mb-1 {{ $liBackground }}">
+                                        <a class="nav-link p-0 {{ $stepClsStr }} {{ $sectionClsStr }} {{ $showSection }} {{ $activeSection ? 'first_navlink_' . $stepIdStr : '' }}"
+                                        data-toggle="tab"
+                                        href="#tab{{ $section->id }}"
+                                        onclick="updateCurrentSectionId('{{ $section->step->phase_id }}', '{{ $section->step->step_id }}', '{{ $section->id }}');">
+                                        <span class="mb-0 text-uppercase " data-toggle="tooltip" data-placement="bottom" title="{{ $section->description }}" > {{ $section->sort_number }}. {{ $section->name }}
+                                        </span>
+                                        @if(!empty($transmissionNumber))
+                                          <br>
+                                          <span class="text text-danger">Transmission Number : {{ $transmissionNumber }}</span>
+                                        @endif
                                         </a>
-                                    </li>
+                                    </li>&nbsp;
                                     @php
                                     $activeSection = false;
+                                    $number++;
                                     @endphp
                                 @endforeach
                             </ul>

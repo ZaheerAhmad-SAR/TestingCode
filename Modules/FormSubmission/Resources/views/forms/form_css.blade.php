@@ -155,4 +155,14 @@ color: #C30;
     font-weight: 600;
     border: 1px solid #1E3D73;
 }
+.li-even{
+	background-color: lightblue;
+    border-radius: 4px;
+    padding: 4px;
+}
+.li-odd{
+	background-color: lightsalmon;
+    border-radius: 4px;
+    padding: 4px;
+}
 </style>
