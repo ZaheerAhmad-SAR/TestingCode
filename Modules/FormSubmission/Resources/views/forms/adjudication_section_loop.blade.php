@@ -63,6 +63,7 @@ if(
                                 'adjudication_status' => 'complete',
                                 'form_adjudicated_by_id' => $current_user_id
                             ];
+                            dd(\Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatusObjArray($check_if_form_graded_by_logged_user));
                         @endphp
                         
                         @if(\Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatusObjArray($check_if_form_graded_by_logged_user)->isEmpty())
