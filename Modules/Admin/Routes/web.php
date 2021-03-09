@@ -11,6 +11,11 @@
 |
 */
 
+// php info
+// Route::get('phpInfo', function(){
+//     phpinfo();
+// });
+
 //test transmission view
 // Route::get('transmissions/transmissionData', function () {
 //     return view('admin::test_transmission_api');
@@ -88,7 +93,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('skiplogic/text_skip_logic/{id}', 'SkipLogicController@skip_question_on_text')->name('skiplogic.textskipLogic');
     Route::post('skiplogic/add_skip_logic', 'SkipLogicController@add_skipLogic')->name('skiplogic.apply_skip_logic');
     // skip logic on cohort
-    Route::get('skiplogic/skip_logic_cohort/{id}', 'SkipLogicController@skip_logic_cohort')->name('skiplogic.skiponcohort');
+    Route::get('skiplogic/skip_logic_cohort/{id}/{formTypeId?}/{modalityId?}', 'SkipLogicController@skip_logic_cohort')->name('skiplogic.skiponcohort');
     Route::post('skiplogic/skip_via_cohort', 'SkipLogicController@git_steps_for_checks_deactivate_cohort')->name('skiplogic.get_steps_skip_logic_deactivate_via_cohort');
     Route::post('skiplogic/add_skip_logic_cohort_based', 'SkipLogicController@add_skipLogic_cohort_based')->name('skiplogic.apply_skip_logic_cohort_based');
     // skip logic

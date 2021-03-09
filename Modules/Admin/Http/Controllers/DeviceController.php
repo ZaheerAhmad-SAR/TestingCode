@@ -22,7 +22,7 @@ class DeviceController extends Controller
      */
     public function index()
     {
-        $devices = Device::orderBy('id','desc')->paginate(8);
+        $devices = Device::orderBy('id','desc')->paginate(\Auth::user()->user_prefrences->default_pagination);
         $modilities = Modility::all();
 
         return view('admin::devices.index',compact('devices','modilities'));

@@ -93,7 +93,7 @@ class UserController extends Controller
             $users = $users->orderBy('users.'.$field_name , $request->sort_by_field);
         }
         $users = $users->orderBy('name', 'asc')
-                    ->paginate(20)
+                    ->paginate(\Auth::user()->user_prefrences->default_pagination)
                     ->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
         $old_values = $request->input();
 

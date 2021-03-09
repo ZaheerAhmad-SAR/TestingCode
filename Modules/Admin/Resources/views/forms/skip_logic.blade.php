@@ -67,9 +67,9 @@
                             @endforeach
                             {{$options->question_text}} &nbsp;
                             <input type="checkbox" name="option_value[]" value="{{$options_value[$index]}}" @if(in_array($options_value[$index], $check_value)) checked="checked" @endif> &nbsp; {{$option}} 
-                            <button class="btn btn-outline-primary" style="float: right;">
+                            {{-- <button class="btn btn-outline-primary" style="float: right;">
                                 <i class="fas fa-list"></i> Checks Details
-                            </button>
+                            </button> --}}
                        </div>
                    </div>
                </div>
