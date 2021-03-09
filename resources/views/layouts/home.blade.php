@@ -19,21 +19,8 @@
 
                     <a href="#" class="sidebarCollapse" id="collapse"><i class="icon-menu"></i></a>
                 </div>
-{{--                @if(empty(auth()->user()->google2fa_secret))--}}
-{{--                    <div class="" style="margin-top: 15px;padding: 9px 62px 14px 0px;" >--}}
-{{--                        @php--}}
-{{--                        $style = (empty(auth()->user()->google2fa_secret))? 'style="display:none;"':'style="margin-top:20px"';--}}
-{{--                        @endphp--}}
-{{--                        <div class="alert alert-warning alert-dismissible" {{ $style }} >--}}
-{{--                            <a type="submit" class="btn btn-outline-info" href="{{route('users.updateProfile')}}" >Enable now</a>--}}
-{{--                            <strong>Warning!</strong> Google 2-Factor Auth is disabled, turn it on.--}}
-{{--                            <button class="close" data-dismiss="alert">&times;</button>--}}
-{{--                        </div>--}}
-{{--                    </div>--}}
-{{--                @endif--}}
-                <!-- title here  -->
-                <!--  -->
-                <div class="navbar-right ml-auto h-100">
+
+                <div class="navbar-right ml-auto h-100 updateListItems">
                     <ul class="ml-auto p-0 m-0 list-unstyled d-flex top-icon h-100">
                         <li style="margin-top: 5px;">
                         <span>
@@ -43,35 +30,26 @@
                         </span>
                         </li>
 
-                        <li class="dropdown align-self-center d-inline-block">
+                        <li class="dropdown align-self-center d-inline-block receivedata">
                             <a href="#" class="nav-link" data-toggle="dropdown" aria-expanded="false">
                                 <i class="icon-bell h4"></i>
+                                      @php
+                                         $count =  \Modules\Queries\Entities\AppNotification::where('user_id','=', auth()->user()->id)
+                                         ->where('is_read','no')->count();
 
-
-
-{{--                                    {!! \Modules\Queries\Entities\AppNotification::checkIfUserHaveNotification() !!}--}}
-
-                                    <span class="badge badge-pill badge-danger" id="unReadNotification" style="height: 20px;top: 12px;"></span>
-                                    {!! \Modules\Queries\Entities\AppNotification::countUserUnReadNotification() !!}
-
-
-{{--                                    {{ \Modules\Queries\Http\Controllers\AppNotificationsController::countUserNotification() }}--}}
-
-
-{{--                                @php $count =  \Modules\Queries\Entities\AppNotification::where('user_id','=', auth()->user()->id)->where('is_read','no')->count(); @endphp--}}
-
-{{--                                @if($count > 0)--}}
-{{--                                    <span class="badge badge-pill badge-danger" style="height: 20px;top: 12px;"> {{$count}}</span>--}}
-{{--                                @endif--}}
-
+                                      @endphp
+                                        @if($count > 0 )
+                                    <span class="badge badge-pill badge-danger updateCounter"style="height: 20px;top: 12px;" data-value="{{auth()->user()->id}}">{{$count}}</span>
+                                        @endif
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-right border   py-0">
+
+                            <ul class="dropdown-menu dropdown-menu-right border  py-0 receivedata">
 
                                 @php
                                     $userQueries =  \Modules\Queries\Entities\AppNotification::where('user_id','=', auth()->user()->id)
                                     ->where('is_read','no')
-                                      ->orderBy('created_at', 'DESC')
-                                      ->groupBy('question_id')
+                                      //->orderBy('created_at', 'DESC')
+                                      //->groupBy('question_id')
                                      //->distinct('user_id')
                                     ->get();
 
@@ -86,9 +64,6 @@
                                     $userData ='';
                                     $answers = '';
                                     $query = '';
-
-                                    $answers = \Modules\Queries\Entities\Query::where('parent_query_id','=',$record->queryorbugid)->orWhereNull('parent_query_id')
-                                    ->where('query_status','open')->get();
 
                                     $query = \Modules\Queries\Entities\Query::where('id','=',$record->queryorbugid)
                                     //->where('query_status','open')
@@ -199,6 +174,7 @@
                                                     </div>
                                                 </a>
                                             </li>
+
                                         @endif
 
 
@@ -206,7 +182,9 @@
                                 @endif
 
                                 <tr>
-                                    {!! Modules\Queries\Entities\AppNotification::showMarkAllReadDiv() !!}
+                                    @if(Modules\Queries\Entities\AppNotification::showMarkAllReadDiv() > 0)
+                                        <td class="align-top"><a class="markAllRead"  href="javascript:void(0);"><span><i class="fas fa-check"></i></span> &nbsp;Mark All Read</a></td>
+                                    @endif
                                     <td class="align-top"><a href="{{route('notifications.index')}}"><span><i class="fas fa-book-open"></i></span> &nbsp; All Notifications</a></td>
 
                                  </tr>
@@ -250,6 +228,7 @@
             </nav>
         </div>
     </div>
+
     <script src="{{ asset('public/dist/vendors/jquery/jquery-3.3.1.min.js') }}"></script>
     <script type="text/javascript">
 
@@ -320,7 +299,6 @@
         });
 
 
-
         function loadnotifications()
         {
             $.ajax({
@@ -332,17 +310,25 @@
                 },
                 success: function(response)
                 {
-                    $('#unReadNotification').html(response.counter);
+                    //$('.updateListItems').html('');
+                    $('.updateListItems').html(response);
                 }
             });
         }
         loadnotifications();
+        //updateNotificaitonList();
+
         setInterval(function(){
             loadnotifications()
-        }, 5000);
+            //updateNotificaitonList()
+
+        }, 10000);
 
 
     </script>
+
+
+
     <!-- END: Header-->
     <!-- START: Main Menu-->
     @include('layouts/sidebar_menu')
