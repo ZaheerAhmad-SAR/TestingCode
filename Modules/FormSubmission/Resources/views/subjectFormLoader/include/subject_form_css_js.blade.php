@@ -719,9 +719,9 @@
                 $('a').removeClass('selected_form');
                 $('a').removeClass('selected_form_adj');
                 if(isAdjudication =='yes'){
-                    $('.adj_step_cls_'+stepIdStr).addClass('selected_form');
+                    $('.adj_applyCss_step_cls_'+stepIdStr).addClass('selected_form');
                 }else{
-                    $('.step_cls_'+stepIdStr).addClass('selected_form');
+                    $('.applyCss_step_cls_'+stepIdStr).addClass('selected_form');
                 }
                 $('#current_phase_id').val(phaseId);
                 $('#current_step_id').val(stepId);
