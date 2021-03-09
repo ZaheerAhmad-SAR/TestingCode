@@ -8,6 +8,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
 use Modules\Admin\Entities\Coordinator;
 use Modules\Admin\Entities\Photographer;
+use Modules\Admin\Entities\Device;
 use Modules\Admin\Entities\PrimaryInvestigator;
 use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\TrailLog;
@@ -21,7 +22,7 @@ class SiteController extends Controller
     public function index(Request $request)
     {
        
-
+    
         if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
             $field_name = $request->sort_by_field_name;
         }else{
@@ -55,13 +56,14 @@ class SiteController extends Controller
         if(isset($request->sort_by_field) && $request->sort_by_field !=''){
             $sites = $sites->orderBy($field_name , $request->sort_by_field);
         }
-        $sites = $sites->paginate(20)->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
+        $sites                = $sites->paginate(20)->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
         $siteForTransmissions = Site::all();
-        $photographers = Photographer::all();
-        $coordinators = Coordinator::all();
-        $pinvestigators = PrimaryInvestigator::all();
-        $old_values = $request->input();
-        return view('admin::sites.index',compact('sites','photographers','pinvestigators','coordinators','siteForTransmissions','old_values'));
+        $photographers        = Photographer::all();
+        $devices              = Device::all();
+        $coordinators         = Coordinator::all();
+        $pinvestigators       = PrimaryInvestigator::all();
+        $old_values           = $request->input();
+        return view('admin::sites.index',compact('sites','photographers','pinvestigators','coordinators','siteForTransmissions','old_values','devices'));
     }
 
     /**
