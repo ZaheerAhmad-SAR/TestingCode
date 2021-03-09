@@ -217,7 +217,7 @@ class StudySiteController extends Controller
         if(isset($request->sort_by_field) && $request->sort_by_field !=''){
             $sites = $sites->orderBy($field_name , $request->sort_by_field);
         }
-        $sites = $sites->paginate(20)->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
+        $sites = $sites->paginate(\Auth::user()->user_prefrences->default_pagination)->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
         return view('admin::studies.assign_sites',compact('sites','total_sites'));
     }
 

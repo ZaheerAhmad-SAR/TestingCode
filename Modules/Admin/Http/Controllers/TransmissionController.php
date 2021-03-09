@@ -87,7 +87,7 @@ class TransmissionController extends Controller
         if(isset($request->sort_by_field) && $request->sort_by_field !=''){
             $getTransmissions = $getTransmissions->orderBy($field_name , $request->sort_by_field);
         }
-        $getTransmissions = $getTransmissions->paginate(50)->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
+        $getTransmissions = $getTransmissions->paginate(\Auth::user()->user_prefrences->default_pagination)->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
 
         // get modality
         $getModalities = Modility::get();
@@ -148,7 +148,7 @@ class TransmissionController extends Controller
         if(isset($request->sort_by_field) && $request->sort_by_field !=''){
             $getTransmissions = $getTransmissions->orderBy($field_name , $request->sort_by_field);
         }
-        $getTransmissions =    $getTransmissions->paginate(50)->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
+        $getTransmissions =    $getTransmissions->paginate(\Auth::user()->user_prefrences->default_pagination)->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
         // get modality
         $getModalities = Modility::get();
         //

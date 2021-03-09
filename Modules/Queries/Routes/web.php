@@ -27,6 +27,7 @@ Route::group(['middleware' => ['auth','web']],function(){
     Route::post('notifications/removeNotification','AppNotificationsController@removeNotification')->name('notifications.removeNotification');
     Route::post('notifications/update', 'AppNotificationsController@update')->name('notifications.update');
     Route::post('notifications/countUserNotification', 'AppNotificationsController@countUserNotification')->name('notifications.countUserNotification');
+    Route::post('notifications/notificationList', 'AppNotificationsController@notificationList')->name('notifications.notificationList');
     Route::get('queries/chatindex','QueriesController@chatindex')->name('queries.chatindex');
 
 

@@ -19,7 +19,7 @@ class PermissionsController extends Controller
      */
     public function index()
     {
-        $permissions  =   Permission::paginate(20);
+        $permissions  =   Permission::paginate(\Auth::user()->user_prefrences->default_pagination);
         return view('userroles::permissions.index', compact('permissions'));
     }
 

@@ -167,14 +167,14 @@
                             </div>
                             <label for="subject_id" class="col-md-2">Subject ID</label>
                             <div class="{!! ($errors->has('subject_id')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                <input type="text" class="form-control" id="subject_id" name="subject_id" value="{{old('subject_id')}}" onchange="check_if_subject_exists(this)">
+                                <input type="text" class="form-control" id="subject_id" name="subject_id" value="{{old('subject_id')}}" onchange="check_if_subject_exists(this)" required>
                                 @error('subject_id')
                                 <span class="text-danger small">{{ $message }} </span>
                                 @enderror
                             </div>
                             <label for="study_short_name" class="col-md-2">Enrollment Date</label>
                             <div class="{!! ($errors->has('enrollment_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                <input type="date" class="form-control" id="enrollment_date" name="enrollment_date" value="{{old('enrollment_date')}}">
+                                <input type="date" class="form-control" id="enrollment_date" name="enrollment_date" value="{{old('enrollment_date')}}" required>
                                 @error('enrollment_date')
                                 <span class="text-danger small">{{ $message }} </span>
                                 @enderror
@@ -183,7 +183,7 @@
                         <div class="form-group row">
                             <label for="site_id" class="col-md-2">Site</label>
                             <div class="{!! ($errors->has('site_id')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                <select name="site_id" id="site_id" class="form-control">
+                                <select name="site_id" id="site_id" class="form-control" required>
                                     <option value="">Select Subject Site</option>
                                     @if(!empty($site_study))
 

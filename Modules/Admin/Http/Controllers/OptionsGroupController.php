@@ -19,7 +19,7 @@ class OptionsGroupController extends Controller
     public function index()
     {
         $current_study =  \Session::get('current_study');
-        $optionsGroups = OptionsGroup::paginate(20);
+        $optionsGroups = OptionsGroup::paginate(\Auth::user()->user_prefrences->default_pagination);
         //$optionsGroup = OptionsGroup::latest('created_at')->get();
         $optionsGroup = OptionsGroup::where('study_id',$current_study)->orderBy('created_at','desc')->get();
 
