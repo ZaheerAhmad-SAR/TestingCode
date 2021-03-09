@@ -11,7 +11,7 @@
 |
 */
 
-Route::prefix('dashboards')->group(function() {
-    Route::get('/', 'DashboardsController@index');
-});
+//Route::prefix('dashboards')->group(function() {
+//    Route::get('/', 'DashboardsController@index');
+//});
 Route::resource('finance', 'FinanceController');

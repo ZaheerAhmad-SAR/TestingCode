@@ -18,23 +18,21 @@ class AppNotification extends Model
       $count = '';
       $count = self::where('user_id','=', auth()->user()->id)
           ->where('is_read','no')
-          ->distinct('question_id')
+          //->distinct('question_id')
           //->groupBy('question_id')
           ->count();
       //dd($count);
       if ($count > 0)
       {
-          return '<span class="badge badge-pill badge-danger" style="height: 20px;top: 12px;">'.$count.'</span>';
+          return '<span id="unReadNotification" class="badge badge-pill badge-danger" style="height: 20px;top: 12px;">'.$count.'</span>';
       }
     }
     public static function showMarkAllReadDiv()
     {
       $count = '';
       $count = self::where('user_id','=', auth()->user()->id)->where('is_read','no')->count();
-      if ($count > 0)
-      {
-          return '&nbsp; &nbsp;<td class="align-baseline"><a class="markAllRead" href="javascript:void(0);"><span><i class="fas fa-check"></i></span> &nbsp;Mark All Read</a></td> &nbsp; &nbsp; &nbsp;';
-      }
+
+      return $count;
     }
 
     public static function  checkIfUserHaveNotification()
