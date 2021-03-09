@@ -17,6 +17,7 @@ use Modules\Queries\Entities\Query;
 use Modules\Admin\Entities\Study;
 use Modules\Queries\Entities\QueryUser;
 use Modules\Queries\Entities\RoleQuery;
+use Modules\UserRoles\Entities\Role;
 use Modules\UserRoles\Entities\StudyRoleUsers;
 use Modules\UserRoles\Entities\UserRole;
 use phpDocumentor\Reflection\Types\Null_;
@@ -49,32 +50,26 @@ class QueriesController extends Controller
             ->get();
         echo  view('queries::queries.usersdropdown',compact('studyusers'));
     }
-
+    /// User DropList for Form Query
     public function usersDropDownListForm(Request $request)
     {
-        $studyusers =  UserRole::select('users.*','user_roles.study_id','roles.role_type', 'roles.name as role_name','study_role_users.study_id','study_role_users.user_id')
-            ->join('users','users.id','=','user_roles.user_id')
-            ->join('roles','roles.id','=','user_roles.role_id')
-            ->join('study_role_users','study_role_users.user_id','=','user_roles.user_id')
-            ->where('roles.role_type','!=','system_role')
-            ->where('study_role_users.study_id','=',$request->study_id)
-            ->groupBy('users.id')
-            ->get();
+        $role = Role::where('role_type','=','system_role')->where('name', 'Study Admin')->first();
+        $studyRoleUsers = StudyRoleUsers::where('role_id',$role->id)
+            ->where('study_id',$request->study_id)
+            ->pluck('user_id')->toArray();
+        $studyusers = User::whereIn('id',$studyRoleUsers)->get();
+
         echo  view('queries::queries.form.usersdropdownform',compact('studyusers'));
     }
-
+    /// User DropList for Question Query
     public function usersDropDownListQuestion(Request $request)
     {
 
-        $studyusers =  UserRole::select('users.*','user_roles.study_id','roles.role_type', 'roles.name as role_name','study_role_users.study_id','study_role_users.user_id')
-            ->join('users','users.id','=','user_roles.user_id')
-            ->join('roles','roles.id','=','user_roles.role_id')
-            ->join('study_role_users','study_role_users.user_id','=','user_roles.user_id')
-            ->where('roles.role_type','!=','system_role')
-            ->where('study_role_users.study_id','=',$request->study_id)
-            ->groupBy('users.id')
-            ->get();
-        //dd($studyusers);
+      $role = Role::where('role_type','=','system_role')->where('name', 'Study Admin')->first();
+        $studyRoleUsers = StudyRoleUsers::where('role_id',$role->id)
+            ->where('study_id',$request->study_id)
+            ->pluck('user_id')->toArray();
+        $studyusers = User::whereIn('id',$studyRoleUsers)->get();
 
         echo  view('queries::queries.question.usersdropdownquestions',compact('studyusers'));
     }

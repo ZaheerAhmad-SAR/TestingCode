@@ -13,7 +13,7 @@
             <div class="col-12  align-self-center">
                 <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
                     <div class="w-sm-100 mr-auto">
-                        <h4 class="mb-0">Subject Phases</h4>
+                        <h4 class="mb-0" style="display: none;">Subject Details</h4>
                     </div>
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                         <li class="breadcrumb-item"><a href="{{ url('dashboard') }}">Home</a></li>
@@ -25,19 +25,18 @@
             </div>
         </div>
         <!-- END: Breadcrumbs-->
-
         <!-- START: Card Data-->
-        <div class="row">
+        <div class="row" style="margin-top: -15px;">
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
-                    <div class="card-header  justify-content-between align-items-center">
+                    <div class="card-header  justify-content-between align-items-center" style="display: none;">
                         <h4 class="card-title">Study and Subject details</h4>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" style="padding: 0;">
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-4">
                                 <div class="table-responsive">
-                                    <table class="table">
+                                    <table class="table" style="margin-bottom: 0px;">
                                         <tr>
                                             <th scope="row">Subject ID</th>
                                             <td>{{ $subject->subject_id }}</td>
@@ -46,17 +45,12 @@
                                             <th scope="row">Study EYE</th>
                                             <td>{{ $subject->study_eye }}</td>
                                         </tr>
-                                        <tr>
-                                            <th scope="row">Study Site ID</th>
-                                            <td>{{ $studySite->study_site_id }}</td>
-                                        </tr>
                                     </table>
                                 </div>
                             </div>
-
-                            <div class="col-6">
+                            <div class="col-4">
                                 <div class="table-responsive">
-                                    <table class="table">
+                                    <table class="table" style="margin-bottom: 0px;">
                                         <tr>
                                             <th scope="row">Site Name</th>
                                             <td>{{ $site->site_name }}</td>
@@ -65,66 +59,27 @@
                                             <th scope="row">Site Code</th>
                                             <td>{{ $site->site_code }}</td>
                                         </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                               <div class="table-responsive">
+                                    <table class="table" style="margin-bottom: 0px;">
+                                       <tr>
+                                            <th scope="row">Study Site ID</th>
+                                            <td>{{ $studySite->study_site_id }}</td>
+                                        </tr>
                                         <tr>
                                             <th scope="row">Cohort</th>
                                             <td>{{ \Modules\Admin\Entities\Subject::getDiseaseCohort($subject) }}</td>
                                         </tr>
                                     </table>
-                                </div>
+                                </div> 
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 mt-3">
-                <div class="card">
-                    <div class="card-header  justify-content-between align-items-center">
-                        <h4 class="card-title">Grading legend</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <img src="{{ url('images/no_status.png') }}" />&nbsp;&nbsp;Not Initiated
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <i class="fas fa-exclamation-circle" style="font-size:15px;"></i> &nbsp;&nbsp;Required
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <img src="{{ url('images/incomplete.png') }}" />&nbsp;&nbsp;Initiated
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <img src="{{ url('images/resumable.png') }}" />&nbsp;&nbsp;Editing
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <img src="{{ url('images/complete.png') }}" />&nbsp;&nbsp;Complete
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <img src="{{ url('images/not_required.png') }}" />&nbsp;&nbsp;Not Required
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                <img src="{{ url('images/query.png') }}" />&nbsp;&nbsp;Query
-                        
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 mt-3">
-                <div class="card">
-                    <div class="card-header  justify-content-between align-items-center">
-                        <h4 class="card-title">Activate Visits</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            @if(
-                                (\Modules\Admin\Entities\Preference::getPreference('VISIT_ACTIVATION') == 'Manual') &&
-                                canQualityControl(['index', 'create', 'store', 'edit', 'update'])
-                            )
-                            <div class="col-2">
-                                <button type="button" class="btn btn-success"
-                                    onclick="openAssignPhasesToSubjectPopup('{{ $studyId }}', '{{ $subjectId }}');">Activate
-                                    Visits</button>
-                            </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="col-12 col-sm-12">
                 <div class="row row-eq-height">
                     <div class="col-12 col-lg-2 mt-3 todo-menu-bar flip-menu pr-lg-0">
@@ -270,7 +225,34 @@
                     <div class="col-12 col-lg-10 mt-3 pl-lg-0">
                         <div class="card border h-100 contact-list-section">
                             <div class="card-body p-0">
-                                <div class="contacts list">
+                                <div class="row">
+                                    <div class="col-md-2" style="margin-top: 6px;">
+                                        @if(
+                                        (\Modules\Admin\Entities\Preference::getPreference('VISIT_ACTIVATION') == 'Manual') &&
+                                        canQualityControl(['index', 'create', 'store', 'edit', 'update'])
+                                            )
+                                            &nbsp;&nbsp;<button type="button" class="btn btn-success"
+                                                onclick="openAssignPhasesToSubjectPopup('{{ $studyId }}', '{{ $subjectId }}');">Activate
+                                                Visits</button>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-10" style="margin-top: 10px;">
+                                        <img src="{{ url('images/no_status.png') }}" />&nbsp;&nbsp;Not Initiated
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <i class="fas fa-exclamation-circle" style="font-size:15px;"></i> &nbsp;&nbsp;Required
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img src="{{ url('images/incomplete.png') }}" />&nbsp;&nbsp;Initiated
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img src="{{ url('images/resumable.png') }}" />&nbsp;&nbsp;Editing
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img src="{{ url('images/complete.png') }}" />&nbsp;&nbsp;Complete
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img src="{{ url('images/not_required.png') }}" />&nbsp;&nbsp;Not Required
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img src="{{ url('images/query.png') }}" />&nbsp;&nbsp;Query
+                                    </div>
+                                </div>
+                                <div class="contacts list" style="margin-top: 6px;">
                                     @php
                                         // load form by url
                                         $subject = \Modules\Admin\Entities\Subject::find(Request::segment(3));

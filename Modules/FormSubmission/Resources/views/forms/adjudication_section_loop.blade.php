@@ -63,9 +63,19 @@ if(
                                 'adjudication_status' => 'complete',
                                 'form_adjudicated_by_id' => $current_user_id
                             ];
+                            $check_form_graded_already = [
+                                'subject_id' => $subjectId,
+                                'study_id' => $studyId,
+                                'study_structures_id' => $phase->id,
+                                'phase_steps_id' => $step->step_id,
+                                'form_type_id' => $step->form_type_id,
+                                'modility_id' => $step->modility_id,
+                                'adjudication_status' => 'complete',
+                            ];
+                            $count_of_form_graded_already = count(\Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatusObjArray($check_form_graded_already));
                         @endphp
                         
-                        @if(\Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatusObjArray($check_if_form_graded_by_logged_user)->isEmpty())
+                        @if(\Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatusObjArray($check_if_form_graded_by_logged_user)->isEmpty() && $count_of_form_graded_already >=1)
                             <div class="alert alert-danger" role="alert">
                                 The current form has already been graded by required number of graders
                             </div>
@@ -100,6 +110,8 @@ if(
                                     $stepIdStr = buildSafeStr($step->step_id, '');
                                     $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                                     $activeSection = true;
+                                    $liBackground = '';
+                                    $number = 0;
                                     @endphp
                                     @foreach ($sections as $section)
                                         @php
@@ -112,25 +124,24 @@ if(
                                         if($activeSection && request('sectionId', '-') == '-'){
                                             $showSection = 'active';
                                         }
+                                        if(substr($section->name, -2) =='OD'){
+                                            $liBackground = 'li-even';
+                                        }else if(substr($section->name, -2) =='OS'){
+                                            $liBackground = 'li-odd';
+                                        }else{
+                                            $liBackground = 'no-class';
+                                        }
                                         @endphp
-                                        <li class="nav-item mr-auto mb-4">
-                                            <a class="nav-link p-0
-                                            {{ $showSection }}
-                                            {{ $activeSection ? 'first_navlink_' . $stepIdStr : '' }}" data-toggle="tab"
+                                        <li class="nav-item mr-auto mb-1 {{ $liBackground }}">
+                                            <a class="nav-link p-0 {{ $showSection }} {{ $activeSection ? 'first_navlink_' . $stepIdStr : '' }}" data-toggle="tab"
                                                 href="#adjudication_tab_{{ $section->id }}">
-                                                <div class="d-flex">
-                                                    <div class="mr-3 mb-0 h1">{{ $section->sort_number }}</div>
-                                                    <div class="media-body align-self-center">
-                                                        <h6 class="mb-0 text-uppercase font-weight-bold">
-                                                            {{ $section->name }}
-                                                        </h6>
-                                                        {{ $section->description }}
-                                                    </div>
-                                                </div>
+                                                <span class="mb-0 text-uppercase " data-toggle="tooltip" data-placement="bottom" title="{{ $section->description }}" > {{ $section->sort_number }}. {{ $section->name }}
+                                                </span>
                                             </a>
                                         </li>
                                         @php
                                         $activeSection = false;
+                                        $number++;
                                         @endphp
                                     @endforeach
                                 </ul>

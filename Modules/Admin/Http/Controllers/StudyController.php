@@ -426,7 +426,7 @@ class StudyController extends Controller
                 $subjects = $subjects->orderBy($field_name , $request->sort_by_field);
             }
 
-            $subjects = $subjects->paginate(15);
+            $subjects = $subjects->paginate(\Auth::user()->user_prefrences->default_pagination);
 
             $site_study = StudySite::where('study_id', '=', $id)
                 ->join('sites', 'sites.id', '=', 'site_study.site_id')

@@ -2,11 +2,15 @@
 
 namespace Modules\Queries\Http\Controllers;
 
+use App\User;
+use Carbon\Carbon;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
+use Modules\Admin\Entities\Study;
 use Modules\Queries\Entities\AppNotification;
+use Modules\Queries\Entities\Query;
 
 class AppNotificationsController extends Controller
 {
@@ -30,19 +34,41 @@ class AppNotificationsController extends Controller
 
         return view('queries::notifications.index',compact('records'));
     }
-
-    public  static function countUserNotification()
+    /// Show the count of each user notification on the bell icon along with lists, normally call this function after 10 second
+    public  function countUserNotification()
     {
-
-        $count = '';
-        $count = AppNotification::where('user_id','=', auth()->user()->id)
+        $records = AppNotification::where('user_id','=', auth()->user()->id)
             ->where('is_read','no')
-            ->distinct('question_id')
+            //->distinct('question_id')
             //->groupBy('question_id')
-            ->count();
-        //return response()->json(['counter'=>$count]);
-        return view('queries::notifications.icon',compact('count'));
+            ->get();
+            $count  = count($records);
+            return view('queries::notifications.icon',compact('records','count'));
+
     }
+
+//    public  function countUserNotification()
+//    {
+//
+//        $count = AppNotification::where('user_id','=', auth()->user()->id)
+//            ->where('is_read','no')
+//            //->distinct('question_id')
+//            //->groupBy('question_id')
+//            ->count();
+//        if ($count > 0 )
+//        {
+//            return response()->json(['counter'=>$count]);
+//        }
+//
+//    }
+
+
+    public function notificationList(Request $request)
+    {
+        $records = AppNotification::where('user_id','=', $request->id)->where('is_read','no')->get();
+        return view('queries::notifications.icon',compact('records'));
+    }
+
     /**
      * Show the form for creating a new resource.
      * @return Renderable
@@ -127,7 +153,7 @@ class AppNotificationsController extends Controller
         //
     }
 
-
+    /// function to mark all the unread notification to read
     public function markAllNotificationToRead()
     {
         $records = AppNotification::where('user_id','=', auth()->user()->id)->where('is_read','no')->get();
