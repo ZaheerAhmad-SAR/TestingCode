@@ -89,8 +89,8 @@
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-2 col-form-label">Assigned to:</label>
                                 <div class="col-sm-10">
-                                    <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="user"> Users</label> &nbsp;
-                                    <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="role" > Roles</label>
+                                    <label class="radio-inline  col-form-label"><input type="radio" id="assignQuestionQueries" name="assignQuestionQueries" value="user"> Users</label> &nbsp;
+                                    <label class="radio-inline  col-form-label"><input type="radio" id="assignQuestionQueries" name="assignQuestionQueries" value="role" > Roles</label>
                                 </div>
                             </div>
                             <div class="form-group row usersInput" style="display: none;">
@@ -977,7 +977,7 @@
         var module              = $("#module").val();
         var modility_id         = $("#modility_id").val();
         var form_type_id        = $("#form_type_id").val();
-        var queryAssignedTo     = $("input[name='assignQueries']:checked").val();
+        var queryAssignedTo     = $("input[name='assignQuestionQueries']:checked").val();
         var message             = $('#message').val();
         var query_url           =  document.URL;
         var query_subject_form  = $("#query_subject_form").val();
@@ -1056,9 +1056,9 @@
         });
     }
 
-    $('#queries-modal-question').on('hidden.bs.modal', function () {
-        $(this).find('form').trigger('reset');
-    })
+    // $('#queries-modal-question').on('hidden.bs.modal', function () {
+    //     $(this).find('form').trigger('reset');
+    // })
 
     $('#reply-question-modal').on('hidden.bs.modal', function () {
         $(this).find('form').trigger('reset');
@@ -1206,6 +1206,9 @@
         });
 
     });
+
+
+
 
 
 
