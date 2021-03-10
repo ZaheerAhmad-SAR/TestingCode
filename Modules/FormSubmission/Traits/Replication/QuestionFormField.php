@@ -24,7 +24,30 @@ trait QuestionFormField
         $newFormField->replicating_or_cloning = $replicating_or_cloning;
         $newFormField->save();
     }
-
+    private function addReplicatedFormFieldForSection($question, $newQuestionId, $isReplicating = true,$request)
+    {
+        $variable_name = '';
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+        $formField = $question->formFields()->first();
+        if(substr($formField->variable_name, -2) =='OD' && $request->remove_suffix == 'OD'){
+            $variable_name = substr_replace($formField->variable_name,$request->add_suffix,-2);
+        }else if(substr($formField->variable_name, -2) =='OS' && $request->remove_suffix == 'OS'){
+            $variable_name = substr_replace($formField->variable_name,$request->add_suffix,-2);
+        }else{
+            $variable_name = $formField->variable_name;
+        }
+        $newFormFieldId = (string)Str::uuid();
+        $newFormField = $formField->replicate();
+        $newFormField->id = $newFormFieldId;
+        $newFormField->question_id = $newQuestionId;
+        $newFormField->parent_id = $formField->id;
+        $newFormField->variable_name = $variable_name;
+        $newFormField->replicating_or_cloning = $replicating_or_cloning;
+        $newFormField->save();
+    }
     private function updateReplicatedFormField($formField, $replicatedFormField)
     {
         $formFieldAttributesArray = Arr::except($formField->attributesToArray(), ['id', 'question_id', 'parent_id', 'replicating_or_cloning']);
