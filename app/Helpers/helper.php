@@ -49,9 +49,11 @@ function is_active($name)
 }
 function search_auth($arr, $auth)
 {
-    foreach ($arr as $row) {
-        if ($auth == $row) {
-            return true;
+    if (is_array($arr)) {
+        foreach ($arr as $row) {
+            if ($auth == $row) {
+                return true;
+            }
         }
     }
     return false;
