@@ -74,6 +74,7 @@ if(null !== $formStatusObj) {
 /********* check form lock status ******************/
 $getFormStatuslockArray= [
     'study_id' => $studyId,
+    'subject_id' => $subjectId,
     'study_structures_id' => $phase->id,
     'modility_id' => $step->modility_id,
 ];
