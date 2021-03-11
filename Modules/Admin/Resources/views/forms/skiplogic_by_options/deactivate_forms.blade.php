@@ -9,7 +9,11 @@
     if(null !==$if_exists_record){
         $deactivate_forms_array = explode(',', $if_exists_record->deactivate_forms);
     }
-    $where_step  = array('phase_id' => $step->phase_id,'modility_id' => $step->modility_id);
+    if($step->form_type_id == 2){
+        $where_step  = array('phase_id' => $step->phase_id,'modility_id' => $step->modility_id,'form_type_id' => 2);
+    }else{
+        $where_step  = array('phase_id' => $step->phase_id,'modility_id' => $step->modility_id);
+    }
     $all_study_steps = Modules\Admin\Entities\PhaseSteps::where($where_step)->get();
 @endphp
 <div class="col-12 col-sm-6 mt-3">
