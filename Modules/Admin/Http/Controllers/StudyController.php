@@ -68,7 +68,7 @@ class StudyController extends Controller
         ]);
         $studyAdminRoleId = Permission::getStudyAdminRole();
         if (count((array)$studyAdminRoleId) == 0) {
-            echo '<a href="' . route('roles.index') . '">Please add study admin role first</a>';
+            echo '<a class="redirecttoPage" href="' . route('roles.index') . '">Please add study admin role first</a>';
             exit;
         }
         $systemRoleIds = Role::where('role_type', 'system_role')->pluck('id')->toArray();
