@@ -651,20 +651,27 @@
         replicateParent();
 
         //// show Child function
+            $('body').on('click','.showPhasesSteps',function(){
 
-            $('.showPhasesSteps').click(function() {
-                $.ajaxSetup({ headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}});
-                var id =($(this).attr("data-id"))
+               $.ajaxSetup({
+                    headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
+                });
+                var id =($(this).attr("data-id"));
                 var url = "{{URL('/modalities')}}";
                 var newPath = url+ "/"+ id+"/showChild/";
+                
                 $.ajax({
                     type:"GET",
                     dataType: 'html',
                     url:newPath,
                     success : function(results) {
+                        $('#childClass').html('');
+
                         $('#childClass').html(results);
+                        return false;
                     }
-                });
-            });
+                }); 
+            })
+            
     </script>
 @stop
