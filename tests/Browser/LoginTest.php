@@ -8,28 +8,30 @@ use Tests\DuskTestCase;
 use App\User;
 use Illuminate\Database\Seeder;
 
-
 class LoginTest extends DuskTestCase
 {
 
    public function setUp(): void
     {
-        $this->appUrl = env('APP_URL');
+        $this->appDB = env('DB_DATABASE');
         parent::setUp();
-        //$this->artisan('migrate:refresh');
+        //$this->artisan('migrate:fresh');
         $this->artisan('module:seed');
     }
 
     /* @test */
     public function test_I_can_login_successfully()
     {
-
-        $this->browse(function ($browser) {
+        $user = User::where('name', 'Super Admin')->first();
+        // this test the login functionality
+        $this->browse(function ($browser) use ($user) {
             $browser->visit('/login')
-                    ->type('email', 'superadmin@admin.com')
+                    ->type('email',  $user->email)
                     ->type('password', 'at@m|c_en@rgy1272')
                     ->press('Sign In')
-                    ->assertSee('Please add study admin role first');
+                    ->assertSee('Please add study admin role first')
+                    ->logout();
         });
     }
+
 }

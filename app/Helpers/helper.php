@@ -1089,7 +1089,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
         // store data in event array
         $newData = [];
         $editReason = '';
-
+        
         //  loop through the dorm data
         foreach ($eventData as $key => $data) {
 

@@ -133,7 +133,7 @@ class SubjectFormLoaderController extends Controller
         $subjects = $subjects->groupBy(['subjects.id', 'study_structures.id'])
                             ->orderBy('subjects.subject_id')
                             ->orderBy('study_structures.position')
-                            ->paginate(20);
+                            ->paginate(\Auth::user()->user_prefrences->default_pagination);
 
         // get modilities according to study
         $getModilities = PhaseSteps::select('modilities.id as modility_id', 'modilities.modility_name')
@@ -145,7 +145,6 @@ class SubjectFormLoaderController extends Controller
             ->groupBy('phase_steps.modility_id')
             ->orderBy('modilities.modility_name')
             ->get();
-
 
         // get form types for modality
         foreach ($getModilities as $key => $modility) {
@@ -161,9 +160,7 @@ class SubjectFormLoaderController extends Controller
 
             $modalitySteps[$modility->modility_name] = $getSteps;
         }
-        // paginate data
-        $getPhaseModalities = $getPhaseModalities->orderBy('study_structures.position')
-                                                 ->paginate(\Auth::user()->user_prefrences->default_pagination);
+
         //get form status depending upon subject, phase and modality
         if ($modalitySteps != null) {
             foreach ($subjects as $subject) {
