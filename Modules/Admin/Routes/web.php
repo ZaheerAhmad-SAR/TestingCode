@@ -43,6 +43,7 @@ Route::post('transmissions-status', 'TransmissionController@transmissionStatus')
 Route::prefix('admin')->group(function () {
     Route::get('/', 'AdminController@index');
 });
+Route::get('modalities/{id}/showChild', 'ModilityController@showChild')->name('modalities.showChild');
 Route::group(['middleware' => ['auth', 'web']], function () {
 
     Route::get('get_steps', 'StudyStructureController@get_steps')->name('study.getSteps');
@@ -179,14 +180,13 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     // Route::resource('section','SectionController');
 
     //end
-
+    // Modalities routes
     Route::resource('childmodilities', 'ChildModilitiesController');
 
     Route::post('childmodilities/update', 'ChildModilitiesController@update')->name('childmodilities.update');
 
     Route::get('modalities/{id}/childshow', 'ModilityController@child')->name('modalities.childshow');
 
-    Route::get('modalities/{id}/showChild', 'ModilityController@showChild')->name('modalities.showChild');
 
     Route::get('modalities/{id}/editChild', 'ModilityController@editChild')->name('modalities.editChild');
 

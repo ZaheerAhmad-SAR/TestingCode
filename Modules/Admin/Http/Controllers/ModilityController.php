@@ -18,17 +18,9 @@ class ModilityController extends Controller
      * @return Response
      */
 
-    //    public function __construct()
-    //    {
-    //
-    //        $this->middleware();
-    //
-    //    }
-
     public function index()
     {
         $modalities = Modility::all();
-
         return view('admin::modilities.index', compact('modalities'));
     }
 
