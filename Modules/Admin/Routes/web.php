@@ -54,6 +54,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     //Route::resource('cloneSteps', 'CloneStepsController');
     Route::post('clone_steps', 'CloneStepsController@clone_steps')->name('cloneSteps.cloneSteps');
     Route::post('clone_phase', 'CloneStepsController@clone_phase')->name('cloneSteps.clonePhase');
+    Route::post('clone_section', 'CloneStepsController@clone_section')->name('cloneSteps.cloneSection');
     // for steps
     Route::DELETE('steps/delete_steps/{step_id}', 'StudyStructureController@destroySteps')->name('steps.deleteSteps');
     Route::post('steps/store_steps', 'StudyStructureController@store_steps')->name('steps.save');
