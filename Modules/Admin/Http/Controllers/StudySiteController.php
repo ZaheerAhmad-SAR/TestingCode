@@ -25,9 +25,19 @@ class StudySiteController extends Controller
      * Display a listing of the resource.
      * @return Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
-
+        // for default orderBy
+        if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
+            $field_name = $request->sort_by_field_name;
+        }else{
+            $field_name = 'site_code';
+        }
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $asc_or_decs = $request->sort_by_field;
+        }else{
+            $asc_or_decs = 'ASC';
+        }
         $siteArray = array();
         $sites = StudySite::select('site_study.*'
             ,'sites.site_name'
@@ -38,7 +48,11 @@ class StudySiteController extends Controller
             ,'sites.site_code'
             ,'sites.site_phone'
         )->join('sites','sites.id','=','site_study.site_id')
-            ->where('site_study.study_id','=',session('current_study'))->get();
+            ->where('site_study.study_id','=',session('current_study'));
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $sites = $sites->orderBy($field_name , $request->sort_by_field);
+        }
+        $sites = $sites->get();
         foreach ($sites as $site)
         {
             $siteArray[] = $site->site_id;

@@ -162,9 +162,12 @@
             var duration = 10000;
             setTimeout(function () { $('#myalert').hide(); }, duration);
         });
+       
+         // reset filters
         $('body').on('click','.reset-filter',function(){
-            ('.filter-form').find('input[type=text], input[type=date],select').val('');
-        });
+            $('.filter-form input').val('');
+            $('.filter-form').submit();
+        })
     </script>
         <!-- END: Page JS-->
     </body>

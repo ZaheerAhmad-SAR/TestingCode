@@ -20,16 +20,38 @@ class DeviceController extends Controller
      * Display a listing of the resource.
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $devices = Device::orderBy('id','desc')->paginate(\Auth::user()->user_prefrences->default_pagination);
+      // for default orderBy
+        if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
+            $field_name = $request->sort_by_field_name;
+        }else{
+            $field_name = 'device_name';
+        }
+
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $asc_or_decs = $request->sort_by_field;
+        }else{
+            $asc_or_decs = 'ASC';
+        }
+        // Devices Query
+        $devices = Device::query();
+        if($request->device_name != '') {
+            $devices = $devices->where('device_name','like', '%'.$request->device_name.'%');
+        }
+        if($request->device_model != '') {
+            $devices = $devices->where('device_model','like', '%'.$request->device_model.'%');
+        }
+        if($request->device_manufacturer != '') {
+            $devices = $devices->where('device_manufacturer','like', '%'.$request->device_manufacturer.'%');
+        }
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $devices = $devices->orderBy($field_name , $request->sort_by_field);
+        }
+        $devices = $devices->paginate(\Auth::user()->user_prefrences->default_pagination)
+                           ->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs); 
         $modilities = Modility::all();
-
         return view('admin::devices.index',compact('devices','modilities'));
-
-        /*        $devices = Device::paginate(20);
-                $modilities = Modility::all();
-                return view('admin::devices.index',compact('devices','modilities'));*/
     }
 
     /**
