@@ -58,7 +58,7 @@ class StudyusersController extends Controller
         if(isset($request->sort_by_field) && $request->sort_by_field !=''){
             $studyusers = $studyusers->orderBy('users.'.$field_name , $request->sort_by_field);
         }
-        $studyusers = $studyusers->paginate(10)->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
+        $studyusers = $studyusers->paginate(\Auth::user()->user_prefrences->default_pagination)->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
         $old_values = $request->input();
 
         $remaining_users = User::whereIn('id', $idsOfUsersWithStudyRole)

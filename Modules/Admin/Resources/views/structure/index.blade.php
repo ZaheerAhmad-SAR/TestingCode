@@ -370,6 +370,7 @@
 </div>
 <!--  -->
 @include('admin::structure.cloneStep')
+@include('admin::structure.cloneSection')
 @include('admin::forms.edit_crf')
 @include('admin::forms.form_checks')
 @endsection
@@ -392,323 +393,323 @@
 <script src="{{ asset('public/dist/vendors/quill/quill.min.js') }}"></script>
 <script src="{{ asset('public/dist/js/mail.script.js') }}"></script>
 <script>
-$(document).ready(function(){
-    // load add model for Phases addsteps
-    $('#add_phase').on('click',function(){
-        $('.modal-title').html('Add a Phase');
-        $('#add_edit_phase').trigger('reset');
-        $('#phase_id').val('');
-        $('#addphase').modal('show');
-    })
-    // Save Phase
-    $('#savePhase').on('click',function(){
-        var id = $('input#phase_id').val();
-        var name = $('input#phase_name').val();
-        var position = $('input#phase_position').val();
-        var duration = $('input#phase_duration').val();
-        var windowfield = $('input#phase_window').val();
-        var is_repeatable = $('input[name="is_repeatable"]:checked').val();
+    $(document).ready(function(){
+        // load add model for Phases addsteps
+        $('#add_phase').on('click',function(){
+            $('.modal-title').html('Add a Phase');
+            $('#add_edit_phase').trigger('reset');
+            $('#phase_id').val('');
+            $('#addphase').modal('show');
+        })
+        // Save Phase
+        $('#savePhase').on('click',function(){
+            var id = $('input#phase_id').val();
+            var name = $('input#phase_name').val();
+            var position = $('input#phase_position').val();
+            var duration = $('input#phase_duration').val();
+            var windowfield = $('input#phase_window').val();
+            var is_repeatable = $('input[name="is_repeatable"]:checked').val();
 
-        if(name =='' || position =='' || duration ==''){
-            alert('Please fill all the required fields');
-        }else{
-            $.ajax({
-                url: (id == '') ? "{{route('study.store')}}" : "{{route('study.updatePhase')}}",
-                type: 'POST',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    'id': id,
-                    'name': name,
-                    'position': position,
-                    'duration': duration,
-                    'window': windowfield,
-                    'is_repeatable': is_repeatable
-                    },
-                success: function(response){
-                    $("#addphase-close").click();
-                    load_phases();
-                    $('.success-msg').html('');
-                    $('.success-msg').html('Operation Done!')
-                    $('.success-alert').slideDown('slow');
-                    tId=setTimeout(function(){
-                     $(".success-alert").slideUp('slow');
-                    }, 3000);
-                }
-            });
-        }
-    })
+            if(name =='' || position =='' || duration ==''){
+                alert('Please fill all the required fields');
+            }else{
+                $.ajax({
+                    url: (id == '') ? "{{route('study.store')}}" : "{{route('study.updatePhase')}}",
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        'id': id,
+                        'name': name,
+                        'position': position,
+                        'duration': duration,
+                        'window': windowfield,
+                        'is_repeatable': is_repeatable
+                        },
+                    success: function(response){
+                        $("#addphase-close").click();
+                        load_phases();
+                        $('.success-msg').html('');
+                        $('.success-msg').html('Operation Done!')
+                        $('.success-alert').slideDown('slow');
+                        tId=setTimeout(function(){
+                         $(".success-alert").slideUp('slow');
+                        }, 3000);
+                    }
+                });
+            }
+        })
 
-    $('body').on('click','.edit_phase',function(){
-        $('.modal-title').html('Edit a Phase');
-        $('#add_edit_phase').trigger('reset');
-         $('#addphase').modal('show');
-        var row = $(this).closest('li.nav-item');
-        var id = row.find('input.phase_id').val();
-        var study_id = row.find('input.phase_study_id').val();
-        var name = row.find('input.phase_name').val();
-        var position = row.find('input.phase_position').val();
-        var duration = row.find('input.phase_duration').val();
-        var is_repeatable = row.find('input.is_repeatable').val();
-        var windowfield = row.find('input.window').val();
-        $('#phase_id').val(id);
-        $('#phase_position').val(position);
-        $('#phase_name').val(name);
-        $('#phase_duration').val(duration);
-        $('#phase_window').val(windowfield);
-        if(is_repeatable == 1){
-            $('#is_repeatable_1').prop('checked', true);
-        }else{
-            $('#is_repeatable_0').prop('checked', true);
-        }
-    })
-    // delete Phase
-    $('body').on('click','.deletePhase',function(){
-        var row = $(this).closest('li.nav-item');
-        var id = row.find('input.phase_id').val();
-        var tId;
-        if (confirm("Are you sure to delete?")) {
-            $.ajax({
-                url: 'study/'+id,
-                type: 'POST',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'DELETE',
-                    'id': id
+        $('body').on('click','.edit_phase',function(){
+            $('.modal-title').html('Edit a Phase');
+            $('#add_edit_phase').trigger('reset');
+             $('#addphase').modal('show');
+            var row = $(this).closest('li.nav-item');
+            var id = row.find('input.phase_id').val();
+            var study_id = row.find('input.phase_study_id').val();
+            var name = row.find('input.phase_name').val();
+            var position = row.find('input.phase_position').val();
+            var duration = row.find('input.phase_duration').val();
+            var is_repeatable = row.find('input.is_repeatable').val();
+            var windowfield = row.find('input.window').val();
+            $('#phase_id').val(id);
+            $('#phase_position').val(position);
+            $('#phase_name').val(name);
+            $('#phase_duration').val(duration);
+            $('#phase_window').val(windowfield);
+            if(is_repeatable == 1){
+                $('#is_repeatable_1').prop('checked', true);
+            }else{
+                $('#is_repeatable_0').prop('checked', true);
+            }
+        })
+        // delete Phase
+        $('body').on('click','.deletePhase',function(){
+            var row = $(this).closest('li.nav-item');
+            var id = row.find('input.phase_id').val();
+            var tId;
+            if (confirm("Are you sure to delete?")) {
+                $.ajax({
+                    url: 'study/'+id,
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "_method": 'DELETE',
+                        'id': id
+                        },
+                    success:function(res){
+                        row.remove();
+                        $('.success-msg').html('Operation Done!')
+                        $('.success-alert').slideDown('slow');
+                        tId=setTimeout(function(){
+                            $(".success-alert").slideUp('slow');
+                        }, 3000);
+                    }
+                })
+            }
+        })
+        // cohort settings
+        $('body').on('click','.cohort_setting',function(){
+            let row = $(this).closest('li.nav-item');
+            let id = row.find('input.phase_id').val();
+            let url = "{{ route('skiplogic.skiponcohort', ':id') }}";
+            url = url.replace(':id', id);
+            document.location.href=url;
+        })
+        // load add model for steps
+        $('#add_steps').on('click',function(){
+            $('.modal-title').html('Add a steps');
+            $('#add_edit_steps').trigger('reset');
+            $('#step_id').val('');
+            $('#addsteps').modal('show');
+        })
+        // Save Steps
+        $('#saveSteps').on('click',function(){
+            var step_id = $('input#step_id').val();
+            var phase_id = $('select#step_phase_id').val();
+            var step_position = $('input#step_position').val();
+            var form_type_id = $('select#form_type_id').val();
+            var modility_id = $('select#modility_id').val();
+            var step_name = $('input#step_name').val();
+            var step_description = $('input#step_description').val();
+            var graders_number = $('select#graders_number').val();
+            var q_c = $("input[name='q_c']:checked").val();
+            var eligibility = $("input[name='eligibility']:checked").val();
+            var post_to = (step_id == '') ? 'steps/store_steps' : 'steps/updateSteps';
+
+            if(phase_id =='' || step_name =='' || step_description ==''){
+                alert('Please fill all the required fields');
+            }else{
+                $.ajax({
+                    url: post_to,
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "_method": 'POST',
+                        'step_id': step_id,
+                        'phase_id': phase_id,
+                        'step_position':step_position,
+                        'form_type_id': form_type_id,
+                        'modility_id': modility_id,
+                        'step_name': step_name,
+                        'step_description': step_description,
+                        'graders_number': graders_number,
+                        'q_c': q_c,
+                        'eligibility': eligibility
+                        },
+                    success: function(response){
+                        $("#addstep-close").click();
+                        load_steps();
+                        $('.success-msg').html('');
+                        $('.success-msg').html('Operation Done!')
+                        $('.success-alert').slideDown('slow');
+                        tId=setTimeout(function(){
+                         $(".success-alert").slideUp('slow');
+                        }, 3000);
+                    }
+                });
+            }
+        })
+        // load steps modal for edit
+        $('body').on('click','.edit_steps',function(){
+
+            $('.modal-title').html('Edit a Step');
+            $('#addsteps').trigger('reset');
+            $('#addsteps').modal('show');
+            var row = $(this).closest('li.mail-item');
+            var id = row.find('input.step_id').val();
+            var phase_id = row.find('input.step_phase_id').val();
+            var step_position = $('input.step_position').val();
+            var form_type_id = row.find('input.form_type_id').val();
+            var modility_id = row.find('input.modility_id').val();
+            var name = row.find('input.step_name').val();
+            var position = row.find('input.step_position').val();
+            var description = row.find('input.step_description').val();
+            var graders_number = row.find('input.graders_number').val();
+            var q_c = row.find('input.q_c').val();
+            var eligibility = row.find('input.eligibility').val();
+
+            $('#step_id').val(id);
+            $('#step_phase_id').val(phase_id);
+            $('#step_position').val(step_position);
+            $('#form_type_id').val(form_type_id);
+            $('#modility_id').val(modility_id);
+            $('#step_name').val(name);
+            $('#step_position').val(position);
+            $('#step_description').val(description);
+            $('#graders_number').val(graders_number);
+            if(q_c =='yes'){ $('#q_c_yes').prop( "checked", true );}else{ $('#q_c_no').prop( "checked", true ); }
+            if(eligibility =='yes'){ $('#eligibility_yes').prop( "checked", true );}else{ $('#eligibility_no').prop( "checked", true ); }
+        })
+        // load modal to add section
+        // delete Step deleteStep
+        $('body').on('click','.deleteStep',function(){
+            var row = $(this).closest('li');
+            var step_id = row.find('input.step_id').val();
+            var tId;
+            if (confirm("Are you sure to delete?")) {
+                $.ajax({
+                    url: 'steps/delete_steps/'+step_id,
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "_method": 'DELETE',
+                        'step_id': step_id
+                        },
+                    success:function(res){
+                        row.remove();
+                        $('.success-msg').html('Operation Done!')
+                        $('.success-alert').slideDown('slow');
+                        tId=setTimeout(function(){
+                            $(".success-alert").slideUp('slow');
+                        }, 3000);
+                    }
+                })
+            }
+        })
+        // Save sections against Steps Save_section {{route('sections.store')}}
+        $('#Save_section').on('click',function(){
+            var APP_URL = {!! json_encode(url('/')) !!}
+            var tId;
+            var section_id = $('input#section_id').val();
+            var step_id = $('input#step_id_for_section').val();
+            var sec_name = $('input#sec_name').val();
+            var sec_description = $('input#sec_description').val();
+            var sort_num = $('input#sort_num').val();
+            if(sec_name =='' || sec_description =='' || sort_num ==''){
+                alert('Please fill all the required fields');
+            }else{
+                $.ajax({
+                    url: (section_id == '') ? "{{route('sections.store')}}" : "{{route('section.updateSections')}}",
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        'section_id': section_id,
+                        'step_id': step_id,
+                        'sec_name': sec_name,
+                        'sec_description': sec_description,
+                        'sort_num': sort_num
+                        },
+                    success: function(response){
+                        Sections(step_id);
+                        $('.modal-title').html('Add a section');
+                        $('#section_id').val('');
+                        $('#sec-form').trigger('reset');
+                        $('.success-msg-sec').html('');
+                        $('.success-msg-sec').html('Operation Done!')
+                        $('.success-alert-sec').slideDown('slow');
+                        tId=setTimeout(function(){
+                          $(".success-alert-sec").slideUp('slow');
+                        }, 3000);
+                    }
+                });
+            }
+        })
+        //end
+        $('body').on('click','.addsection',function(){
+            $('#addsection').trigger('reset');
+            $('#sec_name,#sec_description,#sort_num').val('');
+            $('.modal-title').html('Add a section');
+            $('#addsection').modal('show');
+            var row = $(this).closest('li.mail-item');
+            var id = row.find('input.step_id').val();
+            $('#step_id_for_section').val(id);
+            Sections(id);
+        })
+        $('body').on('click','.edit_sec',function(){
+            $('#addsection').trigger('reset');
+            $('.modal-title').html('Edit a section');
+            var APP_URL = {!! json_encode(url('/')) !!}
+            var row = $(this).closest('tr');
+            var id = row.find('td.sec_id').text();
+            var sec_name = row.find('td.sec_name').text();
+            var sec_desc = row.find('td.sec_desc').text();
+            var sort_numb = row.find('td.sort_numb').text();
+            $('#section_id').val(id);
+            $('#sec_name').val(sec_name);
+            $('#sec_description').val(sec_desc);
+            $('#sort_num').val(sort_numb);
+            $('#sec-form').prop('action', APP_URL+'/section/update');
+        });
+        $('.reset_to_add_sec').on('click',function(){
+            $('.modal-title').html('Add a section');
+            $('#sec_name,#sec_description,#sort_num,#section_id').val('');
+            var APP_URL = {!! json_encode(url('/')) !!}
+            $('#sec-form').prop('action', APP_URL+'/sections');
+            return false;
+        })
+        $('body').on('click','.delete_sec', function(){
+            var row = $(this).closest('tr');
+            var id = row.find('td.sec_id').text();
+            var tId;
+            if (confirm("Are you sure to delete?")) {
+               $.ajax({
+                    url: 'sections/'+id,
+                    type: 'DELETE',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        'id': id
                     },
-                success:function(res){
+                success: function(res){
                     row.remove();
-                    $('.success-msg').html('Operation Done!')
-                    $('.success-alert').slideDown('slow');
-                    tId=setTimeout(function(){
-                        $(".success-alert").slideUp('slow');
-                    }, 3000);
-                }
-            })
-        }
-    })
-    // cohort settings
-    $('body').on('click','.cohort_setting',function(){
-        let row = $(this).closest('li.nav-item');
-        let id = row.find('input.phase_id').val();
-        let url = "{{ route('skiplogic.skiponcohort', ':id') }}";
-        url = url.replace(':id', id);
-        document.location.href=url;
-    })
-    // load add model for steps
-    $('#add_steps').on('click',function(){
-        $('.modal-title').html('Add a steps');
-        $('#add_edit_steps').trigger('reset');
-        $('#step_id').val('');
-        $('#addsteps').modal('show');
-    })
-    // Save Steps
-    $('#saveSteps').on('click',function(){
-        var step_id = $('input#step_id').val();
-        var phase_id = $('select#step_phase_id').val();
-        var step_position = $('input#step_position').val();
-        var form_type_id = $('select#form_type_id').val();
-        var modility_id = $('select#modility_id').val();
-        var step_name = $('input#step_name').val();
-        var step_description = $('input#step_description').val();
-        var graders_number = $('select#graders_number').val();
-        var q_c = $("input[name='q_c']:checked").val();
-        var eligibility = $("input[name='eligibility']:checked").val();
-        var post_to = (step_id == '') ? 'steps/store_steps' : 'steps/updateSteps';
-
-        if(phase_id =='' || step_name =='' || step_description ==''){
-            alert('Please fill all the required fields');
-        }else{
-            $.ajax({
-                url: post_to,
-                type: 'POST',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'POST',
-                    'step_id': step_id,
-                    'phase_id': phase_id,
-                    'step_position':step_position,
-                    'form_type_id': form_type_id,
-                    'modility_id': modility_id,
-                    'step_name': step_name,
-                    'step_description': step_description,
-                    'graders_number': graders_number,
-                    'q_c': q_c,
-                    'eligibility': eligibility
-                    },
-                success: function(response){
-                    $("#addstep-close").click();
-                    load_steps();
-                    $('.success-msg').html('');
-                    $('.success-msg').html('Operation Done!')
-                    $('.success-alert').slideDown('slow');
-                    tId=setTimeout(function(){
-                     $(".success-alert").slideUp('slow');
-                    }, 3000);
-                }
-            });
-        }
-    })
-    // load steps modal for edit
-    $('body').on('click','.edit_steps',function(){
-
-        $('.modal-title').html('Edit a Step');
-        $('#addsteps').trigger('reset');
-        $('#addsteps').modal('show');
-        var row = $(this).closest('li.mail-item');
-        var id = row.find('input.step_id').val();
-        var phase_id = row.find('input.step_phase_id').val();
-        var step_position = $('input.step_position').val();
-        var form_type_id = row.find('input.form_type_id').val();
-        var modility_id = row.find('input.modility_id').val();
-        var name = row.find('input.step_name').val();
-        var position = row.find('input.step_position').val();
-        var description = row.find('input.step_description').val();
-        var graders_number = row.find('input.graders_number').val();
-        var q_c = row.find('input.q_c').val();
-        var eligibility = row.find('input.eligibility').val();
-
-        $('#step_id').val(id);
-        $('#step_phase_id').val(phase_id);
-        $('#step_position').val(step_position);
-        $('#form_type_id').val(form_type_id);
-        $('#modility_id').val(modility_id);
-        $('#step_name').val(name);
-        $('#step_position').val(position);
-        $('#step_description').val(description);
-        $('#graders_number').val(graders_number);
-        if(q_c =='yes'){ $('#q_c_yes').prop( "checked", true );}else{ $('#q_c_no').prop( "checked", true ); }
-        if(eligibility =='yes'){ $('#eligibility_yes').prop( "checked", true );}else{ $('#eligibility_no').prop( "checked", true ); }
-    })
-    // load modal to add section
-    // delete Step deleteStep
-    $('body').on('click','.deleteStep',function(){
-        var row = $(this).closest('li');
-        var step_id = row.find('input.step_id').val();
-        var tId;
-        if (confirm("Are you sure to delete?")) {
-            $.ajax({
-                url: 'steps/delete_steps/'+step_id,
-                type: 'POST',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'DELETE',
-                    'step_id': step_id
-                    },
-                success:function(res){
-                    row.remove();
-                    $('.success-msg').html('Operation Done!')
-                    $('.success-alert').slideDown('slow');
-                    tId=setTimeout(function(){
-                        $(".success-alert").slideUp('slow');
-                    }, 3000);
-                }
-            })
-        }
-    })
-    // Save sections against Steps Save_section {{route('sections.store')}}
-    $('#Save_section').on('click',function(){
-        var APP_URL = {!! json_encode(url('/')) !!}
-        var tId;
-        var section_id = $('input#section_id').val();
-        var step_id = $('input#step_id_for_section').val();
-        var sec_name = $('input#sec_name').val();
-        var sec_description = $('input#sec_description').val();
-        var sort_num = $('input#sort_num').val();
-        if(sec_name =='' || sec_description =='' || sort_num ==''){
-            alert('Please fill all the required fields');
-        }else{
-            $.ajax({
-                url: (section_id == '') ? "{{route('sections.store')}}" : "{{route('section.updateSections')}}",
-                type: 'POST',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    'section_id': section_id,
-                    'step_id': step_id,
-                    'sec_name': sec_name,
-                    'sec_description': sec_description,
-                    'sort_num': sort_num
-                    },
-                success: function(response){
-                    Sections(step_id);
-                    $('.modal-title').html('Add a section');
-                    $('#section_id').val('');
-                    $('#sec-form').trigger('reset');
-                    $('.success-msg-sec').html('');
                     $('.success-msg-sec').html('Operation Done!')
                     $('.success-alert-sec').slideDown('slow');
                     tId=setTimeout(function(){
                       $(".success-alert-sec").slideUp('slow');
                     }, 3000);
                 }
-            });
-        }
-    })
-    //end
-    $('body').on('click','.addsection',function(){
-        $('#addsection').trigger('reset');
-        $('#sec_name,#sec_description,#sort_num').val('');
-        $('.modal-title').html('Add a section');
-        $('#addsection').modal('show');
-        var row = $(this).closest('li.mail-item');
-        var id = row.find('input.step_id').val();
-        $('#step_id_for_section').val(id);
-        Sections(id);
-    })
-    $('body').on('click','.edit_sec',function(){
-        $('#addsection').trigger('reset');
-        $('.modal-title').html('Edit a section');
-        var APP_URL = {!! json_encode(url('/')) !!}
-        var row = $(this).closest('tr');
-        var id = row.find('td.sec_id').text();
-        var sec_name = row.find('td.sec_name').text();
-        var sec_desc = row.find('td.sec_desc').text();
-        var sort_numb = row.find('td.sort_numb').text();
-        $('#section_id').val(id);
-        $('#sec_name').val(sec_name);
-        $('#sec_description').val(sec_desc);
-        $('#sort_num').val(sort_numb);
-        $('#sec-form').prop('action', APP_URL+'/section/update');
-    });
-    $('.reset_to_add_sec').on('click',function(){
-        $('.modal-title').html('Add a section');
-        $('#sec_name,#sec_description,#sort_num,#section_id').val('');
-        var APP_URL = {!! json_encode(url('/')) !!}
-        $('#sec-form').prop('action', APP_URL+'/sections');
-        return false;
-    })
-    $('body').on('click','.delete_sec', function(){
-        var row = $(this).closest('tr');
-        var id = row.find('td.sec_id').text();
-        var tId;
-        if (confirm("Are you sure to delete?")) {
-           $.ajax({
-                url: 'sections/'+id,
-                type: 'DELETE',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    'id': id
-                },
-            success: function(res){
-                row.remove();
-                $('.success-msg-sec').html('Operation Done!')
-                $('.success-alert-sec').slideDown('slow');
-                tId=setTimeout(function(){
-                  $(".success-alert-sec").slideUp('slow');
-                }, 3000);
+               })
             }
-           })
-        }
-    });
-    $('body').on('click','.assign_study_structures_roles',function(){
-        $('#assign_study_structures_roles').modal('show');
-        loadAssignRolesToPhaseForm($(this).data('phase-id'));
+        });
+        $('body').on('click','.assign_study_structures_roles',function(){
+            $('#assign_study_structures_roles').modal('show');
+            loadAssignRolesToPhaseForm($(this).data('phase-id'));
+        })
+        $('body').on('click','.assign_phase_steps_roles',function(){
+            $('#assign_phase_steps_roles').modal('show');
+            loadAssignRolesToPhaseStepForm($(this).data('step-id'));
+        })
+        
     })
-    $('body').on('click','.assign_phase_steps_roles',function(){
-        $('#assign_phase_steps_roles').modal('show');
-        loadAssignRolesToPhaseStepForm($(this).data('step-id'));
-    })
-
-})
     function load_phases(){
 
         $.ajax({
@@ -733,26 +734,26 @@ $(document).ready(function(){
         })
     }
     /// get phases or visits
-function get_all_phases(id,phase_class){
-    phase_class.html('');
-    var options = '<option value="">---Select Phase / visits---</option>';
-    $.ajax({
-        url:'forms/get_phases/'+id,
-        type:'post',
-        dataType: 'json',
-         data: {
-            "_token": "{{ csrf_token() }}",
-            "_method": 'GET',
-            'id': id
-        },
-        success:function(response){
-            $.each(response['data'],function(k,v){
-                options += '<option value="'+v.id+'" >'+v.name+'</option>';
-            });
-            phase_class.append(options);
-        }
-    });
-}
+    function get_all_phases(id,phase_class){
+        phase_class.html('');
+        var options = '<option value="">---Select Phase / visits---</option>';
+        $.ajax({
+            url:'forms/get_phases/'+id,
+            type:'post',
+            dataType: 'json',
+             data: {
+                "_token": "{{ csrf_token() }}",
+                "_method": 'GET',
+                'id': id
+            },
+            success:function(response){
+                $.each(response['data'],function(k,v){
+                    options += '<option value="'+v.id+'" >'+v.name+'</option>';
+                });
+                phase_class.append(options);
+            }
+        });
+    }
     function Sections(id){
         $.ajax({
              url: "{{route('section.getSections')}}",
@@ -781,7 +782,7 @@ function get_all_phases(id,phase_class){
                        "<td class='sec_name'>" + name + "</td>" +
                        "<td class='sec_desc'>" + description + "</td>" +
                        "<td>" + created_at + "</td>" +
-                       "<td><span><i class='far fa-edit edit_sec' style='color: #34A853;'></i></span>&nbsp;&nbsp;<span><i class='far fa-trash-alt delete_sec' style='color: #EA4335;'></i></span></td>" +
+                       "<td style='width:13%'><span><i class='far fa-edit edit_sec' style='color: #34A853;cursor:pointer'></i></span>&nbsp;&nbsp;<span><i class='far fa-trash-alt delete_sec' style='color: #EA4335;cursor:pointer'></i></span>&nbsp;&nbsp;<span><i class='far fa-clone clone_section' style='color: ##530971;cursor:pointer'></i></span></td>" +
                      "</tr>";
 
                      $("#sectionTable").append(tr_str);
@@ -797,5 +798,5 @@ function get_all_phases(id,phase_class){
         });
     }
 
-            </script>
+</script>
 @endsection

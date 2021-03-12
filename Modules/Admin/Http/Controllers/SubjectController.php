@@ -88,7 +88,7 @@ class SubjectController extends Controller
         $subjects = Subject::select('subjects.*', 'sites.site_name', 'sites.site_address', 'sites.site_city', 'sites.site_state', 'sites.site_code', 'sites.site_country', 'sites.site_phone')
             ->where('subjects.study_id', '=', $id)
             ->join('sites', 'sites.id', '=', 'subjects.site_id')
-            ->paginate(20);
+            ->paginate(\Auth::user()->user_prefrences->default_pagination);
 
         $site_study = StudySite::where('study_id', '=', $id)
             ->join('sites', 'sites.id', '=', 'site_study.site_id')
@@ -175,7 +175,7 @@ class SubjectController extends Controller
         $subjects = Subject::select(['subjects.*', 'sites.site_name', 'sites.site_address', 'sites.site_city', 'sites.site_state', 'sites.site_code', 'sites.site_country', 'sites.site_phone'])
             ->where('subjects.study_id', '=', $id)
             ->join('sites', 'sites.id', '=', 'subjects.site_id')
-            ->get();
+            ->paginate(\Auth::user()->user_prefrences->default_pagination);
         $site_study = StudySite::where('study_id', '=', $id)
             ->join('sites', 'sites.id', '=', 'site_study.site_id')
             ->select('sites.site_name', 'sites.id')

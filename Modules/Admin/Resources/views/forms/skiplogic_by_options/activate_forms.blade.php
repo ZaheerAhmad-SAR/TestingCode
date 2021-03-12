@@ -9,7 +9,12 @@
     if(null !==$if_exists_record){
         $activate_forms_array = explode(',', $if_exists_record->activate_forms);
     }
-     $all_study_steps = Modules\Admin\Entities\PhaseSteps::where('phase_id', $phase_id)->get();
+    if($step->form_type_id == 2){
+        $where_step  = array('phase_id' => $step->phase_id,'modility_id' => $step->modility_id,'form_type_id' => 2);
+    }else{
+        $where_step  = array('phase_id' => $step->phase_id,'modility_id' => $step->modility_id);
+    }
+    $all_study_steps = Modules\Admin\Entities\PhaseSteps::where($where_step)->get();
 @endphp
 {{-- Steps data loading Start here  --}}
 <div class="col-12 col-sm-6 mt-3">

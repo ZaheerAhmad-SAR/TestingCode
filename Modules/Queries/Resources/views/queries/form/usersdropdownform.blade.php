@@ -3,7 +3,11 @@
 
 <select class="form-control multieSelectDropDown" multiple data-allow-clear="1" name="form_users" id="form_users">
     @foreach($studyusers as $user)
-        <option value="{{$user->id}}">{{$user->name}}</option>
+
+        @if($user->id !== auth()->user()->id)
+            <option value="{{$user->id}}">{{$user->name}}</option>
+        @endif
+
     @endforeach
 </select>
 <script src="{{ asset("dist/vendors/select2/js/select2.full.min.js") }}"></script>

@@ -220,39 +220,40 @@
 
             function validateAndSubmitField(stepIdStr, sectionIdStr, questionId, questionIdStr, formType, field_name,
                 fieldId,dependencyIdStr) {
+                
+                if (isFormDataLocked(stepIdStr) == false) {
+                  
+                    if (canSubmitForm(formType, stepIdStr)) {
 
-                if (isPreview === false) {
-                    if (isFormDataLocked(stepIdStr) == false) {
-                      
-                        if (canSubmitForm(formType, stepIdStr)) {
+                        if (needToPutFormInEditMode(stepIdStr) == false) {
 
-                            if (needToPutFormInEditMode(stepIdStr) == false) {
+                            if (window['validateQuestion' + questionIdStr](true, stepIdStr)) {
 
-                                if (window['validateQuestion' + questionIdStr](true, stepIdStr)) {
+                                if (eval("typeof " + window['showHideQuestion' + questionIdStr+ '_' + dependencyIdStr]) != 'undefined') {
 
-                                    if (eval("typeof " + window['showHideQuestion' + questionIdStr+ '_' + dependencyIdStr]) != 'undefined') {
-
-                                        window['showHideQuestion' + questionIdStr+ '_' + dependencyIdStr](stepIdStr);
-                                    }
-                                    if (eval("typeof " + window['runCalculatedFieldsFunctions' + stepIdStr]) !=
-                                        'undefined') {
-                                        window['runCalculatedFieldsFunctions' + stepIdStr](questionIdStr);
-                                    }
-                                    if (eval("typeof " + window['checkQuestionSkipLogic' + questionIdStr]) != 'undefined') {
-                                        window['checkQuestionSkipLogic' + questionIdStr]();
-                                    }
-                                    submitFormField(stepIdStr, questionId, field_name, fieldId);
+                                    window['showHideQuestion' + questionIdStr+ '_' + dependencyIdStr](stepIdStr);
                                 }
-                            } else {
-                                showPutFormInEditModeError();
+                                if (eval("typeof " + window['runCalculatedFieldsFunctions' + stepIdStr]) !=
+                                    'undefined') {
+                                    window['runCalculatedFieldsFunctions' + stepIdStr](questionIdStr);
+                                }
+                                if (eval("typeof " + window['checkQuestionSkipLogic' + questionIdStr]) != 'undefined') {
+                                    window['checkQuestionSkipLogic' + questionIdStr]();
+                                }
+                                if (isPreview === false) {
+                                    submitFormField(stepIdStr, questionId, field_name, fieldId);
+                                } //form preview
                             }
                         } else {
-                            showPermissionError();
+                            showPutFormInEditModeError();
                         }
                     } else {
-                        showDataLockError();
+                        showPermissionError();
                     }
+                } else {
+                    showDataLockError();
                 }
+                
             }
 
             function handleValidationErrors(error) {
@@ -556,7 +557,8 @@
                         'phaseId': phaseId
                     },
                     success: function(response) {
-                        reloadPage(0);
+                        changeUrl_after_deactivate_visit()
+                        reloadPage(1);
                     }
                 });
             }
@@ -713,11 +715,23 @@
             }
 
             function updateCurrentStepId(phaseId, stepId, isAdjudication) {
+                var stepIdStr =   stepId.replace(/-/g, "_");
+                $('a').removeClass('selected_form');
+                $('a').removeClass('selected_form_adj');
+                if(isAdjudication =='yes'){
+                    $('.adj_applyCss_step_cls_'+stepIdStr).addClass('selected_form');
+                }else{
+                    $('.applyCss_step_cls_'+stepIdStr).addClass('selected_form');
+                }
                 $('#current_phase_id').val(phaseId);
                 $('#current_step_id').val(stepId);
                 $('#current_section_id').val('-');
                 $('#isAdjudication').val(isAdjudication);
                 changeUrl();
+                if($("#form_master_" + stepIdStr).length == 0 && $("#form_" + stepIdStr).length == 0) {
+                    $('.loader').css('display','block');
+                    reloadPage(0);
+                }
             }
 
             function updateCurrentSectionId(phaseId, stepId, sectionId) {
@@ -734,7 +748,6 @@
                     var sectionId = $('#current_section_id').val();
                     var showAllQuestions = $('#showAllQuestions').val();
                     var isAdjudication = $('#isAdjudication').val();
-
                     var title = 'new title';
                     var url = "{{ url('/') }}/subjectFormLoader/{{ $studyId }}/{{ $subjectId }}/" + phaseId + '/' + stepId +
                         '/' + sectionId + '/' + isAdjudication + '/' + showAllQuestions;
@@ -749,7 +762,19 @@
                     }
                 }
             }
-
+            function changeUrl_after_deactivate_visit() {
+                    var title = 'new title';
+                    var url = "{{ url('/') }}/subjectFormLoader/{{ $studyId }}/{{ $subjectId }}";
+                    if (typeof(history.pushState) != "undefined") {
+                        var obj = {
+                            Title: title,
+                            Url: url
+                        };
+                        history.pushState(obj, obj.Title, obj.Url);
+                    } else {
+                        alert("Browser does not support HTML5.");
+                    }
+            }
             function validateAndUploadFiles(stepIdStr, sectionIdStr, questionId, questionIdStr, formType, field_name,
                 fieldId) {
                 if (isPreview === false) {

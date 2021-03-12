@@ -49,21 +49,10 @@ padding: 5px 10px;
         </div>
     </div>
     <!-- END: Breadcrumbs-->
-    <!-- START: Card Data-->
     <div class="row">
-        <div class="col-12 col-sm-12 mt-3">
-            <div class="card">
-                <div class="form-group col-md-12 mt-3">
-                    <button type="button" class="btn btn-primary assign-sites" data-url="{{ route('studySite.update') }}">Assign Sites</button>
-                    <button type="button" class="btn btn-primary remove-sites" data-url="{{route('studySite.removeAssignedSites')}}">Remove Sites</button>
-                    @if (!$sites->isEmpty())
-                    <span style="float: right; margin-top: 3px;" class="badge badge-pill badge-primary">
-                        {{ $sites->count().' out of '.$sites->total() }}
-                    </span>
-                    @endif
-                </div>
-                <hr>
-                @php
+            <div class="col-12 col-sm-12 mt-3">
+                <div class="card">
+                    @php
                 $current_study =  \Session::get('current_study');
                 @endphp
                 <form action="{{route('studySite.assignedSites')}}" method="get" class="form-1 filter-form">
@@ -145,25 +134,31 @@ padding: 5px 10px;
                                 <option @if(request()->status == 'no') selected @endif value="no">No</option>
                             </select>
                         </div>
-                        {{--                            <div class="form-group col-md-3">--}}
-                            {{--                                <label for="inputState">Text </label>--}}
-                            {{--                                <div id="bloodhound">--}}
-                                {{--                                    <input class="typeahead form-control rounded" type="text" placeholder="">--}}
-                            {{--                                </div>--}}
-                        {{--                            </div>--}}
                         <div class="form-group col-md-2 mt-4">
-                            <!--  <button type="button" class="btn btn-primary reset-filter-1">Reset</button> -->
-                            <button type="submit" class="btn btn-primary btn-lng"> <i class="fas fa-filter" aria-hidden="true"></i>Filter</button>
                             <button type="button" class="btn btn-outline-warning reset-filter"><i class="fas fa-undo-alt" aria-hidden="true"></i>Reset</button>
+                            <button type="submit" class="btn btn-primary btn-lng"> <i class="fas fa-filter" aria-hidden="true"></i>Filter</button>
                         </div>
                     </div>
                     <!-- row ends -->
                 </form>
-                {{--                    @if(Session::has('message'))--}}
-                {{--                        <div class="alert alert-success" role="alert">--}}
-                    {{--                            {{ Session::get('message') }} --}}
-                {{--                        </div>--}}
-                {{--                    @endif--}}
+                </div>
+            </div>
+    </div>
+    <!-- START: Card Data-->
+    <div class="row">
+        <div class="col-12 col-sm-12 mt-3">
+            <div class="card">
+                <div class="form-group col-md-12 mt-3">
+                    <button type="button" class="btn btn-primary assign-sites" data-url="{{ route('studySite.update') }}">Assign Sites</button>
+                    <button type="button" class="btn btn-primary remove-sites" data-url="{{route('studySite.removeAssignedSites')}}">Remove Sites</button>
+                    @if (!$sites->isEmpty())
+                    <span style="float: right; margin-top: 3px;" class="badge badge-pill badge-primary">
+                        {{ $sites->count().' out of '.$sites->total() }}
+                    </span>
+                    @endif
+                </div>
+                <hr>
+                
                 <div class="card-body">
                     <div class="table-responsive">
                         <form method="POST" action="" class="assign-site-form">

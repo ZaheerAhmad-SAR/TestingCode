@@ -58,7 +58,10 @@ class AdjudicationFormStatus extends Model
     {
         return self::getAdjudicationFormStatusObjQuery($getAdjudicationFormStatusArray)->firstOrNew();
     }
-
+    public static function getAdjudicationFormStatusObjArray($getAdjudicationFormStatusArray){
+        
+        return self::getAdjudicationFormStatusObjQuery($getAdjudicationFormStatusArray)->orderBy('created_at')->get();
+    }
     public static function getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, $wrap = false, $wrapSeperate = false)
     {
         $adjudicationFormStatusObj = self::getAdjudicationFormStatusObj($getAdjudicationFormStatusArray);

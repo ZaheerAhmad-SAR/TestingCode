@@ -11,6 +11,11 @@
 |
 */
 
+// php info
+// Route::get('phpInfo', function(){
+//     phpinfo();
+// });
+
 //test transmission view
 // Route::get('transmissions/transmissionData', function () {
 //     return view('admin::test_transmission_api');
@@ -38,6 +43,7 @@ Route::post('transmissions-status', 'TransmissionController@transmissionStatus')
 Route::prefix('admin')->group(function () {
     Route::get('/', 'AdminController@index');
 });
+Route::get('modalities/{id}/showChild', 'ModilityController@showChild')->name('modalities.showChild');
 Route::group(['middleware' => ['auth', 'web']], function () {
 
     Route::get('get_steps', 'StudyStructureController@get_steps')->name('study.getSteps');
@@ -49,6 +55,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     //Route::resource('cloneSteps', 'CloneStepsController');
     Route::post('clone_steps', 'CloneStepsController@clone_steps')->name('cloneSteps.cloneSteps');
     Route::post('clone_phase', 'CloneStepsController@clone_phase')->name('cloneSteps.clonePhase');
+    Route::post('clone_section', 'CloneStepsController@clone_section')->name('cloneSteps.cloneSection');
     // for steps
     Route::DELETE('steps/delete_steps/{step_id}', 'StudyStructureController@destroySteps')->name('steps.deleteSteps');
     Route::post('steps/store_steps', 'StudyStructureController@store_steps')->name('steps.save');
@@ -88,7 +95,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('skiplogic/text_skip_logic/{id}', 'SkipLogicController@skip_question_on_text')->name('skiplogic.textskipLogic');
     Route::post('skiplogic/add_skip_logic', 'SkipLogicController@add_skipLogic')->name('skiplogic.apply_skip_logic');
     // skip logic on cohort
-    Route::get('skiplogic/skip_logic_cohort/{id}', 'SkipLogicController@skip_logic_cohort')->name('skiplogic.skiponcohort');
+    Route::get('skiplogic/skip_logic_cohort/{id}/{formTypeId?}/{modalityId?}', 'SkipLogicController@skip_logic_cohort')->name('skiplogic.skiponcohort');
     Route::post('skiplogic/skip_via_cohort', 'SkipLogicController@git_steps_for_checks_deactivate_cohort')->name('skiplogic.get_steps_skip_logic_deactivate_via_cohort');
     Route::post('skiplogic/add_skip_logic_cohort_based', 'SkipLogicController@add_skipLogic_cohort_based')->name('skiplogic.apply_skip_logic_cohort_based');
     // skip logic
@@ -173,14 +180,13 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     // Route::resource('section','SectionController');
 
     //end
-
+    // Modalities routes
     Route::resource('childmodilities', 'ChildModilitiesController');
 
     Route::post('childmodilities/update', 'ChildModilitiesController@update')->name('childmodilities.update');
 
     Route::get('modalities/{id}/childshow', 'ModilityController@child')->name('modalities.childshow');
 
-    Route::get('modalities/{id}/showChild', 'ModilityController@showChild')->name('modalities.showChild');
 
     Route::get('modalities/{id}/editChild', 'ModilityController@editChild')->name('modalities.editChild');
 
