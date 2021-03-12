@@ -621,6 +621,90 @@
                                 </div>
                             </form>
                         </div>
+
+                        <div role="tabpanel" class="tab-pane" id="devices">
+                            <form  name="devicesForm" id="devicesForm"
+                                  enctype="multipart/form-data" method="POST">
+                                <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                <input type="hidden" name="site_id"  value="">
+                                <div class="row" style="margin-top: 15px;">
+                                    <div class="col-md-6">
+                                        <div class="{!! ($errors->has('photographer_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
+
+                                            <label class="required">First Name</label>
+                                            <                                <select name="site_id" class="form-control">
+                                    <option value="">Select Subject Site</option>
+                                    @if(!empty($devices))
+                                        @foreach($devices as $device)
+                                            <option class="dropdown" value="{{$site->id}}">{{$device->site_name}}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                                            @error('photographer_first_name')
+                                            <span class="input-danger small">
+                                                        {{ $message }}
+                                                        </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div
+                                            class="{!! ($errors->has('photographer_mid_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
+
+                                            <label>Middle Name</label>
+                                            <input type="text" class="form-control" id="photographer_mid_name"
+                                                   name="photographer_mid_name" value="{{old('photographer_mid_name')}}"/>
+                                            @error('photographer_mid_name')
+                                            <span class="input-danger small">
+                                                        {{ $message }}
+                                                        </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                  
+
+                                    
+                                </div>
+                                <div class="row">
+
+                                    <input type="hidden" id="photographerjsonData" value=''>
+
+                                    <div class="col-md-12">
+                                        <div class="pull-right" style="text-align: right;">
+                                            <button type="submit" id="photographer_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
+
+                                            <input type="hidden" name="photographer_submit_actions" id="photographer_submit_actions" value="Add">
+                                            <input type="hidden" name="photo_id" id="photo_id" value="">
+                                            <input type="hidden" name="photographer_site_id" id="photographer_site_id" value= "">
+                                            <button type="button"  id="reset_photographer_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true"></i>Reset</button>
+                                            <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+
+                                        </div>
+                                        <br>
+                                        <br>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered photographertableAppend">
+                                            <thead>
+                                            <tr>
+                                                <th>Full Name</th>
+                                                <th>Phone</th>
+                                                <th>Email</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+
                         <div role="tabpanel" class="tab-pane" id="others">
                             <form  name="othersForm" id="othersForm">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
