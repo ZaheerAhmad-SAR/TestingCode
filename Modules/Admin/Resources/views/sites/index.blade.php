@@ -634,9 +634,9 @@
                                             <label class="required">First Name</label>
                                             <                                <select name="site_id" class="form-control">
                                     <option value="">Select Subject Site</option>
-                                    @if(!empty($site_study))
-                                        @foreach($site_study as $site)
-                                            <option class="dropdown" value="{{$site->id}}">{{$site->site_name}}</option>
+                                    @if(!empty($devices))
+                                        @foreach($devices as $device)
+                                            <option class="dropdown" value="{{$site->id}}">{{$device->site_name}}</option>
                                         @endforeach
                                     @endif
                                 </select>
