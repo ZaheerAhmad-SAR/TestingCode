@@ -40,17 +40,20 @@
             </div>
         </div>
         <!-- END: Breadcrumbs-->
-
+        <form action="{{route('studySite.index')}}" method="get" class="filter-form">
+            <div class="form-row" style="padding: 10px;">
+                <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ request()->sort_by_field }}">
+                <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ request()->sort_by_field_name }}">
+            </div>
+            <!-- row ends -->
+        </form>
         <!-- START: Card Data-->
         <div class="row">
             <div class="col-12 mt-3">
                 <div class="card">
                     <div class="card-header  justify-content-between align-items-center">
                         @if(hasPermission(auth()->user(),'studySite.update'))
-{{--                            <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#assignSites">--}}
-{{--                                <i class="fa fa-plus"></i> Assign Sites--}}
-{{--                            </button>--}}
-
+                        
                             <a  href="{{ route ('studySite.assignedSites') }}"  class="btn btn-outline-primary"><i class="fa fa-plus"></i> Assign Sites</a>
                         @endif
 
@@ -63,13 +66,13 @@
                             <table id="example" class="display table dataTable table-striped table-bordered editable-table" >
                                 <thead>
                                 <tr>
-                                    <th>Code</th>
-                                    <th>Name</th>
+                                    <th onclick="changeSort('site_code');">Code <i class="fas fa-sort float-mrg"></i></th>
+                                    <th onclick="changeSort('site_name');">Name <i class="fas fa-sort float-mrg"></i></th>
                                     <th>Principal Investigator</th>
                                     <th>Coordinator</th>
-                                    <th>City</th>
-                                    <th>State</th>
-                                    <th>Country</th>
+                                    <th onclick="changeSort('site_city');">City <i class="fas fa-sort float-mrg"></i></th>
+                                    <th onclick="changeSort('site_state');">State <i class="fas fa-sort float-mrg"></i></th>
+                                    <th onclick="changeSort('site_country');">Country <i class="fas fa-sort float-mrg"></i></th>
                                     <th>Study Site ID</th>
                                 </tr>
                                 </thead>
@@ -1901,7 +1904,18 @@
                 sitesDestroy();
 
                 ///  Delete  Specific Row function
-
+                        // sorting gride
+                function changeSort(field_name){
+                    var sort_by_field = $('#sort_by_field').val();
+                    if(sort_by_field =='' || sort_by_field =='ASC'){
+                       $('#sort_by_field').val('DESC');
+                       $('#sort_by_field_name').val(field_name);
+                    }else if(sort_by_field =='DESC'){
+                       $('#sort_by_field').val('ASC'); 
+                       $('#sort_by_field_name').val(field_name); 
+                    }
+                    $('.filter-form').submit();
+                }
             </script>
             <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCEELbGoxVU_nvp6ayr2roHHnjN3hM_uec&libraries=places&callback=initAutocomplete" defer></script>
 @endsection

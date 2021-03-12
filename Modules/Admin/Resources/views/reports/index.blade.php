@@ -92,7 +92,10 @@
                                       $get_subjectid = Modules\Admin\Entities\Subject::where('subject_id','like', $transmission->Subject_ID)->first();
                                       if(!empty($get_subjectid)){
                                         $subject_id = $get_subjectid->id;
-                                        dd($subject_id);
+<<<<<<< HEAD
+=======
+                                        //dd($subject_id);
+>>>>>>> 04f77eb041d986ae8dd7869fbe89ad8e252b43cc
                                       }
                                       $form_data_qc = get_tat_of_visit_complete($subject_id,$transmission->phase_id,'1','complete',$transmission->modility_id);
                                       $form_data_grading = get_tat_of_visit_complete($subject_id,$transmission->phase_id,'2','complete',$transmission->modility_id);
