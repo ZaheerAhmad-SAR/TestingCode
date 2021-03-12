@@ -481,17 +481,17 @@ class TransmissionDataDeviceController extends Controller
             $bccEmail = $request->bcc_email != null ? $request->bcc_email : '';
 
             // send email to users
-            // Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $bccEmail, $findTransmission, $getSite, $getDevice)
-            // {
-            //     $message->subject($findTransmission->Study_Name.' '.$findTransmission->StudyI_ID.' | Device Request# '.$findTransmission->Transmission_Number.' | '. $getSite->Site_ID.' | '. $findTransmission->Requested_certification);
-            //     $message->to($senderEmail);
-            //     if($ccEmail != '') {
-            //     $message->cc($ccEmail);
-            //     }
-            //     if($bccEmail != '') {
-            //         $message->bcc($bccEmail);
-            //     }
-            // });
+            Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $bccEmail, $findTransmission, $getSite, $getDevice)
+            {
+                $message->subject($findTransmission->Study_Name.' '.$findTransmission->StudyI_ID.' | Device Request# '.$findTransmission->Transmission_Number.' | '. $getSite->Site_ID.' | '. $findTransmission->Requested_certification);
+                $message->to($senderEmail);
+                if($ccEmail != '') {
+                $message->cc($ccEmail);
+                }
+                if($bccEmail != '') {
+                    $message->bcc($bccEmail);
+                }
+            });
     }
 
     /**
