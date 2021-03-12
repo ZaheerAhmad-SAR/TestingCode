@@ -37,6 +37,7 @@ if(
         /********* check form lock status ******************/
         $getFormStatuslockArray= [
             'study_id' => $studyId,
+            'subject_id' => $subjectId,
             'study_structures_id' => $phase->id,
             'modility_id' => $step->modility_id,
         ];
@@ -75,7 +76,7 @@ if(
                             $count_of_form_graded_already = count(\Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatusObjArray($check_form_graded_already));
                         @endphp
                         
-                        @if(\Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatusObjArray($check_if_form_graded_by_logged_user)->isEmpty() && $count_of_form_graded_already >=1)
+                        @if(\Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatusObjArray($check_if_form_graded_by_logged_user)->isEmpty() && $count_of_form_graded_already >=1  && $isPreview === false)
                             <div class="alert alert-danger" role="alert">
                                 The current form has already been graded by required number of graders
                             </div>

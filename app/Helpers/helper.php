@@ -49,9 +49,11 @@ function is_active($name)
 }
 function search_auth($arr, $auth)
 {
-    foreach ($arr as $row) {
-        if ($auth == $row) {
-            return true;
+    if (is_array($arr)) {
+        foreach ($arr as $row) {
+            if ($auth == $row) {
+                return true;
+            }
         }
     }
     return false;
@@ -1087,7 +1089,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
         // store data in event array
         $newData = [];
         $editReason = '';
-
+        
         //  loop through the dorm data
         foreach ($eventData as $key => $data) {
 

@@ -252,7 +252,7 @@ class FormController extends Controller
             if ($ques_value->form_field_type->field_type == 'Certification') {
                 $question_contents .= '<span class="dropdown-item edit_certify"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
             } elseif ($ques_value->form_field_type->field_type == 'Description') {
-                $question_contents .= '<span class="dropdown-item edit_desc"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
+                $question_contents .= '<span class="dropdown-item edit_desc"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item clone_desc"><a href="#"><i class="far fa-clone"></i>&nbsp; Clone </a></span>';
             } elseif ($ques_value->form_field_type->field_type == 'Calculated') {
                 $question_contents .= '<span class="dropdown-item edit_calculated_field"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
             } else {

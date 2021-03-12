@@ -58,6 +58,27 @@
             $('#question_type').val(id);
             $('#descriptionModal').modal('show');
         })
+        // Clone Description Field
+        $('body').on('click','.clone_desc', function() {
+            $('#form_description').trigger('reset');
+            $('.modal-title').html('Clone Description');
+            $('#form_description').attr('action', "{{ route('forms.addQuestions') }}");
+            var row = $(this).closest('div.custom_fields')
+            tId = ''
+            ques_id = row.find('input.question_id').val()
+            question_sort = row.find('input.question_sort').val()
+            formFields_id = row.find('input.formFields_id').val()
+            section_id = row.find('input.section_id').val()
+            text_info = row.find('input.text_info').val();
+            tinymce.get('text_info_de').setContent(text_info);
+            var id = $(this).attr("data-field-id");
+            $('#question_type').val(id);
+            $('#question_sort_de').val(question_sort);
+            $('#questionId_hide_des').val(ques_id);
+            $('#form_field_id_des').val(formFields_id);
+            $('#section_id_de').val(section_id);
+            $('#descriptionModal').modal('show');
+        })
         // update Description
         $('body').on('click', '.edit_desc', function() {
             $('#form_description').trigger('reset');

@@ -120,6 +120,58 @@ class CloneStepsController extends Controller
             return redirect()->route('study.index')->with('message', 'Cloned Successfully!');
         }
     }
+    public function clone_section(Request $request){
+        $isReplicating = false;
+        $replicating_or_cloning = 'cloning';
+        if ($isReplicating === true) {
+            $replicating_or_cloning = 'replicating';
+        }
+        $cloningSection = Section::find($request->cloning_section_id);
+        $id    = (string)Str::uuid();
+        $cloningSection = Section::create([
+            'id'    => $id,
+            'phase_steps_id'    => $cloningSection->phase_steps_id,
+            'name'  =>  $request->sec_name,
+            'description' =>  $request->sec_description,
+            'sort_number' =>  $request->sort_num,
+            'replicating_or_cloning' =>  $replicating_or_cloning
+        ]);
+        $new_section = Section::find($id);
+        $newSectionId = $new_section->id;
+        $all_questions = Question::where('section_id', $request->cloning_section_id)->get();
+
+        /******************************* */
+        /* Replicate Section Questions * */
+        /******************************* */
+        foreach ($all_questions as $question) {
+
+            $newQuestionId = $this->addReplicatedQuestion($question, $newSectionId, $isReplicating);
+
+            /******************************* */
+            /* Replicate Question Form Field */
+            /******************************* */
+
+            $this->addReplicatedFormFieldForSection($question, $newQuestionId, $isReplicating,$request);
+
+            /******************************* */
+            /* Replicate Question Data Validation */
+            /******************************* */
+
+            $this->addQuestionValidationToReplicatedQuestion($question->id, $newQuestionId, $isReplicating);
+
+            /******************************* */
+            /*Replicate Question Adjudication*/
+            /******************************* */
+
+            $this->addReplicatedQuestionAdjudicationStatus($question, $newQuestionId, $isReplicating);
+        }
+        $data = [
+            'success' => true,
+            'message' => 'Section Cloned successfully',
+            'step_id' => $cloningSection->phase_steps_id
+        ];
+        echo json_encode($data);
+    }
     public function steps_data($step_id, $new_phase_id)
     {
         $newQuestionIdsArray = [];

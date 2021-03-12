@@ -68,7 +68,7 @@ class StudyController extends Controller
         ]);
         $studyAdminRoleId = Permission::getStudyAdminRole();
         if (count((array)$studyAdminRoleId) == 0) {
-            echo '<a href="' . route('roles.index') . '">Please add study admin role first</a>';
+            echo '<a class="redirecttoPage" href="' . route('roles.index') . '">Please add study admin role first</a>';
             exit;
         }
         $systemRoleIds = Role::where('role_type', 'system_role')->pluck('id')->toArray();
@@ -401,7 +401,7 @@ class StudyController extends Controller
             }else{
                 $asc_or_decs = 'ASC';
             }
-           $subjects = Subject::query();
+            $subjects = Subject::query();
             $subjects =  $subjects->select('subjects.*', 'sites.site_name', 'sites.site_address', 'sites.site_city', 'sites.site_state', 'sites.site_code', 'sites.site_country', 'sites.site_phone')
                 ->join('sites', 'sites.id', '=', 'subjects.site_id')
                 ->where('subjects.study_id', '=', $id);
@@ -426,7 +426,8 @@ class StudyController extends Controller
                 $subjects = $subjects->orderBy($field_name , $request->sort_by_field);
             }
 
-            $subjects = $subjects->paginate(\Auth::user()->user_prefrences->default_pagination);
+            $subjects = $subjects->paginate(\Auth::user()->user_prefrences->default_pagination)
+                                 ->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);   
 
             $site_study = StudySite::where('study_id', '=', $id)
                 ->join('sites', 'sites.id', '=', 'site_study.site_id')

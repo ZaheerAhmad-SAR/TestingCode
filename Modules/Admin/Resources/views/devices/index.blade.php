@@ -18,7 +18,40 @@
         </div>
     </div>
     <!-- END: Breadcrumbs-->
-
+    <div class="row">
+            <div class="col-12 col-sm-12 mt-3">
+                <div class="card">
+                    <form action="{{route('devices.index')}}" method="get" class="filter-form">
+                        <div class="form-row" style="padding: 10px;">
+                            <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ request()->sort_by_field }}">
+                            <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ request()->sort_by_field_name }}">
+                            <div class="form-group col-md-3">
+                                <label for="trans_id">Name</label>
+                                <input type="text" name="device_name" id="filter_device_name" class="form-control filter-form-data" value="{{ request()->device_name }}" placeholder="Name">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="suject_id">Model</label>
+                                <input type="text" name="device_model" id="filter_device_model" class="form-control filter-form-data" value="{{ request()->device_model }}" placeholder="Device Model">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="suject_id">Manufacturer</label>
+                                <input type="text" name="device_manufacturer" id="filter_device_manufacturer" class="form-control filter-form-data" value="{{ request()->device_manufacturer }}" placeholder="Manufacturer">
+                            </div>
+                            <div class="form-group col-md-3 mt-4">
+                                <button type="button" class="btn btn-outline-warning reset-filter">
+                                   <i class="fas fa-undo-alt" aria-hidden="true"></i> Reset
+                                </button>
+                                <button type="submit" class="btn btn-primary btn-lng">
+                                   <i class="fas fa-filter" aria-hidden="true"></i> Filter
+                                </button>
+                            </div>
+                        </div>
+                        <!-- row ends -->
+                    </form>
+                </div>
+            </div>
+    </div>
+        <!-- END: Card DATA-->
     <!-- START: Card Data-->
      <div class="row">
          <div class="col-12 col-sm-12 mt-3">
@@ -35,9 +68,9 @@
                         <table class="table table-bordered dataTable" id="laravel_crud">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Model</th>
-                                    <th>Manufacturer</th>
+                                    <th onclick="changeSort('device_name');">Name <i class="fas fa-sort float-mrg"></i></th>
+                                    <th onclick="changeSort('device_model');">Model <i class="fas fa-sort float-mrg"></i></th>
+                                    <th onclick="changeSort('device_manufacturer');">Manufacturer <i class="fas fa-sort float-mrg"></i></th>
                                     <td colspan="2">Action</td>
                                 </tr>
                             </thead>
@@ -227,30 +260,6 @@
                         type: "POST",
                         dataType: 'json',
                         success: function (data) {
-                           //  var device = '<tr id="device_id_' + data.id + '"><td>' + data.id + '</td>' +
-                           //      '<td>' + data.device_name + '</td>' +
-                           //      '<td>' + data.device_manufacturer + '</td>' +
-                           //      '<td>' + data.device_model + '</td>';
-                           //  device += '<td><a href="javascript:void(0)" id="edit-device" data-id="' + data.id + '" class="btn btn-info"> Edit</a></td>';
-                           // device += '<td><a href="javascript:void(0)" id="delete-device" data-id="' + data.id + '" class="btn btn-danger delete-device">Delete</a></td></tr>';
-
-                           //  if (actionType == "create-device") {
-                           //      $('#devices-crud').prepend(device);
-                           //      var t = setTimeout(function(){// wait for -- secs(2)
-                           //          location.reload();
-                           //      }, 1000);
-                           //  } else {
-                           //      $("#device_id_" + data.id).replaceWith(device);
-                           //  }
-                           //  $('#deviceForm').trigger("reset");
-                           //  $('#device-crud-modal').modal('hide');
-                           //  $('#btn-save').html('Save Changes');
-                           //  alert(data.success());
-                           //  if(data.success == true){
-                           //      var t = setTimeout(function(){// wait for -- secs(2)
-                           //          location.reload();
-                           //      }, 1000);
-                           //  }
                            location.reload();
                         },
                         error: function (data) {
@@ -313,6 +322,19 @@
                }
            });
        });
+
+        // sorting gride
+        function changeSort(field_name){
+            var sort_by_field = $('#sort_by_field').val();
+            if(sort_by_field =='' || sort_by_field =='ASC'){
+               $('#sort_by_field').val('DESC');
+               $('#sort_by_field_name').val(field_name);
+            }else if(sort_by_field =='DESC'){
+               $('#sort_by_field').val('ASC'); 
+               $('#sort_by_field_name').val(field_name); 
+            }
+            $('.filter-form').submit();
+        }
    </script>
 
 @stop

@@ -3,6 +3,7 @@
     <!-- START: Header-->
 {{--    @php dd(session()->all()); @endphp--}}
     @if (!empty(auth()->user()))
+        <meta name="csrf-token" content="{{ csrf_token() }}" />
     <div id="header-fix" class="header fixed-top">
         <div class="site-width">
 
@@ -197,7 +198,7 @@
                             </a>
                         </li>
                         <li class="dropdown user-profile align-self-center d-inline-block">
-                            <a href="#" class="nav-link py-0" data-toggle="dropdown" aria-expanded="false">
+                            <a href="#" id="dropdownLogout" class="nav-link py-0" data-toggle="dropdown" aria-expanded="false">
                                 <div class="media">
                                     @if(!empty(auth()->user()->image))
                                        <img src="{{ asset('/images/'.auth()->user()->image) }}" style="width: 40px;border-radius: 50%;">
@@ -301,6 +302,13 @@
 
         function loadnotifications()
         {
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
             $.ajax({
                 url:"{{route('notifications.countUserNotification')}}",
                 type: 'POST',
@@ -316,11 +324,9 @@
             });
         }
         loadnotifications();
-        //updateNotificaitonList();
 
         setInterval(function(){
             loadnotifications()
-            //updateNotificaitonList()
 
         }, 10000);
 
