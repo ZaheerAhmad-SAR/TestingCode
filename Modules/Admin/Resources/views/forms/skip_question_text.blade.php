@@ -1,6 +1,6 @@
 @extends ('layouts.home')
 @section('content')
-<div class="container-fluid site-width">
+<div class="container-fluid site-width" style="padding-bottom: 10px;">
     <!-- START: Breadcrumbs-->
     <div class="row ">
         <div class="col-12 align-self-center">
@@ -179,7 +179,6 @@
                                         <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                         <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                             <span class="dropdown-item"><a href="{{route('skipNumber.updateSkipText',$value['id'])}}"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
-                                            {{-- <span class="dropdown-item"><a href="#"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span> --}}
                                         </div>
                                     </div>
                                 </td>

@@ -138,7 +138,7 @@
                                                     @if(null !== $studyQuery )
                                                         @if(\Modules\Queries\Entities\Query::checkUserhaveQuery($study->id))
                                                             <div class="showQueries">
-                                                    <span class="ml-3" style="cursor: pointer;">
+                                                    <span class="ml-3" style="cursor: pointer;display: none;">
                                                         <i class="fas fa-question-circle showAllStudyQueries" data-id="{{$study->id}}"  style="margin-top: 12px;"></i></span>
                                                             </div>
                                                         @endif
@@ -179,17 +179,20 @@
                                                             </a>
                                                             </span>
                                                             @endif
-                                                            @include('queries::queries.query_popup_span',['study_id'=>$study->id,'studyShortName'=>$study->study_short_name,'studyTitle'=>$study->study_title])
-                                                        {{-- <span class="dropdown-item">
-                                                             <a href="#" class="addModalities">
-                                                                <i class="fa fa-object-group" aria-hidden="true"></i> Preferences
-                                                             </a>
-                                                        </span> --}}
-                                                        {{-- <span class="dropdown-item">
-                                                            <a href="#" data-id="" class="addModalities">
-                                                                <i class="fa fa-object-group" aria-hidden="true"></i> Modalities
-                                                            </a>
-                                                        </span> --}}
+                                                            {{-- Query comment --}}
+                                                            {{-- @include('queries::queries.query_popup_span',['study_id'=>$study->id,'studyShortName'=>$study->study_short_name,'studyTitle'=>$study->study_title]) --}}
+
+
+                                                            {{-- <span class="dropdown-item">
+                                                                 <a href="#" class="addModalities">
+                                                                    <i class="fa fa-object-group" aria-hidden="true"></i> Preferences
+                                                                 </a>
+                                                            </span> --}}
+                                                            {{-- <span class="dropdown-item">
+                                                                <a href="#" data-id="" class="addModalities">
+                                                                    <i class="fa fa-object-group" aria-hidden="true"></i> Modalities
+                                                                </a>
+                                                            </span> --}}
                                                     </div>
                                                 </div>
                                                 @endif

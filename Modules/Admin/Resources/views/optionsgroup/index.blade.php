@@ -18,7 +18,24 @@
         </div>
     </div>
     <!-- END: Breadcrumbs-->
-
+    <div class="card">
+            <div class="card-body">
+                <form action="{{route('optionsGroup.index')}}" method="get" class="filter-form">
+                    @csrf
+                    <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ request()->sort_by_field }}">
+                    <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ request()->sort_by_field_name }}">
+                    <div class="form-row" style="padding: 10px;">
+                        <div class="form-group col-md-4">
+                            <input type="text" name="option_group_name" class="form-control" placeholder="Option Title" value="{{ request()->option_group_name }}">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <button class="btn btn-outline-warning reset-filter"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
+                            <button type="submit" class="btn btn-primary submit-filter"><i class="fas fa-filter" aria-hidden="true"></i> Filter</button>
+                        </div>
+                    </div>    
+                </form>
+            </div>
+        </div>
     <!-- START: Card Data-->
 <div class="row">
  <div class="col-12 col-sm-12 mt-3">
@@ -34,7 +51,7 @@
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <tr>
-                                <th>Options Title</th>
+                                <th onclick="changeSort('option_group_name');">Options Title <i class="fas fa-sort float-mrg"></i></th>
                                 <th>Defined Options</th>
                                 <th style="width: 5%;">Action</th>
                             </tr>
@@ -66,6 +83,7 @@
                             @endforeach
                             @endif
                         </table>
+                        {{ $optionsGroup->links()}}
                     </div>
                 </div>
             </div>
@@ -363,5 +381,18 @@
                })
            }
        });
+
+      // Change Sort
+      function changeSort(field_name){
+            var sort_by_field = $('#sort_by_field').val();
+            if(sort_by_field =='' || sort_by_field =='ASC'){
+               $('#sort_by_field').val('DESC');
+               $('#sort_by_field_name').val(field_name);
+            }else if(sort_by_field =='DESC'){
+               $('#sort_by_field').val('ASC'); 
+               $('#sort_by_field_name').val(field_name); 
+            }
+            $('.filter-form').submit();
+        }
    </script>
 @stop
