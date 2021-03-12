@@ -24,7 +24,7 @@
 
             <ul class="dropdown-menu dropdown-menu-right border  py-0 receivedata">
 
-
+                    @if(!$records->isEmpty())
                     @foreach($records as $record)
                         @if($record->notifications_type =='query')
 
@@ -147,7 +147,7 @@
 
 
                     @endforeach
-
+                   @endif
 
                 <tr>
 
