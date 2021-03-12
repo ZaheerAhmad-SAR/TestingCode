@@ -13,6 +13,7 @@ use Modules\CertificationApp\Entities\StudySetup;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\Device;
+use Modules\Admin\Entities\DeviceSite;
 use Modules\CertificationApp\Entities\DeviceTransmissionUpdateDetail;
 use Modules\Admin\Entities\StudySite;
 use Modules\Admin\Entities\PrimaryInvestigator;
@@ -296,6 +297,8 @@ class TransmissionDataDeviceController extends Controller
             $deviceName = Device::where('device_model', $modelID[1])->first();
             $findTransmission->Device_manufacturer = $deviceName->device_manufacturer;
         }
+        // update device serial
+        $findTransmission->Device_Serial = $request->Device_Serial;
 
         // get modality name and madality_id
         if ($request->Requested_certification != "") {
@@ -307,6 +310,7 @@ class TransmissionDataDeviceController extends Controller
 
         // status
         $findTransmission->status = $request->status;
+        $findTransmission->Comments = $request->comments;
         $findTransmission->save();
 
         // check for status and also store update details in transmission update table
@@ -327,7 +331,6 @@ class TransmissionDataDeviceController extends Controller
 
     public function transmissionStatus($findTransmission, $request)
     {
-
         //get study
         $getStudy = Study::where('study_code', $findTransmission->StudyI_ID)->first();
 
@@ -440,16 +443,31 @@ class TransmissionDataDeviceController extends Controller
 
             $getDevice = Device::where('device_model', $findTransmission->Device_Model)->first();
 
-            if ($getDevice == null) {
+            // if ($getDevice == null) {
 
-                $getDevice = new Device;
-                $getDevice->id = (string)Str::uuid();
-                $getDevice->device_model = $findTransmission->Device_Model;
-                $getDevice->device_manufacturer = $findTransmission->Device_manufacturer;
-                $getDevice->save();
-            } // null check ends
+            //     $getDevice = new Device;
+            //     $getDevice->id = (string)Str::uuid();
+            //     $getDevice->device_model = $findTransmission->Device_Model;
+            //     $getDevice->device_manufacturer = $findTransmission->Device_manufacturer;
+            //     $getDevice->save();
+            // } // null check ends
 
         } // add new device check ends
+
+        /* check for device and site table */
+        $getDeviceSite = DeviceSite::where('device_id', $getDevice->id)
+                                    ->where('site_id', $getSite->id)
+                                    ->where('device_serial', $findTransmission->Device_Serial)
+                                    ->first();
+        if($getDeviceSite == null) {
+            $getDeviceSite = new DeviceSite;
+            $getDeviceSite->id = (string)Str::uuid();
+            $getDeviceSite->device_id = $getDevice->id;
+            $getDeviceSite->site_id = $getSite->id;
+            $getDeviceSite->device_serial = $findTransmission->Device_Serial;
+            $getDeviceSite->device_software_version = $findTransmission->Device_Software_version;
+            $getDeviceSite->save();
+        } // device and site table insertion
 
         // make array for changings dynamic variable in the text editor
         $variables = [$findTransmission->Request_MadeBy_FirstName, $findTransmission->Request_MadeBy_LastName, $findTransmission->StudyI_ID, $findTransmission->Study_Name, $getSite->site_code, $getSite->site_name, $getPrimaryInvestigator->first_name, $findTransmission->Requested_certification, $findTransmission->Transmission_Number, $findTransmission->status, $getDevice->device_manufacturer, $getDevice->device_model, \Auth::user()->name];
@@ -463,17 +481,17 @@ class TransmissionDataDeviceController extends Controller
             $bccEmail = $request->bcc_email != null ? $request->bcc_email : '';
 
             // send email to users
-            Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $bccEmail, $findTransmission, $getSite, $getDevice)
-            {
-                $message->subject($findTransmission->Study_Name.' '.$findTransmission->StudyI_ID.' | Device Request# '.$findTransmission->Transmission_Number.' | '. $getSite->Site_ID.' | '. $findTransmission->Requested_certification);
-                $message->to($senderEmail);
-                if($ccEmail != '') {
-                $message->cc($ccEmail);
-                }
-                if($bccEmail != '') {
-                    $message->bcc($bccEmail);
-                }
-            });
+            // Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $bccEmail, $findTransmission, $getSite, $getDevice)
+            // {
+            //     $message->subject($findTransmission->Study_Name.' '.$findTransmission->StudyI_ID.' | Device Request# '.$findTransmission->Transmission_Number.' | '. $getSite->Site_ID.' | '. $findTransmission->Requested_certification);
+            //     $message->to($senderEmail);
+            //     if($ccEmail != '') {
+            //     $message->cc($ccEmail);
+            //     }
+            //     if($bccEmail != '') {
+            //         $message->bcc($bccEmail);
+            //     }
+            // });
     }
 
     /**

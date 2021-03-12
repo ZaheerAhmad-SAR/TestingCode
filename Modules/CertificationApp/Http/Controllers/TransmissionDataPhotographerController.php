@@ -288,6 +288,7 @@ class TransmissionDataPhotographerController extends Controller
 
         // status
         $findTransmission->status = $request->status;
+        $findTransmission->Comments = $request->comments;
         $findTransmission->pathology = $request->pathology;
         $findTransmission->save();
 
@@ -413,20 +414,20 @@ class TransmissionDataPhotographerController extends Controller
         $bccEmail = $request->bcc_email != null ? $request->bcc_email : '';
 
         // send email to users
-        Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $bccEmail, $findTransmission, $getSite)
-        {
-            $message->subject($findTransmission->Study_Name.' '.$findTransmission->StudyI_ID.' | Photographer Request# '.$findTransmission->Transmission_Number.' | '. $getSite->site_code.' | '. $findTransmission->Requested_certification);
+        // Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $bccEmail, $findTransmission, $getSite)
+        // {
+        //     $message->subject($findTransmission->Study_Name.' '.$findTransmission->StudyI_ID.' | Photographer Request# '.$findTransmission->Transmission_Number.' | '. $getSite->site_code.' | '. $findTransmission->Requested_certification);
 
-            $message->to($senderEmail);
+        //     $message->to($senderEmail);
             
-            if($ccEmail != '') {
-                $message->cc($ccEmail);
-            }
-            if($bccEmail != '') {
-                $message->bcc($bccEmail);
-            }
+        //     if($ccEmail != '') {
+        //         $message->cc($ccEmail);
+        //     }
+        //     if($bccEmail != '') {
+        //         $message->bcc($bccEmail);
+        //     }
             
-        });
+        // });
     }
 
     /**

@@ -183,7 +183,7 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission->Device_Serial }}" readonly="" name="Device_Serial" id="Device_Serial" class="form-control remove-readonly" required="required">
+                                    <input type="text" value="{{ $findTransmission->Device_Serial }}" name="Device_Serial" id="Device_Serial" class="form-control remove-readonly" required="required">
                                 </div>
 
                                  <!--//////////////// row  ///////////////////////// -->
@@ -374,6 +374,14 @@
 
                                 <div class="form-group col-md-9">
                                     <textarea class="form-control required-data" required="required" name="reason_for_change" id="reason_for_change" rows="4">{{ $findTransmission->status}}</textarea>
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Comment</label>
+                                </div>
+
+                                <div class="form-group col-md-9">
+                                    <textarea class="form-control required-data" name="comments" id="comments" rows="4">{{ $findTransmission->Comments}}</textarea>
                                 </div>
 
                             <!-- ///////////////////////////// row ///////////////////// -->
