@@ -24,8 +24,8 @@
                                 </div>
                             </div>
                             <div class="form-group mb-3" @if($user->qr_flag == 1)style="display: none;" @endif>
-                               <img alt="Image of QR barcode" src="{!! $user->google_auth !!}" />
-                            </div>
+                              <!-- <img alt="Image of QR barcode" src="{!! $user->google_auth !!}" />
+                            </div> --> 
                             <div class="form-group mb-3">
                                 <input type="checkbox" name="remember_browser" checked> &nbsp; Don't ask for OTP again this browser!!
                             </div>

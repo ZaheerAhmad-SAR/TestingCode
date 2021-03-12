@@ -44,13 +44,16 @@ class LoginController extends Controller
      * @return void
      */
     public function __construct()
-    {
+    { 
+        
         $this->middleware('guest')->except('logout');
     }
 
     public function login(Request $request)
     {
-        $this->validateLogin($request);
+ 
+      
+        //$this->validateLogin($request);
 
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
@@ -92,43 +95,61 @@ class LoginController extends Controller
 
     private function authenticated(Request $request, Authenticatable $user)
     {
+       //dd("authenticated");
         $getbrowser = UserSystemInfoHelper::get_browsers();
+
         $get_ip = UserSystemInfoHelper::get_ip();
         $secret = $user->google2fa_secret;
         $qr_flag = $user->qr_flag;
-
+         
         if ($user->google2fa_secret) {
             $check_info = UserSystemInfo::where('user_id', '=', $user->id)->get();
             if (count($check_info) > 0) {
-                foreach ($check_info as $info) {
-                    if (!empty($info->browser_name) && $info->browser_name == $getbrowser && $info->remember_flag == 1) {
+               // dd("Hy");
+                
+                foreach ($check_info as $info)
+                   { 
+                    if (!empty($info->browser_name) && $info->browser_name == $getbrowser && $info->remember_flag == '1') {
+                        //dd("case 1");
                         $info->remember_flag = '1';
                         $info->save();
+
                         return redirect(route('studies.index'));
-                    } elseif (!empty($info->browser_name && $info->browser_name == $getbrowser)) {
+                        // dd("case 1");
+
+
+
+                    }  
+                     elseif (!empty($info->browser_name && $info->browser_name == $getbrowser)) { 
+                      
                         Auth::logout();
+                       // dd("after logout");
                         $request->session()->put('2fa:user:id', $user->id);
                         return view('2fa/validate', compact('user'));
-                    } elseif (empty($info->browser_name)) {
+                    } elseif (empty($info->browser_name)) { 
+                        //dd("case 3");
                         $info->browser_name = $getbrowser;
                         $info->save();
+
                         Auth::logout();
                         $request->session()->put('2fa:user:id', $user->id);
                         return view('2fa/validate', compact('user', 'secret'));
-                    } elseif ($info->browser_name != $getbrowser) {
+                    }  elseif ($info->browser_name != $getbrowser) { 
+                        //dd("Case 4");
                         $qr_flag = $user->qr_flag;
-
+ 
                         $info->browser_name = $getbrowser;
                         $info->user_id = $user->id;
                         $info->user_ip = $get_ip;
                         $info->save();
 
+
                         Auth::logout();
                         $request->session()->put('2fa:user:id', $user->id);
                         return view('2fa/validate', compact('user', 'qr_flag'));
                     }
-                }
-            } else {
+                } 
+            } else { //dd("Case 5");
                 Auth::logout();
                 $system_info = new UserSystemInfo();
                 $system_info->user_id = $user->id;
@@ -148,6 +169,7 @@ class LoginController extends Controller
 
     public function getValidateToken()
     {
+        
         if (session('2fa:user:id')) {
             return view('2fa/validate');
         }
@@ -158,6 +180,7 @@ class LoginController extends Controller
 
     public function postValidateToken(ValidateSecretRequest $request)
     {
+     //dd("postValidateToken");
         //get user id and create cache key
         $userId = $request->session()->pull('2fa:user:id');
         $key    = $userId . ':' . $request->totp;

@@ -35,7 +35,8 @@ class Google2FAController extends Controller
      */
     public function enableTwoFactor(Request $request)
     {
-        //generate new secret
+        
+         //generate new secret
         $secret = $this->generateSecret();
 
         //get user
@@ -109,13 +110,15 @@ class Google2FAController extends Controller
      * @return string
      */
     private function generateSecret()
-    {
+    { 
+        
         $randomBytes = random_bytes(10);
 
         return Base32::encodeUpper($randomBytes);
     }
 
     public function getcodes(){
+      
         $codes = backupCode::where('user_id','=',\auth()->user()->id)->get();
 
     }
