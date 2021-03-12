@@ -20,7 +20,7 @@
         @yield('styles')
         <!-- END: Page CSS-->
         <!-- START: Custom CSS-->
-
+        
         <link rel="stylesheet" href="{{ asset('public/dist/css/main.css') }}">
         <link rel="stylesheet" href="{{ asset('public/dist/css/custom.css') }}">
         <link rel="stylesheet" href="{{ asset('public/dist/css/multi-select.css') }}">
@@ -28,7 +28,9 @@
         <link rel="stylesheet" href="{{ asset('public/css/fstdropdown.min.css') }}"/>
         <link rel="stylesheet" href="{{ asset('public/css/sweetalert.css') }}"/>
         <link rel="stylesheet" href="{{ asset('public/css/jquery-confirm.min.css') }}"/>
-
+        <!-- select2 -->
+        <link rel="stylesheet" href="{{ asset('public/dist/vendors/select2/css/select2.min.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('public/dist/vendors/select2/css/select2-bootstrap.min.css') }}"/>
         @stack('styles')
         <!-- END: Custom CSS-->
         <style>
@@ -118,6 +120,9 @@
     <script src="{{ asset('public/js/jquery-confirm.min.js') }}"></script>
     <script src="{{ asset('public/js/multiselect.js') }}"></script>
 
+    <!-- select2 -->
+    <script src="{{ asset('public/dist/vendors/select2/js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
     <!-- END: APP JS-->
 
     <!-- START: Page JS-->
@@ -168,6 +173,8 @@
             $('.filter-form input').val('');
             $('.filter-form').submit();
         })
+        // 
+        $('.searchable_dropdown').select2();
     </script>
         <!-- END: Page JS-->
     </body>
