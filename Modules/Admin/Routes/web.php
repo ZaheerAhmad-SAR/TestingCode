@@ -203,8 +203,6 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
     Route::resource('studySite', 'StudySiteController');
 
-
-
     Route::post('studySite/update', 'StudySiteController@update')->name('studySite.update');
 
 
