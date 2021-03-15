@@ -218,23 +218,23 @@
                                     <input type="text" value="{{ $findTransmission->Site_country }}" readonly="" name="Site_country" id="Site_country" class="form-control remove-readonly" required="required">
                                 </div>
 
-                                <div class="form-group col-sm-3">
+                                <!-- <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">PI Name</label>
                                 </div>
 
                                 <div class="form-group col-sm-3">
                                     <input type="text" name="PI_Name" readonly="" value="{{ $findTransmission->PI_Name }}" id="PI_Name" class="form-control remove-readonly" required="required">
-                                </div>
+                                </div> -->
 
                                 <!-- --------------- row --------------------- -->
 
-                                <div class="form-group col-sm-3">
+                                <!-- <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">PI Email</label>
                                 </div>
 
                                 <div class="form-group col-sm-3">
                                     <input type="text" name="PI_email" readonly="" value="{{ $findTransmission->PI_email }}" id="PI_email" class="form-control remove-readonly" required="required">
-                                </div>
+                                </div> -->
 
                                 <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Notification Email</label>
@@ -357,7 +357,6 @@
                                 <div class="form-group col-md-9">
                                     <textarea class="form-control required-data" name="comments" id="comments" rows="4">{{ $findTransmission->Comments}}</textarea>
                                 </div>
-
 
                                 <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Pathology<span class="field-required">*</span></label>

@@ -49,9 +49,6 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 // get template data ajax
 	Route::get('showreport', 'CertificationPreferencesController@showCertificationReport')->name('showreport'); ///	
 
-// get template data ajax
-	Route::get('showreportphotograper', 'CertificationPreferencesController@showCertificationReportPhotograper')->name('showreportphotograper'); ///		
-
 // update certification template
 	Route::post('update-certification-template', 'CertificationPreferencesController@updateTemplate')->name('update-certification-template'); ////
 
