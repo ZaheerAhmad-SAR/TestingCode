@@ -52,7 +52,7 @@
                             <button class="btn btn-outline-warning reset-filter"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
                             <button type="submit" class="btn btn-primary submit-filter"><i class="fas fa-filter" aria-hidden="true"></i> Filter</button>
                         </div>
-                    </div>    
+                    </div>
                 </form>
             </div>
         </div>
@@ -64,12 +64,12 @@
                 <div class="card">
                     <div class="card-header d-flex align-items-center">
                             @if(hasPermission(auth()->user(),'users.create'))
-                                <button type="button" class="btn btn-outline-primary" onclick="openAddUserPopup();">
+                                <button dusk="add_user" type="button" class="btn btn-outline-primary" onclick="openAddUserPopup();">
                                     <i class="fa fa-plus"></i> Add User
                                 </button>
                             @endif
                                 @if(hasPermission(auth()->user(),'invite_view'))
-                                    &nbsp; <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#inviteuser">
+                                    &nbsp; <button dusk="inviteuser" type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#inviteuser">
                                         <i class="far fa-edit"></i>&nbsp; Invite User
                                     </button>
                                 @endif
@@ -238,8 +238,8 @@
                $('#sort_by_field').val('DESC');
                $('#sort_by_field_name').val(field_name);
             }else if(sort_by_field =='DESC'){
-               $('#sort_by_field').val('ASC'); 
-               $('#sort_by_field_name').val(field_name); 
+               $('#sort_by_field').val('ASC');
+               $('#sort_by_field_name').val(field_name);
             }
             $('.filter-form').submit();
         }

@@ -2,6 +2,7 @@
 
 namespace Tests\Browser;
 
+use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
@@ -25,14 +26,10 @@ class RoleTest extends DuskTestCase
     ///
     public function test_i_can_creat_a_new_role()
     {
-        $this->browse(function ($browser) {
-            $browser->visit('/login')
-                ->type('email', 'superadmin@admin.com')
-                ->type('password', 'at@m|c_en@rgy1272')
-                ->press('Sign In')
-                ->assertSee('Please add study admin role first')
+        $user = User::where('name', 'Super Admin')->first();
+        $this->browse(function ($browser) use ($user) {
+            $browser->loginAs($user)
                 ->visit('/roles')
-                //->click('.redirecttoPage')
                 ->assertSee('Roles Detail')
                 ->click('@create-role')
                 ->waitFor('#createRole')

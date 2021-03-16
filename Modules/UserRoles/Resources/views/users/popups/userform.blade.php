@@ -9,16 +9,16 @@
             <p class="alert alert-danger user-store-error" style="display: none;"></p>
             <nav>
                 <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
-                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-Basic" role="tab"
+                    <a  class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-Basic" role="tab"
                         aria-controls="nav-home" aria-selected="true">Basic Info</a>
-                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-Modalities"
+                    <a dusk="nav-Modalities" class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-Modalities"
                         role="tab" aria-controls="nav-profile" aria-selected="false">Roles</a>
                 </div>
             </nav>
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
                     <div class="form-group row" style="margin-top: 10px;">
-                        <label for="Name" class="col-md-3">Name</label>
+                        <label for="Name" class="col-md-3 showNameField">Name</label>
                         <input type="text" class="form-control col-md-8" required="required" id="name" name="name"
                             value="{{ $user->name }}" {{ $readOnly }}>
                     </div>
