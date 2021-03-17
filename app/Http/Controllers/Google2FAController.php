@@ -58,6 +58,7 @@ class Google2FAController extends Controller
         $user->google_auth = $inlineUrl;
         $user->save();
 
+
         //generate backup codes
         $this->recovery = new Recovery();
         $codes = $this->recovery->setCount(10)->setBlocks(1)->setChars(6)
@@ -74,10 +75,11 @@ class Google2FAController extends Controller
             $bacup_code->save();
         }
         $codes = backupCode::where('user_id','=',\auth()->user()->id)->get();
+      
 
         return view('2fa/enableTwoFactor',compact('inlineUrl','secret','codes'));
     }
-
+  
     /**
      *
      * @param \Illuminate\Http\Request $request
@@ -113,6 +115,7 @@ class Google2FAController extends Controller
     { 
         
         $randomBytes = random_bytes(10);
+        //dd($randomBytes);
 
         return Base32::encodeUpper($randomBytes);
     }

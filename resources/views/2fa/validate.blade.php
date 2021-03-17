@@ -15,7 +15,7 @@
                                     <label>OTP</label></div>
 
                                 <div class="col-md-10">
-                                    <input type="number" class="form-control" name="totp" required>
+                                    <input type="number" class="form-control tt" name="totp" required>
                                     @if ($errors->has('totp'))
                                         <span class="help-block">
                                     <strong>{{ $errors->first('totp') }}</strong>
@@ -25,7 +25,7 @@
                             </div>
                             <div class="form-group mb-3" @if($user->qr_flag == 1)style="display: none;" @endif>
                               <!-- <img alt="Image of QR barcode" src="{!! $user->google_auth !!}" />
-                            </div> --> 
+                            </div>  --> 
                             <div class="form-group mb-3">
                                 <input type="checkbox" name="remember_browser" checked> &nbsp; Don't ask for OTP again this browser!!
                             </div>
