@@ -96,11 +96,6 @@
                             </div>
 
                             <div class="form-group col-md-3">
-                                <label for="site">Site Name</label>
-                                <input type="text" name="site_name" id="site_name" class="form-control filter-form-data" value="{{ request()->site_name }}" placeholder="Site Name">
-                            </div>
-
-                            <div class="form-group col-md-3">
                                 <label for="device_model">Device Model</label>
                                 <input type="text" name="device_model" id="device_model" class="form-control filter-form-data" value="{{ request()->device_model }}" placeholder="Device Model">
                             </div>
@@ -166,7 +161,7 @@
                                 <input type="text" name="expiry_date" id="expiry_date" class="form-control expiry_date filter-form-data" value="{{ request()->expiry_date }}">
                             </div>
 
-                            <div class="form-group col-md-2 mt-4">
+                            <div class="form-group col-md-3 mt-4">
                                 <button type="button" class="btn btn-primary reset-filter">Reset</button>
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Record</button>
                             </div>
@@ -705,22 +700,20 @@
     });
 
     function showDetails(firstName, lastName, email, phone, siteName, siteCode, studyName, certificationFor, issueDate, expiryDate, issuedBy) {
-        
         // show modal
         $('#show-certificate-details-modal').modal('show');
         // assign values
-        $('#Photographer_first_name').val(firstName);
-        $('#Photographer_last_name').val(lastName);
-        $('#Photographer_email').val(email);
-        $('#Photographer_phone').val(phone);
-        $('#site_name').val(siteName);
-        $('#site_code').val(siteCode);
-        $('.study_name').text(studyName);
-        $('.certification_for').text(certificationFor);
-        $('.issue_date').text(issueDate);
-        $('.expiry_date').text(expiryDate);
-        $('.issued_by').text(issuedBy);
-
+        $('#show-certificate-details-modal #Photographer_first_name').val(firstName);
+        $('#show-certificate-details-modal #Photographer_last_name').val(lastName);
+        $('#show-certificate-details-modal #Photographer_email').val(email);
+        $('#show-certificate-details-modal #Photographer_phone').val(phone);
+        $('#show-certificate-details-modal #site_name').val(siteName);
+        $('#show-certificate-details-modal #site_code').val(siteCode);
+        $('#show-certificate-details-modal .study_name').text(studyName);
+        $('#show-certificate-details-modal .certification_for').text(certificationFor);
+        $('#show-certificate-details-modal .issue_date').text(issueDate);
+        $('#show-certificate-details-modal .expiry_date').text(expiryDate);
+        $('#show-certificate-details-modal .issued_by').text(issuedBy);
     } // details function ends
 
     // grandfathering function

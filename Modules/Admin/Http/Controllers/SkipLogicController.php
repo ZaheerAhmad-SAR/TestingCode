@@ -44,7 +44,12 @@ class SkipLogicController extends Controller
         $num_values = Question::where('id', $id)->with('skiplogic')->first();
         $section = Section::where('id', $num_values->section_id)->first();
         $step = PhaseSteps::where('step_id', $section->phase_steps_id)->first();
-        $all_study_steps = PhaseSteps::where('phase_id', $step->phase_id)->get();
+        if($step->form_type_id == 2){
+            $where_step  = array('phase_id' => $step->phase_id,'modility_id' => $step->modility_id,'form_type_id' => 2);
+        }else{
+            $where_step  = array('phase_id' => $step->phase_id,'modility_id' => $step->modility_id);
+        }
+        $all_study_steps = PhaseSteps::where($where_step)->get();
         return view('admin::forms.skip_question_text', compact('num_values', 'all_study_steps', 'step'));
     }
     public function skip_logic_cohort($id,$formTypeId ='',$modalityId ='')

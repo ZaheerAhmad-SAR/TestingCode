@@ -326,7 +326,9 @@
 @endsection
 @section('script')
     <script>
+
         $('body').on('click','.EditSubjects',function () {
+            
             var row = $(this).closest('tr')
                 id  = row.find('td.id').text()
                 subject_id  = row.find('td.subject_id').text()
@@ -335,11 +337,17 @@
                 disease = row.find('td.edit_disease_cohort').text()
                 study_eye = row.find('td.edit_study_eye').text();
 
-                console.log($(this).attr('data-url'));
+            /* format date */
+            var date = new Date(enrol_date);
+            var d = date.getDate();
+            var m =  date.getMonth() +1;
+            if (m < 10) m = '0' + m;
+            if (d < 10) d = '0' + d;
+            var y = date.getFullYear();
 
             $('#edit_id').val(id);
             $('#edit_subject_id').val(subject_id);
-            $('#edit_enrollment_date').val(enrol_date);
+            $('#edit_enrollment_date').val(y + "-" + m + "-" + d);
             $('#edit_site_id').val(site_id);
             $('#edit_study_eye').val(study_eye);
             $('#edit_disease_cohort').val(disease);

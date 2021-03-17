@@ -28,6 +28,7 @@ class AddColumnStatusToQueriesTable extends Migration
     {
         Schema::table('queries', function (Blueprint $table) {
         $table->dropColumn('query_status');
+
         });
     }
 }

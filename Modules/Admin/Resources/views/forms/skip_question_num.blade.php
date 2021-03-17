@@ -1,6 +1,6 @@
 @extends ('layouts.home')
 @section('content')
-    <div class="container-fluid site-width">
+    <div class="container-fluid site-width" style="padding-bottom: 10px;">
         <!-- START: Breadcrumbs-->
         <div class="row ">
             <div class="col-12 align-self-center">
