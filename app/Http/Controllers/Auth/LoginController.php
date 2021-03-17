@@ -15,7 +15,7 @@ use App\Helpers\UserSystemInfoHelper;
 use Modules\UserRoles\Entities\UserSystemInfo;
 use Modules\UserRoles\Entities\UserLog;
 use Illuminate\Support\Str;
-
+use App\Helpers\helper;
 class LoginController extends Controller
 {
     /*
@@ -44,13 +44,17 @@ class LoginController extends Controller
      * @return void
      */
     public function __construct()
-    {
+    { 
+        
         $this->middleware('guest')->except('logout');
     }
 
     public function login(Request $request)
     {
-        $this->validateLogin($request);
+        
+        //dd(get_mac_address());
+      
+        //$this->validateLogin($request);
 
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
@@ -94,46 +98,51 @@ class LoginController extends Controller
     {
         $getbrowser = UserSystemInfoHelper::get_browsers();
         $get_ip = UserSystemInfoHelper::get_ip();
+        $get_mac = get_mac_address(); 
         $secret = $user->google2fa_secret;
         $qr_flag = $user->qr_flag;
-
+        
         if ($user->google2fa_secret) {
             $check_info = UserSystemInfo::where('user_id', '=', $user->id)->get();
             if (count($check_info) > 0) {
-                foreach ($check_info as $info) {
-                    if (!empty($info->browser_name) && $info->browser_name == $getbrowser && $info->remember_flag == 1) {
+                foreach ($check_info as $info)
+                   { 
+                    if (!empty($info->browser_name) && $info->browser_name == $getbrowser && $info->remember_flag == '1' && $info->user_mac==$get_mac) {
                         $info->remember_flag = '1';
                         $info->save();
                         return redirect(route('studies.index'));
-                    } elseif (!empty($info->browser_name && $info->browser_name == $getbrowser)) {
+                    }  
+                     elseif (!empty($info->browser_name && $info->browser_name == $getbrowser && $info->user_mac==$get_mac)) { 
                         Auth::logout();
+                       // dd("after logout");
                         $request->session()->put('2fa:user:id', $user->id);
                         return view('2fa/validate', compact('user'));
-                    } elseif (empty($info->browser_name)) {
+                    } elseif (empty($info->browser_name)) { 
+                        //dd("case 3");
                         $info->browser_name = $getbrowser;
                         $info->save();
                         Auth::logout();
                         $request->session()->put('2fa:user:id', $user->id);
                         return view('2fa/validate', compact('user', 'secret'));
-                    } elseif ($info->browser_name != $getbrowser) {
+                    }  elseif ($info->browser_name != $getbrowser) { 
+                        //dd("Case 4");
                         $qr_flag = $user->qr_flag;
-
                         $info->browser_name = $getbrowser;
                         $info->user_id = $user->id;
                         $info->user_ip = $get_ip;
                         $info->save();
-
                         Auth::logout();
                         $request->session()->put('2fa:user:id', $user->id);
                         return view('2fa/validate', compact('user', 'qr_flag'));
                     }
-                }
-            } else {
+                } 
+            } else { 
                 Auth::logout();
                 $system_info = new UserSystemInfo();
                 $system_info->user_id = $user->id;
                 $system_info->browser_name = $getbrowser;
                 $system_info->user_ip = $get_ip;
+                $system_info->user_mac = $get_mac;
                 $system_info->save();
                 $request->session()->put('2fa:user:id', $user->id);
                 return view('2fa/validate', compact('user', 'secret'));
@@ -148,6 +157,7 @@ class LoginController extends Controller
 
     public function getValidateToken()
     {
+        
         if (session('2fa:user:id')) {
             return view('2fa/validate');
         }
@@ -162,8 +172,10 @@ class LoginController extends Controller
         $userId = $request->session()->pull('2fa:user:id');
         $key    = $userId . ':' . $request->totp;
         if ($request->remember_browser == 'on') {
+            
             $getbrowser = UserSystemInfoHelper::get_browsers();
-            $system_info = UserSystemInfo::where('browser_name', '=', $getbrowser)->where('user_id', '=', $userId)->first();
+            $system_info = UserSystemInfo::where('browser_name', '=', $getbrowser)->where('user_id', '=', $userId)->where('user_mac', '=', $get_mac)->first();
+            // $system_info = UserSystemInfo::where('user_mac', '=', $get_mac)->where('user_id', '=', $userId)->first();
             $system_info->remember_flag = '1';
             $system_info->save();
         } else {
@@ -174,6 +186,7 @@ class LoginController extends Controller
         }
         //use cache to store token to blacklist
         Cache::add($key, true, 4);
+        //dd($key);
 
         //login and redirect user
         Auth::loginUsingId($userId);
