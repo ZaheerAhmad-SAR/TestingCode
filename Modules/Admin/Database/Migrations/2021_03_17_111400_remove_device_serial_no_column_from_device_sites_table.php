@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddColumnStatusToQueriesTable extends Migration
+class RemoveDeviceSerialNoColumnFromDeviceSitesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,8 @@ class AddColumnStatusToQueriesTable extends Migration
      */
     public function up()
     {
-        Schema::table('queries', function (Blueprint $table) {
-            $table->enum('query_status', ['new','open','confirmed', 'unconfirmed', 'close',])
-                ->default('new');
+        Schema::table('device_sites', function (Blueprint $table) {
+        $table->dropColumn('device_serial_no');
         });
     }
 
@@ -26,9 +25,8 @@ class AddColumnStatusToQueriesTable extends Migration
      */
     public function down()
     {
-        Schema::table('queries', function (Blueprint $table) {
-        $table->dropColumn('query_status');
-
+        Schema::table('device_sites', function (Blueprint $table) {
+         $table->text('device_serial_no');
         });
     }
 }

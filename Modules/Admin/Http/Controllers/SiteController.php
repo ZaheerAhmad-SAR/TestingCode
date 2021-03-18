@@ -21,14 +21,14 @@ class SiteController extends Controller
      */
     public function index(Request $request)
     {
-       
-    
+
+
         if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
             $field_name = $request->sort_by_field_name;
         }else{
             $field_name = 'site_code';
         }
-        
+
         if(isset($request->sort_by_field) && $request->sort_by_field !=''){
             $asc_or_decs = $request->sort_by_field;
         }else{
@@ -62,10 +62,12 @@ class SiteController extends Controller
         $sites = $sites->paginate(\Auth::user()->user_prefrences->default_pagination)->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
 
         $siteForTransmissions = Site::all();
+
         $photographers        = Photographer::all();
         $devices              = Device::all();
         $coordinators         = Coordinator::all();
         $pinvestigators       = PrimaryInvestigator::all();
+
         $old_values           = $request->input();
         return view('admin::sites.index',compact('sites','photographers','pinvestigators','coordinators','siteForTransmissions','old_values','devices'));
     }

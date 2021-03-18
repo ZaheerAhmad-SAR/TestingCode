@@ -21,12 +21,11 @@ $where = array('dep_on_question_id' => $question->id);
     }
 $checked = ($answer->answer == $option_value) ? 'checked' : '';
 @endphp
-    <div
-        class="custom-control custom-radio {{ $optionGroup->option_layout == 'horizontal' ? 'custom-control-inline' : '' }}">
+    <div class="custom-control custom-radio {{ $optionGroup->option_layout == 'horizontal' ? 'custom-control-inline' : '' }}">
         <input type="radio" name="{{ $field_name }}"
             onchange="validateAndSubmitAdjudicationFormField('{{ $stepIdStr }}', '{{ $sectionIdStr }}', '{{ $question->id }}', '{{ $questionIdStr }}', '{{ $field_name }}', '{{ $fieldId }}', '{{$dependencyIdStr}}');"
             value="{{ $option_value }}" {{ $checked }}
             class="custom-control-input {{ $skipLogicQuestionIdStr }} {{ buildSafeStr($question->id, 'skip_logic_' . $option_value) }} {{ $fieldId }}">
-        <label class="custom-control-label" for="customCheck1">{{ $option_name }}</label>
+        <label class="custom-control-label" for="customCheck1">{{ $option_name }} </label>
     </div>
 @endforeach

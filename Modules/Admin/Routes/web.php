@@ -143,7 +143,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('studySite/removeAssignedSites', 'StudySiteController@removeAssignedSites')->name('studySite.removeAssignedSites');
 });
 Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
-    
+
     Route::resource('studies', 'StudyController');
     Route::resource('sites', 'SiteController');
     Route::post('sites/update', 'SiteController@update')->name('sites.updateSites');
@@ -261,6 +261,18 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('others/{id}/showOtherBySiteId', 'OtherController@showOtherBySiteId')->name('others.showOtherBySiteId');
     Route::post('others/update', 'OtherController@update')->name('others.update');
     Route::get('others/{id}/destroy', 'OtherController@destroy')->name('others.destroy');
+
+    // Device Site Route start
+
+    Route::resource('deviceSite', 'DeviceSiteController');
+
+    Route::get('deviceSite/{id}/showDeviceBySiteId', 'DeviceSiteController@showDeviceBySiteId')->name('deviceSite.showDeviceBySiteId');
+
+    Route::post('deviceSite/update', 'DeviceSiteController@update')->name('deviceSite.update');
+
+    Route::get('deviceSite/{id}/destroy', 'DeviceSiteController@destroy')->name('deviceSite.destroy');
+
+    /// Device Site Route End
 
     Route::get('study/permanentlyDeleteStudyAndItsRecord/{id}', 'StudyController@permanentlyDeleteStudyAndItsRecord')->name('study.permanentlyDeleteStudyAndItsRecord');
 });

@@ -19,12 +19,14 @@ class TwoFactorController extends Controller
     // show the two factor auth form
     public function show2faForm()
     {
+    
         return view('2fa');
     }
 
 // post token to the backend for check
     public function sendToken(Request $request)
-    {
+    { 
+        
         $clientIP = request()->ip();
         dd($clientIP);
         $browser = get_browser(null, true);
@@ -42,8 +44,11 @@ class TwoFactorController extends Controller
     }
 
     public function verfiyToken(Request $request)
-    {
+    { 
+        
+        
         $user = User::where('two_factor_token', '=', $request->two_factor_token)->first();
+        dd($user);
         if ($user) {
             if (null !== Auth::loginUsingId($user->id)) {
                // dd(\auth()->user()->id);

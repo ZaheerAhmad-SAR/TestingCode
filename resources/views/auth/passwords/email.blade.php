@@ -16,7 +16,7 @@
                     <div class="login-form col-12 col-sm-7">
                         <div class="" style="min-height: 17%"></div>
                             <div class="form-group mb-3" style="margin-top: 60px;">
-                                <label for="email">{{ __('E-Mail Addresssss') }}</label>
+                                <label for="email">{{ __('E-Mail Address') }}</label>
                                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
                                 @error('email')
                                 <span class="invalid-feedback" role="alert">
