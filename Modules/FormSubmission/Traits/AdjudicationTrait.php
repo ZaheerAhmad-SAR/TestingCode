@@ -62,7 +62,6 @@ trait AdjudicationTrait
                         $returnData =  self::selectMajorityAnswer($questionAdjudicationStatusObj, $answersArray);
                     } elseif ($fieldType == 'Textarea') {
                         $returnData = self::checkAdjudicationForText($questionAdjudicationStatusObj, $numberOfAnswers, $answersArray);
-                        dd($returnData);
                     }
                 } else {
                     $returnData = [
