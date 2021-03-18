@@ -49,7 +49,6 @@ trait AdjudicationTrait
                 $answersArray = Answer::getAnswersArray($getAnswerArray);
                 $numberOfAnswers = count($answersArray);
                 $questionAdjudicationStatusObj = $question->questionAdjudicationStatus;
-
                 if ($step->graders_number == $numberOfAnswers) {
                     if ($fieldType == 'Radio') {
                         $returnData =  self::selectMajorityAnswer($questionAdjudicationStatusObj, $answersArray);
@@ -219,8 +218,8 @@ trait AdjudicationTrait
 
         $isQuestionAdjudicationRequired = false;
         $finalAnswer = '';
+        $answersArray = array_filter($answersArray);
         $countedArray = array_count_values($answersArray);
-
         if ($questionAdjudicationStatusObj->adj_status == 'yes') {
             if (
                 (count($answersArray) > 1) &&

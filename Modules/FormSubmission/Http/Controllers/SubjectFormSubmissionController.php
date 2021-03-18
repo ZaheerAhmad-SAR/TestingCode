@@ -43,7 +43,7 @@ class SubjectFormSubmissionController extends Controller
                     $trailLogDataArray['trail_log'][] = $retArray['trail_log'];
                 }
             }
-
+            // Final data and Adjudication decsion making here in putFormStatus methode
             $formStatusArray = FormStatus::putFormStatus($request);
             FormRevisionHistory::putFormRevisionHistory($formRevisionDataArray, $formStatusArray['id']);
 
@@ -116,6 +116,7 @@ class SubjectFormSubmissionController extends Controller
         $form_field_name = buildFormFieldName($question->formFields->variable_name);
         $form_field_id = $question->formFields->id;
         if ($request->has($form_field_name) || $request->hasFile($form_field_name . '0')) {
+
             if ($request->hasFile($form_field_name . '0')) {
                 $formFilesStr = '';
                 for ($x = 0; $x < $request->TotalFiles; $x++) {
