@@ -145,12 +145,30 @@
 
                               <!--//////////////// row  ///////////////////////// -->
 
-                                <div class="form-group col-sm-3">
+                                <!-- <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Device Category</label>
                                 </div>
                                   
                                 <div class="form-group col-sm-3">
                                     <input type="text" value="{{ $findTransmission->Device_Category }}" readonly="" name="Device_Category" id="Device_Category" class="form-control remove-readonly" required="required">
+                                </div> -->
+
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Requested Certification<span class="field-required">*</span></label>
+                                </div>
+                                
+                                <div class="form-group col-sm-3">
+
+                                    <span class="span-text">{{ $findTransmission->Requested_certification }}</span>
+                                    <select name="Requested_certification" id="Requested_certification" class="form-control required-data" required>
+                                        <option value="">Select Modality</option>
+                                        @foreach($getModalities as $modality)
+                                            @php
+                                                $matchingAbbreviation = preg_match("~\b$modality->modility_abbreviation\b~", $findTransmission->Requested_certification);
+                                            @endphp
+                                        <option @if($modality->modility_name == $findTransmission->Requested_certification || $matchingAbbreviation) selected @endif value="{{$modality->id.'__/__'.$modality->modility_name}}">{{$modality->modility_name}}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -173,7 +191,7 @@
                                         <option value="">Select Device</option>
                                         <option value="add_new">Add New</option>
                                         @foreach($getDevices as $device)
-                                        <option @if($device->device_model == $findTransmission->Device_Model) selected @endif value="{{ $device->id.'__/__'.$device->device_model }}">{{ $device->device_model }}</option>
+                                        <option @if($device->device_model == $findTransmission->Device_Model) selected @endif value="{{ $device->id.'__/__'.$device->device_model }}">{{ $device->device_name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -183,7 +201,7 @@
                                 </div>
                               
                                 <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission->Device_Serial }}" readonly="" name="Device_Serial" id="Device_Serial" class="form-control remove-readonly" required="required">
+                                    <input type="text" value="{{ $findTransmission->Device_Serial }}" name="Device_Serial" id="Device_Serial" class="form-control remove-readonly" required="required">
                                 </div>
 
                                  <!--//////////////// row  ///////////////////////// -->
@@ -277,23 +295,23 @@
                                     <input type="text" value="{{ $findTransmission->Site_country }}" readonly="" name="Site_country" id="Site_country" class="form-control remove-readonly" required="required">
                                 </div>
 
-                                <div class="form-group col-sm-3">
+                                <!-- <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">PI Name</label>
                                 </div>
 
                                 <div class="form-group col-sm-3">
                                     <input type="text" name="PI_Name" readonly="" value="{{ $findTransmission->PI_Name }}" id="PI_Name" class="form-control remove-readonly" required="required">
-                                </div>
+                                </div> -->
 
                                 <!-- --------------- row --------------------- -->
 
-                                <div class="form-group col-sm-3">
+                                <!-- <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">PI Email</label>
                                 </div>
 
                                 <div class="form-group col-sm-3">
                                     <input type="text" name="PI_email" readonly="" value="{{ $findTransmission->PI_email }}" id="PI_email" class="form-control remove-readonly" required="required">
-                                </div>
+                                </div> -->
 
                                 <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Notification Email</label>
@@ -304,26 +322,6 @@
                                 </div>
 
                                 <!--//////////////// row ///////////////////////////////// -->
-
-                                <div class="form-group col-sm-3">
-                                    <label for="Name" class="control-label">Requested Certification<span class="field-required">*</span></label>
-                                </div>
-                                
-                                <div class="form-group col-sm-3">
-
-                                    <span class="span-text">{{ $findTransmission->Requested_certification }}</span>
-                                    <select name="Requested_certification" id="Requested_certification" class="form-control required-data" required>
-                                        <option value="">Select Modality</option>
-                                        @foreach($getModalities as $modality)
-                                            @php
-                                                $matchingAbbreviation = preg_match("~\b$modality->modility_abbreviation\b~", $findTransmission->Requested_certification);
-                                            @endphp
-                                        <option @if($modality->modility_name == $findTransmission->Requested_certification || $matchingAbbreviation) selected @endif value="{{$modality->id.'__/__'.$modality->modility_name}}">{{$modality->modility_name}}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-
-                                <!--/////////////////////////// row ///////////////////////// -->
 
                                 <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Submitter First Name</label>
@@ -357,7 +355,7 @@
                                     <label for="Name" class="control-label">Status<span class="field-required">*</span></label>
                                 </div>
 
-                                <div class="form-group col-md-9">
+                                <div class="form-group col-md-3">
                                     <select name="status" id="status" class="form-control required-data" required>
                                         <option value="">Select Status</option>
                                         <option @if ($findTransmission->status == 'pending') selected @endif value="pending">Pending</option>
@@ -374,6 +372,14 @@
 
                                 <div class="form-group col-md-9">
                                     <textarea class="form-control required-data" required="required" name="reason_for_change" id="reason_for_change" rows="4">{{ $findTransmission->status}}</textarea>
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Comment</label>
+                                </div>
+
+                                <div class="form-group col-md-9">
+                                    <textarea class="form-control required-data" name="comments" id="comments" rows="4">{{ $findTransmission->Comments}}</textarea>
                                 </div>
 
                             <!-- ///////////////////////////// row ///////////////////// -->

@@ -30,7 +30,7 @@ h1, h2, h3,p {
 }
 </style>
 <!-- <body style="background: #f7f7f7; height: 150%; border: 2px solid red; padding-left: 10px;"> -->
-<body style="background-image: url('{{ asset('public/certification_pdf/Certificate_Background_1.png')}}'); background-repeat: no-repeat;">
+<body style="background-image: url('{{ asset('public/certification_pdf/Certificate_Background_4.png')}}'); background-repeat: no-repeat;">
 	<table align="center" style="width: 100%;">
 		<tr>
 			<td align="center">&nbsp;</td>
@@ -41,12 +41,11 @@ h1, h2, h3,p {
 		<tr>
 			<td align="center">&nbsp;</td>
 		</tr>
-		<tr>
+		<!-- <tr>
 			<td align="center">
 				<img src="{{ asset('public/certification_pdf/occap_email_logo.png')}}" style="width: 25%; padding-bottom: 5px;"> 
 			</td>
-		</tr>
-
+		</tr> -->
 		<tr>
 			<td align="center" style="">
 				<h3 style="font-family: play">Ocular Imaging Research and Reading Center</h3>
