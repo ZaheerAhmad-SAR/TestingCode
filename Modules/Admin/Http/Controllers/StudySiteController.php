@@ -293,4 +293,21 @@ class StudySiteController extends Controller
     {
         //
     }
+
+    public function getStudySitesForTransmission(Request $request) {
+        if($request->ajax()) {
+            // get study
+            $getStudy = Study::where('study_code', $request->study_code)->first();
+            // get sites
+            $getSites = $getStudy->sites->toArray();
+            // get parent modality Id's
+            $getModalityId = $getStudy->modalities->pluck('id')->toArray();
+            // get Modalities
+            $getModalities = Modility::whereIn('id', $getModalityId)->get()->toArray();
+            // get devices
+            $getDevices = $getStudy->devices->toArray();
+            // return response
+            return response()->json(['study_sites' => $getSites, 'study_modalities' => $getModalities, 'study_devices' => $getDevices]);
+        } // ajax ends
+    }
 }

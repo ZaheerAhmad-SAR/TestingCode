@@ -266,3 +266,8 @@ Route::group(['middleware' => ['auth', 'web']], function () {
 });
 
 Route::post('tinymce-image_upload', 'TinyMceController@uploadImage')->name('tinymce.image_upload');
+
+/*********************************** Ajax get calls **********************************/
+// get sites, modalities and devices for study (Transmission Section)
+Route::get('get-transmission-study-sites', 'StudySiteController@getStudySitesForTransmission')->name('get-transmission-study-sites');
+Route::post('create-transmission-device', 'DeviceController@createTransmissionDevice')->name('create-transmission-device');
