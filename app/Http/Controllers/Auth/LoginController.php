@@ -174,7 +174,7 @@ class LoginController extends Controller
         if ($request->remember_browser == 'on') {
             
             $getbrowser = UserSystemInfoHelper::get_browsers();
-            $system_info = UserSystemInfo::where('browser_name', '=', $getbrowser)->where('user_id', '=', $userId)->where('user_mac', '=', $get_mac)->first();
+            $system_info = UserSystemInfo::where('browser_name', '=', $getbrowser)->where('user_id', '=', $userId)->first();
             // $system_info = UserSystemInfo::where('user_mac', '=', $get_mac)->where('user_id', '=', $userId)->first();
             $system_info->remember_flag = '1';
             $system_info->save();

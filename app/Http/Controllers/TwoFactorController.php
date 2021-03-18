@@ -31,6 +31,8 @@ class TwoFactorController extends Controller
         dd($clientIP);
         $browser = get_browser(null, true);
         dd($browser);
+        $get_mac = get_mac_address(null,true);
+        dd($get_mac); 
 
         //$this->validate(['token' => 'required']);
 

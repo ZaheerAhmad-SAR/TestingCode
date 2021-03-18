@@ -45,6 +45,7 @@ class Google2FAController extends Controller
         //encrypt and then save secret
        // dd(encrypt($secret));
         $user->google2fa_secret = Crypt::encrypt($secret);
+       // $user->save();
 
         //generate image for QR barcode
         $google2fa = new Google2FA();
@@ -75,7 +76,6 @@ class Google2FAController extends Controller
             $bacup_code->save();
         }
         $codes = backupCode::where('user_id','=',\auth()->user()->id)->get();
-      
 
         return view('2fa/enableTwoFactor',compact('inlineUrl','secret','codes'));
     }
