@@ -36,7 +36,7 @@
                 <div class="modal-footer">
                     <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                     @if(hasPermission(auth()->user(),'users.store'))
-                        <button type="submit" class="btn btn-success">Send Invitation</button>
+                        <button dusk="send_invitation" type="submit" class="btn btn-success">Send Invitation</button>
                     @endif
                 </div>
             </form>

@@ -199,4 +199,34 @@ class DeviceController extends Controller
 
         return redirect()->route('devices.index');
     }
+
+    public function createTransmissionDevice(Request $request) {
+        if($request->ajax()) {
+            // check for device model
+            $getDeviceModel = Device::where('device_model', $request->device_model)->first();
+
+            if($getDeviceModel != null) {
+                return response()->json(['error' => true]);
+            } else {
+                // insert data into data base
+                $id = (string)Str::uuid();
+
+                $device = new Device;
+                $device->id = $id;
+                $device->device_name = $request->device_name;
+                $device->device_model = $request->device_model;
+                $device->device_manufacturer = $request->device_manufacturer;
+                $device->save();
+
+                $oldDevice = [];
+
+                // log event details
+                $logEventDetails = eventDetails($id, 'Device', 'Add', $request->ip(), $oldDevice);
+
+                return response()->json(['success' => true, 'device' => $device]);
+
+            }// duplicate device model
+        } // ajax ends
+    }
+
 }

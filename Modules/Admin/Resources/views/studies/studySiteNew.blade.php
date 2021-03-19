@@ -658,6 +658,10 @@
                                 </form>
                             </div>
                             <div role="tabpanel" class="tab-pane" id="devices">
+                                <div class="col-lg-12 success-alert-sec" style="display: none; margin-top: 10px;">
+                                    <div class="success-msg-sec alert-primary success-msg text-center" role="alert" style="font-weight: bold;">
+                                    </div>
+                                </div>
                                 <form  name="devicesForm" id="devicesForm" enctype="multipart/form-data" method="POST">
                                     <input type="hidden" name="_token" value="{{csrf_token()}}">
                                     <input type="hidden" name="site_id"  value="">
@@ -682,7 +686,7 @@
                                         <div class="col-md-4">
                                             <div class="{!! ($errors->has('device_serial')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
                                                 <label class="required">Device Serial #</label>
-                                                <input type="text" class="form-control" id="device_serial" name="device_serial" value="{{old('device_serial')}}"/>
+                                                <input type="text" class="form-control" onchange="deviceSerialValue(this);"  id="device_serial" name="device_serial" value="{{old('device_serial')}}" required/>
                                                 @error('device_serial')
                                                 <span class="input-danger small">{{ $message }}</span>
                                                 @enderror
@@ -1765,6 +1769,48 @@
                         }
                     });
 
+                }
+
+                /// Get the value from Device Serial # Field to check either its exisit in DB
+                function  deviceSerialValue(data) {
+                    var device_name = $('#device_name').val();
+
+                    if(device_name == '')
+                    {
+                        alert('Please select the Device Dropdown first');
+                        $('#device_serial').val('');
+                        $('#device_name').focus();
+                    }
+                    else
+                    {
+                        var deviceSerial  = data.value;
+
+                        $.ajax({
+                            url:"{{route('deviceSite.deviceSerialValueIsExist')}}",
+                            type: 'POST',
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                'deviceSerial'      :deviceSerial,
+                                'device_name'   :device_name,
+                            },
+                            success: function(results)
+                            {
+                                if (results.success)
+                                {
+                                    $('.success-msg-sec').html('');
+                                    $('.success-msg-sec').html(results.success)
+                                    $('.success-alert-sec').slideDown('slow');
+                                    tId=setTimeout(function(){
+                                        $(".success-alert-sec").slideUp('slow');
+                                    }, 3000);
+                                    $('#device_serial').val('');
+                                    $("#device_name").val('');
+                                    $("#device_name").focus();
+                                }
+
+                            }
+                        });
+                    }
                 }
 
                 $("#siteInfoForm").submit(function(e) {
