@@ -272,6 +272,8 @@ Route::group(['middleware' => ['auth', 'web']], function () {
 
     Route::get('deviceSite/{id}/destroy', 'DeviceSiteController@destroy')->name('deviceSite.destroy');
 
+    Route::post('deviceSite/deviceSerialValueIsExist', 'DeviceSiteController@deviceSerialValueIsExist')->name('deviceSite.deviceSerialValueIsExist');
+
     /// Device Site Route End
 
     Route::get('study/permanentlyDeleteStudyAndItsRecord/{id}', 'StudyController@permanentlyDeleteStudyAndItsRecord')->name('study.permanentlyDeleteStudyAndItsRecord');
