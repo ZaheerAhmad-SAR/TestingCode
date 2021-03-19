@@ -372,19 +372,6 @@ class TransmissionDataDeviceController extends Controller
             $getDeviceStudy->save();
         } // study device ends
 
-        // get device modalities
-        $getDeviceModality = DeviceModility::where('device_id', $getDevice->id)
-                                            ->where('modility_id', $findTransmission->transmission_modility_id)
-                                            ->first();
-        if($getDeviceModality == null) {
-            $getDeviceModality = new DeviceModility;
-            $getDeviceModality->id = (string)Str::uuid();
-            $getDeviceModality->device_id = $getDevice->id;
-            $getDeviceModality->modility_id = $findTransmission->transmission_modility_id;
-            $getDeviceModality->save();
-
-        } // device modality ends
-
         /* check for device and site table */
         $getDeviceSite = DeviceSite::where('device_id', $getDevice->id)
                                     ->where('site_id', $getSite->id)

@@ -282,4 +282,5 @@ Route::post('tinymce-image_upload', 'TinyMceController@uploadImage')->name('tiny
 /*********************************** Ajax get calls **********************************/
 // get sites, modalities and devices for study (Transmission Section)
 Route::get('get-transmission-study-sites', 'StudySiteController@getStudySitesForTransmission')->name('get-transmission-study-sites');
-Route::post('create-transmission-device', 'DeviceController@createTransmissionDevice')->name('create-transmission-device');
+// get modality devices for study
+Route::get('get-modality-devices', 'ModilityController@getModalityDevices')->name('get-modality-devices');

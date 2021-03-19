@@ -387,7 +387,7 @@ class TransmissionDataPhotographerController extends Controller
             $getDeviceStudy->save();
          } // study device ends
  
-         // get device modalities
+         /* get device modalities
          $getDeviceModality = DeviceModility::where('device_id', $getDevice->id)
                                              ->where('modility_id', $findTransmission->transmission_modility_id)
                                              ->first();
@@ -398,7 +398,7 @@ class TransmissionDataPhotographerController extends Controller
              $getDeviceModality->modility_id = $findTransmission->transmission_modility_id;
              $getDeviceModality->save();
  
-         } // device modality ends
+         }  device modality ends */
 
         // make array for changings dynamic variable in the text editor
         $variables = [$findTransmission->Photographer_First_Name, $findTransmission->Photographer_Last_Name, $findTransmission->StudyI_ID, $findTransmission->Study_Name, $getSite->site_code, $getSite->site_name, $findTransmission->Requested_certification, $findTransmission->Transmission_Number, $findTransmission->status, \Auth::user()->name];
