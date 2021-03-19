@@ -160,6 +160,7 @@ trait AdjudicationTrait
         sort($answersArray);
 
         $sumOfAnswers = array_sum($answersArray);
+        // Average value
         $averageOfSumOfAnswers = $sumOfAnswers / count($answersArray);
 
         if ($questionAdjudicationStatusObj->adj_status == 'yes') {
@@ -186,7 +187,8 @@ trait AdjudicationTrait
             }
         }
         if ($isQuestionAdjudicationRequired == false && $finalAnswer == '') {
-            $finalAnswer = number_format((float)$averageOfSumOfAnswers, $decimalPoint);
+            $finalAnswer = number_format((float)$averageOfSumOfAnswers);
+            $finalAnswer = round($averageOfSumOfAnswers, $decimalPoint);
         }
 
         return [
@@ -218,8 +220,12 @@ trait AdjudicationTrait
 
         $isQuestionAdjudicationRequired = false;
         $finalAnswer = '';
-        $answersArray = array_filter($answersArray);
+        //$answersArray = array_filter($answersArray);
+        if($questionAdjudicationStatusObj->question_id =='856c4ead-c046-45b0-ab21-e72ab841b600'){
+            dd($answersArray);
+        }
         $countedArray = array_count_values($answersArray);
+        
         if ($questionAdjudicationStatusObj->adj_status == 'yes') {
             if (
                 (count($answersArray) > 1) &&
