@@ -11,11 +11,9 @@ if(isset($queryParams)){
     <div class="col-md-6"></div>
     <div class="col-md-6 text-right">
         @if(\Modules\Queries\Entities\Query::formHasQuery($queryParams)>0)
-        @if(\Modules\Queries\Entities\Query::formStatusHasClose($queryParams) === true)
 
             <div class="formQueries">
         <span class="ml-3" style="cursor: pointer;">
-
              @php
                  $dataStr = '';
                  if(isset($queryParams)){
@@ -23,7 +21,6 @@ if(isset($queryParams)){
 
                  }
              @endphp
-
             <i class="fas fa-question-circle showAllFormQueries"  onclick="getAllFormQueryData({{$dataStr}});"  style="color: red;
     position: absolute;
     right: 24%;
@@ -32,9 +29,9 @@ if(isset($queryParams)){
         </span>
             </div>
 
-            @else
+        @elseif(\Modules\Queries\Entities\Query::formStatusHasClose($queryParams))
 
-                <div class="closeForm">
+        <div class="closeForm">
         <span class="ml-3" style="cursor: pointer;">
             @php
                 $dataStr = '';
@@ -51,8 +48,7 @@ if(isset($queryParams)){
 
         </span>
                 </div>
-
-        @endif
+        @else
         @endif
         <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Queries</button>
             <div class="dropdown-menu p-0">
