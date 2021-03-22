@@ -299,7 +299,7 @@ class Query extends Model
         $queryExits = $query->where('parent_query_id', 'like', 0)
             ->where('query_status', '=', 'close')
             ->where('query_level', '=', 'question')
-            ->where('question_id', '=', $questionQueryArray['question_id'])
+            //->where('question_id', '=', $questionQueryArray['question_id'])
             ->count();
         $queryForUser = QueryUser::where('user_id', auth()->user()->id)->first();
 
