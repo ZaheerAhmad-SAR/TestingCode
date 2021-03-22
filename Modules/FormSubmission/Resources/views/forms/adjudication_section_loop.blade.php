@@ -75,16 +75,6 @@ if(
                             ];
                             $count_of_form_graded_already = count(\Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatusObjArray($check_form_graded_already));
                         @endphp
-                        
-                        @if(\Modules\FormSubmission\Entities\AdjudicationFormStatus::getAdjudicationFormStatusObjArray($check_if_form_graded_by_logged_user)->isEmpty() && $count_of_form_graded_already >=1  && $isPreview === false)
-                            <div class="alert alert-danger" role="alert">
-                                The current form has already been graded by required number of graders
-                            </div>
-                            {{-- just defined id to controll page from loading on same modality  --}}
-                                <div id="adjudication_form_master_{{ $stepIdStr }}"></div>
-                                <div id="adjudication_form_{{ $stepIdStr }}"></div>
-                            {{-- just defined id to controll page from loading on same modality  --}}
-                        @else
                         <form name="adjudication_form_master_{{ $stepIdStr }}"
                             id="adjudication_form_master_{{ $stepIdStr }}">
                             @csrf
@@ -195,7 +185,6 @@ if(
                                 </div>
                             </div>
                         </form>
-                        @endif
                     </div>
                 </div>
             </div>

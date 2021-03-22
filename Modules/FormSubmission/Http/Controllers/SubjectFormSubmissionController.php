@@ -27,7 +27,6 @@ class SubjectFormSubmissionController extends Controller
         if (PhaseSteps::isStepActive($request->stepId)) {
             // step object
             $step = PhaseSteps::find($request->stepId);
-
             $editReason = $request->input('edit_reason_text', '');
             $formRevisionDataArray = ['edit_reason_text' => $editReason];
             $trailLogDataArray['trail_log'][] = $editReason;

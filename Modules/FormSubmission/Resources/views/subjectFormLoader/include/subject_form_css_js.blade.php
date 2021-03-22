@@ -98,7 +98,7 @@
                     var frmData = $("#form_master_" + stepIdStr).serialize() + '&' + $("#form_" + stepIdStr).serialize() +
                         '&terms_cond_' + stepIdStr + '=' + term_cond + '&' + 'edit_reason_text=' + reason;
                     submitRequest(frmData, stepIdStr, formType, formStatusIdStr);
-                    //reloadPage(2);
+                    reloadPage(2);
                 }
             }
 
