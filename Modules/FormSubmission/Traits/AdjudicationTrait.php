@@ -12,8 +12,8 @@ trait AdjudicationTrait
 {
     public static function runAdjudicationCheckForThisStep($step, $getGradingFormStatusArray)
     {
-        $trailLogArray = [];
-        $trailLogArray[] = 'system started adjudication';
+        $trailLogDataArray =[];
+        $trailLogDataArray['trail_log'][] = 'system started adjudication';
 
         $sections = $step->sections;
         foreach ($sections as $section) {
@@ -126,17 +126,19 @@ trait AdjudicationTrait
                     $trailLogArray['form_type'] = 'Adjudication Form';
                     $trailLogArray['modility_id'] = $step->modility_id;
                     $trailLogArray['answer_id'] = $finalAnswer->id;
+
                 }
+                $trailLogDataArray['trail_log'][] = $trailLogArray;
             }
         }
-        if (count($trailLogArray) > 0) {
+        if (count($trailLogDataArray) > 0) {
             /***********************
              *  Trail Log
              */
             $formAddOrEdit = 'Add';
             $formType = 'System Adjudication Form';
 
-            eventDetails($trailLogArray, $formType, $formAddOrEdit, request()->ip, []);
+            eventDetails(array_filter($trailLogDataArray['trail_log']), $formType, $formAddOrEdit, request()->ip, []);
             /********************* */
         }
     }
@@ -160,6 +162,7 @@ trait AdjudicationTrait
         sort($answersArray);
 
         $sumOfAnswers = array_sum($answersArray);
+        // Average value
         $averageOfSumOfAnswers = $sumOfAnswers / count($answersArray);
 
         if ($questionAdjudicationStatusObj->adj_status == 'yes') {
@@ -186,7 +189,8 @@ trait AdjudicationTrait
             }
         }
         if ($isQuestionAdjudicationRequired == false && $finalAnswer == '') {
-            $finalAnswer = number_format((float)$averageOfSumOfAnswers, $decimalPoint);
+            $finalAnswer = number_format((float)$averageOfSumOfAnswers);
+            $finalAnswer = round($averageOfSumOfAnswers, $decimalPoint);
         }
 
         return [
@@ -215,22 +219,22 @@ trait AdjudicationTrait
 
     public static function selectMajorityAnswer($questionAdjudicationStatusObj, $answersArray)
     {
-
         $isQuestionAdjudicationRequired = false;
         $finalAnswer = '';
-        $answersArray = array_filter($answersArray);
-        $countedArray = array_count_values($answersArray);
-        if ($questionAdjudicationStatusObj->adj_status == 'yes') {
-            if (
-                (count($answersArray) > 1) &&
-                (count($countedArray) == count($answersArray))
-            ) {
-                $isQuestionAdjudicationRequired = true;
+        //$answersArray = array_filter($answersArray);
+        // check for empty values 
+        if(count(array_filter($answersArray)) != 0) {
+            $answersArray = array_filter($answersArray);
+            $countedArray = array_count_values($answersArray);
+            if($questionAdjudicationStatusObj->adj_status == 'yes') {
+                if((count($answersArray) > 1) && (count($countedArray) == count($answersArray))){
+                    $isQuestionAdjudicationRequired = true;
+                }
             }
-        }
-        if ($isQuestionAdjudicationRequired == false) {
-            arsort($countedArray);
-            $finalAnswer = array_keys($countedArray)[0];
+            if ($isQuestionAdjudicationRequired == false) {
+                arsort($countedArray);
+                $finalAnswer = array_keys($countedArray)[0];
+            }
         }
         return [
             'isQuestionAdjudicationRequired' => $isQuestionAdjudicationRequired,

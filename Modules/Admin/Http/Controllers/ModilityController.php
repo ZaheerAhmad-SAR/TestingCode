@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Str;
 use Modules\Admin\Entities\ChildModilities;
 use Modules\Admin\Entities\Modility;
+use Modules\Admin\Entities\Study;
+use Modules\Admin\Entities\Device;
+use Modules\CertificationApp\Entities\StudyDevice;
 use Modules\Admin\Entities\Other;
 
 class ModilityController extends Controller
@@ -197,7 +200,6 @@ class ModilityController extends Controller
 
     public function replicateParent(Request $request, $id)
     {
-
         if ($request->ajax()) {
 
             $modalities = Modility::find($id);
@@ -225,5 +227,25 @@ class ModilityController extends Controller
                 ]);
             }
         }
+    }
+
+    public function getModalityDevices(Request $request) {
+        if($request->ajax()) {
+            // explode data
+            $getModalityId = explode('__/__', $request->modality_id);
+            // find Modality and get device ids
+            $getModalityDeviceIds = Modility::find($getModalityId[0])->devices->pluck('id')->toArray();
+            // get study
+            $getStudy = Study::where('study_code', $request->study_code)->first();
+            // get devices from study_devices table based on device id and study id
+            $getStudyDeviceIds = StudyDevice::where('study_id', $getStudy->id)
+                                            ->whereIn('device_id', $getModalityDeviceIds)
+                                            ->pluck('device_id')
+                                            ->toArray();
+            // get study Devices
+            $getStudyDevices = Device::whereIn('id', $getStudyDeviceIds)->get()->toArray();
+
+            return response()->json(['study_devices' => $getStudyDevices]);
+        } // ajax ends
     }
 }

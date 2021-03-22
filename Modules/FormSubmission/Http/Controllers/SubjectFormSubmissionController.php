@@ -12,6 +12,7 @@ use Modules\FormSubmission\Entities\Answer;
 use Modules\FormSubmission\Entities\FormRevisionHistory;
 use Modules\FormSubmission\Entities\FormStatus;
 use Modules\Admin\Entities\Question;
+use Modules\Admin\Entities\QuestionDependency;
 use Modules\FormSubmission\Entities\FormVersion;
 use Modules\FormSubmission\Traits\QuestionDataValidation;
 use App\Helpers\ImageUploadingHelper;
@@ -26,7 +27,6 @@ class SubjectFormSubmissionController extends Controller
         if (PhaseSteps::isStepActive($request->stepId)) {
             // step object
             $step = PhaseSteps::find($request->stepId);
-
             $editReason = $request->input('edit_reason_text', '');
             $formRevisionDataArray = ['edit_reason_text' => $editReason];
             $trailLogDataArray['trail_log'][] = $editReason;
@@ -70,6 +70,23 @@ class SubjectFormSubmissionController extends Controller
         if (PhaseSteps::isStepActive($request->stepId)) {
             $formRevisionDataArray = ['edit_reason_text' => ''];
             $question = Question::find($request->questionId);
+            // check if this question have any dependent data to delete
+            $dependentQuestion = QuestionDependency::where('dep_on_question_id',$request->questionId)->get();
+            if(null !== $dependentQuestion){
+               foreach($dependentQuestion as $dependQuestion){
+                    $where = array(
+                        'study_id' => $request->studyId,
+                        'subject_id' => $request->subjectId,
+                        'study_structures_id' => $request->phaseId,
+                        'phase_steps_id' => $request->stepId,
+                        'question_id' => $dependQuestion->question_id,
+                    );
+                   $checkAnswer = Answer::where($where)->first();
+                    if(null !== $checkAnswer){ 
+                        $removeDependentData = $this->removeDependentAnswers($where); 
+                    }
+               }
+            }
             $formData = $this->putAnswer($request, $question);
             $formRevisionDataArray['form_data'][] = $formData['form_data'];
             $formStatusArray = FormStatus::putFormStatus($request);
@@ -82,7 +99,12 @@ class SubjectFormSubmissionController extends Controller
         }
     }
 
-
+    private function removeDependentAnswers($where)
+    {
+        $answer=Answer::where($where)->first();
+        $answer->forceDelete(); //returns true/false
+        return true;
+    }
     private function putAnswer($request, $question)
     {
         $mimes = [
