@@ -1070,6 +1070,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
         $ip = 'N/A';
         // get event data
         $eventData = $eventId;
+        // dd($eventData[1]);
         // get study name
         $studyName = Study::where('id', $eventData[1]['study_id'])->first();
         //get subject
