@@ -228,17 +228,20 @@ class TransmissionDataPhotographerController extends Controller
         // find transmission
         $findTransmission = TransmissionDataPhotographer::where('id', decrypt($id))->first();
 
+        // transmission study
+        $transmissionStudy = Study::where('study_code', $findTransmission->StudyI_ID)->with(['sites', 'modalities', 'devices'])->first();
+
         // get studies
         $systemStudies = Study::get();
 
-        // get all sites
-        $getSites = Site::get();
+        // get parent modality Id's
+        $getModalityId = $transmissionStudy->modalities->pluck('id')->toArray();
+        
+        // get Modalities
+        $getStudyModalities = Modility::whereIn('id', $getModalityId)->get();
 
         // get modality
         $getModalities = Modility::get();
-
-        // get devices
-        $getDevices = Device::get();
 
         // get all the transmission updates
         $getTransmissionUpdates = PhotographerTransmissionUpdateDetail::where('transmission_id', decrypt($id))->get();
@@ -246,7 +249,7 @@ class TransmissionDataPhotographerController extends Controller
         // get templates for email
         $getTemplates = CertificationTemplate::select('id as template_id', 'title as template_title')->get();
 
-        return view('certificationapp::certificate_photographer.edit', compact('findTransmission', 'systemStudies', 'getSites', 'getModalities', 'getDevices', 'getTransmissionUpdates', 'getTemplates'));
+        return view('certificationapp::certificate_photographer.edit', compact('findTransmission', 'systemStudies', 'getModalities', 'getStudyModalities', 'getTransmissionUpdates', 'transmissionStudy', 'getTemplates'));
     }
 
     /**
