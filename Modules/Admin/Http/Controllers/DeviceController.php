@@ -51,7 +51,8 @@ class DeviceController extends Controller
         $devices = $devices->paginate(\Auth::user()->user_prefrences->default_pagination)
                            ->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs); 
         $modilities = Modility::all();
-        return view('admin::devices.index',compact('devices','modilities'));
+        $assigned_modalities = [];
+        return view('admin::devices.index',compact('devices','modilities', 'assigned_modalities'));
     }
 
     /**
@@ -78,6 +79,7 @@ class DeviceController extends Controller
 
             /************************************** Edit Case ***********************************/
             if($deviceID  != '') {
+
                  // check for device model
                 $getDeviceModel = Device::where('id', '!=', $deviceID)
                                         ->where('device_model', $request->device_model)
@@ -99,6 +101,7 @@ class DeviceController extends Controller
                     $device->save();
 
                     if ($request->modalities != null) {
+
                         // delete old modalities
                         $deleteModalities = DeviceModility::where('device_id', $deviceID)->delete();
 
@@ -179,7 +182,16 @@ class DeviceController extends Controller
         $where = array('id' => $id);
         $device  = Device::with('modalities')->where($where)->first();
 
-        return \response()->json($device);
+        // get modality Id's
+        $getModalityIds = DeviceModility::where('device_id', $id)->pluck('modility_id')->toArray();
+
+        // get Assigned Modalities
+        $getAssignedModalities = Modility::whereIn('id', $getModalityIds)->get();
+
+        // get unassigned modalities
+        $getUnassignedModalities = Modility::whereNotIn('id', $getModalityIds)->get();
+
+        return \response()->json(['device'=> $device, 'getUnassignedModalities' => $getUnassignedModalities, 'getAssignedModalities' => $getAssignedModalities]);
 
         /*$sites = Site::all();
         $modilities = Modility::all();
