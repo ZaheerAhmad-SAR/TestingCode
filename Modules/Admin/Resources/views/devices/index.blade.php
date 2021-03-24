@@ -160,23 +160,44 @@
                                 </div>
                             </div>
                         </div>
+                            <!-- /****************************************************/ -->
                             <div class="tab-pane fade" id="nav-Modalities" role="tabpanel" aria-labelledby="nav-Validation-tab">
-                                <div class="form-group row" style="margin-top: 10px;">
-                                    <label for="device_manufacturer" class="col-sm-3"></label>
-                                    <div class="{!! ($errors->has('roles')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                        <select class="searchable form-control" id="select-modality" multiple="multiple" name="modalities[]" required>
+                                <div class="form-group row">
+                                <div class="col-md-12">&nbsp;</div>
+                            </div>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <label>All Modalities</label>
+                                    </div>
+                                    <div class="col-md-2">
+
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label>Assigned Modalities</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-5">
+                                        <select name="unassigned_modalities[]" id="select_modalities" class="searchable form-control" multiple="multiple">
                                             @foreach($modilities as $modality)
                                                 <option value="{{$modality->id}}">{{$modality->modility_name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
-                                    @error('modalities')
-                                    <span class="text-danger small">
-                                    {{ $message }}
-                                    </span>
-                                    @enderror
+                                    <div class="col-md-2">
+                                        <button type="button" id="select_modalities_rightSelected" class="btn btn-default btn-block"><i class="fas fa-caret-right"></i></button>
+                                        <button type="button" id="select_modalities_leftSelected" class="btn btn-default btn-block"><i class="fas fa-caret-left"></i></button>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <select name="modalities[]" id="select_modalities_to" class="form-control" multiple="multiple">
+                                            @foreach($assigned_modalities as $assigned_modality)
+                                            <option value="{{$assigned_modality->id}}">{{$modality->modility_name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
+                            <!-- /****************************************************/ -->
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -225,11 +246,27 @@
                     // hide error message
                     $('.device-error-message').css('display', 'none');
                     $('#device-crud-modal').modal('show');
-                    $('#device_id').val(data.id);
-                    $('#device_name').val(data.device_name);
-                    $('#device_model').val(data.device_model);
-                    $('#device_manufacturer').val(data.device_manufacturer);
-                });
+                    $('#device_id').val(data.device.id);
+                    $('#device_name').val(data.device.device_name);
+                    $('#device_model').val(data.device.device_model);
+                    $('#device_manufacturer').val(data.device.device_manufacturer);
+                    // unassigned modalities
+                    var unassigned_modalities = '';
+                    $('#select_modalities').html('');
+                        $.each(data.getUnassignedModalities,function (index,value) {
+                               unassigned_modalities += '<option selected="selected" value=" '+value.id+' " >'+value.modility_name+'</option>';
+                        });
+                            /*alert(users);*/
+                        $('#select_modalities').html(unassigned_modalities);
+                    // show assign modalities
+                    var assigned_modalities = '';
+                    $('#select_modalities_to').html('');
+                        $.each(data.getAssignedModalities,function (index,value) {
+                               assigned_modalities += '<option selected="selected" value=" '+value.id+' " >'+value.modility_name+'</option>';
+                        });
+                            /*alert(users);*/
+                        $('#select_modalities_to').html(assigned_modalities);
+                    });
             });
 
             $('body').on('click', '.delete-device', function () {
@@ -258,6 +295,7 @@
                     var actionType = $('#btn-save').val();
                     $('#btn-save').html('Sending..');
 
+                    $('#select_modalities_to option').prop('selected', true);
 
                     $.ajax({
                         data: $('#deviceForm').serialize(),
@@ -300,41 +338,15 @@
 <script src="{{ asset('public/dist/js/jquery.validate.min.js') }}"></script>
     <script type="text/javascript">
        $(document).ready(function() {
-           $('#select-modality').multiSelect({
-               selectableHeader: "<label for=''>All Modalities</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
-               selectionHeader: "<label for=''>Assigned Modalities</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
-               afterInit: function(ms){
-                   var that = this,
-                       $selectableSearch = that.$selectableUl.prev(),
-                       $selectionSearch = that.$selectionUl.prev(),
-                       selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
-                       selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
-
-                   that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-                       .on('keydown', function(e){
-                           if (e.which === 40){
-                               that.$selectableUl.focus();
-                               return false;
-                           }
-                       });
-
-                   that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-                       .on('keydown', function(e){
-                           if (e.which == 40){
-                               that.$selectionUl.focus();
-                               return false;
-                           }
-                       });
-               },
-               afterSelect: function(){
-                   this.qs1.cache();
-                   this.qs2.cache();
-               },
-               afterDeselect: function(){
-                   this.qs1.cache();
-                   this.qs2.cache();
-               }
-           });
+           $('#select_modalities').multiselect({
+                    search: {
+                        left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+                        right: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+                    },
+                    fireSearch: function(value) {
+                        return value.length > 1;
+                    }
+                });
        });
 
         // sorting gride

@@ -2,41 +2,52 @@
 
 namespace Tests\Browser;
 
-use App\User;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Laravel\Dusk\Browser;
 use Tests\DuskTestCase;
+use App\User;
 
 class UserTest extends DuskTestCase
 {
-    /**
-     * A Dusk test example.
-     *
-     * @return void
-     */
-    // Test for Create a User
-    public function test_system_admin_can_create_a_user()
+    /* for running migration and seeding only once for all test cases in this class */
+    protected static $migrationRun = false;
+
+    public function setUp(): void {
+        parent::setUp();
+
+        if(!static::$migrationRun) {
+            $this->appDB = env('DB_DATABASE');
+            //$this->artisan('migrate:fresh');
+            $this->artisan('module:seed');
+            static::$migrationRun = true;
+        }
+
+    }
+
+    /* @test */
+    public function test_I_can_create_a_user_successfully()
     {
         $user = User::where('name', 'Super Admin')->first();
+        // this test the user create functioanlity 
         $this->browse(function ($browser) use ($user) {
             $browser->loginAs($user)
                 ->visit('/users')
                 ->assertSee('Users Details')
-                ->click('@add_user')
-                ->waitFor('#createUser')
-                ->assertVisible('#createUser')
+                ->press('Add User')
+                ->waitForText('Add User')
                 ->assertSee('Add User')
-                ->waitFor('#userFormInner')
-                ->assertVisible('#userFormInner')
-                ->type('name','JS Developer')
-                ->type('email','john@oirrc.net')
+                ->pause(2000)
+                ->type('@user-name','Amir Khan')
+                ->value('@user-email','ak@qapak.org')
                 ->type('password','At@m|c_en@rgy1272')
                 ->type('password_confirmation','At@m|c_en@rgy1272')
-//                ->click('@nav-Modalities')
-//                ->waitFor('#nav-Modalities')
-//                ->assertVisible('#nav-Modalities')
-//                ->assertSee('Select Roles')
-                ->pause(5000);
+                ->click('@nav-roles')
+                ->pause(1000)
+                ->select('#select_roles')
+                ->click('#select_roles_rightSelected')
+                ->press('@add-user')
+                ->assertSee('Users Details')
+                ->logout();
         });
     }
 
@@ -47,7 +58,7 @@ class UserTest extends DuskTestCase
         $user = User::where('name', 'Super Admin')->first();
         $this->browse(function ($browser) use ($user) {
             $browser->loginAs($user)
-                ->visit('/users')
+                ->visit('/ocap_new/users')
                 ->assertSee('Users Details')
                 ->click('@inviteuser')
                 ->waitFor('#inviteuser')
