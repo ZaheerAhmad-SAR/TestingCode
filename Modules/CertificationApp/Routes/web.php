@@ -49,6 +49,12 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 // get template data ajax
 	Route::get('showreport', 'CertificationPreferencesController@showCertificationReport')->name('showreport'); ///	
 
+	// get template data ajax
+	Route::get('showreportdevices', 'CertificationPreferencesController@showCertificationReportDevices')->name('showreportdevices'); ///	
+
+		// get template data ajax
+	Route::get('showreportphotographer', 'CertificationPreferencesController@showCertificationReportPhotograper')->name('showreportphotographer'); ///
+
 // update certification template
 	Route::post('update-certification-template', 'CertificationPreferencesController@updateTemplate')->name('update-certification-template'); ////
 
@@ -138,6 +144,10 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
 // change certificate expiry date for photographer/ device
 	Route::post('change-certificate-date', 'TransmissionDataPhotographerController@changeCertificateDate')->name('change-certificate-date'); ///
+
+// sites export route
+
+	Route::get('exportsites', 'CertificationPreferencesController@exportSites')->name('exportsites'); ///	
 
 // display photographer certificate PDF
 	Route::get('photographer-certificate-pdf/{file_name}', function($fileName) {

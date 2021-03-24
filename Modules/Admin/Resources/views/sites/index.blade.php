@@ -622,8 +622,7 @@
                             </form>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="devices">
-                            <form  name="devicesForm" id="devicesForm"
-                                   enctype="multipart/form-data" method="POST">
+                            <form  name="devicesForm" id="devicesForm" enctype="multipart/form-data" method="POST">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
                                 <input type="hidden" name="site_id"  value="">
                                 <div class="form-group row" style="margin-top: 15px;">
@@ -653,6 +652,20 @@
                                             <label>Device Serial #</label>
                                             <input type="text" class="form-control" id="device_serial_no"
                                                    name="device_serial_no" value="{{old('device_serial_no')}}"/>
+                                            @error('device_serial_no')
+                                            <span class="input-danger small">
+                                                        {{ $message }}
+                                                        </span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div
+                                            class="{!! ($errors->has('device_software_version')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
+
+                                            <label>Software Version #</label>
+                                            <input type="text" class="form-control" id="device_serial_no"
+                                                   name="device_software_version" value="{{old('device_software_version')}}"/>
                                             @error('device_serial_no')
                                             <span class="input-danger small">
                                                         {{ $message }}
@@ -1286,10 +1299,12 @@
 
 
         $("#devicesForm").submit(function(e) {
-            var device_name = $('#device_name').val();
-            var device_serial_no   = $('#device_serial_no').val();
-            var device_id         = $('#device_id').val();
-            var device_submit_actions = $('#device_submit_actions').val();
+            
+            var device_name               = $('#device_name').val();
+            var device_serial_no          = $('#device_serial_no').val();
+            var device_software_version   = $('#device_software_version').val();
+            var device_id                 = $('#device_id').val();
+            var device_submit_actions     = $('#device_submit_actions').val();
             $('#devicesForm').find($('input[name="site_id"]').val($('#site_id').val()));
             if(device_submit_actions == 'Add')
             {

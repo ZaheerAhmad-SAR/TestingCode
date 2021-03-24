@@ -39,11 +39,12 @@ class DeviceSiteController extends Controller
 
         $id = (string)Str::uuid();
         $deviceSite = DeviceSite::create([
-            'id'    => $id,
-            'site_id'=> $request->site_id,
-            'device_name' => $request->device_name,
-            'device_id' => $request->masterListDeviceId,
-            'device_serial_no' => empty($request->device_serial_no) ? Null : $request->device_serial_no
+            'id'                      => $id,
+            'site_id'                 => $request->site_id,
+            'device_name'             => $request->device_name,
+            'device_id'               => $request->masterListDeviceId,
+            'device_serial_no'        => empty($request->device_serial_no) ? Null : $request->device_serial_no
+            'device_software_version' => empty($request->device_software_version) ? Null : $request->device_software_version
         ]);
         return response()->json([$deviceSite,'success'=>'Device data is added successfully']);
     }
