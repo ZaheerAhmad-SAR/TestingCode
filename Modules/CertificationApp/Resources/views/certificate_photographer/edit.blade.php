@@ -101,6 +101,15 @@
                             <div class="row">
                                 @csrf
                                 @method('PUT')
+                                <div class="col-sm-3">
+                                    <strong>Transmission Type</strong>
+                                </div>
+                                <div class="col-sm-9">
+                                    <span class="badge badge-info">
+                                    {{$findTransmission->Certification_Type}}
+                                    </span>
+                                </div>
+                                <hr>
                                 <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Transmission Number</label>
                                 </div>
@@ -131,7 +140,7 @@
                                     <select name="StudyI_ID" id="StudyI_ID" class="form-control required-data" required>
                                         <option value="">Select Study</option>
                                         @foreach($systemStudies as $study)
-                                        <option @if($study->study_code == $findTransmission->StudyI_ID) selected @endif value="{{ $study->study_code }}">{{$study->study_code}}</option>
+                                        <option @if($study->study_code == $findTransmission->StudyI_ID) selected @endif value="{{ $study->study_code }}">{{$study->study_code.' - '.$study->study_short_name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -155,8 +164,7 @@
                                     <span class="span-text">{{ $findTransmission->Site_ID }}</span>
                                     <select name="Site_ID" id="Site_ID" class="form-control required-data">
                                         <option value="">Select Site</option>
-                                        <option value="add_new">Add New</option>
-                                        @foreach($getSites as $site)
+                                        @foreach($transmissionStudy->sites as $site)
                                         <option @if($site->site_code == $findTransmission->Site_ID) selected @endif value="{{$site->id.'__/__'.$site->site_code}}">{{$site->site_code.' - '.$site->site_name}}</option>
                                         @endforeach
                                     </select>
@@ -255,7 +263,7 @@
                                     <span class="span-text">{{ $findTransmission->Requested_certification }}</span>
                                     <select name="Requested_certification" id="Requested_certification" class="form-control required-data" required>
                                         <option value="">Select Modality</option>
-                                        @foreach($getModalities as $modality)
+                                        @foreach($getStudyModalities as $modality)
                                             @php
                                                 $matchingAbbreviation = preg_match("~\b$modality->modility_abbreviation\b~", $findTransmission->Requested_certification);
                                             @endphp
@@ -264,12 +272,21 @@
                                     </select>
                                 </div>
 
-                                <div class="form-group col-sm-3">
-                                    <label for="Name" class="control-label">Device Model</label>
+                               <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Device Model<span class="field-required">*</span></label>
                                 </div>
-                              
-                                <div class="form-group col-sm-3">
-                                    <input type="text" value="{{ $findTransmission->Device_Model }}" readonly="" name="Device_Model" id="Device_Model" class="form-control remove-readonly" required="required">
+
+                                <div class="form-group col-sm-2">
+                                    <span class="span-text">{{ $findTransmission->Device_Model }}</span>
+                                    <select name="Device_Model" id="Device_Model" class="form-control required-data">
+                                        <option value="">Select Device</option>
+                                        @foreach($transmissionStudy->devices as $device)
+                                        <option @if($device->device_model == $findTransmission->Device_Model) selected @endif value="{{ $device->id.'__/__'.$device->device_model }}">{{ $device->device_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="form-group col-sm-1">
+                                <button class="btn btn-primary" style="margin-top: 10px" onclick="transmissionDevice('{{$findTransmission->Device_Model}}')">Add Device</button>
                                 </div>
 
                                 <!--/////////////////////////// row ///////////////////////// -->
@@ -326,7 +343,64 @@
                                     <input type="text" name="Photographer_OIRRCID" readonly="" value="{{ $findTransmission->Photographer_OIRRCID }}" id="Photographer_OIRRCID" class="form-control" required="required">
                                 </div>
 
+                                @if($findTransmission->Certification_Type == 'Certificate for grandfathering')
+                                 <!--//////////////////////// row ///////////////////////// -->
 
+                                 <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Certification Type</label>
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <input type="text" name="Certification_Type" value="{{ $findTransmission->Certification_Type }}" id="Certification_Type" class="form-control" readonly="">
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Previous Status</label>
+                                </div>
+                              
+                                <div class="form-group col-sm-3">
+                                    <input type="text" value="{{ $findTransmission->previous_certification_status }}" name="previous_certification_status" id="previous_certification_status" class="form-control" readonly="">
+                                </div>
+
+                                <!--//////////////////////// row ///////////////////////// -->
+
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">GF Modality</label>
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <input type="text" name="gfModality" value="{{ $findTransmission->gfModality }}" id="gfModality" class="form-control" readonly="">
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">GF Certifying Study</label>
+                                </div>
+                              
+                                <div class="form-group col-sm-3">
+                                    <input type="text" value="{{ $findTransmission->gfCertifying_Study }}" name="gfCertifying_Study" id="gfCertifying_Study" class="form-control" readonly="">
+                                </div>
+
+                                <!--//////////////////////// row ///////////////////////// -->
+
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">GF Certifying Center</label>
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <input type="text" name="gfCertifying_center" value="{{ $findTransmission->gfCertifying_center }}" id="gfCertifying_center" class="form-control" readonly="">
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">GF Certificate Date</label>
+                                </div>
+                              
+                                <div class="form-group col-sm-3">
+                                    <input type="text" value="{{ $findTransmission->gfCertificate_date }}" name="gfCertificate_date" id="gfCertificate_date" class="form-control" readonly="">
+                                </div>
+
+                                <!--//////////////////////////// row //////////////////////////// -->
+                                @endif
+                                
                                 <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Status<span class="field-required">*</span></label>
                                 </div>
@@ -516,6 +590,83 @@
         <!-- END: Card DATA-->
     </div>
 
+ <!-- modal code  -->
+<div class="modal fade" id="device-crud-modal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary" style="color: #fff">
+                    <h4 class="modal-title" id="deviceCrudModal">Add New Device</h4>
+                </div>
+                <form id="deviceForm" name="deviceForm" class="form-horizontal">
+                    <div class="modal-body">
+                        <input type="hidden" name="device_id" id="device_id">
+                            <nav>
+                                <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
+                                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-Basic" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
+                                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-Modalities" role="tab" aria-controls="nav-profile" aria-selected="false">Modalities</a>
+                                </div>
+                            </nav>
+                    <div class="alert alert-danger device-error-message" style="display:none; margin-top:5px;"></div>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
+                            @csrf
+                            <div class="form-group row" style="margin-top: 10px;">
+                                <label for="device_name" class="col-sm-3">Name</label>
+                                <div class="{!! ($errors->has('device_name')) ?'col-sm-9 has-error':'col-sm-9' !!}">
+                                    <input type="text" class="form-control" id="device_name" name="device_name"
+                                           value="{{old('device_name')}}" required>
+                                    @error('device_name')
+                                    <span class="text-danger small">{{ $message }} </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="device_model" class="col-sm-3">Device Model</label>
+                                <div class="{!! ($errors->has('device_model')) ?'col-sm-9 has-error':'col-sm-9' !!}">
+                                    <input type="text" class="form-control" id="device_model" name="device_model" value="{{old('device_model')}}"  required> @error('email')
+                                    <span class="text-danger small"> {{ $message }} </span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="device_manufacturer" class="col-sm-3">Manufacturer</label>
+                                <div class="{!! ($errors->has('device_manufacturer')) ?'col-sm-9 has-error':'col-sm-9' !!}">
+                                    <input type="text" class="form-control" id="device_manufacturer" name="device_manufacturer" value="{{old('device_manufacturer')}}" required> 
+                                    @error('device_manufacturer')
+                                    <span class="text-danger small"> {{ $message }} </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                            <div class="tab-pane fade" id="nav-Modalities" role="tabpanel" aria-labelledby="nav-Validation-tab">
+                                <div class="form-group row" style="margin-top: 10px;">
+                                    <label for="device_manufacturer" class="col-sm-3"></label>
+                                    <div class="{!! ($errors->has('roles')) ?'col-sm-9 has-error':'col-sm-9' !!}">
+                                        <select class="searchable form-control" id="select-modality" multiple="multiple" name="modalities[]" required>
+                                            @foreach($getModalities as $modality)
+                                                <option value="{{$modality->id}}">{{$modality->modility_name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    @error('modalities')
+                                    <span class="text-danger small">
+                                    {{ $message }}
+                                    </span>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                        <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
+                    </div>
+                </form>
+                </div>
+            </div>
+        </div>
+<!-- modal code  -->
+
 @endsection
 @section('script')
 
@@ -542,12 +693,137 @@
         height: 150,
 
     });
+
+/********************* add new device ***********************/
+    function transmissionDevice(deviceModel) {
+        // hide error message
+        $('.device-error-message').css('display', 'none');
+        // clear all inputs
+        $('#deviceForm')[0].reset();
+        // assign value to modal
+        $('input[name="device_model"]').val(deviceModel);
+        // assign value to form
+        $('#device-crud-modal').modal('show');
+    }
+
+/******************** Device Form ***************************/
+    $('#deviceForm').submit(function(e) {
+        e.preventDefault();
+        var formData = new FormData($(this)[0]);
+        $.ajax({
+            url: "{{ route('devices.store') }}",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success:function(data) {
+                if(data.error) {
+                    // append/show error message
+                    $('.device-error-message').text('Device model already exists.');
+                    $('.device-error-message').css('display', 'block');
+                } else if (data.success) {
+                    // append value to device drop down
+                    $('select[name="Device_Model"]').append('<option value="'+data.device.id+'__/__'+data.device.device_model+'">'+data.device.device_name+'</option>').trigger('change');
+                    // close modal
+                    $('#device-crud-modal').modal('hide');
+                }
+                
+            } // success ends
+
+        }); // ajax ends
+    });
+/****************************** device submit ends **************************************************/
    
    $('select[name="StudyI_ID"]').select2();
    $('select[name="Site_ID"]').select2();
+   $('select[name="Device_Model"]').select2();
    $('select[name="Requested_certification"]').select2();
 
-   // model select
+    // get sites for study on change
+    $('#StudyI_ID').change(function() {
+       if($(this).val() != '') {
+            $.ajax({
+                url: '{{ route("get-transmission-study-sites") }}',
+                type: 'GET',
+                data: {
+                    'study_code': $(this).val(),
+                },
+                success:function(data) {
+                    // empty site dropdown
+                    $('select[name="Site_ID"]').empty();
+                    if(data.study_sites != '') {
+                        // default value
+                        $('select[name="Site_ID"]').append('<option value="" selected>Select Site</option>');
+                        // loop through the sites
+                        $.each(data.study_sites, function(index, value) {
+                            $('select[name="Site_ID"]').append('<option value="'+value.id+'__/__'+value.site_code+'">'+value.site_code+' - '+value.site_name+'</option>')
+                        });
+                    } else {
+                        // no site found option
+                        $('select[name="Site_ID"]').append('<option value="" selected>No Site Found</option>');
+                    } // data check ends
+
+                    /************************* Modalities **************************************/
+                    // empty site dropdown
+                    $('select[name="Requested_certification"]').empty();
+                    if(data.study_modalities != '') {
+                        // default value
+                        $('select[name="Requested_certification"]').append('<option value="" selected>Select Modality</option>');
+                        // loop through the sites
+                        $.each(data.study_modalities, function(index, value) {
+                            $('select[name="Requested_certification"]').append('<option value="'+value.id+'__/__'+value.modility_name+'">'+value.modility_name+'</option>')
+                        });
+                    } else {
+                        // no site found option
+                        $('select[name="Requested_certification"]').append('<option value="" selected>No Modality Found</option>');
+                    } // data check ends
+
+                    /************************* Devices ****************************************/
+                    // empty site dropdown
+                    $('select[name="Device_Model"]').empty();
+                    if(data.study_devices != '') {
+                        // default value
+                        $('select[name="Device_Model"]').append('<option value="" selected>Select Device Model</option>');
+                        // loop through the sites
+                        $.each(data.study_devices, function(index, value) {
+                            $('select[name="Device_Model"]').append('<option value="'+value.id+'__/__'+value.device_model+'">'+value.device_name+'</option>')
+                        });
+                    } else {
+                        // no site found option
+                        $('select[name="Device_Model"]').append('<option value="" selected>No Device Found</option>');
+                    } // data check ends
+                } // success ends
+            }); // ajax ends
+       } // if ends
+    });
+    /******************************** Modality Change function *****************************************/
+    $('select[name="Requested_certification"]').change(function() {
+        if($(this).val() != '') {
+            $.ajax({
+                url: '{{ route("get-modality-devices") }}',
+                type: 'GET',
+                data: {
+                    'study_code': $('#StudyI_ID').val(),
+                    'modality_id': $(this).val(),
+                },
+                success:function(data) {
+                     // empty site dropdown
+                    $('select[name="Device_Model"]').empty();
+                    if(data.study_devices != '') {
+                        // default value
+                        $('select[name="Device_Model"]').append('<option value="" selected>Select Device Model</option>');
+                        // loop through the sites
+                        $.each(data.study_devices, function(index, value) {
+                            $('select[name="Device_Model"]').append('<option value="'+value.id+'__/__'+value.device_model+'">'+value.device_name+'</option>')
+                        });
+                    } else {
+                        // no site found option
+                        $('select[name="Device_Model"]').append('<option value="" selected>No Device Found</option>');
+                    } // data check ends
+                } // success function ends
+            });
+        } // null check ends
+    });
    //$('select[name="photographer_user_email"]').select2();
    //$('select[name="template"]').select2();
    $('.cc_email').select2();
@@ -685,6 +961,43 @@
     $('#status').change(function(){
 
         $('#reason_for_change').val($(this).val());
+    });
+
+    /********************************** multi select *************************************************/
+    $('#select-modality').multiSelect({
+        selectableHeader: "<label for=''>All Modalities</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
+        selectionHeader: "<label for=''>Assigned Modalities</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
+        afterInit: function(ms){
+            var that = this,
+                $selectableSearch = that.$selectableUl.prev(),
+                $selectionSearch = that.$selectionUl.prev(),
+                selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
+                selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
+
+            that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
+                .on('keydown', function(e){
+                    if (e.which === 40){
+                        that.$selectableUl.focus();
+                        return false;
+                    }
+                });
+
+            that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
+                .on('keydown', function(e){
+                    if (e.which == 40){
+                        that.$selectionUl.focus();
+                        return false;
+                    }
+                });
+        },
+        afterSelect: function(){
+            this.qs1.cache();
+            this.qs2.cache();
+        },
+        afterDeselect: function(){
+            this.qs1.cache();
+            this.qs2.cache();
+        }
     });
 
 </script>

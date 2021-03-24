@@ -658,17 +658,19 @@
                                 </form>
                             </div>
                             <div role="tabpanel" class="tab-pane" id="devices">
-                                <form  name="devicesForm" id="devicesForm"
-                                       enctype="multipart/form-data" method="POST">
+                                <div class="col-lg-12 success-alert-sec" style="display: none; margin-top: 10px;">
+                                    <div class="success-msg-sec alert-primary success-msg text-center" role="alert" style="font-weight: bold;">
+                                    </div>
+                                </div>
+                                <form  name="devicesForm" id="devicesForm" enctype="multipart/form-data" method="POST">
                                     <input type="hidden" name="_token" value="{{csrf_token()}}">
                                     <input type="hidden" name="site_id"  value="">
                                     <div class="form-group row" style="margin-top: 15px;">
-                                        <div class="col-md-6">
+                                        <div class="col-md-4">
                                             <div class="{!! ($errors->has('device_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
-
                                                 <label class="required">Device</label>
                                                 <select name="device_name" class="form-control" id="device_name">
-                                                    <option disabled>select</option>
+                                                    <option> Select Devices </option>
                                                     @php  $devices= Modules\Admin\Entities\Device::all();
                                                     @endphp
 
@@ -676,24 +678,27 @@
                                                         <option class="form-control" value="{{$device->device_name}}">{{$device->device_name}}</option>
                                                     @endforeach
                                                 </select>
-                                                @error('device_id')
-                                                <span class="input-danger small">
-                                                        {{ $message }}
-                                                        </span>
+                                                @error('device_name')
+                                                <span class="input-danger small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
-                                        <div class="col-md-6">
-                                            <div
-                                                class="{!! ($errors->has('device_serial_no')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
+                                        <div class="col-md-4">
+                                            <div class="{!! ($errors->has('device_serial')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
+                                                <label class="required">Device Serial #</label>
+                                                <input type="text" class="form-control" onchange="deviceSerialValue(this);"  id="device_serial" name="device_serial" value="{{old('device_serial')}}" required/>
+                                                @error('device_serial')
+                                                <span class="input-danger small">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+                                        </div>
 
-                                                <label>Device Serial #</label>
-                                                <input type="text" class="form-control" id="device_serial_no"
-                                                       name="device_serial_no" value="{{old('device_serial_no')}}"/>
-                                                @error('device_serial_no')
-                                                <span class="input-danger small">
-                                                        {{ $message }}
-                                                        </span>
+                                        <div class="col-md-4">
+                                            <div class="{!! ($errors->has('device_software_version')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
+                                                <label class="required">Device Software Version</label>
+                                                <input type="text" class="form-control" id="device_software_version" name="device_software_version" value="{{old('device_software_version')}}"/>
+                                                @error('device_software_version')
+                                                <span class="input-danger small">{{ $message }}</span>
                                                 @enderror
                                             </div>
                                         </div>
@@ -704,11 +709,11 @@
 
                                         <div class="col-md-12">
                                             <div class="pull-right" style="text-align: right;">
-                                                <button type="submit" id="device_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
+                                                <button type="submit" id="device_button" class="btn btn-outline-primary"><i class="fa fa-save">&nbsp;</i>Save</button>
 
                                                 <input type="hidden" name="device_submit_actions" id="device_submit_actions" value="Add">
                                                 <input type="hidden" name="device_id" id="device_id" value="">
-                                                <button type="button"  id="reset_device_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true"></i>Reset</button>
+                                                <button type="button"  id="reset_device_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true">&nbsp;</i>Reset</button>
                                                 <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
 
                                             </div>
@@ -723,6 +728,7 @@
                                                 <tr>
                                                     <th>Device Name</th>
                                                     <th>Device Serial #</th>
+                                                    <th>Device Software Version</th>
                                                     <th>Action</th>
                                                 </tr>
                                                 </thead>
@@ -1512,10 +1518,11 @@
 
                 // End of Add Coordinator
 
-
+                // Add Devices to sites
                 $("#devicesForm").submit(function(e) {
                     var device_name = $('#device_name').val();
-                    var device_serial_no   = $('#device_serial_no').val();
+                    var device_serial   = $('#device_serial').val();
+                    var device_software_version = $('#device_software_version').val();
                     var device_id         = $('#device_id').val();
                     var device_submit_actions = $('#device_submit_actions').val();
                     $('#devicesForm').find($('input[name="site_id"]').val($('#site_id').val()));
@@ -1547,7 +1554,8 @@
                             {
                                 html += '<tr id=' + device_id + '>\n' +
                                     '<td>' + device_name + '</td>\n' +
-                                    '<td>' + device_serial_no + '</td>\n' +
+                                    '<td>' + device_serial + '</td>\n' +
+                                    '<td>' + device_software_version + '</td>\n' +
                                     '<td><i style="color: #EA4335;" class="fa fa-trash deletedevice" data-id =' + device_id + '></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" data-id = ' + device_id + ' class="icon-pencil editdevice"></i></td>\n' +
                                     '</tr>';
 
@@ -1560,10 +1568,10 @@
                                 $.each(results, function(index,row)
                                 {
                                     console.log(results[0].index);
-                                    console.log('foreach sa neechay wala console')
                                     html += '<tr id=' + row.id + '>\n' +
                                         '<td>' + row.device_name + '</td>\n' +
-                                        '<td>' + row.device_serial_no + '</td>\n' +
+                                        '<td>' + row.device_serial + '</td>\n' +
+                                        '<td>' + row.device_software_version + '</td>\n' +
                                         '<td><i style="color: #EA4335;" class="fa fa-trash deletedevice" data-id =' + row.id + '></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" data-id = ' + row.id + ' class="icon-pencil editdevice"></i></td>\n' +
                                         '</tr>';
                                 });
@@ -1614,7 +1622,7 @@
                     });
                 });
 
-
+                //// Edit Devices /////
                 $('body').on('click', '.editdevice', function (e) {
                     $.ajaxSetup({
                         headers: {
@@ -1637,16 +1645,14 @@
                             $('#device_site_id').val(parsedata.site_id);
                             $('#device_submit_actions').val('Edit');
                             $('#device_name').val(parsedata.device_name);
-                            $('#device_serial_no').val(parsedata.device_serial_no);
+                            $('#device_serial').val(parsedata.device_serial);
+                            $('#device_software_version').val(parsedata.device_software_version);
 
                         }
                     });
                 });
 
-
-
-                // Add New Others
-
+                //// Add New Others ////
                 $("#othersForm").submit(function(e) {
                     var others_first_name = $('#others_first_name').val();
                     var others_mid_name   = $('#others_mid_name').val();
@@ -1763,6 +1769,48 @@
                         }
                     });
 
+                }
+
+                /// Get the value from Device Serial # Field to check either its exisit in DB
+                function  deviceSerialValue(data) {
+                    var device_name = $('#device_name').val();
+
+                    if(device_name == '')
+                    {
+                        alert('Please select the Device Dropdown first');
+                        $('#device_serial').val('');
+                        $('#device_name').focus();
+                    }
+                    else
+                    {
+                        var deviceSerial  = data.value;
+
+                        $.ajax({
+                            url:"{{route('deviceSite.deviceSerialValueIsExist')}}",
+                            type: 'POST',
+                            data: {
+                                "_token": "{{ csrf_token() }}",
+                                'deviceSerial'      :deviceSerial,
+                                'device_name'   :device_name,
+                            },
+                            success: function(results)
+                            {
+                                if (results.success)
+                                {
+                                    $('.success-msg-sec').html('');
+                                    $('.success-msg-sec').html(results.success)
+                                    $('.success-alert-sec').slideDown('slow');
+                                    tId=setTimeout(function(){
+                                        $(".success-alert-sec").slideUp('slow');
+                                    }, 3000);
+                                    $('#device_serial').val('');
+                                    $("#device_name").val('');
+                                    $("#device_name").focus();
+                                }
+
+                            }
+                        });
+                    }
                 }
 
                 $("#siteInfoForm").submit(function(e) {
@@ -2154,6 +2202,7 @@
                         })
                     }
                 });
+
 
                 ///  Delete  Specific Row function
                         // sorting gride

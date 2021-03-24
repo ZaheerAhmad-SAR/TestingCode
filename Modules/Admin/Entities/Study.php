@@ -14,6 +14,8 @@ use Modules\FormSubmission\Entities\AdjudicationFormStatus;
 use Modules\FormSubmission\Entities\FormStatus;
 use Modules\FormSubmission\Entities\SubjectsPhases;
 use Modules\Admin\Scopes\PreferencesByStudy;
+use Modules\Admin\Entities\Modility;
+use Modules\Admin\Entities\Device;
 
 class Study extends Model
 {
@@ -40,7 +42,17 @@ class Study extends Model
 
     public function sites()
     {
-        return $this->belongsToMany(Site::class)->withPivot('study_id', 'site_id');
+        return $this->belongsToMany(Site::class, 'site_study', 'study_id', 'site_id');
+    }
+
+    public function modalities()
+    {
+        return $this->belongsToMany(Modility::class, 'study_modilities', 'study_id', 'parent_modility_id');
+    }
+
+    public function devices()
+    {
+        return $this->belongsToMany(Device::class, 'study_devices', 'study_id', 'device_id');
     }
 
     public function subjects()

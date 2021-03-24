@@ -1070,6 +1070,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
         $ip = 'N/A';
         // get event data
         $eventData = $eventId;
+        // dd($eventData[1]);
         // get study name
         $studyName = Study::where('id', $eventData[1]['study_id'])->first();
         //get subject
@@ -1396,3 +1397,11 @@ function get_date_differnce($date1,$date2)
    return (\Carbon\Carbon::parse($date1))->diff(\Carbon\Carbon::parse($date2))->format('%m month, %d days');
    // return $date1->diff($date2);
 }
+function get_mac_address() {
+        // PHP code to get the MAC address of Client 
+     $MAC = exec('getmac'); 
+  
+    // Storing 'getmac' value in $MAC 
+    $MAC = strtok($MAC, ' '); 
+    return $MAC ;
+    }
