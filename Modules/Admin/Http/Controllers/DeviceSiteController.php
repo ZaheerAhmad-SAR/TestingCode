@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Str;
 use Modules\Admin\Entities\DeviceSite;
+use Modules\Admin\Entities\Site;
 
 class DeviceSiteController extends Controller
 {
@@ -38,6 +39,7 @@ class DeviceSiteController extends Controller
 
         $id = (string)Str::uuid();
         $deviceSite = DeviceSite::create([
+
             'id'    => $id,
             'site_id'=> $request->site_id,
             'device_name' => $request->device_name,
@@ -112,6 +114,20 @@ class DeviceSiteController extends Controller
         if ($request->ajax()) {
             $results    = DeviceSite::where('site_id',$id)->get();
             return view('admin::sites.device-sites',compact('results'));
+        }
+    }
+
+    /// Check the Device serial and name if it exists
+    public function deviceSerialValueIsExist(Request $request)
+    {
+        $data = array(
+            'device_serial'=>$request->post('deviceSerial'),
+            'device_name'=>$request->post('device_name')
+        );
+        $check = DeviceSite::where($data)->first();
+        if ($check !== null)
+        {
+            return response()->json(['success'=>'Device Serial number already Exist']);
         }
     }
 }

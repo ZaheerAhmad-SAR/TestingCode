@@ -272,9 +272,17 @@ Route::group(['middleware' => ['auth', 'web']], function () {
 
     Route::get('deviceSite/{id}/destroy', 'DeviceSiteController@destroy')->name('deviceSite.destroy');
 
+    Route::post('deviceSite/deviceSerialValueIsExist', 'DeviceSiteController@deviceSerialValueIsExist')->name('deviceSite.deviceSerialValueIsExist');
+
     /// Device Site Route End
 
     Route::get('study/permanentlyDeleteStudyAndItsRecord/{id}', 'StudyController@permanentlyDeleteStudyAndItsRecord')->name('study.permanentlyDeleteStudyAndItsRecord');
 });
 
 Route::post('tinymce-image_upload', 'TinyMceController@uploadImage')->name('tinymce.image_upload');
+
+/*********************************** Ajax get calls **********************************/
+// get sites, modalities and devices for study (Transmission Section)
+Route::get('get-transmission-study-sites', 'StudySiteController@getStudySitesForTransmission')->name('get-transmission-study-sites');
+// get modality devices for study
+Route::get('get-modality-devices', 'ModilityController@getModalityDevices')->name('get-modality-devices');

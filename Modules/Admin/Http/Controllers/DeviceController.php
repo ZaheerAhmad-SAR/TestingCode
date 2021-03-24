@@ -76,65 +76,84 @@ class DeviceController extends Controller
 
             $deviceID = $request->device_id;
 
+            /************************************** Edit Case ***********************************/
             if($deviceID  != '') {
+                 // check for device model
+                $getDeviceModel = Device::where('id', '!=', $deviceID)
+                                        ->where('device_model', $request->device_model)
+                                        ->where('device_manufacturer', $request->device_manufacturer)
+                                        ->first();
+                // check for duplicate device
+                if($getDeviceModel != null) {
+                    // return response for errors
+                    return response()->json(['error' => true]);
+                } else {
 
-                // get old device data
-                $oldDevice = Device::where('id', $deviceID)->first();
+                    // get old device data
+                    $oldDevice = Device::where('id', $deviceID)->first();
 
-                $device = Device::find($deviceID);
-                $device->device_name = $request->device_name;
-                $device->device_model = $request->device_model;
-                $device->device_manufacturer = $request->device_manufacturer;
-                $device->save();
+                    $device = Device::find($deviceID);
+                    $device->device_name = $request->device_name;
+                    $device->device_model = $request->device_model;
+                    $device->device_manufacturer = $request->device_manufacturer;
+                    $device->save();
 
-                if ($request->modalities != null) {
-                    // delete old modalities
-                    $deleteModalities = DeviceModility::where('device_id', $deviceID)->delete();
+                    if ($request->modalities != null) {
+                        // delete old modalities
+                        $deleteModalities = DeviceModility::where('device_id', $deviceID)->delete();
 
-                    foreach ($request->modalities as $modality) {
-                        DeviceModility::create([
-                            'id'    => (string)Str::uuid(),
-                            'device_id'     => $deviceID,
-                            'modility_id'   => $modality
+                        foreach ($request->modalities as $modality) {
+                            DeviceModility::create([
+                                'id'    => (string)Str::uuid(),
+                                'device_id'     => $deviceID,
+                                'modility_id'   => $modality
 
-                        ]);
-                    } // foreach ends
-                } // modalities null check
+                            ]);
+                        } // foreach ends
+                    } // modalities null check
 
-                 // log event details
-                $logEventDetails = eventDetails($deviceID, 'Device', 'Update', $request->ip(), $oldDevice);
-
+                    // log event details
+                    $logEventDetails = eventDetails($deviceID, 'Device', 'Update', $request->ip(), $oldDevice);
+                    // return success message
+                    return response()->json(['success' => true, 'device' => $device]);
+                } // duplicate device check ends
             } else {
 
-                $id = (string)Str::uuid();
+                // check for device model
+                $getDeviceModel = Device::where('device_model', $request->device_model)
+                                        ->where('device_manufacturer', $request->device_manufacturer)
+                                        ->first();
+                // check for duplicate device
+                if($getDeviceModel != null) {
+                    // return response for errors
+                    return response()->json(['error' => true]);
+                } else {
+                    $id = (string)Str::uuid();
+                    $device = new Device;
+                    $device->id = $id;
+                    $device->device_name = $request->device_name;
+                    $device->device_model = $request->device_model;
+                    $device->device_manufacturer = $request->device_manufacturer;
+                    $device->save();
 
-                $device = new Device;
-                $device->id = $id;
-                $device->device_name = $request->device_name;
-                $device->device_model = $request->device_model;
-                $device->device_manufacturer = $request->device_manufacturer;
-                $device->save();
+                    if ($request->modalities != null) {
+                        foreach ($request->modalities as $modality) {
+                            DeviceModility::create([
+                                'id'    => (string)Str::uuid(),
+                                'device_id'     => $device->id,
+                                'modility_id'   => $modality
 
-                if ($request->modalities != null) {
-                    foreach ($request->modalities as $modality) {
-                        DeviceModility::create([
-                            'id'    => (string)Str::uuid(),
-                            'device_id'     => $device->id,
-                            'modility_id'   => $modality
-
-                        ]);
-                    } // foreach ends
-                } // modalities array check
-
-                $oldDevice = [];
-
-                // log event details
-                $logEventDetails = eventDetails($id, 'Device', 'Add', $request->ip(), $oldDevice);
-
-            } // get device check ends
-            return \response()->json($device);
+                            ]);
+                        } // foreach ends
+                    } // modalities array check
+                    $oldDevice = [];
+                    // log event details
+                    $logEventDetails = eventDetails($id, 'Device', 'Add', $request->ip(), $oldDevice);
+                    // return success message
+                    return response()->json(['success' => true, 'device' => $device]);
+                } // duplicate device check ends
+            } // Add/Edit check
         } // ajax ends
-
     }
 
     /**
@@ -199,4 +218,36 @@ class DeviceController extends Controller
 
         return redirect()->route('devices.index');
     }
+
+    // public function createTransmissionDevice(Request $request) {
+    //     if($request->ajax()) {
+    //         // check for device model
+    //         $getDeviceModel = Device::where('device_model', $request->device_model)
+    //                                 ->orWhere('device_manufacturer', $request->device_manufacturer)
+    //                                 ->first();
+
+    //         if($getDeviceModel != null) {
+    //             return response()->json(['error' => true]);
+    //         } else {
+    //             // insert data into data base
+    //             $id = (string)Str::uuid();
+
+    //             $device = new Device;
+    //             $device->id = $id;
+    //             $device->device_name = $request->device_name;
+    //             $device->device_model = $request->device_model;
+    //             $device->device_manufacturer = $request->device_manufacturer;
+    //             $device->save();
+
+    //             $oldDevice = [];
+
+    //             // log event details
+    //             $logEventDetails = eventDetails($id, 'Device', 'Add', $request->ip(), $oldDevice);
+
+    //             return response()->json(['success' => true, 'device' => $device]);
+
+    //         }// duplicate device model
+    //     } // ajax ends
+    // }
+
 }

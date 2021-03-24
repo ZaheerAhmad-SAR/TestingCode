@@ -323,12 +323,12 @@
                 }
             });
         }
-        loadnotifications();
-
-        setInterval(function(){
-            loadnotifications()
-
-        }, 10000);
+        // loadnotifications();
+        //
+        // setInterval(function(){
+        //     loadnotifications()
+        //
+        // }, 10000);
 
 
     </script>

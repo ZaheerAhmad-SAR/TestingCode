@@ -4,6 +4,7 @@ namespace Modules\Admin\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\Admin\Entities\Study;
 
 class Device extends Model
 {
@@ -25,5 +26,10 @@ class Device extends Model
     public function modalities()
     {
         return $this->belongsToMany(Modility::class, 'device_modilities');
+    }
+
+    public function study()
+    {
+        return $this->belongsToMany(Study::class, 'study_devices', 'device_id', 'study_id');
     }
 }

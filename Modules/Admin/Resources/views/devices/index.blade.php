@@ -116,7 +116,7 @@
     <div class="modal fade" id="device-crud-modal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-primary" style="color: #fff">
                     <h4 class="modal-title" id="deviceCrudModal"></h4>
                 </div>
                 <form id="deviceForm" name="deviceForm" class="form-horizontal">
@@ -128,6 +128,7 @@
                                     <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-Modalities" role="tab" aria-controls="nav-profile" aria-selected="false">Modalities</a>
                                 </div>
                             </nav>
+                    <div class="alert alert-danger device-error-message" style="display:none; margin-top:5px;"></div>
                     <div class="tab-content" id="nav-tabContent">
                         <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
                             @csrf
@@ -135,7 +136,7 @@
                                 <label for="device_name" class="col-sm-3">Name</label>
                                 <div class="{!! ($errors->has('device_name')) ?'col-sm-9 has-error':'col-sm-9' !!}">
                                     <input type="text" class="form-control" id="device_name" name="device_name"
-                                           value="{{old('device_name')}}">
+                                           value="{{old('device_name')}}" required>
                                     @error('device_name')
                                     <span class="text-danger small">{{ $message }} </span>
                                     @enderror
@@ -144,7 +145,7 @@
                             <div class="form-group row">
                                 <label for="device_model" class="col-sm-3">Device Model</label>
                                 <div class="{!! ($errors->has('device_model')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                    <input type="text" class="form-control" id="device_model" name="device_model" value="{{old('device_model')}}"> @error('email')
+                                    <input type="text" class="form-control" id="device_model" name="device_model" value="{{old('device_model')}}" required> @error('email')
                                     <span class="text-danger small"> {{ $message }} </span>
                                     @enderror
                                 </div>
@@ -152,7 +153,7 @@
                             <div class="form-group row">
                                 <label for="device_manufacturer" class="col-sm-3">Manufacturer</label>
                                 <div class="{!! ($errors->has('device_manufacturer')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                    <input type="text" class="form-control" id="device_manufacturer" name="device_manufacturer" value="{{old('device_manufacturer')}}">
+                                    <input type="text" class="form-control" id="device_manufacturer" name="device_manufacturer" value="{{old('device_manufacturer')}}" required>
                                     @error('device_manufacturer')
                                     <span class="text-danger small"> {{ $message }} </span>
                                     @enderror
@@ -163,7 +164,7 @@
                                 <div class="form-group row" style="margin-top: 10px;">
                                     <label for="device_manufacturer" class="col-sm-3"></label>
                                     <div class="{!! ($errors->has('roles')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                        <select class="searchable form-control" id="select-modality" multiple="multiple" name="modalities[]">
+                                        <select class="searchable form-control" id="select-modality" multiple="multiple" name="modalities[]" required>
                                             @foreach($modilities as $modality)
                                                 <option value="{{$modality->id}}">{{$modality->modility_name}}</option>
                                             @endforeach
@@ -210,6 +211,8 @@
                 $('#btn-save').val("create-device");
                 $('#deviceForm').trigger("reset");
                 $('#deviceCrudModal').html("New Device");
+                // hide error message
+                $('.device-error-message').css('display', 'none');
                 $('#device-crud-modal').modal('show');
             });
 
@@ -219,6 +222,8 @@
                 $.get('devices/'+device_id+'/edit', function (data) {
                     $('#deviceCrudModal').html("Edit Device");
                     $('#btn-save').val("edit-device");
+                    // hide error message
+                    $('.device-error-message').css('display', 'none');
                     $('#device-crud-modal').modal('show');
                     $('#device_id').val(data.id);
                     $('#device_name').val(data.device_name);
@@ -260,7 +265,16 @@
                         type: "POST",
                         dataType: 'json',
                         success: function (data) {
-                           location.reload();
+                            if(data.error) {
+                                // append/show error message
+                                $('.device-error-message').text('Device already exists.');
+                                $('.device-error-message').css('display', 'block');
+                            } else if (data.success) {
+                                // close modal
+                                $('#device-crud-modal').modal('hide');
+                                location.reload();
+                            }
+                           
                         },
                         error: function (data) {
                             console.log('Error:', data);
