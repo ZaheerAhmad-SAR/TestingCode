@@ -622,6 +622,7 @@
                             </form>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="devices">
+
                             <div class="col-lg-12 success-alert-sec" style="display: none; margin-top: 10px;">
                                 <div class="success-msg-sec alert-primary success-msg text-center" role="alert" style="font-weight: bold;">
                                 </div>
@@ -1305,11 +1306,11 @@
         // Add Devices to sites
         $("#devicesForm").submit(function(e) {
 
-            var device_name               = $('#device_name').val();
-            var device_serial_no          = $('#device_serial_no').val();
-            var device_software_version   = $('#device_software_version').val();
-            var device_id                 = $('#device_id').val();
-            var device_submit_actions     = $('#device_submit_actions').val();
+            var device_name = $('#device_name').val();
+            var device_serial   = $('#device_serial').val();
+            var device_software_version = $('#device_software_version').val();
+            var device_id         = $('#device_id').val();
+            var device_submit_actions = $('#device_submit_actions').val();
 
             $('#devicesForm').find($('input[name="site_id"]').val($('#site_id').val()));
             if(device_submit_actions == 'Add')
