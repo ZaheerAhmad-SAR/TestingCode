@@ -143,12 +143,12 @@ class FormStatus extends Model
 
     public static function makeFormStatusSpan($step, $formStatusObj)
     {
-        
+
         $info = '';
         $formStatus = $formStatusObj->form_status;
         if ($formStatus != 'no_status') {
             // if($formStatusObj->user) {
-                
+
                 $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="' . $formStatusObj->user->name . '"';
 
             // } else {
@@ -180,7 +180,8 @@ class FormStatus extends Model
             'phase_steps_id' => $step->step_id,
         ];
         if (Query::isThereOpenQueryAgainstStep($getQueryArray)) {
-            $spanStr .= '<span class="" data-toggle="popover" data-trigger="hover" data-content="Has query"><img src="' . url('images/query.png') . '"/></span>';
+            //$spanStr .= '<span class="" data-toggle="popover" data-trigger="hover" data-content="Has query"><img src="' . url('images/query.png') . '"/></span>';
+            $spanStr .= '<span class="" data-toggle="popover" data-trigger="hover" data-content="Has query">&nbsp;<i class="fas fa-question-circle"></i></span>';
         }
         /********************************** */
         return $spanStr;
