@@ -158,22 +158,7 @@ class Query extends Model
         return $queryByLogin;
     }
 
-//    public static function formHasQuery($questionQueryArray)
-//    {
-//        $query = new Query();
-//
-//        $questionQueryArray = array_intersect_key(array_filter($questionQueryArray), array_flip($query->getFillable()));
-//
-//        $sqlQuery = self::getFormQueryObjQuery($questionQueryArray);
-//        $queryByLogin = $sqlQuery->where('queried_remarked_by_id', 'like', auth()->user()->id)
-//            ->where('parent_query_id', 'like', 0)
-//            ->where('query_level', '=', 'form')
-//            ->count();
-//
-//        return $queryByLogin;
-//    }
-
-
+    // Form Query
     public static function formHasQuery($questionQueryArray)
     {
         $query = new Query();
@@ -196,7 +181,7 @@ class Query extends Model
         $queryExits = $query->where('parent_query_id', 'like', 0)
             ->where('query_status', '!=', 'close')
             ->where('query_level', '=', 'form')
-            //->where('question_id', '=', $questionQueryArray['question_id'])
+            ->where('phase_steps_id', '=', $questionQueryArray['phase_steps_id'])
             ->count();
         $queryForUser = QueryUser::where('user_id', auth()->user()->id)->first();
 
@@ -309,27 +294,6 @@ class Query extends Model
         }
         return $queryCheck;
     }
-
-//    public static function formStatusHasClose($questionQueryArray)
-//    {
-//        $query = new Query();
-//
-//        $questionQueryArray = array_intersect_key(array_filter($questionQueryArray), array_flip($query->getFillable()));
-//        $sqlQuery = self::getFormQueryObjQuery($questionQueryArray);
-//        //printSqlQuery($sqlQuery, false);
-//        $queryCheck   = false;
-//        $queryByLogin = $sqlQuery->where('queried_remarked_by_id', 'like', auth()->user()->id)
-//            ->where('parent_query_id','=',0)
-//            ->where('query_status', '!=', 'close')
-//            ->where('query_level', '=', 'form')
-//            ->count();
-//        //dd($queryByLogin);
-//        if ($queryByLogin > 0) {
-//            //dd('ddddd');
-//            $queryCheck = true;
-//        }
-//        return $queryCheck;
-//    }
 
 
     public static function isThereOpenQueryAgainstStep($getQueryArray)
