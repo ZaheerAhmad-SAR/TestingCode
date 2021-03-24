@@ -29,7 +29,7 @@
 
                      <div class="form-group col-md-12 mt-3">
 
-
+                     <a href="{{route('exportsites') }}"><p>Export Sites</p></a>
                       
 
                     </div>
@@ -54,6 +54,7 @@
                                 <label for="study_title">Total Sites Missing in New App : {{ $not_in_new_app_count }}</label>
                                 
                             </div>
+
 
                             
 
