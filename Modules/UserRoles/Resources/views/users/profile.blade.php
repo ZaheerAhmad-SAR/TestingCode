@@ -47,6 +47,7 @@
                                                 <i class="fa fa-door-open"></i> View Codes
                                             </button>
                                         @else
+                                        
                                             <a href="{{ url('2fa/enable') }}" class="btn btn-outline-primary">Enable 2FA</a>
                                         @endif
                                     </div>

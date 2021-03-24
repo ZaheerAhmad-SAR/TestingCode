@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\backupCode;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Http\Request;
@@ -35,30 +36,34 @@ class Google2FAController extends Controller
      */
     public function enableTwoFactor(Request $request)
     {
-        
-         //generate new secret
-        $secret = $this->generateSecret();
 
         //get user
         $user = $request->user();
-
+       //generate new secret
+        $secret = $this->generateSecret();
         //encrypt and then save secret
-       // dd(encrypt($secret));
         $user->google2fa_secret = Crypt::encrypt($secret);
+         //dd($secret);
        // $user->save();
 
         //generate image for QR barcode
         $google2fa = new Google2FA();
-
         $inlineUrl = $google2fa->getQRCodeInline(
             'OIRRC',
             'info@oirrc.net',
             $secret
-        );
-        $user->qr_flag = '0';
-        $user->google_auth = $inlineUrl;
-        $user->save();
-
+        ); 
+        if(isset($request->totp) && $request->totp !=''){
+            if($inlineUrl == $request->totp){
+                $user->qr_flag = '1';
+                $user->google_auth = $inlineUrl;
+                $user->save();
+              
+            }else{
+                
+                
+            }
+        }    
 
         //generate backup codes
         $this->recovery = new Recovery();
@@ -76,10 +81,67 @@ class Google2FAController extends Controller
             $bacup_code->save();
         }
         $codes = backupCode::where('user_id','=',\auth()->user()->id)->get();
-
-        return view('2fa/enableTwoFactor',compact('inlineUrl','secret','codes'));
+        $user = User::where('id',\Auth()->user()->id)->first();
+        return view('2fa/enableTwoFactor',compact('inlineUrl','secret','codes','user'));
     }
-  
+    public function verify_code(Request $request){
+        
+
+        $flag = false;
+         //get user
+        $user = $request->user();
+       //generate new secret
+        $secret = $this->generateSecret();
+
+
+
+        //encrypt and then save secret
+        $user->google2fa_secret = Crypt::encrypt($secret);
+        
+
+       // $user->save();
+
+        //generate image for QR barcode
+        $google2fa = new Google2FA();
+        $inlineUrl = $google2fa->getQRCodeInline(
+            'OIRRC',
+            'info@oirrc.net',
+            $secret
+        );
+        dd($inlineUrl);
+        if(isset($request->totp) && $request->totp !=''){
+            if($inlineUrl == $request->totp){
+                 $flag = true;
+                 $user->qr_flag = '1';
+                $user->google_auth = $inlineUrl;
+                $user->save();
+             }
+         }    
+
+        //generate backup codes
+        $this->recovery = new Recovery();
+        $codes = $this->recovery->setCount(10)->setBlocks(1)->setChars(6)
+            ->numeric()->toArray();
+        $oldCodes = backupCode::where('user_id','=',auth()->user()->id)->get();
+        foreach ($oldCodes as $oldCode){
+            $oldCode->delete();
+        }
+        foreach ($codes as $code){
+            $bacup_code = new backupCode();
+            $bacup_code->user_id = $user->id;
+            $bacup_code->backup_code = $code;
+            $bacup_code->expiry_duration = Carbon::now()->addDays(60);
+            $bacup_code->save();
+        }
+        if($flag ==true){
+            $data = array('2FA Enabled!');
+            echo json_encode($data);
+        }else{
+            $data = array('Failed');
+            echo json_encode($data);
+        }
+        
+    }
     /**
      *
      * @param \Illuminate\Http\Request $request

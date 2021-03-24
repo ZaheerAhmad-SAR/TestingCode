@@ -36,15 +36,16 @@
                 <div class="modal-header">
                     <label class="modal-title">Enter OTP</label>
                 </div>
-                <form class="row row-eq-height mt-5 mb-5" role="form" method="POST" action="{{url('/2fa/validate')}}">
+                <!--{{url('/2fa/validate')}} -->
+                <form class="row row-eq-height mt-5 mb-5" method="POST" action="" id="validate_form">
                     {!! csrf_field() !!}
                     <div class="login-form col-12 col-sm-7">
                         <div style="margin-top: 15px" class="form-group row{{ $errors->has('totp') ? ' has-error' : '' }}">
                             <div class="col-md-2" style="padding-left: 25px">
-                                <label>OTP</label></div>
-
+                                <label>OTP</label>
+                            </div>
                             <div class="col-md-7">
-                                <input type="number" class="form-control" name="totp" required>
+                                <input type="number" class="form-control" name="totp" id="totp" required>
                                 @if ($errors->has('totp'))
                                     <span class="help-block">
                                     <strong>{{ $errors->first('totp') }}</strong>
@@ -52,7 +53,7 @@
                                 @endif
                             </div>
                             <div class="col-md-3">
-                                <button onclick="myFunction()" type="submit" class="btn btn-primary">
+                                <button  type="button" class="btn btn-primary" id="validate_otp">
                                     Validate
                                 </button>
                             </div>
@@ -82,13 +83,33 @@
 @stop
 @section('script')
     <script type="text/javascript">
-        function myFunction() {
-            var x = document.getElementById("myDIV");
-            if (x.style.display === "none") {
-                x.style.display = "block";
-            } else {
-                x.style.display = "none";
-            }
-        }
+         $(document).ready(function(){
+             $('#validate_otp').on('click',function(){
+                 var totp = $('#totp').val();
+
+                 console.log(totp);
+                 var route = "{{ route('2fa.verify_code') }}";
+                 $.ajax({
+                     url: route,
+                     type: 'POST',
+                     data: {
+                     "_token": "{{ csrf_token() }}",
+                      "_method": 'POST',
+                     'totp': totp
+                     },
+                 success:function(amjad){
+                     console.log(amjad);
+                 }
+                 })
+             })
+         })
+        //  function myFunction() {
+        //      var x = document.getElementById("myDIV");
+        //      if (x.style.display === "none") {
+        //          x.style.display = "block";
+        //      } else {
+        //          x.style.display = "none";
+        //      }
+        // }
     </script>
 @endsection

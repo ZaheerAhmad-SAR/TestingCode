@@ -15,7 +15,9 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/2fa/enable', 'Google2FAController@enableTwoFactor');
+//Route::get('/2fa/enable', 'Google2FAController@enableTwoFactor');
+Route::get('2fa/enable', 'Google2FAController@enableTwoFactor')->name('2fa.enableTwoFactor');
+Route::post('2fa/verify_code', 'Google2FAController@verify_code')->name('2fa.verify_code');
 Route::get('/2fa/disable', 'Google2FAController@disableTwoFactor');
 Route::get('/2fa/validate', 'Auth\LoginController@getValidateToken');
 Route::post('/2fa/validate', ['middleware' => 'throttle:5', 'uses' => 'Auth\LoginController@postValidateToken']);
