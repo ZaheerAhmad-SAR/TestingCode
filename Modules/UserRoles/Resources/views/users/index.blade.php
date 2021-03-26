@@ -108,10 +108,10 @@
                                     <td id="userActiveTD_{{$user->id}}">{{ ((int)$user->is_active == 1)? 'Active':'InActive' }}</td>
                                     <td>
                                         <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                            <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                            <span class="ml-3" dusk="user-gear" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                             <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                             <span class="dropdown-item">
-                                            <a href="javascript:void(0);" onclick="openEditUserPopup('{{ $user->id }}');">
+                                            <a href="javascript:void(0);" onclick="openEditUserPopup('{{ $user->id }}');" dusk="user-edit">
                                                     <i class="far fa-edit"></i>&nbsp; Edit
                                                 </a>
                                             </span>

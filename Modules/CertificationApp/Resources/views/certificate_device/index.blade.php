@@ -354,11 +354,11 @@
                         </select>
                     </div>
 
-                    <div class="form-group col-md-12">
+                    <!-- <div class="form-group col-md-12">
                         <label>Device ID<span class="field-required">*</span></label>
                         <input type="text" name="device_id" id="device_id" class="form-control data-required" required="required">
                         
-                    </div>
+                    </div> -->
 
                     <div class="form-group col-md-12">
                         <label class="edit_users">Email To<span class="field-required">*</span></label>

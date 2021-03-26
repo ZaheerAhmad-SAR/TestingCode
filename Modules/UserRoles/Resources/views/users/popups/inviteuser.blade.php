@@ -15,14 +15,14 @@
                             <div class="form-group row" style="margin-top: 10px;">
                                 <div class="col-md-4">Email address</div>
                                 <div class="col-md-8">
-                                    <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email">
+                                    <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp" placeholder="Enter email" dusk="user-invite-email">
                                     <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
                                 </div>
                             </div>
                             <div class="form-group row" style="margin-top: 10px;">
                                 <div class="col-md-4">Role </div>
                                 <div class="col-md-8">
-                                    <select name="roles" id="roles" class="form-control">
+                                    <select name="roles" id="roles" class="form-control" dusk="user-invite-role">
                                         <option value="">-- Select Role --</option>
                                         @foreach($roles as $role)
                                             <option value="{{$role->id}}">{{$role->name}}</option>
@@ -36,7 +36,7 @@
                 <div class="modal-footer">
                     <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                     @if(hasPermission(auth()->user(),'users.store'))
-                        <button dusk="send_invitation" type="submit" class="btn btn-success">Send Invitation</button>
+                        <button dusk="user-invitate-send-button" type="submit" class="btn btn-success">Send Invitation</button>
                     @endif
                 </div>
             </form>
