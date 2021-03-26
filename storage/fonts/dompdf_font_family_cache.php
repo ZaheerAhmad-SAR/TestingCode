@@ -98,4 +98,7 @@
   'tahoma' => array(
     'normal' => $fontDir . '/tahoma-normal_1dacc013b4d4810adf71ed7d02ae797a',
   ),
+  'cuprum' => array(
+    'normal' => $fontDir . '/cuprum-normal_a5e327605fa689ea93644fa32993e220',
+  ),
 ) ?>
