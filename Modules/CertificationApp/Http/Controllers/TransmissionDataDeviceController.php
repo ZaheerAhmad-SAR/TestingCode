@@ -781,7 +781,7 @@ class TransmissionDataDeviceController extends Controller
         $generateCertificate->device_id = $findCertificate->device_id;
         $generateCertificate->device_model = $findCertificate->device_model;
         $generateCertificate->device_serial_no = $findCertificate->device_serial_no;
-        $generateCertificate->device_software_version = $findCertificate->Device_Software_version;
+        $generateCertificate->device_software_version = $findCertificate->device_software_version;
         $generateCertificate->modility_id = $findCertificate->modility_id;
         $generateCertificate->certificate = $findCertificate->certificate;
         $generateCertificate->certificate_for = $findCertificate->certificate_for;

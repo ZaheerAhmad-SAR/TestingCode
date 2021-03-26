@@ -72,7 +72,7 @@ h1, h2, h3,p {
 					<tr>
 						<td style="font-family: cuprum; font-size: 14px;text-align: right;">Transmission Number(s):</td>
 						<td style="font-family: cuprum; font-size: 14px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-						@if($generateCertificate->certificate_type == 'original' && $generateCertificate->transmissions != '')
+						@if($generateCertificate->transmissions != '')
 							@php
 								$transID = implode(', ',json_decode($generateCertificate->transmissions));
 							@endphp		
@@ -163,7 +163,7 @@ h1, h2, h3,p {
 				</tbody>
 			</table>
 			<p style="font-family: cuprum; font-size: 14px;text-align: justify; text-justify: inter-word;">
-				@if($generateCertificate->certificate_type == 'original' && $generateCertificate->transmissions != '')
+				@if($generateCertificate->transmissions != '')
 					@php
 						$transID = implode(', ',json_decode($generateCertificate->transmissions));
 					@endphp
