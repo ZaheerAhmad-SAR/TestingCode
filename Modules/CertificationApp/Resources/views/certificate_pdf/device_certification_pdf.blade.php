@@ -55,7 +55,7 @@ h1, h2, h3,p {
 }
 </style>
 <!-- <body style="background: #f7f7f7; height: 700px; width:1040px; border: 2px solid red; padding-left: 10px;"> -->
-<body style="background-image: url('{{ asset('public/certification_pdf/Device_Certificate_Background_5.png')}}'); background-repeat: no-repeat;">
+<body style="background-image: url('{{ asset('public/certification_pdf/Device_Certificate_Background.png')}}'); background-repeat: no-repeat; background-position: left 50px;">
 	<div style="width: 100%;">
 		<div style="width: 90%;margin:0 auto;">
 			<p style="text-align: center;font-family: lucida;font-size: 30px;">Ocular Imaging Research and Reading Center</p>
@@ -64,14 +64,14 @@ h1, h2, h3,p {
 			<table style="margin:0 auto;font-size: 16px;">
 				<tbody>
 					<tr>
-						<td style="font-family: cuprum; font-size: 13px;text-align: right;">Certificate ID:</td>
-						<td style="font-family: cuprum; font-size: 13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<td style="font-family: cuprum; font-size: 14px;text-align: right;">Certificate ID:</td>
+						<td style="font-family: cuprum; font-size: 14px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							{{ $generateCertificate->certificate_id}}
 						</td>
 					</tr>
 					<tr>
-						<td style="font-family: cuprum; font-size: 13px;text-align: right;">Transmission Number(s):</td>
-						<td style="font-family: cuprum; font-size: 13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<td style="font-family: cuprum; font-size: 14px;text-align: right;">Transmission Number(s):</td>
+						<td style="font-family: cuprum; font-size: 14px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						@if($generateCertificate->certificate_type == 'original' && $generateCertificate->transmissions != '')
 							@php
 								$transID = implode(', ',json_decode($generateCertificate->transmissions));
@@ -81,14 +81,14 @@ h1, h2, h3,p {
 						</td>
 					</tr>
 					<tr>
-						<td style="font-family: cuprum; font-size: 13px;text-align: right;">Issue Date:</td>
-						<td style="font-family: cuprum; font-size: 13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<td style="font-family: cuprum; font-size: 14px;text-align: right;">Issue Date:</td>
+						<td style="font-family: cuprum; font-size: 14px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							{{ date('M d, Y', strtotime($generateCertificate->issue_date)) }}
 						</td>
 					</tr>
 					<tr>
-						<td style="font-family: cuprum; font-size: 13px;text-align: right;">Valid until:</td>
-						<td style="font-family: cuprum; font-size: 13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						<td style="font-family: cuprum; font-size: 14px;text-align: right;">Valid until:</td>
+						<td style="font-family: cuprum; font-size: 14px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 							{{ date('M d, Y', strtotime($generateCertificate->expiry_date)) }}
 						</td>
 					</tr>
@@ -133,36 +133,36 @@ h1, h2, h3,p {
 						</td>
 					</tr>
 					<tr>
-						<td class="td-bg-color" style="font-family: cuprum; font-size: 13px;text-align: right;border-bottom: 1px solid #84adf9;border-right: 1px solid #84adf9;">Device Modality</td>
-						<td style="font-family: cuprum; font-size: 13px;text-align: center;border-bottom: 1px solid #84adf9;">
+						<td class="td-bg-color" style="font-family: cuprum; font-size: 14px;text-align: right;border-bottom: 1px solid #84adf9;border-right: 1px solid #84adf9;">Device Modality</td>
+						<td style="font-family: cuprum; font-size: 14px;text-align: center;border-bottom: 1px solid #84adf9;">
 							{{$getModality->modility_name}}
 						</td>
 					</tr>
 					<tr>
-						<td class="td-bg-color" style="font-family: cuprum; font-size: 13px;text-align: right;border-bottom: 1px solid #84adf9;border-right: 1px solid #84adf9;">Device Manufacture</td>
-						<td style="font-family: cuprum; font-size: 13px;text-align: center;border-bottom: 1px solid #84adf9;">
+						<td class="td-bg-color" style="font-family: cuprum; font-size: 14px;text-align: right;border-bottom: 1px solid #84adf9;border-right: 1px solid #84adf9;">Device Manufacture</td>
+						<td style="font-family: cuprum; font-size: 14px;text-align: center;border-bottom: 1px solid #84adf9;">
 							{{$getDevice->device_manufacturer}}
 						</td>
 					</tr>
 					<tr>
-						<td class="td-bg-color" style="font-family: cuprum; font-size: 13px;text-align: right;border-bottom: 1px solid #84adf9;border-right: 1px solid #84adf9;">Device Model</td>
-						<td style="font-family: cuprum; font-size: 13px;text-align: center;border-bottom: 1px solid #84adf9;">
+						<td class="td-bg-color" style="font-family: cuprum; font-size: 14px;text-align: right;border-bottom: 1px solid #84adf9;border-right: 1px solid #84adf9;">Device Model</td>
+						<td style="font-family: cuprum; font-size: 14px;text-align: center;border-bottom: 1px solid #84adf9;">
 							{{$getDevice->device_model}}
 						</td>
 					</tr>
 					<tr>
-						<td class="td-bg-color" style="font-family: cuprum; font-size: 13px;text-align: right;border-bottom: 1px solid #84adf9;border-right: 1px solid #84adf9;">Device Serial Number</td>
-						<td style="font-family: cuprum; font-size: 13px;text-align: center;border-bottom: 1px solid #84adf9;">
+						<td class="td-bg-color" style="font-family: cuprum; font-size: 14px;text-align: right;border-bottom: 1px solid #84adf9;border-right: 1px solid #84adf9;">Device Serial Number</td>
+						<td style="font-family: cuprum; font-size: 14px;text-align: center;border-bottom: 1px solid #84adf9;">
 							{{$generateCertificate->device_serial_no}}
 						</td>
 					</tr>
 					<tr>
-						<td class="td-bg-color" style="font-family: cuprum; font-size: 13px;text-align: right;border-right: 1px solid #84adf9;">Software Version</td>
-						<td style="font-family: cuprum; font-size: 13px;text-align: center;">{{$generateCertificate->device_software_version}}</td>
+						<td class="td-bg-color" style="font-family: cuprum; font-size: 14px;text-align: right;border-right: 1px solid #84adf9;">Software Version</td>
+						<td style="font-family: cuprum; font-size: 14px;text-align: center;">{{$generateCertificate->device_software_version}}</td>
 					</tr>
 				</tbody>
 			</table>
-			<p style="font-family: cuprum; font-size: 13px;text-align: justify; text-justify: inter-word;">
+			<p style="font-family: cuprum; font-size: 14px;text-align: justify; text-justify: inter-word;">
 				@if($generateCertificate->certificate_type == 'original' && $generateCertificate->transmissions != '')
 					@php
 						$transID = implode(', ',json_decode($generateCertificate->transmissions));
@@ -175,10 +175,9 @@ h1, h2, h3,p {
 				The sample images submitted to the OIRRC (transmission # {{ $transID }}) relevant to the abovementioned device are compliant with requirements and standards of <strong>{{$getStudy->study_short_name}}</strong> imaging manual. The Ocular Imaging Research and Reading Center (OIRRC) is hereby issuing a certificate for the above-mentioned device for the use to obtain images in the <strong>{{$getStudy->study_short_name}}</strong> study.
 			</p>
 			<!-- <div style="min-height: 15px;width: 100%"></div> -->
-			<p style="font-family: cuprum; font-size: 13px;text-align: justify;text-justify: inter-word;">
+			<p style="font-family: cuprum; font-size: 14px;text-align: justify;text-justify: inter-word;">
 				This certificate is valid for <strong>4 years</strong> from the time it is issued provided that no major modifications, upgrades, updates, or repairs are made during that period. It is the responsibility of the PI and the study team at the Study Site to maintain the integrity of the certification status of the above- mentioned device. Please, communicate with the OIRRC regarding such modifications or other conditions that can possibly affect or compromise the certification status of the device.
 			</p>
-			<br>
 			<p style="font-family: helvetica; font-size: 16px;">
 				Certification Officer
 			</p>
@@ -191,7 +190,7 @@ h1, h2, h3,p {
 			@endif
 			<div style="min-height: 15px;width: 100%"></div>
 			<p style="font-family: helvetica; font-size: 16px;">
-				<strong>{{ date('d/m/Y') }}</strong>
+				<strong>{{ date('m/d/Y') }}</strong>
 			</p>
 			<p style="font-family: helvetica; font-size: 16px;">
 				{{ \Auth::user()->name }}
