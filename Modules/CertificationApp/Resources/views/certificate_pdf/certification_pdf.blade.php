@@ -112,7 +112,7 @@ h1, h2, h3,p {
 							@php
 								$transID = implode(', ',json_decode($generateCertificate->transmissions));
 							@endphp		
-								Transmisson ID: {{ $transID }}
+								Transmission ID: {{ $transID }}
 						@endif
 					</p>
 				</span>

@@ -183,6 +183,7 @@
                                         <th>Study</th>
                                         <th>Site Name</th>
                                         <th>Type</th>
+                                        <th>Issue Date</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                         
@@ -214,6 +215,7 @@
                                             {{ $certifiedDevice->certificate_type}}
                                             </span>
                                         </td>
+                                        <td>{{ date('d-M-Y', strtotime($certifiedDevice->issue_date))}}</td>
                                         <td>
                                             <span class="badge badge-primary">
                                             {{ $certifiedDevice->certificate_status}}
