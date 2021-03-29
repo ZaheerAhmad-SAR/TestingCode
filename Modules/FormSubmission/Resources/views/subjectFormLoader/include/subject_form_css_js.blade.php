@@ -125,7 +125,7 @@
             function putRequiredImage(skipLogicCls) {
                 $('.img_step_status_' + skipLogicCls).html('<img src="{{ url('/') . '/images/' }}no_status.png"/>');
             }
-
+            // whole form Submition
             function submitRequest(frmData, stepIdStr, formType, formStatusIdStr) {
                 $.ajax({
                     url: "{{ route('SubjectFormSubmission.submitStudyPhaseStepQuestionForm') }}",
