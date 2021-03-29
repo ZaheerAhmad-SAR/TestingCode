@@ -18,9 +18,9 @@ if ($step->formType->form_type == 'Grading' && canGrading(['index'])){
 if ($step->formType->form_type == 'Eligibility' && canEligibility(['index'])){
     $showForm = true;
 }
-if ($isPreview ===true){
-    $stepIdStr = buildSafeStr(Request::segment(4), '');
-}
+// if ($isPreview ===true){
+//     $stepIdStr = buildSafeStr(Request::segment(4), '');
+// }
 @endphp
 @if($showForm == true)
 @php
@@ -49,7 +49,6 @@ $getFormStatusArray = [
     'phase_steps_id' => $step->step_id,
     'form_type_id' => $step->form_type_id,
     'modility_id' => $step->modility_id,
-    'form_status' => 'complete',
 ];
 
 $formStatusObjects = \Modules\FormSubmission\Entities\FormStatus::getFormStatusObjArray($getFormStatusArray);

@@ -104,7 +104,7 @@ class TransmissionController extends Controller
          if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
             $field_name = $request->sort_by_field_name;
         }else{
-            $field_name = 'site_code';
+            $field_name = 'id';
         }
         
         if(isset($request->sort_by_field) && $request->sort_by_field !=''){
