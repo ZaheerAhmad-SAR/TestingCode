@@ -39,6 +39,7 @@ class DeviceSiteController extends Controller
 
         $id = (string)Str::uuid();
         $deviceSite = DeviceSite::create([
+
             'id'    => $id,
             'site_id'=> $request->site_id,
             'device_name' => $request->device_name,

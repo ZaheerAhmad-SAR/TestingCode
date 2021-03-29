@@ -156,7 +156,7 @@
                                 <input type="text" name="expiry_date" id="expiry_date" class="form-control expiry_date filter-form-data" value="{{ request()->expiry_date }}">
                             </div>
 
-                            <div class="form-group col-md-2 mt-4">
+                            <div class="form-group col-md-3 mt-4">
                                 <button type="button" class="btn btn-primary reset-filter">Reset</button>
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Record</button>
                             </div>
@@ -178,6 +178,7 @@
                                         <th>Site Name</th>
                                         <th>Image MOdality</th>
                                         <th>Type</th>
+                                        <th>Issue Date</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                         
@@ -209,6 +210,7 @@
                                             {{ $certifiedPhotographer->certificate_type}}
                                             </span>
                                         </td>
+                                        <td>{{ date('d-M-Y', strtotime($certifiedPhotographer->issue_date))}}</td>
                                         <td>
                                             <span class="badge badge-primary">
                                             {{ $certifiedPhotographer->certificate_status}}

@@ -22,6 +22,7 @@ class ProfileTest extends DuskTestCase
             $this->artisan('module:seed');
             static::$migrationRun = true;
         }
+      
     }
     
     /* @test */

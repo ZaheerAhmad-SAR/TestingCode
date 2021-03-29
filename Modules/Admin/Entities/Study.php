@@ -42,7 +42,7 @@ class Study extends Model
 
     public function sites()
     {
-        return $this->belongsToMany(Site::class)->withPivot('study_id', 'site_id');
+        return $this->belongsToMany(Site::class, 'site_study', 'study_id', 'site_id');
     }
 
     public function modalities()

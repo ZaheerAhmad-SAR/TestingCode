@@ -228,17 +228,20 @@ class TransmissionDataPhotographerController extends Controller
         // find transmission
         $findTransmission = TransmissionDataPhotographer::where('id', decrypt($id))->first();
 
+        // transmission study
+        $transmissionStudy = Study::where('study_code', $findTransmission->StudyI_ID)->with(['sites', 'modalities', 'devices'])->first();
+
         // get studies
         $systemStudies = Study::get();
 
-        // get all sites
-        $getSites = Site::get();
+        // get parent modality Id's
+        $getModalityId = ($transmissionStudy != null) ? $transmissionStudy->modalities->pluck('id')->toArray() : [];
+        
+        // get Modalities
+        $getStudyModalities = Modility::whereIn('id', $getModalityId)->get();
 
         // get modality
         $getModalities = Modility::get();
-
-        // get devices
-        $getDevices = Device::get();
 
         // get all the transmission updates
         $getTransmissionUpdates = PhotographerTransmissionUpdateDetail::where('transmission_id', decrypt($id))->get();
@@ -246,7 +249,7 @@ class TransmissionDataPhotographerController extends Controller
         // get templates for email
         $getTemplates = CertificationTemplate::select('id as template_id', 'title as template_title')->get();
 
-        return view('certificationapp::certificate_photographer.edit', compact('findTransmission', 'systemStudies', 'getSites', 'getModalities', 'getDevices', 'getTransmissionUpdates', 'getTemplates'));
+        return view('certificationapp::certificate_photographer.edit', compact('findTransmission', 'systemStudies', 'getModalities', 'getStudyModalities', 'getTransmissionUpdates', 'transmissionStudy', 'getTemplates'));
     }
 
     /**
@@ -296,7 +299,7 @@ class TransmissionDataPhotographerController extends Controller
         }
         // status
         $findTransmission->status = $request->status;
-        $findTransmission->Comments = $request->comments;
+        $findTransmission->oirrc_comment = $request->oirrc_comment;
         $findTransmission->pathology = $request->pathology;
         $findTransmission->save();
         // check for status and also store update details in transmission update table
@@ -1256,9 +1259,9 @@ class TransmissionDataPhotographerController extends Controller
             $certificateType = 'Device Certificate#';
 
             // make array for changings dynamic variable in the text editor
-            $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id, $generateCertificate->device_model, $generateCertificate->device_serial_no, $generateCertificate->user_input_device_id];
+            $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id, $generateCertificate->device_model, $generateCertificate->device_serial_no, $generateCertificate->device_software_version];
 
-            $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[modality_name]]', '[[certificate_id]]', '[[sender_name]]', '[[certificate_status]]', '[[certificate_type]]', '[[issue_date]]', '[[expiry_date]]', '[[grandfather_certificate_id]]', '[[device_model]]', '[[device_serial_no]]', '[[device_id]]'];
+            $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[modality_name]]', '[[certificate_id]]', '[[sender_name]]', '[[certificate_status]]', '[[certificate_type]]', '[[issue_date]]', '[[expiry_date]]', '[[grandfather_certificate_id]]', '[[device_model]]', '[[device_serial_no]]', '[[device_software_version]]'];
 
         } else {
 
@@ -1357,6 +1360,9 @@ class TransmissionDataPhotographerController extends Controller
 
         } else {
 
+            // get device information
+            $getDevice = Device::where('id', $generateCertificate->device_id)->first();
+
             $certificateType = 'Device Certificate#';
 
             $file_name = $generateCertificate->certificate_id . '_' . $getModality->modility_name . '_device.pdf';
@@ -1365,20 +1371,20 @@ class TransmissionDataPhotographerController extends Controller
             if ($request->date_certificate_approve_status == 'yes') {
                 
                 // generate pdf
-                $pdf = PDF::loadView('certificationapp::certificate_pdf.certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('letter')->save($path . '/' . $file_name);
+                $pdf = PDF::loadView('certificationapp::certificate_pdf.device_certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail, 'getModality' => $getModality, 'getDevice' => $getDevice])->setPaper('letter')->save($path . '/' . $file_name);
             
             } else {
 
                 // generate pdf
-                $pdf = PDF::loadView('certificationapp::certificate_pdf.certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail])->setPaper('letter');
+                $pdf = PDF::loadView('certificationapp::certificate_pdf.device_certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail, 'getModality' => $getModality, 'getDevice' => $getDevice])->setPaper('letter');
 
                 return $pdf->stream();
             }
 
             // make array for changings dynamic variable in the text editor
-            $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id, $generateCertificate->device_model, $generateCertificate->device_serial_no, $generateCertificate->user_input_device_id];
+            $variables = [$getPhotographer->first_name, $getPhotographer->last_name, $getStudy->study_code, $getStudy->study_short_name, $getSite->site_code, $getSite->site_name, $getModality->modility_name, $generateCertificate->certificate_id, \Auth::user()->name, $generateCertificate->certificate_status, $generateCertificate->certificate_type, $generateCertificate->issue_date, $generateCertificate->expiry_date, $generateCertificate->grandfather_certificate_id, $generateCertificate->device_model, $generateCertificate->device_serial_no, $generateCertificate->device_software_version];
 
-            $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[modality_name]]', '[[certificate_id]]', '[[sender_name]]', '[[certificate_status]]', '[[certificate_type]]', '[[issue_date]]', '[[expiry_date]]', '[[grandfather_certificate_id]]', '[[device_model]]', '[[device_serial_no]]', '[[device_id]]'];
+            $labels    = ['[[first_name]]', '[[last_name]]', '[[study_code]]', '[[study_name]]', '[[site_code]]', '[[site_name]]', '[[modality_name]]', '[[certificate_id]]', '[[sender_name]]', '[[certificate_status]]', '[[certificate_type]]', '[[issue_date]]', '[[expiry_date]]', '[[grandfather_certificate_id]]', '[[device_model]]', '[[device_serial_no]]', '[[device_software_version]]'];
 
         }
 

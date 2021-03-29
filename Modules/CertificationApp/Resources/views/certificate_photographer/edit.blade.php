@@ -109,7 +109,14 @@
                                     {{$findTransmission->Certification_Type}}
                                     </span>
                                 </div>
+                                
+                                <div class="col-md-12">
+                                    <p class="bg-primary text-center" style="color: #fff; margin: 10px; font-size: 20px;">
+                                    Transmission Data
+                                    </p>
+                                </div>
                                 <hr>
+                                
                                 <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Transmission Number</label>
                                 </div>
@@ -140,7 +147,7 @@
                                     <select name="StudyI_ID" id="StudyI_ID" class="form-control required-data" required>
                                         <option value="">Select Study</option>
                                         @foreach($systemStudies as $study)
-                                        <option @if($study->study_code == $findTransmission->StudyI_ID) selected @endif value="{{ $study->study_code }}">{{$study->study_code}}</option>
+                                        <option @if($study->study_code == $findTransmission->StudyI_ID) selected @endif value="{{ $study->study_code }}">{{$study->study_code.' - '.$study->study_short_name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -163,8 +170,11 @@
                                 <div class="form-group col-sm-3">
                                     <span class="span-text">{{ $findTransmission->Site_ID }}</span>
                                     <select name="Site_ID" id="Site_ID" class="form-control required-data">
+                                        @php
+                                            $getStudySites = ($transmissionStudy != null) ? $transmissionStudy->sites : [];
+                                        @endphp
                                         <option value="">Select Site</option>
-                                        @foreach($getSites as $site)
+                                        @foreach($getStudySites as $site)
                                         <option @if($site->site_code == $findTransmission->Site_ID) selected @endif value="{{$site->id.'__/__'.$site->site_code}}">{{$site->site_code.' - '.$site->site_name}}</option>
                                         @endforeach
                                     </select>
@@ -263,7 +273,7 @@
                                     <span class="span-text">{{ $findTransmission->Requested_certification }}</span>
                                     <select name="Requested_certification" id="Requested_certification" class="form-control required-data" required>
                                         <option value="">Select Modality</option>
-                                        @foreach($getModalities as $modality)
+                                        @foreach($getStudyModalities as $modality)
                                             @php
                                                 $matchingAbbreviation = preg_match("~\b$modality->modility_abbreviation\b~", $findTransmission->Requested_certification);
                                             @endphp
@@ -279,8 +289,11 @@
                                 <div class="form-group col-sm-2">
                                     <span class="span-text">{{ $findTransmission->Device_Model }}</span>
                                     <select name="Device_Model" id="Device_Model" class="form-control required-data">
+                                        @php
+                                            $getStudyDevices = ($transmissionStudy != null) ? $transmissionStudy->devices : [];
+                                        @endphp
                                         <option value="">Select Device</option>
-                                        @foreach($getDevices as $device)
+                                        @foreach($getStudyDevices as $device)
                                         <option @if($device->device_model == $findTransmission->Device_Model) selected @endif value="{{ $device->id.'__/__'.$device->device_model }}">{{ $device->device_name }}</option>
                                         @endforeach
                                     </select>
@@ -400,6 +413,25 @@
 
                                 <!--//////////////////////////// row //////////////////////////// -->
                                 @endif
+
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Transmission Comments</label>
+                                </div>
+                              
+                                <div class="form-group col-sm-3">
+                                    <input type="text" value="{{ $findTransmission->Comments }}" name="transmission_comments" id="transmission_comments" class="form-control" readonly="">
+                                </div>
+
+                                 <div class="form-group col-sm-6">
+                                   
+                                </div>
+
+                                <div class="col-md-12">
+                                    <p class="bg-primary text-center" style="color: #fff; margin: 10px; font-size: 20px;">
+                                    OIRRC Data
+                                    </p>
+                                </div>
+                                <hr>
                                 
                                 <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Status<span class="field-required">*</span></label>
@@ -417,19 +449,19 @@
                                 </div>
 
                                 <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Oirrc Comment</label>
+                                </div>
+
+                                <div class="form-group col-md-9">
+                                    <textarea class="form-control required-data" name="oirrc_comment" id="oirrc_comment" rows="4">{{ $findTransmission->oirrc_comment}}</textarea>
+                                </div>
+
+                                <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Reason for change<span class="field-required">*</span></label>
                                 </div>
 
                                 <div class="form-group col-md-9">
                                     <textarea class="form-control required-data" required="required" name="reason_for_change" id="reason_for_change" rows="4">{{ $findTransmission->status}}</textarea>
-                                </div>
-
-                                <div class="form-group col-sm-3">
-                                    <label for="Name" class="control-label">Comments</label>
-                                </div>
-
-                                <div class="form-group col-md-9">
-                                    <textarea class="form-control required-data" name="comments" id="comments" rows="4">{{ $findTransmission->Comments}}</textarea>
                                 </div>
 
                                 <div class="form-group col-sm-3">

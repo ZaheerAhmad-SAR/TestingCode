@@ -8,5 +8,6 @@
     "Model": true,
     "TransmissionDataDevice": true,
     "BugReporting": true,
-    "Dashboards": true
+    "Dashboards": true,
+    "AddDeviceSoftwareVersionColumToCertificationData": true
 }

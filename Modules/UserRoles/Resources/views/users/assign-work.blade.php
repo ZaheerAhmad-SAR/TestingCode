@@ -130,7 +130,7 @@
 
                             <input type="hidden" name="form_1" value="1" class="form-control">
 
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-4">
                                 <label for="inputState">Subject</label>
                                 <select id="subject" name="subject" class="form-control filter-form-data">
                                     <option value="">All Subject</option>
@@ -140,7 +140,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-4">
                                 <label for="inputState">Phase</label>
                                 <select id="phase" name="phase" class="form-control filter-form-data">
                                     <option value="">All Phase</option>
@@ -151,7 +151,7 @@
                             </div>
 
                             
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-4">
                             
                                 <label for="inputState">Site</label>
                                 <select id="site" name="site" class="form-control filter-form-data">
@@ -163,12 +163,12 @@
                             </div>
 
                            
-                            <div class="form-group col-md-3">
+                            <div class="form-group col-md-4">
                                 <label for="dt">Visit Date</label>
                                 <input type="text" name="visit_date" id="visit_date" class="form-control visit_date filter-form-data" value="{{ request()->visit_date }}">
                             </div>
 
-                            <div class="form-group col-md-2 mt-4">        
+                            <div class="form-group col-md-3 mt-4">        
                                <!--  <button type="button" class="btn btn-primary reset-filter-1">Reset</button> -->
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Records</button>
                                 <button type="button" class="btn btn-primary reset-filter">Reset</button>

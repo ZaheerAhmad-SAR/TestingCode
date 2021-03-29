@@ -5,11 +5,14 @@ namespace Modules\CertificationApp\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\ChildModilities;
 use Modules\Admin\Entities\Device;
-
+use Modules\FormSubmission\Exports\FormSiteDataExport;
+use Modules\FormSubmission\Exports\FormPhotograperDataExport;
+use Modules\FormSubmission\Exports\FormDevicesDataExport;
 use Modules\CertificationApp\Entities\StudyModility;
 use Modules\CertificationApp\Entities\StudyDevice;
 use Modules\CertificationApp\Entities\StudySetup;
@@ -121,6 +124,7 @@ class CertificationPreferencesController extends Controller
         $getModalities = ChildModilities::query();
         $getModalities = $getModalities->select('modilities.id as parent_modility_id', 'modilities.modility_name as parent_modility_name', 'child_modilities.id as child_modility_id', 'child_modilities.modility_name as child_modility_name')
         ->leftjoin('modilities', 'modilities.id', '=', 'child_modilities.modility_id')
+        ->whereNotNull('child_modilities.modility_id')
         ->whereNULL('modilities.deleted_at')
         ->whereNULL('child_modilities.deleted_at');
 
@@ -418,97 +422,37 @@ class CertificationPreferencesController extends Controller
 
         public function showCertificationReportPhotograper(Request $request) {
 
+        $fileName =  'data-photograpers-export-' . date('Y-m-d-h-i-s') . '.xlsx';
 
-              $sites_array = DB::connection('mysql')->table('sites')->where('deleted_at', '=' , NULL)->get();
-
-              $result_old  = DB::connection('mysql2')->table('site')
-               ->select('photographer_data.site_id','photographer_data.email_address')
-               ->join('photographer_data', 'photographer_data.site_id', '=', 'site.OIIRC_id')
-               ->groupBy('photographer_data.email_address')
-               //->groupBy('photographer_data.email_address')
-               ->get();
-              //->toSql();
-             // dd($result_old);
-                
-         
-              $result_new = DB::connection('mysql')->table('sites')
-               ->select('photographers.email','sites.site_code')
-               ->join('photographers', 'sites.id', '=', 'photographers.site_id')
-               
-               ->get(); 
-
-                   foreach($result_old as $site_array)
-                   {
-                                
-
-
-               $result_arry= $this->multidimensional_search($result_new, array('email'=>$site_array->email_address, 'site_code'=>$site_array->site_id));
-               dd($result_arry);
-        }
-
-
-
-
-       // return view('certificationapp::certificate_preferences.certification_report_photograper', compact('sites_array', 'result_old','result_new'));
+        return Excel::download(new FormPhotograperDataExport($request), $fileName);
       
        
 
     }
 
 
-       /**
- * @param array multidimensional 
- * @param string $search_value The value to search for, ie a specific 'Taylor'
- * @param string $key_to_search The associative key to find it in, ie first_name
- * @param string $other_matching_key The associative key to find in the matches for employed
- * @param string $other_matching_value The value to find in that matching associative key, ie true
- * 
- * @return array keys, ie all the people with the first name 'Taylor' that are employed.
- */
- function search_revisions($dataArray, $search_value, $key_to_search, $other_matching_value = null, $other_matching_key = null) {
-    // This function will search the revisions for a certain value
-    // related to the associative key you are looking for.
-    $keys = array();
-    foreach ($dataArray as $key => $cur_value) {
-        if ($cur_value[$key_to_search] == $search_value) {
-            if (isset($other_matching_key) && isset($other_matching_value)) {
-                if ($cur_value[$other_matching_key] == $other_matching_value) {
-                    $keys[] = $key;
-                }
-            } else {
-                // I must keep in mind that some searches may have multiple
-                // matches and others would not, so leave it open with no continues.
-                $keys[] = $key;
-            }
-        }
-    }
-    return $keys;
-}
+
 
 
         public function showCertificationReportDevices(Request $request) {
 
 
-              $sites_array = DB::connection('mysql')->table('sites')->where('deleted_at', '=' , NULL)->get();
 
-              $result_old  = DB::connection('mysql2')->table('site')
-               ->select('site.site_id','site.site_title','site.OIIRC_id', DB::raw('COUNT(photographer_data.site_id_db) AS photograpers_count'))
-               ->join('photographer_data', 'site.site_id', '=', 'photographer_data.site_id_db')
-               ->groupBy('site.site_id')
-               ->get();
+        $fileName =  'data-devices-export-' . date('Y-m-d-h-i-s') . '.xlsx';
 
-              $result_new = DB::connection('mysql')->table('sites')
-               ->select('sites.id','sites.site_name','sites.site_code', DB::raw('COUNT(photographers.site_id) AS photograpers_count'))
-               ->join('photographers', 'sites.id', '=', 'photographers.site_id')
-               ->groupBy('sites.id')
-               ->get();
-
-
-
-        return view('certificationapp::certificate_preferences.certification_report_photograper', compact('sites_array', 'result_old','result_new'));
+        return Excel::download(new FormDevicesDataExport($request), $fileName);
       
        
 
+    }
+
+      public function exportSites(Request $request)
+    {
+      
+
+        $fileName =  'data-site-export-' . date('Y-m-d-h-i-s') . '.xlsx';
+
+        return Excel::download(new FormSiteDataExport($request), $fileName);
     }
 
 

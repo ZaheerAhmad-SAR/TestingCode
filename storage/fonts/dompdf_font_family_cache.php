@@ -77,6 +77,9 @@
     'italic' => $rootDir . '/lib/fonts/DejaVuSerif-Italic',
     'normal' => $rootDir . '/lib/fonts/DejaVuSerif',
   ),
+  'roboto' => array(
+    'normal' => $fontDir . '/roboto-normal_cf99a9d56c411ce3fa8a2fc49c520e74',
+  ),
   'lucida' => array(
     'normal' => $fontDir . '/lucida-normal_97d599b4e286474e6017b186418a0ee1',
   ),
@@ -86,7 +89,16 @@
   'optima' => array(
     'normal' => $fontDir . '/optima-normal_3710aa78113ce5005f2d90e92aa8573e',
   ),
-  'roboto' => array(
-    'normal' => $fontDir . '/roboto-normal_cf99a9d56c411ce3fa8a2fc49c520e74',
+  'arial' => array(
+    'normal' => $fontDir . '/arial-normal_8d659865008d6e3e97e52d1ae9fbc2af',
+  ),
+  'tohoma' => array(
+    'normal' => $fontDir . '/tohoma-normal_4aa165bbfa5a1b1b643903e61ec089cf',
+  ),
+  'tahoma' => array(
+    'normal' => $fontDir . '/tahoma-normal_1dacc013b4d4810adf71ed7d02ae797a',
+  ),
+  'cuprum' => array(
+    'normal' => $fontDir . '/cuprum-normal_a5e327605fa689ea93644fa32993e220',
   ),
 ) ?>
