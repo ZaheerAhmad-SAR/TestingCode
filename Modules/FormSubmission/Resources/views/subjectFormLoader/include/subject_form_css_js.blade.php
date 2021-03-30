@@ -28,25 +28,24 @@
             }
 
             function disableAllFormFields(id) {
+                console.log('dis => #'+id);
                 //console.log('disableAllFormFields : ' + id);
-                $("#" + id + " :input").attr('disabled', true);
-                $("#" + id + " textarea").attr('disabled', true);
-                $("#" + id + " select").attr('disabled', true);
+                $("#" + id + " :input").prop('disabled', true);
+                $("#" + id + " textarea").prop('disabled', true);
+                $("#" + id + " select").prop('disabled', true);
             }
-
+            function enableAllFormFields(id) {
+                console.log('ena => #'+id);
+                $("#" + id + " :input").prop('disabled', false);
+                $("#" + id + " textarea").prop('disabled', false);
+                $("#" + id + " select").prop('disabled', false);
+            }
             function makeReadOnly(cls) {
                 $("." + cls + " :input").prop('readonly', true);
             }
 
             function removeReadOnly(cls) {
                 $("." + cls + " :input").prop('readonly', false);
-            }
-
-            function enableAllFormFields(id) {
-                //console.log('enableAllFormFields : ' + id);
-                $("#" + id + " :input").attr('disabled', false);
-                $("#" + id + " textarea").attr('disabled', false);
-                $("#" + id + " select").attr('disabled', false);
             }
 
             function disableField(fieldId) {
@@ -74,7 +73,7 @@
             }
 
             function enableByClass(cls) {
-                //console.log('enableByClass : ' + cls);
+                console.log('enableByClass : ' + cls);
                 $("." + cls).prop('disabled', false);
                 $("." + cls + " :input").prop('disabled', false);
                 $("." + cls + " select").prop('disabled', false);
