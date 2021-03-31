@@ -5754,3 +5754,6 @@ path.domain {
         float: left;
     }
 }
+.bg-disabled{
+    background: #D8DCDF !important;
+}
