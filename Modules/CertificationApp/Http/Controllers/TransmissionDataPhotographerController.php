@@ -23,6 +23,7 @@ use Modules\Admin\Entities\PrimaryInvestigator;
 use Modules\Admin\Entities\Photographer;
 use Modules\CertificationApp\Entities\StudyDevice;
 use Modules\Admin\Entities\DeviceModility;
+use Modules\UserRoles\Entities\Permission;
 use Mail;
 use Session;
 use Illuminate\Support\Str;
@@ -64,6 +65,17 @@ class TransmissionDataPhotographerController extends Controller
         if ($request->site != '') {
 
             $getTransmissions = $getTransmissions->where('Site_Name', 'like', '%' . $request->site . '%');
+        }
+
+        if ($request->created_at != '') {
+                $createdAt = explode('-', $request->created_at);
+                $from   = Carbon::parse($createdAt[0])
+                                    ->startOfDay()        // 2018-09-29 00:00:00.000000
+                                    ->toDateTimeString(); // 2018-09-29 00:00:00
+                $to     = Carbon::parse($createdAt[1])
+                                    ->endOfDay()          // 2018-09-29 23:59:59.000000
+                                    ->toDateTimeString(); // 2018-09-29 23:59:59
+            $getTransmissions =  $getTransmissions->whereBetween('created_at', [$from, $to]);
         }
 
         if ($request->status != '') {
@@ -168,7 +180,6 @@ class TransmissionDataPhotographerController extends Controller
             }
 
             // get linked transmissions
-
             $getLinkedTransmissions = TransmissionDataPhotographer::select('id', 'Transmission_Number', 'status', 'pathology')
                     ->where('StudyI_ID', $transmission->StudyI_ID)
                     ->where('Photographer_email', $transmission->Photographer_email)
@@ -178,15 +189,37 @@ class TransmissionDataPhotographerController extends Controller
                     ->get()
                     ->toArray();
 
+            // get capture date
+             // check for same capture date
+            $checkCaptureDate = TransmissionDataPhotographer::select(\DB::raw('COUNT(id) as count'), 'date_of_capture')
+                                                        ->where('StudyI_ID', $transmission->StudyI_ID)
+                                                        ->where('Photographer_email', $transmission->Photographer_email)
+                                                        ->where('Requested_certification', $transmission->Requested_certification)
+                                                        ->where('Site_ID', $transmission->Site_ID)
+                                                        ->where('archive_transmission', 'no')
+                                                        ->whereNotNull('date_of_capture')
+                                                        ->groupBy('date_of_capture')
+                                                        ->having('count', '>=', 2)
+                                                        ->get();
+            $captureStatus = 'no';
+            if(!$checkCaptureDate->isEmpty()) {
+                $captureStatus = 'yes';
+            }
+
             $transmission->linkedTransmission = $getLinkedTransmissions;
             // assign status
             $transmission->certificateStatus = $certificateStatus;
+            // assign capture date status
+            $transmission->captureStatus = $captureStatus;
         } // loop ends
+
+        // get certification officer users
+        $getCertificationOfficers = Permission::getCertificationOfficer();
 
         // get templates for email
         $getTemplates = CertificationTemplate::select('id as template_id', 'title as template_title')->get();
 
-        return view('certificationapp::certificate_photographer.index', compact('getTransmissions', 'getTemplates'));
+        return view('certificationapp::certificate_photographer.index', compact('getTransmissions', 'getCertificationOfficers', 'getTemplates'));
     }
 
     /**
@@ -301,6 +334,8 @@ class TransmissionDataPhotographerController extends Controller
         $findTransmission->status = $request->status;
         $findTransmission->oirrc_comment = $request->oirrc_comment;
         $findTransmission->pathology = $request->pathology;
+        $findTransmission->date_of_capture = $request->date_of_capture;
+        $findTransmission->assign_to = \Auth::id();
         $findTransmission->save();
         // check for status and also store update details in transmission update table
         $transmissionUpdateDetails = new PhotographerTransmissionUpdateDetail;
@@ -409,8 +444,8 @@ class TransmissionDataPhotographerController extends Controller
         $data = [];
         $data['email_body'] = str_replace($labels, $variables, $request->comment);
         $senderEmail = $request->photographer_user_email;
-        $ccEmail = $request->cc_email != null ? $request->cc_email : '';
-        $bccEmail = $request->bcc_email != null ? $request->bcc_email : '';
+        $ccEmail = $request->cc_email != '' ? explode(',',$request->cc_email) : '';
+        $bccEmail = $request->bcc_email != '' ? explode(',',$request->bcc_email) : '';
         // send email to users
         Mail::send('certificationapp::emails.photographer_transmission_email', $data, function($message) use ($senderEmail, $ccEmail, $bccEmail, $findTransmission, $getSite)
         {
@@ -1472,6 +1507,27 @@ class TransmissionDataPhotographerController extends Controller
             $message->attach($path.'/'.$generateCertificate->certificate_file_name);
         });
 
+    }
+
+    public function assignPhotographerTransmission(Request $request) {
+        // loop through the transmissions
+        $input = $request->all();
+        foreach($input['check_transmission'] as $key => $value) {
+
+            // find the transmission
+            $transmission = TransmissionDataPhotographer::find($key);
+            // update the certification officer for transmission
+            $updateTransmission = TransmissionDataPhotographer::where('StudyI_ID', $transmission->StudyI_ID)
+                                                                ->where('Photographer_email', $transmission->Photographer_email)
+                                                                ->where('Requested_certification', $transmission->Requested_certification)
+                                                                ->where('Site_ID', $transmission->Site_ID)
+                                                                ->where('archive_transmission', 'no')
+                                                                ->update(['assign_to' => $input['certification_officer_id']]);
+
+        }
+        // success message
+        \Session::flash('success', 'Transmission assigned successfully.');
+        return back();
     }
 
 }

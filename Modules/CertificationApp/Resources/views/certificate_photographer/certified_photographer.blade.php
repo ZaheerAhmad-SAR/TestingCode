@@ -1083,6 +1083,39 @@
 
     });
 
+    /************************ Grand fathering cc, bcc_emails *****************************/
+    $('#study').change(function() {
+        if ($(this).val() != '') {
+            
+            $.ajax({
+                url: '{{ route("get-grandfather-certifictae-emails") }}',
+                type: 'GET',
+                data: {
+                    'study_id': $(this).val(),
+                },
+                success:function(data) {
+
+                   // refresh the select2
+                    $('#cc_user_email').empty();
+                    $('#bcc_user_email').empty();
+
+                    // assign cc and bcc emails
+                    $.each(data.userEmails, function(index, value) {
+                                                
+                        $('#cc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+                    });
+
+                    $.each(data.userBCCEmails, function(index, value) {
+                                                
+                        $('#bcc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+                    });
+                    
+                } // success ends
+
+            }); // ajax ends
+        } // null check ends
+    });
+
 </script>
 
 @endsection
