@@ -33,6 +33,15 @@
 	// approve photographer provisional certificate
 	Route::post('approve-photographer-provisional-certificate', 'TransmissionDataPhotographerController@approvePhotographerProvisionalCertificate')->name('approve-photographer-provisional-certificate');
 
+	// assign device transmission to certification officer
+	Route::post('assign-device-transmission', 'TransmissionDataDeviceController@assignDeviceTransmission')->name('assign-device-transmission');
+
+	// assign photographer transmission to certification officer
+	Route::post('assign-photographer-transmission', 'TransmissionDataPhotographerController@assignPhotographerTransmission')->name('assign-photographer-transmission');
+
+	// get study emails for grand fatering certificate
+	Route::get('get-grandfather-certifictae-emails', 'CertificationPreferencesController@getGrandFatherCertificateEmails')->name('get-grandfather-certifictae-emails');
+
 
 Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
