@@ -26,8 +26,8 @@ $dataArray = ['question'=> $question, 'field_name'=> $field_name,
 
 
 @php
-$adjudicationQuestionValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidationForQuestion($question, true);
-$questionDependencyStr = Modules\Admin\Entities\Question::generateQuestionDependencyFunction($question, true);
+
+
 
 $questionSkipLogicStr = Modules\Admin\Entities\Question::generateQuestionSkipLogicFunction($question, true);
 $checkQuestionSkipLogicStr = Modules\Admin\Entities\Question::generateCheckQuestionSkipLogicFunction($question, true);
@@ -37,14 +37,11 @@ $cohortSkipLogicStr = Modules\Admin\Entities\StudyStructure::generateCohortSkipL
 $checkCohortSkipLogicStr = Modules\Admin\Entities\StudyStructure::generateCheckCohortSkipLogicFunction($phase, true);
 $checkCohortSkipLogicStrPageLoad = Modules\Admin\Entities\StudyStructure::generateCheckCohortSkipLogicFunctionForPageLoad($phase, true);
 
+$questionDependencyStr = Modules\Admin\Entities\Question::generateQuestionDependencyFunction($question, true);
+$adjudicationQuestionValidationStr = Modules\Admin\Entities\PhaseSteps::generateJSFormValidationForQuestion($question, true);
 @endphp
 
-@push('script')
-<script>
-{!! $adjudicationQuestionValidationStr !!}
-{!! $questionDependencyStr !!}
-</script>
-@endpush
+
 
 @push('script_skip_logic')
 <script>
@@ -55,5 +52,12 @@ $checkCohortSkipLogicStrPageLoad = Modules\Admin\Entities\StudyStructure::genera
 {!! $cohortSkipLogicStr !!}
 {!! $checkCohortSkipLogicStr !!}
 {!! $checkCohortSkipLogicStrPageLoad !!}
+</script>
+@endpush
+
+@push('script')
+<script>
+{!! $adjudicationQuestionValidationStr !!}
+{!! $questionDependencyStr !!}
 </script>
 @endpush
