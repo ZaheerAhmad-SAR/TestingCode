@@ -36,11 +36,11 @@ trait JSQuestionSkipLogic
 
         return '
         function ' . $checkFunctionName . $questionIdStr . '(){
-            console.log(\'' . $checkFunctionName . $questionIdStr . '\');
+
             ' . $questionSkipLogicStr . '
         }';
     }
-
+    // console.log(\'' . $checkFunctionName . $questionIdStr . '\'); get from above function
     public static function generateQuestionSkipLogicFunction($question, $isForAdjudication = false)
     {
         $questionSkipLogicStr = '';

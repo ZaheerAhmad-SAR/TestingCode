@@ -28,17 +28,22 @@
             }
 
             function disableAllFormFields(id) {
-                console.log('dis => #'+id);
-                //console.log('disableAllFormFields : ' + id);
                 $("#" + id + " :input").prop('disabled', true);
                 $("#" + id + " textarea").prop('disabled', true);
                 $("#" + id + " select").prop('disabled', true);
+                // Add backgroud color
+                $("#" + id + " :input").addClass('bg-disabled');
+                $("#" + id + " textarea").addClass('bg-disabled');
+                $("#" + id + " select").addClass('bg-disabled');
             }
             function enableAllFormFields(id) {
-                console.log('ena => #'+id);
                 $("#" + id + " :input").prop('disabled', false);
                 $("#" + id + " textarea").prop('disabled', false);
                 $("#" + id + " select").prop('disabled', false);
+                // Add backgroud color
+                $("#" + id + " :input").removeClass('bg-disabled');
+                $("#" + id + " textarea").removeClass('bg-disabled');
+                $("#" + id + " select").removeClass('bg-disabled');
             }
             function makeReadOnly(cls) {
                 $("." + cls + " :input").prop('readonly', true);
@@ -50,14 +55,15 @@
 
             function disableField(fieldId) {
                 $("#" + fieldId).prop('disabled', true);
+                $("#" + fieldId).addClass('bg-disabled');
             }
 
             function enableField(fieldId) {
                 $("#" + fieldId).prop('disabled', false);
+                $("#" + fieldId).removeClass('bg-disabled');
             }
 
             function disableByClass(cls) {
-                //console.log('disableByClass : ' + cls);
                 $("." + cls).prop('disabled', true);
                 $("." + cls + " :input").prop('disabled', true);
                 $("." + cls + " textarea").prop('disabled', true);
@@ -73,7 +79,6 @@
             }
 
             function enableByClass(cls) {
-                console.log('enableByClass : ' + cls);
                 $("." + cls).prop('disabled', false);
                 $("." + cls + " :input").prop('disabled', false);
                 $("." + cls + " select").prop('disabled', false);
@@ -337,7 +342,7 @@
                 var checkedCheckBoxes = [];
 
                 if ($('#' + fieldId + '_' + stepIdStr).prop('type') == "file") {
-                    if ($('#' + fieldId + '_' + stepIdStr).prop('disabled') == false) {
+                    if ($('#' + fieldId + '_' + stepIdStr).attr('disabled') == false) {
                         var file = document.getElementById(fieldId + '_' + stepIdStr);
                         var divHtml = document.getElementById('file_upload_files_div_' + fieldId).innerHTML;
                         if(file.files.length == 0 && divHtml == '' ){
