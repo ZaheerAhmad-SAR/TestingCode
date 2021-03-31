@@ -115,6 +115,7 @@
             function validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, questionIdStr, field_name, fieldId) {
                 if(canSubmitAdjudicationForm(stepIdStr)){
                     if(needToPutAdjudicationFormInEditMode(stepIdStr) == false) {
+                        // I Remove comments from here
                         if(window['validateAdjudicationQuestion' + questionIdStr](true, stepIdStr)){
                             if(eval("typeof " + window['checkQuestionSkipLogicForAdjudication' + questionIdStr]) != 'undefined'){
                                 window['checkQuestionSkipLogicForAdjudication' + questionIdStr]();
