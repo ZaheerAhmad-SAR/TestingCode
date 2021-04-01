@@ -81,13 +81,13 @@
     'normal' => $fontDir . '/roboto-normal_cf99a9d56c411ce3fa8a2fc49c520e74',
   ),
   'lucida' => array(
-    'normal' => $fontDir . '/lucida-normal_97d599b4e286474e6017b186418a0ee1',
+    'normal' => $fontDir . '/lucida-normal_906305ea6c97fd8901a84d127a7753a5',
   ),
   'futura' => array(
-    'normal' => $fontDir . '/futura-normal_81f3dcc0b0ae4db4be88da40164630c1',
+    'normal' => $fontDir . '/futura-normal_f917a1c418dd9a9319df5805f597cc59',
   ),
   'optima' => array(
-    'normal' => $fontDir . '/optima-normal_3710aa78113ce5005f2d90e92aa8573e',
+    'normal' => $fontDir . '/optima-normal_7697e03db1547c3cacecb8b4e6f42f95',
   ),
   'arial' => array(
     'normal' => $fontDir . '/arial-normal_8d659865008d6e3e97e52d1ae9fbc2af',

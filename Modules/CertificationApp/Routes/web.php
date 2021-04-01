@@ -21,14 +21,8 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-	// approve device certificate
-	Route::post('approve-device-certificate', 'TransmissionDataDeviceController@approveDeviceCertificate')->name('approve-device-certificate');
-
 	// approve grand father device certificate
 	Route::post('approve-device-grandfather-certificate', 'TransmissionDataDeviceController@approveGrandFatherDeviceCertificate')->name('approve-device-grandfather-certificate');
-
-	// approve photographer certificate
-	Route::post('approve-photographer-certificate', 'TransmissionDataPhotographerController@approvePhotographerCertificate')->name('approve-photographer-certificate');
 
 	// approve photographer provisional certificate
 	Route::post('approve-photographer-provisional-certificate', 'TransmissionDataPhotographerController@approvePhotographerProvisionalCertificate')->name('approve-photographer-provisional-certificate');
@@ -57,11 +51,10 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 // get template data ajax
 	Route::get('showreport', 'CertificationPreferencesController@showCertificationReport')->name('showreport'); ///	
 
-	// get template data ajax
-	Route::get('showreportdevices', 'CertificationPreferencesController@showCertificationReportDevices')->name('showreportdevices'); ///	
-
-		// get template data ajax
-	Route::get('showreportphotographer', 'CertificationPreferencesController@showCertificationReportPhotograper')->name('showreportphotographer'); ///
+// get template data ajax
+Route::get('showreportdevices', 'CertificationPreferencesController@showCertificationReportDevices')->name('showreportdevices'); ///	
+// get template data ajax
+Route::get('showreportphotographer', 'CertificationPreferencesController@showCertificationReportPhotograper')->name('showreportphotographer'); ///
 
 // update certification template
 	Route::post('update-certification-template', 'CertificationPreferencesController@updateTemplate')->name('update-certification-template'); ////
