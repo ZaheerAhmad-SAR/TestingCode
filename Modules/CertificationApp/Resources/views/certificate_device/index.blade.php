@@ -38,6 +38,21 @@
             cursor: text;
         }
 
+        div#cc_user_email_tagsinput {
+            width: 100% !important;
+            min-height: 42px !important;
+            /*height: 30px !important;*/
+            overflow: hidden !important;
+        }
+
+
+        div#bcc_user_email_tagsinput {
+            width: 100% !important;
+            min-height: 42px !important;
+            /*height: 30px !important;*/
+            overflow: hidden !important;
+        }
+
         .span-text {
             color: red;
         }
@@ -48,6 +63,9 @@
     </style>
 
     <link rel="stylesheet" href="{{ asset('public/dist/vendors/summernote/summernote-bs4.css') }}">
+
+    <!-- tag based input -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-tagsinput/1.3.6/jquery.tagsinput.min.css" rel="stylesheet">
 
     <!-- date range picker -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
@@ -366,7 +384,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-            <form action="{{ route('approve-device-certificate') }}" method="POST" class="generate-certificate-form">
+            <form action="{{ route('generate-device-certificate') }}" method="POST" class="generate-certificate-form">
                 @csrf
               <div class="modal-body">
                     <input type="hidden" name="hidden_transmission_id" class="hidden_transmission_id" value="">
@@ -428,18 +446,14 @@
                         </Select>
                     </div>
 
-                     <div class="form-group col-md-12 suspend-certificate-div">
+                    <div class="form-group col-md-12">
                         <label class="edit_users">CC Email</label>
-                        <Select class="form-control cc_user_email data-required" name="cc_user_email[]" id="cc_user_email" multiple>
-
-                        </Select>
+                        <input type="text" class="form-control cc_user_email" name="cc_user_email" id="cc_user_email" value="">
                     </div>
 
                     <div class="form-group col-md-12">
                         <label class="edit_users">BCC Email</label>
-                        <Select class="form-control bcc_user_email" name="bcc_user_email[]" id="bcc_user_email" multiple="multiple">
-
-                        </Select>
+                        <input type="text" class="form-control bcc_user_email" name="bcc_user_email" id="bcc_user_email" value="">
                     </div>
 
                     <div class="form-group col-md-12">
@@ -484,6 +498,9 @@
 @section('script')
 
 <script src="{{ asset('public/dist/vendors/summernote/summernote-bs4.js') }}"></script>
+
+<!-- tag based input -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-tagsinput/1.3.6/jquery.tagsinput.min.js"></script>
 
 <!-- date range picker -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
@@ -578,28 +595,8 @@
 
     });
 
-    $('#cc_user_email').select2();
-    $('#bcc_user_email').select2();
+    // assignment select2
     $('#certification_officer_id').select2();
-    
-    // // on status change
-    // $('#certification_status').change(function() {
-    //     // if this is the value show all div other vice hide the other divs
-    //     if($(this).val() == 'provisional' || $(this).val() == 'full') {
-            
-    //         // show div
-    //         $('.suspend-certificate-div').css('display', 'block');
-    //         // and apply required
-    //         $('.data-required').attr('required', true);
-        
-    //     } else {
-
-    //         // show div
-    //         $('.suspend-certificate-div').css('display', 'none');
-    //         // and apply required
-    //         $('.data-required').attr('required', false);
-    //     }
-    // });
 
     // reset filter form
     $('.reset-filter').click(function(){
@@ -610,7 +607,12 @@
         $('.filter-form').submit();
     });
 
-     function generateCertificate(transmissionID, certificateID, route, type) {
+    /***************************************** Generate Certificate ******************************/
+    // initiallize tags
+    $('#cc_user_email').tagsInput();
+    $('#bcc_user_email').tagsInput();
+
+    function generateCertificate(transmissionID, certificateID, route, type) {
 
         if(type == 'Provisional') {
             // chnage form action and assign certification ID
@@ -624,18 +626,15 @@
         // assign transmission ID
         $('.hidden_transmission_id').val(transmissionID);
         // assign file key
-        $('.pdf_key').val(Math.random().toString(36).substr(2, 16));
+        $('.pdf_key').val('view pdf');
         // enable approve pdf button
         $('.approve-pdf').attr('disabled', false);
         // disable generate button
         $('.generate-pdf').attr('disabled', true);
         // make form target blank
         $('.generate-certificate-form').attr('target', '_blank');
-        // give default url
-         $('.generate-certificate-form').attr("action", "{{ route('approve-device-certificate')}}");
 
         // by default values
-        // $('#certification_status').val('');
         $('#certificate_type').val('');
         $('#issue_date').val('');
 
@@ -650,10 +649,6 @@
         $('#certificate_for').empty();
         // empty user email
         $('.user_email').empty();
-
-        // refresh the select2
-        $('#cc_user_email').empty();
-        $('#bcc_user_email').empty();
 
         // hide error message
         $('.edit-error-field').css('display', 'none');
@@ -727,37 +722,32 @@
                 if(data.ccEmails != null) {
 
                     $.each(data.ccEmails, function(index, value) {
-                                    
-                        $('#cc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+                        // remove old tag
+                        $('#cc_user_email').removeTag(value);
+                        //append new value
+                        $('#cc_user_email').addTag(value);
                     });
-
-                } else {
-
-                    $('#cc_user_email').empty();
                 }
                 // ------------------------------------- user cc email ends----------------------//
 
                 if(data.bccEmails != null) {
 
                     $.each(data.bccEmails, function(index, value) {
-                                
-                        $('#bcc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+                        // remove old tag
+                        $('#bcc_user_email').removeTag(value);
+                        // append new tag
+                        $('#bcc_user_email').addTag(value);
                     });
-
-                } else {
-
-                    $('#bcc_user_email').empty();
                 }
                 // ------------------------------------- user bcc email ends----------------------//
                
-
             } // success ends
 
         }); // ajax ends
 
     }
 
-        // certification type change
+    // certification type change
     $('#certificate_type').change(function() {
 
         if($(this).val() == 'original') {
@@ -790,7 +780,6 @@
         }
 
     });
-
 
     // form submit
     $('.generate-certificate-form').submit(function(e) {
@@ -849,11 +838,13 @@
 
     $('.generate-pdf').click(function(){
 
+        // set pdf key
+        $('.pdf_key').val('generate pdf');
         // make form target blank
         $('.generate-certificate-form').removeAttr('target');
         // give default url
         $('.generate-certificate-form').attr("action", "{{ route('generate-device-certificate')}}");
-
+        // submit the form
         $('.generate-certificate-form').submit();
 
     });
