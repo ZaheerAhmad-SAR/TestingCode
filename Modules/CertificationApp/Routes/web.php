@@ -24,9 +24,6 @@
 	// approve grand father device certificate
 	Route::post('approve-device-grandfather-certificate', 'TransmissionDataDeviceController@approveGrandFatherDeviceCertificate')->name('approve-device-grandfather-certificate');
 
-	// approve photographer provisional certificate
-	Route::post('approve-photographer-provisional-certificate', 'TransmissionDataPhotographerController@approvePhotographerProvisionalCertificate')->name('approve-photographer-provisional-certificate');
-
 	// assign device transmission to certification officer
 	Route::post('assign-device-transmission', 'TransmissionDataDeviceController@assignDeviceTransmission')->name('assign-device-transmission');
 

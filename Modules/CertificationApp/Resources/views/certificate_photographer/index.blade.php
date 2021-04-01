@@ -219,7 +219,7 @@
                                                 @if ($transmission->certificateStatus['status'] == 'provisional')
                                                 
                                                 @if(hasPermission(auth()->user(),'generate-photographer-certificate'))
-                                                    <a href="javascript:void()" id="generate-certification" data-id="" title="Provisional Certified" class="badge badge-warning" onClick="generateCertificate('{{$transmission->id}}', '{{ $transmission->certificateStatus['certificate_id'] }}', '{{ route('approve-photographer-provisional-certificate')}}', 'Provisional')">
+                                                    <a href="javascript:void()" id="generate-certification" data-id="" title="Provisional Certified" class="badge badge-warning" onClick="generateCertificate('{{$transmission->id}}', '{{ $transmission->certificateStatus['certificate_id'] }}', '{{ route('update-photographer-provisonal-certificate')}}', 'Provisional')">
                                                         Provisional Certified
                                                     </a>
                                                 @else
