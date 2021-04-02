@@ -211,7 +211,7 @@ class TransmissionController extends Controller
     {
 
         // remove the upper section
-        $explodeGetCFtPTrans = explode('<?xml', $request);
+        $explodeGetCFtPTrans = explode('<?xml', $request->data);
 
         // concatinate xml with the remaining  xml
         $xml = '<?xml' . $explodeGetCFtPTrans[1];
@@ -224,7 +224,7 @@ class TransmissionController extends Controller
         if ($checkTransmissionNumber == null) {
 
             $saveData = DB::table('crush_ftp_transmissions')->insert([
-                'data'                      => $request,
+                'data'                      => $request->data,
                 'Transmission_Number'       => $xml->Transmission_Number,
                 'Study_Name'                => $xml->Study_Name,
                 'StudyI_ID'                 => $xml->StudyI_ID,
@@ -969,5 +969,33 @@ class TransmissionController extends Controller
         } else {
             echo  view('admin::transmissions.queries_reply_view', compact('record'));
         }
+    }
+
+    // get photographer email from table
+    public function getPhotographerEmailForTransmission(Request $request) {
+
+        // get Emails
+        $getEmails = CrushFtpTransmission::all();
+
+        foreach($getEmails as $key => $value) {
+
+            // remove the upper section
+            $explodeGetCFtPTrans = explode('<?xml', $value->data);
+
+            // concatinate xml with the remaining  xml
+            $xml = '<?xml' . $explodeGetCFtPTrans[1];
+
+            $xml    = simplexml_load_string($xml);
+
+            $updateData = DB::table('crush_ftp_transmissions')->where('Transmission_Number', $value->Transmission_Number)
+                                                              ->update([
+                                                                    'photographer_full_name'    => $xml->photographer_full_name,
+                                                                    'photographer_email'        => $xml->photographer_email,
+                                                                    'photographer_ID'           => $xml->photographer_ID,
+                                                               ]);
+
+        } // loop ends
+
+        echo "Records updated successfully.";
     }
 }

@@ -87,6 +87,11 @@ class TransmissionDataDeviceController extends Controller
             $getTransmissions = $getTransmissions->where('status', $request->status);
         }
 
+        if ($request->officer_id != '') {
+
+            $getTransmissions = $getTransmissions->where('assign_to', $request->officer_id);
+        }
+
         $getTransmissions = $getTransmissions->where('archive_transmission', 'no')
             ->groupBy(['StudyI_ID', 'Request_MadeBy_Email', 'Requested_certification', 'Site_ID', 'Device_Serial'])
             ->orderBy('id', 'desc')->orderBy('id', 'desc')
@@ -431,7 +436,7 @@ class TransmissionDataDeviceController extends Controller
                 $message->bcc($bccEmail);
             }
         });
-        
+
     }
 
     /**
@@ -699,22 +704,26 @@ class TransmissionDataDeviceController extends Controller
         return view('certificationapp::certificate_device.certified_device', compact('getCertifiedDevice', 'getStudies', 'getTemplates', 'getParentModality', 'getChildModality'));
     }
 
-    public function approveGrandFatherDeviceCertificate(Request $request)
-    {
+    public function generateDeviceGrandfatherCertificate(Request $request) {
+
         $findCertificate = CertificationData::where('certificate_id', $request->certificate_id)->first();
         $newCertificateID = Str::uuid();
         $generateCertificate = new CertificationData;
         $generateCertificate->id = $newCertificateID;
         $generateCertificate->photographer_id = $findCertificate->photographer_id;
         $generateCertificate->photographer_email = $findCertificate->photographer_email;
-        $generateCertificate->cc_emails = json_encode($request->cc_user_email);
-        $generateCertificate->bcc_emails = json_encode($request->bcc_user_email);
+
+        // cc and bcc emails
+        $generateCertificate->cc_emails = $request->cc_user_email != '' ? json_encode(explode(',',$request->cc_user_email)) : json_encode([]);
+        $generateCertificate->bcc_emails = $request->bcc_user_email != '' ? json_encode(explode(',',$request->bcc_user_email)) : json_encode([]);
+
         // get study information
         $getStudy = Study::where('id', $request->study)->first();
         $generateCertificate->study_id = $getStudy->id;
         $generateCertificate->study_name = $getStudy->study_short_name;
         $generateCertificate->site_id = $findCertificate->site_id;
         $generateCertificate->site_name = $findCertificate->site_name;
+
         // get device information
         $getDevice = Device::where('id', $findCertificate->device_id)->first();
         $generateCertificate->device_id = $findCertificate->device_id;
@@ -724,8 +733,10 @@ class TransmissionDataDeviceController extends Controller
         $generateCertificate->modility_id = $findCertificate->modility_id;
         $generateCertificate->certificate = $findCertificate->certificate;
         $generateCertificate->certificate_for = $findCertificate->certificate_for;
+
         // certificate status
         $generateCertificate->certificate_status = $findCertificate->certificate_status;
+
         // issue date
         $generateCertificate->issue_date = $findCertificate->issue_date;
         $generateCertificate->expiry_date = $findCertificate->expiry_date;
@@ -733,49 +744,64 @@ class TransmissionDataDeviceController extends Controller
         $generateCertificate->grandfather_certificate_id = 'Grandfater'.substr(md5(microtime()), 0, 8);
         $generateCertificate->certificate_id = 'OIRRC-01-'.substr(md5(microtime()), 0, 8).'-G';
         $generateCertificate->transmissions = $findCertificate->transmissions;
+
         // certification Officer Info
         $generateCertificate->certification_officer_id = \Auth::user()->id;
         //$generateCertificate->certification_file_name = $filename;
         $generateCertificate->transmission_type = 'device_transmission';
         $generateCertificate->validity = 'yes';
-        $generateCertificate->pdf_key = $request->gf_pdf_key;
-        $generateCertificate->save();
+
+        // getmodalities
         $getModality = Modility::where('id', $generateCertificate->modility_id)->first();
+
         //check in child modilities
         if ($getModality == null) {
 
             $getModality = ChildModilities::where('id', $generateCertificate->modility_id)->first();
         }
+
         // get photographer ID
         $getPhotographer = Photographer::find($generateCertificate->photographer_id);
+
         // get study information
         $getStudy = Study::find($generateCertificate->study_id);
+
         // get site information
         $getSite = Site::where('id', $generateCertificate->site_id)->first();
+
         // get study email to pass to pdf
         $getStudyEmail = StudySetup::where('study_id', $getStudy->id)->first();
-        $file_name = $generateCertificate->certificate_id . '_' . $getModality->modility_name . '_device.pdf';
-        $path = storage_path('certificates_pdf/device');
-        // generate pdf
-        $pdf = PDF::loadView('certificationapp::certificate_pdf.device_certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail, 'getModality' => $getModality, 'getDevice' => $getDevice])->setPaper('letter')->save($path . '/' . $file_name);
-        // update the file name in database
-        $upateFileName = CertificationData::where('certificate_id', $generateCertificate->certificate_id)
-            ->update(['certificate_file_name' => $file_name]);
-        // return to pdf function
-        return redirect()->route('device-certificate-pdf', $file_name);
-    }
 
-    public function generateDeviceGrandfatherCertificate(Request $request) {
-        // find the pdf key;
-        $generateCertificate = CertificationData::where('pdf_key', $request->gf_pdf_key)->first();
+        // check for pdf status
+        if($request->gf_pdf_key == 'generate pdf') {
+
+            $file_name = $generateCertificate->certificate_id . '_' . $getModality->modility_name . '_device.pdf';
+            $path = storage_path('certificates_pdf/device');
+            
+            // generate pdf
+            $pdf = PDF::loadView('certificationapp::certificate_pdf.device_certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail, 'getModality' => $getModality, 'getDevice' => $getDevice])->setPaper('letter')->save($path . '/' . $file_name);
+
+            // update the file name in database
+            $generateCertificate->certificate_file_name = $file_name;
+            $generateCertificate->save();
+
+        } else {
+
+            // generate pdf
+            $pdf = PDF::loadView('certificationapp::certificate_pdf.device_certification_pdf', ['generateCertificate' => $generateCertificate, 'getStudy' => $getStudy, 'getPhotographer' => $getPhotographer, 'getSite' => $getSite, 'getStudyEmail' => $getStudyEmail, 'getModality' => $getModality, 'getDevice' => $getDevice])->setPaper('letter');
+
+            // stream pdf
+            return $pdf->stream();
+        }
+
         // call notification function for sending email
         $sendNotificationForCertificate = $this->notificationForCertificate($request, $generateCertificate);
-        $generateCertificate->pdf_key = null;
-        $generateCertificate->save();
+
         // session message
         Session::flash('success', 'Certificate generated successfully.');
         // return back to page
         return redirect()->back();
+
     } // generate device certificate
 
     public function notificationForCertificate($request, $generateCertificate) {

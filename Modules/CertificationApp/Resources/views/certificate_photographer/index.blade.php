@@ -159,6 +159,16 @@
                                 </select>
                             </div>
 
+                            <div class="form-group col-md-3">
+                                <label class="users">Certification Officer</label>
+                                <Select class="form-control certification_officer_id" name="officer_id" id="certification_officer_id">
+                                    <option value="">Select User</option>
+                                    @foreach($getCertificationOfficers as $officer)
+                                    <option value="{{$officer['id']}}">{{$officer['name']}}</option>
+                                    @endforeach
+                                </Select>
+                            </div>
+
                             <div class="form-group col-md-3 mt-4">
                                 <button type="button" class="btn btn-primary reset-filter">Reset</button>
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Record</button>
@@ -303,7 +313,7 @@
                                     @endforeach
                                     @else
                                         <tr>
-                                           <td colspan="6" style="text-align: center">No record found.</td>
+                                           <td colspan="7" style="text-align: center">No record found.</td>
                                         </tr>
                                     @endif
                                 </tbody>
@@ -547,6 +557,9 @@
     });
 
     /*********************************** Date Picker *************************************************/
+
+    // assignment select2
+    $('#certification_officer_id').select2();
 
     // initialize date range picker
     $('input[name="created_at"]').daterangepicker({

@@ -108,11 +108,16 @@ class Permission extends Model
 
     public static function getCertificationOfficer()
     {
-        $permissionsIdsArray = self::where('permissions.name', 'like', 'certification.index')
-            ->distinct('id')->pluck('id')->toArray();
+        $permissionsIdsArray = self::where('permissions.name', '=', 'certification-photographer.index')
+                                    ->orWhere('name', '=', 'generate-photographer-certificate')
+                                    ->distinct('id')
+                                    ->pluck('id')
+                                    ->toArray();
+
         $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
         $roleIdsArray = Role::whereIn('id', $roleIdsArrayFromRolePermission)->distinct()->pluck('id')->toArray();
-        $userIdsArray = UserRole::where('role_id', $roleIdsArray)->distinct()->pluck('user_id')->toArray();
+
+        $userIdsArray = UserRole::whereIn('role_id', $roleIdsArray)->distinct()->pluck('user_id')->toArray();
         $users = User::whereIn('id', $userIdsArray)->get()->toArray();
         
         return $users;

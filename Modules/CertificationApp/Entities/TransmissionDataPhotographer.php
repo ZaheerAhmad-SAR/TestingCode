@@ -51,7 +51,7 @@ class TransmissionDataPhotographer extends Model
 				                        ->whereDate('date_of_capture', '=', $transmission->date_of_capture)
 				                        ->get()->count();
 		if($getCaptureTransmissions > 1) {
-			return ' &nbsp; | &nbsp;<span data-toggle="tooltip" title="Capture date is same!"><img src="' . url('images/info.png') . '"></span>';
+			return ' &nbsp; | &nbsp;<span data-toggle="tooltip" title="Capture date is same!"><i class="fas fa-exclamation-circle"></i></span>';
 		}
 
 		return null;

@@ -398,7 +398,9 @@
 
                                 <!--//////////////// row 15 ///////////////////////// -->
 
-                                 <div class="form-group col-sm-3">
+                                @if($findTransmission->Submitted_By == 'Coordinator or Support staff')
+
+                                <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Photographer Full Name</label>
                                 </div>
 
@@ -413,6 +415,26 @@
                                 <div class="form-group col-sm-3">
                                     <input type="text" value="{{ $findTransmission->photographer_email }}" readonly="" name="d_photographer_email" id="d_photographer_email" class="form-control remove-readonly" required="required">
                                 </div>
+
+                                @else
+
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Photographer Full Name</label>
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <input type="text" name="d_photographer_full_name" readonly="" value="{{ $findTransmission->Submitter_First_Name.' '.$findTransmission->Submitter_Last_Name }}" id="d_photographer_full_name" class="form-control remove-readonly" required="required">
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Photographer Email</label>
+                                </div>
+                              
+                                <div class="form-group col-sm-3">
+                                    <input type="text" value="{{ $findTransmission->Submitter_email }}" readonly="" name="d_photographer_email" id="d_photographer_email" class="form-control remove-readonly" required="required">
+                                </div>
+
+                                @endif
 
                                 <!--//////////////// row 16 ///////////////////////// -->
 

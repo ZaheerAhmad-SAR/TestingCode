@@ -38,6 +38,51 @@
             cursor: text;
         }
 
+        /*Generate Certificate*/
+        div#cc_user_email_tagsinput {
+            width: 100% !important;
+            min-height: 42px !important;
+            /*height: 30px !important;*/
+            overflow: hidden !important;
+        }
+
+        div#bcc_user_email_tagsinput {
+            width: 100% !important;
+            min-height: 42px !important;
+            /*height: 30px !important;*/
+            overflow: hidden !important;
+        }
+
+        /*Status modal*/
+        div#status_cc_user_email_tagsinput {
+            width: 100% !important;
+            min-height: 42px !important;
+            /*height: 30px !important;*/
+            overflow: hidden !important;
+        }
+
+        div#status_bcc_user_email_tagsinput {
+            width: 100% !important;
+            min-height: 42px !important;
+            /*height: 30px !important;*/
+            overflow: hidden !important;
+        }
+
+        /*Expiry Date Modal*/
+        div#date_cc_user_email_tagsinput {
+            width: 100% !important;
+            min-height: 42px !important;
+            /*height: 30px !important;*/
+            overflow: hidden !important;
+        }
+
+        div#date_bcc_user_email_tagsinput {
+            width: 100% !important;
+            min-height: 42px !important;
+            /*height: 30px !important;*/
+            overflow: hidden !important;
+        }
+
         .span-text {
             color: red;
         }
@@ -48,6 +93,9 @@
     </style>
 
     <link rel="stylesheet" href="{{ asset('public/dist/vendors/summernote/summernote-bs4.css') }}">
+
+    <!-- tag based input -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-tagsinput/1.3.6/jquery.tagsinput.min.css" rel="stylesheet">
 
     <!-- date range picker -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
@@ -405,11 +453,10 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-            <form action="{{ route('approve-device-grandfather-certificate') }}" method="POST" class="certificate-grandfather-form">
+            <form action="{{ route('generate-device-grandfather-certificate') }}" method="POST" class="certificate-grandfather-form">
                 @csrf
             <input type="hidden" name="certificate_id" id="certificate_id" value="">
             <input type="hidden" name="gf_pdf_key" class="gf_pdf_key" id="gf_pdf_key" value="">
-            <input type="hidden" name="gf_approve_status" class="gf_approve_status" id="gf_approve_status" value="">
 
               <div class="modal-body">
 
@@ -418,7 +465,7 @@
                     <select name="study" id="study" class="form-control" required="">
                         <option value="">Select Study</option>
                         @foreach($getStudies as $study)
-                            <option value="{{ $study->id }}">{{ $study->study_short_name }}</option>
+                            <option value="{{ $study->id }}">{{ $study->study_code.' - '. $study->study_short_name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -430,18 +477,14 @@
                     </Select>
                 </div>
 
-                <div class="form-group col-md-12 suspend-certificate-div">
+                <div class="form-group col-md-12">
                     <label class="edit_users">CC Email</label>
-                    <Select class="form-control cc_user_email data-required" name="cc_user_email[]" id="cc_user_email" multiple>
-
-                    </Select>
+                    <input type="text" class="form-control cc_user_email" name="cc_user_email" id="cc_user_email" value="">
                 </div>
 
                 <div class="form-group col-md-12">
                     <label class="edit_users">BCC Email</label>
-                    <Select class="form-control bcc_user_email" name="bcc_user_email[]" id="bcc_user_email" multiple="multiple">
-
-                    </Select>
+                    <input type="text" class="form-control bcc_user_email" name="bcc_user_email" id="bcc_user_email" value="">
                 </div>
 
                 <div class="form-group col-md-12">
@@ -512,18 +555,14 @@
                     </Select>
                 </div>
 
-                <div class="form-group col-md-12 suspend-certificate-div">
+                <div class="form-group col-md-12">
                     <label class="edit_users">CC Email</label>
-                    <Select class="form-control status_cc_user_email data-required" name="status_cc_user_email[]" id="status_cc_user_email" multiple>
-
-                    </Select>
+                    <input type="text" class="form-control status_cc_user_email" name="status_cc_user_email" id="status_cc_user_email" value="">
                 </div>
 
                 <div class="form-group col-md-12">
                     <label class="edit_users">BCC Email</label>
-                    <Select class="form-control status_bcc_user_email" name="status_bcc_user_email[]" id="status_bcc_user_email" multiple="multiple">
-
-                    </Select>
+                    <input type="text" class="form-control status_bcc_user_email" name="status_bcc_user_email" id="status_bcc_user_email" value="">
                 </div>
 
                 <div class="form-group col-md-12">
@@ -579,18 +618,14 @@
                     </Select>
                 </div>
 
-                <div class="form-group col-md-12 suspend-certificate-div">
+                <div class="form-group col-md-12">
                     <label class="edit_users">CC Email</label>
-                    <Select class="form-control date_cc_user_email data-required" name="date_cc_user_email[]" id="date_cc_user_email" multiple>
-
-                    </Select>
+                    <input type="text" class="form-control date_cc_user_email" name="date_cc_user_email" id="date_cc_user_email" value="">
                 </div>
 
                 <div class="form-group col-md-12">
                     <label class="edit_users">BCC Email</label>
-                    <Select class="form-control date_bcc_user_email" name="date_bcc_user_email[]" id="date_bcc_user_email" multiple="multiple">
-
-                    </Select>
+                    <input type="text" class="form-control date_bcc_user_email" name="date_bcc_user_email" id="date_bcc_user_email" value="">
                 </div>
 
                 <div class="form-group col-md-12">
@@ -637,6 +672,9 @@
 
 <script src="{{ asset('public/dist/vendors/summernote/summernote-bs4.js') }}"></script>
 
+<!-- tag based input -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-tagsinput/1.3.6/jquery.tagsinput.min.js"></script>
+
 <!-- date range picker -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
@@ -651,8 +689,6 @@
 <script type="text/javascript">
 
     $('#study').select2();
-    $('#cc_user_email').select2();
-    $('#bcc_user_email').select2();
     $('#modility_id').select2();
 
     // reset filter form
@@ -663,6 +699,8 @@
         // submit the filter form
         $('.filter-form').submit();
     });
+
+    /*********************** Date Range Picker **********************/
 
     // initialize date range picker
     $('input[name="issue_date"]').daterangepicker({
@@ -701,6 +739,8 @@
 
     });
 
+    /************************************** Details Modal ************************************/
+
     function showDetails(firstName, lastName, email, phone, siteName, siteCode, studyName, certificationFor, issueDate, expiryDate, issuedBy) {
         // show modal
         $('#show-certificate-details-modal').modal('show');
@@ -718,12 +758,14 @@
         $('#show-certificate-details-modal .issued_by').text(issuedBy);
     } // details function ends
 
+    /************************* Generate GrandFathering Certificate ***************************/
+
+    // initiallize tags
+    $('#cc_user_email').tagsInput();
+    $('#bcc_user_email').tagsInput();
+
     // grandfathering function
     function generateGrandfatherCertificate(certificateID, photographerEmail, ccEmail, bccEmail) {
-
-        // refresh the select2
-        $('#cc_user_email').empty();
-        $('#bcc_user_email').empty();
 
         // assign email to email To input
         $('.user_email').append('<option value="'+photographerEmail+'">'+photographerEmail+'</option>');
@@ -731,12 +773,18 @@
         // assign cc and bcc emails
         $.each(JSON.parse(ccEmail), function(index, value) {
                                     
-            $('#cc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+           // remove old tag
+            $('#cc_user_email').removeTag(value);
+            //append new value
+            $('#cc_user_email').addTag(value);
         });
 
         $.each(JSON.parse(bccEmail), function(index, value) {
                                     
-            $('#bcc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+            // remove old tag
+            $('#bcc_user_email').removeTag(value);
+            // append new tag
+            $('#bcc_user_email').addTag(value);
         });
 
         // unselect study
@@ -752,17 +800,15 @@
         // assign Certificate ID
         $('#certificate_id').val(certificateID);
         // assign file key
-        $('.gf_pdf_key').val(Math.random().toString(36).substr(2, 16));
+        $('.gf_pdf_key').val('view pdf');
         // enable approve pdf button
         $('.approve-gf-pdf').attr('disabled', false);
-        // set approve status to null
-        $('.gf_approve_status').val('');
         // disable generate button
         $('.generate-gf-pdf').attr('disabled', true);
         // make form target blank
         $('.certificate-grandfather-form').attr('target', '_blank');
         // give default url
-         $('.certificate-grandfather-form').attr("action", "{{ route('approve-device-grandfather-certificate')}}");
+         $('.certificate-grandfather-form').attr("action", "{{ route('generate-device-grandfather-certificate')}}");
         // show modal
         $('#certificate-grandfather-modal').modal('show');
     }
@@ -771,17 +817,21 @@
 
         e.preventDefault();
 
-        if($('.gf_approve_status').val() == 'yes') {
+        // check for pdf view
+        if($('.gf_pdf_key').val() == 'view pdf') {
 
-            // submit the form
+            // diable approve pdf button
+            $('.approve-gf-pdf').attr('disabled', true);
+            // enable generate button
+            $('.generate-gf-pdf').attr('disabled', false);
+            // submit form
             e.currentTarget.submit();
-
         } else {
 
             if($('.summernote').summernote('isEmpty')) {
-                // cancel submit
-                e.preventDefault(); 
-                $('.edit-error-field').css('display', 'block'); 
+            // cancel submit
+            e.preventDefault(); 
+            $('.edit-error-field').css('display', 'block'); 
 
             } else {
 
@@ -798,11 +848,6 @@
                        if(data['success'] == 'true') {
                         // submit form
                         e.currentTarget.submit();
-
-                         // diable approve pdf button
-                        $('.approve-gf-pdf').attr('disabled', true);
-                        // enable generate button
-                        $('.generate-gf-pdf').attr('disabled', false);
 
                        } else {
 
@@ -823,11 +868,6 @@
                                     // submit the form
                                     e.currentTarget.submit();
 
-                                    // diable approve pdf button
-                                    $('.approve-gf-pdf').attr('disabled', true);
-                                    // enable generate button
-                                    $('.generate-gf-pdf').attr('disabled', false);
-
                                 } else {
                                     // close the model
                                     $('#certificate-grandfather-modal').modal('hide');
@@ -841,8 +881,9 @@
                 }); // ajax ends
 
             } // summer note else ends
-        } // approve status
- 
+
+        } // pdf view check ends
+       
     }); // submit form function ends
 
     $('#template').change(function() {
@@ -879,29 +920,26 @@
         // give default url
         $('.certificate-grandfather-form').attr("action", "{{ route('generate-device-grandfather-certificate')}}");
 
-        // set approve status to yes
-        $('.gf_approve_status').val('yes');
+        // assign file key
+        $('.gf_pdf_key').val('generate pdf');
 
         $('.certificate-grandfather-form').submit();
 
     });
 
-    ///////////////// change status modal ///////////////////////////////////////////
+    /******************************* change status modal *********************************/
 
     $('.status_summernote').summernote({
         height: 150,
 
     });
-    
-    $('#status_cc_user_email').select2();
-    $('#status_bcc_user_email').select2();
+
+    // initiallize tags
+    $('#status_cc_user_email').tagsInput();
+    $('#status_bcc_user_email').tagsInput();
 
     // status change function
     function changeCertificateStatus(certificateID, photographerEmail, ccEmail, bccEmail, status) {
-
-        // refresh the select2
-        $('#status_cc_user_email').empty();
-        $('#status_bcc_user_email').empty();
 
         // assign email to email To input
         $('.status_user_email').append('<option value="'+photographerEmail+'">'+photographerEmail+'</option>');
@@ -909,12 +947,18 @@
         // assign cc and bcc emails
         $.each(JSON.parse(ccEmail), function(index, value) {
                                     
-            $('#status_cc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+            // remove old tag
+            $('#status_cc_user_email').removeTag(value);
+            //append new value
+            $('#status_cc_user_email').addTag(value);
         });
 
         $.each(JSON.parse(bccEmail), function(index, value) {
                                     
-            $('#status_bcc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+            // remove old tag
+            $('#status_bcc_user_email').removeTag(value);
+            //append new value
+            $('#status_bcc_user_email').addTag(value);
         });
 
         // assign status
@@ -982,16 +1026,15 @@
         height: 150,
 
     });
-    
-    $('#date_cc_user_email').select2();
-    $('#date_bcc_user_email').select2();
+
+    /************************* Expiry Date Modal ****************************************/
+
+    // initiallize tags
+    $('#date_cc_user_email').tagsInput();
+    $('#date_bcc_user_email').tagsInput();
 
     // status change function
     function changeCertificateDate(certificateID, photographerEmail, ccEmail, bccEmail, date) {
-
-        // refresh the select2
-        $('#date_cc_user_email').empty();
-        $('#date_bcc_user_email').empty();
 
         // assign email to email To input
         $('.date_user_email').append('<option value="'+photographerEmail+'">'+photographerEmail+'</option>');
@@ -999,12 +1042,18 @@
         // assign cc and bcc emails
         $.each(JSON.parse(ccEmail), function(index, value) {
                                     
-            $('#date_cc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+            // remove old tag
+            $('#date_cc_user_email').removeTag(value);
+            //append new value
+            $('#date_cc_user_email').addTag(value);
         });
 
         $.each(JSON.parse(bccEmail), function(index, value) {
                                     
-            $('#date_bcc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+            // remove old tag
+            $('#date_bcc_user_email').removeTag(value);
+            //append new value
+            $('#date_bcc_user_email').addTag(value);
         });
 
         // assign date
