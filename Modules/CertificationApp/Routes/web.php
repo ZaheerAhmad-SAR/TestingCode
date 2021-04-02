@@ -21,9 +21,6 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-	// approve grand father device certificate
-	Route::post('approve-device-grandfather-certificate', 'TransmissionDataDeviceController@approveGrandFatherDeviceCertificate')->name('approve-device-grandfather-certificate');
-
 	// assign device transmission to certification officer
 	Route::post('assign-device-transmission', 'TransmissionDataDeviceController@assignDeviceTransmission')->name('assign-device-transmission');
 
