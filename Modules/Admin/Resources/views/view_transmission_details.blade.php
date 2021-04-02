@@ -53,7 +53,7 @@
 @endsection
 
 @section('content')
-    {{dd('hi')}}
+ 
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
         <div class="row ">
