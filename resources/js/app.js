@@ -19,13 +19,45 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i);
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+Vue.component('example-component', require('./components/ExampleComponent').default);
+Vue.component('notification', require('./components/Notfication').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+
+
+import Echo from 'laravel-echo';
+
+window.Pusher = require('pusher-js');
+
+// window.Echo = new Echo({
+//     broadcaster: 'pusher',
+//     key: process.env.VUE_APP_WEBSOCKETS_KEY,
+//     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+//     //encrypted: true,
+//     wsHost:  process.env.VUE_APP_WEBSOCKETS_SERVER,
+//     wsPort: 6001,
+//     forceTLS: false,
+//     disableStats: true,
+// });
+
+
+window.Echo = new Echo({
+    broadcaster: 'pusher',
+    key: process.env.MIX_PUSHER_APP_KEY,
+    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
+    //encrypted: true,
+    wsHost: window.location.hostname,
+    wsPort: 6001,
+    forceTLS: false,
+    disableStats: true,
+});
+
+
+
 
 const app = new Vue({
     el: '#app',
