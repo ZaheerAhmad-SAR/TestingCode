@@ -37,7 +37,7 @@ class UserTest extends DuskTestCase
                 ->waitForText('Add User')
                 ->pause(1000)
                 ->type('@user-name','Amir Khan')
-                ->value('@user-email','ak@qapak.org')
+                ->type('@user-email','ak@qapak.org')
                 ->type('password','At@m|c_en@rgy1272')
                 ->type('password_confirmation','At@m|c_en@rgy1272')
                 ->click('@nav-roles')

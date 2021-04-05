@@ -87,7 +87,7 @@
 
                             <input type="hidden" name="form_1" value="1" class="form-control">
 
-                            <div class="form-group col-md-5">
+                            <div class="form-group col-md-4">
                                 <label for="inputState">Parent Modality</label>
                                 <select id="parent_modility" name="parent_modility" class="form-control filter-form-data">
                                     <option value="">All Parent Modality</option>
@@ -97,7 +97,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-5">
+                            <div class="form-group col-md-4">
                                 <label for="inputState">Child Modality</label>
                                 <select id="child_modility" name="child_modility" class="form-control filter-form-data">
                                     <option value="">All Child Modality</option>
@@ -107,7 +107,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-2 mt-4">        
+                            <div class="form-group col-md-4 mt-4">        
                                <!--  <button type="button" class="btn btn-primary reset-filter-1">Reset</button> -->
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Records</button>
                                 <button type="button" class="btn btn-primary reset-filter">Reset</button>

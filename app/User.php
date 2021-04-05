@@ -20,6 +20,8 @@ use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Entities\UserSystemInfo;
 use Modules\UserRoles\Entities\UserLog;
 use App\UserPrefrences;
+use Modules\CertificationApp\Entities\TransmissionDataDevice;
+use Modules\CertificationApp\Entities\TransmissionDataPhotographer;
 class User extends Authenticatable
 {
     use Notifiable;
@@ -263,5 +265,15 @@ class User extends Authenticatable
     public function user_prefrences()
     {
         return $this->hasOne(UserPrefrences::class)->withDefault();
+    }
+
+    public function transmissionDevices()
+    {
+        return $this->hasMany(TransmissionDataDevice::class, 'assign_to');
+    }
+
+    public function transmissionPhotographer()
+    {
+        return $this->hasMany(TransmissionDataPhotographer::class, 'assign_to');
     }
 }
