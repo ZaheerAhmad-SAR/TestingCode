@@ -2,6 +2,8 @@
 
 namespace Modules\Queries\Http\Controllers;
 
+use App\Events\NotifyUserAboutQuery;
+use App\Events\UserShouldNotifyQuery;
 use App\Mail\QueriesEmail;
 use App\Mail\TransmissonQuery;
 use App\User;
@@ -378,6 +380,9 @@ class QueriesController extends Controller
                     'question_id'=>$question_id,
                     'notification_create_by_user_id'=>\auth()->user()->id
                 ]);
+                //NotifyUserAboutQuery::dispatch(\auth()->user()->name);
+                //broadcast(new UserShouldNotifyQuery());
+                //event(new NotifyUserAboutQuery());
             }
 
         }
@@ -477,7 +482,7 @@ class QueriesController extends Controller
             'query_level'=>$query_level_q,
             'query_condition'=>'reply'
         ]);
-
+        //broadcast(new UserShouldNotifyQuery());
         foreach ($arrayofIds as $founduser)
         {
 
