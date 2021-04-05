@@ -28,18 +28,18 @@
             }
 
             function disableAllFormFields(id) {
-                $("#" + id + " :input").prop('disabled', true);
-                $("#" + id + " textarea").prop('disabled', true);
-                $("#" + id + " select").prop('disabled', true);
+                $("#" + id + " :input").attr('disabled', true);
+                $("#" + id + " textarea").attr('disabled', true);
+                $("#" + id + " select").attr('disabled', true);
                 // Add backgroud color
                 $("#" + id + " :input").addClass('bg-disabled');
                 $("#" + id + " textarea").addClass('bg-disabled');
                 $("#" + id + " select").addClass('bg-disabled');
             }
             function enableAllFormFields(id) {
-                $("#" + id + " :input").prop('disabled', false);
-                $("#" + id + " textarea").prop('disabled', false);
-                $("#" + id + " select").prop('disabled', false);
+                $("#" + id + " :input").attr('disabled', false);
+                $("#" + id + " textarea").attr('disabled', false);
+                $("#" + id + " select").attr('disabled', false);
                 // Add backgroud color
                 $("#" + id + " :input").removeClass('bg-disabled');
                 $("#" + id + " textarea").removeClass('bg-disabled');
@@ -47,10 +47,12 @@
             }
             function makeReadOnly(cls) {
                 $("." + cls + " :input").prop('readonly', true);
+                $("#" + id + " :input").addClass('bg-disabled');
             }
 
             function removeReadOnly(cls) {
                 $("." + cls + " :input").prop('readonly', false);
+                $("#" + id + " :input").removeClass('bg-disabled');
             }
 
             function disableField(fieldId) {
@@ -68,6 +70,11 @@
                 $("." + cls + " :input").prop('disabled', true);
                 $("." + cls + " textarea").prop('disabled', true);
                 $("." + cls + " select").prop('disabled', true);
+                // apply gray backgroud
+                $("." + cls).addClass('bg-disabled');
+                $("." + cls + " :input").addClass('bg-disabled');
+                $("." + cls + " textarea").addClass('bg-disabled');
+                $("." + cls + " select").addClass('bg-disabled');
             }
 
             function disableLinkByClass(cls) {
@@ -83,6 +90,12 @@
                 $("." + cls + " :input").prop('disabled', false);
                 $("." + cls + " select").prop('disabled', false);
                 $("." + cls + " textarea").prop("disabled", false);
+                // apply gray backgroud
+                $("." + cls).removeClass('bg-disabled');
+                $("." + cls + " :input").removeClass('bg-disabled');
+                $("." + cls + " select").removeClass('bg-disabled');
+                $("." + cls + " textarea").removeClass("bg-disabled");
+                
             }
 
             function enableLinkByClass(cls) {
