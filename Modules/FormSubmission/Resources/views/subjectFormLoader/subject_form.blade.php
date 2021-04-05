@@ -27,7 +27,7 @@
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
         <div class="row" style="margin-top: -15px;">
-            <div class="col-12 col-sm-12 mt-3" {{-- style="position: fixed;top: initial;z-index: 1030;" --}}>
+            <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
                     <div class="card-header  justify-content-between align-items-center" style="display: none;">
                         <h4 class="card-title">Study and Subject details</h4>
