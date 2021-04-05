@@ -54,6 +54,21 @@
             opacity: 1 !important;
         }
 
+        div#cc_email_tagsinput {
+            width: 100% !important;
+            min-height: 42px !important;
+            /*height: 30px !important;*/
+            overflow: hidden !important;
+        }
+
+
+        div#bcc_email_tagsinput {
+            width: 100% !important;
+            min-height: 42px !important;
+            /*height: 30px !important;*/
+            overflow: hidden !important;
+        }
+
         .span-text {
             color: red;
         }
@@ -67,6 +82,9 @@
 
     <!-- date range picker -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+    <!-- tag based input -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-tagsinput/1.3.6/jquery.tagsinput.min.css" rel="stylesheet">
 
     <!-- select2 -->
     <link rel="stylesheet" href="{{ asset('public/dist/vendors/select2/css/select2.min.css') }}"/>
@@ -109,7 +127,14 @@
                                     {{$findTransmission->Certification_Type}}
                                     </span>
                                 </div>
+
+                                <div class="col-md-12">
+                                    <p class="bg-primary text-center" style="color: #fff; margin: 10px; font-size: 20px;">
+                                    Transmission Data
+                                    </p>
+                                </div>
                                 <hr>
+
                                 <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Transmission Number</label>
                                 </div>
@@ -138,7 +163,7 @@
                                     <select name="StudyI_ID" id="StudyI_ID" class="form-control required-data" required>
                                         <option value="">Select Study</option>
                                         @foreach($systemStudies as $study)
-                                        <option @if($study->study_code == $findTransmission->StudyI_ID) selected @endif value="{{ $study->study_code }}">{{$study->study_code}}</option>
+                                        <option @if($study->study_code == $findTransmission->StudyI_ID) selected @endif value="{{ $study->study_code }}">{{$study->study_code.' - '.$study->study_short_name}}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -171,7 +196,7 @@
                                     <span class="span-text">{{ $findTransmission->Requested_certification }}</span>
                                     <select name="Requested_certification" id="Requested_certification" class="form-control required-data" required>
                                         <option value="">Select Modality</option>
-                                        @foreach($getModalities as $modality)
+                                        @foreach($getStudyModalities as $modality)
                                             @php
                                                 $matchingAbbreviation = preg_match("~\b$modality->modility_abbreviation\b~", $findTransmission->Requested_certification);
                                             @endphp
@@ -198,7 +223,10 @@
                                     <span class="span-text">{{ $findTransmission->Device_Model }}</span>
                                     <select name="Device_Model" id="Device_Model" class="form-control required-data">
                                         <option value="">Select Device</option>
-                                        @foreach($getDevices as $device)
+                                        @php
+                                        $getStudyDevices = ($transmissionStudy != null) ? $transmissionStudy->devices : [];
+                                        @endphp
+                                        @foreach($getStudyDevices as $device)
                                         <option @if($device->device_model == $findTransmission->Device_Model) selected @endif value="{{ $device->id.'__/__'.$device->device_model }}">{{ $device->device_name }}</option>
                                         @endforeach
                                     </select>
@@ -242,8 +270,11 @@
                                 <div class="form-group col-sm-3">
                                     <span class="span-text">{{ $findTransmission->Site_ID }}</span>
                                     <select name="Site_ID" id="Site_ID" class="form-control required-data">
+                                        @php
+                                            $getStudySites = ($transmissionStudy != null) ? $transmissionStudy->sites : [];
+                                        @endphp
                                         <option value="">Select Site</option>
-                                        @foreach($getSites as $site)
+                                        @foreach($getStudySites as $site)
                                         <option @if($site->site_code == $findTransmission->Site_ID) selected @endif value="{{$site->id.'__/__'.$site->site_code}}">{{$site->site_code.' - '.$site->site_name}}</option>
                                         @endforeach
                                     </select>
@@ -417,6 +448,22 @@
                                 @endif
 
                                 <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Transmission Comments</label>
+                                </div>
+                              
+                                <div class="form-group col-sm-3">
+                                    <input type="text" value="{{ $findTransmission->Comments }}" name="transmission_comments" id="transmission_comments" class="form-control" readonly="">
+                                </div>
+
+                                <div class="col-md-12">
+                                    <p class="bg-primary text-center" style="color: #fff; margin: 10px; font-size: 20px;">
+                                    OIRRC Data
+                                    </p>
+                                </div>
+                                <hr>
+                                
+
+                                <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Status<span class="field-required">*</span></label>
                                 </div>
 
@@ -431,8 +478,24 @@
                                     </select>
                                 </div>
 
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Date of Capture<span class="field-required">*</span></label>
+                                </div>
+
+                                <div class="form-group col-md-3">
+                                    <input type="date" class="form-control required-data" id="date_of_capture" name="date_of_capture" value="{{$findTransmission->date_of_capture != null ? date('Y-m-d', strtotime($findTransmission->date_of_capture)) : ''}}" required="">
+                                </div>
+
 
                                 <!-- ///////////////////////////////////////// row //////////////////////////////////////////// -->
+
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Oirrc Comment</label>
+                                </div>
+
+                                <div class="form-group col-md-9">
+                                    <textarea class="form-control" name="oirrc_comment" id="oirrc_comment" rows="4">{{ $findTransmission->oirrc_comment}}</textarea>
+                                </div>
 
                                 <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Reason for change<span class="field-required">*</span></label>
@@ -440,14 +503,6 @@
 
                                 <div class="form-group col-md-9">
                                     <textarea class="form-control required-data" required="required" name="reason_for_change" id="reason_for_change" rows="4">{{ $findTransmission->status}}</textarea>
-                                </div>
-
-                                <div class="form-group col-sm-3">
-                                    <label for="Name" class="control-label">Comment</label>
-                                </div>
-
-                                <div class="form-group col-md-9">
-                                    <textarea class="form-control required-data" name="comments" id="comments" rows="4">{{ $findTransmission->Comments}}</textarea>
                                 </div>
 
                             <!-- ///////////////////////////// row ///////////////////// -->
@@ -495,16 +550,12 @@
 
                                     <div class="form-group col-md-12">
                                         <label class="edit_users">CC Email</label>
-                                        <Select class="form-control cc_email" name="cc_email[]" id="cc_email" multiple="multiple">
-
-                                        </Select>
+                                        <input type="text" class="form-control cc_email" name="cc_email" id="cc_email" value="">
                                     </div>
 
                                     <div class="form-group col-md-12">
                                         <label class="edit_users">BCC Email</label>
-                                        <Select class="form-control bcc_email" name="bcc_email[]" id="bcc_email" multiple="multiple">
-
-                                        </Select>
+                                        <input type="text" class="form-control bcc_email" name="bcc_email" id="bcc_email" value="">
                                     </div>
 
                                     <div class="form-group col-md-12">
@@ -538,7 +589,6 @@
                         <br>
                         <hr>
 
-            
                         <!-- Transmission Update Details -->
                         
                             <div style="background-color:#00A8B3;">
@@ -675,6 +725,9 @@
 @section('script')
 
 <script src="{{ asset('public/dist/vendors/summernote/summernote-bs4.js') }}"></script>
+
+<!-- tag based input -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-tagsinput/1.3.6/jquery.tagsinput.min.js"></script>
 
 <!-- date range picker -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
@@ -831,10 +884,10 @@
         } // null check ends
     });
 
-   //$('select[name="photographer_user_email"]').select2();
-   //$('select[name="template"]').select2();
-    $('.cc_email').select2();
-    $('.bcc_email').select2();
+
+    // initiallize tags
+    $('.cc_email').tagsInput();
+    $('.bcc_email').tagsInput();
 
     $('document').ready(function () {
 
@@ -872,41 +925,34 @@
                         'study_code': $('#StudyI_ID').val(),
                     },
                     success:function(data) {
-                        
-                        // refresh the select2
-                        $('#cc_email').empty();
-                        $('#bcc_email').empty();
 
                         if(data.userEmails != null) {
 
-                            $.each(data.userEmails, function(index, value) {
-                                    
-                                $('#cc_email').append('<option value="'+value+'" selected>'+value+'</option>')
-                            });
-
-                            // put notification list emails as cc
+                            //put notification list emails as cc
                             if ($('#notification').val() == 'Yes') {
                                 
-                                $('#cc_email').append('<option value="'+notificationList+'" selected>'+notificationList+'</option>');
+                                data.userEmails.push(notificationList);
                             }
+                           
+                            $.each(data.userEmails, function(index, value) {
+                                // remove old tag
+                                $('#cc_email').removeTag(value);
+                                //append new value
+                                $('#cc_email').addTag(value);
+                            });
 
-                        } else {
-
-                            $('#cc_email').val("").trigger("change");
+                            
                         }
 
-                        
                         // check for bcc emails
                         if(data.userBCCEmails != null) {
 
                             $.each(data.userBCCEmails, function(index, value) {
-                                    
-                                $('#bcc_email').append('<option value="'+value+'" selected>'+value+'</option>')
+                                // remove old tag
+                                $('#bcc_email').removeTag(value);
+                                // append new tag
+                                $('#bcc_email').addTag(value);
                             });
-
-                        } else {
-
-                            $('#bcc_email').val("").trigger("change");
 
                         }
                         

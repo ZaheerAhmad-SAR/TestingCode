@@ -22,6 +22,9 @@
 // });
 // transmission end point
 
+// update photographer emails for Transmission
+Route::get('update-transmission-photographer-email', 'TransmissionController@getPhotographerEmailForTransmission')->name('update-transmission-photographer-email');
+
 // Route::get('error-message', function(){
 
 //     return view('errors.404');

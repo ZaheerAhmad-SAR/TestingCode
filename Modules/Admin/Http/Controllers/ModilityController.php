@@ -99,13 +99,13 @@ class ModilityController extends Controller
             <div class="form-group row">
                 <label for="Name" class="col-sm-3 col-form-label">Name</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" id="modility_name" name="modility_name" placeholder="Enter Modility name" maxlength="50"  value="' . $parentmodalities->modility_name . '" required/>
+                    <input type="text" class="form-control" id="modility_name" name="modility_name" placeholder="Enter Modility name" maxlength="50"  value="' . $parentmodalities->modility_name . '" required dusk="update-parent-modality-name"/>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="modility_abbreviation" class="col-sm-3 col-form-label">Abbreviation</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" id="modility_abbreviation" name="modility_abbreviation" placeholder="Enter Modility abbreviation" maxlength="50"  value="' . $parentmodalities->modility_abbreviation . '" required/>
+                    <input type="text" class="form-control" id="modility_abbreviation" name="modility_abbreviation" placeholder="Enter Modility abbreviation" maxlength="50"  value="' . $parentmodalities->modility_abbreviation . '" required dusk="update-parent-modality-abbreviation"/>
                 </div>
             </div>';
             return Response($output);
@@ -128,9 +128,9 @@ class ModilityController extends Controller
                                             <span class="mail-user">' . $modality->modility_name . '</span>
                                         </a>
                                         <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                            <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                            <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;" dusk="child-modality-navtab"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                             <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                                <span class="dropdown-item edit_steps" data-id=' . $modality->id . '><i class="far fa-edit"></i>&nbsp; Edit</span>
+                                                <span class="dropdown-item edit_steps" data-id=' . $modality->id . ' dusk="child-modality-edit"><i class="far fa-edit"></i>&nbsp; Edit</span>
                                                 <span class="dropdown-item deleteChild" data-id=' . $modality->id . '><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                             </div>
                                         </div>

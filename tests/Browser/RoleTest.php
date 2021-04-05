@@ -9,21 +9,20 @@ use Tests\DuskTestCase;
 
 class RoleTest extends DuskTestCase
 {
-//    public function setUp(): void
-//    {
-//        $this->appUrl = env('APP_URL');
-//        parent::setUp();
-//        //$this->artisan('migrate:refresh');
-//        $this->artisan('module:seed');
-//    }
+       public function setUp(): void
+       {
+           $this->appUrl = env('APP_URL');
+           parent::setUp();
+           //$this->artisan('migrate:refresh');
+           $this->artisan('module:seed');
+       }
 
     /**
      * A Dusk test example.
      *
      * @return void
      */
-    /// Create a New Role
-    ///
+    /** @test */
     public function test_i_can_create_a_new_role()
     {
         $user = User::where('name', 'Super Admin')->first();
@@ -94,9 +93,10 @@ class RoleTest extends DuskTestCase
                 ->click('@create-new-roles')
                 ->assertSee('Roles Detail')
                 ->visit('/roles');
-        });
+            });
     }
 
+    /** @test */
     public function test_i_can_update_a_new_role()
     {
         $user = User::where('name', 'Super Admin')->first();

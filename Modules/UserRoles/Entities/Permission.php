@@ -4,6 +4,10 @@ namespace Modules\UserRoles\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Modules\UserRoles\Entities\Role;
+use Modules\UserRoles\Entities\RolePermission;
+use Modules\UserRoles\Entities\UserRole;
+use App\User;
 
 class Permission extends Model
 {
@@ -100,5 +104,22 @@ class Permission extends Model
             return $roleId;
         }
         return null;
+    }
+
+    public static function getCertificationOfficer()
+    {
+        $permissionsIdsArray = self::where('permissions.name', '=', 'certification-photographer.index')
+                                    ->orWhere('name', '=', 'generate-photographer-certificate')
+                                    ->distinct('id')
+                                    ->pluck('id')
+                                    ->toArray();
+
+        $roleIdsArrayFromRolePermission = RolePermission::whereIn('permission_id', $permissionsIdsArray)->distinct()->pluck('role_id')->toArray();
+        $roleIdsArray = Role::whereIn('id', $roleIdsArrayFromRolePermission)->distinct()->pluck('id')->toArray();
+
+        $userIdsArray = UserRole::whereIn('role_id', $roleIdsArray)->distinct()->pluck('user_id')->toArray();
+        $users = User::whereIn('id', $userIdsArray)->get()->toArray();
+        
+        return $users;
     }
 }

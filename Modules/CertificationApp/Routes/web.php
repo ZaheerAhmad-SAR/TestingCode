@@ -10,7 +10,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 // test post phographer transmission
 	Route::post('transmissions/testTransmissionDataPhotographer', 'TransmissionDataPhotographerController@testTransmissionDataPhotographer')->name('transmissions.testTransmissionDataPhotographer');
 
@@ -22,17 +21,14 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-	// approve device certificate
-	Route::post('approve-device-certificate', 'TransmissionDataDeviceController@approveDeviceCertificate')->name('approve-device-certificate');
+	// assign device transmission to certification officer
+	Route::post('assign-device-transmission', 'TransmissionDataDeviceController@assignDeviceTransmission')->name('assign-device-transmission');
 
-	// approve grand father device certificate
-	Route::post('approve-device-grandfather-certificate', 'TransmissionDataDeviceController@approveGrandFatherDeviceCertificate')->name('approve-device-grandfather-certificate');
+	// assign photographer transmission to certification officer
+	Route::post('assign-photographer-transmission', 'TransmissionDataPhotographerController@assignPhotographerTransmission')->name('assign-photographer-transmission');
 
-	// approve photographer certificate
-	Route::post('approve-photographer-certificate', 'TransmissionDataPhotographerController@approvePhotographerCertificate')->name('approve-photographer-certificate');
-
-	// approve photographer provisional certificate
-	Route::post('approve-photographer-provisional-certificate', 'TransmissionDataPhotographerController@approvePhotographerProvisionalCertificate')->name('approve-photographer-provisional-certificate');
+	// get study emails for grand fatering certificate
+	Route::get('get-grandfather-certifictae-emails', 'CertificationPreferencesController@getGrandFatherCertificateEmails')->name('get-grandfather-certifictae-emails');
 
 
 Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
@@ -48,6 +44,11 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
 // get template data ajax
 	Route::get('showreport', 'CertificationPreferencesController@showCertificationReport')->name('showreport'); ///	
+
+// get template data ajax
+Route::get('showreportdevices', 'CertificationPreferencesController@showCertificationReportDevices')->name('showreportdevices'); ///	
+// get template data ajax
+Route::get('showreportphotographer', 'CertificationPreferencesController@showCertificationReportPhotograper')->name('showreportphotographer'); ///
 
 // update certification template
 	Route::post('update-certification-template', 'CertificationPreferencesController@updateTemplate')->name('update-certification-template'); ////
@@ -138,6 +139,10 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
 // change certificate expiry date for photographer/ device
 	Route::post('change-certificate-date', 'TransmissionDataPhotographerController@changeCertificateDate')->name('change-certificate-date'); ///
+
+// sites export route
+
+	Route::get('exportsites', 'CertificationPreferencesController@exportSites')->name('exportsites'); ///	
 
 // display photographer certificate PDF
 	Route::get('photographer-certificate-pdf/{file_name}', function($fileName) {

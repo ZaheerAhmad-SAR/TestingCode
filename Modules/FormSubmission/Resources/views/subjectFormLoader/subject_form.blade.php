@@ -27,7 +27,7 @@
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
         <div class="row" style="margin-top: -15px;">
-            <div class="col-12 col-sm-12 mt-3">
+            <div class="col-12 col-sm-12 mt-3" {{-- style="position: fixed;top: initial;z-index: 1030;" --}}>
                 <div class="card">
                     <div class="card-header  justify-content-between align-items-center" style="display: none;">
                         <h4 class="card-title">Study and Subject details</h4>
@@ -82,7 +82,7 @@
             </div>
             <div class="col-12 col-sm-12">
                 <div class="row row-eq-height">
-                    <div class="col-12 col-lg-2 mt-3 todo-menu-bar flip-menu pr-lg-0">
+                    <div class="col-12 col-lg-2 mt-3 todo-menu-bar flip-menu pr-lg-0" style="height: calc(100vh - 140px);">
                         <a href="#" class="d-inline-block d-lg-none mt-1 flip-menu-close">
                             <i class="icon-close"></i>
                         </a>

@@ -9,10 +9,13 @@ use Illuminate\Support\Str;
 use Modules\Admin\Entities\PhaseSteps;
 use Modules\Admin\Entities\Section;
 use Modules\FormSubmission\Entities\Answer;
+use Modules\FormSubmission\Entities\FinalAnswer;
+use Modules\FormSubmission\Entities\QuestionAdjudicationRequired;
 use Modules\FormSubmission\Entities\FormRevisionHistory;
 use Modules\FormSubmission\Entities\FormStatus;
 use Modules\Admin\Entities\Question;
 use Modules\Admin\Entities\QuestionDependency;
+use Modules\Admin\Entities\SkipLogic;
 use Modules\FormSubmission\Entities\FormVersion;
 use Modules\FormSubmission\Traits\QuestionDataValidation;
 use App\Helpers\ImageUploadingHelper;
@@ -38,6 +41,12 @@ class SubjectFormSubmissionController extends Controller
                     if (($fieldType == 'Upload') || ($fieldType == 'Description')) {
                         continue;
                     }
+                    // Remove answers Against skip logic if condition get fail and Question attempt before submission
+                    $deleteResponse = $this->removeDependentAnswers_on_skiplogic($request, $question);
+                    // end
+                    //  Remove answers over Dependecny
+                    $delete = $this->removeDependentAnswers_on_dependency($request, $question);
+                    //  end
                     $retArray = $this->putAnswer($request, $question);
                     $formRevisionDataArray['form_data'][] = $retArray['form_data'];
                     $trailLogDataArray['trail_log'][] = $retArray['trail_log'];
@@ -64,16 +73,121 @@ class SubjectFormSubmissionController extends Controller
             echo json_encode($formStatusArray);
         }
     }
+    private function removeDependentAnswers_on_skiplogic($request, $question){
+        //$question->id first parameter
+        $form_field_name = buildFormFieldName($question->formFields->variable_name);
+        $answer = $request->{$form_field_name};
+        $where_array = array(
+            'question_id' => $question->id,
+            'option_value' => $answer
+        );
+        // get skip logic deactivate fields only if skip logic applied and during submission those Questions are graded out (disabled) and they answer before applying skip logic
+        $skiplogics = SkipLogic::where($where_array)->get();
+        if(null !== $skiplogics){
+            foreach ($skiplogics as $skiplogic) {
+                if(null !==$skiplogic){
+                    // check and delete if Questions already attempt
+                    $deactivate_forms_array = explode(',', $skiplogic->deactivate_forms);
+                    $deactivate_forms_array = array_filter($deactivate_forms_array);
+                    if(count($deactivate_forms_array) > 0){
+                        $force_delete_by_form_id = $this->deleteAnswer($request,$deactivate_forms_array,'form');
+                    }
+                    $deactivate_sections_array = explode(',', $skiplogic->deactivate_sections);
+                    $deactivate_sections_array = array_filter($deactivate_sections_array);
+                    if(count($deactivate_sections_array) > 0){
 
-    public function submitQuestion(Request $request)
-    {
-        if (PhaseSteps::isStepActive($request->stepId)) {
-            $formRevisionDataArray = ['edit_reason_text' => ''];
-            $question = Question::find($request->questionId);
-            // check if this question have any dependent data to delete
-            $dependentQuestion = QuestionDependency::where('dep_on_question_id',$request->questionId)->get();
-            if(null !== $dependentQuestion){
-               foreach($dependentQuestion as $dependQuestion){
+                        $force_delete_by_section_id = $this->deleteAnswer($request,$deactivate_sections_array,'section');
+                    }
+                    $deactivate_questions_array = explode(',', $skiplogic->deactivate_questions);
+                    $deactivate_questions_array = array_filter($deactivate_questions_array);
+                    if(count($deactivate_questions_array) > 0){
+                        $force_delete_by_question_id = $this->deleteAnswer($request,$deactivate_questions_array,'question');
+                    }
+                }
+            }
+        }
+        // End here the process of deleteing answers over skip logic
+
+    }
+    
+    private function deleteAnswer($request, $deactivateids_array,$type){
+        
+        foreach ($deactivateids_array as $key => $value) {
+            
+            if($type =='form'){
+                $where1 = array('study_id' => $request->studyId,'subject_id' => $request->subjectId,'study_structures_id' => $request->phaseId);
+                $where2 = array('phase_steps_id' => $value);
+                $where = array_merge($where1,$where2);
+                // if found dependend for so we need to delete final data and update status of form
+                $finalData = $this->removeFinalData_and_delete_status($where);
+            }
+            if($type =='section'){
+                $where1 = array('study_id' => $request->studyId,'subject_id' => $request->subjectId,'study_structures_id' => $request->phaseId);
+                $where2 = array('section_id' => $value);
+                $where = array_merge($where1,$where2);
+                // if any section of grading form dependent on QC form Question
+                $updateDeletefinalData = $this->removeFinalData_and_update_status($where,$request->stepId);
+            }
+            if($type =='question'){
+                $where1 = array('study_id' => $request->studyId,'subject_id' => $request->subjectId,'study_structures_id' => $request->phaseId,'phase_steps_id' => $request->stepId);
+                $where2 = array('question_id' => $value);
+                $where = array_merge($where1,$where2);
+            }
+            $answer=Answer::where($where);
+            if(null !==$answer){
+                $this->force_delete_object($answer);
+            }
+        }
+        return true;
+    }
+    // This function will be in action if any of grading form is dependent on Qc Question over skiplogic
+    private function removeFinalData_and_delete_status($where){
+        $finalAnswers = FinalAnswer::where($where);
+        $questionAdjRequired = QuestionAdjudicationRequired::where($where);
+        $graddingStatus = FormStatus::where($where);
+        if(null !== $finalAnswers){
+            $this->force_delete_object($finalAnswers);
+        }
+        if(null !== $questionAdjRequired){
+            $this->force_delete_object($questionAdjRequired);
+        }
+        if(null !== $graddingStatus){
+            $this->force_delete_object($graddingStatus);
+        }
+    }
+    // This function will be in action if any of grading section are dependent on QC Questions over skiplogic
+    private function removeFinalData_and_update_status($where,$phase_steps_id){
+
+        $finalAnswers = FinalAnswer::where($where);
+        $questionAdjRequired = QuestionAdjudicationRequired::where($where);
+        $getStep = PhaseSteps::where('step_id',$phase_steps_id)->first();
+        $where_array = array('modility_id' => $getStep->modility_id,'form_type_id' => 2,'phase_id' =>$where['study_structures_id']);
+        $getGradingStep = PhaseSteps::where($where_array)->first();
+        if(null !==$getGradingStep){
+            $graddingStatuses = FormStatus::where('phase_steps_id',$getGradingStep->step_id)->get();
+            if(null !== $graddingStatuses){
+                foreach ($graddingStatuses as $graddingStatus) {
+                    if($graddingStatus->form_status == 'complete'){
+                        $update_array = array('form_status' => 'resumable');
+                        $graddingStatus->update($update_array);
+                    }
+                }
+            }
+        }
+        if(null !== $finalAnswers){
+            $this->force_delete_object($finalAnswers);
+        }
+        if(null !== $questionAdjRequired){
+            $this->force_delete_object($questionAdjRequired);
+        }
+        
+    }
+
+    private function removeDependentAnswers_on_dependency($request, $question){
+              // check if this question have any dependent data to delete
+            $dependentQuestions = QuestionDependency::where('dep_on_question_id',$question->id)->get();
+            if(null !== $dependentQuestions){
+               foreach($dependentQuestions as $dependQuestion){
                     $where = array(
                         'study_id' => $request->studyId,
                         'subject_id' => $request->subjectId,
@@ -81,12 +195,22 @@ class SubjectFormSubmissionController extends Controller
                         'phase_steps_id' => $request->stepId,
                         'question_id' => $dependQuestion->question_id,
                     );
-                   $checkAnswer = Answer::where($where)->first();
-                    if(null !== $checkAnswer){ 
-                        $removeDependentData = $this->removeDependentAnswers($where); 
+                    $answer=Answer::where($where);
+                    if(null !==$answer){
+                        $this->force_delete_object($answer);
                     }
                }
             }
+    }
+    private function force_delete_object($object){
+        $object->forceDelete(); //returns true/false
+        return true;
+    }
+    public function submitQuestion(Request $request)
+    {
+        if (PhaseSteps::isStepActive($request->stepId)) {
+            $formRevisionDataArray = ['edit_reason_text' => ''];
+            $question = Question::find($request->questionId);
             $formData = $this->putAnswer($request, $question);
             $formRevisionDataArray['form_data'][] = $formData['form_data'];
             $formStatusArray = FormStatus::putFormStatus($request);
@@ -98,13 +222,7 @@ class SubjectFormSubmissionController extends Controller
             ]);
         }
     }
-
-    private function removeDependentAnswers($where)
-    {
-        $answer=Answer::where($where)->first();
-        $answer->forceDelete(); //returns true/false
-        return true;
-    }
+  
     private function putAnswer($request, $question)
     {
         $mimes = [

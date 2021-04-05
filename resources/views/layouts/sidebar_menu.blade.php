@@ -436,42 +436,40 @@
                     <li class="dropdown"><a href="#"><i class="fas fa-certificate"></i> Certification App</a>
                         <ul class="sub-menu">
 
-                            <li class="@if(is_active('certification-device')) {{ ' active' }} @endif">
-                                <a href="{{route('certification-device.index')}}">
-                                    <i class="fas fa-list"></i> Certification Devices
-                                </a>
-                            </li>
-
-                            <li class="@if(is_active('certified-device')) {{ ' active' }} @endif">
-                                <a href="{{route('certified-device')}}">
-                                    <i class="fas fa-list"></i> Certified Devices
-                                </a>
-                            </li>
-
-
-
                             <li  class="@if(is_active('certification-photographer')) {{ ' active' }} @endif">
-                                <a href="{{route('certification-photographer.index')}}">
-                                    <i class="fas fa-list"></i> Certification Photographers
+                                <a href="{{route('certification-photographer.index')}}" style="font-size: 12px;">
+                                    <i class="fas fa-list"></i>Photographer Certification
+                                </a>
+                            </li>
+
+                            <li class="@if(is_active('certification-device')) {{ ' active' }} @endif">
+                                <a href="{{route('certification-device.index')}}" style="font-size: 12px;">
+                                    <i class="fas fa-list"></i>Device Certification
                                 </a>
                             </li>
 
                             <li  class="@if(is_active('certified-photographer')) {{ ' active' }} @endif">
-                                <a href="{{route('certified-photographer')}}">
-                                    <i class="fas fa-list"></i> Certified Photographers
+                                <a href="{{route('certified-photographer')}}" style="font-size: 12px;">
+                                    <i class="fas fa-list"></i>Certified Photographers
+                                </a>
+                            </li>
+
+                            <li class="@if(is_active('certified-device')) {{ ' active' }} @endif">
+                                <a href="{{route('certified-device')}}" style="font-size: 12px;">
+                                    <i class="fas fa-list"></i> Certified Devices
                                 </a>
                             </li>
 
                             @if(hasPermission(auth()->user(),'certification-preferences.index'))
                             <li  class="@if(is_active('certification-preferences')) {{ ' active' }} @endif">
-                                <a href="{{route('certification-preferences.index')}}">
+                                <a href="{{route('certification-preferences.index')}}" style="font-size: 12px;">
                                     <i class="fas fa-list"></i> Preferences
                                 </a>
                             </li>
                             @endif
 
                             <li  class="@if(is_active('certification-template')) {{ ' active' }} @endif">
-                                <a href="{{route('certification-template')}}">
+                                <a href="{{route('certification-template')}}" style="font-size: 12px;">
                                     <i class="fas fa-list"></i> Template
                                 </a>
                             </li>

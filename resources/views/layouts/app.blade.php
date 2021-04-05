@@ -129,10 +129,10 @@
 
     <!-- START: Page JS-->
     @yield('script')
-    @stack('script')
     @stack('script_mid')
     @stack('script_last')
     @stack('script_skip_logic')
+    @stack('script')
     <script>
         $(function() {
             var url_route = "{{ URL('home/working_status') }}";
