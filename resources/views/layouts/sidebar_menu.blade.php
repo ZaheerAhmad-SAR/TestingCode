@@ -16,7 +16,7 @@
                     <li class="dropdown"><a href="#"><i class="fas fa-home"></i> Dashboard</a>
                         <ul class="sub-menu">
                             <li>
-                                <a href="{{ route('dashboard.index')}}">
+                                <a href="{{ route('dashboard.statistics','-')}}">
                                     <i class="fas fa-list"></i> System Dashboard
                                 </a>
                             </li>

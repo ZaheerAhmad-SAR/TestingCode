@@ -33,7 +33,7 @@
         <div class="eagle-divider"></div>
         <div class="col-lg-4 col-xl-4">
             @if(hasPermission(auth()->user(),'study.create'))
-            Phases <button class="custom-btn blue-color" id="add_phase"> <i class="fa fa-plus blue-color"></i> add</button>
+            Phases <button class="custom-btn blue-color" id="add_phase" dusk='add_phase'> <i class="fa fa-plus blue-color"></i> add</button>
             @endif
         </div>
         <div class="col-lg-8  col-xl-8">
@@ -187,7 +187,7 @@
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-outline-danger" data-dismiss="modal" id="addphase-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                        <button type="button" class="btn btn-outline-primary" id="savePhase"><i class="fa fa-save"></i> Save Changes</button>
+                        <button type="button" class="btn btn-outline-primary" id="savePhase" dusk="savePhase"><i class="fa fa-save"></i> Save Changes</button>
                     </div>
                 </div>
             </form>
