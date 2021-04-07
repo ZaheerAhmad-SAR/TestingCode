@@ -160,10 +160,11 @@
                                     @foreach($getParentModality as $parentModality)
                                     <option value="{{ $parentModality->id }}" @if(request()->modility_id == $parentModality->id) selected @endif >{{ $parentModality->modility_name }}</option>
                                     @endforeach
-
+                                    {{--
                                     @foreach($getChildModality as $childModality)
                                     <option value="{{ $childModality->id }}" @if(request()->modility_id == $childModality->id) selected @endif >{{ $childModality->modility_name }}</option>
                                     @endforeach
+                                    --}}
                                 </select>
                             </div>
 
@@ -224,7 +225,7 @@
                                         <th>Photographer</th>
                                         <th>Study</th>
                                         <th>Site Name</th>
-                                        <th>Image MOdality</th>
+                                        <th>Image Modality</th>
                                         <th>Type</th>
                                         <th>Issue Date</th>
                                         <th>Status</th>
@@ -758,12 +759,24 @@
 
     /************************** Generate Certificate *********************************************/ 
 
+    // initiallize tags
+    $('#cc_user_email').tagsInput({
+        'defaultText':'add email',
+        'removeWithBackspace' : true,
+    });
+
+    $('#bcc_user_email').tagsInput({
+        'defaultText':'add email',
+        'removeWithBackspace' : true,
+    });
+
     // grandfathering function
     function generateGrandfatherCertificate(certificateID, photographerEmail, ccEmail, bccEmail) {
 
-        // initiallize tags
-        $('#cc_user_email').tagsInput();
-        $('#bcc_user_email').tagsInput();
+        // remove old cc tag
+        removeCCTag($('#cc_user_email'));
+        // remove old bcc tag
+        removeBCCTag($('#bcc_user_email'));
 
         // assign email to email To input
         $('.user_email').append('<option value="'+photographerEmail+'">'+photographerEmail+'</option>');
@@ -771,16 +784,12 @@
         // assign cc and bcc emails
         $.each(JSON.parse(ccEmail), function(index, value) {
                                     
-           // remove old tag
-            $('#cc_user_email').removeTag(value);
             //append new value
             $('#cc_user_email').addTag(value);
         });
 
         $.each(JSON.parse(bccEmail), function(index, value) {
                                     
-            // remove old tag
-            $('#bcc_user_email').removeTag(value);
             // append new tag
             $('#bcc_user_email').addTag(value);
         });
@@ -1132,6 +1141,7 @@
     });
 
     /************************ Grand fathering cc, bcc_emails *****************************/
+    /************************ Grand fathering cc, bcc_emails *****************************/
     $('#study').change(function() {
         if ($(this).val() != '') {
             
@@ -1143,19 +1153,22 @@
                 },
                 success:function(data) {
 
-                   // refresh the select2
-                    $('#cc_user_email').empty();
-                    $('#bcc_user_email').empty();
+                    // remove old cc tag
+                    removeCCTag($('#cc_user_email'));
+                    // remove old bcc tag
+                    removeBCCTag($('#bcc_user_email'));
 
                     // assign cc and bcc emails
                     $.each(data.userEmails, function(index, value) {
-                                                
-                        $('#cc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+
+                        //append new value
+                        $('#cc_user_email').addTag(value);
                     });
 
                     $.each(data.userBCCEmails, function(index, value) {
                                                 
-                        $('#bcc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+                        //append new value
+                        $('#bcc_user_email').addTag(value);
                     });
                     
                 } // success ends
@@ -1163,6 +1176,28 @@
             }); // ajax ends
         } // null check ends
     });
+
+
+    function removeCCTag(element) {
+        var ccTags = element.val().split(',');
+
+        // remove tags
+        $.each(ccTags, function(index, value) {
+            //append new value
+            element.removeTag(value);
+        });
+    }
+
+    function removeBCCTag(element) {
+        var bccTags = element.val().split(',');
+
+        // remove tags
+        $.each(bccTags, function(index, value) {
+            //append new value
+            element.removeTag(value);
+        });
+
+    }
 
 </script>
 
