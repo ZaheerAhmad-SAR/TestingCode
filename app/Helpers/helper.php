@@ -1309,17 +1309,23 @@ function getOldValue($oldValues, $val)
         return '';
      }
 }
-function get_all_counts_assigned_work_withoperator($form_type_id, $form_status,$condition){
+function get_all_counts_assigned_work_withoperator($form_type_id, $form_status,$condition,$where_study){
     $where = array(
         'assign_work.form_type_id' => $form_type_id,
         'form_submit_status.form_type_id' => $form_type_id,
     ); 
+    if(!isset($where_study['study_id'])){
+        $where_study = array('form_submit_status.deleted_at' => null);
+    }else{
+        $where_study = array('form_submit_status.study_id' => $where_study['study_id']);
+    }
     // $dd = 'true';
     $total_numbers = AssignWork::query();
         $total_numbers = $total_numbers->select('assign_work.*,form_submit_status.id')
         ->from('assign_work')
-        ->leftjoin('form_submit_status', 'form_submit_status.modility_id', '=', 'assign_work.modility_id')
+        ->join('form_submit_status', 'form_submit_status.modility_id', '=', 'assign_work.modility_id')
         ->where($where)
+        ->where($where_study)
         ->where('form_submit_status.form_status', $form_status ,'complete')
         ->where('form_submit_status.created_at', $condition , DB::raw('assign_work.assign_date'))
         ->count();
@@ -1378,8 +1384,8 @@ function get_all_counts_assigned_not_complete_and_due($form_type_id,$modility_id
     );
     return AssignWork::where($where)->with(['get_form_status' => function ($query) { $query->where('form_type_id', '=', $form_type_id)->where('form_status', '!=', 'complete'); }])->count();
 }
-function get_all_counts_assigned_work($form_type_id){
-    return AssignWork::where('form_type_id',$form_type_id)->count();
+function get_all_counts_assigned_work($form_type_id,$where_study){
+    return AssignWork::where('form_type_id',$form_type_id)->where($where_study)->count();
 }
 // For visits Turnarround Time selection
 function get_tat_of_visit_complete($subject_id,$phase_id,$form_type_id,$form_status,$modality_id){

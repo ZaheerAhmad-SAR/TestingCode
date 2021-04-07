@@ -81,7 +81,6 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::resource('users', 'UserController');
     Route::resource('studyusers', 'StudyusersController');
     Route::resource('systemusers', 'SystemusersController');
-    Route::resource('dashboard', 'DashboardController');
     Route::resource('grading', 'GradingController');
     Route::resource('qualitycontrol', 'QualityControlController');
     Route::resource('studytools', 'StudyToolsController');
@@ -103,5 +102,6 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::post('systemUser/activate_user', 'SystemusersController@activate_user')->name('systemUser.activate_user');
     Route::post('systemUser/inactivate_user', 'SystemusersController@inactivate_user')->name('systemUser.inactivate_user');
 
+    Route::get('dashboard/{studyId}', 'DashboardController@statistics')->name('dashboard.statistics');
     // Finance Dashboard
 });
