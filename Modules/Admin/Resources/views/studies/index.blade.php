@@ -17,7 +17,7 @@
                     <div class="w-sm-100 mr-auto"><h4 id="querySection" class="mb-0">Studies</h4></div>
 
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
-                        <li class="breadcrumb-item"><a href="{{route('dashboard.index')}}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{route('dashboard.statistics',1)}}">Home</a></li>
                         <li class="breadcrumb-item active"><a href="javascript:void(0)">Studies Listing</a></li>
                     </ol>
                 </div>

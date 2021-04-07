@@ -1,4 +1,6 @@
 <?php
+use App\Events\UserShouldNotifyQuery;
+use Modules\Admin\Entities\Site;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +15,20 @@
 
 Route::get('/', function () {
     return view('auth.login');
+});
+
+//Route::get('/', function () {
+//    return view('welcome');
+//});
+
+Route::get('/sites', function () {
+
+    $records = \Modules\Admin\Entities\Modility::all();
+    return response()->json($records);
+});
+
+Route::get('/broadcast', function () {
+    broadcast(new \App\Events\UserShouldNotifyQuery());
 });
 
 Route::get('/2fa/enable', 'Google2FAController@enableTwoFactor');

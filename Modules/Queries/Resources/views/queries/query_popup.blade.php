@@ -1029,7 +1029,7 @@
                 $("#queriesQuestionForm")[0].reset();
                 $("#usersSelectOptionList").html('');
                 $('#queries-modal-question').modal('hide');
-                location.reload();
+                //location.reload();
                 {{--$.ajax({--}}
                 {{--    type: 'POST',--}}
                 {{--    url: "{{route('notifications.countUserNotification')}}"--}}
