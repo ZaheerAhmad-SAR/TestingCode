@@ -113,7 +113,7 @@
     <!-- START: APP JS-->
 
     <script src="{{ asset('public/dist/js/app.js') }}"></script>
-    <script src="{{ asset('public/dist/js/custom-notification.js') }}"></script>
+{{--    <script src="{{ asset('public/dist/js/custom-notification.js') }}"></script>--}}
 
     <script src="{{ asset('public/dist/js/jquery.multi-select.js') }}"></script>
     <script src="{{ asset('public/js/fstdropdown.min.js') }}"></script>
