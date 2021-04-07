@@ -45,10 +45,12 @@
                                 @if(hasPermission(auth()->user(),'roles.edit'))
                                 <td>
                                    <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                        <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                        <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;" dusk="roles-navtab">
+                                            <i class="fas fa-cog" style="margin-top: 12px;"></i>
+                                        </span>
                                         <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                             <span class="dropdown-item">
-                                                <a href="{!! route('roles.edit',encrypt($role->id)) !!}">
+                                                <a  dusk="roles-edit" href="{!! route('roles.edit',encrypt($role->id)) !!}">
                                                     <i class="far fa-edit"></i>&nbsp; Edit
                                                 </a>
                                             </span>
@@ -73,9 +75,11 @@
                                     @if(hasPermission(auth()->user(),'roles.edit'))
                                         <td>
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                                <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                                <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;" dusk="roles-navtab">
+                                                    <i class="fas fa-cog" style="margin-top: 12px;"></i>
+                                                </span>
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                            <span class="dropdown-item">
+                                            <span class="dropdown-item" dusk="roles-edit">
                                                 <a href="{!! route('roles.edit',encrypt($role->id)) !!}">
                                                     <i class="far fa-edit"></i>&nbsp; Edit
                                                 </a>
@@ -122,7 +126,7 @@
                                 <div class="form-group row" style="margin-top: 20px;">
                                     <label for="Name" class="col-sm-3 col-form-label">Name</label>
                                     <div class="{!! ($errors->has('name')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                        <input type="text" class="form-control" id="role_name" name="name" value="{{old('name')}}" required>
+                                        <input type="text" class="form-control" id="role_name" name="name" value="{{old('name')}}" required dusk="role_name">
                                         @error('name')
                                         <span class="text-danger small">{{ $message }} </span>
                                         @enderror
@@ -131,7 +135,7 @@
                                 <div class="form-group row">
                                     <label for="Description" class="col-sm-3 col-form-label">Description</label>
                                     <div class="{!! ($errors->has('description')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                        <textarea class="form-control" name="description" id="description" value="{{old('description')}}" required></textarea>
+                                        <textarea class="form-control" name="description" id="description" value="{{old('description')}}" required dusk="description"></textarea>
                                         @error('description')
                                         <span class="text-danger small">{{ $message }} </span>
                                         @enderror
@@ -140,8 +144,8 @@
                                 <div class="form-group row">
                                     <div class="col-md-3">Role Type <sup>*</sup></div>
                                     <div class="form-group col-md-9">
-                                        <input type="radio" name="role_type_name" id="for_system_user" value="system_role" checked> System Role &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <input type="radio" name="role_type_name" id="for_study_user" value="study_role"> Study Role
+                                        <input type="radio" name="role_type_name" id="for_system_user" value="system_role" checked dusk="role_type_name"> System Role &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" name="role_type_name" id="for_study_user" value="study_role" dusk="role_type_name"> Study Role
                                     </div>
                                 </div>
                             </div>

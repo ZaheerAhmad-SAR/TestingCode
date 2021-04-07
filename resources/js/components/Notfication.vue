@@ -54,6 +54,7 @@ export default {
     mounted() {
         window.Echo.channel('channel').listen('UserShouldNotifyQuery',(e)=>{
             console.log(e.data);
+            console.log($);
             let record = e.data ;
            this.message = record;
         })
