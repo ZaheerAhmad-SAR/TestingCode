@@ -14,7 +14,7 @@ use Modules\FormSubmission\Entities\FormStatus;
 use Illuminate\Support\Carbon;
 class DashboardController extends Controller
 {
-    public function statistics ($studyId)
+    public function index ()
     {
         $modalities = Modility::all();
         $studies = Study::all();

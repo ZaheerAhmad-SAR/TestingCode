@@ -14,7 +14,7 @@
             <nav class="navbar navbar-expand-lg  p-0">
 
                 <div class="navbar-header  h-100 h4 mb-0 align-self-center logo-bar text-left">
-                    <a href="{{ url('/dashboard') }}" class="horizontal-logo text-left">
+                    <a href="{{ url('studies') }}" class="horizontal-logo text-left">
                 <span class="h4 font-weight-bold align-self-center mb-0 ml-auto">
                     OIRRC
                 </span>

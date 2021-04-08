@@ -58,12 +58,12 @@
                                 <input type="hidden" class="is_repeatable" value="{{$phase->is_repeatable}}">
                                 <input type="hidden" class="window" value="{{$phase->window}}">
                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                    <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                    <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" dusk="update_phase" style="margin-top: 12px;"></i></span>
                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                        <span class="dropdown-item edit_phase"><i class="far fa-edit"></i>&nbsp; Edit</span>
-                                        <span class="dropdown-item clonePhase"><i class="far fa-clone"></i>&nbsp; Clone</span>
+                                        <span class="dropdown-item edit_phase" dusk="edit_phase_dusk"><i class="far fa-edit"></i>&nbsp; Edit</span>
+                                        <span class="dropdown-item clonePhase"><i class="far fa-clone" dusk="clone_phase_dusk"></i>&nbsp; Clone</span>
                                         <span class="dropdown-item cohort_setting"><i class="fa fa-plus"></i> &nbsp; Cohort Setting</span>
-                                        <span class="dropdown-item deletePhase"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
+                                        <span class="dropdown-item deletePhase" dusk="deletePhase_dusk"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                     </div>
                                 </div>
                             </div>
@@ -178,9 +178,9 @@
                             <div class="form-group row">
                                 <label for="is_repeatable" class="col-sm-3 col-form-label">Is Repeatable?</label>
                                 <div class="col-sm-9">
-                                    <input type="radio" name="is_repeatable" id="is_repeatable_0" value="0" checked> No
+                                    <input type="radio" name="is_repeatable" dusk="is_repeatable" id="is_repeatable_0" value="0" checked> No
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    <input type="radio" name="is_repeatable" id="is_repeatable_1" value="1"> Yes
+                                    <input type="radio" name="is_repeatable" dusk="is_repeatable" id="is_repeatable_1" value="1"> Yes
                                 </div>
                             </div>
                         </div>
