@@ -29,11 +29,11 @@
                                 <nav>
                                     <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
                                         <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-Basic" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
-                                        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-StudyActivities" role="tab" aria-controls="nav-profile" aria-selected="false">Study Activities</a>
+                                        <a dusk="nav-StudyActivities" class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-StudyActivities" role="tab" aria-controls="nav-profile" aria-selected="false">Study Activities</a>
 
-                                        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-ManagementActivities" role="tab" aria-controls="nav-profile" aria-selected="false">Management Activities</a>
+                                        <a dusk="nav-ManagementActivities" class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-ManagementActivities" role="tab" aria-controls="nav-profile" aria-selected="false">Management Activities</a>
 
-                                        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-CertificationApp" role="tab" aria-controls="nav-profile" aria-selected="false">Certification App</a>
+                                        <a  dusk ="nav-CertificationApp" class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-CertificationApp" role="tab" aria-controls="nav-profile" aria-selected="false">Certification App</a>
 
                                     </div>
                                 </nav>
@@ -62,9 +62,9 @@
                                             <div class="col-md-3">Role Type <sup>*</sup></div>
                                             <div class="form-group col-md-9">
                                                 <input type="radio" name="role_type" value="system_role"
-                                                @if($role->role_type == 'system_role') checked="checked" @endif> System Role &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                @if($role->role_type == 'system_role') checked="checked" dusk="role_type" @endif> System Role &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                 <input type="radio" name="role_type" value="study_role"
-                                                       @if($role->role_type == 'study_role') checked="checked" @endif> Study Role
+                                                       @if($role->role_type == 'study_role') checked="checked" dusk="role_type" @endif> Study Role
                                             </div>
                                         </div>                                    </div>
 
