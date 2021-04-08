@@ -16,7 +16,7 @@
                     <li class="dropdown"><a href="#"><i class="fas fa-home"></i> Dashboard</a>
                         <ul class="sub-menu">
                             <li>
-                                <a href="{{ route('dashboard.statistics','-')}}">
+                                <a href="{{ route('dashboard.index','-')}}">
                                     <i class="fas fa-list"></i> System Dashboard
                                 </a>
                             </li>
@@ -106,7 +106,7 @@
                 @if(session('current_study'))
                 <li class="dropdown">
                     <ul>
-                        <li class="dropdown"><a href="#"><i class="fas fa-tools"></i>Study Tools</a>
+                        <li class="dropdown" dusk='study_tools'><a href="#"><i class="fas fa-tools"></i>Study Tools</a>
                             <ul class="sub-menu">
                                 @if(hasPermission(auth()->user(),'studyusers.index'))
                                     <li class="@if(is_active('studyusers.index')) {{ ' active' }} @endif">
@@ -130,11 +130,11 @@
                                     </li>
                                 @endif
                                 @if(hasPermission(auth()->user(),'studydesign.index'))
-                                    <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Design</a>
+                                    <li class="dropdown" dusk="study_design"><a href="#"><i class="icon-grid"></i>Study Design</a>
                                         <ul class="sub-menu">
                                             @if(hasPermission(auth()->user(),'study.index'))
                                                 <li class="@if(is_active('study.index')) {{ ' active' }} @endif">
-                                                    <a href="{!! route('study.index') !!}">
+                                                    <a href="{!! route('study.index') !!}" dusk="study_structure">
                                                         Study Structure
                                                     </a>
                                                 </li>
@@ -544,7 +544,7 @@
         <!-- END: Menu-->
 
     <div class="btn-group dropup" style="margin-left: 15px;">
-     <button type="button" class="btn btn-primary dropdown-toggle position-fixed" data-toggle="dropdown">  <i class="icon-question"></i> Support</button>
+     <button type="button" class="btn btn-primary dropdown-toggle position-fixed" data-toggle="dropdown" style="bottom: 10px;">  <i class="icon-question"></i> Support</button>
         <div class="dropdown-menu">
             @if(hasPermission(auth()->user(),'bug-reporting.create'))
             <a href="javascript:void(0);" class="dropdown-item"  data-toggle="modal" data-target="#reportabugmodel"><i class="fa fa-plus"></i>   Report a Bug</a>
