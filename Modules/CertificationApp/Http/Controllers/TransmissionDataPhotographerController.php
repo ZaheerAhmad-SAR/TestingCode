@@ -905,7 +905,13 @@ class TransmissionDataPhotographerController extends Controller
 
             if ($request->modility_id != '') {
 
-               $getCertifiedPhotographer = $getCertifiedPhotographer->where('certification_data.modility_id', 'like', '%' . $request->modility_id . '%');
+                // get parent modality
+                $modality = Modility::find($request->modility_id);
+                // get child modalities
+                $childModalities = ChildModilities::where('modility_id', $modality->id)->pluck('id')->toArray();
+                $childModalities[] = $modality->id;
+
+               $getCertifiedPhotographer = $getCertifiedPhotographer->whereIn('certification_data.modility_id', $childModalities);
             }
 
             if ($request->certificate_status != '') {
@@ -960,12 +966,12 @@ class TransmissionDataPhotographerController extends Controller
 
         // get parent modality
         $getParentModality = Modility::select('id', 'modility_name')->get();
-        $getChildModality = ChildModilities::select('id', 'modility_name')->get();
+        //$getChildModality = ChildModilities::select('id', 'modility_name')->get();
 
         // get templates for email
         $getTemplates = CertificationTemplate::select('id as template_id', 'title as template_title')->get();
 
-        return view('certificationapp::certificate_photographer.certified_photographer', compact('getCertifiedPhotographer', 'getStudies', 'getTemplates', 'getParentModality', 'getChildModality'));
+        return view('certificationapp::certificate_photographer.certified_photographer', compact('getCertifiedPhotographer', 'getStudies', 'getTemplates', 'getParentModality'));
 
     }
 
