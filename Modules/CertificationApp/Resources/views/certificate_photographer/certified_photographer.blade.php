@@ -933,13 +933,25 @@
         height: 150,
 
     });
-    
+
     // initiallize tags
-    $('#status_cc_user_email').tagsInput();
-    $('#status_bcc_user_email').tagsInput();
+    $('#status_cc_user_email').tagsInput({
+        'defaultText':'add email',
+        'removeWithBackspace' : true,
+    });
+
+    $('#status_bcc_user_email').tagsInput({
+        'defaultText':'add email',
+        'removeWithBackspace' : true,
+    });
 
     // status change function
     function changeCertificateStatus(certificateID, photographerEmail, ccEmail, bccEmail, status) {
+
+        // remove old cc tag
+        removeCCTag($('#status_cc_user_email'));
+        // remove old bcc tag
+        removeBCCTag($('#status_bcc_user_email'));
 
         // assign email to email To input
         $('.status_user_email').append('<option value="'+photographerEmail+'">'+photographerEmail+'</option>');
@@ -947,16 +959,12 @@
          // assign cc and bcc emails
         $.each(JSON.parse(ccEmail), function(index, value) {
                                     
-            // remove old tag
-            $('#status_cc_user_email').removeTag(value);
             //append new value
             $('#status_cc_user_email').addTag(value);
         });
 
         $.each(JSON.parse(bccEmail), function(index, value) {
                                     
-            // remove old tag
-            $('#status_bcc_user_email').removeTag(value);
             //append new value
             $('#status_bcc_user_email').addTag(value);
         });
@@ -1026,13 +1034,25 @@
         height: 150,
 
     });
-    
+
     // initiallize tags
-    $('#date_cc_user_email').tagsInput();
-    $('#date_bcc_user_email').tagsInput();
+    $('#date_cc_user_email').tagsInput({
+        'defaultText':'add email',
+        'removeWithBackspace' : true,
+    });
+
+    $('#date_bcc_user_email').tagsInput({
+        'defaultText':'add email',
+        'removeWithBackspace' : true,
+    });
 
     // status change function
     function changeCertificateDate(certificateID, photographerEmail, ccEmail, bccEmail, date) {
+
+        // remove old cc tag
+        removeCCTag($('#date_cc_user_email'));
+        // remove old bcc tag
+        removeBCCTag($('#date_bcc_user_email'));
 
         // assign email to email To input
         $('.date_user_email').append('<option value="'+photographerEmail+'">'+photographerEmail+'</option>');
@@ -1040,16 +1060,12 @@
         // assign cc and bcc emails
         $.each(JSON.parse(ccEmail), function(index, value) {
                                     
-            // remove old tag
-            $('#date_cc_user_email').removeTag(value);
             //append new value
             $('#date_cc_user_email').addTag(value);
         });
 
         $.each(JSON.parse(bccEmail), function(index, value) {
                                     
-            // remove old tag
-            $('#date_bcc_user_email').removeTag(value);
             //append new value
             $('#date_bcc_user_email').addTag(value);
         });

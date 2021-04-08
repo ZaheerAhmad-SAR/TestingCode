@@ -593,9 +593,17 @@
     });
 
     /***************************************** Generate Certificate ******************************/
+
     // initiallize tags
-    $('#cc_user_email').tagsInput();
-    $('#bcc_user_email').tagsInput();
+    $('#cc_user_email').tagsInput({
+        'defaultText':'add email',
+        'removeWithBackspace' : true,
+    });
+
+    $('#bcc_user_email').tagsInput({
+        'defaultText':'add email',
+        'removeWithBackspace' : true,
+    });
 
     function generateCertificate(transmissionID, certificateID, route, type) {
 
@@ -655,6 +663,11 @@
             },
             success:function(data) {
 
+                // remove old cc tag
+                removeCCTag($('#cc_user_email'));
+                // remove old bcc tag
+                removeBCCTag($('#bcc_user_email'));
+
                 // ------------------------------------- transmission start----------------------//
                 if (data.getTransmissions != null) {
                     // loop through transmission#
@@ -709,10 +722,9 @@
                 // ------------------------------------- user email ends----------------------//
 
                 if(data.ccEmails != null) {
-
+                
                     $.each(data.ccEmails, function(index, value) {
-                        // remove old tag
-                        $('#cc_user_email').removeTag(value);
+       
                         //append new value
                         $('#cc_user_email').addTag(value);
                     });
@@ -722,8 +734,7 @@
                 if(data.bccEmails != null) {
 
                     $.each(data.bccEmails, function(index, value) {
-                        // remove old tag
-                        $('#bcc_user_email').removeTag(value);
+
                         // append new tag
                         $('#bcc_user_email').addTag(value);
                     });
@@ -846,6 +857,27 @@
         $('.generate-certificate-form').submit();
 
     });
+
+    function removeCCTag(element) {
+        var ccTags = element.val().split(',');
+
+        // remove tags
+        $.each(ccTags, function(index, value) {
+            //append new value
+            element.removeTag(value);
+        });
+    }
+
+    function removeBCCTag(element) {
+        var bccTags = element.val().split(',');
+
+        // remove tags
+        $.each(bccTags, function(index, value) {
+            //append new value
+            element.removeTag(value);
+        });
+
+    }
 
 </script>
 
