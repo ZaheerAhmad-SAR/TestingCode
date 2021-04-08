@@ -661,7 +661,13 @@ class TransmissionDataDeviceController extends Controller
                $getCertifiedDevice = $getCertifiedDevice->where('certification_data.device_serial_no', 'like', '%' . $request->device_serial_no . '%');
             }
             if ($request->modility_id != '') {
-               $getCertifiedDevice = $getCertifiedDevice->where('certification_data.modility_id', 'like', '%' . $request->modility_id . '%');
+                // get parent modality
+                $modality = Modility::find($request->modility_id);
+                // get child modalities
+                $childModalities = ChildModilities::where('modility_id', $modality->id)->pluck('id')->toArray();
+                $childModalities[] = $modality->id;
+
+               $getCertifiedDevice = $getCertifiedDevice->whereIn('certification_data.modility_id', $childModalities);
             }
             // if ($request->certificate_status != '') {
             //    $getCertifiedDevice = $getCertifiedDevice->where('certification_data.certificate_status', 'like', '%' . $request->certificate_status . '%');
@@ -698,10 +704,11 @@ class TransmissionDataDeviceController extends Controller
         $getStudies = Study::get();
         // get parent modality
         $getParentModality = Modility::select('id', 'modility_name')->get();
-        $getChildModality = ChildModilities::select('id', 'modility_name')->get();
+        //$getChildModality = ChildModilities::select('id', 'modility_name')->get();
         // get templates for email
         $getTemplates = CertificationTemplate::select('id as template_id', 'title as template_title')->get();
-        return view('certificationapp::certificate_device.certified_device', compact('getCertifiedDevice', 'getStudies', 'getTemplates', 'getParentModality', 'getChildModality'));
+
+        return view('certificationapp::certificate_device.certified_device', compact('getCertifiedDevice', 'getStudies', 'getTemplates', 'getParentModality'));
     }
 
     public function generateDeviceGrandfatherCertificate(Request $request) {
