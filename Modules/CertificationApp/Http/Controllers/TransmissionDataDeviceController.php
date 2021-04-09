@@ -207,13 +207,49 @@ class TransmissionDataDeviceController extends Controller
 
         } // loop ends
 
+        /************************************** Filters *************************************/
+
+        // get transmission number
+        $getFilterTransmissionNumber = TransmissionDataDevice::select('Transmission_Number')
+                                                                    ->where('Transmission_Number', '!=', '')
+                                                                    ->groupBy('Transmission_Number')
+                                                                    ->get();
+        // get study name
+        $getFilterStudy = TransmissionDataDevice::select('Study_Name')
+                                                        ->where('Transmission_Number', '!=', '')
+                                                        ->groupBy('Study_Name')
+                                                        ->get();
+        // get device category
+        $getFilterDeviceCategory = TransmissionDataDevice::select('Device_Category')
+                                                    ->where('Transmission_Number', '!=', '')
+                                                    ->groupBy('Device_Category')
+                                                    ->get();
+        // get device serial
+        $getFilterDeviceSerial = TransmissionDataDevice::select('Device_Serial')
+                                                    ->where('Transmission_Number', '!=', '')
+                                                    ->groupBy('Device_Serial')
+                                                    ->get();
+        // get Site name
+        $getFilterSite = TransmissionDataDevice::select('Site_Name')
+                                                        ->where('Transmission_Number', '!=', '')
+                                                        ->groupBy('Site_Name')
+                                                        ->get();
+
+        // get submitter name
+        $getFilterSubmitter = TransmissionDataDevice::select('Request_MadeBy_FirstName', 'Request_MadeBy_LastName')
+                                                            ->where('Transmission_Number', '!=', '')
+                                                            ->groupBy(['Request_MadeBy_FirstName', 'Request_MadeBy_LastName'])
+                                                            ->get();
+
+        /************************************** Filters *************************************/
+
         // get certification officer users
         $getCertificationOfficers = Permission::getCertificationOfficer();
 
         // get templates for email
         $getTemplates = CertificationTemplate::select('id as template_id', 'title as template_title')->get();
 
-        return view('certificationapp::certificate_device.index', compact('getTransmissions', 'getCertificationOfficers', 'getTemplates'));
+        return view('certificationapp::certificate_device.index', compact('getTransmissions', 'getCertificationOfficers', 'getTemplates', 'getFilterTransmissionNumber', 'getFilterStudy', 'getFilterDeviceCategory', 'getFilterDeviceSerial', 'getFilterSite', 'getFilterSubmitter'));
     }
 
     /**
@@ -649,10 +685,10 @@ class TransmissionDataDeviceController extends Controller
                $getCertifiedDevice = $getCertifiedDevice->where('certification_data.certificate_id', 'like', '%' . $request->certify_id . '%');
             }
             if ($request->study_name != '') {
-               $getCertifiedDevice = $getCertifiedDevice->where('certification_data.study_name', 'like', '%' . $request->study_name . '%');
+               $getCertifiedDevice = $getCertifiedDevice->where('certification_data.study_id', 'like', '%' . $request->study_name . '%');
             }
             if ($request->site_name != '') {
-               $getCertifiedDevice = $getCertifiedDevice->where('certification_data.site_name', 'like', '%' . $request->site_name . '%');
+               $getCertifiedDevice = $getCertifiedDevice->where('certification_data.site_id', 'like', '%' . $request->site_name . '%');
             }
             if ($request->device_model != '') {
                $getCertifiedDevice = $getCertifiedDevice->where('certification_data.device_model', 'like', '%' . $request->device_model . '%');
@@ -700,15 +736,38 @@ class TransmissionDataDeviceController extends Controller
             }
             $getCertifiedDevice = $getCertifiedDevice->orderBy('certification_data.created_at', 'desc')
                                                     ->paginate(50);
+
+        /************************************* Filters *******************************************/
         // get template
         $getStudies = Study::get();
         // get parent modality
         $getParentModality = Modility::select('id', 'modility_name')->get();
         //$getChildModality = ChildModilities::select('id', 'modility_name')->get();
+
+        //get Devices model
+        $getFilterDeviceModel = CertificationData::select('device_model')
+                                                    ->where('transmission_type', 'device_transmission')
+                                                    ->groupBy('device_model')
+                                                    ->get();
+        // get device serial
+         $getFilterDeviceSerial = CertificationData::select('device_serial_no')
+                                                    ->where('transmission_type', 'device_transmission')
+                                                    ->groupBy('device_serial_no')
+                                                    ->get();
+        // get Certification ID
+        $getFilterCertification = CertificationData::select('certificate_id')
+                                                    ->where('transmission_type', 'device_transmission')
+                                                    ->get();
+        // get site Name
+        $getFilterSite = Site::select('id', 'site_name', 'site_code')
+                                  ->get();
+
+        /************************************* Filters *******************************************/
+
         // get templates for email
         $getTemplates = CertificationTemplate::select('id as template_id', 'title as template_title')->get();
 
-        return view('certificationapp::certificate_device.certified_device', compact('getCertifiedDevice', 'getStudies', 'getTemplates', 'getParentModality'));
+        return view('certificationapp::certificate_device.certified_device', compact('getCertifiedDevice', 'getStudies', 'getTemplates', 'getParentModality', 'getFilterCertification', 'getFilterSite', 'getFilterDeviceModel', 'getFilterDeviceSerial'));
     }
 
     public function generateDeviceGrandfatherCertificate(Request $request) {

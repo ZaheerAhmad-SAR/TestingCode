@@ -52,9 +52,9 @@ class TransmissionDataPhotographerController extends Controller
 
         if ($request->photographer_name != '') {
 
-            $getTransmissions = $getTransmissions->where('Photographer_First_Name', 'like', "%$request->photographer_name%")
-                ->orWhereRaw("concat(Photographer_First_Name, ' ', Photographer_Last_Name) like '$request->photographer_name' ")
-                ->orWhere('Photographer_Last_Name', 'like', "$request->photographer_name");
+            $getTransmissions = $getTransmissions->where('Photographer_First_Name', 'like', "%$request->photographer_name%");
+                // ->orWhereRaw("concat(Photographer_First_Name, ' ', Photographer_Last_Name) like '$request->photographer_name' ")
+                // ->orWhere('Photographer_Last_Name', 'like', "$request->photographer_name");
         }
 
         if ($request->certification != '') {
@@ -200,13 +200,43 @@ class TransmissionDataPhotographerController extends Controller
 
         } // loop ends
 
+        /************************************** Filters *************************************/
+
+        // get transmission number
+        $getFilterTransmissionNumber = TransmissionDataPhotographer::select('Transmission_Number')
+                                                                    ->where('Transmission_Number', '!=', '')
+                                                                    ->groupBy('Transmission_Number')
+                                                                    ->get();
+        // get study name
+        $getFilterStudy = TransmissionDataPhotographer::select('Study_Name')
+                                                        ->where('Transmission_Number', '!=', '')
+                                                        ->groupBy('Study_Name')
+                                                        ->get();
+        // get photographer name
+        $getFilterPhotographer = TransmissionDataPhotographer::select('Photographer_First_Name', 'Photographer_Last_Name')
+                                                            ->where('Transmission_Number', '!=', '')
+                                                            ->groupBy(['Photographer_First_Name', 'Photographer_Last_Name'])
+                                                            ->get();
+        // get Modality name
+        $getFilterModality = TransmissionDataPhotographer::select('Requested_certification')
+                                                        ->where('Transmission_Number', '!=', '')
+                                                        ->groupBy('Requested_certification')
+                                                        ->get();
+        // get Site name
+        $getFilterSite = TransmissionDataPhotographer::select('Site_Name')
+                                                        ->where('Transmission_Number', '!=', '')
+                                                        ->groupBy('Site_Name')
+                                                        ->get();
+
+        /************************************** Filters *************************************/
+
         // get certification officer users
         $getCertificationOfficers = Permission::getCertificationOfficer();
 
         // get templates for email
         $getTemplates = CertificationTemplate::select('id as template_id', 'title as template_title')->get();
 
-        return view('certificationapp::certificate_photographer.index', compact('getTransmissions', 'getCertificationOfficers', 'getTemplates'));
+        return view('certificationapp::certificate_photographer.index', compact('getTransmissions', 'getCertificationOfficers', 'getTemplates', 'getFilterTransmissionNumber', 'getFilterStudy', 'getFilterPhotographer', 'getFilterModality', 'getFilterSite'));
     }
 
     /**
@@ -888,19 +918,19 @@ class TransmissionDataPhotographerController extends Controller
 
             if ($request->study_name != '') {
 
-               $getCertifiedPhotographer = $getCertifiedPhotographer->where('certification_data.study_name', 'like', '%' . $request->study_name . '%');
+               $getCertifiedPhotographer = $getCertifiedPhotographer->where('certification_data.study_id', 'like', '%' . $request->study_name . '%');
             }
 
             if ($request->photographer_name != '') {
 
-                $getCertifiedPhotographer = $getCertifiedPhotographer->where('photographers.first_name', 'like', "%$request->photographer_name%")
-                    ->orWhereRaw("concat(photographers.first_name, ' ', photographers.last_name) like '$request->photographer_name' ")
-                    ->orWhere('photographers.last_name', 'like', "$request->photographer_name");
+                $getCertifiedPhotographer = $getCertifiedPhotographer->where('certification_data.photographer_id', 'like', '%' .$request->photographer_name . '%');
+                    // ->orWhereRaw("concat(photographers.first_name, ' ', photographers.last_name) like '$request->photographer_name' ")
+                    // ->orWhere('photographers.last_name', 'like', "$request->photographer_name");
             }
 
             if ($request->site_name != '') {
 
-               $getCertifiedPhotographer = $getCertifiedPhotographer->where('certification_data.site_name', 'like', '%' . $request->site_name . '%');
+               $getCertifiedPhotographer = $getCertifiedPhotographer->where('certification_data.site_id', 'like', '%' . $request->site_name . '%');
             }
 
             if ($request->modility_id != '') {
@@ -961,6 +991,8 @@ class TransmissionDataPhotographerController extends Controller
             $getCertifiedPhotographer = $getCertifiedPhotographer->orderBy('certification_data.created_at', 'desc')
                                                                 ->paginate(50);
 
+        /************************************** Filters *************************************/
+
         // get template
         $getStudies = Study::get();
 
@@ -968,10 +1000,23 @@ class TransmissionDataPhotographerController extends Controller
         $getParentModality = Modility::select('id', 'modility_name')->get();
         //$getChildModality = ChildModilities::select('id', 'modility_name')->get();
 
+        // get Certification ID
+        $getFilterCertification = CertificationData::select('certificate_id')
+                                                    ->where('transmission_type', 'photographer_transmission')
+                                                    ->get();
+        // get Photographer ID
+        $getFilterPhotographer = Photographer::select('id', 'first_name', 'last_name')
+                                                ->get();
+        // get site Name
+        $getFilterSite = Site::select('id', 'site_name', 'site_code')
+                                  ->get();
+
+        /************************************** Filters *************************************/
+
         // get templates for email
         $getTemplates = CertificationTemplate::select('id as template_id', 'title as template_title')->get();
 
-        return view('certificationapp::certificate_photographer.certified_photographer', compact('getCertifiedPhotographer', 'getStudies', 'getTemplates', 'getParentModality'));
+        return view('certificationapp::certificate_photographer.certified_photographer', compact('getCertifiedPhotographer', 'getStudies', 'getTemplates', 'getParentModality', 'getFilterCertification', 'getFilterPhotographer', 'getFilterSite'));
 
     }
 
