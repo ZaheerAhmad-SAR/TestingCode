@@ -135,22 +135,54 @@
 
                             <div class="form-group col-md-3">
                                 <label for="certify_id">Certificate ID</label>
-                                <input type="text" name="certify_id" id="certify_id" class="form-control filter-form-data" value="{{ request()->certify_id }}" placeholder="Certification ID">
+                            
+                                 <Select class="form-control filter-form-data filter-select" name="certify_id" id="certify_id">
+                                    <option value="">Select Certificate</option>
+                                    @foreach($getFilterCertification as $filterCertificate)
+                                    <option value="{{$filterCertificate->certificate_id}}" @if(request()->certify_id == $filterCertificate->certificate_id) selected @endif>
+                                        {{$filterCertificate->certificate_id}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
                                 <label for="study">Study Name</label>
-                                <input type="text" name="study_name" id="study_name" class="form-control filter-form-data" value="{{ request()->study_name }}" placeholder="Study Name">
+                    
+                                 <Select class="form-control filter-form-data filter-select" name="study_name" id="study_name">
+                                    <option value="">Select Study</option>
+                                    @foreach($getStudies as $filterStudy)
+                                    <option value="{{$filterStudy->id}}" @if(request()->study_name == $filterStudy->id) selected @endif>
+                                        {{$filterStudy->study_short_name}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
                                 <label for="photographer_name">Photographer Name</label>
-                                <input type="text" name="photographer_name" id="photographer_name" class="form-control filter-form-data" value="{{ request()->photographer_name }}" placeholder="Photographer Name">
+
+                                 <Select class="form-control filter-form-data filter-select" name="photographer_name" id="photographer_name">
+                                    <option value="">Select Photographer</option>
+                                    @foreach($getFilterPhotographer as $filterPhotographer)
+                                    <option value="{{$filterPhotographer->id}}" @if(request()->photographer_name == $filterPhotographer->id) selected @endif>
+                                        {{$filterPhotographer->first_name.' '.$filterPhotographer->last_name}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
                                 <label for="site">Site Name</label>
-                                <input type="text" name="site_name" id="site_name" class="form-control filter-form-data" value="{{ request()->site_name }}" placeholder="Site Name">
+
+                                <Select class="form-control filter-form-data filter-select" name="site_name" id="site_name">
+                                    <option value="">Select Site</option>
+                                    @foreach($getFilterSite as $filterSite)
+                                    <option value="{{$filterSite->id}}" @if(request()->site_name == $filterSite->id) selected @endif>
+                                        {{$filterSite->site_name}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
@@ -687,6 +719,7 @@
     
     $('#study').select2();
     $('#modility_id').select2();
+    $('.filter-select').select2();
 
      // reset filter form
     $('.reset-filter').click(function(){

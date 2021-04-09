@@ -118,32 +118,74 @@
 
                             <div class="form-group col-md-3">
                                 <label for="trans_id">Transmission#</label>
-                                <input type="text" name="trans_id" id="trans_id" class="form-control filter-form-data" value="{{ request()->trans_id }}" placeholder="Transmission#">
+                                <Select class="form-control filter-form-data filter-select" name="trans_id" id="trans_id">
+                                    <option value="">Select Transmission</option>
+                                    @foreach($getFilterTransmissionNumber as $filterTransmission)
+                                    <option value="{{$filterTransmission->Transmission_Number}}" @if(request()->trans_id == $filterTransmission->Transmission_Number) selected @endif>
+                                        {{$filterTransmission->Transmission_Number}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
                                 <label for="study">Study Name</label>
-                                <input type="text" name="study" id="study" class="form-control filter-form-data" value="{{ request()->study }}" placeholder="Study Name">
+                                <Select class="form-control filter-form-data filter-select" name="study" id="study">
+                                    <option value="">Select Study</option>
+                                    @foreach($getFilterStudy as $filterStudy)
+                                    <option value="{{$filterStudy->Study_Name}}" @if(request()->study == $filterStudy->Study_Name) selected @endif>
+                                        {{$filterStudy->Study_Name}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
                                 <label for="device_category">Device Category</label>
-                                <input type="text" name="device_category" id="device_category" class="form-control filter-form-data" value="{{ request()->device_category }}" placeholder="Device Category">
+                                <Select class="form-control filter-form-data filter-select" name="device_category" id="device_category">
+                                    <option value="">Select Category</option>
+                                    @foreach($getFilterDeviceCategory as $filterCategory)
+                                    <option value="{{$filterCategory->Device_Category}}" @if(request()->device_category == $filterCategory->Device_Category) selected @endif>
+                                        {{$filterCategory->Device_Category}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
                                 <label for="device_serial">Device Serial</label>
-                                <input type="text" name="device_serial" id="device_serial" class="form-control filter-form-data" value="{{ request()->device_serial }}" placeholder="Device Serial">
+                                 <Select class="form-control filter-form-data filter-select" name="device_serial" id="device_serial">
+                                    <option value="">Select Serial</option>
+                                    @foreach($getFilterDeviceSerial as $filterSerial)
+                                    <option value="{{$filterSerial->Device_Serial}}" @if(request()->device_serial == $filterSerial->Device_Serial) selected @endif>
+                                        {{$filterSerial->Device_Serial}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-4">
                                 <label for="site">Site Name</label>
-                                <input type="text" name="site" id="site" class="form-control filter-form-data" value="{{ request()->site }}" placeholder="Site Name">
+                                <Select class="form-control filter-form-data filter-select" name="site" id="site">
+                                    <option value="">Select Site</option>
+                                    @foreach($getFilterSite as $filterSite)
+                                    <option value="{{$filterSite->Site_Name}}" @if(request()->site == $filterSite->Site_Name) selected @endif>
+                                        {{$filterSite->Site_Name}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-4">
                                 <label for="submitter">Submitter Name</label>
-                                <input type="text" name="submitter_name" id="submitter_name" class="form-control filter-form-data" value="{{ request()->submitter_name }}" placeholder="Submitter Name">
+                                 <Select class="form-control filter-form-data filter-select" name="submitter_name" id="submitter_name">
+                                    <option value="">Select Submitter</option>
+                                    @foreach($getFilterSubmitter as $filterSubmitter)
+                                    <option value="{{$filterSubmitter->Request_MadeBy_FirstName}}" @if(request()->submitter_name == $filterSubmitter->Request_MadeBy_FirstName) selected @endif>
+                                        {{$filterSubmitter->Request_MadeBy_FirstName.' '.$filterSubmitter->Request_MadeBy_LastName}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-4">
@@ -168,7 +210,9 @@
                                 <Select class="form-control certification_officer_id" name="officer_id" id="certification_officer_id">
                                     <option value="">Select User</option>
                                     @foreach($getCertificationOfficers as $officer)
-                                    <option value="{{$officer['id']}}">{{$officer['name']}}</option>
+                                        <option value="{{$officer['id']}}"  @if($officer['id'] == request()->officer_id) selected @endif>
+                                            {{$officer['name']}}
+                                        </option>
                                     @endforeach
                                 </Select>
                             </div>
@@ -206,6 +250,11 @@
                                 <tbody>
                                     @if(!$getTransmissions->isEmpty())
                                     @foreach($getTransmissions as $transmission)
+                                    @if($transmission->Transmission_Number == null )
+                                        @php
+                                            continue;
+                                        @endphp
+                                    @endif
                                         <tr style="background: {{ $transmission->rowColor }}">
                                             <td class="assign-transmission" style="display:none;">
                                                 <input type="checkbox" class="check_transmission" name="check_transmission[{{ $transmission->id }}]" >
@@ -607,6 +656,7 @@
 
     // assignment select2
     $('#certification_officer_id').select2();
+    $('.filter-select').select2();
 
     // reset filter form
     $('.reset-filter').click(function(){
