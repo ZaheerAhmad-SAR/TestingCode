@@ -94,7 +94,6 @@ class RoleTest extends DuskTestCase
                 ->click('@create-new-roles')
                 ->assertSee('Roles Detail')
                 ->logout();
-//                ->visit('/roles');
             });
     }
 
