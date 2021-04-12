@@ -79,10 +79,10 @@
                                             @if(hasPermission(auth()->user(),'bug-reporting.edit') && hasPermission(auth()->user(),'bug-reporting.destroy'))
                                             <td>
                                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                                    <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                                    <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;" dusk="bug-navtab"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
 
                                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                                        <span class="dropdown-item"><a href="javascript:void(0);" class="EditbugReporting" data-id="{{$record['id']}}"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
+                                                        <span class="dropdown-item"><a href="javascript:void(0);" class="EditbugReporting" dusk="bug-edit" data-id="{{$record['id']}}"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
                                                         <span class="dropdown-item"><a href="javascript:void(0);" class="deletebugReporting" data-id="{{$record['id']}}"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span>
                                                     </div>
 
@@ -130,23 +130,23 @@
                             <div class="form-group row">
                                 <div class="col-md-3">Developer Comment</div>
                                 <div class="form-group col-md-9">
-                                    <textarea class="form-control" name="developerComment" id="developerComment"></textarea>
+                                    <textarea class="form-control" dusk="developerComment" name="developerComment" id="developerComment"></textarea>
                                 </div>
                             </div>
 
                             <div class="form-group row">
                                 <label for="Name" class="col-md-3 col-form-label">Severity/Priority</label>
                                 <div class="col-md-9">
-                                    <label class="radio-inline  col-form-label"><input type="radio" id="editSeverity" name="editSeverity" value="low"> Low</label> &nbsp;
-                                    <label class="radio-inline  col-form-label"><input type="radio" id="editSeverity" name="editSeverity" value="medium"> Medium</label>
-                                    <label class="radio-inline  col-form-label"><input type="radio" id="editSeverity" name="editSeverity" value="high"> High</label>
+                                    <label class="radio-inline  col-form-label"><input type="radio" dusk="editSeverity" id="editSeverity" name="editSeverity" value="low"> Low</label> &nbsp;
+                                    <label class="radio-inline  col-form-label"><input type="radio" dusk="editSeverity"  id="editSeverity" name="editSeverity" value="medium"> Medium</label>
+                                    <label class="radio-inline  col-form-label"><input type="radio" dusk="editSeverity"  id="editSeverity" name="editSeverity" value="high"> High</label>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="Name" class="col-md-3 col-form-label">Status</label>
                                 <div class="col-md-9">
-                                    <label class="radio-inline  col-form-label"><input type="radio" id="editStatus" name="editStatus" value="open"> open</label> &nbsp;
-                                    <label class="radio-inline  col-form-label"><input type="radio" id="editStatus" name="editStatus" value="close"> close</label>
+                                    <label class="radio-inline  col-form-label"><input type="radio" dusk="editStatus" id="editStatus" name="editStatus" value="open"> open</label> &nbsp;
+                                    <label class="radio-inline  col-form-label"><input type="radio"  dusk="editStatus" id="editStatus" name="editStatus" value="close"> close</label>
                                 </div>
                             </div>
 
@@ -182,7 +182,7 @@
                         </div>
                         <div class="modal-footer">
                             <button id="bug-close-btn" class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Send</button>
+                            <button type="submit" dusk="submit-button-save" class="btn btn-outline-primary"><i class="fa fa-save"></i> Send</button>
                         </div>
                     </div>
                 </form>

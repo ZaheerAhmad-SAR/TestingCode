@@ -544,10 +544,10 @@
         <!-- END: Menu-->
 
     <div class="btn-group dropup" style="margin-left: 15px;">
-     <button type="button" class="btn btn-primary dropdown-toggle position-fixed" data-toggle="dropdown" style="bottom: 10px;">  <i class="icon-question"></i> Support</button>
+     <button type="button" dusk="support-button" class="btn btn-primary dropdown-toggle position-fixed" data-toggle="dropdown" style="bottom: 10px;">  <i class="icon-question"></i> Support</button>
         <div class="dropdown-menu">
             @if(hasPermission(auth()->user(),'bug-reporting.create'))
-            <a href="javascript:void(0);" class="dropdown-item"  data-toggle="modal" data-target="#reportabugmodel"><i class="fa fa-plus"></i>   Report a Bug</a>
+            <a href="javascript:void(0);" class="dropdown-item"  data-toggle="modal" dusk="reportabugmodel" data-target="#reportabugmodel"><i class="fa fa-plus"></i>   Report a Bug</a>
             <div class="dropdown-divider"></div>
             @endif
             <a href="#" class="dropdown-item"><i class="fa fa-plus"></i>  User Manual</a>
@@ -575,14 +575,14 @@
                                 <div class="form-group row">
                                     <div class="col-md-3">Short Title</div>
                                     <div class="form-group col-md-9">
-                                        <input type="text" name="shortTitle" id="shortTitle" class="form-control">
+                                        <input type="text" dusk="shortTitle" name="shortTitle" id="shortTitle" class="form-control">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <div class="col-md-3">Enter Your Message</div>
                                     <div class="form-group col-md-9">
-                                        <textarea class="form-control" name="yourMessage" id="yourMessage"></textarea>
+                                        <textarea dusk="yourMessage" class="form-control" name="yourMessage" id="yourMessage"></textarea>
                                     </div>
                                 </div>
 
@@ -595,15 +595,15 @@
                                 <div class="form-group row">
                                     <label for="Name" class="col-md-3 col-form-label">Severity/Priority</label>
                                     <div class="col-md-9">
-                                        <label class="radio-inline  col-form-label"><input type="radio" id="severity" name="severity" value="low"> Low</label> &nbsp;
-                                        <label class="radio-inline  col-form-label"><input type="radio" id="severity" name="severity" value="medium"> Medium</label>
-                                        <label class="radio-inline  col-form-label"><input type="radio" id="severity" name="severity" value="high"> High</label>
+                                        <label class="radio-inline  col-form-label"><input type="radio" id="severity" dusk="severity" name="severity" value="low"> Low</label> &nbsp;
+                                        <label class="radio-inline  col-form-label"><input type="radio" id="severity" dusk="severity" name="severity" value="medium"> Medium</label>
+                                        <label class="radio-inline  col-form-label"><input type="radio" id="severity" dusk="severity" name="severity" value="high"> High</label>
                                     </div>
                                 </div>
                             </div>
                         <div class="modal-footer">
                             <button id="bug-close-btn" class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Send</button>
+                            <button type="submit" class="btn btn-outline-primary" dusk="submit-button"><i class="fa fa-save"></i> Send</button>
                         </div>
                     </div>
                 </form>
@@ -617,7 +617,7 @@
     $(".sidebar").hover(function () {
         $('#side-menu').toggleClass("scroll-bar");
     });
- </script>   
+ </script>
  <script type="text/javascript">
 
         $("#bugReportingForm").on('submit', function(e) {
