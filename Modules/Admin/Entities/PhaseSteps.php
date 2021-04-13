@@ -78,7 +78,7 @@ class PhaseSteps extends Model
 
     static function phaseStepsbyPermissions($subjectId, $phaseId)
     {
-        $formTypeArray = [];
+        $formTypeArray[] = 4;
         if (canQualityControl(['index'])) {
             $formTypeArray[] = 1;
         }
@@ -94,7 +94,6 @@ class PhaseSteps extends Model
         } else {
             $formTypeArray[] = 4;
         }
-
         $modalityIdsArray = SubjectsPhases::where('subject_id', 'like', $subjectId)->where('phase_id', 'like', $phaseId)->distinct()->pluck('modility_id')->toArray();
         return self::where('phase_id', $phaseId)
             ->whereIn('form_type_id', $formTypeArray)
