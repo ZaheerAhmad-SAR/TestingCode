@@ -17,7 +17,7 @@
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-4 col-form-label">{{$phase->name}}</label>
                                 <div class="col-sm-2">
-                                    <input type="checkbox" name="phase[]" value="{{$phase->id}}" style="margin-top: 10px;">
+                                    <input type="checkbox" name="phase[]" dusk="phase_checkbox_clone" value="{{$phase->id}}" style="margin-top: 10px;">
                                 </div>
                             </div>
                             @endforeach
@@ -25,7 +25,7 @@
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-outline-danger" data-dismiss="modal" id="#"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                        <button type="submit" class="btn btn-outline-primary" id="#"><i class="fa fa-save"></i> Save Changes</button>
+                        <button type="submit" class="btn btn-outline-primary" id="Clonestep"><i class="fa fa-save"></i> Save Changes</button>
                     </div>
                 </div>
             </form>

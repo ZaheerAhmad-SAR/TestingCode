@@ -183,7 +183,9 @@ class FormController extends Controller
                 $option_values = explode(',', $ques_value->optionsGroup->option_value);
                 $question_contents .= '<div class="col-sm-6">';
                 foreach ($option_name as $key => $name) {
-                    $question_contents .= '<input type="radio" name="question_' . $ques_value->id . '" value="' . $option_values[$key] . '"> &nbsp;' . $name . '&nbsp;' . $br;
+                    if(isset($option_values[$key]) && $option_values[$key] !=''){
+                        $question_contents .= '<input type="radio" name="question_' . $ques_value->id . '" value="' . $option_values[$key] . '"> &nbsp;' . $name . '&nbsp;' . $br;
+                    }
                 }
                 $question_contents .= '</div>';
             } elseif ($ques_value->form_field_type->field_type == 'Number') {
