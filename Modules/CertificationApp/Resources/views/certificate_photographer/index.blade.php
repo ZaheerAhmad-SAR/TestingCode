@@ -119,27 +119,63 @@
 
                             <div class="form-group col-md-3">
                                 <label for="trans_id">Transmission#</label>
-                                <input type="text" name="trans_id" id="trans_id" class="form-control filter-form-data" value="{{ request()->trans_id }}" placeholder="Transmission#">
+
+                                <Select class="form-control filter-form-data filter-select" name="trans_id" id="trans_id">
+                                    <option value="">Select Transmission</option>
+                                    @foreach($getFilterTransmissionNumber as $filterTransmission)
+                                    <option value="{{$filterTransmission->Transmission_Number}}" @if(request()->trans_id == $filterTransmission->Transmission_Number) selected @endif>
+                                        {{$filterTransmission->Transmission_Number}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
                                 <label for="study">Study Name</label>
-                                <input type="text" name="study" id="study" class="form-control filter-form-data" value="{{ request()->study }}" placeholder="Study Name">
+                                <Select class="form-control filter-form-data filter-select" name="study" id="study">
+                                    <option value="">Select Study</option>
+                                    @foreach($getFilterStudy as $filterStudy)
+                                    <option value="{{$filterStudy->Study_Name}}" @if(request()->study == $filterStudy->Study_Name) selected @endif>
+                                        {{$filterStudy->Study_Name}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
                                 <label for="photographer_name">Photographer Name</label>
-                                <input type="text" name="photographer_name" id="photographer_name" class="form-control filter-form-data" value="{{ request()->photographer_name }}" placeholder="Photographer Name">
+                                <Select class="form-control filter-form-data filter-select" name="photographer_name" id="photographer_name">
+                                    <option value="">Select Photographer</option>
+                                    @foreach($getFilterPhotographer as $filterPhotographer)
+                                    <option value="{{$filterPhotographer->Photographer_First_Name}}" @if(request()->photographer_name == $filterPhotographer->Photographer_First_Name) selected @endif>
+                                        {{$filterPhotographer->Photographer_First_Name.' '.$filterPhotographer->Photographer_Last_Name}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
                                 <label for="certification">Certification</label>
-                                <input type="text" name="certification" id="certification" class="form-control filter-form-data" value="{{ request()->certification }}" placeholder="Certification">
+                                <Select class="form-control filter-form-data filter-select" name="certification" id="certification">
+                                    <option value="">Select Certification</option>
+                                    @foreach($getFilterModality as $filterModality)
+                                    <option value="{{$filterModality->Requested_certification}}" @if(request()->certification == $filterModality->Requested_certification) selected @endif>
+                                        {{$filterModality->Requested_certification}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
                                 <label for="site">Site Name</label>
-                                <input type="text" name="site" id="site" class="form-control filter-form-data" value="{{ request()->site }}" placeholder="Site Name">
+                                <Select class="form-control filter-form-data filter-select" name="site" id="site">
+                                    <option value="">Select Site</option>
+                                    @foreach($getFilterSite as $filterSite)
+                                    <option value="{{$filterSite->Site_Name}}" @if(request()->site == $filterSite->Site_Name) selected @endif>
+                                        {{$filterSite->Site_Name}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
@@ -161,10 +197,12 @@
 
                             <div class="form-group col-md-3">
                                 <label class="users">Certification Officer</label>
-                                <Select class="form-control certification_officer_id" name="officer_id" id="certification_officer_id">
+                                <Select class="form-control filter-form-data certification_officer_id" name="officer_id" id="certification_officer_id">
                                     <option value="">Select User</option>
                                     @foreach($getCertificationOfficers as $officer)
-                                    <option value="{{$officer['id']}}">{{$officer['name']}}</option>
+                                    <option value="{{$officer['id']}}" @if($officer['id'] == request()->officer_id) selected @endif>
+                                        {{$officer['name']}}
+                                    </option>
                                     @endforeach
                                 </Select>
                             </div>
@@ -202,7 +240,9 @@
                                     @if(!$getTransmissions->isEmpty())
                                     @foreach($getTransmissions as $transmission)
                                     @if($transmission->Transmission_Number == null )
-                                     continue;
+                                        @php
+                                            continue;
+                                        @endphp
                                     @endif
                                         <tr style="background: {{ $transmission->rowColor }}">
                                             <td class="assign-transmission" style="display:none;">
@@ -560,6 +600,7 @@
 
     // assignment select2
     $('#certification_officer_id').select2();
+    $('.filter-select').select2();
 
     // initialize date range picker
     $('input[name="created_at"]').daterangepicker({
