@@ -445,8 +445,8 @@
            $('#sort_by_field').val('DESC');
            $('#sort_by_field_name').val(field_name);
         }else if(sort_by_field =='DESC'){
-           $('#sort_by_field').val('ASC'); 
-           $('#sort_by_field_name').val(field_name); 
+           $('#sort_by_field').val('ASC');
+           $('#sort_by_field_name').val(field_name);
         }
         $('.filter-form').submit();
     }
@@ -672,7 +672,8 @@
     });
 
     $('#transmissonQueryModal').on('hidden.bs.modal', function () {
-        $(this).find('form').trigger('reset');
+        //$(this).find('form').trigger('reset');
+        location.reload();
     })
 
     // Transmission End Work
