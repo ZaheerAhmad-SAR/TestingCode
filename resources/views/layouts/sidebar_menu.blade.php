@@ -148,7 +148,7 @@
                                             @endif
                                             @if(hasPermission(auth()->user(),'study.index'))
                                                 <li class="@if(is_active('optionsGroup.index')) {{ ' active' }} @endif">
-                                                    <a href="{!! route('optionsGroup.index') !!}">
+                                                    <a href="{!! route('optionsGroup.index') !!}" dusk="options-group">
                                                         Option Groups
                                                     </a>
                                                 </li>

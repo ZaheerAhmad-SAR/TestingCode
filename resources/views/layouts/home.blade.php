@@ -177,7 +177,7 @@
 
                                                             <p class="mb-0 text-primary">
 
-                                                                <b> @if($studyData!==null) {{$studyData->study_short_name}} : @else  @endif  @if($answers->isEmpty())  New Bug By  @else Reply By  @endif {{$userData->name}} </b>
+                                                                <b> @if($studyData!==null) {{$studyData->study_short_name}} : @else  @endif  @if($answers->isEmpty())  New Bug By  @else Bug Reply By  @endif {{$userData->name}} </b>
                                                             </p>
 
                                                             {{Carbon\Carbon::parse($bugs->created_at)->diffForHumans()}}
