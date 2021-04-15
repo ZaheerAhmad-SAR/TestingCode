@@ -118,7 +118,6 @@ class ModilityController extends Controller
             $childmodalities = ChildModilities::select('*')->where('modility_id', $id)->get();
 
             $output = "";
-
             if (!empty($childmodalities)) {
                 foreach ($childmodalities as $key => $modality) {
                     $output .= '<li class="nav-item mail-item" style="border-bottom: 1px solid #F6F6F7;">
@@ -131,7 +130,7 @@ class ModilityController extends Controller
                                             <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;" dusk="child-modality-navtab"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                             <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                 <span class="dropdown-item edit_steps" data-id=' . $modality->id . ' dusk="child-modality-edit"><i class="far fa-edit"></i>&nbsp; Edit</span>
-                                                <span class="dropdown-item deleteChild" data-id=' . $modality->id . '><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
+                                                <span class="dropdown-item deleteChild" data-id=' . $modality->id . ' dusk="child-modality-delete"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                             </div>
                                         </div>
                                     </div>
