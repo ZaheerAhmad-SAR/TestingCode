@@ -520,6 +520,7 @@ class TransmissionDataDeviceController extends Controller
             $saveData->Site_country                 = $xml->Site_country;
             $saveData->Requested_certification      = $xml->Requested_certification;
             $saveData->Certification_Type           = $xml->Certification_Type;
+            $saveData->Submitted_Files              = $xml->Submitted_Files;
             $saveData->Request_MadeBy_FirstName     = $xml->Request_MadeBy_FirstName;
             $saveData->Request_MadeBy_LastName      = $xml->Request_MadeBy_LastName;
             $saveData->Request_MadeBy_Email         = $xml->Request_MadeBy_Email;
@@ -532,6 +533,7 @@ class TransmissionDataDeviceController extends Controller
             $saveData->Number_files                 = $xml->Number_files;
             $saveData->transmitted_file_name        = $xml->transmitted_file_name;
             $saveData->transmitted_file_size        = $xml->transmitted_file_size;
+            $saveData->transmitted_file_list        = $xml->transmitted_file_list;
             $saveData->archive_physical_location    = $xml->archive_physical_location;
             $saveData->received_month               = $xml->received_month;
             $saveData->received_day                 = $xml->received_day;
@@ -548,6 +550,9 @@ class TransmissionDataDeviceController extends Controller
             $saveData->CO_email                     = json_encode($xml->CO_email);
             $saveData->notification                 = $xml->notification;
             $saveData->notification_list            = $xml->notification_list;
+            $saveData->Received_Zip                 = $xml->Received_Zip;
+            $saveData->Received_Zip_Size            = $xml->Received_Zip_Size;
+            $saveData->Received_Zip_MD5             = $xml->Received_Zip_MD5;
             $saveData->save();
             echo "Records inserted successfully.";
         } else {

@@ -33,6 +33,7 @@ Route::get('update-transmission-photographer-email', 'TransmissionController@get
 Route::post('subjects/check_variable', 'SubjectController@check_variable_name')->name('subjects.checkVariable');
 // end
 Route::post('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
+
 Route::post('studies/getAssignedAdminsToStudy', 'StudyController@getAssignedAdminsToStudy')->name('studies.getAssignedAdminsToStudy');
 Route::post('transmissions/getAllPIBySiteId', 'TransmissionController@getAllPIBySiteId')->name('transmissions.getAllPIBySiteId');
 Route::post('transmissions/queryTransmissionMail', 'TransmissionController@queryTransmissionMail')->name('transmissions.queryTransmissionMail');

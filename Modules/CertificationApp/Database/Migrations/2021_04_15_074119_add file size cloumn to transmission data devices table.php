@@ -15,6 +15,7 @@ class AddFileSizeCloumnToTransmissionDataDevicesTable extends Migration
     {
         //
           Schema::table('transmission_data_devices', function (Blueprint $table) {
+            $table->string('Submitted_Files')->nullable();
             $table->text('transmitted_file_list')->nullable();
             $table->string('Received_Zip')->nullable();
             $table->string('Received_Zip_Size')->nullable();

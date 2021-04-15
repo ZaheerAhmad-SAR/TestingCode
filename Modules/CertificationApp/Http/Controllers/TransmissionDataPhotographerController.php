@@ -528,6 +528,8 @@ class TransmissionDataPhotographerController extends Controller
             $saveData->Requested_certification      = $xml->Requested_certification;
             $saveData->Certification_Type           = $xml->Certification_Type;
             $saveData->Device_Model                 = $xml->Device_Model;
+            $saveData->Submitted_Files              = $xml->Submitted_Files;
+            $saveData->NumberOfPathologicalSets     = $xml->NumberOfPathologicalSets;
             $saveData->Comments                     = $xml->Comments;
             $saveData->previous_certification_status = $xml->previous_certification_status;
             $saveData->gfModality                   = $xml->gfModality;
@@ -537,6 +539,7 @@ class TransmissionDataPhotographerController extends Controller
             $saveData->Number_files                 = $xml->Number_files;
             $saveData->transmitted_file_name        = $xml->transmitted_file_name;
             $saveData->transmitted_file_size        = $xml->transmitted_file_size;
+            $saveData->transmitted_file_list        = $xml->transmitted_file_list;
             $saveData->archive_physical_location    = $xml->archive_physical_location;
             $saveData->transmitted_file_name        = $xml->transmitted_file_name;
             $saveData->received_month               = $xml->received_month;
@@ -554,6 +557,9 @@ class TransmissionDataPhotographerController extends Controller
             $saveData->CO_email                     = json_encode($xml->CO_email);
             $saveData->notification                 = $xml->notification;
             $saveData->notification_list            = $xml->notification_list;
+            $saveData->Received_Zip                 = $xml->Received_Zip;
+            $saveData->Received_Zip_Size            = $xml->Received_Zip_Size;
+            $saveData->Received_Zip_MD5             = $xml->Received_Zip_MD5;
             $saveData->save();
 
             echo "Records inserted successfully.";
