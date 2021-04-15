@@ -28,7 +28,7 @@ class ModalityTest extends DuskTestCase
     public function test_I_can_create_a_parent_modality_successfully()
     {
         $user = User::where('name', 'Super Admin')->first();
-        // this test the user create functioanlity 
+        // this test the user create functioanlity
         $this->browse(function ($browser) use ($user) {
             $browser->loginAs($user)
                 ->visit('/modalities')
@@ -47,7 +47,7 @@ class ModalityTest extends DuskTestCase
     public function test_I_can_update_a_parent_modality_successfully()
     {
         $user = User::where('name', 'Super Admin')->first();
-        // this test the user create functioanlity 
+        // this test the user create functioanlity
         $this->browse(function ($browser) use ($user) {
             $browser->loginAs($user)
                 ->visit('/modalities')
@@ -59,7 +59,26 @@ class ModalityTest extends DuskTestCase
                 ->press('@update-parent-modality')
                 ->assertSee('Modalities')
                 ->logout();
-                
+
+        });
+    }
+    /* @test */
+
+    public function test_I_can_delete_a_parent_modality_successfully()
+    {
+        $user = User::where('name', 'Super Admin')->first();
+        // this test the user create functioanlity
+        $this->browse(function ($browser) use ($user) {
+            $browser->loginAs($user)
+                ->visit('/modalities')
+                ->assertSee('Modalities')
+                ->press('@parent-modality-navtab')
+                ->press('@parent-modality-delete')
+                ->assertDialogOpened('Are You sure want to delete !')
+                ->acceptDialog('press OK')
+                ->pause('15000')
+                ->logout();
+
         });
     }
 
@@ -67,7 +86,7 @@ class ModalityTest extends DuskTestCase
     public function test_I_can_create_a_child_modality_successfully()
     {
         $user = User::where('name', 'Super Admin')->first();
-        // this test the user create functioanlity 
+        // this test the user create functioanlity
         $this->browse(function ($browser) use ($user) {
             $browser->loginAs($user)
                 ->visit('/modalities')
@@ -86,7 +105,7 @@ class ModalityTest extends DuskTestCase
     public function test_I_can_update_a_child_modality_successfully()
     {
         $user = User::where('name', 'Super Admin')->first();
-        // this test the user create functioanlity 
+        // this test the user create functioanlity
         $this->browse(function ($browser) use ($user) {
             $browser->loginAs($user)
                 ->visit('/modalities')
@@ -100,7 +119,7 @@ class ModalityTest extends DuskTestCase
                 ->press('@update-child-modality')
                 ->assertSee('Modalities')
                 ->logout();
-                
+
         });
     }
 }

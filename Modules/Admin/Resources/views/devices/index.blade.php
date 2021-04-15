@@ -92,8 +92,8 @@
                                                     @endif
                                                         @if(hasPermission(auth()->user(),'devices.destroy'))
                                                     <span class="dropdown-item">
-                                                            <a href="{{route('devices.destroy',$device->id)}}" id="delete-device" data-id="{{ $device->id }}">
-                                                            <i class="far fa-edit"></i>&nbsp; Delete </a>
+                                                            <a href="javascript:void(0)" class="delete-device" data-id="{{ $device->id }}">
+                                                            <i class="far fa-trash-alt"></i>&nbsp; Delete </a>
                                                     </span>
                                                             @endif
                                                 </div>
@@ -221,13 +221,6 @@
     <script src="{{ asset('public/dist/js/jquery.validate.min.js') }}"></script>
 <script>
 
-        $(document).ready(function () {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
             $('#create-new-device').click(function () {
                 $('#btn-save').val("create-device");
                 $('#deviceForm').trigger("reset");
@@ -269,26 +262,36 @@
                     });
             });
 
-            $('body').on('click', '.delete-device', function () {
-                var device_id = $(this).data("id");
-                alert(device_id);
-                confirm("Are You sure want to delete !");
 
-                $.ajax({
-                    type: "DELETE",
-                    url: "{{ url('devices')}}"+'/'+device_id,
-                    success: function (data) {
-                        $("#device_id_" + device_id).remove();
-                        confirm('Deleted Successfully !!');
-                    },
-                    error: function (data) {
-                        console.log('Error:', data);
-                    }
-                });
+
+
+
+            //  Options Delete function
+            $('body').on('click','.delete-device',function()
+            {
+                var id = $(this).data('id');
+                if (confirm("Are you sure to delete?")) {
+                    $.ajax({
+                        url: 'devices/destroy/'+id,
+                        type: 'POST',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            "_method": 'DELETE',
+                            'id': id
+                        },
+                        success:function(result){
+                            window.setTimeout(function () {
+                                location.href = "{{ route('devices.index') }}";
+                            }, 100);
+
+                        }
+                    })
+                }
             });
-        });
 
-        if ($("#deviceForm").length > 0) {
+
+
+            if ($("#deviceForm").length > 0) {
             $("#deviceForm").validate({
                 submitHandler: function(form) {
                     var t;
@@ -312,7 +315,7 @@
                                 $('#device-crud-modal').modal('hide');
                                 location.reload();
                             }
-                           
+
                         },
                         error: function (data) {
                             console.log('Error:', data);
@@ -356,8 +359,8 @@
                $('#sort_by_field').val('DESC');
                $('#sort_by_field_name').val(field_name);
             }else if(sort_by_field =='DESC'){
-               $('#sort_by_field').val('ASC'); 
-               $('#sort_by_field_name').val(field_name); 
+               $('#sort_by_field').val('ASC');
+               $('#sort_by_field_name').val(field_name);
             }
             $('.filter-form').submit();
         }

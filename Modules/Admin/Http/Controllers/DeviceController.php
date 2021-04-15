@@ -10,6 +10,7 @@ use Modules\Admin\Entities\Device;
 use Modules\Admin\Entities\DeviceModility;
 use Modules\Admin\Entities\DeviceSite;
 use Modules\Admin\Entities\Modility;
+use Modules\Admin\Entities\OptionsGroup;
 use Modules\Admin\Entities\Site;
 use Modules\Admin\Entities\StudySite;
 
@@ -49,7 +50,7 @@ class DeviceController extends Controller
             $devices = $devices->orderBy($field_name , $request->sort_by_field);
         }
         $devices = $devices->paginate(\Auth::user()->user_prefrences->default_pagination)
-                           ->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs); 
+                           ->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
         $modilities = Modility::all();
         $assigned_modalities = [];
         return view('admin::devices.index',compact('devices','modilities', 'assigned_modalities'));
@@ -223,13 +224,19 @@ class DeviceController extends Controller
      * @param int $id
      * @return Response
      */
-    public function destroy($id)
-    {
-        dd('delete');
-        $device = Device::where('id',$id)->delete();
 
-        return redirect()->route('devices.index');
+
+    public function destroy(Request $request,$id)
+    {
+        if ($request->ajax())
+        {
+            $delete = Device::find($id);
+            $delete->delete();
+            return response()->json(['success'=>'Device is deleted successfully.']);
+        }
     }
+
+
 
     // public function createTransmissionDevice(Request $request) {
     //     if($request->ajax()) {
