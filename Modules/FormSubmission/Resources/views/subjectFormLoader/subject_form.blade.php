@@ -169,13 +169,9 @@
                                                                         continue;
                                                                 }
                                                             }
-
-
-
                                                             $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                                                             $adjStepClsStr = buildSafeStr($step->step_id, 'adj_step_cls_');
                                                             $stepIdStr = buildSafeStr($step->step_id, '');
-
                                                             $badgeCls = 'badge-light';
                                                             if(request('stepId', '-') == $step->step_id){
                                                                 $badgeCls = 'badge-light';
@@ -184,7 +180,6 @@
                                                                 $badgeCls = 'badge-light';
                                                             }
                                                             $skipLogicStepIdStr = buildSafeStr($step->step_id, 'skip_logic_');
-
                                                             $stepData = [
                                                                 'step' => $step,
                                                                 'stepClsStr' => $stepClsStr,
@@ -199,6 +194,7 @@
                                                             @include('formsubmission::subjectFormLoader.eligibility_left_bar_nav', $stepData)
                                                             @include('formsubmission::subjectFormLoader.grader_left_bar_nav', $stepData)
                                                             @include('formsubmission::subjectFormLoader.adjudication_left_bar_nav', $stepData)
+                                                            @include('formsubmission::subjectFormLoader.other_type_form', $stepData)
                                                             @php
                                                             $activeStep = false;
                                                             @endphp

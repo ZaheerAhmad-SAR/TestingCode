@@ -37,7 +37,7 @@
             @endif
         </div>
         <div class="col-lg-8  col-xl-8">
-            Steps <button class="custom-btn blue-color" id="add_steps"><i class="fa fa-plus blue-color"></i> add</button>
+            Steps <button class="custom-btn blue-color" id="add_steps"  dusk='add_steps'><i class="fa fa-plus blue-color"></i> add</button>
         </div>
         <div class="col-lg-4 col-xl-4 mb-4 mt-3 pr-lg-0 flip-menu">
             <a href="#" class="d-inline-block d-lg-none mt-1 flip-menu-close"><i class="icon-close"></i></a>
@@ -105,11 +105,14 @@
                                     <div class="d-flex mt-3 mt-md-0 ml-auto">
                                         <div class="ml-md-auto mr-3 dot primary"></div>
                                         <p class="ml-auto mail-date mb-0">{{$step_value->created_at}}</p>
-                                        <a href="#" class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-cog"></i></a>
+                                        <a href="#" class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" dusk ="step_actions">
+                                            <i class="fas fa-cog"></i></a>
                                         <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                            <span class="dropdown-item edit_steps"><i class="far fa-edit"></i>&nbsp; Edit</span>
-                                            <span class="dropdown-item addsection"><i class="far fa-file-code"></i>&nbsp; Add Section</span>
-                                            <span class="dropdown-item cloneStep"><i class="far fa-clone"></i>&nbsp; Clone</span>
+                                            <span class="dropdown-item edit_steps" dusk="edit_steps_dusk">
+                                                <i class="far fa-edit"></i>&nbsp; Edit
+                                            </span>
+                                            <span class="dropdown-item addsection" dusk ="addsection-dusk"><i class="far fa-file-code"></i>&nbsp; Add Section</span>
+                                            <span class="dropdown-item cloneStep" dusk="clone_steps_dusk"><i class="far fa-clone"></i>&nbsp; Clone</span>
                                         <div id="activeStatusDiv_{{$step_value->step_id}}">
                                             @if($step_value->is_active == 0)
                                             <span class="dropdown-item activateStep" onclick="activateStep('{{ $step_value->step_id }}');"><i class="far fa-play-circle"></i>&nbsp; Put In Production Mode</span>
@@ -117,7 +120,7 @@
                                             <span class="dropdown-item inActivateStep" onclick="deActivateStep('{{ $step_value->step_id }}');"><i class="far fa-pause-circle"></i>&nbsp; Put In Draft Mode</span>
                                             @endif
                                             </div>
-                                            <span class="dropdown-item deleteStep"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
+                                            <span class="dropdown-item deleteStep" dusk="delete_steps_dusk"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                         </div>
                                     </div>
                                 </div>
@@ -213,13 +216,13 @@
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Position</label>
                                 <div class="col-sm-9">
-                                    <input type="number" class="form-control" name="step_position" id="step_position" value="" placeholder="Enter Sort Number">
+                                    <input type="number" class="form-control" name="step_position" dusk="step_position" id="step_position" value="" placeholder="Enter Sort Number">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Step Against</label>
                                 <div class="col-md-9">
-                                    <select name="phase_id" id="step_phase_id" class="form-control allPhases_list">
+                                    <select name="phase_id" dusk="phase_id" id="step_phase_id" class="form-control allPhases_list">
                                         @foreach($phases as $key => $phase)
                                         <option value="{{$phase->id}}">{{$phase->name}}</option>
                                         @endforeach
@@ -229,7 +232,7 @@
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Form Type</label>
                                 <div class="col-md-9">
-                                    <select name="form_type_id" id="form_type_id" class="form-control" required>
+                                    <select name="form_type_id" dusk="form_type_id" id="form_type_id" class="form-control" required>
                                         <option value="">---Select Form Type---</option>
                                         @foreach($formTypes as $formType)
                                             <option value="{{$formType->id}}">{{$formType->form_type}}</option>
@@ -240,7 +243,7 @@
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Modality</label>
                                 <div class="col-md-9">
-                                    <select name="modility_id" id="modility_id" class="form-control" required>
+                                    <select name="modility_id" dusk="modility_id" id="modility_id" class="form-control" required>
                                         <option value="">---Select Modality---</option>
                                         @foreach($modalities as $modality)
                                             <option value="{{$modality->id}}">{{$modality->modility_name}}</option>
@@ -251,21 +254,21 @@
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Step Name</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="step_name" id="step_name" placeholder="Step Name">
+                                    <input type="text" class="form-control" name="step_name" dusk="step_name" id="step_name" placeholder="Step Name">
 
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Step Description</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="step_description" id="step_description"  placeholder="Description">
+                                    <input type="text" class="form-control" name="step_description" dusk="step_description" id="step_description"  placeholder="Description">
 
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Number of Graders</label>
                                 <div class="col-md-9">
-                                    <select name="graders_number" id="graders_number" class="form-control">
+                                    <select name="graders_number" dusk="graders_number" id="graders_number" class="form-control">
                                         <option value="">---Select Numbers of Graders--</option>
                                         <option value="0">Null (0)</option>
                                         <option value="1">One (1)</option>
@@ -290,7 +293,7 @@
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-outline-danger" data-dismiss="modal" id="addstep-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                        <button type="button" class="btn btn-outline-primary" id="saveSteps"><i class="fa fa-save"></i> Save Changes</button>
+                        <button type="button" class="btn btn-outline-primary" id="saveSteps" dusk="saveSteps"><i class="fa fa-save"></i> Save Changes</button>
                     </div>
                 </div>
             </form>
@@ -320,21 +323,21 @@
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Name</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="sec_name" id="sec_name" placeholder="Section Name">
+                                    <input type="text" class="form-control" name="sec_name" id="sec_name" dusk="sec_name" placeholder="Section Name">
 
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Description</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="sec_description" id="sec_description"  placeholder="Section Title Description">
+                                    <input type="text" class="form-control" name="sec_description" dusk="sec_description" id="sec_description"  placeholder="Section Title Description">
 
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Sort # / Position</label>
                                 <div class="col-md-9">
-                                    <input type="number" class="form-control" name="sort_num" id="sort_num" placeholder="Sort Number">
+                                    <input type="number" class="form-control" name="sort_num" dusk="sort_num" id="sort_num" placeholder="Sort Number">
 
                                 </div>
                             </div>
@@ -343,7 +346,7 @@
                     <div class="modal-footer">
                         <button class="btn btn-outline-warning reset_to_add_sec"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
                         <button class="btn btn-outline-danger" id="addsection-close" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                        <button type="button" class="btn btn-outline-primary" id="Save_section"><i class="fa fa-save"></i> Save Changes</button>
+                        <button type="button" class="btn btn-outline-primary" id="Save_section" dusk="Save_section"><i class="fa fa-save"></i> Save Changes</button>
                     </div>
                     <div class="col-lg-12">
                         <div class="table-wrapper-scroll-y my-custom-scrollbar">
@@ -782,7 +785,7 @@
                        "<td class='sec_name'>" + name + "</td>" +
                        "<td class='sec_desc'>" + description + "</td>" +
                        "<td>" + created_at + "</td>" +
-                       "<td style='width:13%'><span><i class='far fa-edit edit_sec' style='color: #34A853;cursor:pointer'></i></span>&nbsp;&nbsp;<span><i class='far fa-trash-alt delete_sec' style='color: #EA4335;cursor:pointer'></i></span>&nbsp;&nbsp;<span><i class='far fa-clone clone_section' style='color: ##530971;cursor:pointer'></i></span></td>" +
+                       "<td style='width:13%'><span><i class='far fa-edit edit_sec' dusk='edit_sec_dusk' style='color: #34A853;cursor:pointer'></i></span>&nbsp;&nbsp;<span><i class='far fa-trash-alt delete_sec' style='color: #EA4335;cursor:pointer'></i></span>&nbsp;&nbsp;<span><i class='far fa-clone clone_section' style='color: ##530971;cursor:pointer'></i></span></td>" +
                      "</tr>";
 
                      $("#sectionTable").append(tr_str);
