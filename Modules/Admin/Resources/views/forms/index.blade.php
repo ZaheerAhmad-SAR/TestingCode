@@ -497,7 +497,7 @@
 
 
         // get sections for dropdown
-        function section_against_step(id, section_class) {
+        function section_against_step(id, section_class) {;
             section_class.html('');
             var options = '<option value="">---Form / Sections---</option>';
             $.ajax({
@@ -510,6 +510,7 @@
                     'step_id': id
                 },
                 success: function(response) {
+                    
                     $.each(response['data'], function(k, v) {
                         options += '<option value="' + v.id + '" >' + v.name + '</option>';
                     });

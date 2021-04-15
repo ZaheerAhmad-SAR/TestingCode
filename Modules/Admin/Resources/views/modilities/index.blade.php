@@ -25,12 +25,12 @@
             <div class="eagle-divider"></div>
             <div class="col-lg-4 col-xl-4">
                 @if(hasPermission(auth()->user(),'modalities.create'))
-                Parent <button class="custom-btn blue-color" id="add_phase"> <i class="fa fa-plus blue-color"></i> add</button>
+                Parent <button class="custom-btn blue-color" id="add_phase"> <i class="fa fa-plus blue-color" dusk="add-parent"></i> add</button>
                     @endif
             </div>
             <div class="col-lg-8  col-xl-8">
                 @if(hasPermission(auth()->user(),'childmodilities.create'))
-                Child <button class="custom-btn blue-color" id="add_steps"><i class="fa fa-plus blue-color"></i> add</button>
+                Child <button class="custom-btn blue-color" id="add_steps"><i class="fa fa-plus blue-color" dusk="add-child"></i> add</button>
                     @endif
             </div>
             <div class="col-lg-4 col-xl-4 mb-4 mt-3 pr-lg-0 flip-menu">
@@ -45,11 +45,13 @@
                                             <span class="mail-user">{{$modality->modility_name}}</span>
                                         </a>
                                         <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                            <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                            <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;" dusk="parent-modality-navtab">
+                                                <i class="fas fa-cog" style="margin-top: 12px;"></i>
+                                            </span>
                                             <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                                <span class="dropdown-item edit_phase" data-id="{{$modality->id}}"><i class="far fa-edit"></i>&nbsp; Edit</span>
+                                                <span class="dropdown-item edit_phase" data-id="{{$modality->id}}" dusk="parent-modality-edit"><i class="far fa-edit"></i>&nbsp; Edit</span>
                                                 <span class="dropdown-item replicateParent" data-id="{{$modality->id}}"><i class="far fa-clone"></i>&nbsp; Clone</span>
-                                                <span class="dropdown-item deleteParent" data-id="{{$modality->id}}"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
+                                                <span class="dropdown-item deleteParent" data-id="{{$modality->id}}" dusk="parent-modality-delete"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                             </div>
                                         </div>
                                     </div>
@@ -89,20 +91,20 @@
                                 <div class="form-group row">
                                     <label for="Name" class="col-sm-3 col-form-label">Name</label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="modility_name" name="modility_name" placeholder="Enter Modility name" maxlength="50"  value="{{old('modility_name')}}" required/>
+                                        <input type="text" class="form-control" id="modility_name" name="modility_name" placeholder="Enter Modility name" maxlength="50"  value="{{old('modility_name')}}" required dusk="parent-modality-name"/>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label for="modility_abbreviation" class="col-sm-3 col-form-label">Abbreviation</label>
                                     <div class="col-sm-9">
-                                        <input type="text" class="form-control" id="modility_abbreviation" name="modility_abbreviation" placeholder="Enter Modility abbreviation" maxlength="50"  value="{{old('modility_abbreviation')}}" required/>
+                                        <input type="text" class="form-control" id="modility_abbreviation" name="modility_abbreviation" placeholder="Enter Modility abbreviation" maxlength="50"  value="{{old('modility_abbreviation')}}" required dusk="parent-modality-abbreviation"/>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal" id="addphase-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="submit" class="btn btn-outline-primary" id="saveParent" ><i class="fa fa-save"></i> Save Changes</button>
+                            <button type="submit" class="btn btn-outline-primary" id="saveParent" dusk="save-parent-modality"><i class="fa fa-save"></i> Save Changes</button>
                         </div>
                     </div>
                 </form>
@@ -125,7 +127,7 @@
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal" id="addphase-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="submit" class="btn btn-outline-primary" id="updateParent" ><i class="fa fa-save"></i> Save Changes</button>
+                            <button type="submit" class="btn btn-outline-primary" id="updateParent" dusk="update-parent-modality"><i class="fa fa-save"></i> Save Changes</button>
                         </div>
                     </div>
                 </form>
@@ -149,13 +151,13 @@
                                 <div class="form-group row">
                                     <label for="Name" class="col-sm-3 col-form-label">Child Name</label>
                                     <div class="col-md-9">
-                                        <input type="text" class="form-control" id="modility_name" name="modility_name" value="{{old('modility_name')}}" required/>
+                                        <input type="text" class="form-control" id="modility_name" name="modility_name" value="{{old('modility_name')}}" required dusk="child-modality-name"/>
                                     </div>
                                 </div>
                                 <div class="form-group row">
                                     <label for="Name" class="col-sm-3 col-form-label">Modality</label>
                                     <div class="col-md-9">
-                                        <select class="form-control" name="parent_id" id="parent_id">
+                                        <select class="form-control" name="parent_id" id="parent_id" dusk="child-parent-modality-name">
                                             <option value="">Select Parent Modality</option>
                                             @foreach ($modalities as $modility)
                                                 <option value="{{ $modility->id }}">{{ $modility->modility_name }}</option>
@@ -167,7 +169,7 @@
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal" id="addstep-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="button" class="btn btn-outline-primary" id="saveChild"><i class="fa fa-save"></i> Save Changes</button>
+                            <button type="button" class="btn btn-outline-primary" id="saveChild" dusk="save-child-modality"><i class="fa fa-save"></i> Save Changes</button>
                         </div>
                     </div>
                 </form>
@@ -196,7 +198,7 @@
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal" id="addstep-close"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="submit" class="btn btn-outline-primary" id="updateChild"><i class="fa fa-save"></i> Save Changes</button>
+                            <button type="submit" class="btn btn-outline-primary" id="updateChild" dusk="update-child-modality"><i class="fa fa-save"></i> Save Changes</button>
                         </div>
                     </div>
                 </form>
@@ -659,7 +661,7 @@
                 var id =($(this).attr("data-id"));
                 var url = "{{URL('/modalities')}}";
                 var newPath = url+ "/"+ id+"/showChild/";
-                
+
                 $.ajax({
                     type:"GET",
                     dataType: 'html',
@@ -670,8 +672,8 @@
                         $('#childClass').html(results);
                         return false;
                     }
-                }); 
+                });
             })
-            
+
     </script>
 @stop

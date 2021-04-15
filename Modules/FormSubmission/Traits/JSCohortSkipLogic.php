@@ -34,11 +34,11 @@ trait JSCohortSkipLogic
 
         return '
         function ' . $checkFunctionName . $phaseIdStr . '(){
-            console.log(\'' . $checkFunctionName . $phaseIdStr . '\');
+            
             ' . $phaseSkipLogicStr . '
         }';
     }
-
+    //console.log(\'' . $checkFunctionName . $phaseIdStr . '\'); get from above function
     public static function generateCohortSkipLogicFunction($phase, $isForAdjudication = false)
     {
         $phaseSkipLogicStr = '';

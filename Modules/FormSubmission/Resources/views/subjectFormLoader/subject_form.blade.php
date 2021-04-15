@@ -82,7 +82,7 @@
             </div>
             <div class="col-12 col-sm-12">
                 <div class="row row-eq-height">
-                    <div class="col-12 col-lg-2 mt-3 todo-menu-bar flip-menu pr-lg-0">
+                    <div class="col-12 col-lg-2 mt-3 todo-menu-bar flip-menu pr-lg-0" style="height: calc(100vh - 140px);">
                         <a href="#" class="d-inline-block d-lg-none mt-1 flip-menu-close">
                             <i class="icon-close"></i>
                         </a>
@@ -169,13 +169,9 @@
                                                                         continue;
                                                                 }
                                                             }
-
-
-
                                                             $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                                                             $adjStepClsStr = buildSafeStr($step->step_id, 'adj_step_cls_');
                                                             $stepIdStr = buildSafeStr($step->step_id, '');
-
                                                             $badgeCls = 'badge-light';
                                                             if(request('stepId', '-') == $step->step_id){
                                                                 $badgeCls = 'badge-light';
@@ -184,7 +180,6 @@
                                                                 $badgeCls = 'badge-light';
                                                             }
                                                             $skipLogicStepIdStr = buildSafeStr($step->step_id, 'skip_logic_');
-
                                                             $stepData = [
                                                                 'step' => $step,
                                                                 'stepClsStr' => $stepClsStr,
@@ -199,6 +194,7 @@
                                                             @include('formsubmission::subjectFormLoader.eligibility_left_bar_nav', $stepData)
                                                             @include('formsubmission::subjectFormLoader.grader_left_bar_nav', $stepData)
                                                             @include('formsubmission::subjectFormLoader.adjudication_left_bar_nav', $stepData)
+                                                            @include('formsubmission::subjectFormLoader.other_type_form', $stepData)
                                                             @php
                                                             $activeStep = false;
                                                             @endphp

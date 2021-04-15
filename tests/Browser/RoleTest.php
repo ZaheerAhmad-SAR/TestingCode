@@ -9,21 +9,21 @@ use Tests\DuskTestCase;
 
 class RoleTest extends DuskTestCase
 {
-//    public function setUp(): void
-//    {
-//        $this->appUrl = env('APP_URL');
-//        parent::setUp();
-//        //$this->artisan('migrate:refresh');
-//        $this->artisan('module:seed');
-//    }
+       public function setUp(): void
+       {
+           $this->appUrl = env('APP_URL');
+           parent::setUp();
+           //$this->artisan('migrate:refresh');
+           $this->artisan('module:seed');
+       }
 
     /**
      * A Dusk test example.
      *
      * @return void
      */
-    /// Create a New Role
-    ///
+
+    /** @test */
     public function test_i_can_create_a_new_role()
     {
         $user = User::where('name', 'Super Admin')->first();
@@ -35,7 +35,7 @@ class RoleTest extends DuskTestCase
                 ->waitFor('#createRole')
                 ->assertVisible('#createRole')
                 ->assertSee('Add New Role')
-                ->type('name','JS Developer')
+                ->type('name','Jquery Developer')
                 ->type('description','This role is for JS developer only!!!!')
                 ->radio('role_type_name','study_role')
                 ->click('@nav-StudyActivities')
@@ -93,25 +93,25 @@ class RoleTest extends DuskTestCase
                 ->uncheck('certificate_preferences')
                 ->click('@create-new-roles')
                 ->assertSee('Roles Detail')
-                ->visit('/roles');
-        });
+                ->logout();
+            });
     }
 
+    /** @test */
     public function test_i_can_update_a_new_role()
     {
         $user = User::where('name', 'Super Admin')->first();
         $this->browse(function ($browser) use ($user) {
             $browser->loginAs($user)
                 ->visit('/roles')
-                ->assertSee('Roles Detail')
-                ->press('Edit')
-//                ->click('@create-role')
-//                ->waitFor('#createRole')
-//                ->assertVisible('#createRole')
-                ->assertSee('Update Role')
-//                ->type('name','JS Developer')
-//                ->type('description','This role is for JS developer only!!!!')
-//                ->radio('role_type_name','study_role')
+                ->assertSee('Study Roles')
+                ->press('@roles-navtab')
+                ->press('@roles-edit')
+                ->waitForText('Update Role')
+                ->pause(1000)
+                ->type('name','Basic')
+                ->type('description','This role is updated!!!!')
+//                ->radio('role_type','study_role')
 //                ->click('@nav-StudyActivities')
 //                ->waitFor('#nav-StudyActivities')
 //                ->assertVisible('#nav-StudyActivities')
@@ -165,10 +165,10 @@ class RoleTest extends DuskTestCase
 //                ->check('view_certificate')
 //                ->uncheck('generate_certificate')
 //                ->uncheck('certificate_preferences')
-//                ->click('@create-new-roles')
-//                ->assertSee('Roles Detail')
-
-                ->visit('/roles');
+                ->click('@update-roles')
+                ->assertSee('Roles Detail')
+                ->logout();
+                //->visit('/roles');
         });
     }
 

@@ -124,6 +124,7 @@ class CertificationPreferencesController extends Controller
         $getModalities = ChildModilities::query();
         $getModalities = $getModalities->select('modilities.id as parent_modility_id', 'modilities.modility_name as parent_modility_name', 'child_modilities.id as child_modility_id', 'child_modilities.modility_name as child_modility_name')
         ->leftjoin('modilities', 'modilities.id', '=', 'child_modilities.modility_id')
+        ->whereNotNull('child_modilities.modility_id')
         ->whereNULL('modilities.deleted_at')
         ->whereNULL('child_modilities.deleted_at');
 
@@ -413,46 +414,51 @@ class CertificationPreferencesController extends Controller
 
 
         return view('certificationapp::certificate_preferences.certification_report', compact('old_cert_sites_array', 'old_cert_sites_count','new_cert_sites_count','not_in_new_app_array','not_in_new_app_count'));
-      
-       
-
     }
 
-
-        public function showCertificationReportPhotograper(Request $request) {
+    public function showCertificationReportPhotograper(Request $request) {
 
         $fileName =  'data-photograpers-export-' . date('Y-m-d-h-i-s') . '.xlsx';
 
         return Excel::download(new FormPhotograperDataExport($request), $fileName);
-      
-       
-
     }
 
-
-
-
-
-        public function showCertificationReportDevices(Request $request) {
-
-
+    public function showCertificationReportDevices(Request $request) {
 
         $fileName =  'data-devices-export-' . date('Y-m-d-h-i-s') . '.xlsx';
 
         return Excel::download(new FormDevicesDataExport($request), $fileName);
       
-       
-
     }
 
-      public function exportSites(Request $request)
+    public function exportSites(Request $request)
     {
-      
-
         $fileName =  'data-site-export-' . date('Y-m-d-h-i-s') . '.xlsx';
 
         return Excel::download(new FormSiteDataExport($request), $fileName);
     }
 
+    public function getGrandFatherCertificateEmails(Request $request) {
+        
+        if($request->ajax()) {
+
+            $userEmails = [];
+            $userBCCEmails = [];
+
+            // get study id
+            $getStudy = Study::where('id', $request->study_id)->first();
+
+            $getStudyEmail = StudySetup::where('study_id', $getStudy->id)->first();
+            // cc email
+            $userEmails = $getStudyEmail != null ? explode(',', $getStudyEmail->study_cc_email) : [];
+            // study email
+            $userEmails[] = $getStudyEmail != null ? $getStudyEmail->study_email : '';
+
+            // get BCC email
+            $userBCCEmails = $getStudyEmail != null ? explode(',', $getStudyEmail->study_bcc_email) : [];
+
+            return response()->json(['userEmails' => array_filter($userEmails), 'userBCCEmails' => array_filter($userBCCEmails)]);
+        } // ajax ends
+    }
 
 }

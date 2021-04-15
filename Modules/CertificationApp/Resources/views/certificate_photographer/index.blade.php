@@ -38,6 +38,21 @@
             cursor: text;
         }
 
+        div#cc_user_email_tagsinput {
+            width: 100% !important;
+            min-height: 42px !important;
+            /*height: 30px !important;*/
+            overflow: hidden !important;
+        }
+
+
+        div#bcc_user_email_tagsinput {
+            width: 100% !important;
+            min-height: 42px !important;
+            /*height: 30px !important;*/
+            overflow: hidden !important;
+        }
+
         .span-text {
             color: red;
         }
@@ -48,6 +63,9 @@
     </style>
 
     <link rel="stylesheet" href="{{ asset('public/dist/vendors/summernote/summernote-bs4.css') }}">
+
+    <!-- tag based input -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-tagsinput/1.3.6/jquery.tagsinput.min.css" rel="stylesheet">
 
     <!-- date range picker -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
@@ -84,6 +102,8 @@
 
                         <a href="{{ route('archived-photographer-transmission-listing')}}" class="btn btn-primary archive-device-transmission">Archived Transmissions</a>
 
+                        <button class="btn btn-primary show-transmission">Show Assignment Column</button>
+
                         @if (!$getTransmissions->isEmpty())
                         <span style="float: right; margin-top: 3px;" class="badge badge-pill badge-primary">
                             {{ $getTransmissions->count().' out of '.$getTransmissions->total() }}
@@ -99,27 +119,68 @@
 
                             <div class="form-group col-md-3">
                                 <label for="trans_id">Transmission#</label>
-                                <input type="text" name="trans_id" id="trans_id" class="form-control filter-form-data" value="{{ request()->trans_id }}" placeholder="Transmission#">
+
+                                <Select class="form-control filter-form-data filter-select" name="trans_id" id="trans_id">
+                                    <option value="">Select Transmission</option>
+                                    @foreach($getFilterTransmissionNumber as $filterTransmission)
+                                    <option value="{{$filterTransmission->Transmission_Number}}" @if(request()->trans_id == $filterTransmission->Transmission_Number) selected @endif>
+                                        {{$filterTransmission->Transmission_Number}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
                                 <label for="study">Study Name</label>
-                                <input type="text" name="study" id="study" class="form-control filter-form-data" value="{{ request()->study }}" placeholder="Study Name">
+                                <Select class="form-control filter-form-data filter-select" name="study" id="study">
+                                    <option value="">Select Study</option>
+                                    @foreach($getFilterStudy as $filterStudy)
+                                    <option value="{{$filterStudy->Study_Name}}" @if(request()->study == $filterStudy->Study_Name) selected @endif>
+                                        {{$filterStudy->Study_Name}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
                                 <label for="photographer_name">Photographer Name</label>
-                                <input type="text" name="photographer_name" id="photographer_name" class="form-control filter-form-data" value="{{ request()->photographer_name }}" placeholder="Photographer Name">
+                                <Select class="form-control filter-form-data filter-select" name="photographer_name" id="photographer_name">
+                                    <option value="">Select Photographer</option>
+                                    @foreach($getFilterPhotographer as $filterPhotographer)
+                                    <option value="{{$filterPhotographer->Photographer_First_Name}}" @if(request()->photographer_name == $filterPhotographer->Photographer_First_Name) selected @endif>
+                                        {{$filterPhotographer->Photographer_First_Name.' '.$filterPhotographer->Photographer_Last_Name}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
                                 <label for="certification">Certification</label>
-                                <input type="text" name="certification" id="certification" class="form-control filter-form-data" value="{{ request()->certification }}" placeholder="Certification">
+                                <Select class="form-control filter-form-data filter-select" name="certification" id="certification">
+                                    <option value="">Select Certification</option>
+                                    @foreach($getFilterModality as $filterModality)
+                                    <option value="{{$filterModality->Requested_certification}}" @if(request()->certification == $filterModality->Requested_certification) selected @endif>
+                                        {{$filterModality->Requested_certification}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
                                 <label for="site">Site Name</label>
-                                <input type="text" name="site" id="site" class="form-control filter-form-data" value="{{ request()->site }}" placeholder="Site Name">
+                                <Select class="form-control filter-form-data filter-select" name="site" id="site">
+                                    <option value="">Select Site</option>
+                                    @foreach($getFilterSite as $filterSite)
+                                    <option value="{{$filterSite->Site_Name}}" @if(request()->site == $filterSite->Site_Name) selected @endif>
+                                        {{$filterSite->Site_Name}}
+                                    </option>
+                                    @endforeach
+                                </Select>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="dt">Received Date</label>
+                                <input type="text" name="created_at" id="created_at" class="form-control created_at filter-form-data" value="{{ request()->created_at }}">
                             </div>
 
                             <div class="form-group col-md-3">
@@ -134,7 +195,19 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-2 mt-4">
+                            <div class="form-group col-md-3">
+                                <label class="users">Certification Officer</label>
+                                <Select class="form-control filter-form-data certification_officer_id" name="officer_id" id="certification_officer_id">
+                                    <option value="">Select User</option>
+                                    @foreach($getCertificationOfficers as $officer)
+                                    <option value="{{$officer['id']}}" @if($officer['id'] == request()->officer_id) selected @endif>
+                                        {{$officer['name']}}
+                                    </option>
+                                    @endforeach
+                                </Select>
+                            </div>
+
+                            <div class="form-group col-md-3 mt-4">
                                 <button type="button" class="btn btn-primary reset-filter">Reset</button>
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Record</button>
                             </div>
@@ -145,14 +218,19 @@
 
                     <div class="card-body">
                         <div class="table-responsive">
-
+                        <form action="{{route('assign-photographer-transmission')}}" method="POST">
+                        @csrf
                             <table class="table table-bordered" id="laravel_crud">
                                 <thead class="table-secondary">
                                     <tr>
+                                        <th class="assign-transmission" style="display:none;">Select All
+                                            <input type="checkbox" class="select_all" name="select_all" id="select_all">
+                                        </th>
                                         <th>Photographer</th>
                                         <th>Certification</th>
                                         <th>Study</th>
                                         <th>Site</th>
+                                        <th>Date</th>
                                         <th>Certification Status</th>
                                         <th>Transmission#</th>
                                         <!-- <th>Action</th> -->
@@ -161,21 +239,37 @@
                                 <tbody>
                                     @if(!$getTransmissions->isEmpty())
                                     @foreach($getTransmissions as $transmission)
+                                    @if($transmission->Transmission_Number == null )
+                                        @php
+                                            continue;
+                                        @endphp
+                                    @endif
                                         <tr style="background: {{ $transmission->rowColor }}">
+                                            <td class="assign-transmission" style="display:none;">
+                                                <input type="checkbox" class="check_transmission" name="check_transmission[{{ $transmission->id }}]" >
+                                            </td>
                                             <td> 
-                                                {{$transmission->Photographer_First_Name.' '. $transmission->Photographer_Last_Name}} 
+                                               @if($transmission->captureStatus == 'yes')
+                                               <span class="badge badge-info" data-toggle="tooltip" title="Capture date is same!">
+                                                    {{$transmission->Photographer_First_Name.' '. $transmission->Photographer_Last_Name}}
+                                                </span>
+                                               @else
+                                                {{$transmission->Photographer_First_Name.' '. $transmission->Photographer_Last_Name}}
+                                               @endif  
                                             </td>
                                             <td> {{$transmission->Requested_certification}}</td>
                                            
                                             <td> {{$transmission->Study_Name}} </td>
                                            
                                             <td> {{$transmission->Site_Name}} </td>
+
+                                            <td> {{date('d-M-Y', strtotime($transmission->created_at))}} </td>
                                             
                                             <td>
                                                 @if ($transmission->certificateStatus['status'] == 'provisional')
                                                 
                                                 @if(hasPermission(auth()->user(),'generate-photographer-certificate'))
-                                                    <a href="javascript:void()" id="generate-certification" data-id="" title="Provisional Certified" class="badge badge-warning" onClick="generateCertificate('{{$transmission->id}}', '{{ $transmission->certificateStatus['certificate_id'] }}', '{{ route('approve-photographer-provisional-certificate')}}', 'Provisional')">
+                                                    <a href="javascript:void()" id="generate-certification" data-id="" title="Provisional Certified" class="badge badge-warning" onClick="generateCertificate('{{$transmission->id}}', '{{ $transmission->certificateStatus['certificate_id'] }}', '{{ route('update-photographer-provisonal-certificate')}}', 'Provisional')">
                                                         Provisional Certified
                                                     </a>
                                                 @else
@@ -213,7 +307,6 @@
                                             </td>
                                             
                                             <td>
-
                                             @if ($transmission->linkedTransmission != null)
 
                                             @foreach($transmission->linkedTransmission as $linkedTransmission)
@@ -241,6 +334,10 @@
                                                         <i class="fas fa-archive" onClick="archiveTransmission('{{encrypt($linkedTransmission['id'])}}', '{{ route('archive-photographer-transmission', [encrypt($linkedTransmission['id']), 'yes']) }}')" data-url="" style="color: #17a2b8 !important;"></i>
                                                 </span>
 
+                                                {!! $getAssignUser = \Modules\CertificationApp\Entities\TransmissionDataPhotographer::getAssignUser($linkedTransmission['id']) !!}
+
+                                                {!! $getCaptureDateStatus = \Modules\CertificationApp\Entities\TransmissionDataPhotographer::getCaptureDateStatus($linkedTransmission['id']) !!}
+
                                                 <br>
                                                 <br>
                                             @endforeach
@@ -252,39 +349,53 @@
                                                 <i class="fas fa-edit"> </i> -->
 
                                             </td>
-
-                                            <!--  <td>
-                                                &nbsp; &nbsp;
-                                                &nbsp; &nbsp;
-
-                                                <div class="d-flex mt-md-0 ml-auto" style="margin-top: -15px !important;">
-                                                <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog"></i></span>
-                                                    <div class="dropdown-menu p-0 m-0 dropdown-menu-right" style="">
-                                                        @if($transmission->status !== 'accepted')
-                                                        <span class="dropdown-item">
-                                                            <a href="javascript:void(0)" data-id="{{$transmission->Transmission_Number}}">
-                                                                <i class="fas fa-question-circle" aria-hidden="true">
-                                                                </i> Queries</a>
-                                                        </span>
-                                                        @endif
-                                                    </div>
-                                                </div>
-                                                
-                                            </td>  -->
-                                            
                                         </tr>
                                     @endforeach
                                     @else
                                         <tr>
-                                           <td colspan="6" style="text-align: center">No record found.</td>
+                                           <td colspan="7" style="text-align: center">No record found.</td>
                                         </tr>
                                     @endif
                                 </tbody>
                             </table>
                             
-                            {{ $getTransmissions->appends(['trans_id' => \Request::get('trans_id'), 'study' => \Request::get('study'), 'photographer_name' => \Request::get('photographer_name'), 'certification' => \Request::get('certification'), 'site' => \Request::get('site'), 'status' => \Request::get('status')])->links() }}
+                            {{ $getTransmissions->appends(['trans_id' => \Request::get('trans_id'), 'study' => \Request::get('study'), 'photographer_name' => \Request::get('photographer_name'), 'certification' => \Request::get('certification'), 'site' => \Request::get('site'), 'created_at' => \Request::get('created_at'), 'status' => \Request::get('status')])->links() }}
 
+                             <!--Add  Modal -->
+                            <div class="modal fade" id="assign-transmission-model" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Assign Transmission</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+
+                                    <div class="form-group">
+                                        <label class="users">Certification Officer</label>
+                                        <Select class="form-control certification_officer_id" name="certification_officer_id" id="certification_officer_id">
+                                            <option value="">Select User</option>
+                                            @foreach($getCertificationOfficers as $officer)
+                                            <option value="{{$officer['id']}}">{{$officer['name']}}</option>
+                                            @endforeach
+                                        </Select>
+                                    </div>
+
+                                  </div>
+                                  <!-- modal body ends -->
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Assign Transmission</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- Model ends -->
+                        </form>
                         </div>
+                        <!-- table responsive -->
                     </div>
                 </div>
 
@@ -304,7 +415,7 @@
             </button>
           </div>
           <!-- generate-photographer-certificate -->
-            <form action="{{ route('approve-photographer-certificate') }}" method="POST" class="generate-certificate-form">
+            <form action="{{ route('generate-photographer-certificate') }}" method="POST" class="generate-certificate-form">
                 @csrf
               <div class="modal-body">
                     <input type="hidden" name="hidden_transmission_id" class="hidden_transmission_id" value="">
@@ -360,18 +471,14 @@
                         </Select>
                     </div>
 
-                     <div class="form-group col-md-12 suspend-certificate-div">
+                    <div class="form-group col-md-12">
                         <label class="edit_users">CC Email</label>
-                        <Select class="form-control cc_user_email data-required" name="cc_user_email[]" id="cc_user_email" multiple>
-
-                        </Select>
+                        <input type="text" class="form-control cc_user_email" name="cc_user_email" id="cc_user_email" value="">
                     </div>
 
                     <div class="form-group col-md-12">
                         <label class="edit_users">BCC Email</label>
-                        <Select class="form-control bcc_user_email" name="bcc_user_email[]" id="bcc_user_email" multiple="multiple">
-
-                        </Select>
+                        <input type="text" class="form-control bcc_user_email" name="bcc_user_email" id="bcc_user_email" value="">
                     </div>
 
                     <div class="form-group col-md-12">
@@ -416,6 +523,9 @@
 
 <script src="{{ asset('public/dist/vendors/summernote/summernote-bs4.js') }}"></script>
 
+<!-- tag based input -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-tagsinput/1.3.6/jquery.tagsinput.min.js"></script>
+
 <!-- date range picker -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
@@ -426,33 +536,93 @@
 
 <script type="text/javascript">
 
+     /************************************** Select All ******************************************************/
+    // select all change function
+    $('.select_all').change(function(){
+        
+        if($(this).is(":checked")) {
+            // check all checkboxes
+            $(".check_transmission").each(function() {
+                $(this).prop('checked', true);
+            });
+
+        } else {
+
+            // un-check all checkboxes
+            $(".check_transmission").each(function() {
+                $(this).prop('checked', false);
+            });
+
+        }
+    });
+
+    // select/ unselect select all on checkbox event
+    $('.check_transmission').change(function () {
+
+        if ($('.check_transmission:checked').length == $('.check_transmission').length) {
+            // CHECK SELECT ALL
+            $('.select_all').prop('checked',true);
+
+        } else {
+            // uncheck select all
+            $('.select_all').prop('checked',false);
+
+        }
+    });
+
+    /************************************* Assignment Button *******************************************/
+
+    $(".show-transmission").click(function () {
+        if($(this).text() == 'Assign Transmission') {
+
+            // any checkbox is checked
+            if ($(".check_transmission:checked").length > 0) {
+                
+                // show model
+                $('#assign-transmission-model').modal('show');
+
+            } else {
+               // alert msg
+               alert('No transmission selected.');
+            }
+
+        } else {
+            $(this).text(function(i, text){
+              return text == "Show Assignment Column" ? "Assign Transmission" : "Show Assignment Column";
+            });
+            // show check boxes
+            $('.assign-transmission').toggle();
+        }
+        
+    });
+
+    /*********************************** Date Picker *************************************************/
+
+    // assignment select2
+    $('#certification_officer_id').select2();
+    $('.filter-select').select2();
+
+    // initialize date range picker
+    $('input[name="created_at"]').daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            cancelLabel: 'Clear'
+        }
+    });
+
+    $('input[name="created_at"]').on('apply.daterangepicker', function(ev, picker) {
+        $(this).val(picker.startDate.format('MM/DD/YYYY') + ' - ' + picker.endDate.format('MM/DD/YYYY'));
+    });
+
+    $('input[name="created_at"]').on('cancel.daterangepicker', function(ev, picker) {
+        $(this).val('');
+    });
+
     // initialize summer note
     $('.summernote').summernote({
         height: 150,
 
     });
-
-    $('#cc_user_email').select2();
-    $('#bcc_user_email').select2();
-
-    // on status change
-    // $('#certification_status').change(function() {
-    //     // if this is the value show all div other vice hide the other divs
-    //     if($(this).val() == 'provisional' || $(this).val() == 'full') {
-            
-    //         // show div
-    //         $('.suspend-certificate-div').css('display', 'block');
-    //         // and apply required
-    //         $('.data-required').attr('required', true);
-        
-    //     } else {
-
-    //         // show div
-    //         $('.suspend-certificate-div').css('display', 'none');
-    //         // and apply required
-    //         $('.data-required').attr('required', false);
-    //     }
-    // });
 
     // reset filter form
     $('.reset-filter').click(function(){
@@ -461,6 +631,19 @@
         $('.filter-form-data').val("").trigger("change");
         // submit the filter form
         $('.filter-form').submit();
+    });
+
+    /***************************************** Generate Certificate ******************************/
+
+    // initiallize tags
+    $('#cc_user_email').tagsInput({
+        'defaultText':'add email',
+        'removeWithBackspace' : true,
+    });
+
+    $('#bcc_user_email').tagsInput({
+        'defaultText':'add email',
+        'removeWithBackspace' : true,
     });
 
     function generateCertificate(transmissionID, certificateID, route, type) {
@@ -472,7 +655,7 @@
         $('.hidden_transmission_id').val(transmissionID);
 
         // assign file key
-        $('.pdf_key').val(Math.random().toString(36).substr(2, 16));
+        $('.pdf_key').val('view pdf');
         // enable approve pdf button
         $('.approve-pdf').attr('disabled', false);
         // disable generate button
@@ -480,7 +663,7 @@
         // make form target blank
         $('.generate-certificate-form').attr('target', '_blank');
         // give default url
-         $('.generate-certificate-form').attr("action", "{{ route('approve-photographer-certificate')}}");
+         $('.generate-certificate-form').attr("action", "{{ route('generate-photographer-certificate')}}");
 
         // by default values
         $('#certification_status').val('');
@@ -498,10 +681,6 @@
         $('#certificate_for').empty();
         // empty user email
         $('.user_email').empty();
-
-        // refresh the select2
-        $('#cc_user_email').empty();
-        $('#bcc_user_email').empty();
 
         if(type == 'Provisional') {
             // chnage form action and assign certification ID
@@ -524,6 +703,11 @@
                 'type' : 'photographer',
             },
             success:function(data) {
+
+                // remove old cc tag
+                removeCCTag($('#cc_user_email'));
+                // remove old bcc tag
+                removeBCCTag($('#bcc_user_email'));
 
                 // ------------------------------------- transmission start----------------------//
                 if (data.getTransmissions != null) {
@@ -579,31 +763,24 @@
                 // ------------------------------------- user email ends----------------------//
 
                 if(data.ccEmails != null) {
-
+                
                     $.each(data.ccEmails, function(index, value) {
-                                    
-                        $('#cc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+       
+                        //append new value
+                        $('#cc_user_email').addTag(value);
                     });
-
-                } else {
-
-                    $('#cc_user_email').empty();
                 }
                 // ------------------------------------- user cc email ends----------------------//
 
-               if(data.bccEmails != null) {
+                if(data.bccEmails != null) {
 
                     $.each(data.bccEmails, function(index, value) {
-                                
-                        $('#bcc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+
+                        // append new tag
+                        $('#bcc_user_email').addTag(value);
                     });
-
-                } else {
-
-                    $('#bcc_user_email').empty();
                 }
                 // ------------------------------------- user bcc email ends----------------------//
-               
 
             } // success ends
 
@@ -705,7 +882,9 @@
         // make form target blank
         $('.generate-certificate-form').removeAttr('target');
         
-        
+        // assign file key
+        $('.pdf_key').val('generate pdf');
+
         if($('.hidden_photographer_certification_id').val() != '') {
         
             // change url according to 
@@ -719,6 +898,27 @@
         $('.generate-certificate-form').submit();
 
     });
+
+    function removeCCTag(element) {
+        var ccTags = element.val().split(',');
+
+        // remove tags
+        $.each(ccTags, function(index, value) {
+            //append new value
+            element.removeTag(value);
+        });
+    }
+
+    function removeBCCTag(element) {
+        var bccTags = element.val().split(',');
+
+        // remove tags
+        $.each(bccTags, function(index, value) {
+            //append new value
+            element.removeTag(value);
+        });
+
+    }
 
 </script>
 

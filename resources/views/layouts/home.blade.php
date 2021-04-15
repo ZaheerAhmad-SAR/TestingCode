@@ -4,13 +4,17 @@
 {{--    @php dd(session()->all()); @endphp--}}
     @if (!empty(auth()->user()))
         <meta name="csrf-token" content="{{ csrf_token() }}" />
+        <script>
+            window.Laravel = { csrfToken:'{{csrf_token()}}'};
+        </script>
+
     <div id="header-fix" class="header fixed-top">
         <div class="site-width">
 
             <nav class="navbar navbar-expand-lg  p-0">
 
                 <div class="navbar-header  h-100 h4 mb-0 align-self-center logo-bar text-left">
-                    <a href="{{ url('/dashboard') }}" class="horizontal-logo text-left">
+                    <a href="{{ url('studies') }}" class="horizontal-logo text-left">
                 <span class="h4 font-weight-bold align-self-center mb-0 ml-auto">
                     OIRRC
                 </span>
@@ -39,9 +43,16 @@
                                          ->where('is_read','no')->count();
 
                                       @endphp
-                                        @if($count > 0 )
+
+{{--                                <div id="app">--}}
+{{--                                        <notification></notification>--}}
+{{--                                </div>--}}
+{{--                                <script src="{{asset('js/app.js')}}"></script>--}}
+
+                                @if($count > 0 )
                                     <span class="badge badge-pill badge-danger updateCounter"style="height: 20px;top: 12px;" data-value="{{auth()->user()->id}}">{{$count}}</span>
-                                        @endif
+                                @endif
+
                             </a>
 
                             <ul class="dropdown-menu dropdown-menu-right border  py-0 receivedata">
@@ -166,7 +177,7 @@
 
                                                             <p class="mb-0 text-primary">
 
-                                                                <b> @if($studyData!==null) {{$studyData->study_short_name}} : @else  @endif  @if($answers->isEmpty())  New Bug By  @else Reply By  @endif {{$userData->name}} </b>
+                                                                <b> @if($studyData!==null) {{$studyData->study_short_name}} : @else  @endif  @if($answers->isEmpty())  New Bug By  @else Bug Reply By  @endif {{$userData->name}} </b>
                                                             </p>
 
                                                             {{Carbon\Carbon::parse($bugs->created_at)->diffForHumans()}}
@@ -230,110 +241,108 @@
         </div>
     </div>
 
-    <script src="{{ asset('public/dist/vendors/jquery/jquery-3.3.1.min.js') }}"></script>
-    <script type="text/javascript">
+{{--        <script src="{{asset('js/app.js')}}"></script>--}}
 
 
-        $('.currentNotificationId').click(function () {
-            var currentNotificationId  = $(this).attr('data-value');
-            var query_url              = $(this).attr('data-query_url');
-            var study_id               = $(this).attr('data-study_id');
-            var study_code             = $(this).attr('data-study_code');
-            var study_short_name       = $(this).attr('data-study_short_name');
-            updateNotificationToRead(currentNotificationId,query_url,study_id,study_code,study_short_name);
-        });
+        <script src="{{ asset('public/dist/vendors/jquery/jquery-3.3.1.min.js') }}"></script>
+        <script type="text/javascript">
 
 
-        $('.currentNotificationBugId').click(function () {
-            var currentNotificationId  = $(this).attr('data-value');
-            var query_url              = $(this).attr('data-query_url');
-            var study_id               = $(this).attr('data-study_id');
-            var study_code             = $(this).attr('data-study_code');
-            var study_short_name       = $(this).attr('data-study_short_name');
-            updateNotificationToRead(currentNotificationId,query_url,study_id,study_code,study_short_name);
-        });
+            $('.currentNotificationId').click(function () {
+                var currentNotificationId  = $(this).attr('data-value');
+                var query_url              = $(this).attr('data-query_url');
+                var study_id               = $(this).attr('data-study_id');
+                var study_code             = $(this).attr('data-study_code');
+                var study_short_name       = $(this).attr('data-study_short_name');
+                updateNotificationToRead(currentNotificationId,query_url,study_id,study_code,study_short_name);
+            });
+
+
+            $('.currentNotificationBugId').click(function () {
+                var currentNotificationId  = $(this).attr('data-value');
+                var query_url              = $(this).attr('data-query_url');
+                var study_id               = $(this).attr('data-study_id');
+                var study_code             = $(this).attr('data-study_code');
+                var study_short_name       = $(this).attr('data-study_short_name');
+                updateNotificationToRead(currentNotificationId,query_url,study_id,study_code,study_short_name);
+            });
 
 
 
 
-        function updateNotificationToRead(currentNotificationId,query_url,study_id,study_code,study_short_name)
-        {
-            $.ajax({
-                url:"{{route('notifications.update')}}",
-                type: 'POST',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'POST',
-                    'currentNotificationId' :currentNotificationId,
-                    'query_url' :query_url,
-                    'study_id' :study_id,
-                    'study_code' :study_code,
-                    'study_short_name' :study_short_name,
-                },
-                success: function(response)
-                {
-                    //console.log(response);
-                    if (response.success)
+            function updateNotificationToRead(currentNotificationId,query_url,study_id,study_code,study_short_name) {
+                $.ajax({
+                    url:"{{route('notifications.update')}}",
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "_method": 'POST',
+                        'currentNotificationId' :currentNotificationId,
+                        'query_url' :query_url,
+                        'study_id' :study_id,
+                        'study_code' :study_code,
+                        'study_short_name' :study_short_name,
+                    },
+                    success: function(response)
                     {
-                        var urlPath = response.success;
-                        window.location.href = urlPath;
+                        //console.log(response);
+                        if (response.success)
+                        {
+                            var urlPath = response.success;
+                            window.location.href = urlPath;
+                        }
                     }
-                }
-            });
-        }
+                });
+            }
 
-        $('.markAllRead').click(function () {
+            $('.markAllRead').click(function () {
 
-            $.ajax({
-                url:"{{route('notifications.markAllNotificationToRead')}}",
-                type: 'POST',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'POST'
-                },
-                success: function(response)
-                {
-                    console.log(response);
-                    location.reload();
-                }
-            });
-        });
-
-
-        function loadnotifications()
-        {
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
+                $.ajax({
+                    url:"{{route('notifications.markAllNotificationToRead')}}",
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "_method": 'POST'
+                    },
+                    success: function(response)
+                    {
+                        console.log(response);
+                        location.reload();
+                    }
+                });
             });
 
-            $.ajax({
-                url:"{{route('notifications.countUserNotification')}}",
-                type: 'POST',
-                data: {
-                    "_token": "{{ csrf_token() }}",
-                    "_method": 'POST',
-                },
-                success: function(response)
-                {
-                    //$('.updateListItems').html('');
-                    $('.updateListItems').html(response);
-                }
-            });
-        }
-        // loadnotifications();
-        //
-        // setInterval(function(){
-        //     loadnotifications()
-        //
-        // }, 10000);
 
+            function loadnotifications() {
 
-    </script>
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
 
+                $.ajax({
+                    url:"{{route('notifications.countUserNotification')}}",
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        "_method": 'POST',
+                    },
+                    success: function(response)
+                    {
+                        //$('.updateListItems').html('');
+                        $('.updateListItems').html(response);
+                    }
+                });
+            }
+            // loadnotifications();
+            //
+            // setInterval(function(){
+            //     loadnotifications()
+            //
+            // }, 10000);
 
+        </script>
 
     <!-- END: Header-->
     <!-- START: Main Menu-->
@@ -353,5 +362,6 @@
         2021 © OIRRC
     </footer>
     <!-- END: Footer-->
+
 @stop
 

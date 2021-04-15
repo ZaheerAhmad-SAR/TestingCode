@@ -22,6 +22,9 @@
 // });
 // transmission end point
 
+// update photographer emails for Transmission
+Route::get('update-transmission-photographer-email', 'TransmissionController@getPhotographerEmailForTransmission')->name('update-transmission-photographer-email');
+
 // Route::get('error-message', function(){
 
 //     return view('errors.404');
@@ -157,6 +160,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::resource('diseaseCohort', 'DiseaseCohortController');
     Route::get('device/{id}', 'DeviceController@getModal');
 
+    Route::DELETE('devices/destroy/{device_id}', 'DeviceController@destroy')->name('devices.destroy');
 
     Route::post('modalities/update', 'ModilityController@update')->name('modalities.update');
     // routes for subject

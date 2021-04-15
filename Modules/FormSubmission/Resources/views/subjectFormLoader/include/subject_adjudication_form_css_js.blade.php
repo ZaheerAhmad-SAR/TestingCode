@@ -115,15 +115,16 @@
             function validateAndSubmitAdjudicationFormField(stepIdStr, sectionIdStr, questionId, questionIdStr, field_name, fieldId) {
                 if(canSubmitAdjudicationForm(stepIdStr)){
                     if(needToPutAdjudicationFormInEditMode(stepIdStr) == false) {
-                        //if(window['validateAdjudicationQuestion' + questionIdStr](true, stepIdStr)){
+                        // I Remove comments from here
+                        if(window['validateAdjudicationQuestion' + questionIdStr](true, stepIdStr)){
                             if(eval("typeof " + window['checkQuestionSkipLogicForAdjudication' + questionIdStr]) != 'undefined'){
                                 window['checkQuestionSkipLogicForAdjudication' + questionIdStr]();
                             }
                             submitAdjudicationFormField(stepIdStr, questionId, field_name, fieldId);
                         }
-                    // // }else{
-                    // //     showPutFormInEditModeError();
-                    // }
+                    }else{
+                         showPutFormInEditModeError();
+                     }
                 }else{
                     showPermissionError();
                 }

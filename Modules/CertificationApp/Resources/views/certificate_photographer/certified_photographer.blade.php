@@ -38,6 +38,51 @@
             cursor: text;
         }
 
+       /*Generate Certificate*/
+        div#cc_user_email_tagsinput {
+            width: 100% !important;
+            min-height: 42px !important;
+            /*height: 30px !important;*/
+            overflow: hidden !important;
+        }
+
+        div#bcc_user_email_tagsinput {
+            width: 100% !important;
+            min-height: 42px !important;
+            /*height: 30px !important;*/
+            overflow: hidden !important;
+        }
+
+        /*Status modal*/
+        div#status_cc_user_email_tagsinput {
+            width: 100% !important;
+            min-height: 42px !important;
+            /*height: 30px !important;*/
+            overflow: hidden !important;
+        }
+
+        div#status_bcc_user_email_tagsinput {
+            width: 100% !important;
+            min-height: 42px !important;
+            /*height: 30px !important;*/
+            overflow: hidden !important;
+        }
+
+        /*Expiry Date Modal*/
+        div#date_cc_user_email_tagsinput {
+            width: 100% !important;
+            min-height: 42px !important;
+            /*height: 30px !important;*/
+            overflow: hidden !important;
+        }
+
+        div#date_bcc_user_email_tagsinput {
+            width: 100% !important;
+            min-height: 42px !important;
+            /*height: 30px !important;*/
+            overflow: hidden !important;
+        }
+
         .span-text {
             color: red;
         }
@@ -48,6 +93,9 @@
     </style>
 
     <link rel="stylesheet" href="{{ asset('public/dist/vendors/summernote/summernote-bs4.css') }}">
+
+    <!-- tag based input -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/jquery-tagsinput/1.3.6/jquery.tagsinput.min.css" rel="stylesheet">
 
     <!-- date range picker -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
@@ -87,22 +135,54 @@
 
                             <div class="form-group col-md-3">
                                 <label for="certify_id">Certificate ID</label>
-                                <input type="text" name="certify_id" id="certify_id" class="form-control filter-form-data" value="{{ request()->certify_id }}" placeholder="Certification ID">
+                            
+                                 <Select class="form-control filter-form-data filter-select" name="certify_id" id="certify_id">
+                                    <option value="">Select Certificate</option>
+                                    @foreach($getFilterCertification as $filterCertificate)
+                                    <option value="{{$filterCertificate->certificate_id}}" @if(request()->certify_id == $filterCertificate->certificate_id) selected @endif>
+                                        {{$filterCertificate->certificate_id}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
                                 <label for="study">Study Name</label>
-                                <input type="text" name="study_name" id="study_name" class="form-control filter-form-data" value="{{ request()->study_name }}" placeholder="Study Name">
+                    
+                                 <Select class="form-control filter-form-data filter-select" name="study_name" id="study_name">
+                                    <option value="">Select Study</option>
+                                    @foreach($getStudies as $filterStudy)
+                                    <option value="{{$filterStudy->id}}" @if(request()->study_name == $filterStudy->id) selected @endif>
+                                        {{$filterStudy->study_short_name}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
                                 <label for="photographer_name">Photographer Name</label>
-                                <input type="text" name="photographer_name" id="photographer_name" class="form-control filter-form-data" value="{{ request()->photographer_name }}" placeholder="Photographer Name">
+
+                                 <Select class="form-control filter-form-data filter-select" name="photographer_name" id="photographer_name">
+                                    <option value="">Select Photographer</option>
+                                    @foreach($getFilterPhotographer as $filterPhotographer)
+                                    <option value="{{$filterPhotographer->id}}" @if(request()->photographer_name == $filterPhotographer->id) selected @endif>
+                                        {{$filterPhotographer->first_name.' '.$filterPhotographer->last_name}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
                                 <label for="site">Site Name</label>
-                                <input type="text" name="site_name" id="site_name" class="form-control filter-form-data" value="{{ request()->site_name }}" placeholder="Site Name">
+
+                                <Select class="form-control filter-form-data filter-select" name="site_name" id="site_name">
+                                    <option value="">Select Site</option>
+                                    @foreach($getFilterSite as $filterSite)
+                                    <option value="{{$filterSite->id}}" @if(request()->site_name == $filterSite->id) selected @endif>
+                                        {{$filterSite->site_name}}
+                                    </option>
+                                    @endforeach
+                                </Select>
                             </div>
 
                             <div class="form-group col-md-3">
@@ -112,10 +192,11 @@
                                     @foreach($getParentModality as $parentModality)
                                     <option value="{{ $parentModality->id }}" @if(request()->modility_id == $parentModality->id) selected @endif >{{ $parentModality->modility_name }}</option>
                                     @endforeach
-
+                                    {{--
                                     @foreach($getChildModality as $childModality)
                                     <option value="{{ $childModality->id }}" @if(request()->modility_id == $childModality->id) selected @endif >{{ $childModality->modility_name }}</option>
                                     @endforeach
+                                    --}}
                                 </select>
                             </div>
 
@@ -156,7 +237,7 @@
                                 <input type="text" name="expiry_date" id="expiry_date" class="form-control expiry_date filter-form-data" value="{{ request()->expiry_date }}">
                             </div>
 
-                            <div class="form-group col-md-2 mt-4">
+                            <div class="form-group col-md-3 mt-4">
                                 <button type="button" class="btn btn-primary reset-filter">Reset</button>
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Record</button>
                             </div>
@@ -176,8 +257,9 @@
                                         <th>Photographer</th>
                                         <th>Study</th>
                                         <th>Site Name</th>
-                                        <th>Image MOdality</th>
+                                        <th>Image Modality</th>
                                         <th>Type</th>
+                                        <th>Issue Date</th>
                                         <th>Status</th>
                                         <th>Action</th>
                                         
@@ -209,6 +291,7 @@
                                             {{ $certifiedPhotographer->certificate_type}}
                                             </span>
                                         </td>
+                                        <td>{{ date('d-M-Y', strtotime($certifiedPhotographer->issue_date))}}</td>
                                         <td>
                                             <span class="badge badge-primary">
                                             {{ $certifiedPhotographer->certificate_status}}
@@ -402,8 +485,7 @@
             <form action="{{ route('generate-photographer-grandfather-certificate') }}" method="POST" class="certificate-grandfather-form">
                 @csrf
             <input type="hidden" name="certificate_id" id="certificate_id" value="">
-            <input type="hidden" name="gf_approve_status" class="gf_approve_status" id="gf_approve_status" value="">
-
+            <input type="hidden" name="gf_pdf_key" class="gf_pdf_key" id="gf_pdf_key" value="">
 
               <div class="modal-body">
 
@@ -412,7 +494,7 @@
                     <select name="study" id="study" class="form-control" required="">
                         <option value="">Select Study</option>
                         @foreach($getStudies as $study)
-                            <option value="{{ $study->id }}">{{ $study->study_short_name }}</option>
+                            <option value="{{ $study->id }}">{{ $study->study_code.' - '. $study->study_short_name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -424,18 +506,14 @@
                     </Select>
                 </div>
 
-                 <div class="form-group col-md-12 suspend-certificate-div">
+                <div class="form-group col-md-12">
                     <label class="edit_users">CC Email</label>
-                    <Select class="form-control cc_user_email data-required" name="cc_user_email[]" id="cc_user_email" multiple>
-
-                    </Select>
+                    <input type="text" class="form-control cc_user_email" name="cc_user_email" id="cc_user_email" value="">
                 </div>
 
                 <div class="form-group col-md-12">
                     <label class="edit_users">BCC Email</label>
-                    <Select class="form-control bcc_user_email" name="bcc_user_email[]" id="bcc_user_email" multiple="multiple">
-
-                    </Select>
+                    <input type="text" class="form-control bcc_user_email" name="bcc_user_email" id="bcc_user_email" value="">
                 </div>
 
                 <div class="form-group col-md-12">
@@ -506,18 +584,14 @@
                     </Select>
                 </div>
 
-                <div class="form-group col-md-12 suspend-certificate-div">
+                <div class="form-group col-md-12">
                     <label class="edit_users">CC Email</label>
-                    <Select class="form-control status_cc_user_email data-required" name="status_cc_user_email[]" id="status_cc_user_email" multiple>
-
-                    </Select>
+                    <input type="text" class="form-control status_cc_user_email" name="status_cc_user_email" id="status_cc_user_email" value="">
                 </div>
 
                 <div class="form-group col-md-12">
                     <label class="edit_users">BCC Email</label>
-                    <Select class="form-control status_bcc_user_email" name="status_bcc_user_email[]" id="status_bcc_user_email" multiple="multiple">
-
-                    </Select>
+                    <input type="text" class="form-control status_bcc_user_email" name="status_bcc_user_email" id="status_bcc_user_email" value="">
                 </div>
 
                 <div class="form-group col-md-12">
@@ -574,18 +648,14 @@
                     </Select>
                 </div>
 
-                <div class="form-group col-md-12 suspend-certificate-div">
+                <div class="form-group col-md-12">
                     <label class="edit_users">CC Email</label>
-                    <Select class="form-control date_cc_user_email data-required" name="date_cc_user_email[]" id="date_cc_user_email" multiple>
-
-                    </Select>
+                    <input type="text" class="form-control date_cc_user_email" name="date_cc_user_email" id="date_cc_user_email" value="">
                 </div>
 
                 <div class="form-group col-md-12">
                     <label class="edit_users">BCC Email</label>
-                    <Select class="form-control date_bcc_user_email" name="date_bcc_user_email[]" id="date_bcc_user_email" multiple="multiple">
-
-                    </Select>
+                    <input type="text" class="form-control date_bcc_user_email" name="date_bcc_user_email" id="date_bcc_user_email" value="">
                 </div>
 
                 <div class="form-group col-md-12">
@@ -631,6 +701,9 @@
 
 <script src="{{ asset('public/dist/vendors/summernote/summernote-bs4.js') }}"></script>
 
+<!-- tag based input -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-tagsinput/1.3.6/jquery.tagsinput.min.js"></script>
+
 <!-- date range picker -->
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
@@ -645,9 +718,8 @@
 <script type="text/javascript">
     
     $('#study').select2();
-    $('#cc_user_email').select2();
-    $('#bcc_user_email').select2();
     $('#modility_id').select2();
+    $('.filter-select').select2();
 
      // reset filter form
     $('.reset-filter').click(function(){
@@ -657,6 +729,8 @@
         // submit the filter form
         $('.filter-form').submit();
     });
+
+    /****************** Date Range Date picker *********************/
 
     // initialize date range picker
     $('input[name="issue_date"]').daterangepicker({
@@ -695,6 +769,8 @@
 
     });
 
+    /********************* show Details ************************************/
+
     function showDetails(firstName, lastName, email, phone, siteName, siteCode, studyName, certificationFor, issueDate, expiryDate, issuedBy) {
         
         // show modal
@@ -714,12 +790,26 @@
 
     } // details function ends
 
+    /************************** Generate Certificate *********************************************/ 
+
+    // initiallize tags
+    $('#cc_user_email').tagsInput({
+        'defaultText':'add email',
+        'removeWithBackspace' : true,
+    });
+
+    $('#bcc_user_email').tagsInput({
+        'defaultText':'add email',
+        'removeWithBackspace' : true,
+    });
+
     // grandfathering function
     function generateGrandfatherCertificate(certificateID, photographerEmail, ccEmail, bccEmail) {
 
-        // refresh the select2
-        $('#cc_user_email').empty();
-        $('#bcc_user_email').empty();
+        // remove old cc tag
+        removeCCTag($('#cc_user_email'));
+        // remove old bcc tag
+        removeBCCTag($('#bcc_user_email'));
 
         // assign email to email To input
         $('.user_email').append('<option value="'+photographerEmail+'">'+photographerEmail+'</option>');
@@ -727,12 +817,14 @@
         // assign cc and bcc emails
         $.each(JSON.parse(ccEmail), function(index, value) {
                                     
-            $('#cc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+            //append new value
+            $('#cc_user_email').addTag(value);
         });
 
         $.each(JSON.parse(bccEmail), function(index, value) {
                                     
-            $('#bcc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+            // append new tag
+            $('#bcc_user_email').addTag(value);
         });
 
         // unselect study
@@ -746,8 +838,8 @@
         $('#certificate_id').val(certificateID);
         // enable approve pdf button
         $('.approve-gf-pdf').attr('disabled', false);
-        // set approve status to null
-        $('.gf_approve_status').val('');
+        // assign file key
+        $('.gf_pdf_key').val('view pdf');
         // disable generate button
         $('.generate-gf-pdf').attr('disabled', true);
         // make form target blank
@@ -760,8 +852,12 @@
 
         e.preventDefault();
 
-        if($('.gf_approve_status').val() == 'yes') {
+        if($('.gf_pdf_key').val() == 'view pdf') {
 
+            // diable approve pdf button
+            $('.approve-gf-pdf').attr('disabled', true);
+            // enable generate button
+            $('.generate-gf-pdf').attr('disabled', false);
             // submit the form
             e.currentTarget.submit();
 
@@ -788,11 +884,6 @@
                         // submit form
                         e.currentTarget.submit();
 
-                        // diable approve pdf button
-                        $('.approve-gf-pdf').attr('disabled', true);
-                        // enable generate button
-                        $('.generate-gf-pdf').attr('disabled', false);
-
                        } else {
 
                             swal({
@@ -811,11 +902,6 @@
 
                                     // submit the form
                                     e.currentTarget.submit();
-
-                                    // diable approve pdf button
-                                    $('.approve-gf-pdf').attr('disabled', true);
-                                    // enable generate button
-                                    $('.generate-gf-pdf').attr('disabled', false);
 
                                 } else {
                                     // close the model
@@ -867,42 +953,53 @@
         // make form target blank
         $('.certificate-grandfather-form').removeAttr('target');
 
-        // set approve status to yes
-        $('.gf_approve_status').val('yes');
+       // assign file key
+        $('.gf_pdf_key').val('generate pdf');
 
         $('.certificate-grandfather-form').submit();
 
     });
 
-     /////////////////////////////// change status modal //////////////////////////////////////////////////
-
+    /******************************* change status modal *********************************/
+    
     $('.status_summernote').summernote({
         height: 150,
 
     });
-    
-    $('#status_cc_user_email').select2();
-    $('#status_bcc_user_email').select2();
+
+    // initiallize tags
+    $('#status_cc_user_email').tagsInput({
+        'defaultText':'add email',
+        'removeWithBackspace' : true,
+    });
+
+    $('#status_bcc_user_email').tagsInput({
+        'defaultText':'add email',
+        'removeWithBackspace' : true,
+    });
 
     // status change function
     function changeCertificateStatus(certificateID, photographerEmail, ccEmail, bccEmail, status) {
 
-        // refresh the select2
-        $('#status_cc_user_email').empty();
-        $('#status_bcc_user_email').empty();
+        // remove old cc tag
+        removeCCTag($('#status_cc_user_email'));
+        // remove old bcc tag
+        removeBCCTag($('#status_bcc_user_email'));
 
         // assign email to email To input
         $('.status_user_email').append('<option value="'+photographerEmail+'">'+photographerEmail+'</option>');
 
-        // assign cc and bcc emails
+         // assign cc and bcc emails
         $.each(JSON.parse(ccEmail), function(index, value) {
                                     
-            $('#status_cc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+            //append new value
+            $('#status_cc_user_email').addTag(value);
         });
 
         $.each(JSON.parse(bccEmail), function(index, value) {
                                     
-            $('#status_bcc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+            //append new value
+            $('#status_bcc_user_email').addTag(value);
         });
 
         // assign status
@@ -964,22 +1061,31 @@
 
     });  // change function ends
 
-    ///////////////////////////////// Change Certificate Date Modal /////////////////////////////////////////
+    /**************************** Change Certificate Date Modal *************************************/
 
     $('.date_summernote').summernote({
         height: 150,
 
     });
-    
-    $('#date_cc_user_email').select2();
-    $('#date_bcc_user_email').select2();
+
+    // initiallize tags
+    $('#date_cc_user_email').tagsInput({
+        'defaultText':'add email',
+        'removeWithBackspace' : true,
+    });
+
+    $('#date_bcc_user_email').tagsInput({
+        'defaultText':'add email',
+        'removeWithBackspace' : true,
+    });
 
     // status change function
     function changeCertificateDate(certificateID, photographerEmail, ccEmail, bccEmail, date) {
 
-        // refresh the select2
-        $('#date_cc_user_email').empty();
-        $('#date_bcc_user_email').empty();
+        // remove old cc tag
+        removeCCTag($('#date_cc_user_email'));
+        // remove old bcc tag
+        removeBCCTag($('#date_bcc_user_email'));
 
         // assign email to email To input
         $('.date_user_email').append('<option value="'+photographerEmail+'">'+photographerEmail+'</option>');
@@ -987,12 +1093,14 @@
         // assign cc and bcc emails
         $.each(JSON.parse(ccEmail), function(index, value) {
                                     
-            $('#date_cc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+            //append new value
+            $('#date_cc_user_email').addTag(value);
         });
 
         $.each(JSON.parse(bccEmail), function(index, value) {
                                     
-            $('#date_bcc_user_email').append('<option value="'+value+'" selected>'+value+'</option>')
+            //append new value
+            $('#date_bcc_user_email').addTag(value);
         });
 
         // assign date
@@ -1080,6 +1188,65 @@
         $('.change-certificate-date-form').submit();
 
     });
+
+    /************************ Grand fathering cc, bcc_emails *****************************/
+    /************************ Grand fathering cc, bcc_emails *****************************/
+    $('#study').change(function() {
+        if ($(this).val() != '') {
+            
+            $.ajax({
+                url: '{{ route("get-grandfather-certifictae-emails") }}',
+                type: 'GET',
+                data: {
+                    'study_id': $(this).val(),
+                },
+                success:function(data) {
+
+                    // remove old cc tag
+                    removeCCTag($('#cc_user_email'));
+                    // remove old bcc tag
+                    removeBCCTag($('#bcc_user_email'));
+
+                    // assign cc and bcc emails
+                    $.each(data.userEmails, function(index, value) {
+
+                        //append new value
+                        $('#cc_user_email').addTag(value);
+                    });
+
+                    $.each(data.userBCCEmails, function(index, value) {
+                                                
+                        //append new value
+                        $('#bcc_user_email').addTag(value);
+                    });
+                    
+                } // success ends
+
+            }); // ajax ends
+        } // null check ends
+    });
+
+
+    function removeCCTag(element) {
+        var ccTags = element.val().split(',');
+
+        // remove tags
+        $.each(ccTags, function(index, value) {
+            //append new value
+            element.removeTag(value);
+        });
+    }
+
+    function removeBCCTag(element) {
+        var bccTags = element.val().split(',');
+
+        // remove tags
+        $.each(bccTags, function(index, value) {
+            //append new value
+            element.removeTag(value);
+        });
+
+    }
 
 </script>
 

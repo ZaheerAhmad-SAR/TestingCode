@@ -1,4 +1,6 @@
 <?php
+use App\Events\UserShouldNotifyQuery;
+use Modules\Admin\Entities\Site;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,9 +17,26 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-//Route::get('/2fa/enable', 'Google2FAController@enableTwoFactor');
+
 Route::get('2fa/enable', 'Google2FAController@enableTwoFactor')->name('2fa.enableTwoFactor');
 Route::post('2fa/verify_code', 'Google2FAController@verify_code')->name('2fa.verify_code');
+
+//Route::get('/', function () {
+//    return view('welcome');
+//});
+
+Route::get('/sites', function () {
+
+    $records = \Modules\Admin\Entities\Modility::all();
+    return response()->json($records);
+});
+
+Route::get('/broadcast', function () {
+    broadcast(new \App\Events\UserShouldNotifyQuery());
+});
+
+Route::get('/2fa/enable', 'Google2FAController@enableTwoFactor');
+
 Route::get('/2fa/disable', 'Google2FAController@disableTwoFactor');
 Route::post('/2fa/validate', 'Auth\LoginController@postValidateToken');
 // Route::post('/2fa/validate', ['middleware' => 'throttle:5', 'uses' => 'Auth\LoginController@postValidateToken']);

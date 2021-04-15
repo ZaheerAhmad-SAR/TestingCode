@@ -20,7 +20,7 @@
         @yield('styles')
         <!-- END: Page CSS-->
         <!-- START: Custom CSS-->
-        
+
         <link rel="stylesheet" href="{{ asset('public/dist/css/main.css') }}">
         <link rel="stylesheet" href="{{ asset('public/dist/css/custom.css') }}">
         <link rel="stylesheet" href="{{ asset('public/dist/css/multi-select.css') }}">
@@ -60,7 +60,7 @@
                 }
             .detail-icon{
                 cursor: pointer;
-            }    
+            }
                 @-webkit-keyframes spin {
                   0% { -webkit-transform: rotate(0deg); }
                   100% { -webkit-transform: rotate(360deg); }
@@ -81,7 +81,7 @@
             }
         </style>
     </head>
-@php 
+@php
     $active_class = '';
     if(\Auth::check()){
         $active_class = \Auth::user()->user_prefrences->default_theme;
@@ -103,7 +103,6 @@
     <!-- END: Back to top-->
 
     <!-- START: Template JS-->
- 
     <script src="{{ asset('public/dist/vendors/jquery/jquery-3.3.1.min.js') }}"></script>
     <script src="{{ asset('public/dist/vendors/jquery-ui/jquery-ui.min.js') }}"></script>
     <script src="{{ asset('public/dist/vendors/moment/moment.js') }}"></script>
@@ -112,7 +111,10 @@
 
     <!-- END: Template JS-->
     <!-- START: APP JS-->
+
     <script src="{{ asset('public/dist/js/app.js') }}"></script>
+{{--    <script src="{{ asset('public/dist/js/custom-notification.js') }}"></script>--}}
+
     <script src="{{ asset('public/dist/js/jquery.multi-select.js') }}"></script>
     <script src="{{ asset('public/js/fstdropdown.min.js') }}"></script>
     <script src="{{ asset('public/js/sweetalert.min.js') }}"></script>
@@ -127,10 +129,10 @@
 
     <!-- START: Page JS-->
     @yield('script')
-    @stack('script')
     @stack('script_mid')
     @stack('script_last')
     @stack('script_skip_logic')
+    @stack('script')
     <script>
         $(function() {
             var url_route = "{{ URL('home/working_status') }}";
@@ -141,7 +143,7 @@
                     "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
-                   
+
                 }
             });
         });
@@ -154,11 +156,11 @@
                     "_token": "{{ csrf_token() }}",
                 },
                 success: function(response) {
-                   
+
                 }
             });
         });
-        
+
         $(document).ready(function(){
             $('[data-toggle="popover"]').popover();
 
@@ -167,16 +169,17 @@
             var duration = 10000;
             setTimeout(function () { $('#myalert').hide(); }, duration);
         });
-       
+
          // reset filters
         $('body').on('click','.reset-filter',function(){
             $('.filter-form input').val('');
             $('.filter-form').submit();
         })
-        // 
+        //
         $('.searchable_dropdown').select2();
     </script>
         <!-- END: Page JS-->
+
     </body>
 </html>
 <div class="loader" style="display: none;"></div>

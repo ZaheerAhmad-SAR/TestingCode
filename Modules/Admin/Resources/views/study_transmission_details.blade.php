@@ -278,10 +278,8 @@
                                 <div class="form-group row">
                                     <label for="Name" class="col-sm-2 col-form-label">CC:</label>
                                     @php
-
-                                $study_email = Modules\Admin\Entities\Preference::getPreference('STUDY_EMAIL');
-                                $study_cc_email = Modules\Admin\Entities\Preference::getPreference('STUDY_CC_EMAILS');
-
+                                        $study_email = Modules\Admin\Entities\Preference::getPreference('STUDY_EMAIL');
+                                        $study_cc_email = Modules\Admin\Entities\Preference::getPreference('STUDY_CC_EMAILS');
                                     @endphp
                                     <div class="col-sm-10">
                                         <input class="form-control" type="text" name="cc_email" id="cc_email" value="{{$study_email}},{{$study_cc_email}}">
@@ -447,8 +445,8 @@
            $('#sort_by_field').val('DESC');
            $('#sort_by_field_name').val(field_name);
         }else if(sort_by_field =='DESC'){
-           $('#sort_by_field').val('ASC'); 
-           $('#sort_by_field_name').val(field_name); 
+           $('#sort_by_field').val('ASC');
+           $('#sort_by_field_name').val(field_name);
         }
         $('.filter-form').submit();
     }
@@ -674,7 +672,8 @@
     });
 
     $('#transmissonQueryModal').on('hidden.bs.modal', function () {
-        $(this).find('form').trigger('reset');
+        //$(this).find('form').trigger('reset');
+        location.reload();
     })
 
     // Transmission End Work
