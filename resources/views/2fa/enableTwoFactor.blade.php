@@ -15,7 +15,7 @@
 
                     </div>
                 </div>
-                    <div class="login-form col-12 col-sm-5" id="myDIV">
+                    <!-- <div class="login-form col-12 col-sm-5" id="myDIV">
                         <strong>If your 2FA mobile app does not support QR barcodes,
                             enter in the following number: <br><h4><code>{{ $secret }}</code></h4>
                         </strong>
@@ -24,7 +24,7 @@
                         <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#verify2fa" style="margin-top: 50px">
                             <i class="fa fa-plus"></i> Verify
                         </button>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -45,7 +45,8 @@
                                 <label>OTP</label>
                             </div>
                             <div class="col-md-7">
-                                <input type="number" class="form-control" name="totp" id="totp" required>
+                                <p id="msg" style="display: none;color: red;font-size: 10px;"></p>
+                                <input type="number" class="form-control" name="totp" id="totp" placeholder="Enter OTP Here" required="" >
                                 @if ($errors->has('totp'))
                                     <span class="help-block">
                                     <strong>{{ $errors->first('totp') }}</strong>
@@ -97,8 +98,16 @@
                       "_method": 'POST',
                      'totp': totp
                      },
-                 success:function(amjad){
-                     console.log(amjad);
+                 success:function(response){
+                    if(response.success){
+                       
+                       var urlPath = response.url;
+                        window.location.href = urlPath;
+                    }
+                    else
+                    {
+                        $('#msg').text(response.success);
+                    }
                  }
                  })
              })

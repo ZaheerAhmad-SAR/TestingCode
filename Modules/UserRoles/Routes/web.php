@@ -104,4 +104,5 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::post('systemUser/inactivate_user', 'SystemusersController@inactivate_user')->name('systemUser.inactivate_user');
 
     // Finance Dashboard
+    Route::post('systemUser/user2faActivate', 'SystemusersController@user2faActivate')->name('systemUser.systemUser');
 });
