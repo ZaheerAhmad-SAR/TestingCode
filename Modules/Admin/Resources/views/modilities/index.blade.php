@@ -51,7 +51,7 @@
                                             <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                 <span class="dropdown-item edit_phase" data-id="{{$modality->id}}" dusk="parent-modality-edit"><i class="far fa-edit"></i>&nbsp; Edit</span>
                                                 <span class="dropdown-item replicateParent" data-id="{{$modality->id}}"><i class="far fa-clone"></i>&nbsp; Clone</span>
-                                                <span class="dropdown-item deleteParent" data-id="{{$modality->id}}"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
+                                                <span class="dropdown-item deleteParent" data-id="{{$modality->id}}" dusk="parent-modality-delete"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                             </div>
                                         </div>
                                     </div>
@@ -661,7 +661,7 @@
                 var id =($(this).attr("data-id"));
                 var url = "{{URL('/modalities')}}";
                 var newPath = url+ "/"+ id+"/showChild/";
-                
+
                 $.ajax({
                     type:"GET",
                     dataType: 'html',
@@ -672,8 +672,8 @@
                         $('#childClass').html(results);
                         return false;
                     }
-                }); 
+                });
             })
-            
+
     </script>
 @stop
