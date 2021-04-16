@@ -17,7 +17,6 @@
         </div>
     </div>
     <!-- END: Breadcrumbs-->
-
     <!-- START: Card Data-->
 <div class="row">
  <div class="col-12 col-sm-12 mt-3">
@@ -248,6 +247,27 @@
                                             </div>
                                             <div class="col-md-3">
                                                 <input type="checkbox" name="qualityControl_delete" id="qualityControl_delete"> Delete
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row" style="margin-top: 15px;">
+                                    <div class="col-md-3">
+                                        <label for="Name" style="padding-left: 11px">Other Forms</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="otherForms_add" id="otherForms_add"> Add
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="otherForms_edit" id="otherForms_edit"> Edit
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="otherForms_view" id="otherForms_view"> View
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="otherForms_delete" id="otherForms_delete"> Delete
                                             </div>
                                         </div>
                                     </div>

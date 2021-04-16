@@ -18,7 +18,7 @@ if ($step->formType->form_type == 'Grading' && canGrading(['index'])){
 if ($step->formType->form_type == 'Eligibility' && canEligibility(['index'])){
     $showForm = true;
 }
-if ($step->formType->form_type == 'Others' && canEligibility(['index'])){
+if ($step->formType->form_type == 'Others' && canOtherForm(['index'])){
     $showForm = true;
 }
 // if ($isPreview ===true){

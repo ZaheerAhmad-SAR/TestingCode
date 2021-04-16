@@ -20,7 +20,7 @@ use Excel;
 use App\Exports\QCFromView;
 use App\Exports\QCFromView2;
 
-class QualityControlController extends Controller
+class OtherFormsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -28,6 +28,7 @@ class QualityControlController extends Controller
      */
     public function index(Request $request)
     {
+       
         $subjects = collect();
         // modility/form type array
         $modalitySteps = [];
@@ -167,7 +168,7 @@ class QualityControlController extends Controller
                 ->whereNULL('sites.deleted_at')
                 ->whereNULL('phase_steps.deleted_at')
                 ->whereNULL('subjects_phases.deleted_at')
-                ->where('form_submit_status.form_type_id', 1)
+                ->where('form_submit_status.form_type_id', 4)
                 ->where('form_submit_status.study_id', \Session::get('current_study'));
 
             if ($request->subject != '') {
@@ -233,7 +234,7 @@ class QualityControlController extends Controller
                         ->whereNULL('phase_steps.deleted_at')
                         ->whereNULL('form_types.deleted_at')
                         ->where('form_submit_status.modility_id', $modility->modility_id)
-                        ->where('form_submit_status.form_type_id', 1);
+                        ->where('form_submit_status.form_type_id', 4);
 
                     // if ($request->form_type != '') {
 
@@ -327,213 +328,7 @@ class QualityControlController extends Controller
             'resumable' => 'Editing'
         );
 
-        return view('userroles::users.qc-list', compact('subjects', 'modalitySteps', 'getFilterSubjects', 'getFilterPhases', 'getFilterSites', 'getFilterModilities', 'getFilterFormType', 'getFilterFormStatus'));
-    }
-
-    public function qcWorkList(Request $request)
-    {
-
-        $modalitySteps = [];
-
-        $subjects = AssignWork::query();
-        // get subjects for assign work
-        $subjects = $subjects->select('assign_work.subject_id as subj_id', 'assign_work.study_id', 'assign_work.phase_id', 'assign_work.form_type_id', 'assign_work.modility_id', 'assign_work.assign_date', 'subjects.subject_id', 'study_structures.name as phase_name', 'study_structures.position', 'sites.site_name')
-            ->leftJoin('subjects', 'subjects.id', '=', 'assign_work.subject_id')
-            ->leftJoin('study_structures', 'study_structures.id', '=', 'assign_work.phase_id')
-            ->leftJoin('sites', 'sites.id', '=', 'subjects.site_id')
-            ->whereNULL('subjects.deleted_at')
-            ->whereNULL('study_structures.deleted_at')
-            ->whereNULL('sites.deleted_at')
-            ->where('assign_work.user_id', \Auth::user()->id)
-            ->where('assign_work.form_type_id', 1)
-            ->where('assign_work.study_id', \Session::get('current_study'));
-        // apply filters
-        if ($request->subject != '') {
-            $subjects = $subjects->where('assign_work.subject_id', $request->subject);
-        }
-
-        if ($request->phase != '') {
-            $subjects = $subjects->where('assign_work.phase_id', $request->phase);
-        }
-
-        if ($request->site != '') {
-            $subjects = $subjects->where('sites.id', $request->site);
-        }
-
-        if ($request->assign_date != '') {
-            $visitDate = explode('-', $request->assign_date);
-            $from   = Carbon::parse($visitDate[0])
-                ->startOfDay()        // 2018-09-29 00:00:00.000000
-                ->toDateTimeString(); // 2018-09-29 00:00:00
-
-            $to     = Carbon::parse($visitDate[1])
-                ->endOfDay()          // 2018-09-29 23:59:59.000000
-                ->toDateTimeString(); // 2018-09-29 23:59:59
-
-            $subjects =  $subjects->whereBetween('assign_work.assign_date', [$from, $to]);
-        }
-
-        if ($request->modility != '') {
-
-            $subjects = $subjects->where('assign_work.modility_id', $request->modility);
-        }
-
-        $subjects = $subjects->groupBy(['assign_work.subject_id', 'assign_work.phase_id'])
-            ->orderBy('subjects.subject_id')
-            ->orderBy('study_structures.position')
-            ->paginate(\Auth::user()->user_prefrences->default_pagination);
-
-
-        // get modalities
-        $getModilities = AssignWork::query();
-        $getModilities = $getModilities->select('assign_work.modility_id', 'modilities.modility_name')
-            ->leftJoin('modilities', 'modilities.id', '=', 'assign_work.modility_id')
-            ->whereNULL('modilities.deleted_at')
-            ->where('assign_work.user_id', \Auth::user()->id)
-            ->where('assign_work.form_type_id', 1)
-            ->where('assign_work.study_id', \Session::get('current_study'));
-
-        if ($request->modility != '') {
-
-            $getModilities = $getModilities->where('assign_work.modility_id', $request->modility);
-        }
-
-        $getModilities = $getModilities
-            ->groupBy('assign_work.modility_id')
-            ->orderBy('modilities.modility_name')
-            ->get();
-
-        // get form types for modality
-        foreach ($getModilities as $key => $modility) {
-
-            $getSteps = AssignWork::select('assign_work.modility_id', 'form_types.id as form_type_id', 'form_types.form_type')
-                ->leftJoin('form_types', 'form_types.id', '=', 'assign_work.form_type_id')
-                ->whereNULL('form_types.deleted_at')
-                ->where('modility_id', $modility->modility_id)
-                ->where('form_types.form_type', 'QC')
-                ->orderBy('form_types.sort_order')
-                ->groupBy('assign_work.form_type_id')
-                ->get()->toArray();
-
-            $modalitySteps[$modility->modility_name] = $getSteps;
-        }
-
-        //get form status depending upon subject, phase and modality
-        if ($modalitySteps != null) {
-            foreach ($subjects as $subject) {
-                //get status
-                $formStatus = [];
-
-                // modality loop
-                foreach ($modalitySteps as $key => $formType) {
-
-                    // form type loop
-                    foreach ($formType as $type) {
-
-                        // comparing assign modality with the array modality
-                        $checkModality = AssignWork::where('subject_id', $subject->subj_id)
-                            ->where('phase_id', $subject->phase_id)
-                            ->where('modility_id', $type['modility_id'])
-                            ->where('form_type_id', $type['form_type_id'])
-                            ->where('user_id', \Auth::user()->id)
-                            ->first();
-
-                        if ($checkModality != null) {
-                            //if ($subject->modility_id == $type['modility_id']) {
-
-                            $formStatus[$key . '_' . $type['form_type']]['color'] = 'background: rgba(179, 183, 187, 0.5)';
-
-                            // check if form is not initialize and assign date is passed
-                            $getFormStatus = FormStatus::where('subject_id', $subject->subj_id)
-                                ->where('study_structures_id', $subject->phase_id)
-                                ->where('modility_id', $type['modility_id'])
-                                ->where('form_type_id', $type['form_type_id'])
-                                ->first();
-
-                            if ($getFormStatus == null) {
-
-                                $diffInDays = Carbon::now()->diffInDays(Carbon::parse($checkModality->assign_date), false);
-
-
-                                // check week difference (past date)
-                                if ($diffInDays < 0) {
-
-                                    $formStatus[$key . '_' . $type['form_type']]['color'] = 'background: rgba(255, 0, 0, 0.5)';
-                                }
-
-                                // check due date (in week)
-                                if ($diffInDays >= 0 && $diffInDays <= 7) {
-                                    $formStatus[$key . '_' . $type['form_type']]['color'] = 'background: rgba(241, 245, 15, 0.5)';
-                                }
-                            } else {
-
-                                // if it is graded
-                                if ($getFormStatus->form_status == 'complete') {
-
-                                    $formStatus[$key . '_' . $type['form_type']]['color'] = 'background: rgba(76, 175, 80, 0.5)';
-                                }
-                            } // form status null check ends
-
-                            // check step
-                            $step = PhaseSteps::where('phase_id', $subject->phase_id)
-                                ->where('modility_id', $type['modility_id'])
-                                ->where('form_type_id', $type['form_type_id'])
-                                ->first();
-
-                            //$formStatus[$key . '_' . $type['form_type']]['status'] = '';
-
-                            if ($step != null) {
-
-                                $getFormStatusArray = array(
-                                    'subject_id' => $subject->subj_id,
-                                    'study_structures_id' => $subject->phase_id,
-                                    'modility_id' => $type['modility_id'],
-                                    'form_type_id' => $type['form_type_id']
-                                );
-
-                                if ($step->formType->form_type == 'Grading' || $step->formType->form_type == 'Eligibility') {
-
-                                    $formStatus[$key . '_' . $type['form_type']]['status'] =  \Modules\FormSubmission\Entities\FormStatus::getGradersFormsStatusesSpan($step, $getFormStatusArray, $step->graders_number, false);
-                                } else {
-
-                                    $formStatus[$key . '_' . $type['form_type']]['status'] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
-                                }
-                            } 
-                            else {
-
-                                $formStatus[$key . '_' . $type['form_type']]['status'] = '';
-                            } // step check ends
-
-                        } else {
-
-                            $formStatus[$key . '_' . $type['form_type']]['status'] = '';
-                            $formStatus[$key . '_' . $type['form_type']]['color'] = '';
-                        } // modility check ends
-
-                    } // step lopp ends
-
-                } // modality loop ends
-                // assign the array to the key
-                $subject->form_status = $formStatus;
-            } // subject loop ends
-        } // modality step null check
-
-        // get subjects
-        $getFilterSubjects = Subject::select('id', 'subject_id')
-            ->get();
-        //get phases
-        $getFilterPhases = StudyStructure::select('id', 'name')->withOutRepeated()
-            ->orderBy('position')
-            ->get();
-        // get sites
-        $getFilterSites = Site::select('id', 'site_name')
-            ->get();
-        // get modilities
-        $getFilterModilities = Modility::select('id', 'modility_name')
-            ->get();
-
-
-        return view('userroles::users.qc-work-list', compact('subjects', 'modalitySteps', 'getFilterSubjects', 'getFilterPhases', 'getFilterSites', 'getFilterModilities'));
+        return view('userroles::users.other-form-list', compact('subjects', 'modalitySteps', 'getFilterSubjects', 'getFilterPhases', 'getFilterSites', 'getFilterModilities', 'getFilterFormType', 'getFilterFormStatus'));
     }
 
     /**
@@ -594,17 +389,5 @@ class QualityControlController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function excelQC(Request $request)
-    {
-
-        return Excel::download(new QCFromView(), 'qc.xlsx');
-    }
-
-    public function excelQC2(Request $request)
-    {
-
-        return Excel::download(new QCFromView2(), 'qc.xlsx');
     }
 }
