@@ -3,8 +3,8 @@
 /public/storage
 /public/images
 /storage/*.key
-/vendor
 server.php
+/vendor
 .env
 .env_old
 .htaccess
