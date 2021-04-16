@@ -1218,6 +1218,12 @@ function canQualityControl($permissionsArray = ['index', 'create', 'store', 'edi
     return checkPermission($permissionText, $permissionsArray);
 }
 
+function canOtherForm($permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
+{
+    $permissionText = 'otherForms.';
+    return checkPermission($permissionText, $permissionsArray);
+}
+
 function canGrading($permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
 {
     $permissionText = 'grading.';
