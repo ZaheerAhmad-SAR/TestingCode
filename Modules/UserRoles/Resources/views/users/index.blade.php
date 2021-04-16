@@ -104,7 +104,7 @@
                                     <td>{{ucfirst(($user->name))}}</td>
                                     <td>{{($user->email)}}</td>
                                     <td>{{ \App\User::getUserRolesString($user) }}</td>
-                                    <td>{{!empty($user->google2fa_secret)?'Enabled':'Disabled'}}</td>
+                                    <td>{{($user->qr_flag==1)?'Enabled':'Disabled'}}</td>
                                     <td id="userActiveTD_{{$user->id}}">{{ ((int)$user->is_active == 1)? 'Active':'InActive' }}</td>
                                     <td>
                                         <div class="d-flex mt-3 mt-md-0 ml-auto">
@@ -119,7 +119,13 @@
                                                 <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
                                                     <i class="fa fa-trash"></i>&nbsp; Delete </a>
                                                 </span>
-
+                                                <span class="dropdown-item" onclick="toggle_2fa('{{ $user->id }}','{{$user->qr_flag}}');">
+                                               <!--  <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}"> -->
+                                               <!-- <i class="fa fa-play-circle"></i>&nbsp; Enable 2FA  -->
+                                              <i class="fa @if($user->qr_flag==0) fa-play @else fa-ban-circle @endif "></i>&nbsp;
+                                                 @if($user->qr_flag==0) Enable 2FA @else Disable 2FA
+                                                 @endif
+                                                </span>   
 
                                                 @if (hasPermission(auth()->user(), 'systemtools.index'))
                                                 <div id="userActiveStatusDiv_{{$user->id}}">
@@ -370,8 +376,22 @@
                 });
 
             }
+            function toggle_2fa(user_id,qr_flag){
+                //alert(user_id);
+                if(confirm('Are you sure to change ?')){
+                    $.ajax({
+                        url:'{{ route('systemUser.systemUser') }}',
+                        data:{ "_token": "{{ csrf_token() }}",'id':user_id,'qr_flag':qr_flag},
+                        type:'POST',
+                        success:function(res){
+                            location.reload();
+                        }
+                    })
+                }
+            }
     </script>
      @include('userroles::users.common_js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
     <script src="{{ asset("js/jquery.quicksearch.js") }}" type="text/javascript"></script>
+   
 @stop

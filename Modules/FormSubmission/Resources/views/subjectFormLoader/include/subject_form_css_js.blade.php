@@ -608,6 +608,7 @@
                 var canGrading = {{ canGrading(['create', 'store', 'edit', 'update']) ? 'true' : 'false' }};
                 var canEligibility = {{ canEligibility(['create', 'store', 'edit', 'update']) ? 'true' : 'false' }};
                 var canAdjudication = {{ canAdjudication(['create', 'store', 'edit', 'update']) ? 'true' : 'false' }};
+                var canOtherForm = {{ canOtherForm(['create', 'store', 'edit', 'update']) ? 'true' : 'false' }};
                 var canSubmit = false;
                 var formStatus = $('#form_master_' + stepIdStr + ' input[name="formStatus"]').val();
                 var formFilledByUserId = $('#form_master_' + stepIdStr + ' input[name="formFilledByUserId"]').val();
@@ -654,6 +655,20 @@
                 ) {
 
                     canSubmit = false;
+                }
+
+                // For other type of form
+                if (
+                    (formType == 'Others') &&
+                    (canOtherForm == true)
+                ) {
+
+                    if ((formStatus == 'no_status') && (formFilledByUserId == 'no-user-id')) {
+                        canSubmit = true;
+                    }
+                    if ((formStatus != 'no_status') && (formFilledByUserId == current_user_id)) {
+                        canSubmit = true;
+                    }
                 }
 
                 return canSubmit;

@@ -18,7 +18,7 @@ class DuskServiceProvider extends ServiceProvider
             Route::group(array_filter([
                 'prefix' => config('dusk.path', '_dusk'),
                 'domain' => config('dusk.domain', null),
-                'middleware' => 'web',
+                'middleware' => config('dusk.middleware', 'web'),
             ]), function () {
                 Route::get('/login/{userId}/{guard?}', [
                     'uses' => 'Laravel\Dusk\Http\Controllers\UserController@login',
@@ -36,17 +36,7 @@ class DuskServiceProvider extends ServiceProvider
                 ]);
             });
         }
-    }
 
-    /**
-     * Register any package services.
-     *
-     * @return void
-     *
-     * @throws \Exception
-     */
-    public function register()
-    {
         if ($this->app->runningInConsole()) {
             $this->commands([
                 Console\InstallCommand::class,
@@ -54,6 +44,7 @@ class DuskServiceProvider extends ServiceProvider
                 Console\DuskFailsCommand::class,
                 Console\MakeCommand::class,
                 Console\PageCommand::class,
+                Console\PurgeCommand::class,
                 Console\ComponentCommand::class,
                 Console\ChromeDriverCommand::class,
             ]);

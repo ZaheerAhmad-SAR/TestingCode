@@ -16,7 +16,7 @@
                     <li class="dropdown"><a href="#"><i class="fas fa-home"></i> Dashboard</a>
                         <ul class="sub-menu">
                             <li>
-                                <a href="{{ route('dashboard.index','-')}}">
+                                <a href="{{ route('dashboard.index')}}">
                                     <i class="fas fa-list"></i> System Dashboard
                                 </a>
                             </li>
@@ -255,64 +255,119 @@
                 </li>
                 @endif
             @endif
+            {{-- Data Entry new parent menu --}}
+            @if(session('current_study'))
+                <li class="dropdown">
+                    <ul>
+                        <li class="dropdown">
+                            <a href="#">
+                                <i class="fas fa-file-image"></i>Data Entry
+                            </a>
+                            <ul class="sub-menu">
+                               {{-- Listing for Quality controll --}}
+                                   @if(hasPermission(auth()->user(),'qualitycontrol.create') && hasPermission(auth()->user(),'qualitycontrol.edit'))
+                                        @if(session('current_study'))
+                                            <li>
+                                                <a href="{{ route('qualitycontrol.index')}}">
+                                                    <i class="fas fa-list"></i> QC List
+                                                </a>
+                                            </li>
+                                        @endif
+                                    @endif
+                               {{-- Listing for Quality controll --}}
+                               {{-- ************************************************************************ --}}
+                               {{-- Grading Listing --}}
+                                        @if(hasPermission(auth()->user(),'grading.create') && hasPermission(auth()->user(),'grading.edit'))
+                                            @if(session('current_study'))
+                                                <li>
+                                                    <a href="{{route('grading.index')}}">
+                                                        <i class="fas fa-list"></i> Grading List
+                                                    </a>
+                                                </li>
+                                            @endif
+                                        @endif
+                               {{-- Grading Listing --}}
+                               {{-- **************************************************************************** --}}
+                               {{-- Adjudication Listing --}}
+                                    @if(hasPermission(auth()->user(),'adjudication.create') && hasPermission(auth()->user(),'adjudication.edit'))
+                                            @if(session('current_study'))
+                                                <li>
+                                                    <a href="{{ route('adjudication.index')}}">
+                                                        <i class="fas fa-list"></i> Adjudication List
+                                                    </a>
+                                                </li>
+                                            @endif
 
-            @if(hasPermission(auth()->user(),'qualitycontrol.create') && hasPermission(auth()->user(),'qualitycontrol.edit'))
-
-                @if(session('current_study'))
-                    <li class="dropdown">
-                        <ul>
-                            <li class="dropdown"><a href="#"><i class="fas fa-file-image"></i> Quality Control</a>
-                                <ul class="sub-menu">
+                                        @endif
+                               {{-- Adjudication Listing --}}
+                               {{-- Listing for Quality controll --}}
+                                @if(session('current_study'))
                                     <li>
-                                        <a href="{{ route('qualitycontrol.index')}}">
-                                            <i class="fas fa-list"></i> QC List
+                                        <a href="{{ route('otherforms.index')}}">
+                                            <i class="fas fa-list"></i> Other Forms List
                                         </a>
                                     </li>
-                                    <li>
-                                        <a href="{{ route('qualitycontrol.qc-work-list')}}">
-                                            <i class="fas fa-list"></i> QC Work List
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                @endif
+                                @endif
+                               {{-- Listing for Quality controll --}}
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
             @endif
+            {{-- Data Entry new parent menu --}}
+            
+            {{-- Data Entry new parent menu --}}
+            @if(session('current_study'))
+                <li class="dropdown">
+                    <ul>
+                        <li class="dropdown">
+                            <a href="#">
+                                <i class="fas fa-list"></i>Work Lists
+                            </a>
+                            <ul class="sub-menu">
+                               {{-- Listing for Quality controll --}}
+                                   @if(hasPermission(auth()->user(),'qualitycontrol.create') && hasPermission(auth()->user(),'qualitycontrol.edit'))
+                                        @if(session('current_study'))
+                                            <li>
+                                                <a href="{{ route('qualitycontrol.qc-work-list')}}">
+                                                    <i class="fas fa-list"></i> QC Work List
+                                                </a>
+                                            </li>
+                                        @endif
+                                    @endif
+                               {{-- Listing for Quality controll --}}
+                               {{-- ************************************************************************ --}}
+                               {{-- Grading Listing --}}
+                                        @if(hasPermission(auth()->user(),'grading.create') && hasPermission(auth()->user(),'grading.edit'))
+                                            @if(session('current_study'))
+                                                <li>
+                                                    <a href="{{ route('gradingcontrol.grading-work-list')}}">
+                                                        <i class="fas fa-list"></i> Grading Work List
+                                                    </a>
+                                                </li>
+                                            @endif
+                                        @endif
+                               {{-- Grading Listing --}}
+                               {{-- **************************************************************************** --}}
+                               {{-- Adjudication Listing --}}
+                                    @if(hasPermission(auth()->user(),'adjudication.create') && hasPermission(auth()->user(),'adjudication.edit'))
+                                            @if(session('current_study'))
+                                                <li>
+                                                    <a href="{{ route('adjudicationcontroller.adjudication-work-list')}}">
+                                                        <i class="fas fa-list"></i> Adjudication Work List
+                                                    </a>
+                                                </li>
+                                            @endif
 
-            @if(hasPermission(auth()->user(),'grading.create') && hasPermission(auth()->user(),'grading.edit'))
-
-                @if(session('current_study'))
-                    <li class="dropdown">
-                        <ul>
-                            <li class="dropdown"><a href="#"><i class="fas fa-sitemap"></i> Grading</a>
-                                <ul class="sub-menu">
-                                    <li>
-                                        <a href="{{route('grading.index')}}">
-                                            <i class="fas fa-list"></i> Grading List
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a href="{{ route('gradingcontrol.grading-work-list')}}">
-                                            <i class="fas fa-list"></i> Grading Work List
-                                        </a>
-                                    </li>
-
-                                    {{--
-                                    <li>
-                                        <a href="{{route('grading.status')}}">
-                                            <i class="fas fa-chart-line"></i> Grading Status
-                                        </a>
-                                    </li>
-                                    --}}
-
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                @endif
+                                        @endif
+                               {{-- Adjudication Listing --}}
+                               {{-- Listing for Quality controll --}}
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
             @endif
+            {{-- Data Entry new parent menu --}}
 
             <!-- show grading status -->
             @if(hasPermission(auth()->user(),'studytools.index') && hasPermission(auth()->user(),'grading.index'))
@@ -331,32 +386,7 @@
 
             @endif
 
-            @if(hasPermission(auth()->user(),'adjudication.create') && hasPermission(auth()->user(),'adjudication.edit'))
-
-                @if(session('current_study'))
-                    <li class="dropdown">
-                        <ul>
-                            <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Adjudication</a>
-                               <ul class="sub-menu">
-                                    <li>
-                                        <a href="{{ route('adjudication.index')}}">
-                                            <i class="fas fa-list"></i> Adjudication List
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a href="{{ route('adjudicationcontroller.adjudication-work-list')}}">
-                                            <i class="fas fa-list"></i> Adjudication Work List
-                                        </a>
-                                    </li>
-
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                @endif
-
-            @endif
+            
             @if(hasPermission(auth()->user(),'certification.index'))
                 @if(session('current_study'))
                 <li class="dropdown">

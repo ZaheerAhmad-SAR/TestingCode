@@ -359,7 +359,7 @@
     <!-- START: Footer-->
     <footer class="site-footer">
 
-        2021 © OIRRC
+        {{ date("Y") }} © OIRRC
     </footer>
     <!-- END: Footer-->
 

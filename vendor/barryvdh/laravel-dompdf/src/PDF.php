@@ -75,7 +75,7 @@ class PDF{
      * @param bool $warnings
      * @return $this
      */
-    public function setWarnings($warnings) {
+    public function setWarnings($warnings){
         $this->showWarnings = $warnings;
         return $this;
     }

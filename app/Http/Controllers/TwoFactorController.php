@@ -28,19 +28,19 @@ class TwoFactorController extends Controller
     { 
         
         $clientIP = request()->ip();
-        dd($clientIP);
         $browser = get_browser(null, true);
-        dd($browser);
+        $get_mac = get_mac_address(null,true);
 
         //$this->validate(['token' => 'required']);
 
         // $user = auth()->user();
+        // $id = Auth::id();
         $user = User::where('email', '=', $request->email)->first();
         $user->two_factor_token = rand(000000, 999999);
         $user->save();
         $mail = Mail::to($user)->send(new TwoFactorAuthMail($user->two_factor_token));
 
-        return redirect('/2f_login/' . encrypt($user->two_factor_token));
+        return redirect('/2f_login/'.encrypt($user->two_factor_token));
     }
 
     public function verfiyToken(Request $request)
@@ -48,7 +48,7 @@ class TwoFactorController extends Controller
         
         
         $user = User::where('two_factor_token', '=', $request->two_factor_token)->first();
-        dd($user);
+        //dd($user);
         if ($user) {
             if (null !== Auth::loginUsingId($user->id)) {
                // dd(\auth()->user()->id);

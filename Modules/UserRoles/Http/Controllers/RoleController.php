@@ -56,6 +56,7 @@ class RoleController extends Controller
      */
     public function store(RoleRequest $request)
     {
+        dd($request->all());
         $role =  Role::create([
             'id' => (string)Str::uuid(),
             'name'  =>  $request->name,
@@ -331,6 +332,31 @@ class RoleController extends Controller
             $this->createRolePermissions($role, $permissions);
         }
 
+        // for other forms permissions start
+        if ($request->otherForms_add == 'on') {
+            $permissions = Permission::where('name', '=', 'otherForms.create')
+                ->orwhere('name', '=', 'otherForms.store')
+                ->get();
+            $this->createRolePermissions($role, $permissions);
+        }
+        if ($request->otherForms_edit == 'on') {
+            $permissions = Permission::where('name', '=', 'otherForms.edit')
+                ->orwhere('name', '=', 'otherForms.update')
+                ->get();
+            $this->createRolePermissions($role, $permissions);
+        }
+
+        if ($request->otherForms_view == 'on') {
+            $permissions = Permission::where('name', '=', 'otherForms.index')
+                ->get();
+            $this->createRolePermissions($role, $permissions);
+        }
+        if ($request->otherForms_delete == 'on') {
+            $permissions = Permission::where('name', '=', 'otherForms.destroy')
+                ->get();
+            $this->createRolePermissions($role, $permissions);
+        }
+        // for other forms permissions end
         /*-- Adjudication Permissions --*/
         if ($request->adjudication_add == 'on') {
             $permissions = Permission::where('name', '=', 'adjudication.create')

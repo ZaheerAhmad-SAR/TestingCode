@@ -91,6 +91,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::resource('data_management', 'DataManagementController');
     Route::resource('adjudication', 'AdjudicationController');
     Route::resource('eligibility', 'EligibilityController');
+    Route::resource('otherforms', 'OtherFormsController');
     Route::resource('studyRoles', 'StudyRolesController');
     Route::post('users/assignusers', 'UserController@assign_users')->name('users.assignUsers');
     Route::post('users/enable_2fa', 'UserController@enable_2fa')->name('users.enable_2fa');
@@ -104,4 +105,5 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
     Route::get('dashboard', 'DashboardController@index')->name('dashboard.index');
     // Finance Dashboard
+    Route::post('systemUser/user2faActivate', 'SystemusersController@user2faActivate')->name('systemUser.systemUser');
 });
