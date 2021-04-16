@@ -8,6 +8,18 @@
 
 ### [Unreleased]
 
+### [v9.18.0] - 2021-04-16
+
+- Improve count performance for simple queries. #2616
+- Fixes #1928
+- Make prepareCountQuery() public so its easy to test.
+
+### [v9.17.4] - 2021-04-15
+
+- Revert changes on count. #2614
+- Fix #2613
+- Reverts: #2611 and #2612
+
 ### [v9.17.3] - 2021-04-14
 
 - Fix the regression when using a having condition in a query. #2612
@@ -455,7 +467,9 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.17.3...9.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v9.18.0...9.0
+[v9.18.0]: https://github.com/yajra/laravel-datatables/compare/v9.17.4...v9.18.0
+[v9.17.4]: https://github.com/yajra/laravel-datatables/compare/v9.17.3...v9.17.4
 [v9.17.3]: https://github.com/yajra/laravel-datatables/compare/v9.17.2...v9.17.3
 [v9.17.2]: https://github.com/yajra/laravel-datatables/compare/v9.17.1...v9.17.2
 [v9.17.1]: https://github.com/yajra/laravel-datatables/compare/v9.17.0...v9.17.1

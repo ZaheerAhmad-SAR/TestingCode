@@ -253,6 +253,7 @@
                                     <input type="text" value="{{ $findTransmission->Device_Software_version }}" readonly="" name="Device_Software_version" id="Device_Software_version" class="form-control remove-readonly" required="required">
                                 </div>
 
+                                {{--
                                 <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Device OIRRC ID</label>
                                 </div>
@@ -260,11 +261,12 @@
                                 <div class="form-group col-sm-3">
                                     <input type="text" value="{{ $findTransmission->Device_OIRRCID }}" readonly="" name="Device_OIRRCID" id="Device_OIRRCID" class="form-control remove-readonly" required="required">
                                 </div>
+                                --}}
 
                                 <!--//////////////// row  ///////////////////////// -->
 
                                 <div class="form-group col-sm-3">
-                                    <label for="Name" class="control-label">Site ID<span class="field-required">*</span></label>
+                                    <label for="Name" class="control-label">Site Code<span class="field-required">*</span></label>
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -736,6 +738,7 @@
                         </div>
                             <div class="tab-pane fade" id="nav-Modalities" role="tabpanel" aria-labelledby="nav-Validation-tab">
                                 <div class="form-group row" style="margin-top: 10px;">
+                                    {{--
                                     <label for="device_manufacturer" class="col-sm-3"></label>
                                     <div class="{!! ($errors->has('roles')) ?'col-sm-9 has-error':'col-sm-9' !!}">
                                         <select class="searchable form-control" id="select-modality" multiple="multiple" name="modalities[]" required>
@@ -749,6 +752,12 @@
                                     {{ $message }}
                                     </span>
                                     @enderror
+                                    --}}
+                                    @foreach($getModalities as $modality)
+                                    <div class="col-md-3" style="padding: 10px;">
+                                        <input type="checkbox" name="modalities[]" value="{{$modality->id}}"> {{$modality->modility_name}}
+                                    </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>

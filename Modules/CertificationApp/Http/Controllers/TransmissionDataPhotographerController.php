@@ -89,9 +89,16 @@ class TransmissionDataPhotographerController extends Controller
         }
 
         $getTransmissions = $getTransmissions->where('archive_transmission', 'no')
-            ->groupBy(['StudyI_ID', 'Photographer_email', 'Requested_certification', 'Site_ID'])
-            ->orderBy('id', 'desc')
-            ->paginate(50);
+                                             ->groupBy(['StudyI_ID', 'Photographer_email', 'Requested_certification', 'Site_ID']);
+
+        if(isset($request->sort_by_order) && $request->sort_by_order != '') {
+            $getTransmissions = $getTransmissions->orderBy($request->sort_by_field , $request->sort_by_order);
+
+        } else {
+            $getTransmissions = $getTransmissions->orderBy('id', 'DESC');
+        }
+            
+        $getTransmissions = $getTransmissions->paginate(50);
 
         // loop through the data and get row color and transmission details for each entry
         foreach ($getTransmissions as $key => $transmission) {
@@ -138,7 +145,7 @@ class TransmissionDataPhotographerController extends Controller
                     // compare the counts
                     if ($acceptedTransmissions >= $decodedNumberColumn->photographer->$getModalityID) {
 
-                        $transmission->rowColor = 'rgba(76, 175, 80, 0.5)';
+                        $transmission->rowColor = 'rgba(188, 245, 190, 0.5)';
                     } else {
 
                         $transmission->rowColor = '';
@@ -555,8 +562,8 @@ class TransmissionDataPhotographerController extends Controller
             $saveData->QC_folder                    = $xml->QC_folder;
             $saveData->CO_folder                    = $xml->CO_folder;
             $saveData->CO_email                     = json_encode($xml->CO_email);
-            $saveData->notification                 = $xml->notification;
-            $saveData->notification_list            = $xml->notification_list;
+            // $saveData->notification                 = $xml->notification;
+            // $saveData->notification_list            = $xml->notification_list;
             $saveData->Received_Zip                 = $xml->Received_Zip;
             $saveData->Received_Zip_Size            = $xml->Received_Zip_Size;
             $saveData->Received_Zip_MD5             = $xml->Received_Zip_MD5;
