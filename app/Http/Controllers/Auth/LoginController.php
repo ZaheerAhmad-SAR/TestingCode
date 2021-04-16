@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
+use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -96,101 +97,77 @@ class LoginController extends Controller
 
     private function authenticated(Request $request, Authenticatable $user)
     {
-        $getbrowser = UserSystemInfoHelper::get_browsers();
-        $get_ip = UserSystemInfoHelper::get_ip();
-        $get_mac = get_mac_address(); 
-        $secret = $user->google2fa_secret;
-        $qr_flag = $user->qr_flag;
-        
-        if ($user->google2fa_secret) {
-            $check_info = UserSystemInfo::where('user_id', '=', $user->id)->get();
-            if (count($check_info) > 0) {
-                foreach ($check_info as $info)
-                   { 
-                    if (!empty($info->browser_name) && $info->browser_name == $getbrowser && $info->remember_flag == '1' && $info->user_mac==$get_mac) {
-                        $info->remember_flag = '1';
-                        $info->save();
-                        return redirect(route('studies.index'));
-                    }  
-                     elseif (!empty($info->browser_name && $info->browser_name == $getbrowser && $info->user_mac==$get_mac)) { 
-                        Auth::logout();
-                       // dd("after logout");
-                        $request->session()->put('2fa:user:id', $user->id);
-                        return view('2fa/validate', compact('user'));
-                    } elseif (empty($info->browser_name)) { 
-                        //dd("case 3");
-                        $info->browser_name = $getbrowser;
-                        $info->save();
-                        Auth::logout();
-                        $request->session()->put('2fa:user:id', $user->id);
-                        return view('2fa/validate', compact('user', 'secret'));
-                    }  elseif ($info->browser_name != $getbrowser) { 
-                        //dd("Case 4");
-                        $qr_flag = $user->qr_flag;
-                        $info->browser_name = $getbrowser;
-                        $info->user_id = $user->id;
-                        $info->user_ip = $get_ip;
-                        $info->save();
-                        Auth::logout();
-                        $request->session()->put('2fa:user:id', $user->id);
-                        return view('2fa/validate', compact('user', 'qr_flag'));
-                    }
-                } 
-            } else { 
+    
+    $user = User::where('id','=', $user->id) ->first();
+       
+         if($user->qr_flag==1)    
+         {
+            if (isset($_COOKIE['ocap_remember_user'])) 
+               {       
+                return redirect(route('studies.index'));
+                }  
+            else{ 
                 Auth::logout();
-                $system_info = new UserSystemInfo();
-                $system_info->user_id = $user->id;
-                $system_info->browser_name = $getbrowser;
-                $system_info->user_ip = $get_ip;
-                $system_info->user_mac = $get_mac;
-                $system_info->save();
+
                 $request->session()->put('2fa:user:id', $user->id);
-                return view('2fa/validate', compact('user', 'secret'));
+                return view('2fa/validate', compact('user'));
             }
-            $user->qr_flag = '1';
-            $user->save();
-        }
-        return redirect(route('studies.index'));
-    }
-
-
-
-    public function getValidateToken()
-    {
+         }
+         else{
+             return redirect(route('studies.index'));
+         }
+          
         
-        if (session('2fa:user:id')) {
-            return view('2fa/validate');
-        }
-
-        return redirect('login');
+       
     }
 
 
-    public function postValidateToken(ValidateSecretRequest $request)
+
+    // public function getValidateToken()
+    // {
+    
+    //     if (session('2fa:user:id')) {
+    //         return view('2fa/validate');
+    //     }
+
+    //     return redirect('login');
+    // }
+
+
+    public function postValidateToken(Request $request)
     {
-        //get user id and create cache key
-        $userId = $request->session()->pull('2fa:user:id');
-        $key    = $userId . ':' . $request->totp;
+
+     $userId = session('2fa:user:id');
+    
+     $user = User::where('id','=', session('2fa:user:id')) ->first();
+        
+     
+       
+
+          $google_2fa = new Google2FA();
+
+        $valid = $google_2fa->verifyKey($user->google2fa_secret, $request->totp);
+
+        if($valid){
+
+       
         if ($request->remember_browser == 'on') {
-            
-            $getbrowser = UserSystemInfoHelper::get_browsers();
-            $system_info = UserSystemInfo::where('browser_name', '=', $getbrowser)->where('user_id', '=', $userId)->where('user_mac', '=', $get_mac)->first();
-            // $system_info = UserSystemInfo::where('user_mac', '=', $get_mac)->where('user_id', '=', $userId)->first();
-            $system_info->remember_flag = '1';
-            $system_info->save();
+            setcookie('ocap_remember_user','yes',false,'/');
         } else {
-            $getbrowser = UserSystemInfoHelper::get_browsers();
-            $system_info = UserSystemInfo::where('browser_name', '=', $getbrowser)->where('user_id', '=', $userId)->first();
-            $system_info->remember_flag = '0';
-            $system_info->save();
+            if (isset($_COOKIE['ocap_remember_user'])) {
+               unset($_COOKIE['ocap_remember_user']);
+               setcookie('ocap_remember_user', null, -1, '/');
+            }
         }
-        //use cache to store token to blacklist
-        Cache::add($key, true, 4);
-        //dd($key);
+         Auth::loginUsingId($userId);
 
-        //login and redirect user
-        Auth::loginUsingId($userId);
-
-        return redirect(route('studies.index'));/*->intended($this->redirectTo);*/
+          return redirect(route('studies.index'));
     }
+    else{
+     return redirect(route('login'));
+
+    }
+}
+   
+    
 }

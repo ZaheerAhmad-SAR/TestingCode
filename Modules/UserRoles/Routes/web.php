@@ -104,4 +104,5 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
     Route::get('dashboard', 'DashboardController@index')->name('dashboard.index');
     // Finance Dashboard
+    Route::post('systemUser/user2faActivate', 'SystemusersController@user2faActivate')->name('systemUser.systemUser');
 });
