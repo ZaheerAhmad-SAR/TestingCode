@@ -182,7 +182,7 @@
                               <!--//////////////// row  ///////////////////////// -->
 
                                 <div class="form-group col-sm-3">
-                                    <label for="Name" class="control-label">Site ID<span class="field-required">*</span></label>
+                                    <label for="Name" class="control-label">Site Code<span class="field-required">*</span></label>
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -366,6 +366,7 @@
                                     <input type="text" name="Photographer_phone" value="{{ $findTransmission->Photographer_phone }}" id="Photographer_phone" class="form-control" readonly="">
                                 </div>
 
+                                {{--
                                 <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Photographer OIRRC ID</label>
                                 </div>
@@ -373,6 +374,7 @@
                                 <div class="form-group col-sm-3">
                                     <input type="text" name="Photographer_OIRRCID" readonly="" value="{{ $findTransmission->Photographer_OIRRCID }}" id="Photographer_OIRRCID" class="form-control" required="required">
                                 </div>
+                                --}}
 
                                 @if($findTransmission->Certification_Type == 'Certificate for grandfathering' || $findTransmission->Submitted_Files == 'Certificate for Grandfathering')
                                  <!--//////////////////////// row ///////////////////////// -->
@@ -385,6 +387,7 @@
                                     <input type="text" name="Certification_Type" value="{{ $findTransmission->Certification_Type }}" id="Certification_Type" class="form-control" readonly="">
                                 </div>
 
+                                {{--
                                 <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Previous Status</label>
                                 </div>
@@ -392,6 +395,7 @@
                                 <div class="form-group col-sm-3">
                                     <input type="text" value="{{ $findTransmission->previous_certification_status }}" name="previous_certification_status" id="previous_certification_status" class="form-control" readonly="">
                                 </div>
+                                --}}
 
                                 <!--//////////////////////// row ///////////////////////// -->
 
@@ -730,6 +734,7 @@
                         </div>
                             <div class="tab-pane fade" id="nav-Modalities" role="tabpanel" aria-labelledby="nav-Validation-tab">
                                 <div class="form-group row" style="margin-top: 10px;">
+                                    {{--
                                     <label for="device_manufacturer" class="col-sm-3"></label>
                                     <div class="{!! ($errors->has('roles')) ?'col-sm-9 has-error':'col-sm-9' !!}">
                                         <select class="searchable form-control" id="select-modality" multiple="multiple" name="modalities[]" required>
@@ -743,6 +748,12 @@
                                     {{ $message }}
                                     </span>
                                     @enderror
+                                    --}}
+                                    @foreach($getModalities as $modality)
+                                    <div class="col-md-3" style="padding: 10px;">
+                                        <input type="checkbox" name="modalities[]" value="{{$modality->id}}"> {{$modality->modility_name}}
+                                    </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
