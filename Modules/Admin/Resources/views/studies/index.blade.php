@@ -74,7 +74,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         @if(hasPermission(auth()->user(),'studies.create'))
-                            <button type="button" class="btn btn-outline-primary" id="create-new-study" data-toggle="modal" data-target="#createStudy">
+                            <button type="button" class="btn btn-outline-primary" id="create-new-study" data-toggle="modal" dusk="createStudy" data-target="#createStudy">
                                 <i class="fa fa-plus"></i> Add Study
                             </button>
                         @endif
@@ -130,7 +130,7 @@
                                             <td>
                                                 @if(hasPermission(auth()->user(),'studies.edit'))
                                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                                    <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                                    <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;" dusk="study-navbar"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                     @php
                                                         $studyQuery = Modules\Queries\Entities\Query::where('module_id','=',$study->id)->where('query_status','open')->first();
                                                         //dd($studyQuery);
@@ -153,7 +153,7 @@
                                                         @endif
                                                         @if(hasPermission(auth()->user(),'studytools.index'))
                                                             <span class="dropdown-item">
-                                                           <a href="javascript:void(0)" id="edit-study" data-id="{{ $study->id }}">
+                                                           <a href="javascript:void(0)" dusk="edit-study" id="edit-study" data-id="{{ $study->id }}">
                                                                <i class="icon-pencil"></i> Edit
                                                            </a>
                                                     </span>
@@ -627,7 +627,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
 
     <script type="text/javascript">
-       
+
         $('.variable_name_ques').keydown(function(e) {
             if (e.keyCode == 32) {
                 $('.variable_name_ques').css('border', '1px solid red');
@@ -684,8 +684,8 @@
                $('#sort_by_field').val('DESC');
                $('#sort_by_field_name').val(field_name);
             }else if(sort_by_field =='DESC'){
-               $('#sort_by_field').val('ASC'); 
-               $('#sort_by_field_name').val(field_name); 
+               $('#sort_by_field').val('ASC');
+               $('#sort_by_field_name').val(field_name);
             }
             $('.filter-form').submit();
         }
@@ -703,7 +703,7 @@
             $('.add_field').on('click',function (e) {
                 e.preventDefault();
                 $('.appendfields').append('<div class="disease_row" style="margin-top:10px;">' +
-                    '    <input type="text" class="form-control" name="disease_cohort_name[]" value="" style="width: 80%;display: inline;">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>');
+                    '    <input type="text" class="form-control" dusk="disease_cohort_name" name="disease_cohort_name[]" value="" style="width: 80%;display: inline;">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>');
             })
             $('body').on('click','.remove_field',function () {
                 var row = $(this).closest('div.disease_row');
