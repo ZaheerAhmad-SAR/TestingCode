@@ -44,10 +44,18 @@ class Google2FAController extends Controller
 
         //generate image for QR barcode
         $google2fa = new Google2FA();
+        if(config('app.env') == 'live') {
+              $project_name='OCAP';
+              $project_url= 'ocap.oirrc.net';
+            }
+            else{
+              $project_name = 'DEVOCAP';
+              $project_url =   'devocap.oirrc.net';
+            }
         $inlineUrl = $google2fa->getQRCodeInline(
-            'OIRRC',
-            'ocap@oirrc.net',
-            $secret
+          $project_name,
+          $project_url , 
+          $secret    
         ); 
      
                 $user->qr_flag = '1';
@@ -122,8 +130,14 @@ class Google2FAController extends Controller
         $user->google_auth = null;
 
         $user->save();
-         unset($_COOKIE['ocap_remember_user']);
-               setcookie('ocap_remember_user', null, -1, '/');
+        if(config('app.env') == 'live') {
+         unset($_COOKIE['ocap_live_remember_user']);
+               setcookie('ocap_live_remember_user', null, -1, '/');
+             }
+             else {
+                unset($_COOKIE['ocap_dev_remember_user']);
+               setcookie('ocap_dev_remember_user', null, -1, '/');
+             }
 
         return view('userroles::users.profile',compact('user','codes'));
     }

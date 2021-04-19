@@ -15,7 +15,7 @@
 
                     </div>
                 </div>
-                    <!-- <div class="login-form col-12 col-sm-5" id="myDIV">
+                     <div class="login-form col-12 col-sm-5" id="myDIV">
                         <strong>If your 2FA mobile app does not support QR barcodes,
                             enter in the following number: <br><h4><code>{{ $secret }}</code></h4>
                         </strong>
@@ -24,7 +24,7 @@
                         <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#verify2fa" style="margin-top: 50px">
                             <i class="fa fa-plus"></i> Verify
                         </button>
-                    </div> -->
+                    </div> 
                 </div>
             </div>
         </div>
@@ -36,7 +36,7 @@
                 <div class="modal-header">
                     <label class="modal-title">Enter OTP</label>
                 </div>
-                <!--{{url('/2fa/validate')}} -->
+              <!--   {{url('/2fa/validate')}}  -->
                 <form class="row row-eq-height mt-5 mb-5" method="POST" action="" id="validate_form">
                     {!! csrf_field() !!}
                     <div class="login-form col-12 col-sm-7">
