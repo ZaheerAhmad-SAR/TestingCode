@@ -74,7 +74,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         @if(hasPermission(auth()->user(),'studies.create'))
-                            <button type="button" class="btn btn-outline-primary" id="create-new-study" data-toggle="modal" data-target="#createStudy">
+                            <button type="button" class="btn btn-outline-primary" id="create-new-study" data-toggle="modal" dusk="createStudy" data-target="#createStudy">
                                 <i class="fa fa-plus"></i> Add Study
                             </button>
                         @endif
@@ -130,7 +130,7 @@
                                             <td>
                                                 @if(hasPermission(auth()->user(),'studies.edit'))
                                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                                    <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                                    <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;" dusk="study-navbar"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                     @php
                                                         $studyQuery = Modules\Queries\Entities\Query::where('module_id','=',$study->id)->where('query_status','open')->first();
                                                         //dd($studyQuery);
@@ -146,21 +146,21 @@
                                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                         @if(hasPermission(auth()->user(),'systemtools.index'))
                                                             <span class="dropdown-item">
-                                                        <a href="javascript:void(0)" id="change-status" data-target-id="{{$study->id}}" data-target-studydeletecount="{{$study->study_delete_count}}" data-toggle="modal" data-target="#change_status">
+                                                        <a href="javascript:void(0)" dusk="change_status" id="change-status" data-target-id="{{$study->id}}" data-target-studydeletecount="{{$study->study_delete_count}}" data-toggle="modal" data-target="#change_status">
                                                             <i class="icon-action-redo"></i> Change Status
                                                         </a>
                                                     </span>
                                                         @endif
                                                         @if(hasPermission(auth()->user(),'studytools.index'))
                                                             <span class="dropdown-item">
-                                                           <a href="javascript:void(0)" id="edit-study" data-id="{{ $study->id }}">
+                                                           <a href="javascript:void(0)" dusk="edit-study" id="edit-study" data-id="{{ $study->id }}">
                                                                <i class="icon-pencil"></i> Edit
                                                            </a>
                                                     </span>
                                                         @endif
                                                         @if(hasPermission(auth()->user(),'systemtools.index'))
                                                             <span class="dropdown-item">
-                                                        <a href="javascript:void(0)" id="clone-study" data-target-id="{{$study->id}}" data-toggle="modal" data-target="#clone-study-modal">
+                                                        <a href="javascript:void(0)" id="clone-study" dusk="clone-study-modal" data-target-id="{{$study->id}}" data-toggle="modal" data-target="#clone-study-modal">
                                                             <i class="fa fa-clone"></i> Clone
                                                         </a>
                                                         </span>
@@ -229,7 +229,7 @@
                         <nav>
                             <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab-clone" role="tablist">
                                 <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-BasicInfo" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
-                                <a class="nav-item nav-link" id="nav-clone-tab" data-toggle="tab" href="#nav-Clone" role="tab" aria-controls="nav-clone" aria-selected="false">Clone Study Data</a>
+                                <a class="nav-item nav-link" id="nav-clone-tab" data-toggle="tab" dusk="nav-Clone" href="#nav-Clone" role="tab" aria-controls="nav-clone" aria-selected="false">Clone Study Data</a>
                             </div>
                         </nav>
                         <div class="tab-content" id="nav-ClonetabContent">
@@ -240,7 +240,7 @@
                                     <label for="study_title" class="col-md-2">Title</label>
                                     <div class="{!! ($errors->has('study_title')) ?'form-group col-md-10 has-error':'form-group col-md-10' !!}">
                                         <input type="hidden" name="study_id" id="studyID" value="">
-                                        <input type="text" class="form-control" id="study_title" name="study_title" value="{{ old('value') }}"> @error('study_title')
+                                        <input type="text" class="form-control" dusk="study_title" id="study_title" name="study_title" value="{{ old('value') }}"> @error('study_title')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
                                     </div>
@@ -360,7 +360,7 @@
                             <div class="modal-footer">
                                 <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                                 @if(hasPermission(auth()->user(),'studies.store'))
-                                    <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Clone Study</button>
+                                    <button type="submit" dusk="clone-study-submit-button" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Clone Study</button>
                                 @endif
                             </div>
                         </div>
@@ -549,7 +549,7 @@
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="button"  onclick="changeStudyStatus();" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                            <button type="button" dusk="changeStudyStatusButton" onclick="changeStudyStatus();" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
                         </div>
                     </form>
                 </div>
@@ -627,7 +627,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
 
     <script type="text/javascript">
-       
+
         $('.variable_name_ques').keydown(function(e) {
             if (e.keyCode == 32) {
                 $('.variable_name_ques').css('border', '1px solid red');
@@ -684,8 +684,8 @@
                $('#sort_by_field').val('DESC');
                $('#sort_by_field_name').val(field_name);
             }else if(sort_by_field =='DESC'){
-               $('#sort_by_field').val('ASC'); 
-               $('#sort_by_field_name').val(field_name); 
+               $('#sort_by_field').val('ASC');
+               $('#sort_by_field_name').val(field_name);
             }
             $('.filter-form').submit();
         }
@@ -703,7 +703,7 @@
             $('.add_field').on('click',function (e) {
                 e.preventDefault();
                 $('.appendfields').append('<div class="disease_row" style="margin-top:10px;">' +
-                    '    <input type="text" class="form-control" name="disease_cohort_name[]" value="" style="width: 80%;display: inline;">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>');
+                    '    <input type="text" class="form-control" dusk="disease_cohort_name" name="disease_cohort_name[]" value="" style="width: 80%;display: inline;">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>');
             })
             $('body').on('click','.remove_field',function () {
                 var row = $(this).closest('div.disease_row');
