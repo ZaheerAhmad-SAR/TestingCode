@@ -229,7 +229,7 @@
                         <nav>
                             <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab-clone" role="tablist">
                                 <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-BasicInfo" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
-                                <a class="nav-item nav-link" id="nav-clone-tab" data-toggle="tab" href="#nav-Clone" role="tab" aria-controls="nav-clone" aria-selected="false">Clone Study Data</a>
+                                <a class="nav-item nav-link" id="nav-clone-tab" data-toggle="tab" dusk="nav-Clone" href="#nav-Clone" role="tab" aria-controls="nav-clone" aria-selected="false">Clone Study Data</a>
                             </div>
                         </nav>
                         <div class="tab-content" id="nav-ClonetabContent">

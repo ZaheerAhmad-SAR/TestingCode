@@ -93,7 +93,11 @@ class StudyTest extends DuskTestCase
                 ->press('@clone-study-modal')
                 ->waitForText('Clone Study')
                 ->type('@study_title', 'Clone An Open Label,with Scleritis ')
-                ->press('@create-study-button')
+                ->press('@nav-Clone')
+                ->waitFor('#nav-Clone')
+                ->assertVisible('#nav-Clone')
+                ->pause('3434343434')
+                ->press('@clone-study-submit-button')
                 ->logout();
         });
     }
