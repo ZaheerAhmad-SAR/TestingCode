@@ -148,22 +148,54 @@ class LoginController extends Controller
 
         $valid = $google_2fa->verifyKey($user->google2fa_secret, $request->totp);
 
-        if($valid){
 
-       
+
+        if($valid)
+        {
+
+         
         if ($request->remember_browser == 'on') {
-            setcookie('ocap_remember_user','yes',false,'/');
-        } else {
-            if (isset($_COOKIE['ocap_remember_user'])) {
-               unset($_COOKIE['ocap_remember_user']);
-               setcookie('ocap_remember_user', null, -1, '/');
+            if(config('app.env') == 'live') {
+
+            setcookie('ocap_live_remember_user','yes',false,'/');
+          }
+          else 
+          {
+               setcookie('ocap_dev_remember_user','yes',false,'/');
+          }
+        } 
+
+      elseif (config('app.env') == 'live') {
+          # code...
+        if (isset($_COOKIE['ocap_live_remember_user'])) {
+               unset($_COOKIE['ocap_live_remember_user']);
+               setcookie('ocap_live_remember_user', null, -1, '/');
             }
+      }
+      // {
+      //        if(config('app.env') == 'live') {
+
+      //       if (isset($_COOKIE['ocap_live_remember_user'])) {
+      //          unset($_COOKIE['ocap_live_remember_user']);
+      //          setcookie('ocap_live_remember_user', null, -1, '/');
+      //       }
+      //     }
+          else
+          {
+              if (isset($_COOKIE['ocap_dev_remember_user'])) {
+               unset($_COOKIE['ocap_dev_remember_user']);
+               setcookie('ocap_dev_remember_user', null, -1, '/');
+        
+          }
+
+
         }
          Auth::loginUsingId($userId);
 
           return redirect(route('studies.index'));
     }
-    else{
+     else 
+     {
      return redirect(route('login'));
 
     }

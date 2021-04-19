@@ -47,12 +47,12 @@
                                     We encourage you to take advantage of our two-factor authentication if you haven’t already.
                                     </p>
                                 </div>
-                                <div class="form-group mb-3">
+                                <!-- <div class="form-group mb-3">
                                    <h6 style="color:blue;">Try Another Way </h6> 
                                    <input id="Button1" type="button" class="button btn-primary" value="Alternate Method" onclick="switchVisible();"/>
                                     
 
-                                </div>
+                                </div> -->
                             </div>
                         </form>
                     </div>
