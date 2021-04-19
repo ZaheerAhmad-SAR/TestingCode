@@ -146,7 +146,7 @@
                                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                         @if(hasPermission(auth()->user(),'systemtools.index'))
                                                             <span class="dropdown-item">
-                                                        <a href="javascript:void(0)" id="change-status" data-target-id="{{$study->id}}" data-target-studydeletecount="{{$study->study_delete_count}}" data-toggle="modal" data-target="#change_status">
+                                                        <a href="javascript:void(0)" dusk="change_status" id="change-status" data-target-id="{{$study->id}}" data-target-studydeletecount="{{$study->study_delete_count}}" data-toggle="modal" data-target="#change_status">
                                                             <i class="icon-action-redo"></i> Change Status
                                                         </a>
                                                     </span>
@@ -160,7 +160,7 @@
                                                         @endif
                                                         @if(hasPermission(auth()->user(),'systemtools.index'))
                                                             <span class="dropdown-item">
-                                                        <a href="javascript:void(0)" id="clone-study" data-target-id="{{$study->id}}" data-toggle="modal" data-target="#clone-study-modal">
+                                                        <a href="javascript:void(0)" id="clone-study" dusk="clone-study-modal" data-target-id="{{$study->id}}" data-toggle="modal" data-target="#clone-study-modal">
                                                             <i class="fa fa-clone"></i> Clone
                                                         </a>
                                                         </span>
@@ -240,7 +240,7 @@
                                     <label for="study_title" class="col-md-2">Title</label>
                                     <div class="{!! ($errors->has('study_title')) ?'form-group col-md-10 has-error':'form-group col-md-10' !!}">
                                         <input type="hidden" name="study_id" id="studyID" value="">
-                                        <input type="text" class="form-control" id="study_title" name="study_title" value="{{ old('value') }}"> @error('study_title')
+                                        <input type="text" class="form-control" dusk="study_title" id="study_title" name="study_title" value="{{ old('value') }}"> @error('study_title')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
                                     </div>
@@ -360,7 +360,7 @@
                             <div class="modal-footer">
                                 <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                                 @if(hasPermission(auth()->user(),'studies.store'))
-                                    <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Clone Study</button>
+                                    <button type="submit" dusk="clone-study-submit-button" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Clone Study</button>
                                 @endif
                             </div>
                         </div>
@@ -549,7 +549,7 @@
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="button"  onclick="changeStudyStatus();" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                            <button type="button" dusk="changeStudyStatusButton" onclick="changeStudyStatus();" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
                         </div>
                     </form>
                 </div>
