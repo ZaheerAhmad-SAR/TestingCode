@@ -118,7 +118,7 @@ class Google2FA
      *
      * @return string
      */
-    public function generateSecretKey($length = 32, $prefix = '')
+    public function generateSecretKey($length = 16, $prefix = '')
     {
         return $this->generateBase32RandomKey($length, $prefix);
     }
@@ -447,7 +447,6 @@ class Google2FA
         $timestamp = null,
         $oldTimestamp = null
     ) {
-      
         $timestamp = $this->makeTimestamp($timestamp);
 
         return $this->findValidOTP(

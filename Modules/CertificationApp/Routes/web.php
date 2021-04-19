@@ -10,8 +10,14 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+
+// Route::post('transmissions/transmissionData', 'TransmissionDataDeviceController@transmissionDataDevice')->name('transmissions.transmissionDataDevice');
+// Route::post('transmissions/transmissionData', 'TransmissionDataPhotographerController@transmissionDataPhotographer')->name('transmissions.transmissionDataPhotographer');
+
+
 // test post phographer transmission
-	Route::post('transmissions/testTransmissionDataPhotographer', 'TransmissionDataPhotographerController@testTransmissionDataPhotographer')->name('transmissions.testTransmissionDataPhotographer');
+	// Route::post('transmissions/testTransmissionDataPhotographer', 'TransmissionDataPhotographerController@testTransmissionDataPhotographer')->name('transmissions.testTransmissionDataPhotographer');
 
 // post device transmission
 	Route::post('transmissions/transmissionDataDevice', 'TransmissionDataDeviceController@transmissionDataDevice')->name('transmissions.transmissionDataDevice');

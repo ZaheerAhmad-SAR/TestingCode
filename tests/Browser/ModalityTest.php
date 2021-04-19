@@ -62,6 +62,23 @@ class ModalityTest extends DuskTestCase
 
         });
     }
+
+    public function test_I_can_clone_a_child_modality_from_parent_modalitiy_successfully()
+    {
+        $user = User::where('name', 'Super Admin')->first();
+        // this test the user create functioanlity
+        $this->browse(function ($browser) use ($user) {
+            $browser->loginAs($user)
+                ->visit('/modalities')
+                ->assertSee('Modalities')
+                ->press('@parent-modality-navtab')
+                ->press('@parent-modality-clone')
+                ->pause(1000)
+                ->assertSee('Modalities')
+                ->logout();
+
+        });
+    }
     /* @test */
 
     public function test_I_can_delete_a_parent_modality_successfully()
@@ -81,6 +98,7 @@ class ModalityTest extends DuskTestCase
 
         });
     }
+
 
      /* @test */
     public function test_I_can_create_a_child_modality_successfully()
@@ -120,6 +138,27 @@ class ModalityTest extends DuskTestCase
                 ->assertSee('Modalities')
                 ->logout();
 
+        });
+    }
+
+    /* @test */
+
+    public function test_I_can_delete_a_child_modality_successfully()
+    {
+        $user = User::where('name', 'Super Admin')->first();
+        // this test the user create functioanlity
+        $this->browse(function ($browser) use ($user) {
+            $browser->loginAs($user)
+                ->visit('/modalities')
+                ->assertSee('Modalities')
+                ->click('.showPhasesSteps')
+                ->pause(1000)
+                ->press('@child-modality-navtab')
+                ->press('@child-modality-delete')
+                ->assertDialogOpened('Are You sure want to delete !')
+                ->acceptDialog('press OK')
+                ->pause('15000')
+                ->logout();
         });
     }
 }

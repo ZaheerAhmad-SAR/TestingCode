@@ -74,15 +74,64 @@ class SectionsTest extends DuskTestCase
                 ->pause(3000);
         });
     }
-    // ->click('@add_steps')
-    // ->waitForText('Add a steps')
-    // ->type('step_position', '1')
-    // ->select('phase_id', '68bff15a-43b3-42ef-b9b1-b80ca6d854aa')
-    // ->select('form_type_id', '1')
-    // ->select('modility_id', 'c7230c04-077b-477d-9e60-b490169c69e2')
-    // ->type('step_name', 'step-dusk')
-    // ->type('step_description', '2')
-    // ->select('graders_number', '1')
-    // ->pause(1000)
-    // ->click('@saveSteps');
+
+    public function test_I_can_clone_a_section_successfully()
+    {
+        $user = User::where('name', 'Super Admin')->first();
+        $this->browse(function ($browser) use ($user) {
+            $browser->loginAs($user)
+                ->visit('/studies')
+                ->assertSee('Studies')
+                ->click('@study_title_dusk')
+                ->pause(2000)
+                ->click('@study_tools')
+                ->pause(1000)
+                ->click('@study_design')
+                ->pause(1000)
+                ->click('@study_structure')
+                ->assertSee('Visits & Modalities Sections')
+                ->pause(1000)
+                ->click('@step_actions')
+                ->click('@addsection-dusk')
+                ->waitForText('Add a section')
+                ->click('@clone_sec_dusk')
+                ->pause(1000)
+                ->waitForText('Clone Section')
+                ->pause(1000)
+                ->type('@sec_name_clone','cloned')
+                ->type('@sec_description_clone','testing description dusk up')
+                ->type('@sort_num_clone','3')
+                ->type('@remove_suffix_clone','OD')
+                ->type('@add_suffix_clone','OS')
+                ->click('@cloneSection')
+                ->pause(3000);
+        });
+    }
+
+    public function test_I_can_delete_a_section_successfully()
+    {
+        $user = User::where('name', 'Super Admin')->first();
+        $this->browse(function ($browser) use ($user) {
+            $browser->loginAs($user)
+                ->visit('/studies')
+                ->assertSee('Studies')
+                ->click('@study_title_dusk')
+                ->pause(2000)
+                ->click('@study_tools')
+                ->pause(1000)
+                ->click('@study_design')
+                ->pause(1000)
+                ->click('@study_structure')
+                ->assertSee('Visits & Modalities Sections')
+                ->pause(1000)
+                ->click('@step_actions')
+                ->click('@addsection-dusk')
+                ->waitForText('Add a section')
+                ->pause(2000)
+                ->click('@delete_sec_dusk')
+                ->assertDialogOpened('Are you sure to delete?')
+                ->acceptDialog('press OK')
+                ->pause(5000);
+        });
+    }
 }

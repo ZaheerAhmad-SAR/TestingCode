@@ -16,42 +16,40 @@
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Name</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="sec_name" placeholder="Section Name" required>
+                                    <input type="text" class="form-control" name="sec_name" dusk="sec_name_clone" id ="sec_name_clone" placeholder="Section Name" required>
 
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Description</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="sec_description" placeholder="Section Title Description" required>
-
+                                    <input type="text" class="form-control" name="sec_description" dusk="sec_description_clone" id ="sec_description_clone" placeholder="Section Title Description" required>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Sort # / Position</label>
                                 <div class="col-md-9">
-                                    <input type="number" class="form-control" name="sort_num" placeholder="Sort Number" required>
-
+                                    <input type="number" class="form-control" name="sort_num" dusk="sort_num_clone" id ="sort_num_clone" placeholder="Sort Number" required>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Remove Question variable Suffix</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="remove_suffix" placeholder="Remove Question variable Suffix">
+                                    <input type="text" class="form-control" name="remove_suffix" dusk="remove_suffix_clone" id ="remove_suffix_clone" placeholder="Sort Number" placeholder="Remove Question variable Suffix">
 
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Add Question variable Suffix</label>
                                 <div class="col-md-9">
-                                    <input type="text" class="form-control" name="add_suffix" placeholder="Add Question variable Suffix">
+                                    <input type="text" class="form-control" name="add_suffix" dusk="add_suffix_clone" id ="add_suffix_clone" placeholder="Add Question variable Suffix">
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-outline-danger" data-dismiss="modal" id="close-cloneSection"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                        <button type="button" class="btn btn-outline-primary" id="cloneSection"><i class="fa fa-save"></i> Save Changes</button>
+                        <button type="button" class="btn btn-outline-primary" id="cloneSection" dusk="cloneSection"><i class="fa fa-save"></i> Save Changes</button>
                     </div>
                 </div>
             </form>

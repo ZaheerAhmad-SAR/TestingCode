@@ -194,7 +194,6 @@ trait AuthenticatesUsers
      */
     protected function guard()
     {
-        
         return Auth::guard();
     }
 }

@@ -218,6 +218,39 @@
                                         </div>
                                         <div class="form-group row" style="margin-top: 15px;">
                                             <div class="col-md-3">
+                                                <label for="Name" style="padding-left: 11px">Other Forms </label>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <?php foreach($permissions as $permission) { ?>
+                                                        <input type="checkbox" name="otherForms_add" id="otherForms_add"
+                                                               <?php if($permission->name == 'otherforms.create') {?> checked <?php } } ?>
+                                                        > Add
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <?php foreach($permissions as $permission) { ?>
+                                                        <input type="checkbox" name="otherForms_edit" id="otherForms_edit"
+                                                               <?php if($permission->name == 'otherforms.edit') {?> checked <?php } } ?>
+                                                        > Edit
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <?php foreach($permissions as $permission) { ?>
+                                                        <input type="checkbox" name="otherForms_view" id="otherForms_view"
+                                                               <?php if($permission->name == 'otherforms.index') {?> checked <?php } } ?>
+                                                        > View
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <?php foreach($permissions as $permission) { ?>
+                                                        <input type="checkbox" name="otherForms_delete" id="otherForms_delete"
+                                                               <?php if($permission->name == 'otherforms.destroy') {?> checked <?php } } ?>
+                                                        > Delete
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row" style="margin-top: 15px;">
+                                            <div class="col-md-3">
                                                 <label for="Name" style="padding-left: 11px">Queries</label>
                                             </div>
                                             <div class="col-md-9">

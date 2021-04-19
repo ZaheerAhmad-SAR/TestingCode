@@ -43,15 +43,25 @@ class TransmissionDataPhotographer extends Model
     	// find the transmission
     	$transmission = self::find($transmissionId);
     	// check for same capture date
-		$getCaptureTransmissions = self::where('StudyI_ID', $transmission->StudyI_ID)
-                                        ->where('Photographer_email', $transmission->Photographer_email)
-                                        ->where('Requested_certification', $transmission->Requested_certification)
-                                        ->where('Site_ID', $transmission->Site_ID)
-                                        ->where('archive_transmission', 'no')
-				                        ->whereDate('date_of_capture', '=', $transmission->date_of_capture)
-				                        ->get()->count();
+		$getCaptureTransmissions = self::where(function($query) use ($transmission) {
+                                            $query->where('StudyI_ID', $transmission->StudyI_ID);
+                                            $query->where('Photographer_email', $transmission->Photographer_email);
+                                            $query->where('Requested_certification', $transmission->Requested_certification);
+                                            $query->where('Site_ID', $transmission->Site_ID);
+                                            $query->where('archive_transmission', 'no');
+                                            $query->whereDate('date_of_capture', '=', $transmission->date_of_capture);
+                                            $query->orWhere('transmitted_file_list', $transmission->transmitted_file_list);
+                                            $query->orWhere('Received_Zip_Size', $transmission->Received_Zip_Size);
+                                            $query->orWhere('Received_Zip_MD5', $transmission->Received_Zip_MD5);
+                                        })->where(function($query) use ($transmission){
+                                            $query->whereNotNull('date_of_capture');
+                                            $query->whereNotNull('transmitted_file_list');
+                                            $query->whereNotNull('Received_Zip_Size');
+                                            $query->whereNotNull('Received_Zip_MD5');
+                                        })->get()->count();
+
 		if($getCaptureTransmissions > 1) {
-			return ' &nbsp; | &nbsp;<span data-toggle="tooltip" title="Capture date is same!"><i class="fas fa-exclamation-circle"></i></span>';
+			return ' &nbsp; | &nbsp;<span data-toggle="tooltip" title="Same capture date, file list, zip size or md5!"><i class="fas fa-exclamation-circle"></i></span>';
 		}
 
 		return null;
