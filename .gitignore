@@ -3,6 +3,7 @@
 /public/storage
 /public/images
 /storage/*.key
+vendor
 server.php
 /vendor
 .env
