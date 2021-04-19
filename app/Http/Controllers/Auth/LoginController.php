@@ -102,7 +102,9 @@ class LoginController extends Controller
        
          if($user->qr_flag==1)    
          {
-            if (isset($_COOKIE['ocap_remember_user'])) 
+
+             if(config('app.env') == 'live') {
+            if (isset($_COOKIE['ocap_live_remember_user'])) 
                {       
                 return redirect(route('studies.index'));
                 }  
@@ -117,7 +119,18 @@ class LoginController extends Controller
              return redirect(route('studies.index'));
          }
           
-        
+        } else{
+         if (isset($_COOKIE['ocap_dev_remember_user'])) 
+               {       
+                return redirect(route('studies.index'));
+                }  
+            else{ 
+                Auth::logout();
+
+                $request->session()->put('2fa:user:id', $user->id);
+                return view('2fa/validate', compact('user'));
+            }   
+        }
        
     }
 
@@ -165,29 +178,20 @@ class LoginController extends Controller
           }
         } 
 
-      elseif (config('app.env') == 'live') {
+      else{
+        if (config('app.env') == 'live') {
           # code...
         if (isset($_COOKIE['ocap_live_remember_user'])) {
                unset($_COOKIE['ocap_live_remember_user']);
                setcookie('ocap_live_remember_user', null, -1, '/');
             }
-      }
-      // {
-      //        if(config('app.env') == 'live') {
-
-      //       if (isset($_COOKIE['ocap_live_remember_user'])) {
-      //          unset($_COOKIE['ocap_live_remember_user']);
-      //          setcookie('ocap_live_remember_user', null, -1, '/');
-      //       }
-      //     }
-          else
-          {
-              if (isset($_COOKIE['ocap_dev_remember_user'])) {
+      } else{
+        if (isset($_COOKIE['ocap_dev_remember_user'])) {
                unset($_COOKIE['ocap_dev_remember_user']);
                setcookie('ocap_dev_remember_user', null, -1, '/');
-        
-          }
-
+      }
+         
+}
 
         }
          Auth::loginUsingId($userId);
