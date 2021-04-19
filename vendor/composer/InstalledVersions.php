@@ -24,12 +24,12 @@ class InstalledVersions
 private static $installed = array (
   'root' => 
   array (
-    'pretty_version' => 'dev-duskUnitTest',
-    'version' => 'dev-duskUnitTest',
+    'pretty_version' => 'dev-2fa',
+    'version' => 'dev-2fa',
     'aliases' => 
     array (
     ),
-    'reference' => '22efa0649c4d6aff244d72118c9ea9a870b2ede8',
+    'reference' => '9fed7006acccf22aa1b16e7d8e0100ce60530313',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
@@ -609,12 +609,12 @@ private static $installed = array (
     ),
     'laravel/laravel' => 
     array (
-      'pretty_version' => 'dev-duskUnitTest',
-      'version' => 'dev-duskUnitTest',
+      'pretty_version' => 'dev-2fa',
+      'version' => 'dev-2fa',
       'aliases' => 
       array (
       ),
-      'reference' => '22efa0649c4d6aff244d72118c9ea9a870b2ede8',
+      'reference' => '9fed7006acccf22aa1b16e7d8e0100ce60530313',
     ),
     'laravel/tinker' => 
     array (
