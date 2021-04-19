@@ -124,7 +124,7 @@
                                 </div>
                                 <div class="col-sm-9">
                                     <span class="badge badge-info">
-                                    {{$findTransmission->Certification_Type}}
+                                    {{$findTransmission->Certification_Type != '' ? $findTransmission->Certification_Type :  $findTransmission->Submitted_Files}}
                                     </span>
                                 </div>
 
@@ -253,6 +253,7 @@
                                     <input type="text" value="{{ $findTransmission->Device_Software_version }}" readonly="" name="Device_Software_version" id="Device_Software_version" class="form-control remove-readonly" required="required">
                                 </div>
 
+                                {{--
                                 <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Device OIRRC ID</label>
                                 </div>
@@ -260,11 +261,12 @@
                                 <div class="form-group col-sm-3">
                                     <input type="text" value="{{ $findTransmission->Device_OIRRCID }}" readonly="" name="Device_OIRRCID" id="Device_OIRRCID" class="form-control remove-readonly" required="required">
                                 </div>
+                                --}}
 
                                 <!--//////////////// row  ///////////////////////// -->
 
                                 <div class="form-group col-sm-3">
-                                    <label for="Name" class="control-label">Site ID<span class="field-required">*</span></label>
+                                    <label for="Name" class="control-label">Site Code<span class="field-required">*</span></label>
                                 </div>
 
                                 <div class="form-group col-sm-3">
@@ -390,7 +392,7 @@
                                     <input type="text" value="{{ $findTransmission->Request_MadeBy_Email }}" name="Request_MadeBy_Email" id="Request_MadeBy_Email" class="form-control" readonly="">
                                 </div>
 
-                                @if($findTransmission->Certification_Type == 'Certificate for grandfathering')
+                                @if($findTransmission->Certification_Type == 'Certificate for grandfathering' || $findTransmission->Submitted_Files == 'Certificate for Grandfathering')
                                 <!--//////////////////////// row ///////////////////////// -->
                                  <div class="form-group col-sm-3">
                                     <label for="Name" class="control-label">Certification Type</label>
@@ -454,6 +456,48 @@
                                 <div class="form-group col-sm-3">
                                     <input type="text" value="{{ $findTransmission->Comments }}" name="transmission_comments" id="transmission_comments" class="form-control" readonly="">
                                 </div>
+
+                                <!-- ------------------------------------------------------------------------ -->
+
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Number of files</label>
+                                </div>
+                              
+                                <div class="form-group col-sm-2">
+                                    <input type="text" value="{{ $findTransmission->Number_files }}" name="Number_files" id="Number_files" class="form-control" readonly="">
+                                </div>
+
+                                <div class="form-group col-sm-1">
+                                    <button class="btn btn-primary" data-toggle="modal" data-target="#show-files-modal">View Files</button>
+                                </div>
+
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Received zip</label>
+                                </div>
+                              
+                                <div class="form-group col-sm-3">
+                                    <input type="text" value="{{ $findTransmission->Received_Zip }}" name="Received_Zip" id="Received_Zip" class="form-control" readonly="">
+                                </div>
+
+                                <!-- ------------------------------------------------------------ -->
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Received zip size</label>
+                                </div>
+                              
+                                <div class="form-group col-sm-3">
+                                    <input type="text" value="{{ $findTransmission->Received_Zip_Size }}" name="Received_Zip_Size" id="Received_Zip_Size" class="form-control" readonly="">
+                                </div>
+
+
+                                <div class="form-group col-sm-3">
+                                    <label for="Name" class="control-label">Received zip md5</label>
+                                </div>
+                              
+                                <div class="form-group col-sm-3">
+                                    <input type="text" value="{{ $findTransmission->Received_Zip_MD5 }}" name="Received_Zip_MD5" id="Received_Zip_MD5" class="form-control" readonly="" style="font-size: 11px">
+                                </div>
+
+                                <!----------------------------- OICCR DATA ---------------------------------- -->
 
                                 <div class="col-md-12">
                                     <p class="bg-primary text-center" style="color: #fff; margin: 10px; font-size: 20px;">
@@ -694,6 +738,7 @@
                         </div>
                             <div class="tab-pane fade" id="nav-Modalities" role="tabpanel" aria-labelledby="nav-Validation-tab">
                                 <div class="form-group row" style="margin-top: 10px;">
+                                    {{--
                                     <label for="device_manufacturer" class="col-sm-3"></label>
                                     <div class="{!! ($errors->has('roles')) ?'col-sm-9 has-error':'col-sm-9' !!}">
                                         <select class="searchable form-control" id="select-modality" multiple="multiple" name="modalities[]" required>
@@ -707,6 +752,12 @@
                                     {{ $message }}
                                     </span>
                                     @enderror
+                                    --}}
+                                    @foreach($getModalities as $modality)
+                                    <div class="col-md-3" style="padding: 10px;">
+                                        <input type="checkbox" name="modalities[]" value="{{$modality->id}}"> {{$modality->modility_name}}
+                                    </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
@@ -720,6 +771,33 @@
             </div>
         </div>
 <!-- modal code  -->
+
+<!-- show no of files modal -->
+<!-- Modal -->
+<div class="modal fade" id="show-files-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-primary" style="color: #fff">
+        <h5 class="modal-title" id="exampleModalLabel">Number of Files</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+         <div class="form-group col-md-12">
+            <label>Files</label>
+            <textarea class="form-control" value="" rows="4">{{$findTransmission->transmitted_file_list}}</textarea>
+           
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- show no of files modal -->
 
 @endsection
 @section('script')

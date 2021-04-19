@@ -159,7 +159,7 @@ class SystemusersController extends Controller
      */
     public function destroy($id)
     {
-        dd('delete');
+        //dd('delete');
         $user = User::find($id);
     }
 
@@ -178,4 +178,28 @@ class SystemusersController extends Controller
         $user->update();
         echo 'inactivate_user';
     }
+    public function user2faActivate(Request $request)
+    { 
+         $user = User::find($request->id);
+       if($request->qr_flag==0){
+        $qr_flag='1';
+         $user->qr_flag = $qr_flag;
+       }
+       else{
+        $qr_flag='0';
+         $user->qr_flag = $qr_flag;
+         $user->google2fa_secret = '';
+
+
+       }
+
+       
+       
+       
+        $user->update();
+        return true;
+        
+    }
 }
+
+

@@ -1,4 +1,4 @@
-@if (canQualityControl(['index']))
+@if (canOtherForm(['index']))
 @php
 $getFormQCStatusArray = [
 'subject_id' => $subjectId,
@@ -8,21 +8,6 @@ $getFormQCStatusArray = [
 'form_type_id' => $step->form_type_id,
 ];
 
-/*************** Form Lock *****************/
-$getQCLockFormStatusArray = [
-'study_id' => $studyId,
-'subject_id' => $subjectId,
-'study_structures_id' => $phase->id,
-'modility_id' => $step->modility_id,
-];
-$qcLockFromStatus = '';
-$qcLockFormStatusObj = \Modules\FormSubmission\Entities\FormStatus::getFormStatusObj($getQCLockFormStatusArray);
-if(null !== $qcLockFormStatusObj) {
-    $qcLockFromStatus = $qcLockFormStatusObj->is_data_locked == 1 ? '<span class="" data-toggle="popover" data-trigger="hover" data-content="'.$qcLockFormStatusObj->is_data_locked_reason.'">
-                                        <i class="fas fa-lock"></i>
-                                    </span>' : '';
-}
-/*************** Form Lock *****************/
 @endphp
     @if ($step->formType->form_type == 'Others')
         <a class="badge p-1 {{ $badgeCls }} m-1 applyCss_{{ $stepClsStr }} {{ $stepClsStr }}  {{ $skipLogicStepIdStr }} {{ $active_form }}" href="javascript:void(0);"
@@ -33,8 +18,6 @@ if(null !== $qcLockFormStatusObj) {
             \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step,
             $getFormQCStatusArray, true);
             @endphp
-            
-            {!! $qcLockFromStatus !!}
         </a>
         <br>
     @endif

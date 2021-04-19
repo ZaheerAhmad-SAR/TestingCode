@@ -116,6 +116,9 @@
                     <form action="{{route('certification-device.index')}}" method="get" class="filter-form">
                         <div class="form-row" style="padding: 10px;">
 
+                            <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ request()->sort_by_field }}">
+                            <input type="hidden" name="sort_by_order" id="sort_by_order" value="{{ request()->sort_by_order }}">
+
                             <div class="form-group col-md-3">
                                 <label for="trans_id">Transmission#</label>
                                 <Select class="form-control filter-form-data filter-select" name="trans_id" id="trans_id">
@@ -236,15 +239,15 @@
                                         <th class="assign-transmission" style="display:none;">Select All
                                             <input type="checkbox" class="select_all" name="select_all" id="select_all">
                                         </th>
-                                        <th>Submitter Name</th>
-                                        <th>Certification</th>
-                                        <th>Study</th>
-                                        <th>Device Category</th>
-                                        <th>Device Serial</th>
-                                        <th>Site</th>
-                                        <th>Date</th>
+                                        <th onclick="changeSort('Study_Name');">Study <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('Site_Name');">Site <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('Device_Category');">Device Category <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('Device_Serial');">Device Serial <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('Request_MadeBy_FirstName');">Submitter Name <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('Requested_certification');">Certification <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('created_at');">Date <i class="fas fa-sort float-mrg"></i></th>
                                         <th>Certification Status</th>
-                                        <th>Transmission#</th>
+                                        <th onclick="changeSort('Transmission_Number');">Transmission# <i class="fas fa-sort float-mrg"></i></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -259,20 +262,15 @@
                                             <td class="assign-transmission" style="display:none;">
                                                 <input type="checkbox" class="check_transmission" name="check_transmission[{{ $transmission->id }}]" >
                                             </td>
-                                            <td>
-                                                @if($transmission->captureStatus == 'yes')
-                                                    <span class="badge badge-info" data-toggle="tooltip" title="Capture date is same!">
-                                                        {{ $transmission->Request_MadeBy_FirstName.' '.$transmission->Request_MadeBy_LastName }}
-                                                    </span>
-                                                @else
-                                                    {{ $transmission->Request_MadeBy_FirstName.' '.$transmission->Request_MadeBy_LastName }}
-                                               @endif   
-                                            </td>
-                                            <td> {{$transmission->Requested_certification}} </td>
                                             <td> {{$transmission->Study_Name}} </td>
+                                            <td> {{$transmission->Site_Name}} </td>
                                             <td> {{$transmission->Device_Category}} </td>
                                             <td> {{$transmission->Device_Serial}}</td>
-                                            <td> {{$transmission->Site_Name}} </td>
+                                            <td>                         
+                                                {{ $transmission->Request_MadeBy_FirstName.' '.$transmission->Request_MadeBy_LastName }}
+                                            </td>
+                                            <td> {{$transmission->Requested_certification}} </td>
+                                            
                                             <td> {{date('d-M-Y', strtotime($transmission->created_at))}} </td>
 
                                             <td>
@@ -321,8 +319,8 @@
                                             @if ($transmission->linkedTransmission != null)
 
                                             @foreach($transmission->linkedTransmission as $linkedTransmission)
-                                                <a href="{{ route('certification-device.edit', encrypt($linkedTransmission['id']))}}" id="view-transmission" class="" data-id="" title="Edit Certifaction Device Details" data-url="" style="color: #17a2b8 !important;">
-                                                    <strong>
+                                                <a href="{{ route('certification-device.edit', encrypt($linkedTransmission['id']))}}" id="view-transmission" class="" data-id="" title="Edit Certifaction Device Details" data-url="" >
+                                                    <strong style="color:@if($linkedTransmission['status'] == 'accepted') #0B6623 @elseif($linkedTransmission['status'] == 'rejected') red @else #17a2b8 @endif" >
                                                     {{ $linkedTransmission['Transmission_Number'] }}
                                                     </strong>
                                                 </a>
@@ -388,7 +386,7 @@
                                     @endif
                                 </tbody>
                             </table>
-                            {{ $getTransmissions->appends(['trans_id' => \Request::get('trans_id'), 'study' => \Request::get('study'), 'device_category' => \Request::get('device_category'), 'device_serial' => \Request::get('device_serial'), 'site' => \Request::get('site'), 'submitter_name' => \Request::get('submitter_name'), 'created_at' => \Request::get('created_at'), 'status' => \Request::get('status')])->links() }}
+                            {{ $getTransmissions->appends(['trans_id' => \Request::get('trans_id'), 'study' => \Request::get('study'), 'device_category' => \Request::get('device_category'), 'device_serial' => \Request::get('device_serial'), 'site' => \Request::get('site'), 'submitter_name' => \Request::get('submitter_name'), 'created_at' => \Request::get('created_at'), 'status' => \Request::get('status'), 'sort_by_field' => \Request::get('sort_by_field'), 'sort_by_order' => \Request::get('sort_by_order')])->links() }}
 
                             <!--Add  Modal -->
                             <div class="modal fade" id="assign-transmission-model" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -939,6 +937,23 @@
             element.removeTag(value);
         });
 
+    }
+
+    // Sort function
+    function changeSort(field_name) {
+        var sort_by_field = $('#sort_by_order').val();
+
+        if(sort_by_field == '' || sort_by_field =='ASC') {
+           $('#sort_by_order').val('DESC');
+           $('#sort_by_field').val(field_name);
+
+        } else if(sort_by_field =='DESC'){
+           $('#sort_by_order').val('ASC'); 
+           $('#sort_by_field').val(field_name);
+
+        }
+        //submit form
+        $('.filter-form').submit();
     }
 
 </script>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\backupCode;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Http\Request;
@@ -35,28 +36,32 @@ class Google2FAController extends Controller
      */
     public function enableTwoFactor(Request $request)
     {
-        
-         //generate new secret
-        $secret = $this->generateSecret();
 
-        //get user
+         //get user
         $user = $request->user();
-
-        //encrypt and then save secret
-       // dd(encrypt($secret));
-        $user->google2fa_secret = Crypt::encrypt($secret);
+        //generate new secret
+        $secret = $this->generateSecret();
 
         //generate image for QR barcode
         $google2fa = new Google2FA();
-
+        if(config('app.env') == 'live') {
+              $project_name='OCAP';
+              $project_url= 'ocap.oirrc.net';
+            }
+            else{
+              $project_name = 'DEVOCAP';
+              $project_url =   'devocap.oirrc.net';
+            }
         $inlineUrl = $google2fa->getQRCodeInline(
-            'OIRRC',
-            'info@oirrc.net',
-            $secret
-        );
-        $user->qr_flag = '0';
-        $user->google_auth = $inlineUrl;
-        $user->save();
+          $project_name,
+          $project_url , 
+          $secret    
+        ); 
+     
+                $user->qr_flag = '1';
+                $user->google_auth = $inlineUrl;
+                $user->google2fa_secret = $secret;
+                $user->save();   
 
 
         //generate backup codes
@@ -73,13 +78,36 @@ class Google2FAController extends Controller
             $bacup_code->backup_code = $code;
             $bacup_code->expiry_duration = Carbon::now()->addDays(60);
             $bacup_code->save();
+
         }
         $codes = backupCode::where('user_id','=',\auth()->user()->id)->get();
-      
+        $user = User::where('id',\Auth()->user()->id)->first();
+        return view('2fa/enableTwoFactor',compact('inlineUrl','secret','codes','user'));
 
-        return view('2fa/enableTwoFactor',compact('inlineUrl','secret','codes'));
     }
-  
+    public function verify_code(Request $request){
+        
+       $user = $request->user();
+        //dd($user);
+        $google2fa = new Google2FA();
+        $secret = $request->input('secret');
+        $valid = $google2fa->verifyKey($user->google2fa_secret, $secret);
+        if($valid){
+            $user->google2fa_secret->google2fa_enable = 1;
+            $user->google2fa_secret->save();
+            return redirect('2fa')->with('success',"2FA is enabled successfully.");
+        }else{
+            return redirect('2fa')->with('error',"Invalid verification Code, Please try again.");
+       //$current_totp=$google2fa->getCurrentOtp($user->google2fa_secret);
+    //     if(isset($request->totp) && $request->totp !=''){
+    //         if($inlineUrl == $secret_totp){
+    //         echo json_encode('Valide Code');
+    //     }else{
+    //         echo json_encode('InValid Code');
+    //     }
+    // }
+      }  
+     }
     /**
      *
      * @param \Illuminate\Http\Request $request
@@ -102,6 +130,14 @@ class Google2FAController extends Controller
         $user->google_auth = null;
 
         $user->save();
+        if(config('app.env') == 'live') {
+         unset($_COOKIE['ocap_live_remember_user']);
+               setcookie('ocap_live_remember_user', null, -1, '/');
+             }
+             else {
+                unset($_COOKIE['ocap_dev_remember_user']);
+               setcookie('ocap_dev_remember_user', null, -1, '/');
+             }
 
         return view('userroles::users.profile',compact('user','codes'));
     }
@@ -115,7 +151,7 @@ class Google2FAController extends Controller
     { 
         
         $randomBytes = random_bytes(10);
-        //dd($randomBytes);
+       
 
         return Base32::encodeUpper($randomBytes);
     }

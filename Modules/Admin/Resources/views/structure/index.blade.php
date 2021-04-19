@@ -7,7 +7,6 @@
         <div class="col-12 align-self-center">
             <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
                 <div class="w-sm-100 mr-auto"><h4 class="mb-0">Visits & Modalities Sections</h4></div>
-
                 <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                     <li class="breadcrumb-item">Dashboard</li>
                     <li class="breadcrumb-item">Study Structure</li>
@@ -785,7 +784,7 @@
                        "<td class='sec_name'>" + name + "</td>" +
                        "<td class='sec_desc'>" + description + "</td>" +
                        "<td>" + created_at + "</td>" +
-                       "<td style='width:13%'><span><i class='far fa-edit edit_sec' dusk='edit_sec_dusk' style='color: #34A853;cursor:pointer'></i></span>&nbsp;&nbsp;<span><i class='far fa-trash-alt delete_sec' style='color: #EA4335;cursor:pointer'></i></span>&nbsp;&nbsp;<span><i class='far fa-clone clone_section' style='color: ##530971;cursor:pointer'></i></span></td>" +
+                       "<td style='width:13%'><span><i class='far fa-edit edit_sec' dusk='edit_sec_dusk' style='color: #34A853;cursor:pointer' ></i></span>&nbsp;&nbsp;<span><i class='far fa-trash-alt delete_sec' dusk='delete_sec_dusk' style='color: #EA4335;cursor:pointer'></i></span>&nbsp;&nbsp;<span><i class='far fa-clone clone_section' dusk='clone_sec_dusk' style='color: ##530971;cursor:pointer'></i></span></td>" +
                      "</tr>";
 
                      $("#sectionTable").append(tr_str);

@@ -74,7 +74,7 @@ class DeviceController extends Controller
      */
     public function store(Request $request)
     {
-        if ($request->ajax()) {
+        if ($request->ajax()) { 
 
             $deviceID = $request->device_id;
 
