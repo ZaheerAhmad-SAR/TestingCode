@@ -92,12 +92,31 @@ class StudyTest extends DuskTestCase
                 ->press('@study-navbar')
                 ->press('@clone-study-modal')
                 ->waitForText('Clone Study')
-                ->type('@study_title', 'Clone An Open Label,with Scleritis ')
+               // ->type('@study_title','Clone of the Study!!!!!!')
                 ->press('@nav-Clone')
                 ->waitFor('#nav-Clone')
                 ->assertVisible('#nav-Clone')
-                ->pause('3434343434')
+                ->uncheck('studySites')
+                ->uncheck('studySubjects')
                 ->press('@clone-study-submit-button')
+                ->logout();
+        });
+    }
+
+    /* @test */
+    public function test_I_can_delete_a_study()
+    {
+        $user = User::where('name', 'Super Admin')->first();
+        $this->browse(function ($browser) use ($user) {
+            $browser->loginAs($user)
+                ->visit('/studies')
+                ->assertSee('Studies')
+                ->press('@study-navbar')
+                ->press('@delete-study')
+                ->assertDialogOpened('Are You sure want to delete !')
+                ->pause(10000000000)
+                ->acceptDialog('press OK')
+                ->pause(1000)
                 ->logout();
         });
     }
