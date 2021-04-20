@@ -26,12 +26,25 @@ class StudyusersController extends Controller
      */
     public function index(Request $request)
     {
-        // dd($request->all());
+        if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
+            $field_name = $request->sort_by_field_name;
+        }else{
+            $field_name = 'name';
+        }
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $asc_or_decs = $request->sort_by_field;
+        }else{
+            $asc_or_decs = 'ASC';
+        }
         $currentStudy = session('current_study');
-        $studyRoleIds = Role::where('role_type', '=', 'study_role')->pluck('id')->toArray();
+
+        // $studyRoleIds = Role::where('role_type', '=', 'study_role')->pluck('id')->toArray();
+        $studyRoleIds = Role::pluck('id')->toArray();
         $idsOfUsersWithStudyRole = UserRole::whereIn('role_id', $studyRoleIds)->pluck('user_id')->toArray();
+
         $roles  =   Role::where('role_type', '=', 'study_role')->get();
         $enrolledUserIds = RoleStudyUser::where('study_id', '=', session('current_study'))->pluck('user_id')->toArray();
+
         $studyusers = User::whereIn('id', $enrolledUserIds);
         if(isset($request->name) && $request->name !=''){
             $studyusers = $studyusers->where('users.name','like', '%'.$request->name.'%');
@@ -42,11 +55,17 @@ class StudyusersController extends Controller
         if(isset($request->role_id) && $request->role_id !=''){
             $studyusers = $studyusers->where('users.role_id','like', '%'. $request->role_id.'%');
         }
-        $studyusers = $studyusers->get();
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $studyusers = $studyusers->orderBy('users.'.$field_name , $request->sort_by_field);
+        }
+        $studyusers = $studyusers->paginate(\Auth::user()->user_prefrences->default_pagination)->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
+        $old_values = $request->input();
+
         $remaining_users = User::whereIn('id', $idsOfUsersWithStudyRole)
-            ->whereNotIn('id', $enrolledUserIds)->get();
+                                ->whereNotIn('id', $enrolledUserIds)
+                                ->get();
         $allroles = Role::all();
-        return view('userroles::users.studyUsers', compact('roles', 'studyusers', 'remaining_users','allroles'));
+        return view('userroles::users.studyUsers', compact('roles', 'studyusers', 'remaining_users','allroles','old_values'));
     }
 
     /**

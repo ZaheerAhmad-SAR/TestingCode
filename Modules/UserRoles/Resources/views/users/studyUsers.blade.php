@@ -13,22 +13,29 @@
                 </div>
             </div>
         </div>
+        
         <div class="card">
             <div class="card-body">
                 <form action="{{route('studyusers.index')}}" method="get" class="filter-form">
                     @csrf
+                    <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ getOldValue($old_values,'sort_by_field') }}">
+                    <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ getOldValue($old_values,'sort_by_field_name') }}">
                     <div class="form-row" style="padding: 10px;">
                         <div class="form-group col-md-3">
-                            <input type="text" name="name" class="form-control" placeholder="Name">
+                            <input type="text" name="name" class="form-control" value="{{ getOldValue($old_values,'name')}}" placeholder="Name">
                         </div>
                          <div class="form-group col-md-3">
-                            <input type="text" name="email" class="form-control" placeholder="Email">
+                            <input type="text" name="email" class="form-control" value="{{ getOldValue($old_values,'email')}}" placeholder="Email">
                         </div>
                         <div class="form-group col-md-3">
+                           @php
+                                $old_role_id ='';
+                                $old_role_id =  getOldValue($old_values,'role_id');
+                            @endphp 
                            <select class="form-control" name="role_id">
                                <option value="">Role</option>
                                @foreach($allroles as $key => $role)
-                                <option value="{{$role->id}}">{{$role->name}}</option>
+                                <option value="{{$role->id}}" @if($old_role_id == $role->id) selected @endif>{{$role->name}}</option>
                                @endforeach
                            </select>
                         </div>
@@ -80,10 +87,10 @@
                             <table class="table table-bordered editable-table" id="laravel_crud">
                                         <thead>
                                         <tr>
-                                            <th scope="col">Name</th>
-                                            <th scope="col">Email</th>
+                                            <th scope="col" onclick="changeSort('name');">Name <i class="fas fa-sort float-mrg"></i></th>
+                                            <th scope="col" onclick="changeSort('email');">Email <i class="fas fa-sort float-mrg"></i></th>
                                             <th scope="col">Role</th>
-                                            <th scope="col">Is Active?</th>
+                                            <th scope="col" onclick="changeSort('is_active');">Is Active? <i class="fas fa-sort float-mrg"></i></th>
                                             <th scope="col">Actions</th>
                                         </tr>
                                         </thead>
@@ -123,6 +130,7 @@
                                         @endforeach
                                         </tbody>
                             </table>
+                            {{ $studyusers->links()}}
                         </div>
                     </div>
                 </div>
@@ -442,6 +450,17 @@
                 });
 
             }
+        function changeSort(field_name){
+            var sort_by_field = $('#sort_by_field').val();
+            if(sort_by_field =='' || sort_by_field =='ASC'){
+               $('#sort_by_field').val('DESC');
+               $('#sort_by_field_name').val(field_name);
+            }else if(sort_by_field =='DESC'){
+               $('#sort_by_field').val('ASC'); 
+               $('#sort_by_field_name').val(field_name); 
+            }
+            $('.filter-form').submit();
+        }
     </script>
     @include('userroles::users.common_js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>

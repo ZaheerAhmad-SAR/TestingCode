@@ -5,15 +5,19 @@ namespace Modules\CertificationApp\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use Modules\Admin\Entities\Study;
 use Modules\Admin\Entities\Modility;
 use Modules\Admin\Entities\ChildModilities;
 use Modules\Admin\Entities\Device;
-
+use Modules\FormSubmission\Exports\FormSiteDataExport;
+use Modules\FormSubmission\Exports\FormPhotograperDataExport;
+use Modules\FormSubmission\Exports\FormDevicesDataExport;
 use Modules\CertificationApp\Entities\StudyModility;
 use Modules\CertificationApp\Entities\StudyDevice;
 use Modules\CertificationApp\Entities\StudySetup;
 use Modules\CertificationApp\Entities\CertificationTemplate;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Str;
 use Session;
@@ -119,7 +123,10 @@ class CertificationPreferencesController extends Controller
         // get all parent and child modalities
         $getModalities = ChildModilities::query();
         $getModalities = $getModalities->select('modilities.id as parent_modility_id', 'modilities.modility_name as parent_modility_name', 'child_modilities.id as child_modility_id', 'child_modilities.modility_name as child_modility_name')
-        ->leftjoin('modilities', 'modilities.id', '=', 'child_modilities.modility_id');
+        ->leftjoin('modilities', 'modilities.id', '=', 'child_modilities.modility_id')
+        ->whereNotNull('child_modilities.modility_id')
+        ->whereNULL('modilities.deleted_at')
+        ->whereNULL('child_modilities.deleted_at');
 
         if ($request->parent_modility != '') {
 
@@ -385,4 +392,73 @@ class CertificationPreferencesController extends Controller
 
         } // ajax ends
     }
+
+    public function showCertificationReport(Request $request) {
+
+        $old_cert_sites_array = DB::connection('mysql2')->table('site')->pluck('OIIRC_id')->where('status', '!=' , -1)->toArray();
+        $old_cert_sites_count = DB::connection('mysql2')->table('site')->pluck('OIIRC_id')->where('status', '!=' , -1)->count();
+
+      
+        $new_cert_sites_array = DB::connection('mysql')->table('sites')->pluck('site_code')->where('deleted_at', '=' , NULL)->toArray();
+        $new_cert_sites_count = DB::connection('mysql')->table('sites')->pluck('site_code')->where('deleted_at', '=' , NULL)->count();
+
+
+
+        $not_in_new_app_array = DB::connection('mysql2')->table('site')->whereNotIn('OIIRC_id', $new_cert_sites_array)->get();
+
+        $not_in_new_app_count = DB::connection('mysql2')->table('site')->whereNotIn('OIIRC_id', $new_cert_sites_array)->pluck('OIIRC_id')->count();
+
+       
+       //dd($not_in_new_app_array);
+       // dd("old_cert_sites_count".$old_cert_sites_count.'new_cert_sites_count'.$new_cert_sites_count.'not_in_new_app_count'.$not_in_new_app_count);
+
+
+        return view('certificationapp::certificate_preferences.certification_report', compact('old_cert_sites_array', 'old_cert_sites_count','new_cert_sites_count','not_in_new_app_array','not_in_new_app_count'));
+    }
+
+    public function showCertificationReportPhotograper(Request $request) {
+
+        $fileName =  'data-photograpers-export-' . date('Y-m-d-h-i-s') . '.xlsx';
+
+        return Excel::download(new FormPhotograperDataExport($request), $fileName);
+    }
+
+    public function showCertificationReportDevices(Request $request) {
+
+        $fileName =  'data-devices-export-' . date('Y-m-d-h-i-s') . '.xlsx';
+
+        return Excel::download(new FormDevicesDataExport($request), $fileName);
+      
+    }
+
+    public function exportSites(Request $request)
+    {
+        $fileName =  'data-site-export-' . date('Y-m-d-h-i-s') . '.xlsx';
+
+        return Excel::download(new FormSiteDataExport($request), $fileName);
+    }
+
+    public function getGrandFatherCertificateEmails(Request $request) {
+        
+        if($request->ajax()) {
+
+            $userEmails = [];
+            $userBCCEmails = [];
+
+            // get study id
+            $getStudy = Study::where('id', $request->study_id)->first();
+
+            $getStudyEmail = StudySetup::where('study_id', $getStudy->id)->first();
+            // cc email
+            $userEmails = $getStudyEmail != null ? explode(',', $getStudyEmail->study_cc_email) : [];
+            // study email
+            $userEmails[] = $getStudyEmail != null ? $getStudyEmail->study_email : '';
+
+            // get BCC email
+            $userBCCEmails = $getStudyEmail != null ? explode(',', $getStudyEmail->study_bcc_email) : [];
+
+            return response()->json(['userEmails' => array_filter($userEmails), 'userBCCEmails' => array_filter($userBCCEmails)]);
+        } // ajax ends
+    }
+
 }

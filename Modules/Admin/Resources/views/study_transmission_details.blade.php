@@ -69,8 +69,10 @@
 
                     <form action="{{route('transmissions.study-transmissions')}}" method="get" class="filter-form">
                         <div class="form-row" style="padding: 10px;">
-
+                            <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ request()->sort_by_field }}">
+                            <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ request()->sort_by_field_name }}">
                             <div class="form-group col-md-3">
+
                                 <label for="trans_id">Transmission#</label>
                                 <input type="text" name="trans_id" id="trans_id" class="form-control filter-form-data" value="{{ request()->trans_id }}" placeholder="Transmission#">
                             </div>
@@ -94,7 +96,7 @@
                                 <label for="imagine_modality">Imagine Modality</label>
                                 <input type="text" name="imagine_modality" id="imagine_modality" class="form-control filter-form-data" value="{{ request()->imagine_modality }}" placeholder="Imagine Modality">
                             </div>
-
+                            {{--
                              <div class="form-group col-md-2">
                                 <label for="inputState"> Modality </label>
                                 <select id="modility_id" name="modility_id" class="form-control filter-form-data">
@@ -104,8 +106,9 @@
                                     @endforeach
                                 </select>
                             </div>
+                            --}}
 
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-3">
                                 <label for="inputState"> Processed Status</label>
                                 <select id="is_read" name="is_read" class="form-control filter-form-data">
                                     <option value="">All Processed Status</option>
@@ -126,7 +129,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-2 mt-4">
+                            <div class="form-group col-md-3 mt-4">
                                 <button type="button" class="btn btn-primary reset-filter">Reset</button>
                                 <button type="submit" class="btn btn-primary btn-lng">Filter Record</button>
                             </div>
@@ -141,14 +144,14 @@
                             <table class="table table-bordered" id="laravel_crud">
                                 <thead class="table-secondary">
                                     <tr>
-                                        <th>Transmission#</th>
-                                        <th>Site ID</th>
-                                        <th>Subject ID</th>
-                                        <th>Visit</th>
-                                        <th>Date</th>
-                                        <th>Modality</th>
-                                        <th>Processed Status</th>
-                                        <th>Status</th>
+                                        <th onclick="changeSort('Transmission_Number');">Transmission# <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('Site_ID');">Site ID <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('Subject_ID');">Subject ID <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('visit_name');">Visit <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('visit_date');">Date <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('ImageModality');">Modality <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('is_read');">Processed Status <i class="fas fa-sort float-mrg"></i></th>
+                                        <th onclick="changeSort('status');">Status <i class="fas fa-sort float-mrg"></i></th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -233,7 +236,8 @@
                                     @endif
                                 </tbody>
                             </table>
-                             {{ $getTransmissions->links() }}
+
+                            {{ $getTransmissions->appends(['trans_id' => \Request::get('trans_id'), 'subject_id' => \Request::get('subject_id'), 'visit_name' => \Request::get('visit_name'), 'visit_date' => \Request::get('visit_date'), 'imagine_modality' => \Request::get('imagine_modality'), 'is_read' => \Request::get('is_read'), 'status' => \Request::get('status') ])->links() }}
 
                         </div>
                     </div>
@@ -274,10 +278,8 @@
                                 <div class="form-group row">
                                     <label for="Name" class="col-sm-2 col-form-label">CC:</label>
                                     @php
-
-                                $study_email = Modules\Admin\Entities\Preference::getPreference('STUDY_EMAIL');
-                                $study_cc_email = Modules\Admin\Entities\Preference::getPreference('STUDY_CC_EMAILS');
-
+                                        $study_email = Modules\Admin\Entities\Preference::getPreference('STUDY_EMAIL');
+                                        $study_cc_email = Modules\Admin\Entities\Preference::getPreference('STUDY_CC_EMAILS');
                                     @endphp
                                     <div class="col-sm-10">
                                         <input class="form-control" type="text" name="cc_email" id="cc_email" value="{{$study_email}},{{$study_cc_email}}">
@@ -436,7 +438,18 @@
 <script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
 
 <script type="text/javascript">
-
+    // sorting gride
+    function changeSort(field_name){
+        var sort_by_field = $('#sort_by_field').val();
+        if(sort_by_field =='' || sort_by_field =='ASC'){
+           $('#sort_by_field').val('DESC');
+           $('#sort_by_field_name').val(field_name);
+        }else if(sort_by_field =='DESC'){
+           $('#sort_by_field').val('ASC');
+           $('#sort_by_field_name').val(field_name);
+        }
+        $('.filter-form').submit();
+    }
     // Transmission Query  Work start
     function creatNewTransmissionsForQueries(transmission_Id)
     {
@@ -659,7 +672,8 @@
     });
 
     $('#transmissonQueryModal').on('hidden.bs.modal', function () {
-        $(this).find('form').trigger('reset');
+        //$(this).find('form').trigger('reset');
+        location.reload();
     })
 
     // Transmission End Work

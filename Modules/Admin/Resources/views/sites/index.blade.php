@@ -40,23 +40,25 @@
                 <form action="{{route('sites.index')}}" method="get" class="filter-form">
                     @csrf
                     <div class="form-row" style="padding: 10px;">
+                        <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ request()->sort_by_field }}">
+                        <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ getOldValue($old_values,'sort_by_field_name') }}">
                         <div class="form-group col-md-3">
-                            <input type="text" name="site_code" class="form-control" placeholder="Site Code">
-                        </div>
-                         <div class="form-group col-md-3">
-                           <input type="text" name="site_name" class="form-control" placeholder="Site Name">
-                        </div>
-                        <div class="form-group col-md-3">
-                            <input type="text" class="form-control" name="site_city" placeholder="Site City">
+                            <input type="text" name="site_code" class="form-control" placeholder="Site Code" value="{{ getOldValue($old_values,'site_code')}}">
                         </div>
                         <div class="form-group col-md-3">
-                            <input type="text" class="form-control" name="site_state" placeholder="Site State">
+                            <input type="text" name="site_name" class="form-control" placeholder="Site Name" value="{{ getOldValue($old_values,'site_name')}}">
                         </div>
                         <div class="form-group col-md-3">
-                            <input type="text" class="form-control" name="site_country" placeholder="Site Country">
+                            <input type="text" class="form-control" name="site_city" placeholder="Site City" value="{{ getOldValue($old_values,'site_city')}}">
                         </div>
                         <div class="form-group col-md-3">
-                            <input type="text" class="form-control" name="site_phone" placeholder="Site Contact">
+                            <input type="text" class="form-control" name="site_state" placeholder="Site State" value="{{ getOldValue($old_values,'site_state')}}">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" name="site_country" placeholder="Site Country" value="{{ getOldValue($old_values,'site_country')}}">
+                        </div>
+                        <div class="form-group col-md-3">
+                            <input type="text" class="form-control" name="site_phone" placeholder="Site Contact" value="{{ getOldValue($old_values,'site_phone')}}">
                         </div>
                         <div class="form-group col-md-3" style="text-align: right;">
                             <button class="btn btn-outline-warning reset-filter"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
@@ -72,21 +74,21 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         @if(hasPermission(auth()->user(),'sites.create'))
-                        <button type="button" class="btn btn-outline-primary" data-toggle="modal"
-                                data-target="#siteModal"> <i class="fa fa-plus blue-color"></i>Add Site
-                        </button>
-                            @endif
+                            <button type="button" class="btn btn-outline-primary" data-toggle="modal" dusk="siteModal"
+                                    data-target="#siteModal"> <i class="fa fa-plus blue-color"></i>Add Site
+                            </button>
+                        @endif
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
                             <table class="table table-bordered" id="laravel_crud">
                                 <thead>
                                 <tr>
-                                    <th>Code</th>
-                                    <th>Name</th>
-                                    <th>Address</th>
-                                    <th>City</th>
-                                    <th>State</th>
+                                    <th onclick="changeSort('site_code');">Code <i class="fas fa-sort float-mrg"></i></th>
+                                    <th onclick="changeSort('site_name');">Name <i class="fas fa-sort float-mrg"></i></th>
+                                    <th onclick="changeSort('site_address');">Address <i class="fas fa-sort float-mrg"></i></th>
+                                    <th onclick="changeSort('site_city');">City <i class="fas fa-sort float-mrg"></i></th>
+                                    <th onclick="changeSort('site_state');">State <i class="fas fa-sort float-mrg"></i></th>
                                     <th>Country</th>
                                     <th>Phone</th>
                                     <th style="width: 5%;">Action</th>
@@ -105,14 +107,14 @@
                                             <td>{{ucfirst($site->site_phone)}}</td>
                                             <td>
                                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                                    <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                                    <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;" dusk="sites-navtab"></i></span>
                                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                         @if(hasPermission(auth()->user(),'sites.edit'))
-                                                        <span class="dropdown-item" style="cursor: pointer;"><a data-toggle="modal" data-target="#siteModal" data-id="{{$site->id}}" class="editsiterecord"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
+                                                            <span class="dropdown-item" style="cursor: pointer;"><a data-toggle="modal" data-target="#siteModal" data-id="{{$site->id}}" class="editsiterecord" dusk="sites-edit"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
                                                         @endif
                                                         @if(hasPermission(auth()->user(),'sites.destroy'))
-                                                        <span class="dropdown-item" style="cursor: pointer;"><a data-id="{{$site->id}}" class="deletesiterecord"><i class="fa fa-trash"></i>&nbsp; Delete </a></span>
-                                                            @endif
+                                                            <span class="dropdown-item" style="cursor: pointer;"><a data-id="{{$site->id}}" class="deletesiterecord" dusk="sites-delete"><i class="fa fa-trash"></i>&nbsp; Delete </a></span>
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </td>
@@ -146,10 +148,11 @@
                     <nav>
                         <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
                             <a class="nav-item nav-link active" href="#siteInfo" aria-controls="siteInfo" role="tab" data-toggle="tab">Site Info</a>
-                            <a href="#primaryInvestigator" class="nav-item nav-link addTabs" aria-controls="primaryInvestigator" role="tab" >Primary Investigator</a>
-                            <a href="#coordinator" class="nav-item nav-link addTabs" aria-controls="coordinator" role="tab" >Coordinator</a>
-                            <a href="#photographer" class="nav-item nav-link addTabs" aria-controls="photographer" role="tab">Photographer</a>
-                            <a href="#others" class="nav-item nav-link addTabs" aria-controls="others" role="tab">Others</a>
+                            <a dusk="primaryInvestigator" href="#primaryInvestigator" class="nav-item nav-link addTabs" aria-controls="primaryInvestigator" role="tab" >Primary Investigator</a>
+                            <a dusk ="coordinator" href="#coordinator" class="nav-item nav-link addTabs" aria-controls="coordinator" role="tab" >Coordinator</a>
+                            <a dusk="photographer" href="#photographer" class="nav-item nav-link addTabs" aria-controls="photographer" role="tab">Photographer</a>
+                            <a dusk ="devices" href="#devices" class="nav-item nav-link addTabs" aria-controls="devices" role="tab">Devices</a>
+                            <a dusk="others" href="#others" class="nav-item nav-link addTabs" aria-controls="others" role="tab">Others</a>
                         </div>
                     </nav>
                     <!-- Tab panes -->
@@ -170,7 +173,7 @@
 
                                                     <label >Site Code <span class="required"></span> <span class="space_msg" style="font-size: 9px;color: red;"></span></label>
                                                     <input autofocus type="text" class="form-control variable_name_ques"
-                                                           name="site_code"  id="site_code"
+                                                           name="site_code"  id="site_code" dusk="site_code"
                                                            value="{{old('site_code')}}"  required onchange="siteCodeValue(this);"/>
                                                     <p id="site_code_uniqe"></p>
                                                     @error('site_code')
@@ -184,7 +187,7 @@
                                                 <div class="{!! ($errors->has('site_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
                                                     <label class="required">Site Name</label>
                                                     <input type="text" class="form-control"
-                                                           name="site_name" id="site_name"
+                                                           name="site_name" id="site_name" dusk="site_name"
                                                            value="{{old('site_name')}}" required/>
                                                     @error('site_name')
                                                     <span class="input-danger small">{{ $message }}</span>
@@ -195,7 +198,7 @@
                                             <div class="col-md-6">
                                                 <div class="{!! ($errors->has('autocomplete')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
                                                     <label>Find address</label>
-                                                    <input id="autocomplete" autocomplete="disabled"  class="form-control"
+                                                    <input id="autocomplete" name="autocomplete" autocomplete="disabled"  class="form-control" dusk="autocomplete"
                                                            placeholder="Find Address"
                                                            onFocus="geolocate()"
                                                            type="text"/>
@@ -208,7 +211,7 @@
                                             <div class="col-md-6">
                                                 <div class="{!! ($errors->has('fullAddr')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
                                                     <label class="required">Street Address</label>
-                                                    <input id="fullAddr" name="fullAddr" autocomplete="disabled" class="form-control" type="text"/>
+                                                    <input id="fullAddr" name="fullAddr" autocomplete="disabled" class="form-control" type="text" dusk="fullAddr"/>
                                                 </div>
                                                 @error('autocomplete')
                                                 <span class="input-danger small">{{ $message }}</span>
@@ -218,7 +221,7 @@
                                             <div class="col-md-6">
                                                 <div class="{!! ($errors->has('locality')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
                                                     <label class="required">City</label>
-                                                    <input type="text" class="form-control" id="locality" name="locality" value="{{old('locality')}}"/>
+                                                    <input type="text" class="form-control" id="locality" name="locality" dusk="locality" value="{{old('locality')}}"/>
                                                 </div>
                                                 @error('locality')
                                                 <span class="input-danger small">{{ $message }}</span>
@@ -229,7 +232,7 @@
                                             <div class="col-md-6">
                                                 <div class="{!! ($errors->has('administrative_area_level_1')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
                                                     <label class="required">State</label>
-                                                    <input type="text" class="form-control" id="administrative_area_level_1" name="administrative_area_level_1" value="{{old('administrative_area_level_1')}}" required/>
+                                                    <input type="text" class="form-control" dusk="administrative_area_level_1" id="administrative_area_level_1" name="administrative_area_level_1" value="{{old('administrative_area_level_1')}}" required/>
                                                 </div>
                                                 @error('administrative_area_level_1')
                                                 <span class="input-danger small">{{ $message }}</span>
@@ -239,7 +242,7 @@
                                             <div class="col-md-6">
                                                 <div class="{!! ($errors->has('postal_code')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
                                                     <label>Zip Code</label>
-                                                    <input type="text" class="form-control" id="postal_code" name="postal_code" value="{{old('postal_code')}}"/>
+                                                    <input type="text" dusk="postal_code" class="form-control" id="postal_code" name="postal_code" value="{{old('postal_code')}}"/>
                                                 </div>
                                                 @error('postal_code')
                                                 <span class="input-danger small">{{ $message }}</span>
@@ -249,7 +252,7 @@
                                             <div class="col-md-6">
                                                 <div class="{!! ($errors->has('country')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
                                                     <label class="required">Country</label>
-                                                    <input type="text" class="form-control" id="country"  name="country" value="{{old('country')}}" required />
+                                                    <input type="text" dusk="country" class="form-control" id="country"  name="country" value="{{old('country')}}" required />
                                                 </div>
                                                 @error('country')
                                                 <span class="input-danger small">{{ $message }}</span>
@@ -259,7 +262,7 @@
                                             <div class="col-md-6">
                                                 <div class="{!! ($errors->has('site_phone')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
                                                     <label class="required">Phone</label>
-                                                    <input type="text" class="form-control" id="site_phone" name="site_phone" value="{{old('site_phone')}}" required/>
+                                                    <input type="text" dusk="site_phone" class="form-control" id="site_phone" name="site_phone" value="{{old('site_phone')}}" required/>
                                                 </div>
                                                 @error('site_phone')
                                                 <span class="input-danger small">{{ $message }}</span>
@@ -269,7 +272,7 @@
                                         </div>
                                         <div class="modal-footer">
                                             @if(hasPermission(auth()->user(),'sites.store'))
-                                            <button type="submit" id="btn_site_info" class="btn btn-outline-primary"><i class="fa fa-save changeText"></i> Save</button>
+                                                <button type="submit" dusk="createSite" id="btn_site_info" class="btn btn-outline-primary"><i class="fa fa-save changeText"></i> Save</button>
                                                 <input type="hidden" name="sites_submit_actions" id="sites_submit_actions" value="Add">
                                             @endif
                                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close redirectPage" aria-hidden="true"></i> Close</button>
@@ -287,7 +290,7 @@
                                         <div class="{!! ($errors->has('first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">First Name</label>
-                                            <input type="text" class="form-control" id="pi_first_name"
+                                            <input type="text" class="form-control" id="pi_first_name" dusk="pi_first_name"
                                                    name="pi_first_name" value="{{old('pi_first_name')}}" required/>
                                             @error('pi_first_name')
                                             <span class="input-danger small">
@@ -301,7 +304,7 @@
                                             class="{!! ($errors->has('mid_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label>Middle Name</label>
-                                            <input type="text" class="form-control" id="pi_mid_name"
+                                            <input type="text" class="form-control" id="pi_mid_name" dusk="pi_mid_name"
                                                    name="pi_mid_name" value="{{old('pi_mid_name')}}"/>
                                             @error('mid_name')
                                             <span class="input-danger small">
@@ -315,7 +318,7 @@
                                         <div class="{!! ($errors->has('last_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Last Name</label>
-                                            <input type="text" class="form-control" id="pi_last_name"
+                                            <input type="text" class="form-control" id="pi_last_name" dusk="pi_last_name"
                                                    name="pi_last_name" value="{{old('pi_last_name')}}" required/>
                                             @error('last_name')
                                             <span class="input-danger small">
@@ -330,7 +333,7 @@
                                             class="{!! ($errors->has('phone')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label>Phone</label>
-                                            <input type="text" class="form-control" id="pi_phone"
+                                            <input type="text" class="form-control" id="pi_phone" dusk="pi_phone"
                                                    name="pi_phone" value="{{old('pi_phone')}}"/>
                                             @error('phone')
                                             <span class="input-danger small">
@@ -344,7 +347,7 @@
                                         <div class="{!! ($errors->has('email')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Email</label>
-                                            <input type="email" class="form-control" id="pi_email"
+                                            <input type="email" class="form-control" id="pi_email" dusk="pi_email"
                                                    name="pi_email" value="{{old('pi_email')}}" required/>
                                             @error('email')
                                             <span class="input-danger small">
@@ -360,7 +363,7 @@
 
                                     <div class="col-md-12">
                                         <div class="pull-right" style="text-align: right;">
-                                            <button type="submit" id="pi_button" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save</button>
+                                            <button type="submit" dusk="pi_button_save" id="pi_button" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save</button>
                                             <input type="hidden" name="pi_submit_actions" id="pi_submit_actions" value="Add">
                                             <input type="hidden" name="pi_id" id="pi_id" value="">
                                             <input type="hidden" name="pi_site_id" id="pi_site_id" value="">
@@ -399,7 +402,7 @@
                                         <div class="{!! ($errors->has('c_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">First Name</label>
-                                            <input type="text" class="form-control" id="c_first_name"
+                                            <input type="text" class="form-control" id="c_first_name" dusk="c_first_name"
                                                    name="c_first_name" value="{{old('c_first_name')}}" required/>
                                             @error('c_first_name')
                                             <span class="input-danger small">
@@ -413,7 +416,7 @@
                                             class="{!! ($errors->has('c_mid_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label>Middle Name</label>
-                                            <input type="text" class="form-control" id="c_mid_name"
+                                            <input type="text" class="form-control" id="c_mid_name" dusk="c_mid_name"
                                                    name="c_mid_name" value="{{old('c_mid_name')}}"/>
                                             @error('c_mid_name')
                                             <span class="input-danger small">
@@ -427,7 +430,7 @@
                                         <div class="{!! ($errors->has('last_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Last Name</label>
-                                            <input type="text" class="form-control" id="c_last_name"
+                                            <input type="text" class="form-control" id="c_last_name" dusk="c_last_name"
                                                    name="c_last_name" value="{{old('c_last_name')}}" required/>
                                             @error('c_last_name')
                                             <span class="input-danger small">
@@ -442,7 +445,7 @@
                                             class="{!! ($errors->has('c_phone')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label>Phone</label>
-                                            <input type="text" class="form-control" id="c_phone"
+                                            <input type="text" class="form-control" id="c_phone" dusk="c_phone"
                                                    name="c_phone" value="{{old('c_phone')}}"/>
                                             @error('c_phone')
                                             <span class="input-danger small">
@@ -456,7 +459,7 @@
                                         <div class="{!! ($errors->has('c_email')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Email</label>
-                                            <input type="email" class="form-control" id="c_email"
+                                            <input type="email" class="form-control" id="c_email" dusk="c_email"
                                                    name="c_email" value="{{old('email')}}" required/>
                                             @error('c_email')
                                             <span class="input-danger small">
@@ -472,7 +475,7 @@
 
                                     <div class="col-md-12">
                                         <div class="pull-right" style="text-align: right;">
-                                            <button type="submit" id="c_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
+                                            <button type="submit" dusk="c_button_save" id="c_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
                                             <input type="hidden" name="c_submit_actions" id="c_submit_actions" value="Add">
                                             <input type="hidden" name="c_id" id="c_id" value="">
                                             <input type="hidden" name="c_site_id" id="c_site_id" value= "">
@@ -504,7 +507,7 @@
                         </div>
                         <div role="tabpanel" class="tab-pane" id="photographer">
                             <form  name="photographerForm" id="photographerForm"
-                                  enctype="multipart/form-data" method="POST">
+                                   enctype="multipart/form-data" method="POST">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
                                 <input type="hidden" name="site_id"  value="">
                                 <div class="row" style="margin-top: 15px;">
@@ -512,7 +515,7 @@
                                         <div class="{!! ($errors->has('photographer_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">First Name</label>
-                                            <input type="text" class="form-control" id="photographer_first_name"
+                                            <input type="text" class="form-control" id="photographer_first_name" dusk="photographer_first_name"
                                                    name="photographer_first_name" value="{{old('photographer_first_name')}}" required/>
                                             @error('photographer_first_name')
                                             <span class="input-danger small">
@@ -526,7 +529,7 @@
                                             class="{!! ($errors->has('photographer_mid_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label>Middle Name</label>
-                                            <input type="text" class="form-control" id="photographer_mid_name"
+                                            <input type="text" class="form-control" id="photographer_mid_name" dusk="photographer_mid_name"
                                                    name="photographer_mid_name" value="{{old('photographer_mid_name')}}"/>
                                             @error('photographer_mid_name')
                                             <span class="input-danger small">
@@ -541,7 +544,7 @@
                                             class="{!! ($errors->has('photographer_last_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Last Name</label>
-                                            <input type="text" class="form-control" id="photographer_last_name"
+                                            <input type="text" class="form-control" id="photographer_last_name" dusk="photographer_last_name"
                                                    name="photographer_last_name" value="{{old('photographer_last_name')}}" required/>
                                             @error('photographer_last_name')
                                             <span class="input-danger small">
@@ -556,7 +559,7 @@
                                             class="{!! ($errors->has('photographer_phone')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label>Phone</label>
-                                            <input type="text" class="form-control" id="photographer_phone"
+                                            <input type="text" class="form-control" id="photographer_phone" dusk="photographer_phone"
                                                    name="photographer_phone" value="{{old('photographer_phone')}}"/>
                                             @error('photographer_phone')
                                             <span class="input-danger small">
@@ -571,7 +574,7 @@
                                             class="{!! ($errors->has('photographer_email')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Email</label>
-                                            <input type="email"  class="form-control" id="photographer_email"
+                                            <input type="email"  class="form-control" id="photographer_email" dusk="photographer_email"
                                                    name="photographer_email" value="{{old('photographer_email')}}" required/>
                                             @error('photographer_email')
                                             <span class="input-danger small">
@@ -587,7 +590,7 @@
 
                                     <div class="col-md-12">
                                         <div class="pull-right" style="text-align: right;">
-                                            <button type="submit" id="photographer_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
+                                            <button type="submit" dusk="photographer_button_save" id="photographer_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
 
                                             <input type="hidden" name="photographer_submit_actions" id="photographer_submit_actions" value="Add">
                                             <input type="hidden" name="photo_id" id="photo_id" value="">
@@ -618,6 +621,86 @@
                                 </div>
                             </form>
                         </div>
+                        <div role="tabpanel" class="tab-pane" id="devices">
+
+                            <div class="col-lg-12 success-alert-sec" style="display: none; margin-top: 10px;">
+                                <div class="success-msg-sec alert-primary success-msg text-center" role="alert" style="font-weight: bold;">
+                                </div>
+                            </div>
+
+                            <form  name="devicesForm" id="devicesForm" enctype="multipart/form-data" method="POST">
+                                <input type="hidden" name="_token" value="{{csrf_token()}}">
+                                <input type="hidden" name="site_id"  value="">
+                                <div class="form-group row" style="margin-top: 15px;">
+                                    <div class="col-md-4">
+                                        <div class="{!! ($errors->has('device_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
+                                            <label class="required">Device</label>
+                                            <select name="device_name" class="form-control" id="device_name" dusk="device_name">
+                                                <option value="">Select Devices</option>
+
+                                                @foreach($devices as $device)
+                                                    <option class="form-control" value="{{$device->device_name}}">{{$device->device_name}}</option>
+                                                @endforeach
+                                            </select>
+                                            @error('device_name')
+                                            <span class="input-danger small">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="{!! ($errors->has('device_serial')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
+                                            <label class="required">Device Serial #</label>
+                                            <input type="text" class="form-control" id="device_serial" name="device_serial" dusk="device_serial"  onchange="deviceSerialValue(this);" value="{{old('device_serial')}}" required/>
+                                            @error('device_serial')
+                                            <span class="input-danger small">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="{!! ($errors->has('device_software_version')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
+                                            <label>Device Software Version</label>
+                                            <input type="text" class="form-control" dusk="device_software_version" id="device_software_version" name="device_software_version" value="{{old('device_software_version')}}"/>
+                                            @error('device_software_version')
+                                            <span class="input-danger small">{{ $message }}</span>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+
+                                    <input type="hidden" id="devicejsonData" value=''>
+
+                                    <div class="col-md-12">
+                                        <div class="pull-right" style="text-align: right;">
+                                            <button type="submit" dusk="device_button_save" id="device_button" class="btn btn-outline-primary"><i class="fa fa-save">&nbsp;</i>Save</button>
+                                            <input type="hidden" name="device_submit_actions" id="device_submit_actions" value="Add">
+                                            <input type="hidden" name="device_id" id="device_id" value="">
+                                            <button type="button"  id="reset_device_button" class="btn btn-outline-warning"><i class="fas fa-undo-alt" aria-hidden="true">&nbsp;</i>Reset</button>
+                                            <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
+                                        </div>
+                                        <br>
+                                        <br>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <table class="table table-bordered deviceSiteTableAppend">
+                                            <thead>
+                                            <tr>
+                                                <th>Device Name</th>
+                                                <th>Device Serial #</th>
+                                                <th>Device Software Version</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                         <div role="tabpanel" class="tab-pane" id="others">
                             <form  name="othersForm" id="othersForm">
                                 <input type="hidden" name="_token" value="{{csrf_token()}}">
@@ -627,7 +710,7 @@
                                         <div class="{!! ($errors->has('others_first_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">First Name </label>
-                                            <input type="text" class="form-control" id="others_first_name"
+                                            <input type="text" class="form-control" id="others_first_name" dusk="others_first_name"
                                                    name="others_first_name" value="{{old('others_first_name')}}" required/>
                                             @error('others_first_name')
                                             <span class="input-danger small">
@@ -641,7 +724,7 @@
                                             class="{!! ($errors->has('others_mid_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label>Middle Name</label>
-                                            <input type="text" class="form-control" id="others_mid_name"
+                                            <input type="text" class="form-control" id="others_mid_name" dusk="others_mid_name"
                                                    name="others_mid_name" value="{{old('others_mid_name')}}"/>
                                             @error('others_mid_name')
                                             <span class="input-danger small">
@@ -655,7 +738,7 @@
                                         <div class="{!! ($errors->has('others_last_name')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Last Name</label>
-                                            <input type="text" class="form-control" id="others_last_name"
+                                            <input type="text" class="form-control" id="others_last_name" dusk="others_last_name"
                                                    name="others_last_name" value="{{old('others_last_name')}}" required/>
                                             @error('others_last_name')
                                             <span class="input-danger small">
@@ -670,7 +753,7 @@
                                             class="{!! ($errors->has('others_phone')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label>Phone</label>
-                                            <input type="text" class="form-control" id="others_phone"
+                                            <input type="text" class="form-control" id="others_phone" dusk="others_phone"
                                                    name="others_phone" value="{{old('others_phone')}}"/>
                                             @error('others_phone')
                                             <span class="input-danger small">
@@ -684,7 +767,7 @@
                                         <div class="{!! ($errors->has('others_email')) ?'form-group col-md-12 has-error':'form-group col-md-12' !!}">
 
                                             <label class="required">Email</label>
-                                            <input type="email" class="form-control" id="others_email"
+                                            <input type="email" class="form-control" id="others_email" dusk="others_email"
                                                    name="others_email" value="{{old('others_email')}}" required/>
                                             @error('others_email')
                                             <span class="input-danger small">
@@ -700,7 +783,7 @@
 
                                     <div class="col-md-12">
                                         <div class="pull-right" style="text-align: right;">
-                                            <button type="submit" id="others_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
+                                            <button type="submit" dusk="others_button_save" id="others_button" class="btn btn-outline-primary"><i class="fa fa-save"></i>Save</button>
                                             <input type="hidden" name="others_submit_actions" id="others_submit_actions" value="Add">
                                             <input type="hidden" name="others_id" id="others_id" value="">
                                             <input type="hidden" name="others_site_id" id="others_site_id" value= "">
@@ -736,162 +819,163 @@
     </div>
 @endsection
 @section('script')
-{{--    <script src="{{asset('public/dist/js/sites.js')}}"></script>--}}
+    {{--    <script src="{{asset('public/dist/js/sites.js')}}"></script>--}}
 
-<!-- Queries Model scripts start -->
-<script src="{{ asset("dist/vendors/select2/js/select2.full.min.js") }}"></script>
-<script src="{{ asset("dist/js/select2.script.js") }}"></script>
-<script src="{{ asset("dist/vendors/summernote/summernote-bs4.js") }}"></script>
-<script src="{{ asset("dist/js/summernote.script.js") }}"></script>
+    <!-- Queries Model scripts start -->
+    <script src="{{ asset("dist/vendors/select2/js/select2.full.min.js") }}"></script>
+    <script src="{{ asset("dist/js/select2.script.js") }}"></script>
+    <script src="{{ asset("dist/vendors/summernote/summernote-bs4.js") }}"></script>
+    <script src="{{ asset("dist/js/summernote.script.js") }}"></script>
 
-<!-- Queries Model scripts end -->
-<script type="text/javascript">
-    var placeSearch, autocomplete;
-    var componentForm = {
-        street_number: 'short_name',
-        route: 'long_name',
-        locality: 'long_name',
-        administrative_area_level_1: 'short_name',
-        country: 'long_name',
-        postal_code: 'short_name',
+    <!-- Queries Model scripts end -->
+    <script type="text/javascript">
+        var placeSearch, autocomplete;
+        var componentForm = {
+            street_number: 'short_name',
+            route: 'long_name',
+            locality: 'long_name',
+            administrative_area_level_1: 'short_name',
+            country: 'long_name',
+            postal_code: 'short_name',
 
-    };
+        };
 
-    function initAutocomplete() {
-        // Create the autocomplete object, restricting the search predictions to
-        // geographical location types.
-        autocomplete = new google.maps.places.Autocomplete(
-            document.getElementById('autocomplete'), {types: ['geocode']});
-        autocomplete.addListener('place_changed', fillInAddress);
-    }
-
-    // [START region_fillform]
-    function fillInAddress() {
-        // Get the place details from the autocomplete object.
-        var place = autocomplete.getPlace();
-
-        for (var component in componentForm) {
-            document.getElementById(component).value = '';
-            document.getElementById(component).disabled = false;
+        function initAutocomplete() {
+            // Create the autocomplete object, restricting the search predictions to
+            // geographical location types.
+            autocomplete = new google.maps.places.Autocomplete(
+                document.getElementById('autocomplete'), {types: ['geocode']});
+            autocomplete.addListener('place_changed', fillInAddress);
         }
 
-        // Get each component of the address from the place details
-        // and fill the corresponding field on the form.
-        var fullAddress =[];
-        for (var i = 0; i < place.address_components.length; i++) {
-            var addressType = place.address_components[i].types[0];
-            if (componentForm[addressType]) {
-                var val = place.address_components[i][componentForm[addressType]];
-                document.getElementById(addressType).value = val;
-            }
-            if (addressType == "street_number") {
-                fullAddress[0] = val;
-            } else if (addressType == "route") {
-                fullAddress[1] = val;
-            }
-        }
-        document.getElementById('fullAddr').value = fullAddress.join(" ");
-        if (document.getElementById('fullAddr').value !== "") {
-            document.getElementById('fullAddr').disabled = false;
-        }
-    }
+        // [START region_fillform]
+        function fillInAddress() {
+            // Get the place details from the autocomplete object.
+            var place = autocomplete.getPlace();
 
-    // Bias the autocomplete object to the user's geographical location,
-    // as supplied by the browser's 'navigator.geolocation' object.
-    function geolocate() {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                var geolocation = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
-                var circle = new google.maps.Circle({
-                    center: geolocation,
-                    radius: position.coords.accuracy
-                });
-                autocomplete.setBounds(circle.getBounds());
-            });
-        }
-    }
+            for (var component in componentForm) {
+                document.getElementById(component).value = '';
+                document.getElementById(component).disabled = false;
+            }
 
-    // Add New Primary Investigator
-    function addPrimaryInvestigator(){
-        $("#primaryInvestigatorForm").submit(function(e) {
-            var first_name        = $('#pi_first_name').val();
-            var p_mid_name        = $('#pi_mid_name').val();
-            var p_last_name       = $('#pi_last_name').val();
-            var p_phone           = $('#pi_phone').val();
-            var p_email           = $('#pi_email').val();
-            var pi_id             = $('#pi_id').val();
-            var pi_submit_actions = $('#pi_submit_actions').val();
-            $('#primaryInvestigatorForm').find($('input[name="site_id"]').val($('#site_id').val()));
-            if(pi_submit_actions  == 'Add')
-            {
-                var action_url = "{{ route('primaryinvestigator.store') }}";
-            }
-            else
-            {
-                var action_url = "{{ route('primaryinvestigator.update') }}";
-            }
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
+            // Get each component of the address from the place details
+            // and fill the corresponding field on the form.
+            var fullAddress =[];
+            for (var i = 0; i < place.address_components.length; i++) {
+                var addressType = place.address_components[i].types[0];
+                if (componentForm[addressType]) {
+                    var val = place.address_components[i][componentForm[addressType]];
+                    document.getElementById(addressType).value = val;
                 }
-            });
-            e.preventDefault();
-            $.ajax({
-                data: $('#primaryInvestigatorForm').serialize(),
-                url: action_url,
-                type: "POST",
-                dataType: 'json',
-                success: function (results) {
-                    //console.log(results);
-                    var primary_investigator_id = results.id;
-                    var html    =   '';
+                if (addressType == "street_number") {
+                    fullAddress[0] = val;
+                } else if (addressType == "route") {
+                    fullAddress[1] = val;
+                }
+            }
+            document.getElementById('fullAddr').value = fullAddress.join(" ");
+            if (document.getElementById('fullAddr').value !== "") {
+                document.getElementById('fullAddr').disabled = false;
+            }
+        }
 
-                    if(pi_submit_actions == 'Add') {
+        // Bias the autocomplete object to the user's geographical location,
+        // as supplied by the browser's 'navigator.geolocation' object.
+        function geolocate() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var geolocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    var circle = new google.maps.Circle({
+                        center: geolocation,
+                        radius: position.coords.accuracy
+                    });
+                    autocomplete.setBounds(circle.getBounds());
+                });
+            }
+        }
 
-                        html    += '<tr id='+primary_investigator_id+'>\n'+
-                            '<td>'+first_name + '   '.repeat(4)+p_last_name+'</td>\n'+
-                            '<td>'+p_phone+'</td>\n' +
-                            '<td>'+p_email+'</td>\n' +
-                            '<td><i style="color: #EA4335;" class="fa fa-trash deleteprimaryinvestigator" data-id ='+primary_investigator_id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editprimaryinvestigator" data-id ='+primary_investigator_id+'></i>'+
-                            '</td>\n' +
-                            '</tr>';
+        // Add New Primary Investigator
 
-                        $('.primaryInvestigatorTableAppend tbody').prepend(html);
+            $("#primaryInvestigatorForm").submit(function(e) {
+                var first_name        = $('#pi_first_name').val();
+                var p_mid_name        = $('#pi_mid_name').val();
+                var p_last_name       = $('#pi_last_name').val();
+                var p_phone           = $('#pi_phone').val();
+                var p_email           = $('#pi_email').val();
+                var pi_id             = $('#pi_id').val();
+                var pi_submit_actions = $('#pi_submit_actions').val();
+                $('#primaryInvestigatorForm').find($('input[name="site_id"]').val($('#site_id').val()));
+                if(pi_submit_actions  == 'Add')
+                {
+                    var action_url = "{{ route('primaryinvestigator.store') }}";
+                }
+                else
+                {
+                    var action_url = "{{ route('primaryinvestigator.update') }}";
+                }
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
                     }
-                    else{
+                });
+                e.preventDefault();
+                $.ajax({
+                    data: $('#primaryInvestigatorForm').serialize(),
+                    url: action_url,
+                    type: "POST",
+                    dataType: 'json',
+                    success: function (results) {
+                        //console.log(results);
+                        var primary_investigator_id = results.id;
+                        var html    =   '';
 
-                        $.each(results, function(index,row)
-                        {
-                            //console.log(results);
-                            html    += '<tr id='+row.id+'>\n'+
-                                '<td>'+row.first_name + '  '.repeat(4)+row.last_name+'</td>\n'+
-                                '<td>'+row.phone+'</td>\n' +
-                                '<td>'+row.email+'</td>\n' +
-                                '<td><i style="color: #EA4335;" class="fa fa-trash deleteprimaryinvestigator" data-id ='+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editprimaryinvestigator" data-id ='+row.id+'></i>'+
+                        if(pi_submit_actions == 'Add') {
+
+                            html    += '<tr id='+primary_investigator_id+'>\n'+
+                                '<td>'+first_name + '   '.repeat(4)+p_last_name+'</td>\n'+
+                                '<td>'+p_phone+'</td>\n' +
+                                '<td>'+p_email+'</td>\n' +
+                                '<td><i style="color: #EA4335;" class="fa fa-trash deleteprimaryinvestigator" data-id ='+primary_investigator_id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editprimaryinvestigator" data-id ='+primary_investigator_id+'></i>'+
                                 '</td>\n' +
                                 '</tr>';
-                        });
 
-                        $('.primaryInvestigatorTableAppend tbody').html(html);
+                            $('.primaryInvestigatorTableAppend tbody').prepend(html);
+                        }
+                        else{
 
+                            $.each(results, function(index,row)
+                            {
+                                //console.log(results);
+                                html    += '<tr id='+row.id+'>\n'+
+                                    '<td>'+row.first_name + '  '.repeat(4)+row.last_name+'</td>\n'+
+                                    '<td>'+row.phone+'</td>\n' +
+                                    '<td>'+row.email+'</td>\n' +
+                                    '<td><i style="color: #EA4335;" class="fa fa-trash deleteprimaryinvestigator" data-id ='+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editprimaryinvestigator" data-id ='+row.id+'></i>'+
+                                    '</td>\n' +
+                                    '</tr>';
+                            });
+
+                            $('.primaryInvestigatorTableAppend tbody').html(html);
+
+                        }
+
+                        $('#primaryInvestigatorForm').trigger("reset");
+                    },
+                    error: function (results) {
+                        console.log('Error:', results);
+                        //$('#saveChild').html('Save Changes');
                     }
-
-                    $('#primaryInvestigatorForm').trigger("reset");
-                },
-                error: function (results) {
-                    console.log('Error:', results);
-                    //$('#saveChild').html('Save Changes');
-                }
+                });
             });
-        });
-    }
-    addPrimaryInvestigator();
-    // End of primary Investigator
 
-    // Primary Investigator Delete function
+        // End of primary Investigator
+
+// *************************************************************************************** //
+
+        // Primary Investigator Delete function
 
         $('body').on('click', '.deleteprimaryinvestigator', function () {
             $.ajaxSetup({
@@ -920,79 +1004,81 @@
         });
 
 
-    function resetprimaryinvestigatorForm() {
-        $("#rest_pi_button").click(function(){
-            $("#pi_submit_actions").attr('value', 'Add');
-            $("#primaryInvestigatorForm").trigger("reset");
-        });
-    }
-    resetprimaryinvestigatorForm();
-
-    function resetcoordinatorForm() {
-        $("#reset_c_button").click(function(){
-            $("#c_submit_actions").attr('value', 'Add');
-            $("#coordinatorForm").trigger("reset");
-        });
-    }
-    resetcoordinatorForm();
-
-    function resetphotographerForm()
-    {
-        $("#reset_photographer_button").click(function(){
-            $("#photographer_submit_actions").attr('value', 'Add');
-            $("#photographerForm").trigger("reset");
-        });
-    }
-    resetphotographerForm();
-
-    function resetothersForm()
-    {
-        $("#reset_others_button").click(function(){
-            $("#others_submit_actions").attr('value', 'Add');
-            $("#othersForm").trigger("reset");
-        });
-    }
-
-    resetothersForm();
-    //// show Coordinator function
-
-    function showCoordinator() {
-        $('body').on('click', '.editCoordinator', function (e) {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
+        // function reset primary investigator Form
+            $("#rest_pi_button").click(function(){
+                $("#pi_submit_actions").attr('value', 'Add');
+                $("#primaryInvestigatorForm").trigger("reset");
             });
-            var id =($(this).attr("data-id"));
 
-            var url = "{{URL('coordinator')}}";
 
-            var newPath = url+ "/"+ id+"/edit/";
+        // function reset coordinator Form
 
-            $.ajax({
-                type:"GET",
-                dataType: 'html',
-                url:newPath,
-                success : function(results) {
-                    var parsedata = JSON.parse(results)[0];
-                    console.log(parsedata);
-                    $('#c_id').val(parsedata.id);
-                    $('#c_site_id').val(parsedata.site_id);
-                    $('#c_submit_actions').val('Edit');
-                    $('#c_first_name').val(parsedata.first_name);
-                    $('#c_mid_name').val(parsedata.mid_name);
-                    $('#c_last_name').val(parsedata.last_name);
-                    $('#c_phone').val(parsedata.phone);
-                    $('#c_email').val(parsedata.email);
-                }
+            $("#reset_c_button").click(function(){
+                $("#c_submit_actions").attr('value', 'Add');
+                $("#coordinatorForm").trigger("reset");
             });
-        });
-    }
-    showCoordinator();
 
 
-    //// show Primary Investigator function
-    function showPrimaryInvestigator() {
+        /// function reset photographer Form
+
+            $("#reset_photographer_button").click(function(){
+                $("#photographer_submit_actions").attr('value', 'Add');
+                $("#photographerForm").trigger("reset");
+            });
+
+
+        /// function reset others Form
+
+            $("#reset_others_button").click(function(){
+                $("#others_submit_actions").attr('value', 'Add');
+                $("#othersForm").trigger("reset");
+            });
+
+
+            /// function reset Device Site  Form
+
+            $("#reset_device_button").click(function(){
+                $("#device_submit_actions").attr('value', 'Add');
+                $("#devicesForm").trigger("reset");
+            });
+
+
+         //// show Coordinator function
+
+            $('body').on('click', '.editCoordinator', function (e) {
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                var id =($(this).attr("data-id"));
+
+                var url = "{{URL('coordinator')}}";
+
+                var newPath = url+ "/"+ id+"/edit/";
+
+                $.ajax({
+                    type:"GET",
+                    dataType: 'html',
+                    url:newPath,
+                    success : function(results) {
+                        var parsedata = JSON.parse(results)[0];
+                        console.log(parsedata);
+                        $('#c_id').val(parsedata.id);
+                        $('#c_site_id').val(parsedata.site_id);
+                        $('#c_submit_actions').val('Edit');
+                        $('#c_first_name').val(parsedata.first_name);
+                        $('#c_mid_name').val(parsedata.mid_name);
+                        $('#c_last_name').val(parsedata.last_name);
+                        $('#c_phone').val(parsedata.phone);
+                        $('#c_email').val(parsedata.email);
+                    }
+                });
+            });
+
+
+
+        //// show Primary Investigator function
         $('body').on('click', '.editprimaryinvestigator', function (e) {
             $.ajaxSetup({
                 headers: {
@@ -1022,10 +1108,9 @@
                 }
             });
         });
-    }
-    showPrimaryInvestigator();
 
-    // Add New Photographer
+
+        // Add New Photographer
 
         $("#photographerForm").submit(function(e) {
 
@@ -1095,67 +1180,133 @@
             });
         });
 
-    // End of Photographer
-    ///////////////////////
+        // End of Photographer
+        ///////////////////////
 
 
-    //// show Photographer function
+        //// show Photographer function
 
-    function showPhotographer()
-    {
         $('body').on('click', '.editPhotographer', function (e) {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                var id =($(this).attr("data-id"));
+
+                var url = "{{URL('photographers')}}";;
+
+                var newPath = url+ "/"+ id+"/edit/";
+                $.ajax({
+                    type:"GET",
+                    dataType: 'html',
+                    url:newPath,
+                    success : function(results) {
+                        var parsedata = JSON.parse(results)[0];
+                        $('#photo_id').val(parsedata.id);
+                        $('#photographer_site_id').val(parsedata.site_id);
+                        $('#photographer_submit_actions').val('Edit');
+                        $('#photographer_first_name').val(parsedata.first_name);
+                        $('#photographer_mid_name').val(parsedata.mid_name);
+                        $('#photographer_last_name').val(parsedata.last_name);
+                        $('#photographer_phone').val(parsedata.phone);
+                        $('#photographer_email').val(parsedata.email);
+                    }
+                });
             });
-            var id =($(this).attr("data-id"));
 
-            var url = "{{URL('photographers')}}";;
+        //// end of show Photographer function
 
-            var newPath = url+ "/"+ id+"/edit/";
-            $.ajax({
-                type:"GET",
-                dataType: 'html',
-                url:newPath,
-                success : function(results) {
-                    var parsedata = JSON.parse(results)[0];
-                    $('#photo_id').val(parsedata.id);
-                    $('#photographer_site_id').val(parsedata.site_id);
-                    $('#photographer_submit_actions').val('Edit');
-                    $('#photographer_first_name').val(parsedata.first_name);
-                    $('#photographer_mid_name').val(parsedata.mid_name);
-                    $('#photographer_last_name').val(parsedata.last_name);
-                    $('#photographer_phone').val(parsedata.phone);
-                    $('#photographer_email').val(parsedata.email);
+        // Add New Coordinator
+
+            $("#coordinatorForm").submit(function(e) {
+                var c_first_name   = $('#c_first_name').val();
+                var c_mid_name   = $('#c_mid_name').val();
+                var c_last_name  = $('#c_last_name').val();
+                var c_phone      = $('#c_phone').val();
+                var c_email      = $('#c_email').val();
+                var c_id = $('#c_id').val();
+                var c_submit_actions = $('#c_submit_actions').val();
+                $('#coordinatorForm').find($('input[name="site_id"]').val($('#site_id').val()));
+
+                if(c_submit_actions == 'Add')
+                {
+                    var action_url = "{{ route('coordinator.store') }}";
                 }
+                else
+                {
+                    var action_url = "{{ route('coordinator.update') }}";
+                }
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                e.preventDefault();
+                $.ajax({
+                    data: $('#coordinatorForm').serialize(),
+                    url: action_url,
+                    type: "POST",
+                    dataType: 'json',
+                    success: function (results) {
+                        //console.log(results);
+                        var coordinator_id = results[0].id;
+                        var html    =   '';
+                        if(c_submit_actions == 'Add')
+                        {
+                            html    += '<tr id= '+coordinator_id+'>\n' +
+                                '<td>'+c_first_name + '   '.repeat(4)+c_last_name+'</td>\n'+
+                                '<td>'+c_phone+'</td>\n' +
+                                '<td>'+c_email+'</td>\n' +
+                                '<td><i style="color: #EA4335;" class="fa fa-trash deleteCoordinator" data-id ='+coordinator_id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editCoordinator" data-id ='+coordinator_id+'></i></td>\n' +
+                                '</tr>';
+                            $('.CtableAppend tbody').prepend(html);
+                        }
+                        else
+                        {
+                            $.each(results, function(index,row)
+                            {
+                                console.log(results[0].index);
+                                html    += '<tr id= '+row.id+'>\n' +
+                                    '<td>'+row.first_name + '   '.repeat(4)+row.last_name+'</td>\n'+
+                                    '<td>'+row.phone+'</td>\n' +
+                                    '<td>'+row.email+'</td>\n' +
+                                    '<td><i style="color: #EA4335;" class="fa fa-trash deleteCoordinator" data-id ='+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editCoordinator" data-id ='+row.id+'></i></td>\n' +
+                                    '</tr>';
+                            });
+                            $('.CtableAppend tbody').html(html);
+
+                        }
+                        $('#coordinatorForm').trigger("reset");
+                    },
+                    error: function (results) {
+                        console.log('Error:', results);
+                        //$('#saveChild').html('Save Changes');
+                    }
+                });
             });
-        });
-    }
-    showPhotographer();
 
-    // Add New Coordinator
-    function addCoordinator()
-    {
-        $("#coordinatorForm").submit(function(e) {
-            var c_first_name   = $('#c_first_name').val();
-            var c_mid_name   = $('#c_mid_name').val();
-            var c_last_name  = $('#c_last_name').val();
-            var c_phone      = $('#c_phone').val();
-            var c_email      = $('#c_email').val();
-            var c_id = $('#c_id').val();
-            var c_submit_actions = $('#c_submit_actions').val();
-            $('#coordinatorForm').find($('input[name="site_id"]').val($('#site_id').val()));
+        // End of Add Coordinator
 
-            if(c_submit_actions == 'Add')
+        // Add Devices to sites
+        $("#devicesForm").submit(function(e) {
+
+            var device_name = $('#device_name').val();
+            var device_serial   = $('#device_serial').val();
+            var device_software_version = $('#device_software_version').val();
+            var device_id         = $('#device_id').val();
+            var device_submit_actions = $('#device_submit_actions').val();
+
+            $('#devicesForm').find($('input[name="site_id"]').val($('#site_id').val()));
+            if(device_submit_actions == 'Add')
             {
-                var action_url = "{{ route('coordinator.store') }}";
+                var action_url = "{{ route('deviceSite.store') }}";
             }
             else
             {
-                var action_url = "{{ route('coordinator.update') }}";
+                var action_url = "{{ route('deviceSite.update') }}";
             }
-
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -1163,40 +1314,46 @@
             });
             e.preventDefault();
             $.ajax({
-                data: $('#coordinatorForm').serialize(),
+                data: $('#devicesForm').serialize(),
                 url: action_url,
                 type: "POST",
                 dataType: 'json',
                 success: function (results) {
-                    //console.log(results);
-                    var coordinator_id = results[0].id;
+                    var device_id = results[0].id;
+                    console.log(results);
                     var html    =   '';
-                    if(c_submit_actions == 'Add')
+
+                    if(device_submit_actions == 'Add')
                     {
-                        html    += '<tr id= '+coordinator_id+'>\n' +
-                            '<td>'+c_first_name + '   '.repeat(4)+c_last_name+'</td>\n'+
-                            '<td>'+c_phone+'</td>\n' +
-                            '<td>'+c_email+'</td>\n' +
-                            '<td><i style="color: #EA4335;" class="fa fa-trash deleteCoordinator" data-id ='+coordinator_id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editCoordinator" data-id ='+coordinator_id+'></i></td>\n' +
+                        html += '<tr id=' + device_id + '>\n' +
+                            '<td>' + device_name + '</td>\n' +
+                            '<td>' + device_serial + '</td>\n' +
+                            '<td>' + device_software_version + '</td>\n' +
+                            '<td><i style="color: #EA4335;" class="fa fa-trash deletedevice" data-id =' + device_id + '></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" data-id = ' + device_id + ' class="icon-pencil editdevice"></i></td>\n' +
                             '</tr>';
-                        $('.CtableAppend tbody').prepend(html);
+
+                        $('.deviceSiteTableAppend tbody').prepend(html);
+
                     }
                     else
                     {
+
                         $.each(results, function(index,row)
                         {
                             console.log(results[0].index);
-                            html    += '<tr id= '+row.id+'>\n' +
-                                '<td>'+row.first_name + '   '.repeat(4)+row.last_name+'</td>\n'+
-                                '<td>'+row.phone+'</td>\n' +
-                                '<td>'+row.email+'</td>\n' +
-                                '<td><i style="color: #EA4335;" class="fa fa-trash deleteCoordinator" data-id ='+row.id+'></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" class="icon-pencil editCoordinator" data-id ='+row.id+'></i></td>\n' +
+                            html += '<tr id=' + row.id + '>\n' +
+                                '<td>' + row.device_name + '</td>\n' +
+                                '<td>' + row.device_serial + '</td>\n' +
+                                '<td>' + row.device_software_version + '</td>\n' +
+                                '<td><i style="color: #EA4335;" class="fa fa-trash deletedevice" data-id =' + row.id + '></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" data-id = ' + row.id + ' class="icon-pencil editdevice"></i></td>\n' +
                                 '</tr>';
                         });
-                        $('.CtableAppend tbody').html(html);
+
+                        $('.deviceSiteTableAppend tbody').html(html);
 
                     }
-                    $('#coordinatorForm').trigger("reset");
+
+                    $('#devicesForm').trigger("reset");
                 },
                 error: function (results) {
                     console.log('Error:', results);
@@ -1204,11 +1361,9 @@
                 }
             });
         });
-    }
-    addCoordinator();
-    // End of Coordinator
 
-    function showOthers() {
+        // Edit Others
+
         $('body').on('click', '.editOthers', function (e) {
             $.ajaxSetup({
                 headers: {
@@ -1239,104 +1394,126 @@
                 }
             });
         });
-    }
 
-    showOthers();
-
-    // Add New Others
-    function addOthers() {
-        $("#othersForm").submit(function(e) {
-            var others_first_name = $('#others_first_name').val();
-            var others_mid_name   = $('#others_mid_name').val();
-            var others_last_name  = $('#others_last_name').val();
-            var others_phone      = $('#others_phone').val();
-            var others_email      = $('#others_email').val();
-            var others_id         = $('#others_id').val();
-            var others_submit_actions = $('#others_submit_actions').val();
-            $('#othersForm').find($('input[name="site_id"]').val($('#site_id').val()));
-            if(others_submit_actions == 'Add')
-            {
-                var action_url = "{{ route('others.store') }}";
-            }
-            else
-            {
-                var action_url = "{{ route('others.update') }}";
-            }
+        //// Edit Devices /////
+        $('body').on('click', '.editdevice', function (e) {
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            e.preventDefault();
+            var id =($(this).attr("data-id"));
+
+            var url = "{{URL('deviceSite')}}";
+
+            var newPath = url+ "/"+ id+"/edit/";
+
             $.ajax({
-                data: $('#othersForm').serialize(),
-                url: action_url,
-                type: "POST",
-                dataType: 'json',
-                success: function (results) {
-                    var others_id = results[0].id;
+                type:"GET",
+                dataType: 'html',
+                url:newPath,
+                success : function(results) {
+                    var parsedata = JSON.parse(results)[0];
+                    $('#device_id').val(parsedata.id);
+                    $('#device_site_id').val(parsedata.site_id);
+                    $('#device_submit_actions').val('Edit');
+                    $('#device_name').val(parsedata.device_name);
+                    $('#device_serial').val(parsedata.device_serial);
+                    $('#device_software_version').val(parsedata.device_software_version);
 
-                    var html    =   '';
-
-                    if(others_submit_actions == 'Add')
-                    {
-                        html += '<tr id=' + others_id + '>\n' +
-                            '<td>' + others_first_name + '   '.repeat(4) + others_last_name + '</td>\n' +
-                            '<td>' + others_phone + '</td>\n' +
-                            '<td>' + others_email + '</td>\n' +
-                            '<td><i style="color: #EA4335;" class="fa fa-trash deleteOthers" data-id =' + others_id + '></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" data-id = ' + others_id + ' class="icon-pencil editOthers"></i></td>\n' +
-                            '</tr>';
-
-                        $('.otherstableAppend tbody').prepend(html);
-
-                    }
-                    else
-                    {
-
-                        $.each(results, function(index,row)
-                        {
-                            //console.log(results[0].index);
-                            html += '<tr id=' + row.id + '>\n' +
-                                '<td>' + row.first_name + '   '.repeat(4) + row.last_name + '</td>\n' +
-                                '<td>' + row.phone + '</td>\n' +
-                                '<td>' + row.email + '</td>\n' +
-                                '<td><i style="color: #EA4335;" class="fa fa-trash deleteOthers" data-id =' + row.id + '></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" data-id = ' + row.id + ' class="icon-pencil editOthers"></i></td>\n' +
-                                '</tr>';
-                        });
-
-                        $('.otherstableAppend tbody').html(html);
-
-                    }
-
-                    $('#othersForm').trigger("reset");
-                },
-                error: function (results) {
-                    console.log('Error:', results);
-                    //$('#saveChild').html('Save Changes');
                 }
             });
         });
-    }
-    addOthers();
-    // End of Others
 
-    $('.variable_name_ques').keydown(function(e) {
-        if (e.keyCode == 32) {
-            $('.variable_name_ques').css('border', '1px solid red');
-            $('.space_msg').html('Space Not Allowed!!')
-            e.preventDefault();
-        } else {
-            $('.variable_name_ques').css('border', '');
-            $('.space_msg').html('');
-            return true;
-        }
-    })
+        //// Add New Others ////
+            $("#othersForm").submit(function(e) {
+                var others_first_name = $('#others_first_name').val();
+                var others_mid_name   = $('#others_mid_name').val();
+                var others_last_name  = $('#others_last_name').val();
+                var others_phone      = $('#others_phone').val();
+                var others_email      = $('#others_email').val();
+                var others_id         = $('#others_id').val();
+                var others_submit_actions = $('#others_submit_actions').val();
+                $('#othersForm').find($('input[name="site_id"]').val($('#site_id').val()));
+                if(others_submit_actions == 'Add')
+                {
+                    var action_url = "{{ route('others.store') }}";
+                }
+                else
+                {
+                    var action_url = "{{ route('others.update') }}";
+                }
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                e.preventDefault();
+                $.ajax({
+                    data: $('#othersForm').serialize(),
+                    url: action_url,
+                    type: "POST",
+                    dataType: 'json',
+                    success: function (results) {
+                        var others_id = results[0].id;
 
-        function  siteCodeValue(data)
-        {
+                        var html    =   '';
+
+                        if(others_submit_actions == 'Add')
+                        {
+                            html += '<tr id=' + others_id + '>\n' +
+                                '<td>' + others_first_name + '   '.repeat(4) + others_last_name + '</td>\n' +
+                                '<td>' + others_phone + '</td>\n' +
+                                '<td>' + others_email + '</td>\n' +
+                                '<td><i style="color: #EA4335;" class="fa fa-trash deleteOthers" data-id =' + others_id + '></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" data-id = ' + others_id + ' class="icon-pencil editOthers"></i></td>\n' +
+                                '</tr>';
+
+                            $('.otherstableAppend tbody').prepend(html);
+
+                        }
+                        else
+                        {
+
+                            $.each(results, function(index,row)
+                            {
+                                //console.log(results[0].index);
+                                html += '<tr id=' + row.id + '>\n' +
+                                    '<td>' + row.first_name + '   '.repeat(4) + row.last_name + '</td>\n' +
+                                    '<td>' + row.phone + '</td>\n' +
+                                    '<td>' + row.email + '</td>\n' +
+                                    '<td><i style="color: #EA4335;" class="fa fa-trash deleteOthers" data-id =' + row.id + '></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" data-id = ' + row.id + ' class="icon-pencil editOthers"></i></td>\n' +
+                                    '</tr>';
+                            });
+
+                            $('.otherstableAppend tbody').html(html);
+
+                        }
+
+                        $('#othersForm').trigger("reset");
+                    },
+                    error: function (results) {
+                        console.log('Error:', results);
+                        //$('#saveChild').html('Save Changes');
+                    }
+                });
+            });
+
+        // End of Others
+
+        $('.variable_name_ques').keydown(function(e) {
+            if (e.keyCode == 32) {
+                $('.variable_name_ques').css('border', '1px solid red');
+                $('.space_msg').html('Space Not Allowed!!')
+                e.preventDefault();
+            } else {
+                $('.variable_name_ques').css('border', '');
+                $('.space_msg').html('');
+                return true;
+            }
+        })
+
+        function  siteCodeValue(data) {
             var siteCode  = data.value;
-
-
             $.ajax({
                 url:"{{route('sites.checkIfSiteIsExist')}}",
                 type: 'POST',
@@ -1356,12 +1533,54 @@
                         }, 3000);
                         $('#site_code').val('');
                         $("#site_code").focus();
-
                     }
 
                 }
             });
 
+        }
+
+
+        /// Get the value from Device Serial # Field to check either its exisit in DB
+        function  deviceSerialValue(data) {
+            var device_name = $('#device_name').val();
+
+            if(device_name == '')
+            {
+                alert('Please select the Device Dropdown first');
+                $('#device_serial').val('');
+                $('#device_name').focus();
+            }
+            else
+            {
+                var deviceSerial  = data.value;
+
+                $.ajax({
+                    url:"{{route('deviceSite.deviceSerialValueIsExist')}}",
+                    type: 'POST',
+                    data: {
+                        "_token": "{{ csrf_token() }}",
+                        'deviceSerial'      :deviceSerial,
+                        'device_name'   :device_name,
+                    },
+                    success: function(results)
+                    {
+                        if (results.success)
+                        {
+                            $('.success-msg-sec').html('');
+                            $('.success-msg-sec').html(results.success)
+                            $('.success-alert-sec').slideDown('slow');
+                            tId=setTimeout(function(){
+                                $(".success-alert-sec").slideUp('slow');
+                            }, 3000);
+                            $('#device_serial').val('');
+                            $("#device_name").val('');
+                            $("#device_name").focus();
+                        }
+
+                    }
+                });
+            }
         }
 
         $("#siteInfoForm").submit(function(e) {
@@ -1409,14 +1628,14 @@
             });
         });
 
-    $('#siteModal').on('hidden.bs.modal', function () {
-        location.reload();
-    });
+        $('#siteModal').on('hidden.bs.modal', function () {
+            location.reload();
+        });
 
 
-    $(document).on('shown.bs.modal', '.modal', function() {
-        $(this).find('[autofocus]').focus();
-    });
+        $(document).on('shown.bs.modal', '.modal', function() {
+            $(this).find('[autofocus]').focus();
+        });
 
         $('body').on('click', '.editsiterecord', function (e) {
             $('.modal-title').text('Edit Site');
@@ -1438,6 +1657,12 @@
             var other_url = "{{URL('others')}}";
 
             var new_other_url = other_url+ "/"+ id+"/showOtherBySiteId/";
+
+
+            var deviceSite = "{{URL('deviceSite')}}";
+
+            var new_deviceSite_url = deviceSite+ "/"+ id+"/showDeviceBySiteId/";
+
 
             $.ajaxSetup({
                 headers: {
@@ -1547,6 +1772,45 @@
                                                     $('.otherstableAppend tbody').html('');
                                                     $('.otherstableAppend tbody').html(html);
 
+                                                    $.ajax({
+                                                        type:"GET",
+                                                        dataType: 'html',
+                                                        url:new_other_url,
+                                                        success : function(results) {
+                                                            //$('.otherstableAppend tbody tr').remove();
+                                                            var parsedata = JSON.parse(results)[0];
+                                                            var html    =   '';
+                                                            $.each(parsedata, function(index,row)
+                                                            {
+                                                                html += '<tr id=' + row.id + '>\n' +
+                                                                    '<td>' + row.first_name + '   '.repeat(4) + row.last_name + '</td>\n' +
+                                                                    '<td>' + row.phone + '</td>\n' +
+                                                                    '<td>' + row.email + '</td>\n' +
+                                                                    '<td><i style="color: #EA4335;" class="fa fa-trash deleteOthers" data-id =' + row.id + '></i>&nbsp;&nbsp;<i style="color: #34A853; cursor: pointer;" data-id = ' + row.id + ' class="icon-pencil editOthers"></i></td>\n' +
+                                                                    '</tr>';
+                                                            });
+
+                                                            $('.otherstableAppend tbody').html('');
+                                                            $('.otherstableAppend tbody').html(html);
+
+                                                            //// Device Site Ajax Start
+
+                                                            $.ajax({
+                                                                type:"GET",
+                                                                dataType: 'html',
+                                                                url:new_deviceSite_url,
+                                                                success : function(results) {
+                                                                    $('.deviceSiteTableAppend tbody').html('');
+                                                                    $('.deviceSiteTableAppend tbody').html(results);
+                                                                }
+                                                            });
+
+                                                            //// Device Site Ajax Code End
+
+                                                        }
+
+                                                    });
+
                                                 }
                                             });
                                         },
@@ -1563,30 +1827,122 @@
 
         });
 
-    //  Coordinator Delete function
-    function  coordinatorDestroy ()
-    {
-        $('body').on('click', '.deleteCoordinator', function () {
+        //  Coordinator Delete function
+
+            $('body').on('click', '.deleteCoordinator', function () {
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                var coordinator_id = $(this).data("id");
+
+
+
+                var url = "{{URL('coordinator/')}}";
+
+                var newPath = url+ "/"+ coordinator_id+"/destroy/";
+                if( confirm("Are You sure want to delete !") ==true)
+                {
+                    $.ajax({
+                        type: "GET",
+                        url: newPath,
+                        success: function (data) {
+                            $('#'+coordinator_id).remove();
+                        },
+                        error: function (data) {
+                            console.log('Error:', data);
+                        }
+                    });
+                }
+            });
+
+
+
+
+        //  Photographer Delete function
+            $('body').on('click', '.deletePhotographer', function () {
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                var photographer_id = $(this).data("id");
+
+
+                var url = "{{URL('photographers/')}}";
+
+                var newPath = url+ "/"+ photographer_id+"/destroy/";
+                if( confirm("Are You sure want to delete !") ==true)
+                {
+                    $.ajax({
+                        type: "GET",
+                        url: newPath,
+                        success: function (data) {
+                            $('#'+photographer_id).remove();
+                        },
+                        error: function (data) {
+                            console.log('Error:', data);
+                        }
+                    });
+                }
+            });
+
+
+
+        //  Delete Others function
+
+            $('body').on('click', '.deleteOthers', function () {
+
+                $.ajaxSetup({
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                });
+                var others_id = $(this).data("id");
+
+                var url = "{{URL('others/')}}";
+
+                var newPath = url+ "/"+ others_id+"/destroy/";
+                if( confirm("Are You sure want to delete !") ==true)
+                {
+                    $.ajax({
+                        type: "GET",
+                        url: newPath,
+                        success: function (data) {
+                            $('#'+others_id).remove();
+                        },
+                        error: function (data) {
+                            console.log('Error:', data);
+                        }
+                    });
+                }
+            });
+
+
+        //  Delete Device  function
+
+        $('body').on('click', '.deletedevice', function () {
 
             $.ajaxSetup({
                 headers: {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
-            var coordinator_id = $(this).data("id");
+            var device_id = $(this).data("id");
 
+            var url = "{{URL('deviceSite/')}}";
 
-
-            var url = "{{URL('coordinator/')}}";
-
-            var newPath = url+ "/"+ coordinator_id+"/destroy/";
+            var newPath = url+ "/"+ device_id+"/destroy/";
             if( confirm("Are You sure want to delete !") ==true)
             {
                 $.ajax({
                     type: "GET",
                     url: newPath,
                     success: function (data) {
-                        $('#'+coordinator_id).remove();
+                        $('#'+device_id).remove();
                     },
                     error: function (data) {
                         console.log('Error:', data);
@@ -1594,113 +1950,45 @@
                 });
             }
         });
-    }
-    coordinatorDestroy();
 
 
-
-    //  Photographer Delete function
-
-    function  photographerDestroy ()
-    {
-        $('body').on('click', '.deletePhotographer', function () {
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            $('body').on('click','.deletesiterecord',function(){
+                var id = $(this).data('id');
+                if (confirm("Are you sure to delete?")) {
+                    $.ajax({
+                        url: 'sites/destroy/'+id,
+                        type: 'POST',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            "_method": 'DELETE',
+                            'id': id
+                        },
+                        success:function(result){
+                            console.log(result);
+                            window.setTimeout(function () {
+                                location.href = "{{ route('sites.index') }}";
+                            }, 100);
+                        }
+                    })
                 }
             });
-            var photographer_id = $(this).data("id");
 
 
-            var url = "{{URL('photographers/')}}";
+        ///  Delete  Specific Row function
 
-            var newPath = url+ "/"+ photographer_id+"/destroy/";
-            if( confirm("Are You sure want to delete !") ==true)
-            {
-                $.ajax({
-                    type: "GET",
-                    url: newPath,
-                    success: function (data) {
-                        $('#'+photographer_id).remove();
-                    },
-                    error: function (data) {
-                        console.log('Error:', data);
-                    }
-                });
+        function changeSort(field_name){
+            var sort_by_field = $('#sort_by_field').val();
+            if(sort_by_field =='' || sort_by_field =='ASC'){
+                $('#sort_by_field').val('DESC');
+                $('#sort_by_field_name').val(field_name);
+            }else if(sort_by_field =='DESC'){
+                $('#sort_by_field').val('ASC');
+                $('#sort_by_field_name').val(field_name);
             }
-        });
-    }
-    photographerDestroy();
+            $('.filter-form').submit();
+        }
 
-
-    //  Delete Others function
-
-    function  othersDestroy ()
-    {
-        $('body').on('click', '.deleteOthers', function () {
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            var others_id = $(this).data("id");
-
-            var url = "{{URL('others/')}}";
-
-            var newPath = url+ "/"+ others_id+"/destroy/";
-            if( confirm("Are You sure want to delete !") ==true)
-            {
-                $.ajax({
-                    type: "GET",
-                    url: newPath,
-                    success: function (data) {
-                        $('#'+others_id).remove();
-                    },
-                    error: function (data) {
-                        console.log('Error:', data);
-                    }
-                });
-            }
-        });
-    }
-    othersDestroy();
-
-
-
-
-    ///  Options Delete function
-    function  sitesDestroy ()
-    {
-        $('body').on('click','.deletesiterecord',function(){
-            var id = $(this).data('id');
-            if (confirm("Are you sure to delete?")) {
-                $.ajax({
-                    url: 'sites/destroy/'+id,
-                    type: 'POST',
-                    data: {
-                        "_token": "{{ csrf_token() }}",
-                        "_method": 'DELETE',
-                        'id': id
-                    },
-                    success:function(result){
-                        console.log(result);
-                        window.setTimeout(function () {
-                            location.href = "{{ route('sites.index') }}";
-                        }, 100);
-                    }
-                })
-            }
-        });
-    }
-    sitesDestroy();
-
-    ///  Delete  Specific Row function
-
-
-
-</script>
+    </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCEELbGoxVU_nvp6ayr2roHHnjN3hM_uec&libraries=places&callback=initAutocomplete"
             defer></script>
 @endsection

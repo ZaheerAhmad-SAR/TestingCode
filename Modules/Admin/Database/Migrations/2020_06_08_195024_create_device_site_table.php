@@ -15,9 +15,10 @@ class CreateDeviceSiteTable extends Migration
     {
         Schema::create('device_sites', function (Blueprint $table) {
             $table->uuid('id')->unique()->primary();
-            $table->uuid('device_id');
-            $table->uuid('site_id');
-
+            $table->uuid('device_id')->nullable();
+            $table->text('device_name')->nullable();
+            $table->uuid('site_id')->nullable();
+            $table->text('device_serial_no')->nullable();
             $table->timestamps();
         });
     }

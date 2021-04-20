@@ -5,7 +5,6 @@
         <div class="row ">
             <div class="col-12 align-self-center">
                 <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
-                   
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                         <li class="breadcrumb-item">Dashboard</li>
                         <li class="breadcrumb-item">Skip Logic</li>
@@ -43,8 +42,35 @@
                         <button type="button" class="btn-info" style="border-radius: 50%;height: 20px;width: 20px;border-color: black;background-color:white;"></button> Options
                     </div>
                 </div>
+                <hr>
+                <div class="row">
+                    <form action="" style="width: 100%;">
+                        <div class="form-row" style="padding: 10px;">
+                            <div class="col-md-4">
+                                <select class="form-control" id="filter_by_form_type" required>
+                                    <option value="">---Form Type---</option>
+                                    @foreach($form_types as $key => $value)
+                                        <option value="{{$value->id}}">{{$value->form_type}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <select class="form-control" id="filter_by_modality" required>
+                                    <option value="">---Modality---</option>
+                                    @foreach($modalities as $key => $value)
+                                        <option value="{{$value->id}}">{{$value->modility_name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="submit" class="btn btn-primary filter_cohort"><i class="fas fa-filter" aria-hidden="true"></i> Filter</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
+        
         <!-- END: Breadcrumbs-->
         <!-- START: Card Data-->
         <form action="{{route('skiplogic.apply_skip_logic_cohort_based')}}" enctype="multipart/form-data" method="POST">
@@ -77,7 +103,7 @@
                </div>
             </div>
             <div class="row append_data_{{$value->id}}">
-                @include('admin::forms.skip_logic_view_cohort.deactivate_forms')
+                {{-- @include('admin::forms.skip_logic_view_cohort.deactivate_forms') --}}
             </div>
             @endforeach
             </div>
@@ -99,5 +125,26 @@
         $('.detail-icon').click(function(e){
             $(this).toggleClass("fa-chevron-circle-right fa-chevron-circle-down");
         });
+    </script>
+    <script type="text/javascript">
+        $('.filter_cohort').on('click',function(){
+            var formTypeId = $('#filter_by_form_type').val();
+            var Modality = $('#filter_by_modality').val();
+            var phase_id = '{{ Request::segment(3)}}';
+            var url = "{{ url('/') }}/skip_logic_cohort/"+phase_id+"/"+formTypeId+"/"+Modality;
+            changeUrl(url);
+        })
+        function changeUrl(url) {
+            var title = 'new title';
+            if (typeof(history.pushState) != "undefined") {
+                var obj = {
+                    Title: title,
+                    Url: url
+                };
+                history.pushState(obj, obj.Title, obj.Url);
+            } else {
+                alert("Browser does not support HTML5.");
+            }
+        }
     </script>
 @endsection

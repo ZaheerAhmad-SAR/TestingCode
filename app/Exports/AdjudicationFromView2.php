@@ -32,6 +32,11 @@ class AdjudicationFromView2 implements FromView
             ->leftJoin('sites', 'sites.id', '=', 'subjects.site_id')
             ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'adjudication_form_status.phase_steps_id')
             ->leftJoin('subjects_phases', 'subjects_phases.phase_id', 'adjudication_form_status.study_structures_id')
+            ->whereNULL('subjects.deleted_at')
+            ->whereNULL('study_structures.deleted_at')
+            ->whereNULL('sites.deleted_at')
+            ->whereNULL('phase_steps.deleted_at')
+            ->whereNULL('subjects_phases.deleted_at')
             ->where('adjudication_form_status.study_id', \Session::get('current_study'))
             ->groupBy(['adjudication_form_status.subject_id', 'adjudication_form_status.study_structures_id'])
             ->get();
@@ -43,6 +48,8 @@ class AdjudicationFromView2 implements FromView
                 $getModilities = $getModilities->select('adjudication_form_status.modility_id', 'phase_steps.step_id', 'phase_steps.step_name', 'modilities.modility_name')
                 ->leftJoin('modilities', 'modilities.id', '=', 'adjudication_form_status.modility_id')
                 ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'adjudication_form_status.phase_steps_id')
+                ->whereNULL('modilities.deleted_at')
+                ->whereNULL('phase_steps.deleted_at')
                 ->groupBy('adjudication_form_status.modility_id')
                 ->orderBy('modilities.modility_name')
                 ->get();
@@ -92,7 +99,7 @@ class AdjudicationFromView2 implements FromView
 
                             } else {
 
-                                $formStatus[$key.'_'.$type['form_type']] = 'NoName-Not Initiated|';
+                                $formStatus[$key.'_'.$type['form_type']] = ' - ';
                             } // step check ends
 
                         } // step lopp ends

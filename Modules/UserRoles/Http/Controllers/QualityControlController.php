@@ -13,9 +13,7 @@ use Modules\Admin\Entities\PhaseSteps;
 use Modules\FormSubmission\Entities\SubjectsPhases;
 use Modules\FormSubmission\Entities\FormStatus;
 use Modules\Admin\Entities\FormType;
-
 use Modules\Admin\Entities\AssignWork;
-
 use DB;
 use Carbon\Carbon;
 use Excel;
@@ -42,7 +40,10 @@ class QualityControlController extends Controller
                 ->rightJoin('subjects_phases', 'subjects_phases.subject_id', '=', 'subjects.id')
                 ->leftJoin('study_structures', 'study_structures.id', '=', 'subjects_phases.phase_id')
                 ->leftJoin('sites', 'sites.id', 'subjects.site_id')
-                ->where('subjects.study_id', \Session::get('current_study'));
+                ->where('subjects.study_id', \Session::get('current_study'))
+                ->whereNULL('subjects_phases.deleted_at')
+                ->whereNULL('study_structures.deleted_at')
+                ->whereNULL('sites.deleted_at');
             //->leftJoin('form_submit_status', 'form_submit_status.subject_id', 'subjects.id');
 
             if ($request->subject != '') {
@@ -73,11 +74,12 @@ class QualityControlController extends Controller
             $subjects = $subjects->groupBy(['subjects.id', 'study_structures.id'])
                 ->orderBy('subjects.subject_id')
                 ->orderBy('study_structures.position')
-                ->paginate(15);
+                ->paginate(\Auth::user()->user_prefrences->default_pagination);
 
             // get modalities
             $getModilities = PhaseSteps::select('phase_steps.step_id', 'phase_steps.step_name', 'modilities.id as modility_id', 'modilities.modility_name')
                 ->leftJoin('modilities', 'modilities.id', '=', 'phase_steps.modility_id')
+                ->whereNULL('modilities.deleted_at')
                 ->groupBy('phase_steps.modility_id')
                 ->orderBy('modilities.modility_name')
                 ->get();
@@ -89,6 +91,7 @@ class QualityControlController extends Controller
                     ->leftJoin('form_types', 'form_types.id', '=', 'phase_steps.form_type_id')
                     ->where('modility_id', $modility->modility_id)
                     ->where('form_types.form_type', 'QC')
+                    ->whereNULL('form_types.deleted_at')
                     ->orderBy('form_types.sort_order')
                     ->groupBy('phase_steps.form_type_id')
                     ->get()->toArray();
@@ -113,6 +116,8 @@ class QualityControlController extends Controller
                                 ->where('form_type_id', $type['form_type_id'])
                                 ->first();
 
+                            //$formStatus[$key . '_' . $type['form_type']] = '';
+
                             if ($step != null) {
 
                                 $getFormStatusArray = array(
@@ -129,9 +134,10 @@ class QualityControlController extends Controller
 
                                     $formStatus[$key . '_' . $type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
                                 }
-                            } else {
+                            } 
+                            else {
 
-                                $formStatus[$key . '_' . $type['form_type']] = '<img src="' . url('images/no_status.png') . '"/>';
+                                $formStatus[$key . '_' . $type['form_type']] = '';
                             } // step check ends
 
                         } // step lopp ends
@@ -156,6 +162,11 @@ class QualityControlController extends Controller
                 ->leftJoin('sites', 'sites.id', '=', 'subjects.site_id')
                 ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id')
                 ->leftJoin('subjects_phases', 'subjects_phases.phase_id', 'form_submit_status.study_structures_id')
+                ->whereNULL('subjects.deleted_at')
+                ->whereNULL('study_structures.deleted_at')
+                ->whereNULL('sites.deleted_at')
+                ->whereNULL('phase_steps.deleted_at')
+                ->whereNULL('subjects_phases.deleted_at')
                 ->where('form_submit_status.form_type_id', 1)
                 ->where('form_submit_status.study_id', \Session::get('current_study'));
 
@@ -188,7 +199,7 @@ class QualityControlController extends Controller
             // }
 
             $subjects = $subjects->groupBy(['form_submit_status.subject_id', 'form_submit_status.study_structures_id'])
-                ->paginate(15);
+                ->paginate(\Auth::user()->user_prefrences->default_pagination);
 
 
             if (!$subjects->isEmpty()) {
@@ -196,7 +207,9 @@ class QualityControlController extends Controller
                 $getModilities = FormStatus::query();
                 $getModilities = $getModilities->select('form_submit_status.modility_id', 'phase_steps.step_id', 'phase_steps.step_name', 'modilities.modility_name')
                     ->leftJoin('modilities', 'modilities.id', '=', 'form_submit_status.modility_id')
-                    ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id');
+                    ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id')
+                    ->whereNULL('modilities.deleted_at')
+                    ->whereNULL('phase_steps.deleted_at');
 
                 if ($request->modility != '') {
 
@@ -216,6 +229,9 @@ class QualityControlController extends Controller
                         ->leftJoin('modilities', 'modilities.id', '=', 'form_submit_status.modility_id')
                         ->leftJoin('phase_steps', 'phase_steps.step_id', '=', 'form_submit_status.phase_steps_id')
                         ->leftJoin('form_types', 'form_types.id', '=', 'form_submit_status.form_type_id')
+                        ->whereNULL('modilities.deleted_at')
+                        ->whereNULL('phase_steps.deleted_at')
+                        ->whereNULL('form_types.deleted_at')
                         ->where('form_submit_status.modility_id', $modility->modility_id)
                         ->where('form_submit_status.form_type_id', 1);
 
@@ -250,6 +266,8 @@ class QualityControlController extends Controller
                                 ->where('form_type_id', $type['form_type_id'])
                                 ->first();
 
+                            //$formStatus[$key . '_' . $type['form_type']] = '';
+
                             if ($step != null) {
 
                                 $getFormStatusArray = [
@@ -266,9 +284,10 @@ class QualityControlController extends Controller
 
                                     $formStatus[$key . '_' . $type['form_type']] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
                                 }
-                            } else {
+                            } 
+                            else {
 
-                                $formStatus[$key . '_' . $type['form_type']] = '<img src="' . url('images/no_status.png') . '"/>';
+                                $formStatus[$key . '_' . $type['form_type']] = '';
                             } // step check ends
 
                         } // step lopp ends
@@ -322,6 +341,9 @@ class QualityControlController extends Controller
             ->leftJoin('subjects', 'subjects.id', '=', 'assign_work.subject_id')
             ->leftJoin('study_structures', 'study_structures.id', '=', 'assign_work.phase_id')
             ->leftJoin('sites', 'sites.id', '=', 'subjects.site_id')
+            ->whereNULL('subjects.deleted_at')
+            ->whereNULL('study_structures.deleted_at')
+            ->whereNULL('sites.deleted_at')
             ->where('assign_work.user_id', \Auth::user()->id)
             ->where('assign_work.form_type_id', 1)
             ->where('assign_work.study_id', \Session::get('current_study'));
@@ -359,13 +381,14 @@ class QualityControlController extends Controller
         $subjects = $subjects->groupBy(['assign_work.subject_id', 'assign_work.phase_id'])
             ->orderBy('subjects.subject_id')
             ->orderBy('study_structures.position')
-            ->paginate(15);
+            ->paginate(\Auth::user()->user_prefrences->default_pagination);
 
 
         // get modalities
         $getModilities = AssignWork::query();
         $getModilities = $getModilities->select('assign_work.modility_id', 'modilities.modility_name')
             ->leftJoin('modilities', 'modilities.id', '=', 'assign_work.modility_id')
+            ->whereNULL('modilities.deleted_at')
             ->where('assign_work.user_id', \Auth::user()->id)
             ->where('assign_work.form_type_id', 1)
             ->where('assign_work.study_id', \Session::get('current_study'));
@@ -385,6 +408,7 @@ class QualityControlController extends Controller
 
             $getSteps = AssignWork::select('assign_work.modility_id', 'form_types.id as form_type_id', 'form_types.form_type')
                 ->leftJoin('form_types', 'form_types.id', '=', 'assign_work.form_type_id')
+                ->whereNULL('form_types.deleted_at')
                 ->where('modility_id', $modility->modility_id)
                 ->where('form_types.form_type', 'QC')
                 ->orderBy('form_types.sort_order')
@@ -456,6 +480,8 @@ class QualityControlController extends Controller
                                 ->where('form_type_id', $type['form_type_id'])
                                 ->first();
 
+                            //$formStatus[$key . '_' . $type['form_type']]['status'] = '';
+
                             if ($step != null) {
 
                                 $getFormStatusArray = array(
@@ -472,9 +498,10 @@ class QualityControlController extends Controller
 
                                     $formStatus[$key . '_' . $type['form_type']]['status'] =  \Modules\FormSubmission\Entities\FormStatus::getFormStatus($step, $getFormStatusArray, true, false);
                                 }
-                            } else {
+                            } 
+                            else {
 
-                                $formStatus[$key . '_' . $type['form_type']]['status'] = '<img src="' . url('images/no_status.png') . '"/>';
+                                $formStatus[$key . '_' . $type['form_type']]['status'] = '';
                             } // step check ends
 
                         } else {

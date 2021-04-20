@@ -15,10 +15,25 @@
     Route::get('/', 'QueriesController@index');
 });*/
 
+use Modules\Queries\Entities\AppNotification;
+
 Route::group(['middleware' => ['auth','web']],function(){
     Route::resource('queries','QueriesController');
+    Route::resource('notifications','AppNotificationsController');
+    Route::get('notifications', 'AppNotificationsController@index')->name('notifications.index');
+    Route::post('notifications/markAllNotificationToRead','AppNotificationsController@markAllNotificationToRead')->name('notifications.markAllNotificationToRead');
+    Route::post('notifications/markAsUnRead','AppNotificationsController@markAsUnRead')->name('notifications.markAsUnRead');
+    Route::post('notifications/markAsRead','AppNotificationsController@markAsRead')->name('notifications.markAsRead');
+    Route::post('notifications/removeNotification','AppNotificationsController@removeNotification')->name('notifications.removeNotification');
+    Route::post('notifications/update', 'AppNotificationsController@update')->name('notifications.update');
+    Route::post('notifications/countUserNotification', 'AppNotificationsController@countUserNotification')->name('notifications.countUserNotification');
+    Route::post('notifications/notificationList', 'AppNotificationsController@notificationList')->name('notifications.notificationList');
     Route::get('queries/chatindex','QueriesController@chatindex')->name('queries.chatindex');
+
+
+
     Route::post('queries/loadHtml', 'QueriesController@loadHtml')->name('queries.loadHtml');
+    //Route::post('queries/update', 'QueriesController@update')->name('queries.update');
     Route::post('queries/usersDropDownListQuestion', 'QueriesController@usersDropDownListQuestion')->name('queries.usersDropDownListQuestion');
     Route::post('queries/loadAllQueriesByStudyId', 'QueriesController@loadAllQueriesByStudyId')->name('queries.loadAllQueriesByStudyId');
     Route::post('queries/loadAllQuestionById', 'QueriesController@loadAllQuestionById')->name('queries.loadAllQuestionById');
@@ -37,4 +52,20 @@ Route::group(['middleware' => ['auth','web']],function(){
     Route::post('queries/usersDropDownListForm', 'QueriesController@usersDropDownListForm')->name('queries.usersDropDownListForm');
 
 
+    Route::get('/countUserNotification', 'AppNotificationsController@countUserNotification');
+
+
+
+    Route::get('/countUsers', function () {
+
+        $count = '';
+        $count = AppNotification::where('user_id','=', auth()->user()->id)->where('is_read','no')->count();
+        if ($count > 0)
+        {
+            return '<span class="badge badge-pill badge-danger" style="height: 20px;top: 12px;">'.$count.'</span>';
+        }
+    });
 });
+
+
+

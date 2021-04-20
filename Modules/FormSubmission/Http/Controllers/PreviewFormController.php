@@ -18,7 +18,6 @@ class PreviewFormController extends Controller
     {
         $phase = StudyStructure::find($phase_id);
         $step = PhaseSteps::find($step_id);
-
         return view('formsubmission::forms.preview_form')
             ->with('isPreview', true)
             ->with('studyId', '')

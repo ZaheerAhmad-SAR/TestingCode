@@ -14,6 +14,7 @@ use Modules\FormSubmission\Entities\FormVersion;
 use Modules\FormSubmission\Entities\SubjectsPhases;
 use Modules\FormSubmission\Traits\JSQuestionDataValidation;
 use Modules\FormSubmission\Traits\JSStepCalculatedFields;
+use Modules\FormSubmission\Entities\FormStatus;
 
 class PhaseSteps extends Model
 {
@@ -77,7 +78,7 @@ class PhaseSteps extends Model
 
     static function phaseStepsbyPermissions($subjectId, $phaseId)
     {
-        $formTypeArray = [];
+        $formTypeArray[] = 4;
         if (canQualityControl(['index'])) {
             $formTypeArray[] = 1;
         }
@@ -93,7 +94,6 @@ class PhaseSteps extends Model
         } else {
             $formTypeArray[] = 4;
         }
-
         $modalityIdsArray = SubjectsPhases::where('subject_id', 'like', $subjectId)->where('phase_id', 'like', $phaseId)->distinct()->pluck('modility_id')->toArray();
         return self::where('phase_id', $phaseId)
             ->whereIn('form_type_id', $formTypeArray)
@@ -111,12 +111,59 @@ class PhaseSteps extends Model
         return $this->belongsTo(Modility::class, 'modility_id', 'id');
     }
 
-    public static function getStepsIdsArray($form_type_id, $activatedPhasesidsArray)
+    public static function getStepsIdsArray($form_type_id, $activatedPhasesid)
     {
         return self::where('form_type_id', $form_type_id)
-            ->whereIn('phase_id', $activatedPhasesidsArray)
-            ->pluck('step_id')
+            ->where('phase_id', $activatedPhasesid)
+            ->pluck('modility_id')
             ->toArray();
+    }
+
+    public static function getStepStatus($studyId, $subject, $phase, $modality, $formStatus, $formTypeId, $type) {
+        
+        // check grader number 
+        $assignedUserNumbers = self::where('phase_id', $phase)
+            ->where('modility_id', $modality)
+            ->where('form_type_id', $formTypeId)
+            ->first();
+
+        // check Qc and Grading
+        if ($type == 'Qc' || $type == 'Grading') {
+            // check complete forms
+            $getFormStatus = FormStatus::where('study_id', $studyId)
+                                        ->where('subject_id', $subject)
+                                        ->where('study_structures_id', $phase)
+                                        ->where('modility_id', $modality)
+                                        ->where('form_type_id', $formTypeId)
+                                        ->where('form_status', $formStatus)
+                                        ->get();
+            
+            if(!$getFormStatus->isEmpty()) {
+                // compare grader numbers with form complete number
+                if($getFormStatus->count() >= $assignedUserNumbers->graders_number) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        } else {
+
+            $getFormStatus = AdjudicationFormStatus::where('study_id', $studyId)
+                                        ->where('subject_id', $subject)
+                                        ->where('study_structures_id', $phase)
+                                        ->where('modility_id', $modality)
+                                        ->where('form_type_id', $formTypeId)
+                                        ->where('adjudication_status', $formStatus)
+                                        ->first();
+            if($getFormStatus != null){
+                return true;
+            } else {
+                return false;
+            }
+       
+        } // type check ends
     }
 
     public static function isStepActive($step_id)

@@ -19,13 +19,12 @@
             {{ showMessage() }}
         </div>
         <!-- END: Breadcrumbs-->
-
         <!-- START: Card Data-->
         <div class="row">
             <div class="col-12 col-sm-12 mt-3">
 
                 <div class="card">
-                    <form action="{{route('users.updateUser',$user->id)}}" enctype="multipart/form-data" method="POST">
+                    <form action="{{route('users.updateUser',$user->id)}}" enctype="multipart/form-data" method="POST" class="user-profile-form">
                         @csrf
                         @method('GET')
                         <div class="modal-body">
@@ -48,6 +47,7 @@
                                                 <i class="fa fa-door-open"></i> View Codes
                                             </button>
                                         @else
+                                        
                                             <a href="{{ url('2fa/enable') }}" class="btn btn-outline-primary">Enable 2FA</a>
                                         @endif
                                     </div>
@@ -102,7 +102,6 @@
                                     <label for="password">Password</label>
                                 </div>
                                 <div class="{!! ($errors->has('password')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                    {{--<input type="password" autocomplete="off" class="form-control" required="required" id="password" name="password" value="{{old('password')}}">--}}
                                     <input type="password" autocomplete="off" class="form-control @error('password') is-invalid @enderror" id="password" name="password"  autocomplete="new-password">
                                     @error('password')
                                     <span class="text-danger small"> {{ $message }} </span>
@@ -112,24 +111,106 @@
                                     <label for="C-Password">Confirm Password</label>
                                 </div>
                                 <div class="{!! ($errors->has('password_confirmation')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                   {{-- <input type="password" autocomplete="off" class="form-control" required="required" id="password_confirmation" name="password_confirmation" value="{{old('password_confirmation')}}">--}}
                                     <input type="password" autocomplete="off" class="form-control" id="password-confirm" name="password_confirmation"  autocomplete="new-password">
                                     @error('password_confirmation')
                                     <span class="text-danger small">{{ $message }} </span>
                                     @enderror
                                 </div>
                             </div>
-
                             <div class="form-group row">
+                                <div class="col-md-2">
+                                    <label for="notificationType">Notification Type </label>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="customCheck4">System</label>
+                                    <input type="checkbox"  disabled="disabled" id="customCheck4">
+
+                                    <label for="outprimary">Email</label>
+                                    @if($user->notification_type == 'email')
+                                    <input name="notification_type" type="checkbox" checked="checked" class="emailChecked" id="outprimary" onchange="notificationTypeValueChange();" value="email"/>
+                                    @endif
+
+                                    @if($user->notification_type !== 'email')
+                                    <input name="notification_type" type="checkbox" class="emailChecked" id="outprimary" onchange="notificationTypeValueChange();" value="email"/>
+                                     @endif
+
+
+                                    <div class="othergroups">
+                                        <label  for="bug">Bug</label> &nbsp; &nbsp; &nbsp;
+
+                                        <input type="radio" name="bug" id="bug" value="1" @if($user->bug_report==true) checked="checked" @endif >
+                                        <label  for="bug">Yes</label>
+
+                                        <input type="radio" name="bug" id="bug" value="0" @if($user->bug_report==false) checked="checked" @endif>
+                                        <label  for="bug"> No</label>
+                                        <br>
+                                        <label  for="bug"> Form </label> &nbsp; &nbsp;
+                                        <input type="radio" name="form" id="form" value="1"  @if($user->is_form==true) checked="checked" @endif>
+                                        <label  for="bug">Yes</label>
+
+                                        <input type="radio" name="form" id="form" value="0" @if($user->is_form==false) checked="checked" @endif>
+                                        <label  for="bug"> No</label>
+
+                                        <br>
+                                        <label for="subject">Subject</label>
+                                        <input type="radio"  id="subject" name="subject" value="1"   @if($user->is_subject==true) checked="checked" @endif>
+                                        <label  for="bug">Yes</label>
+
+                                        <input type="radio"  id="subject" name="subject" value="0"  @if($user->is_subject==false) checked="checked" @endif>
+                                        <label for="subject">no</label>
+                                    </div>
+
+                                </div>
+                            </div>
+                            @if(hasPermission(auth()->user(),'certification-photographer.index'))
+                            <div class="row">
 
                                 <div class="col-md-2">
-                                    <label for="avatar" class="">User Signature</label>
+                                    <label for="C-Password">Signature Status</label>
                                 </div>
+
                                 <div class="col-md-4">
-                                    <input id="user_signature" type="file"  name="user_signature" style="padding-left: 3px">
+                                    @if (File::exists(storage_path('user_signature/'.md5(\Auth::user()->id).'.png')))
+                                    <!-- <a href="{{ route('user-signature', encrypt(\Auth::user()->id.'.png')) }}"> -->
+
+                                    <span class="badge badge-success"><strong>Available</strong></span>
+                                    <!-- </a> -->
+                                    @else
+                                    <span class="badge badge-info"><strong>Not Available</strong></span>
+                                    @endif
                                 </div>
-                                
                             </div>
+                            <div class="row">
+
+                                <div class="col-md-2">
+                                    <label for="C-Password">Show Signature Pad</label>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <input type="checkbox" name="show_signature_pad" id="show_signature_pad" value="yes">
+                                </div>
+                            </div>
+                                <br>
+                            <div class="row signature-pad-row">
+
+                                <div class="col-md-2">
+                                    <label for="C-Password">Signature</label>
+                                </div>
+
+                                <div class="col-md-10">
+                                    <div class="wrapper">
+                                        <canvas id="signature-pad" class="signature-pad"></canvas>
+                                        <input type="text" id="hidden_user_signature" name="hidden_user_signature" value="" style="display: none;">
+                                    </div>
+                                    <br>
+                                    <button type="button" class="btn btn-outline-primary" id="undo">Undo</button>
+                                    <button type="button" class="btn btn-outline-primary" id="clear">Clear</button>
+                                </div>
+                                <!-- col ends -->
+                            </div>
+                            <!-- row ends -->
+                            @endif
+
                         </div>
                         <div class="modal-footer">
                             @if(hasPermission(auth()->user(),'users.store'))
@@ -166,15 +247,42 @@
 @section('styles')
 
     <style>
+
         div.dt-buttons{
             display: none;
         }
+
+        .wrapper {
+            position: relative;
+            width: 80%;
+            height: 400px;
+            border: 1px solid;
+            padding: 10px;
+            box-shadow: 5px 10px #1e3d73;
+          -moz-user-select: none;
+          -webkit-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+        }
+
+        .signature-pad {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width:100%;
+          height:400px;
+          background-color: white;
+        }
     </style>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/css/multi-select.css" integrity="sha512-2sFkW9HTkUJVIu0jTS8AUEsTk8gFAFrPmtAxyzIhbeXHRH8NXhBFnLAMLQpuhHF/dL5+sYoNHWYYX2Hlk+BVHQ==" crossorigin="anonymous" />
     <link rel="stylesheet" href="{{ asset('dist/vendors/datatable/css/dataTables.bootstrap4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('dist/vendors/datatable/buttons/css/buttons.bootstrap4.min.css') }}">
 @endsection
 @section('script')
+
+    <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
+
     <script type="text/javascript">
         $(document).ready(function(){
             var tId;
@@ -195,5 +303,95 @@
             }
         }
 
+        /***************  Signature Pad **************************/
+
+        var canvas = document.getElementById('signature-pad');
+
+        // Adjust canvas coordinate space taking into account pixel ratio,
+        // to make it look crisp on mobile devices.
+        // This also causes canvas to be cleared.
+        function resizeCanvas() {
+            // When zoomed out to less than 100%, for some very strange reason,
+            // some browsers report devicePixelRatio as less than 1
+            // and only part of the canvas is cleared then.
+            var ratio =  Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+        }
+
+        window.onresize = resizeCanvas;
+        resizeCanvas();
+
+        var signaturePad = new SignaturePad(canvas, {
+          backgroundColor: 'rgb(255, 255, 255)' // necessary for saving image as JPEG; can be removed is only saving as PNG or SVG
+        });
+
+        document.getElementById('clear').addEventListener('click', function () {
+          signaturePad.clear();
+        });
+
+        document.getElementById('undo').addEventListener('click', function () {
+            var data = signaturePad.toData();
+          if (data) {
+            data.pop(); // remove the last dot or line
+            signaturePad.fromData(data);
+          }
+        });
+
+        $('.user-profile-form').submit(function(e) {
+
+            e.preventDefault();
+
+            if (!signaturePad.isEmpty()) {
+                var data = signaturePad.toDataURL('image/png');
+                $('#hidden_user_signature').val(data);
+            }
+
+            e.currentTarget.submit();
+
+        });
+
+        // hide signature pad in page load
+        jQuery(document).ready(function(){
+        setTimeout(function(){
+        $(".signature-pad-row").hide();
+        }, 10)
+        });
+
+        $('#show_signature_pad').change(function(e){
+            if($(this).prop('checked')) {
+                // show signature pad
+                $('.signature-pad-row').show();
+            } else {
+                // hide signature pad
+                $('.signature-pad-row').hide();
+
+            }
+        });
+        /// script for Notification type
+        //$('.othergroups').hide();
+        // $(".emailChecked").click(function()
+        // {
+        //     if($(this).is(":checked"))
+        //     {
+        //         $(".othergroups").show();
+        //     }
+        //     else
+        //     {
+        //         $(".othergroups").hide();
+        //     }
+        // });
+        /// end script for Notification type
+
+
+
+        function notificationTypeValueChange()
+        {
+            if($('.emailChecked').is(":checked"))
+                $(".othergroups").show();
+            else
+                $(".othergroups").hide();
+        }
     </script>
 @endsection

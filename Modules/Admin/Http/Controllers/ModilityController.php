@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Str;
 use Modules\Admin\Entities\ChildModilities;
 use Modules\Admin\Entities\Modility;
+use Modules\Admin\Entities\Study;
+use Modules\Admin\Entities\Device;
+use Modules\CertificationApp\Entities\StudyDevice;
 use Modules\Admin\Entities\Other;
 
 class ModilityController extends Controller
@@ -18,17 +21,9 @@ class ModilityController extends Controller
      * @return Response
      */
 
-    //    public function __construct()
-    //    {
-    //
-    //        $this->middleware();
-    //
-    //    }
-
     public function index()
     {
         $modalities = Modility::all();
-
         return view('admin::modilities.index', compact('modalities'));
     }
 
@@ -38,7 +33,7 @@ class ModilityController extends Controller
      */
     public function create()
     {
-        $modalities = Modility::paginate(2);
+        $modalities = Modility::paginate(\Auth::user()->user_prefrences->default_pagination);
         //dd($modalities);
         foreach ($modalities as $key => $value) {
             // $arr[3] will be updated with each value from $arr...
@@ -104,13 +99,13 @@ class ModilityController extends Controller
             <div class="form-group row">
                 <label for="Name" class="col-sm-3 col-form-label">Name</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" id="modility_name" name="modility_name" placeholder="Enter Modility name" maxlength="50"  value="' . $parentmodalities->modility_name . '" required/>
+                    <input type="text" class="form-control" id="modility_name" name="modility_name" placeholder="Enter Modility name" maxlength="50"  value="' . $parentmodalities->modility_name . '" required dusk="update-parent-modality-name"/>
                 </div>
             </div>
             <div class="form-group row">
                 <label for="modility_abbreviation" class="col-sm-3 col-form-label">Abbreviation</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" id="modility_abbreviation" name="modility_abbreviation" placeholder="Enter Modility abbreviation" maxlength="50"  value="' . $parentmodalities->modility_abbreviation . '" required/>
+                    <input type="text" class="form-control" id="modility_abbreviation" name="modility_abbreviation" placeholder="Enter Modility abbreviation" maxlength="50"  value="' . $parentmodalities->modility_abbreviation . '" required dusk="update-parent-modality-abbreviation"/>
                 </div>
             </div>';
             return Response($output);
@@ -123,7 +118,6 @@ class ModilityController extends Controller
             $childmodalities = ChildModilities::select('*')->where('modility_id', $id)->get();
 
             $output = "";
-
             if (!empty($childmodalities)) {
                 foreach ($childmodalities as $key => $modality) {
                     $output .= '<li class="nav-item mail-item" style="border-bottom: 1px solid #F6F6F7;">
@@ -133,10 +127,10 @@ class ModilityController extends Controller
                                             <span class="mail-user">' . $modality->modility_name . '</span>
                                         </a>
                                         <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                            <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                            <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;" dusk="child-modality-navtab"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                             <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                                <span class="dropdown-item edit_steps" data-id=' . $modality->id . '><i class="far fa-edit"></i>&nbsp; Edit</span>
-                                                <span class="dropdown-item deleteChild" data-id=' . $modality->id . '><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
+                                                <span class="dropdown-item edit_steps" data-id=' . $modality->id . ' dusk="child-modality-edit"><i class="far fa-edit"></i>&nbsp; Edit</span>
+                                                <span class="dropdown-item deleteChild" data-id=' . $modality->id . ' dusk="child-modality-delete"><i class="far fa-trash-alt"></i>&nbsp; Delete</span>
                                             </div>
                                         </div>
                                     </div>
@@ -205,7 +199,6 @@ class ModilityController extends Controller
 
     public function replicateParent(Request $request, $id)
     {
-
         if ($request->ajax()) {
 
             $modalities = Modility::find($id);
@@ -233,5 +226,25 @@ class ModilityController extends Controller
                 ]);
             }
         }
+    }
+
+    public function getModalityDevices(Request $request) {
+        if($request->ajax()) {
+            // explode data
+            $getModalityId = explode('__/__', $request->modality_id);
+            // find Modality and get device ids
+            $getModalityDeviceIds = Modility::find($getModalityId[0])->devices->pluck('id')->toArray();
+            // get study
+            $getStudy = Study::where('study_code', $request->study_code)->first();
+            // get devices from study_devices table based on device id and study id
+            $getStudyDeviceIds = StudyDevice::where('study_id', $getStudy->id)
+                                            ->whereIn('device_id', $getModalityDeviceIds)
+                                            ->pluck('device_id')
+                                            ->toArray();
+            // get study Devices
+            $getStudyDevices = Device::whereIn('id', $getStudyDeviceIds)->get()->toArray();
+
+            return response()->json(['study_devices' => $getStudyDevices]);
+        } // ajax ends
     }
 }

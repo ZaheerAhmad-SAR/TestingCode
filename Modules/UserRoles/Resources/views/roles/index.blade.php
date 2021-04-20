@@ -17,14 +17,13 @@
         </div>
     </div>
     <!-- END: Breadcrumbs-->
-
     <!-- START: Card Data-->
 <div class="row">
  <div class="col-12 col-sm-12 mt-3">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                    @if(hasPermission(auth()->user(),'roles.create'))
-                        <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#createRole">
+                        <button dusk="create-role" type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#createRole">
                             <i class="fa fa-plus"></i> Add Role
                         </button>
                        @endif
@@ -45,10 +44,12 @@
                                 @if(hasPermission(auth()->user(),'roles.edit'))
                                 <td>
                                    <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                        <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                        <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;" dusk="roles-navtab">
+                                            <i class="fas fa-cog" style="margin-top: 12px;"></i>
+                                        </span>
                                         <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                             <span class="dropdown-item">
-                                                <a href="{!! route('roles.edit',encrypt($role->id)) !!}">
+                                                <a  dusk="roles-edit" href="{!! route('roles.edit',encrypt($role->id)) !!}">
                                                     <i class="far fa-edit"></i>&nbsp; Edit
                                                 </a>
                                             </span>
@@ -73,9 +74,11 @@
                                     @if(hasPermission(auth()->user(),'roles.edit'))
                                         <td>
                                             <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                                <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                                <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;" dusk="roles-navtab">
+                                                    <i class="fas fa-cog" style="margin-top: 12px;"></i>
+                                                </span>
                                                 <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                            <span class="dropdown-item">
+                                            <span class="dropdown-item" dusk="roles-edit">
                                                 <a href="{!! route('roles.edit',encrypt($role->id)) !!}">
                                                     <i class="far fa-edit"></i>&nbsp; Edit
                                                 </a>
@@ -108,8 +111,12 @@
                         <nav>
                             <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
                                 <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-Basic" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
-                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-StudyActivities" role="tab" aria-controls="nav-profile" aria-selected="false">Study Activities</a>
-                                <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-ManagementActivities" role="tab" aria-controls="nav-profile" aria-selected="false">Management Activities</a>
+
+                                <a dusk="nav-StudyActivities" class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-StudyActivities" role="tab" aria-controls="nav-profile" aria-selected="false">Study Activities</a>
+
+                                <a dusk="nav-ManagementActivities" class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-ManagementActivities" role="tab" aria-controls="nav-profile" aria-selected="false">Management Activities</a>
+
+                                 <a dusk ="nav-CertificationApp" class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-CertificationApp" role="tab" aria-controls="nav-profile" aria-selected="false">Certification App</a>
                             </div>
                         </nav>
                         <div class="tab-content" id="nav-tabContent">
@@ -118,7 +125,7 @@
                                 <div class="form-group row" style="margin-top: 20px;">
                                     <label for="Name" class="col-sm-3 col-form-label">Name</label>
                                     <div class="{!! ($errors->has('name')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                        <input type="text" class="form-control" id="role_name" name="name" value="{{old('name')}}" required>
+                                        <input type="text" class="form-control" id="role_name" name="name" value="{{old('name')}}" required dusk="role_name">
                                         @error('name')
                                         <span class="text-danger small">{{ $message }} </span>
                                         @enderror
@@ -127,7 +134,7 @@
                                 <div class="form-group row">
                                     <label for="Description" class="col-sm-3 col-form-label">Description</label>
                                     <div class="{!! ($errors->has('description')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                        <textarea class="form-control" name="description" id="description" value="{{old('description')}}" required></textarea>
+                                        <textarea class="form-control" name="description" id="description" value="{{old('description')}}" required dusk="description"></textarea>
                                         @error('description')
                                         <span class="text-danger small">{{ $message }} </span>
                                         @enderror
@@ -136,8 +143,8 @@
                                 <div class="form-group row">
                                     <div class="col-md-3">Role Type <sup>*</sup></div>
                                     <div class="form-group col-md-9">
-                                        <input type="radio" name="role_type_name" id="for_system_user" value="system_role" checked> System Role &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        <input type="radio" name="role_type_name" id="for_study_user" value="study_role"> Study Role
+                                        <input type="radio" name="role_type_name" id="for_system_user" value="system_role" checked dusk="role_type_name"> System Role &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <input type="radio" name="role_type_name" id="for_study_user" value="study_role" dusk="role_type_name"> Study Role
                                     </div>
                                 </div>
                             </div>
@@ -240,6 +247,27 @@
                                             </div>
                                             <div class="col-md-3">
                                                 <input type="checkbox" name="qualityControl_delete" id="qualityControl_delete"> Delete
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row" style="margin-top: 15px;">
+                                    <div class="col-md-3">
+                                        <label for="Name" style="padding-left: 11px">Other Forms</label>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="otherForms_add" id="otherForms_add"> Add
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="otherForms_edit" id="otherForms_edit"> Edit
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="otherForms_view" id="otherForms_view"> View
+                                            </div>
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="otherForms_delete" id="otherForms_delete"> Delete
                                             </div>
                                         </div>
                                     </div>
@@ -373,11 +401,37 @@
                                             <input type="checkbox" name="finance" id="finance"> Allow Permission
                                         </div>
                                     </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="nav-CertificationApp" role="tabpanel">
+
+                                <div class="form-group row" style="margin-top: 15px;">
+                                    <div class="col-md-3">
+                                        <label for="Name" style="padding-left: 11px">Certification App</label>
                                     </div>
+                                    <div class="col-md-9">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <input type="checkbox" name="view_certificate" id="view_certificate"> View Certificate
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <input type="checkbox" name="generate_certificate" id="generate_certificate"> Generate Certificate
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <input type="checkbox" name="certificate_preferences" id="certification_preferences"> Certificate Preferences
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!-- certification tab ends -->
                         </div>
                             <div class="modal-footer">
                                 <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                                <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
+                                <button dusk="create-new-roles" type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
                             </div>
                         </div>
                     @if(count($errors))

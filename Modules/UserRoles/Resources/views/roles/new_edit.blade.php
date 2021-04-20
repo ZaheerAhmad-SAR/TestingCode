@@ -29,8 +29,12 @@
                                 <nav>
                                     <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab" role="tablist">
                                         <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-Basic" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
-                                        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-StudyActivities" role="tab" aria-controls="nav-profile" aria-selected="false">Study Activities</a>
-                                        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-ManagementActivities" role="tab" aria-controls="nav-profile" aria-selected="false">Management Activities</a>
+                                        <a dusk="nav-StudyActivities" class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-StudyActivities" role="tab" aria-controls="nav-profile" aria-selected="false">Study Activities</a>
+
+                                        <a dusk="nav-ManagementActivities" class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-ManagementActivities" role="tab" aria-controls="nav-profile" aria-selected="false">Management Activities</a>
+
+                                        <a  dusk ="nav-CertificationApp" class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-CertificationApp" role="tab" aria-controls="nav-profile" aria-selected="false">Certification App</a>
+
                                     </div>
                                 </nav>
 
@@ -58,9 +62,9 @@
                                             <div class="col-md-3">Role Type <sup>*</sup></div>
                                             <div class="form-group col-md-9">
                                                 <input type="radio" name="role_type" value="system_role"
-                                                @if($role->role_type == 'system_role') checked="checked" @endif> System Role &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                                @if($role->role_type == 'system_role') checked="checked" dusk="role_type" @endif> System Role &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                                 <input type="radio" name="role_type" value="study_role"
-                                                       @if($role->role_type == 'study_role') checked="checked" @endif> Study Role
+                                                       @if($role->role_type == 'study_role') checked="checked" dusk="role_type" @endif> Study Role
                                             </div>
                                         </div>                                    </div>
 
@@ -207,6 +211,39 @@
                                                         <?php foreach($permissions as $permission) { ?>
                                                         <input type="checkbox" name="qualityControl_delete" id="qualityControl_delete"
                                                                <?php if($permission->name == 'qualitycontrol.destroy') {?> checked <?php } } ?>
+                                                        > Delete
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group row" style="margin-top: 15px;">
+                                            <div class="col-md-3">
+                                                <label for="Name" style="padding-left: 11px">Other Forms </label>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="row">
+                                                    <div class="col-md-3">
+                                                        <?php foreach($permissions as $permission) { ?>
+                                                        <input type="checkbox" name="otherForms_add" id="otherForms_add"
+                                                               <?php if($permission->name == 'otherforms.create') {?> checked <?php } } ?>
+                                                        > Add
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <?php foreach($permissions as $permission) { ?>
+                                                        <input type="checkbox" name="otherForms_edit" id="otherForms_edit"
+                                                               <?php if($permission->name == 'otherforms.edit') {?> checked <?php } } ?>
+                                                        > Edit
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <?php foreach($permissions as $permission) { ?>
+                                                        <input type="checkbox" name="otherForms_view" id="otherForms_view"
+                                                               <?php if($permission->name == 'otherforms.index') {?> checked <?php } } ?>
+                                                        > View
+                                                    </div>
+                                                    <div class="col-md-3">
+                                                        <?php foreach($permissions as $permission) { ?>
+                                                        <input type="checkbox" name="otherForms_delete" id="otherForms_delete"
+                                                               <?php if($permission->name == 'otherforms.destroy') {?> checked <?php } } ?>
                                                         > Delete
                                                     </div>
                                                 </div>
@@ -411,10 +448,40 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <div class="tab-pane fade" id="nav-CertificationApp" role="tabpanel">
+
+                                        <div class="form-group row" style="margin-top: 15px;">
+                                            <div class="col-md-3">
+                                                <label for="Name" style="padding-left: 11px">Certification App</label>
+                                            </div>
+                                            <div class="col-md-9">
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <?php foreach($permissions as $permission) { ?>
+                                                        <input type="checkbox" name="view_certificate" id="view_certificate" <?php if($permission->name == 'certification-photographer.index') {?> checked <?php } } ?>> View Certificate
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <?php foreach($permissions as $permission) { ?>
+                                                        <input type="checkbox" name="generate_certificate" id="generate_certificate" <?php if($permission->name == 'generate-photographer-certificate') {?> checked <?php } } ?>> Generate Certificate
+                                                    </div>
+
+                                                    <div class="col-md-4">
+                                                        <?php foreach($permissions as $permission) { ?>
+                                                        <input type="checkbox" name="certificate_preferences" id="certification_preferences" <?php if($permission->name == 'certification-preferences.index') {?> checked <?php } } ?>> Certificate Preferences
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <!-- certification tab ends -->
+
                                 </div>
                                 <div class="modal-footer">
                                    {{-- <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>--}}
-                                    <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
+                                    <button dusk="update-roles" type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save Changes</button>
                                 </div>
                             </div>
                         </form>

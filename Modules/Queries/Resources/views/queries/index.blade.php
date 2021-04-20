@@ -42,6 +42,7 @@
                                 </thead>
                                 <tbody>
                                 @php $count= 1; @endphp
+                                @if(!empty($queries))
                                 @foreach($queries as $query)
 {{--                                    @php--}}
 {{--                                        $moduleId = \Modules\Admin\Entities\Study::where('id','=',$query->module_id)->first();--}}
@@ -51,12 +52,18 @@
                                         <td>{{$count++}}</td>
                                         <td>{{$query->query_subject}}</td>
                                         <td><a target="_blank" href="{{$query->query_url}}">{{$query->module_name}}</a></td>
-                                        <td>{{ucfirst(auth()->user()->name)}}</td>
-                                        <td>{{date_format($query->created_at,'M-d-Y')}}</td>
+                                        @php
+                                          $personName  = App\User::where('id',$query->queried_remarked_by_id)->first();
+
+                                        @endphp
+                                        <td>{{ $personName->name }}</td>
+                                        <td> {{Carbon\Carbon::parse($query->created_at)->diffForHumans()}}</td>
+{{--                                        <td>{{date_format($query->created_at,'M-d-Y')}}</td>--}}
                                         <td>{{ucfirst($query->query_status)}}</td>
                                         <td class="detailConversation" style="cursor: pointer;" data-id="{{$query->id}}"><i class="fa fa-eye" aria-hidden="true"></i></td>
                                     </tr>
                                 @endforeach
+                                @endif
                                 </tbody>
                             </table>
                         </div>

@@ -8,7 +8,6 @@
 
     <style type="text/css">
         /*.table{table-layout: fixed;}*/
-
         .select2-container--default
         .select2-selection--single {
             background-color: #fff;
@@ -50,96 +49,104 @@
             </div>
         </div>
         <!-- END: Breadcrumbs-->
+        <div class="row">
+            <div class="col-12 col-sm-12 mt-3">
+                <div class="card">
+                    <div class="card-body">
+                        <form action="{{route('trail_logs.list')}}" method="get" class="filter-form">
+                            <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ request()->sort_by_field }}">
+                            <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ request()->sort_by_field_name }}">
+                            <div class="form-row" style="padding: 10px;">
+                                @if(hasPermission(auth()->user(),'systemtools.index'))
+                                <div class="form-group col-md-4">
+                                    <label for="inputEmail4">Name</label>
+                                    <select class="form-control user_name filter-form-data" name="user_name" id="user_name">
+                                        <option value="">All Users</option>
+                                        @foreach($getUsers as $filterUser)
+                                            <option @if(request()->user_name == $filterUser->user_id) selected @endif value="{{$filterUser->user_id}}">{{$filterUser->name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                @endif
 
+                                @if(hasPermission(auth()->user(),'systemtools.index'))
+                                <div class="form-group col-md-4">
+                                {{--
+                                @else
+                                <div class="form-group col-md-3">
+                                @endif
+                                --}}
+                                    <label for="inputState">Study</label>
+                                    <select id="event_study" name="event_study" class="form-control filter-form-data">
+                                        <option value="">All Studies</option>
+                                        @foreach($getStudies as $study)
+                                        <option @if(request()->event_study == $study->id) selected @endif value="{{$study->id}}">{{$study->study_short_name}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                @endif
+
+                                @if(hasPermission(auth()->user(),'systemtools.index'))
+                                <div class="form-group col-md-4">
+                                @else
+                                <div class="form-group col-md-3">
+                                @endif
+                                    <label for="inputState">Event Section</label>
+                                    <select id="event_section" name="event_section" class="form-control filter-form-data">
+                                        <option value="">All Sections</option>
+                                        @foreach($eventSection as $key => $section)
+                                        <option @if(request()->event_section == $section) selected @endif value="{{$section}}">{{$section}}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+
+                                @if(hasPermission(auth()->user(),'systemtools.index'))
+                                <div class="form-group col-md-4">
+                                @else
+                                <div class="form-group col-md-3">
+                                @endif
+                                    <label for="inputState">Event Type</label>
+                                    <select id="event_type" name="event_type" class="form-control filter-form-data">
+                                        <option value="">All Types</option>
+                                        <option @if(request()->event_type == 'Add') selected @endif vale="Add">Add</option>
+                                        <option  @if(request()->event_type == 'Update') selected @endif value="Update">Update</option>
+                                        <option  @if(request()->event_type == 'Delete') selected @endif value="Delete">Delete</option>
+                                        <option  @if(request()->event_type == 'Activate') selected @endif value="Activate">Activate</option>
+                                        <option  @if(request()->event_type == 'Deactivate') selected @endif value="Deactivate">Deactivate</option>
+                                        <option  @if(request()->event_type == 'Lock Form') selected @endif value="Lock Form">Lock Form</option>
+                                        <option  @if(request()->event_type == 'Unlock Form') selected @endif value="Unlock Form">Unlock Form</option>
+                                    </select>
+                                </div>
+
+                                @if(hasPermission(auth()->user(),'systemtools.index'))
+                                <div class="form-group col-md-4">
+                                @else
+                                <div class="form-group col-md-3">
+                                @endif
+                                    <label for="dt">Event Date</label>
+                                    <input type="text" name="event_date" id="event_date" class="form-control event_date filter-form-data" value="{{ request()->event_date }}">
+                                </div>
+
+                                @if(hasPermission(auth()->user(),'systemtools.index'))
+                                <div class="form-group col-md-2 mt-4">
+                                @else
+                                <div class="form-group col-md-3 mt-4">
+                                @endif
+                                    <button class="btn btn-outline-warning reset-filter"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
+                                    <button type="submit" class="btn btn-primary submit-filter"><i class="fas fa-filter" aria-hidden="true"></i> Filter</button>
+                                </div>
+
+                            </div>
+                            <!-- row ends -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- START: Card Data-->
         <div class="row">
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
-
-                    <form action="{{route('trail_logs.list')}}" method="get" class="filter-form">
-                        <div class="form-row" style="padding: 10px;">
-
-                            @if(hasPermission(auth()->user(),'systemtools.index'))
-                            <div class="form-group col-md-4">
-                                <label for="inputEmail4">Name</label>
-                                <select class="form-control user_name filter-form-data" name="user_name" id="user_name">
-                                    <option value="">All Users</option>
-                                    @foreach($getUsers as $filterUser)
-                                        <option @if(request()->user_name == $filterUser->user_id) selected @endif value="{{$filterUser->user_id}}">{{$filterUser->name}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            @endif
-
-                            @if(hasPermission(auth()->user(),'systemtools.index'))
-                            <div class="form-group col-md-4">
-                            {{--
-                            @else
-                            <div class="form-group col-md-3">
-                            @endif
-                            --}}
-                                <label for="inputState">Study</label>
-                                <select id="event_study" name="event_study" class="form-control filter-form-data">
-                                    <option value="">All Studies</option>
-                                    @foreach($getStudies as $study)
-                                    <option @if(request()->event_study == $study->id) selected @endif value="{{$study->id}}">{{$study->study_short_name}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            @endif
-
-                            @if(hasPermission(auth()->user(),'systemtools.index'))
-                            <div class="form-group col-md-4">
-                            @else
-                            <div class="form-group col-md-3">
-                            @endif
-                                <label for="inputState">Event Section</label>
-                                <select id="event_section" name="event_section" class="form-control filter-form-data">
-                                    <option value="">All Sections</option>
-                                    @foreach($eventSection as $key => $section)
-                                    <option @if(request()->event_section == $section) selected @endif value="{{$section}}">{{$section}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            @if(hasPermission(auth()->user(),'systemtools.index'))
-                            <div class="form-group col-md-4">
-                            @else
-                            <div class="form-group col-md-3">
-                            @endif
-                                <label for="inputState">Event Type</label>
-                                <select id="event_type" name="event_type" class="form-control filter-form-data">
-                                    <option value="">All Types</option>
-                                    <option @if(request()->event_type == 'Add') selected @endif vale="Add">Add</option>
-                                    <option  @if(request()->event_type == 'Update') selected @endif value="Update">Update</option>
-                                    <option  @if(request()->event_type == 'Delete') selected @endif value="Delete">Delete</option>
-                                    <option  @if(request()->event_type == 'Activate') selected @endif value="Activate">Activate</option>
-                                     <option  @if(request()->event_type == 'Deactivate') selected @endif value="Deactivate">Deactivate</option>
-                                </select>
-                            </div>
-
-                            @if(hasPermission(auth()->user(),'systemtools.index'))
-                            <div class="form-group col-md-4">
-                            @else
-                            <div class="form-group col-md-3">
-                            @endif
-                                <label for="dt">Event Date</label>
-                                <input type="text" name="event_date" id="event_date" class="form-control event_date filter-form-data" value="{{ request()->event_date }}">
-                            </div>
-
-                            @if(hasPermission(auth()->user(),'systemtools.index'))
-                            <div class="form-group col-md-2 mt-4">
-                            @else
-                            <div class="form-group col-md-3 mt-4">
-                            @endif
-                                <button type="button" class="btn btn-primary reset-filter">Reset</button>
-                                <button type="submit" class="btn btn-primary btn-lng">Filter</button>
-                            </div>
-
-                        </div>
-                        <!-- row ends -->
-                    </form>
-                   <hr>
                     <div class="card-body">
                         <div class="table-responsive">
 
@@ -147,8 +154,8 @@
                                 <thead class="table-secondary">
                                     <tr>
                                         <th>Action</th>
-                                        <th>Name</th>
-                                        <th>Event Type</th>
+                                        <th onclick="changeSort('name');">Name </th>
+                                        <th onclick="changeSort('event_type');">Event Type </th>
                                         <th>Event Note</th>
                                         <th>IP Address</th>
                                         <th>Date</th>
@@ -175,7 +182,7 @@
                                         <td colspan="6">
                                            <table class="table table-hover" style="width: 100%">
                                                 <thead class="table-secondary">
-                                                    @if($log->event_type == 'Add' || $log->event_type == 'Activate' || $log->event_type == 'Deactivate' || $log->event_type == 'Delete' || $log->event_section == 'QC Form' || $log->event_section == 'Grading Form')
+                                                    @if($log->event_type == 'Add' || $log->event_type == 'Activate' || $log->event_type == 'Deactivate' || $log->event_type == 'Delete' || $log->event_section == 'QC Form' || $log->event_section == 'Grading Form' || $log->event_section == 'Form')
                                                         <th>Name</th>
                                                         <th>Value</th>
                                                     @else
@@ -231,7 +238,7 @@
                                                         @endforeach
                                                     @else
                                                         <!-- for add event -->
-                                                        @if($log->event_type == 'Add' || $log->event_type == 'Activate' || $log->event_type == 'Deactivate' || $log->event_type == 'Delete')
+                                                        @if($log->event_type == 'Add' || $log->event_type == 'Activate' || $log->event_type == 'Deactivate' || $log->event_type == 'Delete' || $log->event_section == 'Form')
                                                             @foreach($newDetails as $key => $details)
                                                             <tr>
                                                                 <td>{{$key}}</td>
@@ -245,7 +252,7 @@
                                                             <tr>
                                                                 <td>{{$key}}</td>
                                                                 <td>{{$details}}</td>
-                                                                <td>{{$oldDetails->$key}}</td>
+                                                                <td>{{isset($oldDetails->$key) ? $oldDetails->$key : '' }}</td>
                                                             </tr>
                                                             @endforeach
                                                         @endif
@@ -324,6 +331,18 @@
     $('select[name="event_section"]').select2();
     $('select[name="event_study"]').select2();
 
+
+    function changeSort(field_name){
+        var sort_by_field = $('#sort_by_field').val();
+        if(sort_by_field =='' || sort_by_field =='ASC'){
+           $('#sort_by_field').val('DESC');
+           $('#sort_by_field_name').val(field_name);
+        }else if(sort_by_field =='DESC'){
+           $('#sort_by_field').val('ASC'); 
+           $('#sort_by_field_name').val(field_name); 
+        }
+        $('.filter-form').submit();
+    }
 </script>
 @endsection
 

@@ -89,8 +89,8 @@
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-2 col-form-label">Assigned to:</label>
                                 <div class="col-sm-10">
-                                    <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="user"> Users</label> &nbsp;
-                                    <label class="radio-inline  col-form-label"><input type="radio" id="assignQueries" name="assignQueries" value="role" > Roles</label>
+                                    <label class="radio-inline  col-form-label"><input type="radio" id="assignQuestionQueries" name="assignQuestionQueries" value="user"> Users</label> &nbsp;
+                                    <label class="radio-inline  col-form-label"><input type="radio" id="assignQuestionQueries" name="assignQuestionQueries" value="role" > Roles</label>
                                 </div>
                             </div>
                             <div class="form-group row usersInput" style="display: none;">
@@ -977,14 +977,14 @@
         var module              = $("#module").val();
         var modility_id         = $("#modility_id").val();
         var form_type_id        = $("#form_type_id").val();
-        var queryAssignedTo     = $("input[name='assignQueries']:checked").val();
+        var queryAssignedTo     = $("input[name='assignQuestionQueries']:checked").val();
         var message             = $('#message').val();
         var query_url           =  document.URL;
         var query_subject_form  = $("#query_subject_form").val();
         if (queryAssignedTo == 'user')
         {
             var assignedUsers = $('#question_users').val();
-            console.log(assignedUsers);
+            //console.log(assignedUsers);
         }
         if(queryAssignedTo =='role')
         {
@@ -1025,22 +1025,40 @@
             processData:false,
             success: function(response)
             {
-                console.log(response);
+                //console.log(response);
                 $("#queriesQuestionForm")[0].reset();
                 $("#usersSelectOptionList").html('');
                 $('#queries-modal-question').modal('hide');
-                location.reload();
-                // window.setTimeout(function () {
-                //     window.location.reload();
-                // }, 100);
+                //location.reload();
+                {{--$.ajax({--}}
+                {{--    type: 'POST',--}}
+                {{--    url: "{{route('notifications.countUserNotification')}}"--}}
+                {{--});--}}
             }
         });
 
     });
 
-    $('#queries-modal-question').on('hidden.bs.modal', function () {
-        $(this).find('form').trigger('reset');
-    })
+    function countUserNotification()
+    {
+        $.ajax({
+            type: 'POST',
+            url:"{{route('notifications.countUserNotification')}}",
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            cache: false,
+            processData:false,
+            success: function(response)
+            {
+                //console.log(response);
+            }
+        });
+    }
+
+    // $('#queries-modal-question').on('hidden.bs.modal', function () {
+    //     $(this).find('form').trigger('reset');
+    // })
 
     $('#reply-question-modal').on('hidden.bs.modal', function () {
         $(this).find('form').trigger('reset');
@@ -1072,7 +1090,7 @@
         if (queryAssignedTo == 'user')
         {
             var assignedUsers = $('#form_users').val();
-            console.log(assignedUsers);
+            //console.log(assignedUsers);
         }
         if(queryAssignedTo =='role')
         {
@@ -1112,7 +1130,7 @@
             processData:false,
             success: function(response)
             {
-                console.log(response);
+                //console.log(response);
                 $("#formForQueries")[0].reset();
                 $("#formQueryUserDropDownList").html('');
                 $('#queries-modal-form').modal('hide');
@@ -1180,7 +1198,7 @@
             processData:false,
             success: function(results)
             {
-                console.log(results);
+                //console.log(results);
                 $('.replyFormButton').css('display','');
                 var query_id = results[0].parent_query_id;
                 showForm(query_id);
@@ -1188,6 +1206,9 @@
         });
 
     });
+
+
+
 
 
 

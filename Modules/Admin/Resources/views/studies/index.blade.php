@@ -8,6 +8,7 @@
 @stop
 
 @section('content')
+
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
         <div class="row ">
@@ -16,7 +17,7 @@
                     <div class="w-sm-100 mr-auto"><h4 id="querySection" class="mb-0">Studies</h4></div>
 
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
-                        <li class="breadcrumb-item"><a href="{{route('dashboard.index')}}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{route('dashboard.index','-')}}">Home</a></li>
                         <li class="breadcrumb-item active"><a href="javascript:void(0)">Studies Listing</a></li>
                     </ol>
                 </div>
@@ -35,23 +36,28 @@
             <div class="card-body">
                 <form action="{{route('studies.index')}}" method="get" class="filter-form">
                     @csrf
-                    <input type="hidden" name="id" id="sort_by_id" value="ASC">
+                    <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ getOldValue($old_values,'sort_by_field') }}">
+                    <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ getOldValue($old_values,'sort_by_field_name') }}">
                     <div class="form-row" style="padding: 10px;">
                         <div class="form-group col-md-4">
-                            <input type="text" name="study_code" class="form-control" placeholder="Study Code">
+                            <input type="text" name="study_code" class="form-control" placeholder="Study Code" value="{{ getOldValue($old_values,'study_code')}}">
                         </div>
                          <div class="form-group col-md-4">
-                           <input type="text" name="study_short_name" class="form-control" placeholder="Study Short Name">
+                           <input type="text" name="study_short_name" class="form-control" placeholder="Study Short Name" value="{{ getOldValue($old_values,'study_short_name')}}">
                         </div>
                         <div class="form-group col-md-4">
-                            <input type="text" class="form-control" name="study_sponsor" placeholder="Sponsor Name">
+                            <input type="text" class="form-control" name="study_sponsor" placeholder="Sponsor Name" value="{{ getOldValue($old_values,'study_sponsor')}}">
                         </div>
                         <div class="form-group col-md-4">
+                            @php
+                                $old_study_status ='';
+                                $old_study_status =  getOldValue($old_values,'study_status');
+                            @endphp
                             <select name="study_status" class="form-control">
                                 <option value="">Status</option>
-                                <option value="Development">Development</option>
-                                <option value="Live">Live</option>
-                                <option value="Archived">Archived</option>
+                                <option value="Development" @if($old_study_status == 'Development') selected @endif>Development</option>
+                                <option value="Live" @if($old_study_status == 'Live') selected @endif>Live</option>
+                                <option value="Archived" @if($old_study_status == 'Archived') selected @endif>Archived</option>
                             </select>
                         </div>
                         <div class="form-group col-md-4" style="text-align: right;">
@@ -68,7 +74,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         @if(hasPermission(auth()->user(),'studies.create'))
-                            <button type="button" class="btn btn-outline-primary" id="create-new-study" data-toggle="modal" data-target="#createStudy">
+                            <button type="button" class="btn btn-outline-primary" id="create-new-study" data-toggle="modal" dusk="createStudy" data-target="#createStudy">
                                 <i class="fa fa-plus"></i> Add Study
                             </button>
                         @endif
@@ -82,15 +88,15 @@
                         <table class="tablesaw table-bordered" data-tablesaw-mode="stack" id="studies_crud">
                             <thead>
                             <tr>
-                                <th scope="col" data-tablesaw-priority="persist" style="width: 5%" onclick="changeSort('id');">ID <i class="fas fa-sort float-mrg"></i></th>
-                                <th scope="col" data-tablesaw-sortable-default-col data-tablesaw-priority="3" style="width: 40%">
+                                <th scope="col" data-tablesaw-priority="persist" style="width: 5%" >ID </th>
+                                <th scope="col" data-tablesaw-sortable-default-col data-tablesaw-priority="3" style="width: 40%" onclick="changeSort('study_sponsor');">
                                     Short Name : <strong>Study Title</strong>
                                     <br>
                                     <br>Sponsor
-                                    {{-- <i class="fas fa-sort float-mrg" style="margin-top: -15px"></i> --}}
+                                    <i class="fas fa-sort float-mrg" style="margin-top: -15px"></i>
                                 </th>
                                 <th scope="col" data-tablesaw-priority="2" class="tablesaw-stack-block"  style="width: 20%">Progress bar</th>
-                                <th scope="col" data-tablesaw-priority="1" style="width: 10%">Status {{-- <i class="fas fa-sort float-mrg"></i> --}}</th>
+                                <th scope="col" data-tablesaw-priority="1" style="width: 10%" onclick="changeSort('study_status');">Status <i class="fas fa-sort float-mrg"></i></th>
                                 @if(hasPermission(auth()->user(),'systemtools.index'))
                                     <th scope="col" data-tablesaw-priority="1" style="width: 20%">Study Admin</th>
                                 @endif
@@ -105,7 +111,7 @@
                                         <td class="studyID" style="display: none">{{ $study->id }}</td>
                                         <td class="title">
                                             <a class="" href="{{ route('studies.show', $study->id) }}">
-                                                {{ucfirst($study->study_short_name)}} : <strong>{{ucfirst($study->study_title)}}</strong>
+                                                {{ucfirst($study->study_short_name)}} : <strong dusk = 'study_title_dusk'>{{ucfirst($study->study_title)}}</strong>
                                             </a>
                                             <br><br><p style="font-size: 14px; font-style: oblique">Sponsor: <strong>{{ucfirst($study->study_sponsor)}}</strong></p>
                                         </td>
@@ -124,7 +130,7 @@
                                             <td>
                                                 @if(hasPermission(auth()->user(),'studies.edit'))
                                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                                    <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                                    <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;" dusk="study-navbar"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                                     @php
                                                         $studyQuery = Modules\Queries\Entities\Query::where('module_id','=',$study->id)->where('query_status','open')->first();
                                                         //dd($studyQuery);
@@ -132,7 +138,7 @@
                                                     @if(null !== $studyQuery )
                                                         @if(\Modules\Queries\Entities\Query::checkUserhaveQuery($study->id))
                                                             <div class="showQueries">
-                                                    <span class="ml-3" style="cursor: pointer;">
+                                                    <span class="ml-3" style="cursor: pointer;display: none;">
                                                         <i class="fas fa-question-circle showAllStudyQueries" data-id="{{$study->id}}"  style="margin-top: 12px;"></i></span>
                                                             </div>
                                                         @endif
@@ -140,21 +146,21 @@
                                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
                                                         @if(hasPermission(auth()->user(),'systemtools.index'))
                                                             <span class="dropdown-item">
-                                                        <a href="javascript:void(0)" id="change-status" data-target-id="{{$study->id}}" data-toggle="modal" data-target="#change_status">
+                                                        <a href="javascript:void(0)" dusk="change_status" id="change-status" data-target-id="{{$study->id}}" data-target-studydeletecount="{{$study->study_delete_count}}" data-toggle="modal" data-target="#change_status">
                                                             <i class="icon-action-redo"></i> Change Status
                                                         </a>
                                                     </span>
                                                         @endif
                                                         @if(hasPermission(auth()->user(),'studytools.index'))
                                                             <span class="dropdown-item">
-                                                           <a href="javascript:void(0)" id="edit-study" data-id="{{ $study->id }}">
+                                                           <a href="javascript:void(0)" dusk="edit-study" id="edit-study" data-id="{{ $study->id }}">
                                                                <i class="icon-pencil"></i> Edit
                                                            </a>
                                                     </span>
                                                         @endif
                                                         @if(hasPermission(auth()->user(),'systemtools.index'))
                                                             <span class="dropdown-item">
-                                                        <a href="javascript:void(0)" id="clone-study" data-target-id="{{$study->id}}" data-toggle="modal" data-target="#clone-study-modal">
+                                                        <a href="javascript:void(0)" id="clone-study" dusk="clone-study-modal" data-target-id="{{$study->id}}" data-toggle="modal" data-target="#clone-study-modal">
                                                             <i class="fa fa-clone"></i> Clone
                                                         </a>
                                                         </span>
@@ -168,22 +174,25 @@
                                                             @endif
                                                             @if(hasPermission(auth()->user(),'systemtools.index'))
                                                             <span class="dropdown-item">
-                                                            <a href="#" data-id="{{$study->id}}" id="delete-study">
+                                                            <a href="javascript:void(0)" data-id="{{$study->id}}" dusk="delete-study" id="delete-study">
                                                                 <i class="fa fa-trash"  aria-hidden="true"></i> Delete
                                                             </a>
                                                             </span>
                                                             @endif
-                                                            @include('queries::queries.query_popup_span',['study_id'=>$study->id,'studyShortName'=>$study->study_short_name,'studyTitle'=>$study->study_title])
-                                                        {{-- <span class="dropdown-item">
-                                                             <a href="#" class="addModalities">
-                                                                <i class="fa fa-object-group" aria-hidden="true"></i> Preferences
-                                                             </a>
-                                                        </span> --}}
-                                                        {{-- <span class="dropdown-item">
-                                                            <a href="#" data-id="" class="addModalities">
-                                                                <i class="fa fa-object-group" aria-hidden="true"></i> Modalities
-                                                            </a>
-                                                        </span> --}}
+                                                            {{-- Query comment --}}
+                                                            {{-- @include('queries::queries.query_popup_span',['study_id'=>$study->id,'studyShortName'=>$study->study_short_name,'studyTitle'=>$study->study_title]) --}}
+
+
+                                                            {{-- <span class="dropdown-item">
+                                                                 <a href="#" class="addModalities">
+                                                                    <i class="fa fa-object-group" aria-hidden="true"></i> Preferences
+                                                                 </a>
+                                                            </span> --}}
+                                                            {{-- <span class="dropdown-item">
+                                                                <a href="#" data-id="" class="addModalities">
+                                                                    <i class="fa fa-object-group" aria-hidden="true"></i> Modalities
+                                                                </a>
+                                                            </span> --}}
                                                     </div>
                                                 </div>
                                                 @endif
@@ -220,7 +229,7 @@
                         <nav>
                             <div class="nav nav-tabs font-weight-bold border-bottom" id="nav-tab-clone" role="tablist">
                                 <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-BasicInfo" role="tab" aria-controls="nav-home" aria-selected="true">Basic Info</a>
-                                <a class="nav-item nav-link" id="nav-clone-tab" data-toggle="tab" href="#nav-Clone" role="tab" aria-controls="nav-clone" aria-selected="false">Clone Study Data</a>
+                                <a class="nav-item nav-link" id="nav-clone-tab" data-toggle="tab" dusk="nav-Clone" href="#nav-Clone" role="tab" aria-controls="nav-clone" aria-selected="false">Clone Study Data</a>
                             </div>
                         </nav>
                         <div class="tab-content" id="nav-ClonetabContent">
@@ -231,7 +240,7 @@
                                     <label for="study_title" class="col-md-2">Title</label>
                                     <div class="{!! ($errors->has('study_title')) ?'form-group col-md-10 has-error':'form-group col-md-10' !!}">
                                         <input type="hidden" name="study_id" id="studyID" value="">
-                                        <input type="text" class="form-control" id="study_title" name="study_title" value="{{ old('value') }}"> @error('study_title')
+                                        <input type="text" class="form-control" dusk="study_title" id="study_title" name="study_title" value="{{ old('value') }}"> @error('study_title')
                                         <span class="text-danger small"> {{ $message }} </span>
                                         @enderror
                                     </div>
@@ -351,7 +360,7 @@
                             <div class="modal-footer">
                                 <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                                 @if(hasPermission(auth()->user(),'studies.store'))
-                                    <button type="submit" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Clone Study</button>
+                                    <button type="submit" dusk="clone-study-submit-button" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Clone Study</button>
                                 @endif
                             </div>
                         </div>
@@ -525,6 +534,7 @@
                         <input type="hidden" value="" id="deleteExistingData" name="deleteExistingData" value="">
                         @if(!empty($study))
                             <input type="hidden" value="" id="study_ID" name="study_ID">
+                            <input type="hidden" value="" id="study_delete_count" name="study_delete_count">
                         @endif
                         <div class="form-group row">
                             <div class="col-md-3">Status</div>
@@ -539,7 +549,7 @@
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="button"  onclick="changeStudyStatus();" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
+                            <button type="button" dusk="changeStudyStatusButton" onclick="changeStudyStatus();" class="btn btn-outline-primary" value="create"><i class="fa fa-save"></i> Save Changes</button>
                         </div>
                     </form>
                 </div>
@@ -635,6 +645,11 @@
             $('#change_status').on('show.bs.modal',function (e) {
                 var id = $(e.relatedTarget).data('target-id');
                 $(this).find('#study_ID').val(id);
+
+                // get delete count
+                var studyDeleteCount = $(e.relatedTarget).data('target-studydeletecount');
+                console.log(studyDeleteCount);
+                $(this).find('#study_delete_count').val(studyDeleteCount);
                 //$('#study_ID').val(id);
             })
         })
@@ -647,7 +662,7 @@
             })
         })
         $(document).ready(function(){
-            $('input[type="checkbox"]').click(function(){
+            $('input[type="checkbox"]').click(function() {
                 var a = Ge
                 if($(this).prop("checked") == true){
                     $("#result").html("Checkbox is checked.");
@@ -664,9 +679,13 @@
             })
         })
         function changeSort(field_name){
-            var check_sort_id = $('#sort_by_id').val();
-            if(check_sort_id =='ASC' && field_name =='id'){
-                $('#sort_by_id').val('DESC');
+            var sort_by_field = $('#sort_by_field').val();
+            if(sort_by_field =='' || sort_by_field =='ASC'){
+               $('#sort_by_field').val('DESC');
+               $('#sort_by_field_name').val(field_name);
+            }else if(sort_by_field =='DESC'){
+               $('#sort_by_field').val('ASC');
+               $('#sort_by_field_name').val(field_name);
             }
             $('.filter-form').submit();
         }
@@ -684,7 +703,7 @@
             $('.add_field').on('click',function (e) {
                 e.preventDefault();
                 $('.appendfields').append('<div class="disease_row" style="margin-top:10px;">' +
-                    '    <input type="text" class="form-control" name="disease_cohort_name[]" value="" style="width: 80%;display: inline;">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>');
+                    '    <input type="text" class="form-control" dusk="disease_cohort_name" name="disease_cohort_name[]" value="" style="width: 80%;display: inline;">' + '&nbsp;<i class="btn btn-outline-danger fas fa-trash-alt remove_field"></i></div>');
             })
             $('body').on('click','.remove_field',function () {
                 var row = $(this).closest('div.disease_row');
@@ -949,6 +968,7 @@
 	        });
             function changeStudyStatus() {
                 var studyStatus = $('#studyStatusDD').val();
+
                 if(studyStatus == 'Live'){
                     $.confirm({
                         columnClass: 'col-md-8',
@@ -976,14 +996,18 @@
                                 btnClass: 'btn-red',
                                 action: function() {
                                     $('#deleteExistingData').val('');
+
                                 }
                             }
-                        }
-                    });
-                }else{
+                        });
+                    } else {
+                        $('#deleteExistingData').val('');
+                        $('#changeStudyStatusForm').submit();
+                    } // live check ends
+                } else {
                     $('#deleteExistingData').val('');
                     $('#changeStudyStatusForm').submit();
-                }
+                } // delete count check ends
         }
         </script>
 

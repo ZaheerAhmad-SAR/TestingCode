@@ -18,7 +18,10 @@ use Modules\UserRoles\Entities\Role;
 use Modules\Admin\Entities\RoleStudyUser;
 use Modules\UserRoles\Entities\UserRole;
 use Modules\UserRoles\Entities\UserSystemInfo;
-
+use Modules\UserRoles\Entities\UserLog;
+use App\UserPrefrences;
+use Modules\CertificationApp\Entities\TransmissionDataDevice;
+use Modules\CertificationApp\Entities\TransmissionDataPhotographer;
 class User extends Authenticatable
 {
     use Notifiable;
@@ -46,6 +49,10 @@ class User extends Authenticatable
         'role_id',
         'password',
         'google_auth',
+        'notification_type',
+        'bug_report',
+        'is_form',
+        'is_subject',
         'qr_flag',
         'browser_name',
         'two_factor_code',
@@ -242,5 +249,31 @@ class User extends Authenticatable
     public function certificationOfficer()
     {
         return $this->hasMany(CertificationData::class);
+    }
+
+    public function user_log()
+    {
+        return $this->hasMany(UserLog::class);
+    }
+
+    public static function getUserStatus($userId) {
+        return self::where('id', $userId)
+                    ->whereNull('deleted_at')
+                    ->first();
+    }
+
+    public function user_prefrences()
+    {
+        return $this->hasOne(UserPrefrences::class)->withDefault();
+    }
+
+    public function transmissionDevices()
+    {
+        return $this->hasMany(TransmissionDataDevice::class, 'assign_to');
+    }
+
+    public function transmissionPhotographer()
+    {
+        return $this->hasMany(TransmissionDataPhotographer::class, 'assign_to');
     }
 }

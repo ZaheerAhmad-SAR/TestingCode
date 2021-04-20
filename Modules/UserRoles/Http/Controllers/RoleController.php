@@ -56,6 +56,7 @@ class RoleController extends Controller
      */
     public function store(RoleRequest $request)
     {
+        dd($request->all());
         $role =  Role::create([
             'id' => (string)Str::uuid(),
             'name'  =>  $request->name,
@@ -185,7 +186,8 @@ class RoleController extends Controller
         if ($request->study_view == 'on') {
             //dd('log store');
             $permissions = Permission::where('name', '=', 'studies.index')
-                ->get();
+                                    ->orwhere('name', '=', 'studies.show')
+                                    ->get();
 
             $this->createRolePermissions($role, $permissions);
         }
@@ -330,6 +332,31 @@ class RoleController extends Controller
             $this->createRolePermissions($role, $permissions);
         }
 
+        // for other forms permissions start
+        if ($request->otherForms_add == 'on') {
+            $permissions = Permission::where('name', '=', 'otherForms.create')
+                ->orwhere('name', '=', 'otherForms.store')
+                ->get();
+            $this->createRolePermissions($role, $permissions);
+        }
+        if ($request->otherForms_edit == 'on') {
+            $permissions = Permission::where('name', '=', 'otherForms.edit')
+                ->orwhere('name', '=', 'otherForms.update')
+                ->get();
+            $this->createRolePermissions($role, $permissions);
+        }
+
+        if ($request->otherForms_view == 'on') {
+            $permissions = Permission::where('name', '=', 'otherForms.index')
+                ->get();
+            $this->createRolePermissions($role, $permissions);
+        }
+        if ($request->otherForms_delete == 'on') {
+            $permissions = Permission::where('name', '=', 'otherForms.destroy')
+                ->get();
+            $this->createRolePermissions($role, $permissions);
+        }
+        // for other forms permissions end
         /*-- Adjudication Permissions --*/
         if ($request->adjudication_add == 'on') {
             $permissions = Permission::where('name', '=', 'adjudication.create')
@@ -537,7 +564,10 @@ class RoleController extends Controller
         /*-- Data management Permissions */
         if ($request->management == 'on') {
             $permissions = Permission::where('name', '=', 'data_management.index')
-                ->get();
+                                    ->orwhere('name', '=', 'subjectFormLoader.lock-data')
+                                    ->orwhere('name', '=', 'subjectFormLoader.lock-from-data')
+                                    ->orwhere('name', '=', 'subjectFormLoader.unlock-form-data')
+                                    ->get();
             $this->createRolePermissions($role, $permissions);
         }
 
@@ -561,6 +591,72 @@ class RoleController extends Controller
                 ->get();
             $this->createRolePermissions($role, $permissions);
         }
+
+        /*------------ Certification App Starts ---------------------------*/
+
+        // view
+        if ($request->view_certificate == 'on') {
+            $permissions = Permission::where('name', '=', 'certification-template')
+                                       ->orwhere('name', '=', 'save-certification-template')
+                                       ->orwhere('name', '=', 'get-template-data')
+                                       ->orwhere('name', '=', 'update-certification-template')
+                                       ->orwhere('name', '=', 'update-certification-template')
+                                       ->orwhere('name', '=', 'update-photographer-provisonal-certificate')
+                                       ->orwhere('name', '=', 'get-study-setup-emails')
+                                       ->orwhere('name', '=', 'get-transmission-data')
+                                       ->orwhere('name', '=', 'certification-photographer.index')
+                                       ->orwhere('name', '=', 'certification-photographer.edit')
+                                       ->orwhere('name', '=', 'certification-photographer.update')
+                                       ->orwhere('name', '=', 'archive-photographer-transmission')
+                                       ->orwhere('name', '=', 'archived-photographer-transmission-listing')
+                                       ->orwhere('name', '=', 'certified-photographer')
+                                       ->orwhere('name', '=', 'check-grandfather-certificate')
+                                       ->orwhere('name', '=', 'change-certificate-status')
+                                       ->orwhere('name', '=', 'change-certificate-date')
+                                       ->orwhere('name', '=', 'photographer-certificate-pdf')
+                                       ->orwhere('name', '=', 'user-signature')
+                                       ->orwhere('name', '=', 'device-certificate-pdf')
+                                       ->orwhere('name', '=', 'certification-device.index')
+                                       ->orwhere('name', '=', 'certification-device.edit')
+                                       ->orwhere('name', '=', 'certification-device.update')
+                                       ->orwhere('name', '=', 'update-device-provisonal-certificate')
+                                       ->orwhere('name', '=', 'archive-device-transmission')
+                                       ->orwhere('name', '=', 'certified-device')
+                                       ->orwhere('name', '=', 'archived-device-transmission-listing')
+                                       ->get();
+
+            $this->createRolePermissions($role, $permissions);
+        }
+
+        // generate
+        if ($request->generate_certificate == 'on') {
+            $permissions = Permission::where('name', '=', 'generate-photographer-certificate')
+                                       ->orWhere('name', '=', 'generate-photographer-grandfather-certificate')
+                                       ->orWhere('name', '=', 'generate-device-certificate')
+                                       ->orWhere('name', '=', 'generate-device-grandfather-certificate')
+                                       ->get();
+                                       
+            $this->createRolePermissions($role, $permissions);
+        }
+
+        // preferences
+        if ($request->certificate_preferences == 'on') {
+            $permissions = Permission::where('name', '=', 'certification-preferences.index')
+                                       ->orWhere('name', '=', 'preferences.assign-modality')
+                                       ->orwhere('name', '=', 'preferences.save-assign-modality')
+                                       ->orwhere('name', '=', 'preferences.remove-assign-modality')
+                                       ->orwhere('name', '=', 'preferences.assign-device')
+                                       ->orwhere('name', '=', 'preferences.save-assign-device')
+                                       ->orwhere('name', '=', 'preferences.remove-assign-device')
+                                       ->orwhere('name', '=', 'preferences.study-setup')
+                                       ->orwhere('name', '=', 'preferences.save-study-setup')
+                                       ->get();
+                                       
+            $this->createRolePermissions($role, $permissions);
+        }
+
+        /*------------ Certification App Ends ---------------------------*/
+
     }
     private function createRolePermissions($role, $permissions)
     {

@@ -183,7 +183,9 @@ class FormController extends Controller
                 $option_values = explode(',', $ques_value->optionsGroup->option_value);
                 $question_contents .= '<div class="col-sm-6">';
                 foreach ($option_name as $key => $name) {
-                    $question_contents .= '<input type="radio" name="question_' . $ques_value->id . '" value="' . $option_values[$key] . '"> &nbsp;' . $name . '&nbsp;' . $br;
+                    if(isset($option_values[$key]) && $option_values[$key] !=''){
+                        $question_contents .= '<input type="radio" name="question_' . $ques_value->id . '" value="' . $option_values[$key] . '"> &nbsp;' . $name . '&nbsp;' . $br;
+                    }
                 }
                 $question_contents .= '</div>';
             } elseif ($ques_value->form_field_type->field_type == 'Number') {
@@ -252,7 +254,7 @@ class FormController extends Controller
             if ($ques_value->form_field_type->field_type == 'Certification') {
                 $question_contents .= '<span class="dropdown-item edit_certify"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
             } elseif ($ques_value->form_field_type->field_type == 'Description') {
-                $question_contents .= '<span class="dropdown-item edit_desc"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
+                $question_contents .= '<span class="dropdown-item edit_desc"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span><span class="dropdown-item clone_desc"><a href="#"><i class="far fa-clone"></i>&nbsp; Clone </a></span>';
             } elseif ($ques_value->form_field_type->field_type == 'Calculated') {
                 $question_contents .= '<span class="dropdown-item edit_calculated_field"><a href="#"><i class="far fa-edit"></i>&nbsp; Edit </a></span>';
             } else {
@@ -457,7 +459,6 @@ class FormController extends Controller
             $adjStatus->opertaor = $request->opertaor;
             $adjStatus->custom_value = $request->custom_value;
             $adjStatus->save();
-
             $this->updateQuestionAdjudicationStatusesToReplicatedVisits($adjStatus, true);
         } else {
             $this->createQuestionAdjudicationStatus($request, $questionObj);
@@ -504,7 +505,6 @@ class FormController extends Controller
         // Question dependency update
         if (!empty($request->dependency_id) && $request->dependency_id != 'no-id-123') {
             $dependencies = QuestionDependency::where('id', $request->dependency_id)->first();
-
             if (!empty($request->dep_on_question_id)) {
                 $dependencies->q_d_status = $request->q_d_status;
                 $dependencies->dep_on_question_id = $request->dep_on_question_id;

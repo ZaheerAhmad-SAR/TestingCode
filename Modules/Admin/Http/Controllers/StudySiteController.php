@@ -5,6 +5,7 @@ namespace Modules\Admin\Http\Controllers;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Modules\Admin\Entities\Coordinator;
 use Modules\Admin\Entities\Modility;
@@ -24,9 +25,19 @@ class StudySiteController extends Controller
      * Display a listing of the resource.
      * @return Renderable
      */
-    public function index()
+    public function index(Request $request)
     {
-
+        // for default orderBy
+        if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
+            $field_name = $request->sort_by_field_name;
+        }else{
+            $field_name = 'site_code';
+        }
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $asc_or_decs = $request->sort_by_field;
+        }else{
+            $asc_or_decs = 'ASC';
+        }
         $siteArray = array();
         $sites = StudySite::select('site_study.*'
             ,'sites.site_name'
@@ -37,7 +48,11 @@ class StudySiteController extends Controller
             ,'sites.site_code'
             ,'sites.site_phone'
         )->join('sites','sites.id','=','site_study.site_id')
-            ->where('site_study.study_id','=',session('current_study'))->get();
+            ->where('site_study.study_id','=',session('current_study'));
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $sites = $sites->orderBy($field_name , $request->sort_by_field);
+        }
+        $sites = $sites->get();
         foreach ($sites as $site)
         {
             $siteArray[] = $site->site_id;
@@ -165,8 +180,22 @@ class StudySiteController extends Controller
 
     public function assignedSites(Request $request)
     {
-        //dd($request->all());
+
+        $total_sites = Site::all();
         $sites = Site::query();
+        // For Sorting purpose
+        if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
+            $field_name = $request->sort_by_field_name;
+        }else{
+            $field_name = 'site_code';
+        }
+
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $asc_or_decs = $request->sort_by_field;
+        }else{
+            $asc_or_decs = 'ASC';
+        }
+
         if ($request->site_code != '') {
             $sites = $sites->where('site_code','like', '%'.$request->site_code.'%');
         }
@@ -182,11 +211,28 @@ class StudySiteController extends Controller
         if ($request->site_country != '') {
             $sites = $sites->where('site_country','like', '%'.$request->site_country.'%');
         }
-        if ($request->site_phone != '') {
+        if ($request->site_phone != '')
+        {
             $sites = $sites->where('site_phone','like', '%'.$request->site_phone.'%');
         }
-        $sites = $sites->paginate(20);
-        return view('admin::studies.assign_sites',compact('sites'));
+        if ($request->status =='yes')
+        {
+            $asignedSites = StudySite::where('study_id', '=',session('current_study'))->pluck('site_id')->toArray();
+            $yes = is_array($asignedSites) ? $asignedSites : [$asignedSites];
+            $sites = $sites->whereIn('id', $yes);
+        }
+        if ($request->status =='no')
+        {
+            $asignedSites = StudySite::where('study_id', '=',session('current_study'))->pluck('site_id')->toArray();
+            $no = is_array($asignedSites) ? $asignedSites : [$asignedSites];
+            $sites = $sites->whereNotIn('id', $no);
+        }
+
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $sites = $sites->orderBy($field_name , $request->sort_by_field);
+        }
+        $sites = $sites->paginate(\Auth::user()->user_prefrences->default_pagination)->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
+        return view('admin::studies.assign_sites',compact('sites','total_sites'));
     }
 
     public function updateStudySite(Request $request)
@@ -246,5 +292,22 @@ class StudySiteController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getStudySitesForTransmission(Request $request) {
+        if($request->ajax()) {
+            // get study
+            $getStudy = Study::where('study_code', $request->study_code)->first();
+            // get sites
+            $getSites = $getStudy->sites->toArray();
+            // get parent modality Id's
+            $getModalityId = $getStudy->modalities->pluck('id')->toArray();
+            // get Modalities
+            $getModalities = Modility::whereIn('id', $getModalityId)->get()->toArray();
+            // get devices
+            $getDevices = $getStudy->devices->toArray();
+            // return response
+            return response()->json(['study_sites' => $getSites, 'study_modalities' => $getModalities, 'study_devices' => $getDevices]);
+        } // ajax ends
     }
 }

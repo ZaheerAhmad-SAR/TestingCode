@@ -1,18 +1,35 @@
+<style>
+    .badge {
+        line-height: normal !important;
+    }
+    .scroll-bar{
+        height: calc(100vh - 140px);
+        overflow-y: scroll;
+    }
+</style>
 <div class="sidebar">
     <div class="site-width">
-        <!-- START: Menu-->
-        <ul id="side-menu" class="sidebar-menu" style="height: calc(100vh - 140px);overflow-y: scroll;">
-            <li class="dropdown"><a href="#"><i class="icon-home mr-1"></i> Dashboard</a>
-                <ul class="@if(is_active('dashboard.index')) {{ 'active' }} @endif">
-                  {{--  @if(hasPermission(auth()->user(),'dashboard.index'))--}}
-                        <li class="nav-item @if(is_active('dashboard.index')) {{ 'active' }} @endif">
-                            <a href="{{ url('/dashboard') }}">
-                                <i class="icon-rocket"></i>
-                                Dashboard <span class="sr-only">(current)</span>
-                            </a>
-                        </li>
-                    {{--@endif--}}
+        <!-- START: Menu  style="height: calc(100vh - 140px);overflow-y: scroll;"-->
+        <ul id="side-menu" class="sidebar-menu">
+            <li class="dropdown">
+                <ul>
+                    <li class="dropdown"><a href="#"><i class="fas fa-home"></i> Dashboard</a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="{{ route('dashboard.index')}}">
+                                    <i class="fas fa-list"></i> System Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ route('finance.index')}}">
+                                    <i class="icon-layers"></i> Finance Dashboard
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
                 </ul>
+            </li>
+            <li class="dropdown">
                 <ul class="@if(is_active('studies.index')) {{ 'active' }} @endif">
                     @if(
                         (hasPermission(auth()->user(),'studies.index') &&
@@ -38,7 +55,7 @@
             @if(hasPermission(auth()->user(),'systemtools.index'))
             <li class="dropdown">
                 <ul>
-                        <li class="dropdown"><a href="#"><i class="icon-grid"></i>System Tools</a>
+                        <li class="dropdown"><a href="#"><i class="fas fa-tools"></i>System Tools</a>
                             <ul class="sub-menu">
                                 @if(hasPermission(auth()->user(),'users.index'))
                                     <li class="@if(is_active('users.index')) {{ ' active' }} @endif">
@@ -89,7 +106,7 @@
                 @if(session('current_study'))
                 <li class="dropdown">
                     <ul>
-                        <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Tools</a>
+                        <li class="dropdown" dusk='study_tools'><a href="#"><i class="fas fa-tools"></i>Study Tools</a>
                             <ul class="sub-menu">
                                 @if(hasPermission(auth()->user(),'studyusers.index'))
                                     <li class="@if(is_active('studyusers.index')) {{ ' active' }} @endif">
@@ -113,11 +130,11 @@
                                     </li>
                                 @endif
                                 @if(hasPermission(auth()->user(),'studydesign.index'))
-                                    <li class="dropdown"><a href="#"><i class="icon-grid"></i>Study Design</a>
+                                    <li class="dropdown" dusk="study_design"><a href="#"><i class="icon-grid"></i>Study Design</a>
                                         <ul class="sub-menu">
                                             @if(hasPermission(auth()->user(),'study.index'))
                                                 <li class="@if(is_active('study.index')) {{ ' active' }} @endif">
-                                                    <a href="{!! route('study.index') !!}">
+                                                    <a href="{!! route('study.index') !!}" dusk="study_structure">
                                                         Study Structure
                                                     </a>
                                                 </li>
@@ -131,7 +148,7 @@
                                             @endif
                                             @if(hasPermission(auth()->user(),'study.index'))
                                                 <li class="@if(is_active('optionsGroup.index')) {{ ' active' }} @endif">
-                                                    <a href="{!! route('optionsGroup.index') !!}">
+                                                    <a href="{!! route('optionsGroup.index') !!}" dusk="options-group">
                                                         Option Groups
                                                     </a>
                                                 </li>
@@ -164,7 +181,7 @@
             @if(hasPermission(auth()->user(),'systemtools.index'))
             <li class="dropdown">
                 <ul>
-                    <li class="dropdown"><a href="#"><i class="icon-grid"></i>Transmissions</a>
+                    <li class="dropdown"><a href="#"><i class="fas fa-file-contract"></i>Transmissions</a>
                         <ul class="sub-menu">
 
                             @if(!empty(session('current_study')))
@@ -217,7 +234,7 @@
                         <ul class="@if(is_active('studies.show')) {{ 'active' }} @endif">
                             <li class="nav-item @if(is_active('studies.show')) {{ ' active' }} @endif">
                                 <a href="{!! route('studies.show',session('current_study')) !!}">
-                                    <i class="fas fa-hospital"></i>Subjects
+                                    <i class="fas fa-user-tag"></i>Subjects
                                 </a>
                             </li>
                     </ul>
@@ -238,65 +255,119 @@
                 </li>
                 @endif
             @endif
+            {{-- Data Entry new parent menu --}}
+            @if(session('current_study'))
+                <li class="dropdown">
+                    <ul>
+                        <li class="dropdown">
+                            <a href="#">
+                                <i class="fas fa-file-image"></i>Data Entry
+                            </a>
+                            <ul class="sub-menu">
+                               {{-- Listing for Quality controll --}}
+                                   @if(hasPermission(auth()->user(),'qualitycontrol.create') && hasPermission(auth()->user(),'qualitycontrol.edit'))
+                                        @if(session('current_study'))
+                                            <li>
+                                                <a href="{{ route('qualitycontrol.index')}}">
+                                                    <i class="fas fa-list"></i> QC List
+                                                </a>
+                                            </li>
+                                        @endif
+                                    @endif
+                               {{-- Listing for Quality controll --}}
+                               {{-- ************************************************************************ --}}
+                               {{-- Grading Listing --}}
+                                        @if(hasPermission(auth()->user(),'grading.create') && hasPermission(auth()->user(),'grading.edit'))
+                                            @if(session('current_study'))
+                                                <li>
+                                                    <a href="{{route('grading.index')}}">
+                                                        <i class="fas fa-list"></i> Grading List
+                                                    </a>
+                                                </li>
+                                            @endif
+                                        @endif
+                               {{-- Grading Listing --}}
+                               {{-- **************************************************************************** --}}
+                               {{-- Adjudication Listing --}}
+                                    @if(hasPermission(auth()->user(),'adjudication.create') && hasPermission(auth()->user(),'adjudication.edit'))
+                                            @if(session('current_study'))
+                                                <li>
+                                                    <a href="{{ route('adjudication.index')}}">
+                                                        <i class="fas fa-list"></i> Adjudication List
+                                                    </a>
+                                                </li>
+                                            @endif
 
-            @if(hasPermission(auth()->user(),'qualitycontrol.create') && hasPermission(auth()->user(),'qualitycontrol.edit'))
-
-                @if(session('current_study'))
-                    <li class="dropdown">
-                        <ul>
-                            <li class="dropdown"><a href="#"><i class="fas fa-sitemap"></i> Quality Control</a>
-                                <ul class="sub-menu">
+                                        @endif
+                               {{-- Adjudication Listing --}}
+                               {{-- Listing for Quality controll --}}
+                                @if(session('current_study'))
                                     <li>
-                                        <a href="{{ route('qualitycontrol.index')}}">
-                                            <i class="fas fa-list"></i> QC List
+                                        <a href="{{ route('otherforms.index')}}">
+                                            <i class="fas fa-list"></i> Other Forms List
                                         </a>
                                     </li>
-
-                                    <li>
-                                        <a href="{{ route('qualitycontrol.qc-work-list')}}">
-                                            <i class="fas fa-list"></i> QC Work List
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                @endif
+                                @endif
+                               {{-- Listing for Quality controll --}}
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
             @endif
+            {{-- Data Entry new parent menu --}}
+            
+            {{-- Data Entry new parent menu --}}
+            @if(session('current_study'))
+                <li class="dropdown">
+                    <ul>
+                        <li class="dropdown">
+                            <a href="#">
+                                <i class="fas fa-list"></i>Work Lists
+                            </a>
+                            <ul class="sub-menu">
+                               {{-- Listing for Quality controll --}}
+                                   @if(hasPermission(auth()->user(),'qualitycontrol.create') && hasPermission(auth()->user(),'qualitycontrol.edit'))
+                                        @if(session('current_study'))
+                                            <li>
+                                                <a href="{{ route('qualitycontrol.qc-work-list')}}">
+                                                    <i class="fas fa-list"></i> QC Work List
+                                                </a>
+                                            </li>
+                                        @endif
+                                    @endif
+                               {{-- Listing for Quality controll --}}
+                               {{-- ************************************************************************ --}}
+                               {{-- Grading Listing --}}
+                                        @if(hasPermission(auth()->user(),'grading.create') && hasPermission(auth()->user(),'grading.edit'))
+                                            @if(session('current_study'))
+                                                <li>
+                                                    <a href="{{ route('gradingcontrol.grading-work-list')}}">
+                                                        <i class="fas fa-list"></i> Grading Work List
+                                                    </a>
+                                                </li>
+                                            @endif
+                                        @endif
+                               {{-- Grading Listing --}}
+                               {{-- **************************************************************************** --}}
+                               {{-- Adjudication Listing --}}
+                                    @if(hasPermission(auth()->user(),'adjudication.create') && hasPermission(auth()->user(),'adjudication.edit'))
+                                            @if(session('current_study'))
+                                                <li>
+                                                    <a href="{{ route('adjudicationcontroller.adjudication-work-list')}}">
+                                                        <i class="fas fa-list"></i> Adjudication Work List
+                                                    </a>
+                                                </li>
+                                            @endif
 
-            @if(hasPermission(auth()->user(),'grading.create') && hasPermission(auth()->user(),'grading.edit'))
-
-                @if(session('current_study'))
-                    <li class="dropdown">
-                        <ul>
-                            <li class="dropdown"><a href="#"><i class="fas fa-sitemap"></i> Grading</a>
-                                <ul class="sub-menu">
-                                    <li>
-                                        <a href="{{route('grading.index')}}">
-                                            <i class="fas fa-list"></i> Grading List
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a href="{{ route('gradingcontrol.grading-work-list')}}">
-                                            <i class="fas fa-list"></i> Grading Work List
-                                        </a>
-                                    </li>
-
-                                    {{--
-                                    <li>
-                                        <a href="{{route('grading.status')}}">
-                                            <i class="fas fa-chart-line"></i> Grading Status
-                                        </a>
-                                    </li>
-                                    --}}
-
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                @endif
+                                        @endif
+                               {{-- Adjudication Listing --}}
+                               {{-- Listing for Quality controll --}}
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
             @endif
+            {{-- Data Entry new parent menu --}}
 
             <!-- show grading status -->
             @if(hasPermission(auth()->user(),'studytools.index') && hasPermission(auth()->user(),'grading.index'))
@@ -315,37 +386,12 @@
 
             @endif
 
-            @if(hasPermission(auth()->user(),'adjudication.create') && hasPermission(auth()->user(),'adjudication.edit'))
-
-                @if(session('current_study'))
-                    <li class="dropdown">
-                        <ul>
-                            <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Adjudication</a>
-                               <ul class="sub-menu">
-                                    <li>
-                                        <a href="{{ route('adjudication.index')}}">
-                                            <i class="fas fa-list"></i> Adjudication List
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a href="{{ route('adjudicationcontroller.adjudication-work-list')}}">
-                                            <i class="fas fa-list"></i> Adjudication Work List
-                                        </a>
-                                    </li>
-
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                @endif
-
-            @endif
+            
             @if(hasPermission(auth()->user(),'certification.index'))
                 @if(session('current_study'))
                 <li class="dropdown">
                     <ul>
-                        <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Certification Data</a>
+                        <li class="dropdown"><a href="#"><i class="fas fa-certificate"></i> Certification Data</a>
                             <ul class="sub-menu">
                                 <li  class="@if(is_active('photographer.index')) {{ ' active' }} @endif">
                                     <a href="{{route('photographer.index')}}">
@@ -379,6 +425,11 @@
                                             Data Exports
                                         </a>
                                     </li>
+                                    <li>
+                                        <a href="{{route('subjectFormLoader.lock-data')}}">
+                                            Data Lock
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                         </ul>
@@ -389,22 +440,8 @@
                 @if(session('current_study'))
                     <li class="dropdown">
                         <ul>
-                            <li class="dropdown"><a href="#"><i class="fab fa-rocketchat"></i>Queries</a>
-                                <ul class="sub-menu">
-                                    <li>
-                                        <a href="{{route('queries.index')}}">
-                                            Overall Data
-                                        </a>
-                                    </li>
-
-        {{--                            @if(hasPermission(auth()->user(),'queries.index'))--}}
-        {{--                            <li>--}}
-        {{--                                <a href="{{route('queries.chatindex')}}">--}}
-        {{--                                    Chat App--}}
-        {{--                                </a>--}}
-        {{--                            </li>--}}
-        {{--                                @endif--}}
-                                </ul>
+                            @php $count = Modules\Queries\Entities\QueryUser::where('user_id','=',\auth()->user()->id)->count() @endphp
+                            <li class="nav-item"><a href="{{route('queries.index')}}"><i class="fab fa-rocketchat"></i>Queries <span class="badge badge-dark">{{$count}}</span></a>
                             </li>
                         </ul>
                     </li>
@@ -412,60 +449,57 @@
             @endif
 
 
-
+            @if(hasPermission(auth()->user(),'bug-reporting.index'))
+{{--                @if(session('current_study'))--}}
             <li class="dropdown">
                 <ul>
-                    <li class="dropdown"><a href="#"><i class="fas fa-bug"></i>Bugs Reporting</a>
-                        <ul class="sub-menu">
-                            <li>
-                                <a  href="{{route('bug-reporting.index')}}">
-                                    List
-                                </a>
-                            </li>
-                        </ul>
+                    <li class="nav-item"><a href="{{route('bug-reports.index')}}"><i class="fas fa-bug"></i>Bug Reports <span class="badge badge-danger">{{Modules\BugReporting\Entities\BugReport::where('parent_bug_id','like', 0)->where('status','open')->count() }}</span></a>
                     </li>
                 </ul>
             </li>
+{{--                @endif--}}
+            @endif
 
-             <li class="dropdown">
+            @if(hasPermission(auth()->user(),'certification-photographer.index'))
+            <li class="dropdown">
                 <ul>
-                    <li class="dropdown"><a href="#"><i class="fas fa-database"></i> Certification App</a>
+                    <li class="dropdown"><a href="#"><i class="fas fa-certificate"></i> Certification App</a>
                         <ul class="sub-menu">
 
-                            <li class="@if(is_active('certification-device')) {{ ' active' }} @endif">
-                                <a href="{{route('certification-device.index')}}">
-                                    <i class="fas fa-list"></i> Certification Devices
-                                </a>
-                            </li>
-
-                            <li class="@if(is_active('certified-device')) {{ ' active' }} @endif">
-                                <a href="{{route('certified-device')}}">
-                                    <i class="fas fa-list"></i> Certified Devices
-                                </a>
-                            </li>
-
-
-
                             <li  class="@if(is_active('certification-photographer')) {{ ' active' }} @endif">
-                                <a href="{{route('certification-photographer.index')}}">
-                                    <i class="fas fa-list"></i> Certification Photographers
+                                <a href="{{route('certification-photographer.index')}}" style="font-size: 12px;">
+                                    <i class="fas fa-list"></i>Photographer Certification
+                                </a>
+                            </li>
+
+                            <li class="@if(is_active('certification-device')) {{ ' active' }} @endif">
+                                <a href="{{route('certification-device.index')}}" style="font-size: 12px;">
+                                    <i class="fas fa-list"></i>Device Certification
                                 </a>
                             </li>
 
                             <li  class="@if(is_active('certified-photographer')) {{ ' active' }} @endif">
-                                <a href="{{route('certified-photographer')}}">
-                                    <i class="fas fa-list"></i> Certified Photographers
+                                <a href="{{route('certified-photographer')}}" style="font-size: 12px;">
+                                    <i class="fas fa-list"></i>Certified Photographers
                                 </a>
                             </li>
 
+                            <li class="@if(is_active('certified-device')) {{ ' active' }} @endif">
+                                <a href="{{route('certified-device')}}" style="font-size: 12px;">
+                                    <i class="fas fa-list"></i> Certified Devices
+                                </a>
+                            </li>
+
+                            @if(hasPermission(auth()->user(),'certification-preferences.index'))
                             <li  class="@if(is_active('certification-preferences')) {{ ' active' }} @endif">
-                                <a href="{{route('certification-preferences.index')}}">
+                                <a href="{{route('certification-preferences.index')}}" style="font-size: 12px;">
                                     <i class="fas fa-list"></i> Preferences
                                 </a>
                             </li>
+                            @endif
 
-                             <li  class="@if(is_active('certification-template')) {{ ' active' }} @endif">
-                                <a href="{{route('certification-template')}}">
+                            <li  class="@if(is_active('certification-template')) {{ ' active' }} @endif">
+                                <a href="{{route('certification-template')}}" style="font-size: 12px;">
                                     <i class="fas fa-list"></i> Template
                                 </a>
                             </li>
@@ -474,6 +508,7 @@
                     </li>
                 </ul>
             </li>
+            @endif
 
             @if(hasPermission(auth()->user(),'systemtools.index') && hasPermission(auth()->user(),'trail_logs.list'))
 
@@ -485,6 +520,12 @@
                                 <a href="{{route('trail_logs.list')}}">
                                     <i class="fas fa-history"></i>
                                     Audit Trail
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{route('trail_logs.usersActivities')}}">
+                                    <i class="fas fa-users"></i>
+                                    Users Activities
                                 </a>
                             </li>
                         </ul>
@@ -511,19 +552,37 @@
                 </li>
                 @endif
 
+
+
             @endif
 
+            <li class="dropdown">
+                <ul>
+                    <li class="dropdown"><a href="#"><i class="fas fa-info"></i>TAT Reports</a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a href="{{route('reports.index')}}">
+                                    <i class="fas fa-history"></i>
+                                    Visit Completion Report
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
         </ul>
         <!-- END: Menu-->
 
     <div class="btn-group dropup" style="margin-left: 15px;">
-     <button type="button" class="btn btn-primary dropdown-toggle position-fixed" data-toggle="dropdown">  <i class="icon-question"></i> Support</button>
+     <button type="button" dusk="support-button" class="btn btn-primary dropdown-toggle position-fixed" data-toggle="dropdown" style="bottom: 10px;">  <i class="icon-question"></i> Support</button>
         <div class="dropdown-menu">
-            <a href="#" class="dropdown-item"  data-toggle="modal" data-target="#reportabugmodel"><i class="fa fa-plus"></i>   Report a Bug</a>
+            @if(hasPermission(auth()->user(),'bug-reporting.create'))
+            <a href="javascript:void(0);" class="dropdown-item"  data-toggle="modal" dusk="reportabugmodel" data-target="#reportabugmodel"><i class="fa fa-plus"></i>   Report a Bug</a>
             <div class="dropdown-divider"></div>
+            @endif
             <a href="#" class="dropdown-item"><i class="fa fa-plus"></i>  User Manual</a>
             <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item"> <i class="fa fa-plus"></i>  OCAP v2021.1.0</a>
+            <a href="#" class="dropdown-item"> <i class="fa fa-plus"></i>  OCAP v2021.{{  TagReleasenumber() }}</a>
         </div>
     </div>
 
@@ -546,14 +605,14 @@
                                 <div class="form-group row">
                                     <div class="col-md-3">Short Title</div>
                                     <div class="form-group col-md-9">
-                                        <input type="text" name="shortTitle" id="shortTitle" class="form-control">
+                                        <input type="text" dusk="shortTitle" name="shortTitle" id="shortTitle" class="form-control">
                                     </div>
                                 </div>
 
                                 <div class="form-group row">
                                     <div class="col-md-3">Enter Your Message</div>
                                     <div class="form-group col-md-9">
-                                        <textarea class="form-control" name="yourMessage" id="yourMessage"></textarea>
+                                        <textarea dusk="yourMessage" class="form-control" name="yourMessage" id="yourMessage"></textarea>
                                     </div>
                                 </div>
 
@@ -566,15 +625,15 @@
                                 <div class="form-group row">
                                     <label for="Name" class="col-md-3 col-form-label">Severity/Priority</label>
                                     <div class="col-md-9">
-                                        <label class="radio-inline  col-form-label"><input type="radio" id="severity" name="severity" value="low"> Low</label> &nbsp;
-                                        <label class="radio-inline  col-form-label"><input type="radio" id="severity" name="severity" value="medium"> Medium</label>
-                                        <label class="radio-inline  col-form-label"><input type="radio" id="severity" name="severity" value="high"> High</label>
+                                        <label class="radio-inline  col-form-label"><input type="radio" id="severity" dusk="severity" name="severity" value="low"> Low</label> &nbsp;
+                                        <label class="radio-inline  col-form-label"><input type="radio" id="severity" dusk="severity" name="severity" value="medium"> Medium</label>
+                                        <label class="radio-inline  col-form-label"><input type="radio" id="severity" dusk="severity" name="severity" value="high"> High</label>
                                     </div>
                                 </div>
                             </div>
                         <div class="modal-footer">
                             <button id="bug-close-btn" class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Send</button>
+                            <button type="submit" class="btn btn-outline-primary" dusk="submit-button"><i class="fa fa-save"></i> Send</button>
                         </div>
                     </div>
                 </form>
@@ -583,7 +642,12 @@
     </div>
     <!-- End -->
 <script src="{{ asset('public/dist/vendors/jquery/jquery-3.3.1.min.js') }}"></script>
-
+{{--  style="height: calc(100vh - 140px);overflow-y: scroll;" --}}
+ <script type="text/javascript">
+    $(".sidebar").hover(function () {
+        $('#side-menu').toggleClass("scroll-bar");
+    });
+ </script>
  <script type="text/javascript">
 
         $("#bugReportingForm").on('submit', function(e) {
@@ -609,7 +673,7 @@
             formData.append("attachFile", $("#attachFile")[0].files[0]);
 
             $.ajax({
-                url: "{{route('bug-reporting.store')}}",
+                url: "{{route('bug-reports.store')}}",
                 type: "POST",
                 data: formData,
                 dataType: 'json',

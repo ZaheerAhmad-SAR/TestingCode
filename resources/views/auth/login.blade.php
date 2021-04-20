@@ -38,12 +38,14 @@
                         @enderror
                     </div>
 
-                    <div class="form-group mb-3">
+                   <div class="form-group mb-3">
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" id="checkbox-signin" checked="">
-                            <label class="custom-control-label" for="checkbox-signin">Remember me</label>
+                             <label class="custom-control-label" for="checkbox-signin">Remember me</label>
+
                             <button class="btn btn-primary" type="submit" onclick="browserName()" style="float: right;"> Sign In </button>
                         </div>
+
                     </div>
                     <div class="form-group mb-3">
                         <div class="custom-control">

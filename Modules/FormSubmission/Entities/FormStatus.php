@@ -10,6 +10,7 @@ use Modules\FormSubmission\Traits\AdjudicationTrait;
 use Modules\FormSubmission\Scopes\FormStatusOrderByScope;
 use Modules\Admin\Entities\FormType;
 use Modules\Admin\Entities\PhaseSteps;
+use Modules\Admin\Entities\CrushFtpTransmission;
 use Modules\Queries\Entities\Query;
 
 class FormStatus extends Model
@@ -39,7 +40,7 @@ class FormStatus extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'form_filled_by_user_id', 'id');
+        return $this->belongsTo(User::class, 'form_filled_by_user_id', 'id')->withTrashed();
     }
 
     public function formType()
@@ -77,7 +78,9 @@ class FormStatus extends Model
         return self::getFormStatusObjQuery($getFormStatusArray)->orderBy('created_at')->get();
     }
 
-
+    public function crushftptransmission(){
+        return $this->hasMany(CrushFtpTransmission::class, 'modility_id', 'modility_id');
+    }
     public function editReasons()
     {
         return $this->hasMany(FormRevisionHistory::class, 'form_submit_status_id', 'id');
@@ -140,10 +143,18 @@ class FormStatus extends Model
 
     public static function makeFormStatusSpan($step, $formStatusObj)
     {
+
         $info = '';
         $formStatus = $formStatusObj->form_status;
         if ($formStatus != 'no_status') {
-            $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="' . $formStatusObj->user->name . '"';
+            // if($formStatusObj->user) {
+
+                $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="' . $formStatusObj->user->name . '"';
+
+            // } else {
+
+            //     $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="Done By Deleted User"';
+            // }
         }
 
         $imgSpanStepClsStr = buildSafeStr($step->step_id, 'img_step_status_');
@@ -169,7 +180,8 @@ class FormStatus extends Model
             'phase_steps_id' => $step->step_id,
         ];
         if (Query::isThereOpenQueryAgainstStep($getQueryArray)) {
-            $spanStr .= '<span class="" data-toggle="popover" data-trigger="hover" data-content="Has query"><img src="' . url('images/query.png') . '"/></span>';
+            //$spanStr .= '<span class="" data-toggle="popover" data-trigger="hover" data-content="Has query"><img src="' . url('images/query.png') . '"/></span>';
+            $spanStr .= '<span class="" data-toggle="popover" data-trigger="hover" data-content="Has query">&nbsp;<i class="fas fa-question-circle"></i></span>';
         }
         /********************************** */
         return $spanStr;
@@ -332,4 +344,9 @@ class FormStatus extends Model
             ->pluck('subject_id')
             ->toArray();
     }
+    public function assignwork()
+    {
+        return $this->belongsTo(AssignWork::class, 'modility_id', 'modility_id')->withDefault();
+    }
+
 }

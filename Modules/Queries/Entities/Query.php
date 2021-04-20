@@ -3,9 +3,11 @@
 namespace Modules\Queries\Entities;
 
 use App\User;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use phpDocumentor\Reflection\Types\Self_;
+use Carbon\Carbon;
 
 class Query extends Model
 {
@@ -15,7 +17,7 @@ class Query extends Model
         'id', 'messages', 'parent_query_id', 'queried_remarked_by_id', 'module_id',
         'module_name', 'query_status', 'query_subject', 'query_url', 'query_type', 'query_attachments',
         'study_id', 'subject_id', 'study_structures_id', 'phase_steps_id', 'section_id', 'question_id',
-        'field_id', 'form_type_id', 'modility_id', 'query_level'
+        'field_id', 'form_type_id', 'modility_id', 'query_level','is_active','query_condition'
     ];
     protected $keyType = 'string';
 
@@ -48,6 +50,18 @@ class Query extends Model
     public static function buildHtmlForQuerySubmitter($querySubmitedBy, $query)
     {
         $attachment = '';
+        $profileImage = '';
+
+        if ($querySubmitedBy->profile_image == '')
+        {
+            $profileImage = asset('/images/download.png');
+        }
+        else
+        {
+            $profileImage = asset('/images/'.$querySubmitedBy->profile_image);
+        }
+        //date_format($query->created_at, 'M-d-Y H:i A')
+        $date = Carbon::parse($query->created_at)->diffForHumans();
         if (!empty($query->query_attachments)) {
             $attachment .= '<div class="row">
                         <img  style="width:200px; height:200px;" class="mr-3" src=' . url((string)$query->query_attachments) . ' alt="">
@@ -58,12 +72,11 @@ class Query extends Model
         return '<div class="row text-left">
                     <input type="hidden" value=' . $query->parent_query_id . ' name="parent_query_id" id="parent_query_id">
                     <div class="col-md-12">
-                        <i class="fas fa-circle" style="color: lightgreen; font-size:8px;position: absolute;float: right;top: 15px;left: 43px;"></i>
-                        <img class="mr-3" style="width: 30px; height: 30px; border-radius: 50%;"
-                            src="' . url((string)$querySubmitedBy->profile_image) . '" />
+                        <img class="mr-1"  style="width: 30px; height: 30px; border-radius: 50%;"
+                            src="' . url((string)$profileImage) . '" />
 
                         <strong>' . ucfirst((string)$querySubmitedBy->name) . ':</strong>
-                        ' . date_format($query->created_at, 'M-d-Y H:i A') . '<br>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        ' .$date. '<br>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         ' . $query->messages . '
                         ' . $attachment . '
                     </div>
@@ -73,6 +86,18 @@ class Query extends Model
     public static function buildHtmlForQueryAnswer($querySubmitedBy, $query)
     {
         $attachment = '';
+
+        $profileImage = '';
+
+        if ($querySubmitedBy->profile_image == '')
+        {
+            $profileImage = asset('/images/download.png');
+        }
+        else
+        {
+            $profileImage = asset('/images/'.$querySubmitedBy->profile_image);
+        }
+             $date = Carbon::parse($query->created_at)->diffForHumans();
         if (!empty($query->query_attachments)) {
             $attachment .= '<div class="row">
                         <img style="width:200px; height:200px; margin: 0 auto;" class="mr-3" src=' . url((string)$query->query_attachments) . ' alt="">
@@ -82,10 +107,9 @@ class Query extends Model
         }
         return '<div class="row text-right">
                     <div class="col-md-12">
-                    <i class="fas fa-circle" style="color: lightgreen; font-size:8px;position: absolute;float: right;top: 11px;  right: 220px !important;"></i>
-                    <img class="mr-3" style="width: 30px; height: 30px; border-radius: 50%;" src="' . url((string)$querySubmitedBy->profile_image) . '" />
+                    <img class="mr-1" style="width: 40px; height: 40px; border-radius: 50%;" src="' . url((string)$profileImage) . '" />
                         <strong>' . ucfirst((string)$querySubmitedBy->name) . ':</strong>
-                        ' . date_format($query->created_at, 'M-d-Y H:i A') . '<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        ' .$date.'<br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         ' . $query->messages . '
                          ' . $attachment . '
                     </div>
@@ -134,64 +158,106 @@ class Query extends Model
         return $queryByLogin;
     }
 
+    // Form Query
     public static function formHasQuery($questionQueryArray)
     {
         $query = new Query();
-
         $questionQueryArray = array_intersect_key(array_filter($questionQueryArray), array_flip($query->getFillable()));
 
         $sqlQuery = self::getFormQueryObjQuery($questionQueryArray);
+
+        $queryCheck = false;
         $queryByLogin = $sqlQuery->where('queried_remarked_by_id', 'like', auth()->user()->id)
             ->where('parent_query_id', 'like', 0)
+            ->where('query_status', '!=', 'close')
             ->where('query_level', '=', 'form')
-            ->count();
+            ->first();
 
-        return $queryByLogin;
+        if (null !== $queryByLogin) {
+            $queryCheck = true;
+
+        }
+        // Status For Queried person
+        $queryExits = $query->where('parent_query_id', 'like', 0)
+            ->where('query_status', '!=', 'close')
+            ->where('query_level', '=', 'form')
+            ->where('phase_steps_id', '=', $questionQueryArray['phase_steps_id'])
+            ->count();
+        $queryForUser = QueryUser::where('user_id', auth()->user()->id)->first();
+
+        if (null !== $queryForUser && $queryExits > 0) {
+
+            $queryCheck = true;
+        }
+        return $queryCheck;
     }
 
-//    public static function formHasQueryDemo($questionQueryArray)
-//    {
-//        $query = new Query();
-//
-//        $questionQueryArray = array_intersect_key(array_filter($questionQueryArray), array_flip($query->getFillable()));
-//        $sqlQuery = self::getFormQueryObjQuery($questionQueryArray);
-//        //printSqlQuery($sqlQuery, false);
-//        $queryCheck   = false;
-//        $queryByLogin = $sqlQuery->where('queried_remarked_by_id', 'like', auth()->user()->id)
-//            ->where('parent_query_id', 'like', 0)
-//            ->where('query_status', '!=', 'close')
-//            ->where('query_level', '=', 'form')
-//            ->first();
-//
-//        if (null !== $queryByLogin) {
-//            //dd('ddddd');
-//            $queryCheck = true;
-//        }
-//        $queryForUser = QueryUser::where('user_id', auth()->user()->id)->first();
-//
-//        if (null !== $queryForUser) {
-//
-//            $queryCheck = true;
-//        }
-//        return $queryCheck;
-//    }
 
-    public static function questionStatusHasClose($questionQueryArray)
+    public static function questionHasQueryDemo($questionQueryArray)
     {
         $query = new Query();
 
         $questionQueryArray = array_intersect_key(array_filter($questionQueryArray), array_flip($query->getFillable()));
+        $sqlQuery = self::getFormQueryObjQuery($questionQueryArray);
+
+        //printSqlQuery($sqlQuery, false);
+        $queryCheck   = false;
+
+        $queryByLogin = $sqlQuery->where('queried_remarked_by_id', 'like', auth()->user()->id)
+            ->where('parent_query_id', 'like', 0)
+            ->where('query_status', '!=', 'close')
+            ->where('query_level', '=', 'question')
+            ->first();
+
+        if (null !== $queryByLogin) {
+            $queryCheck = true;
+
+        }
+        // Status For Queried person
+        $queryExits = $query->where('parent_query_id', 'like', 0)
+            ->where('query_status', '!=', 'close')
+            ->where('query_level', '=', 'question')
+            ->where('question_id', '=', $questionQueryArray['question_id'])
+            ->count();
+        $queryForUser = QueryUser::where('user_id', auth()->user()->id)->first();
+
+        if (null !== $queryForUser && $queryExits > 0) {
+
+            $queryCheck = true;
+        }
+        return $queryCheck;
+    }
+
+    public static function questionStatusHasClose($questionQueryArray)
+    {
+
+
+        $query = new Query();
+
+        $questionQueryArray = array_intersect_key(array_filter($questionQueryArray), array_flip($query->getFillable()));
+
         $sqlQuery = self::getFormQueryObjQuery($questionQueryArray);
         //printSqlQuery($sqlQuery, false);
         $queryCheck   = false;
         $queryByLogin = $sqlQuery->where('queried_remarked_by_id', 'like', auth()->user()->id)
-            ->where('parent_query_id','=',0)
-            ->where('query_status', '!=', 'close')
+            ->where('parent_query_id', 'like', 0)
+            ->where('query_status', '=', 'close')
             ->where('query_level', '=', 'question')
+            ->first();
+
+        if (null !== $queryByLogin) {
+            $queryCheck = true;
+        }
+         // Status For Queried person
+        $queryExits = $query->where('parent_query_id', 'like', 0)
+            ->where('query_status', '=', 'close')
+            ->where('query_level', '=', 'question')
+            ->where('question_id', '=', $questionQueryArray['question_id'])
             ->count();
-        //dd($queryByLogin);
-        if ($queryByLogin > 0) {
-            //dd('ddddd');
+        $queryForUser = QueryUser::where('user_id', auth()->user()->id)->first();
+
+        if (null !== $queryForUser && $queryExits > 0) {
+
             $queryCheck = true;
         }
         return $queryCheck;
@@ -200,19 +266,30 @@ class Query extends Model
     public static function formStatusHasClose($questionQueryArray)
     {
         $query = new Query();
-
         $questionQueryArray = array_intersect_key(array_filter($questionQueryArray), array_flip($query->getFillable()));
+
         $sqlQuery = self::getFormQueryObjQuery($questionQueryArray);
         //printSqlQuery($sqlQuery, false);
         $queryCheck   = false;
         $queryByLogin = $sqlQuery->where('queried_remarked_by_id', 'like', auth()->user()->id)
-            ->where('parent_query_id','=',0)
-            ->where('query_status', '!=', 'close')
+            ->where('parent_query_id', 'like', 0)
+            ->where('query_status', '=', 'close')
             ->where('query_level', '=', 'form')
+            ->first();
+
+        if (null !== $queryByLogin) {
+            $queryCheck = true;
+        }
+         // Status For Queried person
+        $queryExits = $query->where('parent_query_id', 'like', 0)
+            ->where('query_status', '=', 'close')
+            ->where('query_level', '=', 'question')
+            //->where('question_id', '=', $questionQueryArray['question_id'])
             ->count();
-        //dd($queryByLogin);
-        if ($queryByLogin > 0) {
-            //dd('ddddd');
+        $queryForUser = QueryUser::where('user_id', auth()->user()->id)->first();
+
+        if (null !== $queryForUser && $queryExits > 0) {
+
             $queryCheck = true;
         }
         return $queryCheck;

@@ -18,7 +18,40 @@
         </div>
     </div>
     <!-- END: Breadcrumbs-->
-
+    <div class="row">
+            <div class="col-12 col-sm-12 mt-3">
+                <div class="card">
+                    <form action="{{route('devices.index')}}" method="get" class="filter-form">
+                        <div class="form-row" style="padding: 10px;">
+                            <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ request()->sort_by_field }}">
+                            <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ request()->sort_by_field_name }}">
+                            <div class="form-group col-md-3">
+                                <label for="trans_id">Name</label>
+                                <input type="text" name="device_name" id="filter_device_name" class="form-control filter-form-data" value="{{ request()->device_name }}" placeholder="Name">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="suject_id">Model</label>
+                                <input type="text" name="device_model" id="filter_device_model" class="form-control filter-form-data" value="{{ request()->device_model }}" placeholder="Device Model">
+                            </div>
+                            <div class="form-group col-md-3">
+                                <label for="suject_id">Manufacturer</label>
+                                <input type="text" name="device_manufacturer" id="filter_device_manufacturer" class="form-control filter-form-data" value="{{ request()->device_manufacturer }}" placeholder="Manufacturer">
+                            </div>
+                            <div class="form-group col-md-3 mt-4">
+                                <button type="button" class="btn btn-outline-warning reset-filter">
+                                   <i class="fas fa-undo-alt" aria-hidden="true"></i> Reset
+                                </button>
+                                <button type="submit" class="btn btn-primary btn-lng">
+                                   <i class="fas fa-filter" aria-hidden="true"></i> Filter
+                                </button>
+                            </div>
+                        </div>
+                        <!-- row ends -->
+                    </form>
+                </div>
+            </div>
+    </div>
+        <!-- END: Card DATA-->
     <!-- START: Card Data-->
      <div class="row">
          <div class="col-12 col-sm-12 mt-3">
@@ -35,9 +68,9 @@
                         <table class="table table-bordered dataTable" id="laravel_crud">
                             <thead>
                                 <tr>
-                                    <th>Name</th>
-                                    <th>Model</th>
-                                    <th>Manufacturer</th>
+                                    <th onclick="changeSort('device_name');">Name <i class="fas fa-sort float-mrg"></i></th>
+                                    <th onclick="changeSort('device_model');">Model <i class="fas fa-sort float-mrg"></i></th>
+                                    <th onclick="changeSort('device_manufacturer');">Manufacturer <i class="fas fa-sort float-mrg"></i></th>
                                     <td colspan="2">Action</td>
                                 </tr>
                             </thead>
@@ -59,8 +92,8 @@
                                                     @endif
                                                         @if(hasPermission(auth()->user(),'devices.destroy'))
                                                     <span class="dropdown-item">
-                                                            <a href="{{route('devices.destroy',$device->id)}}" id="delete-device" data-id="{{ $device->id }}">
-                                                            <i class="far fa-edit"></i>&nbsp; Delete </a>
+                                                            <a href="javascript:void(0)" class="delete-device" data-id="{{ $device->id }}">
+                                                            <i class="far fa-trash-alt"></i>&nbsp; Delete </a>
                                                     </span>
                                                             @endif
                                                 </div>
@@ -83,7 +116,7 @@
     <div class="modal fade" id="device-crud-modal" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-primary" style="color: #fff">
                     <h4 class="modal-title" id="deviceCrudModal"></h4>
                 </div>
                 <form id="deviceForm" name="deviceForm" class="form-horizontal">
@@ -95,6 +128,7 @@
                                     <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-Modalities" role="tab" aria-controls="nav-profile" aria-selected="false">Modalities</a>
                                 </div>
                             </nav>
+                    <div class="alert alert-danger device-error-message" style="display:none; margin-top:5px;"></div>
                     <div class="tab-content" id="nav-tabContent">
                         <div class="tab-pane fade show active" id="nav-Basic" role="tabpanel" aria-labelledby="nav-Basic-tab">
                             @csrf
@@ -102,7 +136,7 @@
                                 <label for="device_name" class="col-sm-3">Name</label>
                                 <div class="{!! ($errors->has('device_name')) ?'col-sm-9 has-error':'col-sm-9' !!}">
                                     <input type="text" class="form-control" id="device_name" name="device_name"
-                                           value="{{old('device_name')}}">
+                                           value="{{old('device_name')}}" required>
                                     @error('device_name')
                                     <span class="text-danger small">{{ $message }} </span>
                                     @enderror
@@ -111,7 +145,7 @@
                             <div class="form-group row">
                                 <label for="device_model" class="col-sm-3">Device Model</label>
                                 <div class="{!! ($errors->has('device_model')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                    <input type="text" class="form-control" id="device_model" name="device_model" value="{{old('device_model')}}"> @error('email')
+                                    <input type="text" class="form-control" id="device_model" name="device_model" value="{{old('device_model')}}" required> @error('email')
                                     <span class="text-danger small"> {{ $message }} </span>
                                     @enderror
                                 </div>
@@ -119,30 +153,51 @@
                             <div class="form-group row">
                                 <label for="device_manufacturer" class="col-sm-3">Manufacturer</label>
                                 <div class="{!! ($errors->has('device_manufacturer')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                    <input type="text" class="form-control" id="device_manufacturer" name="device_manufacturer" value="{{old('device_manufacturer')}}">
+                                    <input type="text" class="form-control" id="device_manufacturer" name="device_manufacturer" value="{{old('device_manufacturer')}}" required>
                                     @error('device_manufacturer')
                                     <span class="text-danger small"> {{ $message }} </span>
                                     @enderror
                                 </div>
                             </div>
                         </div>
+                            <!-- /****************************************************/ -->
                             <div class="tab-pane fade" id="nav-Modalities" role="tabpanel" aria-labelledby="nav-Validation-tab">
-                                <div class="form-group row" style="margin-top: 10px;">
-                                    <label for="device_manufacturer" class="col-sm-3"></label>
-                                    <div class="{!! ($errors->has('roles')) ?'col-sm-9 has-error':'col-sm-9' !!}">
-                                        <select class="searchable form-control" id="select-modality" multiple="multiple" name="modalities[]">
+                                <div class="form-group row">
+                                <div class="col-md-12">&nbsp;</div>
+                            </div>
+                                <div class="row">
+                                    <div class="col-md-5">
+                                        <label>All Modalities</label>
+                                    </div>
+                                    <div class="col-md-2">
+
+                                    </div>
+                                    <div class="col-md-5">
+                                        <label>Assigned Modalities</label>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="col-md-5">
+                                        <select name="unassigned_modalities[]" id="select_modalities" class="searchable form-control" multiple="multiple">
                                             @foreach($modilities as $modality)
                                                 <option value="{{$modality->id}}">{{$modality->modility_name}}</option>
                                             @endforeach
                                         </select>
                                     </div>
-                                    @error('modalities')
-                                    <span class="text-danger small">
-                                    {{ $message }}
-                                    </span>
-                                    @enderror
+                                    <div class="col-md-2">
+                                        <button type="button" id="select_modalities_rightSelected" class="btn btn-default btn-block"><i class="fas fa-caret-right"></i></button>
+                                        <button type="button" id="select_modalities_leftSelected" class="btn btn-default btn-block"><i class="fas fa-caret-left"></i></button>
+                                    </div>
+                                    <div class="col-md-5">
+                                        <select name="modalities[]" id="select_modalities_to" class="form-control" multiple="multiple">
+                                            @foreach($assigned_modalities as $assigned_modality)
+                                            <option value="{{$assigned_modality->id}}">{{$modality->modility_name}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
+                            <!-- /****************************************************/ -->
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -166,17 +221,12 @@
     <script src="{{ asset('public/dist/js/jquery.validate.min.js') }}"></script>
 <script>
 
-        $(document).ready(function () {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-
             $('#create-new-device').click(function () {
                 $('#btn-save').val("create-device");
                 $('#deviceForm').trigger("reset");
                 $('#deviceCrudModal').html("New Device");
+                // hide error message
+                $('.device-error-message').css('display', 'none');
                 $('#device-crud-modal').modal('show');
             });
 
@@ -186,40 +236,69 @@
                 $.get('devices/'+device_id+'/edit', function (data) {
                     $('#deviceCrudModal').html("Edit Device");
                     $('#btn-save').val("edit-device");
+                    // hide error message
+                    $('.device-error-message').css('display', 'none');
                     $('#device-crud-modal').modal('show');
-                    $('#device_id').val(data.id);
-                    $('#device_name').val(data.device_name);
-                    $('#device_model').val(data.device_model);
-                    $('#device_manufacturer').val(data.device_manufacturer);
-                });
+                    $('#device_id').val(data.device.id);
+                    $('#device_name').val(data.device.device_name);
+                    $('#device_model').val(data.device.device_model);
+                    $('#device_manufacturer').val(data.device.device_manufacturer);
+                    // unassigned modalities
+                    var unassigned_modalities = '';
+                    $('#select_modalities').html('');
+                        $.each(data.getUnassignedModalities,function (index,value) {
+                               unassigned_modalities += '<option selected="selected" value=" '+value.id+' " >'+value.modility_name+'</option>';
+                        });
+                            /*alert(users);*/
+                        $('#select_modalities').html(unassigned_modalities);
+                    // show assign modalities
+                    var assigned_modalities = '';
+                    $('#select_modalities_to').html('');
+                        $.each(data.getAssignedModalities,function (index,value) {
+                               assigned_modalities += '<option selected="selected" value=" '+value.id+' " >'+value.modility_name+'</option>';
+                        });
+                            /*alert(users);*/
+                        $('#select_modalities_to').html(assigned_modalities);
+                    });
             });
 
-            $('body').on('click', '.delete-device', function () {
-                var device_id = $(this).data("id");
-                alert(device_id);
-                confirm("Are You sure want to delete !");
 
-                $.ajax({
-                    type: "DELETE",
-                    url: "{{ url('devices')}}"+'/'+device_id,
-                    success: function (data) {
-                        $("#device_id_" + device_id).remove();
-                        confirm('Deleted Successfully !!');
-                    },
-                    error: function (data) {
-                        console.log('Error:', data);
-                    }
-                });
+
+
+
+            //  Options Delete function
+            $('body').on('click','.delete-device',function()
+            {
+                var id = $(this).data('id');
+                if (confirm("Are you sure to delete?")) {
+                    $.ajax({
+                        url: 'devices/destroy/'+id,
+                        type: 'POST',
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            "_method": 'DELETE',
+                            'id': id
+                        },
+                        success:function(result){
+                            window.setTimeout(function () {
+                                location.href = "{{ route('devices.index') }}";
+                            }, 100);
+
+                        }
+                    })
+                }
             });
-        });
 
-        if ($("#deviceForm").length > 0) {
+
+
+            if ($("#deviceForm").length > 0) {
             $("#deviceForm").validate({
                 submitHandler: function(form) {
                     var t;
                     var actionType = $('#btn-save').val();
                     $('#btn-save').html('Sending..');
 
+                    $('#select_modalities_to option').prop('selected', true);
 
                     $.ajax({
                         data: $('#deviceForm').serialize(),
@@ -227,31 +306,16 @@
                         type: "POST",
                         dataType: 'json',
                         success: function (data) {
-                           //  var device = '<tr id="device_id_' + data.id + '"><td>' + data.id + '</td>' +
-                           //      '<td>' + data.device_name + '</td>' +
-                           //      '<td>' + data.device_manufacturer + '</td>' +
-                           //      '<td>' + data.device_model + '</td>';
-                           //  device += '<td><a href="javascript:void(0)" id="edit-device" data-id="' + data.id + '" class="btn btn-info"> Edit</a></td>';
-                           // device += '<td><a href="javascript:void(0)" id="delete-device" data-id="' + data.id + '" class="btn btn-danger delete-device">Delete</a></td></tr>';
+                            if(data.error) {
+                                // append/show error message
+                                $('.device-error-message').text('Device already exists.');
+                                $('.device-error-message').css('display', 'block');
+                            } else if (data.success) {
+                                // close modal
+                                $('#device-crud-modal').modal('hide');
+                                location.reload();
+                            }
 
-                           //  if (actionType == "create-device") {
-                           //      $('#devices-crud').prepend(device);
-                           //      var t = setTimeout(function(){// wait for -- secs(2)
-                           //          location.reload();
-                           //      }, 1000);
-                           //  } else {
-                           //      $("#device_id_" + data.id).replaceWith(device);
-                           //  }
-                           //  $('#deviceForm').trigger("reset");
-                           //  $('#device-crud-modal').modal('hide');
-                           //  $('#btn-save').html('Save Changes');
-                           //  alert(data.success());
-                           //  if(data.success == true){
-                           //      var t = setTimeout(function(){// wait for -- secs(2)
-                           //          location.reload();
-                           //      }, 1000);
-                           //  }
-                           location.reload();
                         },
                         error: function (data) {
                             console.log('Error:', data);
@@ -277,42 +341,29 @@
 <script src="{{ asset('public/dist/js/jquery.validate.min.js') }}"></script>
     <script type="text/javascript">
        $(document).ready(function() {
-           $('#select-modality').multiSelect({
-               selectableHeader: "<label for=''>All Modalities</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
-               selectionHeader: "<label for=''>Assigned Modalities</label><input type='text' class='form-control' autocomplete='off' placeholder='search here'>",
-               afterInit: function(ms){
-                   var that = this,
-                       $selectableSearch = that.$selectableUl.prev(),
-                       $selectionSearch = that.$selectionUl.prev(),
-                       selectableSearchString = '#'+that.$container.attr('id')+' .ms-elem-selectable:not(.ms-selected)',
-                       selectionSearchString = '#'+that.$container.attr('id')+' .ms-elem-selection.ms-selected';
-
-                   that.qs1 = $selectableSearch.quicksearch(selectableSearchString)
-                       .on('keydown', function(e){
-                           if (e.which === 40){
-                               that.$selectableUl.focus();
-                               return false;
-                           }
-                       });
-
-                   that.qs2 = $selectionSearch.quicksearch(selectionSearchString)
-                       .on('keydown', function(e){
-                           if (e.which == 40){
-                               that.$selectionUl.focus();
-                               return false;
-                           }
-                       });
-               },
-               afterSelect: function(){
-                   this.qs1.cache();
-                   this.qs2.cache();
-               },
-               afterDeselect: function(){
-                   this.qs1.cache();
-                   this.qs2.cache();
-               }
-           });
+           $('#select_modalities').multiselect({
+                    search: {
+                        left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+                        right: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
+                    },
+                    fireSearch: function(value) {
+                        return value.length > 1;
+                    }
+                });
        });
+
+        // sorting gride
+        function changeSort(field_name){
+            var sort_by_field = $('#sort_by_field').val();
+            if(sort_by_field =='' || sort_by_field =='ASC'){
+               $('#sort_by_field').val('DESC');
+               $('#sort_by_field_name').val(field_name);
+            }else if(sort_by_field =='DESC'){
+               $('#sort_by_field').val('ASC');
+               $('#sort_by_field_name').val(field_name);
+            }
+            $('.filter-form').submit();
+        }
    </script>
 
 @stop

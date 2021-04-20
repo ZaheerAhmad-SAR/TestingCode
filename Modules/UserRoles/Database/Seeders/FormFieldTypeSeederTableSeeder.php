@@ -12,7 +12,7 @@ use Modules\Admin\Entities\FormFieldType;
 class FormFieldTypeSeederTableSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Run the database seeds for filed type.
      *
      * @return void
      */
@@ -103,7 +103,7 @@ class FormFieldTypeSeederTableSeeder extends Seeder
         if (null === $field) {
             $form_filed_Date_Time = FormFieldType::create([
                 'id' => $id,
-                'field_type'    => 'Date & Time',
+                'field_type'    => 'Date',
                 'icon'          => 'fa fa-calendar-alt',
                 'support_multiple_values' => 'no',
                 'sort_order'    =>  7,
@@ -163,5 +163,7 @@ class FormFieldTypeSeederTableSeeder extends Seeder
                 'updated_at'    => Carbon::now()
             ]);
         }
+       
+
     }
 }

@@ -22,24 +22,29 @@
                 </ul>
             </div>
         @endif
+
         <div class="card">
             <div class="card-body">
                 <form action="{{route('users.index')}}" method="get" class="filter-form">
                     @csrf
-                    <input type="hidden" name="sort_by_name" id="sort_by_name" value="ASC">
-                    <input type="hidden" name="sort_by_email" id="sort_by_email" value="ASC">
+                    <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ getOldValue($old_values,'sort_by_field') }}">
+                    <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ getOldValue($old_values,'sort_by_field_name') }}">
                     <div class="form-row" style="padding: 10px;">
                         <div class="form-group col-md-3">
-                            <input type="text" name="name" class="form-control" placeholder="Name">
+                            <input type="text" name="name" class="form-control" placeholder="Name" value="{{ getOldValue($old_values,'name')}}">
                         </div>
                          <div class="form-group col-md-3">
-                            <input type="text" name="email" class="form-control" placeholder="Email">
+                            <input type="text" name="email" class="form-control" placeholder="Email" value="{{ getOldValue($old_values,'email')}}">
                         </div>
                         <div class="form-group col-md-3">
+                            @php
+                                $old_role ='';
+                                $old_role =  getOldValue($old_values,'role_id');
+                            @endphp
                            <select class="form-control" name="role_id">
                                <option value="">Role</option>
                                @foreach($allroles as $key => $role)
-                                <option value="{{$role->id}}">{{$role->name}}</option>
+                                <option value="{{$role->id}}" @if($old_role == $role->id) selected @endif>{{$role->name}}</option>
                                @endforeach
                            </select>
                         </div>
@@ -47,7 +52,7 @@
                             <button class="btn btn-outline-warning reset-filter"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
                             <button type="submit" class="btn btn-primary submit-filter"><i class="fas fa-filter" aria-hidden="true"></i> Filter</button>
                         </div>
-                    </div>    
+                    </div>
                 </form>
             </div>
         </div>
@@ -59,12 +64,12 @@
                 <div class="card">
                     <div class="card-header d-flex align-items-center">
                             @if(hasPermission(auth()->user(),'users.create'))
-                                <button type="button" class="btn btn-outline-primary" onclick="openAddUserPopup();">
+                                <button dusk="add_user" type="button" class="btn btn-outline-primary" onclick="openAddUserPopup();">
                                     <i class="fa fa-plus"></i> Add User
                                 </button>
                             @endif
                                 @if(hasPermission(auth()->user(),'invite_view'))
-                                    &nbsp; <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#inviteuser">
+                                    &nbsp; <button dusk="inviteuser" type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#inviteuser">
                                         <i class="far fa-edit"></i>&nbsp; Invite User
                                     </button>
                                 @endif
@@ -80,61 +85,70 @@
                     <div class="card-body">
                         <div class="table-responsive list">
                             <table class="table table-bordered editable-table" id="laravel_crud">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col" colspan="6">System Users</th>
-                                        </tr>
-                                        <tr>
+                                <thead>
+                                    <tr>
+                                      <th scope="col" colspan="6">System Users</th>
+                                    </tr>
+                                    <tr>
                                         <th scope="col" onclick="changeSort('name');">Name <i class="fas fa-sort float-mrg"></i></th>
-                                        <th scope="col">Email</th>
+                                        <th scope="col" onclick="changeSort('email');">Email <i class="fas fa-sort float-mrg"></i></th>
                                         <th scope="col">Roles</th>
                                         <th scope="col">2 Factor Auth</th>
                                         <th scope="col">Is Active?</th>
                                         <th scope="col">Actions</th>
                                     </tr>
-                                    </thead>
-                                    <tbody id="users-crud">
-                                        @foreach($users as $user)
-                                    <tr>
-                                        <td>{{ucfirst(($user->name))}}</td>
-                                        <td>{{($user->email)}}</td>
-                                        <td>{{ \App\User::getUserRolesString($user) }}</td>
-                                        <td>{{!empty($user->google2fa_secret)?'Enabled':'Disabled'}}</td>
-                                        <td id="userActiveTD_{{$user->id}}">{{ ((int)$user->is_active == 1)? 'Active':'InActive' }}</td>
-                                        <td>
-                                            <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                                <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
-                                                <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
+                                </thead>
+                                <tbody id="users-crud">
+                                    @foreach($users as $user)
+                                <tr>
+                                    <td>{{ucfirst(($user->name))}}</td>
+                                    <td>{{($user->email)}}</td>
+                                    <td>{{ \App\User::getUserRolesString($user) }}</td>
+                                    <td>{{($user->qr_flag==1)?'Enabled':'Disabled'}}</td>
+                                    <td id="userActiveTD_{{$user->id}}">{{ ((int)$user->is_active == 1)? 'Active':'InActive' }}</td>
+                                    <td>
+                                        <div class="d-flex mt-3 mt-md-0 ml-auto">
+                                            <span class="ml-3" dusk="user-gear" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                            <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
+                                            <span class="dropdown-item">
+                                            <a href="javascript:void(0);" onclick="openEditUserPopup('{{ $user->id }}');" dusk="user-edit">
+                                                    <i class="far fa-edit"></i>&nbsp; Edit
+                                                </a>
+                                            </span>
                                                 <span class="dropdown-item">
-                                                <a href="javascript:void(0);" onclick="openEditUserPopup('{{ $user->id }}');">
-                                                        <i class="far fa-edit"></i>&nbsp; Edit
-                                                    </a>
+                                                <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
+                                                    <i class="fa fa-trash"></i>&nbsp; Delete </a>
                                                 </span>
-                                                    <span class="dropdown-item">
-                                                    <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}">
-                                                        <i class="fa fa-trash"></i>&nbsp; Delete </a>
-                                                    </span>
+                                                <span class="dropdown-item" onclick="toggle_2fa('{{ $user->id }}','{{$user->qr_flag}}');">
+                                               <!--  <a href="{{route('users.destroy',$user->id)}}" class="delete-user" id="delete-user" data-id="{{ $user->id }}"> -->
+                                               <!-- <i class="fa fa-play-circle"></i>&nbsp; Enable 2FA  -->
+                                              <i class="fa @if($user->qr_flag==0) fa-play @else fa-ban-circle @endif "></i>&nbsp;
+                                                 @if($user->qr_flag==0) Enable 2FA @else Disable 2FA
+                                                 @endif
+                                                </span>   
 
-
-                                                    @if (hasPermission(auth()->user(), 'systemtools.index'))
-                                                    <div id="userActiveStatusDiv_{{$user->id}}">
-                                                        @if($user->is_active == 0)
-                                                        <span class="dropdown-item activateUser" onclick="submitActivateUserRequest('{{ $user->id }}');"><i class="far fa-play-circle"></i>&nbsp; Activate User</span>
-                                                        @else
-                                                        <span class="dropdown-item inActivateUser" onclick="submitInActivateUserRequest('{{ $user->id }}');"><i class="far fa-pause-circle"></i>&nbsp; Inactivate User</span>
-                                                        @endif
-                                                    </div>
+                                                @if (hasPermission(auth()->user(), 'systemtools.index'))
+                                                <div id="userActiveStatusDiv_{{$user->id}}">
+                                                    @if($user->is_active == 0)
+                                                    <span class="dropdown-item activateUser" onclick="submitActivateUserRequest('{{ $user->id }}');"><i class="far fa-play-circle"></i>&nbsp; Activate User</span>
+                                                    @else
+                                                    <span class="dropdown-item inActivateUser" onclick="submitInActivateUserRequest('{{ $user->id }}');"><i class="far fa-pause-circle"></i>&nbsp; Inactivate User</span>
                                                     @endif
-
                                                 </div>
+                                                @endif
+
                                             </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                                    </tbody>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                                </tbody>
                             </table>
+                            {{ $users->links() }}
                         </div>
                     </div>
+
+                    {{--
                     <div class="card-body">
                         <div class="table-responsive list">
                             <table class="table table-bordered editable-table" id="laravel_crud">
@@ -190,6 +204,7 @@
                             </table>
                         </div>
                     </div>
+                    --}}
                 </div>
             </div>
         </div>
@@ -224,11 +239,13 @@
             });
         }
         function changeSort(field_name){
-            var check_sort_id = $('#sort_by_name').val();
-            if(check_sort_id =='ASC' && field_name =='name'){
-                $('#sort_by_name').val('DESC');
-            }else if(check_sort_id =='ASC' && field_name =='email'){
-               $('#sort_by_email').val('DESC'); 
+            var sort_by_field = $('#sort_by_field').val();
+            if(sort_by_field =='' || sort_by_field =='ASC'){
+               $('#sort_by_field').val('DESC');
+               $('#sort_by_field_name').val(field_name);
+            }else if(sort_by_field =='DESC'){
+               $('#sort_by_field').val('ASC');
+               $('#sort_by_field_name').val(field_name);
             }
             $('.filter-form').submit();
         }
@@ -359,8 +376,22 @@
                 });
 
             }
+            function toggle_2fa(user_id,qr_flag){
+                //alert(user_id);
+                if(confirm('Are you sure to change ?')){
+                    $.ajax({
+                        url:'{{ route('systemUser.systemUser') }}',
+                        data:{ "_token": "{{ csrf_token() }}",'id':user_id,'qr_flag':qr_flag},
+                        type:'POST',
+                        success:function(res){
+                            location.reload();
+                        }
+                    })
+                }
+            }
     </script>
      @include('userroles::users.common_js')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/multi-select/0.9.12/js/jquery.multi-select.min.js" integrity="sha512-vSyPWqWsSHFHLnMSwxfmicOgfp0JuENoLwzbR+Hf5diwdYTJraf/m+EKrMb4ulTYmb/Ra75YmckeTQ4sHzg2hg==" crossorigin="anonymous"></script>
     <script src="{{ asset("js/jquery.quicksearch.js") }}" type="text/javascript"></script>
+   
 @stop

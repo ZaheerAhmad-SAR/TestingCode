@@ -9,10 +9,10 @@
         <div class="row ">
             <div class="col-12  align-self-center">
                 <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
-                    <div class="w-sm-100 mr-auto"><h4 class="mb-0">Bug Reporting</h4></div>
+                    <div class="w-sm-100 mr-auto"><h4 class="mb-0">Bug Reports</h4></div>
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                         <li class="breadcrumb-item">Dashboard</li>
-                        <li class="breadcrumb-item">Bug Reporting</li>
+                        <li class="breadcrumb-item">Bug Reports</li>
                     </ol>
                 </div>
             </div>
@@ -35,10 +35,14 @@
                             <table class="table table-bordered">
                                 <tr>
                                     <th style="width: 1%;">ID</th>
-                                    <th style="width: 25%;">Title</th>
+                                    <th style="width: 20%;">Title</th>
                                     <th style="width: 2%;">Reported by</th>
                                     <th style="width: 1%;">Priority</th>
                                     <th style="width: 1%;">Status</th>
+                                    @if(hasPermission(auth()->user(),'bug-reporting.edit') && hasPermission(auth()->user(),'bug-reporting.destroy'))
+                                        <th style="width: 1%;">Bug Location </th>
+                                    @endif
+                                    <th style="width: 1%;">created_at</th>
                                     <th style="width: 1%;">Action</th>
                                 </tr>
                                 <tbody>
@@ -48,32 +52,45 @@
 
                                         <tr>
                                             <td>{{$count++}}</td>
-                                            <td>{{$record['bug_title']}}</td>
+                                            <td class="showBugDetails" style="cursor: pointer;" data-value="{{$record['id']}}">{{$record['bug_title']}}</td>
                                             @php $row = App\User::where('id','=',$record['bug_reporter_by_id'])->first();@endphp
                                             <td>{{$row->name}}</td>
                                             <td>{{$record['bug_priority']}}</td>
-                                            <td>{{ ($record['status'] && $record['open_status']) ? $record['status'] .'-'. lcfirst($record['open_status']) : '' }}</td>
+{{--                                            <td>{{ ($record['status'] && $record['open_status']) ? $record['status'] .'-'. lcfirst($record['closed_status']) : '' }}</td>--}}
+                                            @if($record['status'] == 'open')
+                                                <td> {{($record['status'].'-'.lcfirst($record['open_status']))}}</td>
+                                            @else
+                                                <td> {{($record['status'].'-'.lcfirst($record['closed_status']))}}</td>
+                                            @endif
 
-{{--                                            @php--}}
-{{--                                            $str = '';--}}
-{{--                                            $str = $record['bug_url'];--}}
-{{--                                            $segment = explode("/",$str);--}}
+                                            @php
+                                            $str = '';
+                                            $str = $record['bug_url'];
+                                            $segment = explode("/",$str);
 
-{{--                                            @endphp--}}
-{{--                                             <td style="cursor: pointer;">--}}
-{{--                                                <a target="_blank" href=" {{$record['bug_url']}}">{{ucwords($segment[3])}}</a>--}}
+                                            @endphp
+                                            @if(hasPermission(auth()->user(),'bug-reporting.edit') && hasPermission(auth()->user(),'bug-reporting.destroy'))
+                                             <td style="cursor: pointer;">
+                                                <a target="_blank" href=" {{$record['bug_url']}}">{{ucwords($segment[3])}}</a>
 
-{{--                                            </td>--}}
-
+                                            </td>
+                                            @endif
+                                            <td>{{Carbon\Carbon::parse($record['created_at'])->diffForHumans()}}</td>
+                                            @if(hasPermission(auth()->user(),'bug-reporting.edit') && hasPermission(auth()->user(),'bug-reporting.destroy'))
                                             <td>
                                                 <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                                    <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                                    <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;" dusk="bug-navtab"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+
                                                     <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                                        <span class="dropdown-item"><a href="javascript:void(0);" class="EditbugReporting" data-id="{{$record['id']}}"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
+                                                        <span class="dropdown-item"><a href="javascript:void(0);" class="EditbugReporting" dusk="bug-edit" data-id="{{$record['id']}}"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
                                                         <span class="dropdown-item"><a href="javascript:void(0);" class="deletebugReporting" data-id="{{$record['id']}}"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span>
                                                     </div>
+
                                                 </div>
                                             </td>
+                                            @else
+                                                <td style="cursor: not-allowed;"><i class="fas fa-ban" aria-hidden="true"></i></td>
+                                            @endif
                                         </tr>
                                 @endforeach
                                 @else
@@ -113,23 +130,23 @@
                             <div class="form-group row">
                                 <div class="col-md-3">Developer Comment</div>
                                 <div class="form-group col-md-9">
-                                    <textarea class="form-control" name="developerComment" id="developerComment"></textarea>
+                                    <textarea class="form-control" dusk="developerComment" name="developerComment" id="developerComment"></textarea>
                                 </div>
                             </div>
 
                             <div class="form-group row">
                                 <label for="Name" class="col-md-3 col-form-label">Severity/Priority</label>
                                 <div class="col-md-9">
-                                    <label class="radio-inline  col-form-label"><input type="radio" id="editSeverity" name="editSeverity" value="low"> Low</label> &nbsp;
-                                    <label class="radio-inline  col-form-label"><input type="radio" id="editSeverity" name="editSeverity" value="medium"> Medium</label>
-                                    <label class="radio-inline  col-form-label"><input type="radio" id="editSeverity" name="editSeverity" value="high"> High</label>
+                                    <label class="radio-inline  col-form-label"><input type="radio" dusk="editSeverity" id="editSeverity" name="editSeverity" value="low"> Low</label> &nbsp;
+                                    <label class="radio-inline  col-form-label"><input type="radio" dusk="editSeverity"  id="editSeverity" name="editSeverity" value="medium"> Medium</label>
+                                    <label class="radio-inline  col-form-label"><input type="radio" dusk="editSeverity"  id="editSeverity" name="editSeverity" value="high"> High</label>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="Name" class="col-md-3 col-form-label">Status</label>
                                 <div class="col-md-9">
-                                    <label class="radio-inline  col-form-label"><input type="radio" id="editStatus" name="editStatus" value="open"> open</label> &nbsp;
-                                    <label class="radio-inline  col-form-label"><input type="radio" id="editStatus" name="editStatus" value="close"> close</label>
+                                    <label class="radio-inline  col-form-label"><input type="radio" dusk="editStatus" id="editStatus" name="editStatus" value="open"> open</label> &nbsp;
+                                    <label class="radio-inline  col-form-label"><input type="radio"  dusk="editStatus" id="editStatus" name="editStatus" value="close"> close</label>
                                 </div>
                             </div>
 
@@ -165,7 +182,30 @@
                         </div>
                         <div class="modal-footer">
                             <button id="bug-close-btn" class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                            <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Send</button>
+                            <button type="submit" dusk="submit-button-save" class="btn btn-outline-primary"><i class="fa fa-save"></i> Send</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- End -->
+
+
+    <!-- Modal Report a bug -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="showBugDetailsModel">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="alert alert-danger" style="display:none"></div>
+                <div class="modal-header">
+                    <p class="modal-title"> Report a Bug</p>
+                    <p class="modal-title-status">  </p>
+                </div>
+                <form name="showBugDetailsForm" id="showBugDetailsForm">
+                    <div class="modal-body">
+                        <div class="bugdataResponse"></div>
+                        <div class="modal-footer">
+                            <button id="bug-close-btn" class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
                         </div>
                     </div>
                 </form>
@@ -189,6 +229,41 @@
     <script type="text/javascript">
 
 
+        $('body').on('click','.showBugDetails',function () {
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            var currentRow = $(this).data("value");
+            $('#showBugDetailsModel').modal('show');
+            getCurrentBugData(currentRow);
+
+        });
+
+        function getCurrentBugData(currentRow)
+        {
+            $.ajax({
+                url:"{{route('bug-reports.getCurrentRowData')}}",
+                type: 'POST',
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    "_method": 'POST',
+                    'currentRow' :currentRow,
+                },
+                success: function(response)
+                {
+                    console.log(response);
+                    $('.bugdataResponse').html('');
+                    $('.bugdataResponse').html(response);
+                    var bugCurrentStatus  = $('#bugStatus').val();
+                    $('.modal-title-status').text('Status :'+' '+bugCurrentStatus);
+
+                }
+            });
+        }
+
+
         // Bug Delete function
         $('body').on('click', '.deletebugReporting', function () {
             $.ajaxSetup({
@@ -197,7 +272,7 @@
                 }
             });
             var parent_id = $(this).data("id");
-            var url = "{{URL('/bug-reporting')}}";
+            var url = "{{URL('/bug-reports')}}";
             var newPath = url+ "/"+ parent_id+"/destroy/";
             if( confirm("Are You sure want to delete !") ==true)
             {
@@ -222,7 +297,7 @@
             //$('.appendDataOptions_edit').html('');
             $('#editReportBugModel').modal('show');
             var id =($(this).attr("data-id"));
-            var url = "{{URL('bug-reporting')}}";
+            var url = "{{URL('bug-reports')}}";
             var newPath = url+ "/"+ id+"/edit/";
             $.ajaxSetup({
                 headers: {
@@ -234,7 +309,7 @@
                 dataType: 'html',
                 url:newPath,
                 success : function(results) {
-                    console.log(results);
+                    //console.log(results);
                     var parsedata = JSON.parse(results)[0];
                     $('#editBugUrl').val(parsedata.bug_url);
                     $('#editBugTitle').val(parsedata.bug_title);
@@ -360,7 +435,7 @@
             e.preventDefault();
             $.ajax({
                 data: $('#editBugReportingForm').serialize(),
-                url: "{{ route('bugReporting.update') }}",
+                url: "{{ route('bug-reports.update') }}",
                 type: "POST",
                 dataType: 'json',
                 success: function (data) {

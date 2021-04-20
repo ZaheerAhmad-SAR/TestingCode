@@ -24,6 +24,8 @@ use Modules\Admin\Entities\QuestionOption;
 use Modules\Admin\Entities\CohortSkipLogic;
 use Modules\Admin\Entities\CohortSkipLogicOption;
 use Modules\Admin\Entities\DiseaseCohort;
+use Modules\Admin\Entities\FormType;
+use Modules\Admin\Entities\Modility;
 use Illuminate\Support\Facades\DB;
 use Modules\FormSubmission\Traits\Replication\ReplicatePhaseStructure;
 
@@ -42,15 +44,22 @@ class SkipLogicController extends Controller
         $num_values = Question::where('id', $id)->with('skiplogic')->first();
         $section = Section::where('id', $num_values->section_id)->first();
         $step = PhaseSteps::where('step_id', $section->phase_steps_id)->first();
-        $all_study_steps = PhaseSteps::where('phase_id', $step->phase_id)->get();
+        if($step->form_type_id == 2){
+            $where_step  = array('phase_id' => $step->phase_id,'modility_id' => $step->modility_id,'form_type_id' => 2);
+        }else{
+            $where_step  = array('phase_id' => $step->phase_id,'modility_id' => $step->modility_id);
+        }
+        $all_study_steps = PhaseSteps::where($where_step)->get();
         return view('admin::forms.skip_question_text', compact('num_values', 'all_study_steps', 'step'));
     }
-    public function skip_logic_cohort($id)
-    {
+    public function skip_logic_cohort($id,$formTypeId ='',$modalityId ='')
+    { 
+        $form_types = FormType::all();
+        $modalities = Modility::all();
         $disease_cohorts = DiseaseCohort::where('study_id', '=', session('current_study'))->get();
         $cohort_skiplogic = CohortSkipLogic::where('study_id', '=', session('current_study'))->get();
         $all_study_steps = PhaseSteps::where('phase_id', $id)->get();
-        return view('admin::structure.skip_logic_cohort', compact('all_study_steps', 'disease_cohorts', 'cohort_skiplogic'));
+        return view('admin::structure.skip_logic_cohort', compact('all_study_steps', 'disease_cohorts', 'cohort_skiplogic','form_types','modalities'));
     }
 
     public function add_skipLogic(Request $request)

@@ -15,9 +15,11 @@ trait JSQuestionDataValidation
         $functionName = ($isForAdjudication) ? 'validateAdjudicationQuestion' : 'validateQuestion';
         foreach ($step->sections as $section) {
             foreach ($section->questions as $question) {
-                $questionIdStr = buildSafeStr($question->id, '');
-                $questionValidationStr .= '
-                    isFormValid = ' . $functionName . $questionIdStr . '(isFormValid, "' . $stepIdStr . '");';
+                if($question->form_field_type_id != 11){
+                    $questionIdStr = buildSafeStr($question->id, '');
+                    $questionValidationStr .= '
+                        isFormValid = ' . $functionName . $questionIdStr . '(isFormValid, "' . $stepIdStr . '");';
+                }
             }
         }
 
@@ -79,7 +81,7 @@ trait JSQuestionDataValidation
 
 
         $fieldName = buildFormFieldName($question->formFields->variable_name);
-        $fieldTitle = $question->question_text;
+        $fieldTitle = json_encode($question->question_text);
         $questionIdStr = buildSafeStr($question->id, '');
         $fieldId = $fieldName . '_' . $questionIdStr;
 
@@ -87,13 +89,12 @@ trait JSQuestionDataValidation
         $functionName = ($isForAdjudication) ? 'validateAdjudicationQuestion' : 'validateQuestion';
         $getValueFunctionName = ($isForAdjudication) ? 'getAdjudicationFormFieldValueForRequired' : 'getFormFieldValueForRequired';
         $questionRowId = ($isForAdjudication) ? 'adjudication_question_row_' . $questionIdStr : 'question_row_' . $questionIdStr;
-
         $mainQuestionValidationStr .= '
                 function ' . $functionName . $questionIdStr . '(isFormValid, stepIdStr){
                     if(isFormValid){
                         var fieldName = "' . $fieldName . '";
                         var fieldId = "' . $fieldId . '";
-                        var fieldTitle = "' . $fieldTitle . '";
+                        var fieldTitle = ' . $fieldTitle . ';
                         var questionRowId = "' . $questionRowId . '";
                         ' . $messageTypeStr . '
 
@@ -104,7 +105,7 @@ trait JSQuestionDataValidation
                     return isFormValid;
                 }';
 
-
+        
         return $mainQuestionValidationStr;
     }
 }

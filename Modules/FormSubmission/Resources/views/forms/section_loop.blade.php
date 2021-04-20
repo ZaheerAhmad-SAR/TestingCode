@@ -6,7 +6,7 @@ $transmissionNumber = \Modules\FormSubmission\Entities\SubjectsPhases::getTransm
 /**************************************/
 /**************************************/
 /**************************************/
-//$current_user_id = auth()->user()->id;
+$current_user_id = auth()->user()->id;
 
 $showForm = false;
 if ($step->formType->form_type == 'QC' && canQualityControl(['index'])){
@@ -18,6 +18,12 @@ if ($step->formType->form_type == 'Grading' && canGrading(['index'])){
 if ($step->formType->form_type == 'Eligibility' && canEligibility(['index'])){
     $showForm = true;
 }
+if ($step->formType->form_type == 'Others' && canOtherForm(['index'])){
+    $showForm = true;
+}
+// if ($isPreview ===true){
+//     $stepIdStr = buildSafeStr(Request::segment(4), '');
+// }
 @endphp
 @if($showForm == true)
 @php
@@ -54,20 +60,49 @@ $numberOfAlreadyGradedPersons = count($formStatusObjects);
 if($step->formType->form_type == 'Grading' || $step->formType->form_type == 'Eligibility'){
     $getFormStatusArray['form_filled_by_user_id'] = $current_user_id;
 }
+
 $formStatusObj = \Modules\FormSubmission\Entities\FormStatus::getFormStatusObj($getFormStatusArray);
+
 $formStatus = 'no_status';
 $formFilledByUserId = 'no-user-id';
 $isFormDataLocked = 0;
-if(null !== $formStatusObj){
+
+if(null !== $formStatusObj) {
     $formStatus = $formStatusObj->form_status;
     $formFilledByUserId = $formStatusObj->form_filled_by_user_id;
-    $isFormDataLocked = $formStatusObj->is_data_locked;
+    //$isFormDataLocked = $formStatusObj->is_data_locked;
 }
+
+/********* check form lock status ******************/
+$getFormStatuslockArray= [
+    'study_id' => $studyId,
+    'subject_id' => $subjectId,
+    'study_structures_id' => $phase->id,
+    'modility_id' => $step->modility_id,
+];
+$formLockStatusObj = \Modules\FormSubmission\Entities\FormStatus::getFormStatusObj($getFormStatuslockArray);
+if(null !== $formLockStatusObj) {
+    $isFormDataLocked = $formLockStatusObj->is_data_locked;
+}
+/********* check form lock status ******************/
 @endphp
 <div class="row">
     <div class="col-12 col-md-12">
         <div class="card">
             <div class="card-body">
+                {{--  --}}
+                @php 
+                    $check_if_form_graded_by_logged_user = [
+                        'subject_id' => $subjectId,
+                        'study_id' => $studyId,
+                        'study_structures_id' => $phase->id,
+                        'phase_steps_id' => $step->step_id,
+                        'form_type_id' => $step->form_type_id,
+                        'modility_id' => $step->modility_id,
+                        'form_status' => 'complete',
+                        'form_filled_by_user_id' => $current_user_id
+                    ];
+                @endphp
                 <form name="form_master_{{ $stepIdStr }}" id="form_master_{{ $stepIdStr }}" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="studyId" value="{{ $studyId }}" />
@@ -93,6 +128,8 @@ if(null !== $formStatusObj){
                                 $subjectId = ($subjectId ?? '');
                                 $studyId = ($studyId ?? '');
                                 $activeSection = true;
+                                $liBackground = '';
+                                $number = 0;
                                 @endphp
                                 @foreach ($sections as $section)
                                 @php
@@ -104,33 +141,30 @@ if(null !== $formStatusObj){
                                 if($activeSection && request('sectionId', '-') == '-'){
                                     $showSection = 'active';
                                 }
+                                if(substr($section->name, -2) =='OD'){
+                                    $liBackground = 'li-even';
+                                }else if(substr($section->name, -2) =='OS'){
+                                    $liBackground = 'li-odd';
+                                }else{
+                                    $liBackground = 'no-class';
+                                }
                                 @endphp
-                                    <li class="nav-item mr-auto mb-4">
-                                        <a class="nav-link p-0
-                                    {{ $stepClsStr }}
-                                    {{ $sectionClsStr }}
-                                    {{ $showSection }}
-                                    {{ $activeSection ? 'first_navlink_' . $stepIdStr : '' }}" data-toggle="tab"
-                                            href="#tab{{ $section->id }}"
-                                            onclick="updateCurrentSectionId('{{ $section->step->phase_id }}', '{{ $section->step->step_id }}', '{{ $section->id }}');">
-                                            <div class="d-flex">
-                                                <div class="mr-3 mb-0 h1">{{ $section->sort_number }}</div>
-                                                <div class="media-body align-self-center">
-                                                    <h6
-                                                        class="mb-0 text-uppercase font-weight-bold">
-                                                        {{ $section->name }}
-                                                    </h6>
-                                                    {{ $section->description }}
-                                                    @if(!empty($transmissionNumber))
-                                                      <br>
-                                                      <span class="text text-danger">Transmission Number : {{ $transmissionNumber }}</span>
-                                                    @endif
-                                                </div>
-                                            </div>
+                                    <li class="nav-item mr-auto mb-1 {{ $liBackground }}">
+                                        <a class="nav-link p-0 {{ $stepClsStr }} {{ $sectionClsStr }} {{ $showSection }} {{ $activeSection ? 'first_navlink_' . $stepIdStr : '' }}"
+                                        data-toggle="tab"
+                                        href="#tab{{ $section->id }}"
+                                        onclick="updateCurrentSectionId('{{ $section->step->phase_id }}', '{{ $section->step->step_id }}', '{{ $section->id }}');">
+                                        <span class="mb-0 text-uppercase " data-toggle="tooltip" data-placement="bottom" title="{{ $section->description }}" > {{ $section->sort_number }}. {{ $section->name }}
+                                        </span>
+                                        @if(!empty($transmissionNumber))
+                                          <br>
+                                          <span class="text text-danger">Transmission Number : {{ $transmissionNumber }}</span>
+                                        @endif
                                         </a>
-                                    </li>
+                                    </li>&nbsp;
                                     @php
                                     $activeSection = false;
+                                    $number++;
                                     @endphp
                                 @endforeach
                             </ul>

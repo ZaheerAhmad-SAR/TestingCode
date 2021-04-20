@@ -18,14 +18,31 @@
         </div>
     </div>
     <!-- END: Breadcrumbs-->
-
+    <div class="card">
+            <div class="card-body">
+                <form action="{{route('optionsGroup.index')}}" method="get" class="filter-form">
+                    @csrf
+                    <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ request()->sort_by_field }}">
+                    <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ request()->sort_by_field_name }}">
+                    <div class="form-row" style="padding: 10px;">
+                        <div class="form-group col-md-4">
+                            <input type="text" name="option_group_name" class="form-control" placeholder="Option Title" value="{{ request()->option_group_name }}">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <button class="btn btn-outline-warning reset-filter"><i class="fas fa-undo-alt" aria-hidden="true"></i> Reset</button>
+                            <button type="submit" class="btn btn-primary submit-filter"><i class="fas fa-filter" aria-hidden="true"></i> Filter</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     <!-- START: Card Data-->
 <div class="row">
  <div class="col-12 col-sm-12 mt-3">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     @if(hasPermission(auth()->user(),'optionsGroup.create'))
-                    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#addOptionGroups">
+                    <button type="button" class="btn btn-outline-primary" dusk="addOptionGroups" data-toggle="modal" data-target="#addOptionGroups">
                         <i class="fa fa-plus"></i> Add Option Groups
                     </button>
                         @endif
@@ -34,7 +51,7 @@
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <tr>
-                                <th>Options Title</th>
+                                <th onclick="changeSort('option_group_name');">Options Title <i class="fas fa-sort float-mrg"></i></th>
                                 <th>Defined Options</th>
                                 <th style="width: 5%;">Action</th>
                             </tr>
@@ -55,10 +72,10 @@
                                 </td>
                                 <td>
                                    <div class="d-flex mt-3 mt-md-0 ml-auto">
-                                        <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
+                                        <span class="ml-3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="cursor: pointer;" dusk="optionGroup-navtab"><i class="fas fa-cog" style="margin-top: 12px;"></i></span>
                                         <div class="dropdown-menu p-0 m-0 dropdown-menu-right">
-                                            <span class="dropdown-item"><a href="#" class="editOptions" data-id='{{$option->id}}'><i class="far fa-edit"></i>&nbsp; Edit </a></span>
-                                            <span class="dropdown-item"><a href="#" class="deleteOptions" data-id='{{$option->id}}'><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span>
+                                            <span class="dropdown-item"><a href="javascript:void(0);" class="editOptions" data-id='{{$option->id}}' dusk="optionGroup-edit"><i class="far fa-edit"></i>&nbsp; Edit </a></span>
+                                            <span class="dropdown-item"><a href="javascript:void(0);" class="deleteOptions" data-id='{{$option->id}}' dusk="optionGroup-delete"><i class="far fa-trash-alt"></i>&nbsp; Delete </a></span>
                                         </div>
                                     </div>
                                 </td>
@@ -66,6 +83,7 @@
                             @endforeach
                             @endif
                         </table>
+                        {{ $optionsGroup->links()}}
                     </div>
                 </div>
             </div>
@@ -90,14 +108,14 @@
                                 <div class="col-md-3">Option group name
                                     <sup>*</sup></div>
                                 <div class="form-group col-md-9">
-                                    <input type="text" class="form-control" id="option_group_name" name="option_group_name" value="">
+                                    <input type="text" class="form-control" dusk="group-name" id="option_group_name" name="option_group_name" value="">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <div class="col-md-3">Option group description
                                     <sup>*</sup></div>
                                 <div class="form-group col-md-9">
-                                    <input type="text" class="form-control" id="option_group_description" name="option_group_description" value="">
+                                    <input type="text" class="form-control" dusk="group-description" id="option_group_description" name="option_group_description" value="">
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -111,9 +129,9 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-outline-primary addOptions pull-right"><i class="fa fa-plus"></i> Add option</button>
+                        <button type="button" class="btn btn-outline-primary addOptions pull-right" dusk="add-option-group"><i class="fa fa-plus"></i> Add option</button>
                         <button id="optiongroup-close" class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                        <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save</button>
+                        <button type="submit" class="btn btn-outline-primary" dusk="option-group-save-button"><i class="fa fa-save"></i> Save</button>
                     </div>
                 </div>
             </form>
@@ -138,7 +156,7 @@
                                     <div class="col-md-3">Option group name
                                         <sup>*</sup></div>
                                     <div class="form-group col-md-9">
-                                        <input type="text" class="form-control" id="option_group_name_edit" name="option_group_name_edit" value="">
+                                        <input type="text" class="form-control" dusk="option_group_name_edit" id="option_group_name_edit" name="option_group_name_edit" value="">
                                     </div>
                                     <input type="hidden" class="form-control" id="options_groups_id" name="options_groups_id" value="">
                                 </div>
@@ -146,7 +164,7 @@
                                     <div class="col-md-3">Option group description
                                         <sup>*</sup></div>
                                     <div class="form-group col-md-9">
-                                        <input type="text" class="form-control" id="option_group_description_edit" name="option_group_description_edit" value="">
+                                        <input type="text" class="form-control" dusk="option_group_description_edit" id="option_group_description_edit" name="option_group_description_edit" value="">
                                     </div>
                                     <div class="garage">
                                         <input type="hidden" class="form-control" id="study_id_edit" name="study_id_edit" value="">
@@ -169,7 +187,7 @@
 
                         <button type="button" class="btn btn-outline-primary addOptions_edit pull-right"><i class="fa fa-plus"></i> Add option</button>
                         <button id="optiongroup-close" class="btn btn-outline-danger" data-dismiss="modal"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                        <button type="submit" class="btn btn-outline-primary"><i class="fa fa-save"></i> Save</button>
+                        <button type="submit" class="btn btn-outline-primary" dusk="option-group-edit-save-button"><i class="fa fa-save"></i> Save</button>
                     </div>
                 </div>
             </form>
@@ -203,8 +221,17 @@
 <script src="{{ asset('public/dist/js/datatable.script.js') }}"></script>
 <script>
 
-       $('.addOptions').on('click',function(){
-           $('.appendDataOptions').append('<div class="values_row"><div class="form-group row"><div class="col-md-3">Option Name:</div><div class="form-group col-md-4"><input type="text" id="option_name" name="option_name[]" class="form-control" required></div><div class="form-group col-md-4"><input type="number" placeholder="value" name="option_value[]" id="option_value" class="form-control" required></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove" style="margin-top: 3px;"></i></div></div></div>');
+    $('#addOptionGroups').on('hidden.bs.modal', function () {
+        location.reload();
+    });
+
+    $('#editOptionGroups').on('hidden.bs.modal', function () {
+        location.reload();
+    });
+
+
+    $('.addOptions').on('click',function(){
+           $('.appendDataOptions').append('<div class="values_row"><div class="form-group row"><div class="col-md-3">Option Name:</div><div class="form-group col-md-4"><input type="text" id="option_name" dusk="option_name" name="option_name[]" class="form-control" required></div><div class="form-group col-md-4"><input type="number" placeholder="value" dusk="option_value" name="option_value[]" id="option_value" class="form-control" required></div><div class="form-group col-md-1" style="text-align: right;!important;"><i class="btn btn-outline-danger fa fa-trash remove" style="margin-top: 3px;"></i></div></div></div>');
            return false;
        });
 
@@ -345,7 +372,7 @@
        //  Options Delete function
        $('body').on('click','.deleteOptions',function(){
            var id = $(this).data('id');
-           if (confirm("Are you sure to delete?")) {
+           if (confirm("Are you sure to delete the option group?")) {
                $.ajax({
                    url: 'optionsGroup/destroy/'+id,
                    type: 'POST',
@@ -363,5 +390,18 @@
                })
            }
        });
+
+      // Change Sort
+      function changeSort(field_name){
+            var sort_by_field = $('#sort_by_field').val();
+            if(sort_by_field =='' || sort_by_field =='ASC'){
+               $('#sort_by_field').val('DESC');
+               $('#sort_by_field_name').val(field_name);
+            }else if(sort_by_field =='DESC'){
+               $('#sort_by_field').val('ASC');
+               $('#sort_by_field_name').val(field_name);
+            }
+            $('.filter-form').submit();
+        }
    </script>
 @stop

@@ -66,7 +66,7 @@
 
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
-        <div class="row ">
+        <div class="row">
             <div class="col-12  align-self-center">
                 <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
                     <div class="w-sm-100 mr-auto"><h4 class="mb-0">Grading Status</h4></div>
@@ -78,7 +78,36 @@
             </div>
         </div>
         <!-- END: Breadcrumbs-->
-
+        {{-- Grading lagends --}}
+        <div class="row">
+            <div class="col-12 col-sm-12 mt-3">
+                <div class="card">
+                    <div class="card-header  justify-content-between align-items-center">
+                        <h4 class="card-title">Grading legend</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <img src="http://localhost/ocap_new/images/no_status.png">&nbsp;&nbsp;Not Initiated
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <i class="fas fa-exclamation-circle" style="font-size:15px;"></i> &nbsp;&nbsp;Required
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <img src="http://localhost/ocap_new/images/incomplete.png">&nbsp;&nbsp;Initiated
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <img src="http://localhost/ocap_new/images/resumable.png">&nbsp;&nbsp;Editing
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <img src="http://localhost/ocap_new/images/complete.png">&nbsp;&nbsp;Complete
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <img src="http://localhost/ocap_new/images/not_required.png">&nbsp;&nbsp;Not Required
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <img src="http://localhost/ocap_new/images/query.png">&nbsp;&nbsp;Query
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- Grading lagends --}}
         <!-- START: Card Data-->
         <div class="row">
             <!-- Adjudication legends -->
@@ -160,7 +189,7 @@
                             
                             <input type="hidden" name="form_2" value="2" class="form-control">
 
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-3">
                                 <label for="inputState">Subject</label>
                                 <select id="subject" name="subject" class="form-control filter-form-data">
                                     <option value="">All Subject</option>
@@ -170,7 +199,7 @@
                                 </select>
                             </div>
 
-                            <div class="form-group col-md-2">
+                            <div class="form-group col-md-3">
                                 <label for="inputState">Phase</label>
                                 <select id="phase" name="phase" class="form-control filter-form-data">
                                     <option value="">All Phase</option>
@@ -190,6 +219,17 @@
                                 </select>
                             </div>
                             
+                           <div class="form-group col-md-3">
+                            
+                                <label for="inputState">Form Type</label>
+                                <select id="form_type" name="form_type" class="form-control filter-form-data">
+                                    <option value="">All Form Type</option>
+                                     @foreach($getFilterFormType as $filterForm)
+                                     <option @if(request()->form_type == $filterForm->id) selected @endif value="{{ $filterForm->id }}">{{ $filterForm->form_type }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
                             <div class="form-group col-md-3">
                             
                                 <label for="inputState">Status</label>
@@ -198,6 +238,17 @@
                                      @foreach($getFilterFormStatus as $filter => $filterStatus)
                                      <option @if(request()->form_status == $filter) selected @endif value="{{ $filter }}">{{ $filterStatus }}</option>
                                     @endforeach
+                                </select>
+                            </div>
+
+                            <div class="form-group col-md-3">
+                                <label for="inputState">Graders</label>
+                                <select name="graders_number" id="graders_number" class="form-control filter-form-data">
+                                    <option value="">Select Numbers of Graders</option>
+                                    <option @if(request()->graders_number == "0") selected @endif value="0">Null (0)</option>
+                                    <option @if(request()->graders_number == "1") selected @endif  value="1">One (1)</option>
+                                    <option @if(request()->graders_number == "2") selected @endif  value="2">Two (2)</option>
+                                    <option @if(request()->graders_number == "3") selected @endif  value="3">Three (3)</option>
                                 </select>
                             </div>
                    

@@ -28,13 +28,15 @@
         <link rel="stylesheet" href="{{ asset('public/css/fstdropdown.min.css') }}"/>
         <link rel="stylesheet" href="{{ asset('public/css/sweetalert.css') }}"/>
         <link rel="stylesheet" href="{{ asset('public/css/jquery-confirm.min.css') }}"/>
-
+        <!-- select2 -->
+        <link rel="stylesheet" href="{{ asset('public/dist/vendors/select2/css/select2.min.css') }}"/>
+        <link rel="stylesheet" href="{{ asset('public/dist/vendors/select2/css/select2-bootstrap.min.css') }}"/>
         @stack('styles')
         <!-- END: Custom CSS-->
         <style>
-            #settingbutton{
+            /*#settingbutton{
                 display: none;
-            }
+            }*/
             .fstselected{
                 font-size: 12px !important;
             }
@@ -56,7 +58,9 @@
                   animation: spin 2s linear infinite;
                   position: fixed;
                 }
-
+            .detail-icon{
+                cursor: pointer;
+            }
                 @-webkit-keyframes spin {
                   0% { -webkit-transform: rotate(0deg); }
                   100% { -webkit-transform: rotate(360deg); }
@@ -77,8 +81,13 @@
             }
         </style>
     </head>
-
-<body class="@yield('class')">
+@php
+    $active_class = '';
+    if(\Auth::check()){
+        $active_class = \Auth::user()->user_prefrences->default_theme;
+    }
+@endphp
+<body class="@yield('class') {{ $active_class }}">
     <!-- START: Pre Loader-->
         <div class="se-pre-con">
             <div class="loader"></div>
@@ -94,41 +103,83 @@
     <!-- END: Back to top-->
 
     <!-- START: Template JS-->
-
     <script src="{{ asset('public/dist/vendors/jquery/jquery-3.3.1.min.js') }}"></script>
-        <script src="{{ asset('public/dist/vendors/jquery-ui/jquery-ui.min.js') }}"></script>
-        <script src="{{ asset('public/dist/vendors/moment/moment.js') }}"></script>
-        <script src="{{ asset('public/dist/vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-        <script src="{{ asset('public/dist/vendors/slimscroll/jquery.slimscroll.min.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/jquery-ui/jquery-ui.min.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/moment/moment.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('public/dist/vendors/slimscroll/jquery.slimscroll.min.js') }}"></script>
 
-        <!-- END: Template JS-->
-        <!-- START: APP JS-->
-        <script src="{{ asset('public/dist/js/app.js') }}"></script>
-        <script src="{{ asset('public/dist/js/jquery.multi-select.js') }}"></script>
-        <script src="{{ asset('public/js/fstdropdown.min.js') }}"></script>
-        <script src="{{ asset('public/js/sweetalert.min.js') }}"></script>
-        <script src="{{ asset('public/js/jquery.validate.min.js') }}"></script>
-        <script src="{{ asset('public/js/jquery-confirm.min.js') }}"></script>
-        <script src="{{ asset('public/js/multiselect.js') }}"></script>
+    <!-- END: Template JS-->
+    <!-- START: APP JS-->
 
-        <!-- END: APP JS-->
+    <script src="{{ asset('public/dist/js/app.js') }}"></script>
+{{--    <script src="{{ asset('public/dist/js/custom-notification.js') }}"></script>--}}
 
-        <!-- START: Page JS-->
-        @yield('script')
-        @stack('script')
-        @stack('script_mid')
-        @stack('script_last')
-        @stack('script_skip_logic')
-        <script>
-            $(document).ready(function(){
-                $('[data-toggle="popover"]').popover();
+    <script src="{{ asset('public/dist/js/jquery.multi-select.js') }}"></script>
+    <script src="{{ asset('public/js/fstdropdown.min.js') }}"></script>
+    <script src="{{ asset('public/js/sweetalert.min.js') }}"></script>
+    <script src="{{ asset('public/js/jquery.validate.min.js') }}"></script>
+    <script src="{{ asset('public/js/jquery-confirm.min.js') }}"></script>
+    <script src="{{ asset('public/js/multiselect.js') }}"></script>
+
+    <!-- select2 -->
+    <script src="{{ asset('public/dist/vendors/select2/js/select2.full.min.js') }}"></script>
+    <script src="{{ asset('public/dist/js/select2.script.js') }}"></script>
+    <!-- END: APP JS-->
+
+    <!-- START: Page JS-->
+    @yield('script')
+    @stack('script_mid')
+    @stack('script_last')
+    @stack('script_skip_logic')
+    @stack('script')
+    <script>
+        $(function() {
+            var url_route = "{{ URL('home/working_status') }}";
+
+            $.ajax({
+                url:url_route,
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
+                success: function(response) {
+
+                }
             });
-            $(function () {
-                var duration = 10000;
-                setTimeout(function () { $('#myalert').hide(); }, duration);
+        });
+
+        $(function() {
+            var url_route2 = "{{ URL('home/update_online_at_time') }}";
+            $.ajax({
+                url:url_route2,
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                },
+                success: function(response) {
+
+                }
             });
-        </script>
+        });
+
+        $(document).ready(function(){
+            $('[data-toggle="popover"]').popover();
+
+        });
+        $(function () {
+            var duration = 10000;
+            setTimeout(function () { $('#myalert').hide(); }, duration);
+        });
+
+         // reset filters
+        $('body').on('click','.reset-filter',function(){
+            $('.filter-form input').val('');
+            $('.filter-form').submit();
+        })
+        //
+        $('.searchable_dropdown').select2();
+    </script>
         <!-- END: Page JS-->
+
     </body>
 </html>
 <div class="loader" style="display: none;"></div>

@@ -70,6 +70,20 @@ class SubjectsPhases extends Model
             ->toArray();
     }
 
+    public static function getActivatedSubjectFromSubjectArray($getAllSubjectArray)
+    {
+        return self::whereIn('subject_id', $getAllSubjectArray)
+            ->pluck('subject_id')
+            ->toArray();
+    }
+
+    public static function getActivatedPhaseFromSubject($subjectId)
+    {
+        return self::where('subject_id', $subjectId)
+            ->pluck('phase_id')
+            ->toArray();
+    }
+
     public static function getModilityIdsFromActivatedPhasesidsArray($activatedPhasesidsArray)
     {
         return self::whereIn('phase_id', $activatedPhasesidsArray)

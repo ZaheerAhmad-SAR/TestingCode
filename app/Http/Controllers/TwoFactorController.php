@@ -19,31 +19,36 @@ class TwoFactorController extends Controller
     // show the two factor auth form
     public function show2faForm()
     {
+    
         return view('2fa');
     }
 
 // post token to the backend for check
     public function sendToken(Request $request)
-    {
+    { 
+        
         $clientIP = request()->ip();
-        dd($clientIP);
         $browser = get_browser(null, true);
-        dd($browser);
+        $get_mac = get_mac_address(null,true);
 
         //$this->validate(['token' => 'required']);
 
         // $user = auth()->user();
+        // $id = Auth::id();
         $user = User::where('email', '=', $request->email)->first();
         $user->two_factor_token = rand(000000, 999999);
         $user->save();
         $mail = Mail::to($user)->send(new TwoFactorAuthMail($user->two_factor_token));
 
-        return redirect('/2f_login/' . encrypt($user->two_factor_token));
+        return redirect('/2f_login/'.encrypt($user->two_factor_token));
     }
 
     public function verfiyToken(Request $request)
-    {
+    { 
+        
+        
         $user = User::where('two_factor_token', '=', $request->two_factor_token)->first();
+        //dd($user);
         if ($user) {
             if (null !== Auth::loginUsingId($user->id)) {
                // dd(\auth()->user()->id);

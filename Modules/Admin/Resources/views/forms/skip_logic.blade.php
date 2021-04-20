@@ -66,11 +66,13 @@
                                 @endif
                             @endforeach
                             {{$options->question_text}} &nbsp;
-                            <input type="checkbox" name="option_value[]" value="{{$options_value[$index]}}" @if(in_array($options_value[$index], $check_value)) checked="checked" @endif> &nbsp; {{$option}} 
+                            <input type="checkbox" name="option_value[]" value="{{$options_value[$index]}}" @if(in_array($options_value[$index], $check_value)) checked="checked" @endif> &nbsp; {{$option}}
                        </div>
                    </div>
                </div>
             </div>
+
+            @include('admin::forms.skiplogic_details')
             <div class="row append_data_{{$options_value[$index]}}">
                 @include('admin::forms.skiplogic_by_options.activate_forms')
                 @include('admin::forms.skiplogic_by_options.deactivate_forms')

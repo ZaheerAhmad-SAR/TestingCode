@@ -8,6 +8,8 @@ $('body').on('click','.form-fields',function(){
         $('#formfields').attr('action', "{{route('forms.addQuestions')}}");
         setFieldType($(this).attr("data-field-id"));
         $('#addField').modal('show');
+        $('#field_dependent_no').prop('checked', true);
+        $('.append_if_yes').css('display', 'none');
         filterRulesByQuestionType();
     }else{
             showStepDeActivationAlert();

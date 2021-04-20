@@ -16,16 +16,31 @@ class OptionsGroupController extends Controller
      * Display a listing of the resource.
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        // for default orderBy
+        if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
+            $field_name = $request->sort_by_field_name;
+        }else{
+            $field_name = 'option_group_name';
+        }
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $asc_or_decs = $request->sort_by_field;
+        }else{
+            $asc_or_decs = 'ASC';
+        }
         $current_study =  \Session::get('current_study');
-        $optionsGroups = OptionsGroup::paginate(20);
-        //$optionsGroup = OptionsGroup::latest('created_at')->get();
-        $optionsGroup = OptionsGroup::where('study_id',$current_study)->orderBy('created_at','desc')->get();
-
-        return view('admin::optionsgroup.index',compact('optionsGroups','optionsGroup'));
+        $optionsGroup = OptionsGroup::where('study_id',$current_study);
+        if(isset($request->option_group_name) && $request->option_group_name !=''){
+            $optionsGroup = $optionsGroup->where('option_group_name','like', '%'.$request->option_group_name.'%');
+        }
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $optionsGroup = $optionsGroup->orderBy($field_name , $request->sort_by_field);
+        }
+        $optionsGroup = $optionsGroup->paginate(\Auth::user()->user_prefrences->default_pagination)
+                    ->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
+        return view('admin::optionsgroup.index',compact('optionsGroup'));
     }
-
     /**
      * Show the form for creating a new resource.
      * @return Response

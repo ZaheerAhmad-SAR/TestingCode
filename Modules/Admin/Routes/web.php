@@ -11,11 +11,19 @@
 |
 */
 
+// php info
+// Route::get('phpInfo', function(){
+//     phpinfo();
+// });
+
 //test transmission view
 // Route::get('transmissions/transmissionData', function () {
 //     return view('admin::test_transmission_api');
 // });
 // transmission end point
+
+// update photographer emails for Transmission
+Route::get('update-transmission-photographer-email', 'TransmissionController@getPhotographerEmailForTransmission')->name('update-transmission-photographer-email');
 
 // Route::get('error-message', function(){
 
@@ -25,6 +33,7 @@
 Route::post('subjects/check_variable', 'SubjectController@check_variable_name')->name('subjects.checkVariable');
 // end
 Route::post('transmissions/transmissionData', 'TransmissionController@transmissionData')->name('transmissions.transmissionData');
+
 Route::post('studies/getAssignedAdminsToStudy', 'StudyController@getAssignedAdminsToStudy')->name('studies.getAssignedAdminsToStudy');
 Route::post('transmissions/getAllPIBySiteId', 'TransmissionController@getAllPIBySiteId')->name('transmissions.getAllPIBySiteId');
 Route::post('transmissions/queryTransmissionMail', 'TransmissionController@queryTransmissionMail')->name('transmissions.queryTransmissionMail');
@@ -38,6 +47,7 @@ Route::post('transmissions-status', 'TransmissionController@transmissionStatus')
 Route::prefix('admin')->group(function () {
     Route::get('/', 'AdminController@index');
 });
+Route::get('modalities/{id}/showChild', 'ModilityController@showChild')->name('modalities.showChild');
 Route::group(['middleware' => ['auth', 'web']], function () {
 
     Route::get('get_steps', 'StudyStructureController@get_steps')->name('study.getSteps');
@@ -49,6 +59,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     //Route::resource('cloneSteps', 'CloneStepsController');
     Route::post('clone_steps', 'CloneStepsController@clone_steps')->name('cloneSteps.cloneSteps');
     Route::post('clone_phase', 'CloneStepsController@clone_phase')->name('cloneSteps.clonePhase');
+    Route::post('clone_section', 'CloneStepsController@clone_section')->name('cloneSteps.cloneSection');
     // for steps
     Route::DELETE('steps/delete_steps/{step_id}', 'StudyStructureController@destroySteps')->name('steps.deleteSteps');
     Route::post('steps/store_steps', 'StudyStructureController@store_steps')->name('steps.save');
@@ -56,7 +67,8 @@ Route::group(['middleware' => ['auth', 'web']], function () {
 
     Route::post('steps/activate_step/{step_id}', 'StudyStructureController@activateStep')->name('steps.activateStep');
     Route::post('steps/deActivate_step/{step_id}', 'StudyStructureController@deActivateStep')->name('steps.deActivateStep');
-
+    // For Reports
+    Route::resource('reports', 'ReportController');
     // for Section
     Route::resource('sections', 'SectionController');
     Route::post('section', 'SectionController@getSectionby_id')->name('section.getSections');
@@ -72,6 +84,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('forms/isStepActive/{step_id}', 'FormController@isStepActive')->name('steps.isStepActive');
     Route::post('forms/isThisStepHasData', 'FormController@isThisStepHasData')->name('steps.isThisStepHasData');
     Route::post('forms/getStepVersion/{step_id}', 'FormController@getStepVersion')->name('forms.getStepVersion');
+    Route::get('forms/show_available_variable_names/{step_id}', 'FormController@show_available_variable_names')->name('forms.show_available_variable_names');
     // skip logic
     Route::resource('skiplogic', 'SkipLogicController');
     Route::get('skiplogic/sections_for_skip_logic/{id}', 'SkipLogicController@sections_skip_logic')->name('skiplogic.sectionsSkip');
@@ -86,7 +99,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('skiplogic/text_skip_logic/{id}', 'SkipLogicController@skip_question_on_text')->name('skiplogic.textskipLogic');
     Route::post('skiplogic/add_skip_logic', 'SkipLogicController@add_skipLogic')->name('skiplogic.apply_skip_logic');
     // skip logic on cohort
-    Route::get('skiplogic/skip_logic_cohort/{id}', 'SkipLogicController@skip_logic_cohort')->name('skiplogic.skiponcohort');
+    Route::get('skiplogic/skip_logic_cohort/{id}/{formTypeId?}/{modalityId?}', 'SkipLogicController@skip_logic_cohort')->name('skiplogic.skiponcohort');
     Route::post('skiplogic/skip_via_cohort', 'SkipLogicController@git_steps_for_checks_deactivate_cohort')->name('skiplogic.get_steps_skip_logic_deactivate_via_cohort');
     Route::post('skiplogic/add_skip_logic_cohort_based', 'SkipLogicController@add_skipLogic_cohort_based')->name('skiplogic.apply_skip_logic_cohort_based');
     // skip logic
@@ -134,6 +147,7 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('studySite/removeAssignedSites', 'StudySiteController@removeAssignedSites')->name('studySite.removeAssignedSites');
 });
 Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
+
     Route::resource('studies', 'StudyController');
     Route::resource('sites', 'SiteController');
     Route::post('sites/update', 'SiteController@update')->name('sites.updateSites');
@@ -147,6 +161,7 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::resource('diseaseCohort', 'DiseaseCohortController');
     Route::get('device/{id}', 'DeviceController@getModal');
 
+    Route::DELETE('devices/destroy/{device_id}', 'DeviceController@destroy')->name('devices.destroy');
 
     Route::post('modalities/update', 'ModilityController@update')->name('modalities.update');
     // routes for subject
@@ -170,14 +185,13 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     // Route::resource('section','SectionController');
 
     //end
-
+    // Modalities routes
     Route::resource('childmodilities', 'ChildModilitiesController');
 
     Route::post('childmodilities/update', 'ChildModilitiesController@update')->name('childmodilities.update');
 
     Route::get('modalities/{id}/childshow', 'ModilityController@child')->name('modalities.childshow');
 
-    Route::get('modalities/{id}/showChild', 'ModilityController@showChild')->name('modalities.showChild');
 
     Route::get('modalities/{id}/editChild', 'ModilityController@editChild')->name('modalities.editChild');
 
@@ -194,8 +208,6 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
     Route::resource('studySite', 'StudySiteController');
 
-
-
     Route::post('studySite/update', 'StudySiteController@update')->name('studySite.update');
 
 
@@ -209,6 +221,8 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
 
     // CHM-Amir
     Route::get('trail_logs', 'TrailLogController@index')->name('trail_logs.list');
+
+    Route::get('users_activities', 'TrailLogController@usersActivities')->name('trail_logs.usersActivities');
     //Transmissions Routes
     Route::resource('transmissions', 'TransmissionController');
 
@@ -253,7 +267,27 @@ Route::group(['middleware' => ['auth', 'web']], function () {
     Route::post('others/update', 'OtherController@update')->name('others.update');
     Route::get('others/{id}/destroy', 'OtherController@destroy')->name('others.destroy');
 
+    // Device Site Route start
+
+    Route::resource('deviceSite', 'DeviceSiteController');
+
+    Route::get('deviceSite/{id}/showDeviceBySiteId', 'DeviceSiteController@showDeviceBySiteId')->name('deviceSite.showDeviceBySiteId');
+
+    Route::post('deviceSite/update', 'DeviceSiteController@update')->name('deviceSite.update');
+
+    Route::get('deviceSite/{id}/destroy', 'DeviceSiteController@destroy')->name('deviceSite.destroy');
+
+    Route::post('deviceSite/deviceSerialValueIsExist', 'DeviceSiteController@deviceSerialValueIsExist')->name('deviceSite.deviceSerialValueIsExist');
+
+    /// Device Site Route End
+
     Route::get('study/permanentlyDeleteStudyAndItsRecord/{id}', 'StudyController@permanentlyDeleteStudyAndItsRecord')->name('study.permanentlyDeleteStudyAndItsRecord');
 });
 
 Route::post('tinymce-image_upload', 'TinyMceController@uploadImage')->name('tinymce.image_upload');
+
+/*********************************** Ajax get calls **********************************/
+// get sites, modalities and devices for study (Transmission Section)
+Route::get('get-transmission-study-sites', 'StudySiteController@getStudySitesForTransmission')->name('get-transmission-study-sites');
+// get modality devices for study
+Route::get('get-modality-devices', 'ModilityController@getModalityDevices')->name('get-modality-devices');

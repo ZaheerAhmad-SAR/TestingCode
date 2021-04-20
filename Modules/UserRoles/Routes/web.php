@@ -81,7 +81,6 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     Route::resource('users', 'UserController');
     Route::resource('studyusers', 'StudyusersController');
     Route::resource('systemusers', 'SystemusersController');
-    Route::resource('dashboard', 'DashboardController');
     Route::resource('grading', 'GradingController');
     Route::resource('qualitycontrol', 'QualityControlController');
     Route::resource('studytools', 'StudyToolsController');
@@ -90,17 +89,21 @@ Route::group(['middleware' => ['auth', 'web', 'roles']], function () {
     // Route::resource('activitylog','ActivityLogController');
     Route::resource('certification', 'CertificationController');
     Route::resource('data_management', 'DataManagementController');
-    Route::resource('finance', 'FinanceController');
     Route::resource('adjudication', 'AdjudicationController');
     Route::resource('eligibility', 'EligibilityController');
+    Route::resource('otherforms', 'OtherFormsController');
     Route::resource('studyRoles', 'StudyRolesController');
     Route::post('users/assignusers', 'UserController@assign_users')->name('users.assignUsers');
     Route::post('users/enable_2fa', 'UserController@enable_2fa')->name('users.enable_2fa');
 });
-Route::group(['middleware' => ['auth', 'web']], function () {
+    Route::group(['middleware' => ['auth', 'web']], function () {
     Route::get('update_user/{id}', 'UserController@update_user')->name('users.updateUser');
     Route::get('change-role/{role_id}', 'DashboardController@switch_role')->name('switch_role');
 
     Route::post('systemUser/activate_user', 'SystemusersController@activate_user')->name('systemUser.activate_user');
     Route::post('systemUser/inactivate_user', 'SystemusersController@inactivate_user')->name('systemUser.inactivate_user');
+
+    Route::get('dashboard', 'DashboardController@index')->name('dashboard.index');
+    // Finance Dashboard
+    Route::post('systemUser/user2faActivate', 'SystemusersController@user2faActivate')->name('systemUser.systemUser');
 });

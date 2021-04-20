@@ -25,6 +25,7 @@ trait QuestionReplication
 
     private function addReplicatedQuestion($question, $newSectionId, $isReplicating = true)
     {
+
         $replicating_or_cloning = 'cloning';
         if ($isReplicating === true) {
             $replicating_or_cloning = 'replicating';
@@ -38,7 +39,7 @@ trait QuestionReplication
         $newQuestion->save();
         return $newQuestionId;
     }
-
+  
     private function updateReplicatedQuestion($question, $replicatedQuestion)
     {
         $questionAttributesArray = Arr::except($question->attributesToArray(), ['id', 'section_id', 'parent_id', 'replicating_or_cloning']);

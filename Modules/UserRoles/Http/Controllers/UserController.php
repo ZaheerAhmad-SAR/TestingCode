@@ -52,18 +52,34 @@ class UserController extends Controller
     }
     public function index(Request $request)
     {
-        if (isThisUserSuperAdmin(\auth()->user())) {
-            $roles  =   Role::where('role_type', '!=', 'study_role')->get();
-            $systemRoleIds = Role::where('role_type', '!=', 'study_role')->pluck('id')->toArray();
-        } else {
-            $roles  =   Role::where('role_type', '=', 'system_role')->get();
-            $systemRoleIds = Role::where('role_type', '=', 'system_role')->pluck('id')->toArray();
-        }
-
+        // if(isThisUserSuperAdmin(\auth()->user())){
+        //     $roles  =   Role::where('role_type', '!=', 'study_role')->get();
+        //     $systemRoleIds = Role::where('role_type', '!=', 'study_role')->pluck('id')->toArray();
+        // }else {
+        //     $roles  =   Role::where('role_type', '=', 'system_role')->get();
+        //     $systemRoleIds = Role::where('role_type', '=', 'system_role')->pluck('id')->toArray();
+        // }
+        
         $currentStudyId = session('current_study');
 
+        $roles  =   Role::get();
+        $systemRoleIds = Role::pluck('id')->toArray();
+        
         $userIdsOfSystemRoles = UserRole::whereIn('role_id', $systemRoleIds)->pluck('user_id')->toArray();
+        // for default order by
+        if(isset($request->sort_by_field_name) && $request->sort_by_field_name !=''){
+            $field_name = $request->sort_by_field_name;
+        }else{
+            $field_name = 'name';
+        }
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $asc_or_decs = $request->sort_by_field;
+        }else{
+            $asc_or_decs = 'ASC';
+        }
+
         $users = User::whereIn('id', $userIdsOfSystemRoles);
+
         if(isset($request->name) && $request->name !=''){
             $users = $users->where('users.name','like', '%'.$request->name.'%');
         }
@@ -73,24 +89,31 @@ class UserController extends Controller
         if(isset($request->role_id) && $request->role_id !=''){
             $users = $users->where('users.role_id', 'like', '%'.$request->role_id.'%');
         }
-        if (isset($request->sort_by_name) && $request->sort_by_name !=''){
-            $users = $users->orderBy('name', $request->sort_by_name);
+        if(isset($request->sort_by_field) && $request->sort_by_field !=''){
+            $users = $users->orderBy('users.'.$field_name , $request->sort_by_field);
         }
-        $users = $users->get();
+        $users = $users->orderBy('name', 'asc')
+                    ->paginate(\Auth::user()->user_prefrences->default_pagination)
+                    ->withPath('?sort_by_field_name='.$field_name.'&sort_by_field='.$asc_or_decs);
+        $old_values = $request->input();
 
-        $studyRoleIds = Role::where('role_type', '=', 'study_role')->pluck('id')->toArray();
+        //$studyRoleIds = Role::where('role_type', '=', 'study_role')->pluck('id')->toArray();
+        $studyRoleIds = Role::pluck('id')->toArray();
         $userIdsOfStudyRoles = UserRole::whereIn('role_id', $studyRoleIds)->pluck('user_id')->toArray();
 
         if ($currentStudyId != '') {
             $studyUserIds = RoleStudyUser::where('study_id', 'like', $currentStudyId)->pluck('user_id')->toArray();
+            
             $studyusers = User::whereIn('id', $userIdsOfStudyRoles)
-                ->whereIn('id', $studyUserIds)
-                ->where('id', '!=', \auth()->user()->id)->get();
-        } else {
+                ->whereNotIn('id', $studyUserIds)
+                ->where('id', '!=', \auth()->user()->id)
+                ->get();
+        }else {
             $studyusers = User::whereIn('id', $userIdsOfStudyRoles)->where('id', '!=', \auth()->user()->id)->get();
         }
+        
         $allroles = Role::all();
-        return view('userroles::users.index', compact('users', 'roles', 'studyusers','allroles'));
+        return view('userroles::users.index', compact('users', 'roles', 'studyusers','allroles','old_values'));
     }
 
     /**
@@ -219,6 +242,7 @@ class UserController extends Controller
                 'role_id'   => $request->user_role,
                 'study_id'  => session('current_study')
             ]);
+
             UserRole::createUserRole($request->study_user, $request->user_role);
             return response()->json(['success' => 'User assigned successfully.']);
         }
@@ -256,19 +280,21 @@ class UserController extends Controller
             $assigned_roles = Role::whereIn('id', $currentRoleIds)->get();
 
             if (isThisUserSuperAdmin(\auth()->user())) {
-                $allRoleIds = Role::where('role_type', '!=', 'study_role')->pluck('id')->toArray();
+                $allRoleIds = Role::pluck('id')->toArray();
             } else {
-                $allRoleIds = Role::where('role_type', '=', 'system_role')->pluck('id')->toArray();
+                $allRoleIds = Role::where('role_type', '!=', 'super_admin')->pluck('id')->toArray();
             }
             $unassignedRoleIds = array_diff($allRoleIds, $currentRoleIds);
             $unassigned_roles = Role::whereIn('id', $unassignedRoleIds)->get();
+
         } else {
-            $currentRoleIds = RoleStudyUser::where('user_id', 'like', $id)->pluck('role_id')->toArray();
+            // $currentRoleIds = RoleStudyUser::where('user_id', 'like', $id)->pluck('role_id')->toArray();
+            $currentRoleIds = UserRole::where('user_id', 'like', $id)->pluck('role_id')->toArray();
             $assigned_roles = Role::whereIn('id', $currentRoleIds)->get();
             if (!empty($currentRoleIds)) {
-                $unassigned_roles = Role::where('role_type', '=', 'study_role')->whereNotIn('id', $currentRoleIds)->get();
+                $unassigned_roles = Role::where('role_type', '!=', 'super_admin')->whereNotIn('id', $currentRoleIds)->get();
             } else {
-                $unassigned_roles = Role::where('role_type', '=', 'study_role')->get();
+                $unassigned_roles = Role::where('role_type', '!=', 'super_admin')->get();
             }
         }
 
@@ -292,6 +318,7 @@ class UserController extends Controller
      */
     public function update_user(Request $request, $id)
     {
+
         $validate = Validator::make($request->all(), [
             'name'      =>  'required',
             'email'      =>  'required|email|unique:users,email,',
@@ -301,49 +328,62 @@ class UserController extends Controller
             $user->title  =  $request->title;
             $user->name  =  $request->name;
             $user->phone =  $request->phone;
+            $user->notification_type =  $request->notification_type;
+            $user->bug_report =  $request->bug;
+            $user->is_form =  $request->form;
+            $user->is_subject =  $request->subject;
             $user->password =   Hash::make($request->password);
             if ($request->has('profile_image')) {
                 $image = $request->file('profile_image');
                 $name = Str::slug($request->input('name')) . '_' . time();
                 $folder = '/images/';
-                $filePath = $folder . $name . '.' . $image->getClientOriginalExtension();
+                $filePath = $name . '.' . $image->getClientOriginalExtension();
                 $this->uploadOne($image, $folder, 'public', $name);
                 $user->profile_image = $filePath;
             }
 
-            // look for user signature
-            if ($request->has('user_signature')) {
+            if ($request->hidden_user_signature != '') {
+                // unlink old image
+                @unlink(storage_path('/user_signature/'.md5($user->id).'.png'));
+                // get image and save to path
+                $image = $request->hidden_user_signature;  // your base64 encoded
+                $image = str_replace('data:image/png;base64,', '', $image);
+                $image = base64_decode(str_replace(' ', '+', $image));
+                $imageName = md5($user->id).'.'.'png';
+                \File::put(storage_path(). '/user_signature/' . $imageName, $image);
 
-                @unlink(storage_path('/user_signature/'.$user->user_signature));
-
-                $user->user_signature = $user->id.''.$request->file("user_signature")->getClientOriginalName();
-                $request->user_signature->move(storage_path('/user_signature/'), $user->user_signature);
             }
-            //dd($user);
+
             $user->save();
         } else {
             $user->title  =  $request->title;
             $user->name  =  $request->name;
             $user->phone =  $request->phone;
+            $user->notification_type =  $request->notification_type;
+            $user->bug_report =  $request->bug;
+            $user->is_form =  $request->form;
+            $user->is_subject =  $request->subject;
             if ($request->has('profile_image')) {
                 $image = $request->file('profile_image');
                 $name = Str::slug($request->input('name')) . '_' . time();
                 $folder = '/images/';
-                $filePath = $folder . $name . '.' . $image->getClientOriginalExtension();
+                $filePath = $name . '.' . $image->getClientOriginalExtension();
                 $this->uploadOne($image, $folder, 'public', $name);
                 $user->profile_image = $filePath;
             }
 
-             // look for user signature
-            if ($request->has('user_signature')) {
+            if ($request->hidden_user_signature != '') {
+                // unlink old image
+                @unlink(storage_path('/user_signature/'.md5($user->id).'.png'));
+                // get image and save to path
+                $image = $request->hidden_user_signature;  // your base64 encoded
+                $image = str_replace('data:image/png;base64,', '', $image);
+                $image = base64_decode(str_replace(' ', '+', $image));
+                $imageName = md5($user->id).'.'.'png';
+                \File::put(storage_path(). '/user_signature/' . $imageName, $image);
 
-                @unlink(storage_path('/user_signature/'.$user->user_signature));
-
-                $user->user_signature = $user->id.''.$request->file("user_signature")->getClientOriginalName();
-                $request->user_signature->move(storage_path('/user_signature/'), $user->user_signature);
             }
 
-            //dd($user);
             $user->save();
         }
 
@@ -524,6 +564,7 @@ class UserController extends Controller
                 'roles' => 'Please select a role!',
             ]
         );
+
         /*$validator->after(function ($validator) use ($request) {
             if (Invitation::where('email', $request->input('email'))->exists()) {
                 $validator->errors()->add('email', 'There exists an invite with this email!');

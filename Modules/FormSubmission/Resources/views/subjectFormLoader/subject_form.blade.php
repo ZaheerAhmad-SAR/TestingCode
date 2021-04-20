@@ -13,7 +13,7 @@
             <div class="col-12  align-self-center">
                 <div class="sub-header mt-3 py-3 align-self-center d-sm-flex w-100 rounded">
                     <div class="w-sm-100 mr-auto">
-                        <h4 class="mb-0">Subject Phases</h4>
+                        <h4 class="mb-0" style="display: none;">Subject Details</h4>
                     </div>
                     <ol class="breadcrumb bg-transparent align-self-center m-0 p-0">
                         <li class="breadcrumb-item"><a href="{{ url('dashboard') }}">Home</a></li>
@@ -25,19 +25,18 @@
             </div>
         </div>
         <!-- END: Breadcrumbs-->
-
         <!-- START: Card Data-->
-        <div class="row">
+        <div class="row" style="margin-top: -15px;">
             <div class="col-12 col-sm-12 mt-3">
                 <div class="card">
-                    <div class="card-header  justify-content-between align-items-center">
+                    <div class="card-header  justify-content-between align-items-center" style="display: none;">
                         <h4 class="card-title">Study and Subject details</h4>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" style="padding: 0;">
                         <div class="row">
-                            <div class="col-6">
+                            <div class="col-4">
                                 <div class="table-responsive">
-                                    <table class="table">
+                                    <table class="table" style="margin-bottom: 0px;">
                                         <tr>
                                             <th scope="row">Subject ID</th>
                                             <td>{{ $subject->subject_id }}</td>
@@ -46,17 +45,12 @@
                                             <th scope="row">Study EYE</th>
                                             <td>{{ $subject->study_eye }}</td>
                                         </tr>
-                                        <tr>
-                                            <th scope="row">Study Site ID</th>
-                                            <td>{{ $studySite->study_site_id }}</td>
-                                        </tr>
                                     </table>
                                 </div>
                             </div>
-
-                            <div class="col-6">
+                            <div class="col-4">
                                 <div class="table-responsive">
-                                    <table class="table">
+                                    <table class="table" style="margin-bottom: 0px;">
                                         <tr>
                                             <th scope="row">Site Name</th>
                                             <td>{{ $site->site_name }}</td>
@@ -65,76 +59,37 @@
                                             <th scope="row">Site Code</th>
                                             <td>{{ $site->site_code }}</td>
                                         </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                               <div class="table-responsive">
+                                    <table class="table" style="margin-bottom: 0px;">
+                                       <tr>
+                                            <th scope="row">Study Site ID</th>
+                                            <td>{{ $studySite->study_site_id }}</td>
+                                        </tr>
                                         <tr>
                                             <th scope="row">Cohort</th>
                                             <td>{{ \Modules\Admin\Entities\Subject::getDiseaseCohort($subject) }}</td>
                                         </tr>
                                     </table>
-                                </div>
+                                </div> 
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-sm-12 mt-3">
-                <div class="card">
-                    <div class="card-header  justify-content-between align-items-center">
-                        <h4 class="card-title">Grading legend</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-2">
-                                <img src="{{ url('images/no_status.png') }}" />&nbsp;&nbsp;Not Initiated
-                            </div>
-                            <div class="col-md-2">
-                                <img src="{{ url('images/incomplete.png') }}" />&nbsp;&nbsp;Initiated
-                            </div>
-                            <div class="col-md-2">
-                                <img src="{{ url('images/resumable.png') }}" />&nbsp;&nbsp;Editing
-                            </div>
-                            <div class="col-md-2">
-                                <img src="{{ url('images/complete.png') }}" />&nbsp;&nbsp;Complete
-                            </div>
-                            <div class="col-md-2">
-                                <img src="{{ url('images/not_required.png') }}" />&nbsp;&nbsp;Not Required
-                            </div>
-                            <div class="col-md-2">
-                                <img src="{{ url('images/query.png') }}" />&nbsp;&nbsp;Query
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-sm-12 mt-3">
-                <div class="card">
-                    <div class="card-header  justify-content-between align-items-center">
-                        <h4 class="card-title">Activate Visits</h4>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            @if(
-                                (\Modules\Admin\Entities\Preference::getPreference('VISIT_ACTIVATION') == 'Manual') &&
-                                canQualityControl(['index', 'create', 'store', 'edit', 'update'])
-                            )
-                            <div class="col-2">
-                                <button type="button" class="btn btn-success"
-                                    onclick="openAssignPhasesToSubjectPopup('{{ $studyId }}', '{{ $subjectId }}');">Activate
-                                    Visits</button>
-                            </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="col-12 col-sm-12">
                 <div class="row row-eq-height">
-                    <div class="col-12 col-lg-2 mt-3 todo-menu-bar flip-menu pr-lg-0">
-                        <a href="#" class="d-inline-block d-lg-none mt-1 flip-menu-close"><i class="icon-close"></i></a>
+                    <div class="col-12 col-lg-2 mt-3 todo-menu-bar flip-menu pr-lg-0" style="height: calc(100vh - 140px);">
+                        <a href="#" class="d-inline-block d-lg-none mt-1 flip-menu-close">
+                            <i class="icon-close"></i>
+                        </a>
                         <div class="card border h-100 contact-menu-section">
                             <div id="accordion">
                                 @php
-                                $activePhase = true;
+                                $activePhase = false;
                                 @endphp
                                 @if (count($visitPhases))
                                     @foreach ($visitPhases as $phase)
@@ -142,7 +97,6 @@
                                         $phaseIdStr = buildSafeStr($phase->id, 'phase_cls_');
                                         $subjectPhaseDetail =
                                         \Modules\FormSubmission\Entities\SubjectsPhases::getSubjectPhase($subjectId, $phase->id);
-
                                         $showPhase = 'false';
                                         if(request('phaseId', '-') == $phase->id){
                                             $showPhase = 'true';
@@ -151,6 +105,7 @@
                                             $showPhase = 'true';
                                         }
                                         @endphp
+
                                         <div class="card text-white bg-primary m-1">
                                             <div
                                                 id="heading{{ $phase->id }}"
@@ -176,6 +131,15 @@
                                                         @endphp
                                                         @foreach ($steps as $step)
                                                             @php
+                                                             // apply css to current active form 
+                                                                $active_form = '';
+                                                                $active_form_adj = '';
+                                                                if($step->step_id == Request::segment(5) && Request::segment(7) =='yes'){
+                                                                    $active_form_adj = 'selected_form_adj';
+                                                                }else if ($step->step_id == Request::segment(5)){
+                                                                    $active_form = 'selected_form';
+                                                                }
+                                                             // apply css to current active form end 
                                                             if ($step->formType->form_type == 'Grading' || $step->formType->form_type == 'Eligibility') {
                                                                 $getQcFormStatusArray = [
                                                                     'subject_id' => $subjectId,
@@ -205,13 +169,9 @@
                                                                         continue;
                                                                 }
                                                             }
-
-
-
                                                             $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                                                             $adjStepClsStr = buildSafeStr($step->step_id, 'adj_step_cls_');
                                                             $stepIdStr = buildSafeStr($step->step_id, '');
-
                                                             $badgeCls = 'badge-light';
                                                             if(request('stepId', '-') == $step->step_id){
                                                                 $badgeCls = 'badge-light';
@@ -220,7 +180,6 @@
                                                                 $badgeCls = 'badge-light';
                                                             }
                                                             $skipLogicStepIdStr = buildSafeStr($step->step_id, 'skip_logic_');
-
                                                             $stepData = [
                                                                 'step' => $step,
                                                                 'stepClsStr' => $stepClsStr,
@@ -235,6 +194,7 @@
                                                             @include('formsubmission::subjectFormLoader.eligibility_left_bar_nav', $stepData)
                                                             @include('formsubmission::subjectFormLoader.grader_left_bar_nav', $stepData)
                                                             @include('formsubmission::subjectFormLoader.adjudication_left_bar_nav', $stepData)
+                                                            @include('formsubmission::subjectFormLoader.other_type_form', $stepData)
                                                             @php
                                                             $activeStep = false;
                                                             @endphp
@@ -257,22 +217,61 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-12 col-lg-10 mt-3 pl-lg-0">
                         <div class="card border h-100 contact-list-section">
                             <div class="card-body p-0">
-                                <div class="contacts list">
-                                    @if (count($visitPhases))
+                                <div class="row">
+                                    <div class="col-md-2" style="margin-top: 6px;">
+                                        @if(
+                                        (\Modules\Admin\Entities\Preference::getPreference('VISIT_ACTIVATION') == 'Manual') &&
+                                        canQualityControl(['index', 'create', 'store', 'edit', 'update'])
+                                            )
+                                            &nbsp;&nbsp;<button type="button" class="btn btn-success"
+                                                onclick="openAssignPhasesToSubjectPopup('{{ $studyId }}', '{{ $subjectId }}');">Activate
+                                                Visits</button>
+                                        @endif
+                                    </div>
+                                    <div class="col-md-10" style="margin-top: 10px;">
+                                        <img src="{{ url('images/no_status.png') }}" />&nbsp;&nbsp;Not Initiated
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <i class="fas fa-exclamation-circle" style="font-size:15px;"></i> &nbsp;&nbsp;Required
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img src="{{ url('images/incomplete.png') }}" />&nbsp;&nbsp;Initiated
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img src="{{ url('images/resumable.png') }}" />&nbsp;&nbsp;Editing
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img src="{{ url('images/complete.png') }}" />&nbsp;&nbsp;Complete
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img src="{{ url('images/not_required.png') }}" />&nbsp;&nbsp;Not Required
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <img src="{{ url('images/query.png') }}" />&nbsp;&nbsp;Query
+                                    </div>
+                                </div>
+                                <div class="contacts list" style="margin-top: 6px;">
+                                    @php
+                                        // load form by url
+                                        $subject = \Modules\Admin\Entities\Subject::find(Request::segment(3));
+                                        $subjectPhasesIdsArray = $subject->subjectPhasesArray();
+                                        $where = array('study_id' =>$studyId,'id' => Request::segment(4));
+                                        $visitPhases_to_load_forms = \Modules\Admin\Entities\StudyStructure::where($where)->whereIn('id', $subjectPhasesIdsArray)->get();
+                                        // load steps to get modality id
+                                        $where_step = array('step_id' => Request::segment(5));
+                                        $get_modality_id = \Modules\Admin\Entities\PhaseSteps::where($where_step)->first();
+                                    @endphp
+                                    @if (count($visitPhases_to_load_forms))
                                         @php
                                         $activeStep = true;
                                         $stepCounter = 0;
                                         @endphp
-                                        @foreach ($visitPhases as $phase)
+                                        @foreach ($visitPhases_to_load_forms as $phase)
                                             @php
                                             $phaseIdStr = buildSafeStr($phase->id, 'phase_cls_');
                                             $steps =
                                             \Modules\Admin\Entities\PhaseSteps::phaseStepsbyPermissions($subjectId, $phase->id);
                                             @endphp
                                             @foreach ($steps as $step)
+                                            @if($step->modility_id == $get_modality_id->modility_id)
                                                 @php
                                                 $stepCounter++;
                                                 if ($step->formType->form_type == 'Grading' || $step->formType->form_type == 'Eligibility') {
@@ -296,21 +295,18 @@
                                                         'subject_id' => $subjectId,
                                                         'study_id' => $studyId,
                                                         'study_structures_id' => $phase->id,
-                                                        'form_type_id' => 3,
+                                                        'form_type_id' => 3, //Eligibility 
                                                         'modility_id' => $step->modility_id,
                                                         ];
-                                                    if(
-                                                        null !== $eligibilityStep &&
+                                                    if(null !== $eligibilityStep &&
                                                         \Modules\FormSubmission\Entities\FormStatus::isAllGradersGradedThatForm($eligibilityStep, $getEligibilityFormStatusArray) === false){
                                                         continue;
                                                     }
                                                 }
-
                                                 $stepClsStr = buildSafeStr($step->step_id, 'step_cls_');
                                                 $adjStepClsStr = buildSafeStr($step->step_id, 'adj_step_cls_');
                                                 $stepIdStr = buildSafeStr($step->step_id, '');
                                                 $skipLogicStepIdStr = buildSafeStr($step->step_id, 'skip_logic_');
-
 
                                                 $sections = $step->sections;
                                                 if(count($sections)){
@@ -329,12 +325,14 @@
                                                 'stepCounter' => $stepCounter,
                                                 ];
                                                 @endphp
-                                                @include('formsubmission::forms.section_loop', $dataArray)
-                                                @include('formsubmission::forms.adjudication_form', $dataArray)
+                                                    @include('formsubmission::forms.section_loop', $dataArray)
+                                            
+                                                    @include('formsubmission::forms.adjudication_form', $dataArray)
                                                 @php
                                                 }
                                                 $activeStep = false;
                                                 @endphp
+                                            @endif
                                             @endforeach
                                         @endforeach
                                     @endif

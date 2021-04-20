@@ -30,6 +30,9 @@ use Modules\UserRoles\Entities\Permission;
 use Modules\UserRoles\Entities\RolePermission;
 use Illuminate\Support\Facades\Route;
 use Modules\Admin\Entities\RoleStudyUser;
+use Modules\Admin\Entities\AssignWork;
+use Modules\FormSubmission\Entities\FormStatus;
+use Illuminate\Support\Str;
 
 function hasrole($role)
 {
@@ -46,9 +49,11 @@ function is_active($name)
 }
 function search_auth($arr, $auth)
 {
-    foreach ($arr as $row) {
-        if ($auth == $row) {
-            return true;
+    if (is_array($arr)) {
+        foreach ($arr as $row) {
+            if ($auth == $row) {
+                return true;
+            }
         }
     }
     return false;
@@ -134,6 +139,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
         $auditUrl = url('optionsGroup');
         // store data in event array
         $newData = array(
+            'study_short_name' => session('study_short_name'),
             'option_group_name' => $eventData->option_group_name,
             'option_group_description' => $eventData->option_group_description,
             'option_layout' => $eventData->option_layout,
@@ -144,6 +150,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
         if ($eventType == 'Update') {
             // store data in event array
             $oldData = array(
+                'study_short_name' => session('study_short_name'),
                 'option_group_name' => $previousData->option_group_name,
                 'option_group_description' => $previousData->option_group_description,
                 'option_layout' => $previousData->option_layout,
@@ -673,8 +680,8 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
 
         // store data in event array
         $newData = array(
-            'study_id'    => session('current_study'),
-            'phase_id'    => $getPhaseName->name,
+            'study_name'    => session('study_short_name'),
+            'phase_name'    => $getPhaseName->name,
             'step_position'  =>  $eventData->step_position,
             'form_type_id' =>  $getFormName->form_type,
             'modility_id' =>  $getModilityName->modility_name,
@@ -697,8 +704,8 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
             $getOldModilityName = Modility::find($previousData->modility_id);
 
             $oldData = array(
-                'study_id'    => session('current_study'),
-                'phase_id'    => $getOldPhaseName->name,
+                'study_name'    => session('study_short_name'),
+                'phase_name'    => $getOldPhaseName->name,
                 'step_position'  =>  $previousData->step_position,
                 'form_type_id' =>  $getOldFormName->form_type,
                 'modility_id' =>  $getOldModilityName->modility_name,
@@ -727,7 +734,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
 
         // store data in event array
         $newData = array(
-            'study_id'    => session('current_study'),
+            'study_short_name'    => session('study_short_name'),
             'step_name'    => $getPhaseName->step_name,
             'name'        =>  $eventData->name,
             'description' =>  $eventData->description,
@@ -742,7 +749,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
             $getOldPhaseName = PhaseSteps::where('step_id', $previousData->phase_steps_id)->first();
 
             $oldData = array(
-                'study_id'    =>  session('current_study'),
+                'study_short_name'    =>  session('study_short_name'),
                 'step_name'   =>  $getOldPhaseName->step_name,
                 'name'        =>  $previousData->name,
                 'description' =>  $previousData->description,
@@ -898,7 +905,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
 
         // store data in event array
         $newData = array(
-            'study_id' => Session::get('current_study'),
+            'study_short_name' => Session::get('study_short_name'),
             'subject_id' => $eventData->subject_id,
             'enrollment_date' => $eventData->enrollment_date,
             'site_name' => $site_study,
@@ -926,7 +933,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
             $old_diseaseCohort = $old_diseaseCohort != null ? $old_diseaseCohort->name : 'N/A';
 
             $oldData = array(
-                'study_id' => $previousData->study_id,
+                'study_short_name' => $previousData->study_short_name,
                 'subject_id' => $previousData->subject_id,
                 'enrollment_date' => $previousData->enrollment_date,
                 'site_name' => $old_site_study,
@@ -967,7 +974,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
 
         // store data in event array
         $newData = array(
-            'study_id' => Session::get('current_study'),
+            'study_short_name' => Session::get('study_short_name'),
             'subject_id' => $eventData->subject_id,
             'enrollment_date' => $eventData->enrollment_date,
             'site_name' => $site_study,
@@ -1063,6 +1070,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
         $ip = 'N/A';
         // get event data
         $eventData = $eventId;
+        // dd($eventData[1]);
         // get study name
         $studyName = Study::where('id', $eventData[1]['study_id'])->first();
         //get subject
@@ -1082,7 +1090,7 @@ function eventDetails($eventId, $eventSection, $eventType, $ip, $previousData, $
         // store data in event array
         $newData = [];
         $editReason = '';
-
+        
         //  loop through the dorm data
         foreach ($eventData as $key => $data) {
 
@@ -1210,6 +1218,12 @@ function canQualityControl($permissionsArray = ['index', 'create', 'store', 'edi
     return checkPermission($permissionText, $permissionsArray);
 }
 
+function canOtherForm($permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
+{
+    $permissionText = 'otherForms.';
+    return checkPermission($permissionText, $permissionsArray);
+}
+
 function canGrading($permissionsArray = ['index', 'create', 'store', 'edit', 'update'])
 {
     $permissionText = 'grading.';
@@ -1275,18 +1289,131 @@ function arrayFilter($array)
 
 function TagReleasenumber()
 {
-    return 'Fix OCAP Version Issue';
-    /*
-    $HEAD_hash = file_get_contents('.git/refs/heads/Laravel_7'); // or branch x
+    
+   $HEAD_hash = file_get_contents('./.git/refs/heads/Laravel_7'); // or any branch
+   
 
-    $files = glob('.git/refs/tags/*');
-    foreach (array_reverse($files) as $file) {
-        $contents = file_get_contents($file);
+$files = glob('./.git/refs/tags/*');
+foreach(array_reverse($files) as $file) {
+    $contents = file_get_contents($file);
 
-        if ($HEAD_hash === $contents) {
-            return basename($file);
-            exit;
-        }
+    if($HEAD_hash === $contents)
+    {
+        return  basename($file);
+        exit;
     }
-    */
 }
+
+return 'No matching tag';
+    
+}
+function getOldValue($oldValues, $val)
+{
+     if (isset($oldValues[$val])) {
+        return $oldValues[$val];
+     } else {
+        return '';
+     }
+}
+function get_all_counts_assigned_work_withoperator($form_type_id, $form_status,$condition,$where_study){
+    $where = array(
+        'assign_work.form_type_id' => $form_type_id,
+        'form_submit_status.form_type_id' => $form_type_id,
+    ); 
+    if(!isset($where_study['study_id'])){
+        $where_study = array('form_submit_status.deleted_at' => null);
+    }else{
+        $where_study = array('form_submit_status.study_id' => $where_study['study_id']);
+    }
+    // $dd = 'true';
+    $total_numbers = AssignWork::query();
+        $total_numbers = $total_numbers->select('assign_work.*,form_submit_status.id')
+        ->from('assign_work')
+        ->join('form_submit_status', 'form_submit_status.modility_id', '=', 'assign_work.modility_id')
+        ->where($where)
+        ->where($where_study)
+        ->where('form_submit_status.form_status', $form_status ,'complete')
+        ->where('form_submit_status.created_at', $condition , DB::raw('assign_work.assign_date'))
+        ->count();
+     // printSqlQuery($total_numbers,$dd);
+    return $total_numbers;
+}
+
+function get_all_counts_assigned_work_withoperator_modality($form_type_id, $form_status,$condition,$modility_id){
+    $where = array(
+        'assign_work.form_type_id' => $form_type_id,
+        'assign_work.modility_id' => $modility_id,
+        'form_submit_status.form_type_id' => $form_type_id,
+    ); 
+    $total_numbers = AssignWork::query();
+        $total_numbers = $total_numbers->select('*')
+        ->from('assign_work')
+        ->leftjoin('form_submit_status', 'form_submit_status.modility_id', '=', 'assign_work.modility_id')
+        ->where($where)
+        ->where('form_submit_status.form_status', $form_status ,'complete')
+        ->where('form_submit_status.created_at', $condition ,DB::raw('assign_work.assign_date'))
+        ->count();
+    return $total_numbers;
+}
+
+function get_all_counts_assigned_work_withoutoperator($form_type_id, $form_status){
+    $where = array(
+        'assign_work.form_type_id' => $form_type_id,
+        'form_submit_status.form_status' => $form_status,
+    );
+    $total_numbers = AssignWork::query();
+        $total_numbers = $total_numbers->select('*')
+        ->from('assign_work')
+        ->leftjoin('form_submit_status', 'form_submit_status.modility_id', '=', 'assign_work.modility_id')
+        ->where($where)
+        ->count();
+    return $total_numbers;
+}
+
+function get_all_counts_assigned_work_withoutoperator_modality($form_type_id,$modility_id){
+    $where = array(
+        'assign_work.form_type_id' => $form_type_id,
+        'assign_work.modility_id' => $modility_id,
+    );
+    $total_numbers = AssignWork::query();
+        $total_numbers = $total_numbers->select('*')
+        ->from('assign_work')
+        ->leftjoin('form_submit_status', 'form_submit_status.modility_id', '=', 'assign_work.modility_id')
+        ->where($where)
+        ->count();
+    return $total_numbers;
+}
+function get_all_counts_assigned_not_complete_and_due($form_type_id,$modility_id){
+    $where = array(
+        'assign_work.form_type_id' => $form_type_id,
+        'assign_work.modility_id' => $modility_id,
+    );
+    return AssignWork::where($where)->with(['get_form_status' => function ($query) { $query->where('form_type_id', '=', $form_type_id)->where('form_status', '!=', 'complete'); }])->count();
+}
+function get_all_counts_assigned_work($form_type_id,$where_study){
+    return AssignWork::where('form_type_id',$form_type_id)->where($where_study)->count();
+}
+// For visits Turnarround Time selection
+function get_tat_of_visit_complete($subject_id,$phase_id,$form_type_id,$form_status,$modality_id){
+    $where = array(
+        'study_structures_id' => $phase_id,
+        'form_type_id' => $form_type_id,
+        'form_status' => $form_status,
+        'modility_id' => $modality_id
+    );
+    return FormStatus::where($where)->with('user')->first();
+}
+
+function get_date_differnce($date1,$date2)
+{
+   return (\Carbon\Carbon::parse($date1))->diff(\Carbon\Carbon::parse($date2))->format('%m month, %d days');
+   // return $date1->diff($date2);
+}
+function get_mac_address() {
+        // PHP code to get the MAC address of Client 
+     $MAC = exec('getmac'); 
+  
+    // Storing 'getmac' value in $MAC 
+    $MAC = strtok($MAC, ' '); 
+    return $MAC ;
+    }

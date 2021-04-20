@@ -4,6 +4,7 @@ namespace Modules\FormSubmission\Entities;
 
 use App\User;
 use Modules\Admin\Entities\FormType;
+use Modules\FormSubmission\Entities\QuestionAdjudicationRequired;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
@@ -57,7 +58,10 @@ class AdjudicationFormStatus extends Model
     {
         return self::getAdjudicationFormStatusObjQuery($getAdjudicationFormStatusArray)->firstOrNew();
     }
-
+    public static function getAdjudicationFormStatusObjArray($getAdjudicationFormStatusArray){
+        
+        return self::getAdjudicationFormStatusObjQuery($getAdjudicationFormStatusArray)->orderBy('created_at')->get();
+    }
     public static function getAdjudicationFormStatus($step, $getAdjudicationFormStatusArray, $wrap = false, $wrapSeperate = false)
     {
         $adjudicationFormStatusObj = self::getAdjudicationFormStatusObj($getAdjudicationFormStatusArray);
@@ -65,7 +69,7 @@ class AdjudicationFormStatus extends Model
             if ($wrapSeperate) {
                 return self::makeAdjudicationFormStatusSeperateSpan($adjudicationFormStatusObj);
             } else {
-                return self::makeAdjudicationFormStatusSpan($step, $adjudicationFormStatusObj);
+                return self::makeAdjudicationFormStatusSpan($step, $adjudicationFormStatusObj, $getAdjudicationFormStatusArray);
             }
         } else {
             return $adjudicationFormStatusObj->adjudication_status;
@@ -118,21 +122,26 @@ class AdjudicationFormStatus extends Model
         return $userName . '-' . $status . '|';
     }
 
-    public static function makeAdjudicationFormStatusSpan($step, $adjudicationFormStatusObj)
+    public static function makeAdjudicationFormStatusSpan($step, $adjudicationFormStatusObj,$getAdjudicationFormStatusArray)
     {
         $info = '';
+        $checkIfAnyQuestionNeedAdj = '';
         $adjudicationFormStatus = $adjudicationFormStatusObj->adjudication_status;
+        $checkIfAnyQuestionNeedAdj = QuestionAdjudicationRequired::checkEnteryInAdjudicationRequired($getAdjudicationFormStatusArray);
         if ($adjudicationFormStatus != 'no_status') {
             $info = 'data-toggle="popover" data-trigger="hover" title="" data-content="' . $adjudicationFormStatusObj->user->name . '"';
+        }else{
+            if($checkIfAnyQuestionNeedAdj > 0){
+                $adjudicationFormStatus = 'required';
+            }
         }
-
         $imgSpanStepClsStr = buildAdjudicationStatusIdClsStr($step->step_id);
         $spanStr = '<span class="' . $imgSpanStepClsStr . '" ' . $info . '>';
-        $spanStr .= self::makeAdjudicationFormStatusSpanImage($adjudicationFormStatus) . '</span>';
+        $spanStr .= self::makeAdjudicationFormStatusSpanImage($adjudicationFormStatus,$checkIfAnyQuestionNeedAdj) . '</span>';
         return $spanStr;
     }
 
-    public static function makeAdjudicationFormStatusSpanImage($adjudication_status)
+    public static function makeAdjudicationFormStatusSpanImage($adjudication_status,$checkIfAnyQuestionNeedAdj)
     {
 
         $imageStr = '';
@@ -143,12 +152,16 @@ class AdjudicationFormStatus extends Model
             $imageStr .= '<img src="' . url('images/incomplete.png') . '"/>';
         } elseif ($adjudication_status == 'resumable') {
             $imageStr .= '<img src="' . url('images/resumable.png') . '"/>';
-        } elseif ($adjudication_status == 'no_status') {
+        } elseif ($adjudication_status == 'no_status' && $checkIfAnyQuestionNeedAdj < 1) {
+            $imageStr .= '<img src="' . url('images/not_required.png') . '"/>';
+        } elseif($adjudication_status == 'no_status'){
             $imageStr .= '<img src="' . url('images/no_status.png') . '"/>';
         } elseif ($adjudication_status == 'adjudication') {
             $imageStr .= '<img src="' . url('images/adjudication.png') . '"/>';
         } elseif ($adjudication_status == 'notrequired') {
             $imageStr .= '<img src="' . url('images/not_required.png') . '"/>';
+        } elseif ($adjudication_status == 'required') {
+            $imageStr .= '<i class="fas fa-exclamation-circle" style="font-size:15px;"></i>';
         }
         return $imageStr;
     }
@@ -202,5 +215,18 @@ class AdjudicationFormStatus extends Model
             ->where('adjudication_status', 'like', $form_status)
             ->pluck('phase_steps_id')
             ->toArray();
+    }
+
+    public static function getTotalAdjudicationStatus($studyId, $status = null)
+    {
+        $getTotalStatus = self::query();
+        $getTotalStatus = $getTotalStatus->where('study_id', $studyId);
+                    if($status != null) {
+                        $getTotalStatus->where('adjudication_status', $status);
+                    }
+        $getTotalStatus = $getTotalStatus->get()->count();
+
+        return $getTotalStatus;
+       
     }
 }

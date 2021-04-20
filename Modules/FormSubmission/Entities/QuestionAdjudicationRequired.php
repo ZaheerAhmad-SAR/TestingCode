@@ -31,4 +31,10 @@ class QuestionAdjudicationRequired extends Model
     {
         return self::getQuery($array)->delete();
     }
+    public static function checkEnteryInAdjudicationRequired($getAdjudicationFormStatusArray)
+    {
+        unset($getAdjudicationFormStatusArray['adjudication_status']);
+        unset($getAdjudicationFormStatusArray['modility_id']);
+        return self::where($getAdjudicationFormStatusArray)->count();
+    }
 }

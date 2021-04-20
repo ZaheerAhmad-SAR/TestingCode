@@ -132,7 +132,6 @@ class ChildModilitiesController extends Controller
 
         if ($request->ajax()) {
             $child = ChildModilities::withTrashed()->find($id)->restore();
-
             return response()->json(['success' => 'Child is restore successfully.']);
         }
     }

@@ -17,7 +17,7 @@
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-4 col-form-label">{{$phase->name}}</label>
                                 <div class="col-sm-2">
-                                    <input type="checkbox" name="phase[]" value="{{$phase->id}}" style="margin-top: 10px;">
+                                    <input type="checkbox" name="phase[]" dusk="phase_checkbox_clone" value="{{$phase->id}}" style="margin-top: 10px;">
                                 </div>
                             </div>
                             @endforeach
@@ -25,7 +25,7 @@
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-outline-danger" data-dismiss="modal" id="#"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                        <button type="submit" class="btn btn-outline-primary" id="#"><i class="fa fa-save"></i> Save Changes</button>
+                        <button type="submit" class="btn btn-outline-primary" id="Clonestep"><i class="fa fa-save"></i> Save Changes</button>
                     </div>
                 </div>
             </form>
@@ -51,20 +51,20 @@
                             <div class="form-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Position</label>
                                 <div class="col-sm-9">
-                                    <input type="text" name="position" value="" class="form-control">
+                                    <input type="text" name="position" dusk ="clone_position" id="clone_position" value="" class="form-control">
                                 </div>
                             </div>
                             <div class="from-group row">
                                 <label for="Name" class="col-sm-3 col-form-label">Name</label>
                                 <div class="col-sm-9">
-                                    <input type="text" name="name" id="phase_name_clone" value="" class="form-control">
+                                    <input type="text" name="name" dusk="phase_name_clone" id="phase_name_clone" value="" class="form-control">
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-outline-danger" data-dismiss="modal" id="#"><i class="fa fa-window-close" aria-hidden="true"></i> Close</button>
-                        <button type="submit" class="btn btn-outline-primary" id="#"><i class="fa fa-save"></i> Save Changes</button>
+                        <button type="submit" dusk="phase_clone_submit" class="btn btn-outline-primary" id="phase_clone_submit"><i class="fa fa-save"></i> Save Changes</button>
                     </div>
                 </div>
             </form>

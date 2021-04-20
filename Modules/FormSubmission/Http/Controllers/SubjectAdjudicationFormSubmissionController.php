@@ -39,9 +39,10 @@ class SubjectAdjudicationFormSubmissionController extends Controller
                     $retArray = $this->putFinalAnswer($request, $question);
                     $adjudicationFormRevisionDataArray['adjudication_form_data'][] = $retArray['adjudication_form_data'];
                     $trailLogDataArray['trail_log'][] = $retArray['trail_log'];
+
                 }
             }
-
+            
             $adjudicationFormStatusArray = AdjudicationFormStatus::putAdjudicationFormStatus($request);
             AdjudicationFormRevisionHistory::putAdjudicationFormRevisionHistory($adjudicationFormRevisionDataArray, $adjudicationFormStatusArray['id']);
 
@@ -66,8 +67,7 @@ class SubjectAdjudicationFormSubmissionController extends Controller
             }
             // get form type
             $formType = 'Adjudication Form';
-
-            eventDetails($trailLogDataArray['trail_log'], $formType, $formAddOrEdit, request()->ip, []);
+            eventDetails(array_filter($trailLogDataArray['trail_log']), $formType, $formAddOrEdit, request()->ip, []);
             /********************* */
 
             echo json_encode($adjudicationFormStatusArray);
@@ -91,7 +91,8 @@ class SubjectAdjudicationFormSubmissionController extends Controller
     {
         $step = PhaseSteps::find($request->stepId);
         $answerFixedArray = [];
-        $finalFormDataArray = [];
+        $finalFormDataArray = ['trail_log' => '','adjudication_form_data' => ''];
+        // $finalFormDataArray = [];
         $formDataArray = [];
         $trailLogArray = [];
         $answerFixedArray['study_id'] = $request->studyId;

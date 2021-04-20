@@ -3,7 +3,7 @@
     <title> View Subject Details | {{ config('app.name', 'Laravel') }}</title>
 @stop
 @section('content')
-
+    @php $old_values = ''; @endphp
     <div class="container-fluid site-width">
         <!-- START: Breadcrumbs-->
         <div class="row ">
@@ -22,42 +22,55 @@
             <div class="card-body">
                 <form action="{{route('studies.show',session('current_study'))}}" method="get" class="filter-form">
                     @csrf
+                    <input type="hidden" name="sort_by_field" id="sort_by_field" value="{{ getOldValue($old_values,'sort_by_field') }}">
+                    <input type="hidden" name="sort_by_field_name" id="sort_by_field_name" value="{{ getOldValue($old_values,'sort_by_field_name') }}">
                     <div class="form-row" style="padding: 10px;">
                         <div class="form-group col-md-4">
-                            <input type="text" name="subject_id" class="form-control" placeholder="Subject ID">
+                            <input type="text" name="subject_id" class="form-control" placeholder="Subject ID" value="{{ getOldValue($old_values,'subject_id')}}">
                         </div>
                          <div class="form-group col-md-4">
-                            <select name="site_id" class="form-control">
+                            @php
+                                $old_site ='';
+                                $old_site =  getOldValue($old_values,'site_id');
+                            @endphp
+                            <select name="site_id" class="form-control" >
                                 <option value="">Select Site</option>
                                 @if(!empty($site_study))
                                     @foreach($site_study as $site)
-                                        <option class="dropdown" value="{{$site->id}}">{{$site->site_name}}--{{$site->site_code}}</option>
+                                        <option class="dropdown" value="{{$site->id}}" @if($old_site == $site->id) selected @endif>{{$site->site_name}}--{{$site->site_code}}</option>
                                     @endforeach
                                 @endif
                             </select>
                         </div>
                         <div class="form-group col-md-4">
-                            <input type="date" class="form-control" name="enrollment_date" placeholder="Enrollment Date">
+                            <input type="date" class="form-control" name="enrollment_date" placeholder="Enrollment Date" value="{{ getOldValue($old_values,'enrollment_date')}}">
                         </div>
                         <div class="form-group col-md-4">
-                            {{-- <input type="text" name="disease_cohort" class="form-control" placeholder="Filter Via Disease Cohort"> --}}
+                            @php
+                                $old_cohort ='';
+                                $old_cohort =  getOldValue($old_values,'disease_cohort');
+                            @endphp
                             <select name="disease_cohort" class="form-control">
                                 <option value="">Select Disease Cohort</option>
                                 @if(!empty($diseaseCohort))
                                     {!! $diseaseCohort !!}
                                     @foreach($diseaseCohort as $disease)
-                                        <option class="dropdown" value="{{$disease->id}}">{{$disease->name}}</option>
+                                        <option class="dropdown" value="{{$disease->id}}"  @if($old_cohort == $disease->id) selected @endif>{{$disease->name}}</option>
                                     @endforeach
                                 @endif
                             </select>
                         </div>
                         <div class="form-group col-md-4">
+                            @php
+                                $old_eye ='';
+                                $old_eye =  getOldValue($old_values,'study_eye');
+                            @endphp
                             <select name="study_eye" class="form-control">
                                 <option value="">Select Study Eye</option>
-                                <option value="OD">OD</option>
-                                <option value="OS">OS</option>
-                                <option value="OU">OU</option>
-                                <option value="NA">NA</option>
+                                <option value="OD" @if($old_eye == 'OD') selected @endif>OD</option>
+                                <option value="OS" @if($old_eye == 'OS') selected @endif>OS</option>
+                                <option value="OU" @if($old_eye == 'OU') selected @endif>OU</option>
+                                <option value="NA" @if($old_eye == 'NA') selected @endif>NA</option>
                             </select>
                         </div>
                         <div class="form-group col-md-4" style="text-align: right;">
@@ -82,11 +95,11 @@
                         <div class="table-responsive list">
                             <table class="table">
                                 <thead>
-                                <th>Subject ID <i class="fas fa-sort float-mrg"></i></th>
-                                <th>Enrollment Date <i class="fas fa-sort float-mrg"></i></th>
-                                <th>Site Name <i class="fas fa-sort float-mrg"></i></th>
-                                <th>Disease Cohort <i class="fas fa-sort float-mrg"></i></th>
-                                <th>Study Eye <i class="fas fa-sort float-mrg"></i></th>
+                                <th onclick="changeSort('subject_id');">Subject ID <i class="fas fa-sort float-mrg"></i></th>
+                                <th onclick="changeSort('enrollment_date');">Enrollment Date <i class="fas fa-sort float-mrg"></i></th>
+                                <th onclick="changeSort('site_name');">Site Name <i class="fas fa-sort float-mrg"></i></th>
+                                <th>Disease Cohort </th>
+                                <th onclick="changeSort('study_eye');">Study Eye <i class="fas fa-sort float-mrg"></i></th>
                                 <th>Actions</th>
                                 </thead>
                                 <tbody>
@@ -99,7 +112,7 @@
                                         <td class="eye" style="display: none;">{{$subject}}</td>
                                         <td class="subject_id"><a href="{{route('subjectFormLoader.showSubjectForm',['study_id'=>$currentStudy->id,'subject_id'=>$subject->id])}}" class="text-primary font-weight-bold">{{$subject->subject_id}}</a>
                                         </td>
-                                        <td class="enrol_date">{{$subject->enrollment_date}}</td>
+                                        <td class="enrol_date">{{ date_format( new DateTime($subject->enrollment_date) , 'M-d-Y')}}</td>
                                         <td class="site_name">{{!empty($subject->site_name)?$subject->site_name:'SiteName'}}</td>
                                         <td class="disease">{{!empty($subject->disease_cohort->name)?$subject->disease_cohort->name:'Not Defined'}}</td>
                                         <td class="study_eye">{{!empty($subject->study_eye)?$subject->study_eye:'Not Defined'}}</td>
@@ -126,6 +139,8 @@
                                 @endforeach
                                 </tbody>
                             </table>
+                            
+                            {{ $subjects->appends(['sort_by_field_name' => \Request::get('sort_by_field_name'), 'sort_by_field' => \Request::get('sort_by_field'), 'subject_id' => \Request::get('subject_id'), 'site_id' => \Request::get('site_id'), 'date' => \Request::get('date'), 'disease_cohort' => \Request::get('disease_cohort'), 'study_eye' => \Request::get('study_eye')])->links() }}
                         </div>
                     </div>
                 </div>
@@ -152,14 +167,14 @@
                             </div>
                             <label for="subject_id" class="col-md-2">Subject ID</label>
                             <div class="{!! ($errors->has('subject_id')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                <input type="text" class="form-control" id="subject_id" name="subject_id" value="{{old('subject_id')}}" onchange="check_if_subject_exists(this)">
+                                <input type="text" class="form-control" id="subject_id" name="subject_id" value="{{old('subject_id')}}" onchange="check_if_subject_exists(this)" required>
                                 @error('subject_id')
                                 <span class="text-danger small">{{ $message }} </span>
                                 @enderror
                             </div>
                             <label for="study_short_name" class="col-md-2">Enrollment Date</label>
                             <div class="{!! ($errors->has('enrollment_date')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                <input type="date" class="form-control" id="enrollment_date" name="enrollment_date" value="{{old('enrollment_date')}}">
+                                <input type="date" class="form-control" id="enrollment_date" name="enrollment_date" value="{{old('enrollment_date')}}" required>
                                 @error('enrollment_date')
                                 <span class="text-danger small">{{ $message }} </span>
                                 @enderror
@@ -168,7 +183,7 @@
                         <div class="form-group row">
                             <label for="site_id" class="col-md-2">Site</label>
                             <div class="{!! ($errors->has('site_id')) ?'form-group col-md-4 has-error':'form-group col-md-4' !!}">
-                                <select name="site_id" id="site_id" class="form-control">
+                                <select name="site_id" id="site_id" class="form-control" required>
                                     <option value="">Select Subject Site</option>
                                     @if(!empty($site_study))
 
@@ -311,7 +326,9 @@
 @endsection
 @section('script')
     <script>
+
         $('body').on('click','.EditSubjects',function () {
+            
             var row = $(this).closest('tr')
                 id  = row.find('td.id').text()
                 subject_id  = row.find('td.subject_id').text()
@@ -320,11 +337,17 @@
                 disease = row.find('td.edit_disease_cohort').text()
                 study_eye = row.find('td.edit_study_eye').text();
 
-                console.log($(this).attr('data-url'));
+            /* format date */
+            var date = new Date(enrol_date);
+            var d = date.getDate();
+            var m =  date.getMonth() +1;
+            if (m < 10) m = '0' + m;
+            if (d < 10) d = '0' + d;
+            var y = date.getFullYear();
 
             $('#edit_id').val(id);
             $('#edit_subject_id').val(subject_id);
-            $('#edit_enrollment_date').val(enrol_date);
+            $('#edit_enrollment_date').val(y + "-" + m + "-" + d);
             $('#edit_site_id').val(site_id);
             $('#edit_study_eye').val(study_eye);
             $('#edit_disease_cohort').val(disease);
@@ -449,6 +472,17 @@
                     }
                 }
             });
+        }
+        function changeSort(field_name){
+            var sort_by_field = $('#sort_by_field').val();
+            if(sort_by_field =='' || sort_by_field =='ASC'){
+               $('#sort_by_field').val('DESC');
+               $('#sort_by_field_name').val(field_name);
+            }else if(sort_by_field =='DESC'){
+               $('#sort_by_field').val('ASC'); 
+               $('#sort_by_field_name').val(field_name); 
+            }
+            $('.filter-form').submit();
         }
     </script>
 @endsection

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class UserSystemInfo extends Model
 {
     use softDeletes;
-    protected $fillable = ['browser_name', 'remember_flag', 'user_id', 'qr_flag'];
+    protected $fillable = ['browser_name', 'user_mac', 'remember_flag', 'user_id', 'qr_flag'];
 
     public function user()
     {

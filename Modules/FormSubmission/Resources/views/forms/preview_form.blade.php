@@ -46,3 +46,4 @@
     @include('formsubmission::forms.form_css')
 @stop
 @include('formsubmission::subjectFormLoader.include.subject_form_css_js')
+@include('formsubmission::subjectFormLoader.include.validation_rules_functions_js')

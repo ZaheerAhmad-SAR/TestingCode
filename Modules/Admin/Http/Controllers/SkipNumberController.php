@@ -34,7 +34,12 @@ class SkipNumberController extends Controller
         $section = Section::where('id', $question_label->section_id)->first();
         $step = PhaseSteps::where('step_id', $section->phase_steps_id)->first();
         $num_values = Question::where('id', $id)->with('skiplogic')->get();
-        $all_study_steps = PhaseSteps::where('phase_id', $step->phase_id)->get();
+        if($step->form_type_id == 2){
+            $where_step  = array('phase_id' => $step->phase_id,'modility_id' => $step->modility_id,'form_type_id' => 2);
+        }else{
+            $where_step  = array('phase_id' => $step->phase_id,'modility_id' => $step->modility_id);
+        }
+        $all_study_steps = PhaseSteps::where($where_step)->get();
         return view('admin::forms.skip_question_num', compact('question_label', 'num_values', 'all_study_steps', 'step'));
     }
     // Add skip conditions on Questions with type Number

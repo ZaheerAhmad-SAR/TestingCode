@@ -22,10 +22,11 @@ class StudySeederTableSeeder extends Seeder
     public function run()
     {
         Model::unguard();
-        /*  $study = Study::all();
-        if (count($study) <= 0){
+        $study = Study::all();
+        if (count($study) <= 0) {
+            $studyID = (string)Str::uuid();
             $study = Study::create([
-                'id'    => (string)Str::uuid(),
+                'id'    => $studyID,
                 'study_short_name'  =>  'Test Study',
                 'study_title' => 'Study Title',
                 'study_status'  => 'Development',
@@ -40,16 +41,15 @@ class StudySeederTableSeeder extends Seeder
                 'user_id'       => (string)Str::uuid()
             ]);
 
-
-            $studyUser = User::all();
-            if ($studyUser->name = 'admin'){
-                RoleStudyUser::create([
-                    'id'    => (string)Str::uuid(),
-                    'user_id'   => $studyUser->id,
-                    'role_id'   => $studyUser->role_id,
-                    'study_id'  => $study->id
-                ]);
+            $studyUser = User::where('name', 'Super Admin')->first();
+            if ($studyUser->name = 'Super Admin') {
+                $studyUser = new RoleStudyUser;
+                    $studyUser->id    = (string)Str::uuid();
+                    $studyUser->user_id   = $studyUser->id;
+                    $studyUser->role_id   = $studyUser->role_id;
+                    $studyUser->study_id  = $studyID;
+                    $studyUser->save();
             }
-        }*/
+        }
     }
 }
