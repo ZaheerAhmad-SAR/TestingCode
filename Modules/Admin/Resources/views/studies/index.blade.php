@@ -968,37 +968,35 @@
 	        });
             function changeStudyStatus() {
                 var studyStatus = $('#studyStatusDD').val();
-                var StudyDeleteCount = $('#study_delete_count').val();
-                // if it is first time
-                if (StudyDeleteCount == 0) {
-                    if(studyStatus == 'Live') {
-                        $.confirm({
-                            columnClass: 'col-md-12',
-                            title: 'Put study in LIVE mode!',
-                            content: 'Keep existing data or delete',
-                            buttons: {
-                                deleteExistingData: {
-                                    text: 'Delete existing data',
-                                    btnClass: 'btn-green',
-                                    action: function() {
-                                        $('#deleteExistingData').val('deleteExistingData');
-                                        $('#changeStudyStatusForm').submit();
-                                    }
-                                },
-                                doNotdeleteExistingData: {
-                                    text: 'Do not delete existing data',
-                                    btnClass: 'btn-blue',
-                                    action: function() {
-                                        $('#deleteExistingData').val('');
-                                        $('#changeStudyStatusForm').submit();
-                                    }
-                                },
-                                cancel: {
-                                    text: 'Cancel',
-                                    btnClass: 'btn-red',
-                                    action: function() {
-                                        $('#deleteExistingData').val('');
-                                    }
+
+                if(studyStatus == 'Live'){
+                    $.confirm({
+                        columnClass: 'col-md-8',
+                        title: 'Put study in LIVE mode!',
+                        content: '<h2>Keep existing data or delete</h2>If you select "DELETE EXISTING DATA" all current collected data will be permanently deleted otherwise data will remain untouched as the study is moved to LIVE mode',
+                        buttons: {
+                            deleteExistingData: {
+                                text: 'Delete existing data',
+                                btnClass: 'btn-green',
+                                action: function() {
+                                    $('#deleteExistingData').val('deleteExistingData');
+                                    $('#changeStudyStatusForm').submit();
+                                }
+                            },
+                            doNotdeleteExistingData: {
+                                text: 'Do not delete existing data',
+                                btnClass: 'btn-blue',
+                                action: function() {
+                                    $('#deleteExistingData').val('');
+                                    $('#changeStudyStatusForm').submit();
+                                }
+                            },
+                            cancel: {
+                                text: 'Cancel',
+                                btnClass: 'btn-red',
+                                action: function() {
+                                    $('#deleteExistingData').val('');
+
                                 }
                             }
                         });
