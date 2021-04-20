@@ -114,7 +114,7 @@ class StudyTest extends DuskTestCase
                 ->press('@study-navbar')
                 ->press('@delete-study')
                 ->assertDialogOpened('Are You sure want to delete !')
-                ->pause(10000000000)
+//                ->pause(10000000000)
                 ->acceptDialog('press OK')
                 ->pause(1000)
                 ->logout();

@@ -106,6 +106,7 @@ class Google2FAController extends Controller
     //         echo json_encode('InValid Code');
     //     }
     // }
+            //pushing the new code again 
       }  
      }
     /**
