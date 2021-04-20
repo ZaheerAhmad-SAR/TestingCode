@@ -174,7 +174,7 @@
                                                             @endif
                                                             @if(hasPermission(auth()->user(),'systemtools.index'))
                                                             <span class="dropdown-item">
-                                                            <a href="#" data-id="{{$study->id}}" id="delete-study">
+                                                            <a href="javascript:void(0)" data-id="{{$study->id}}" dusk="delete-study" id="delete-study">
                                                                 <i class="fa fa-trash"  aria-hidden="true"></i> Delete
                                                             </a>
                                                             </span>
