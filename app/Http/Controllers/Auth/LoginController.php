@@ -103,7 +103,8 @@ class LoginController extends Controller
          if($user->qr_flag==1)    
          {
 
-             if(config('app.env') == 'live') {
+        if(config('app.env') == 'live') 
+        {
             if (isset($_COOKIE['ocap_live_remember_user'])) 
                {       
                 return redirect(route('studies.index'));
@@ -116,11 +117,8 @@ class LoginController extends Controller
             }
          }
          else{
-             return redirect(route('studies.index'));
-         }
-          
-        } else{
-         if (isset($_COOKIE['ocap_dev_remember_user'])) 
+
+             if (isset($_COOKIE['ocap_dev_remember_user'])) 
                {       
                 return redirect(route('studies.index'));
                 }  
@@ -130,6 +128,11 @@ class LoginController extends Controller
                 $request->session()->put('2fa:user:id', $user->id);
                 return view('2fa/validate', compact('user'));
             }   
+          
+         }
+          
+        } else{
+           return redirect(route('studies.index'));
         }
        
     }
