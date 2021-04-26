@@ -6,8 +6,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Prepare The Environment
-        run: cp .env.example .env
       - name: Create Database
         run: |
           sudo systemctl start mysql
