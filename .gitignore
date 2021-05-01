@@ -4,7 +4,7 @@
 /public/images
 /storage/*.key
 server.php
-/vendor
+/vendor/
 .env
 .env_old
 .htaccess
